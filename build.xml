@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jminor" default="report" basedir=".">
+
+  <description>JMinor RAD Framework Ant build file</description>
+
+  <property file="build.properties"/>
+
+  <fileset id="lib" dir="${lib}" />
+
+  <fileset id="common_resources" dir="${src}" includes=
+          "org/jminor/common/**/*.gif, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
+  <fileset id="framework_resources" dir="${src}" includes=
+          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
+  <fileset id="common_test_resources" dir="${srctest}" includes=
+          "org/jminor/common/**/*.gif, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
+  <fileset id="framework_test_resources" dir="${srctest}" includes=
+          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
+
+  <target name="prep_libraries" >
+    <delete dir="${lib}" />
+    <mkdir dir="${lib}" />
+    <copy file="${libdir}/${lib.jdbc.oracle}" todir="${lib}" />
+    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${lib}" />
+    <copy file="${libdir}/${lib.junit}" todir="${lib}" />
+    <copy file="${libdir}/${lib.jasperreports.base}" todir="${lib}" />
+    <copy file="${libdir}/${lib.log4j}" todir="${lib}" />
+    <copy file="${libdir}/${lib.substance}" todir="${lib}" />
+    <copy file="${libdir}/${lib.jcalendar}" todir="${lib}" />
+    <copy file="${libdir}/${lib.jfreechart.base}" todir="${lib}" />
+    <copy file="${libdir}/${lib.jfreechart.common}" todir="${lib}" />
+  </target>
+
+  <target name="clean">
+    <delete dir="${build}" includeEmptyDirs="true" />
+    <delete dir="${buildtest}" includeEmptyDirs="true" />
+    <delete dir="${buildroot}" includeEmptyDirs="true" />
+    <delete dir="${reports}" includeEmptyDirs="true" />
+    <delete dir="${htmlreports}" includeEmptyDirs="true" />
+    <delete dir="${test}" includeEmptyDirs="true" />
+  </target>
+
+  <target name="init" depends="clean">
+    <mkdir dir="${build}" />
+    <mkdir dir="${buildtest}" />
+    <mkdir dir="${dist}" />
+    <mkdir dir="${dist}/current" />
+    <mkdir dir="${docs}" />
+    <mkdir dir="${docsapi}" />
+    <mkdir dir="${reports}" />
+    <mkdir dir="${htmlreports}" />
+  </target>
+
+  <target name="cvs_checkout">
+    <cvs passfile="${cvspassfile}" dest="${basedir}/../../.."
+         cvsroot="${cvsroot}" package="${ant.project.name}" />
+  </target>
+
+  <target name="build" depends="init">
+    <tstamp>
+      <format property="DSTAMP" pattern="dd-MM-yy HH:mm" />
+    </tstamp>
+    <javac destdir="${build}" debug="true" >
+      <src path="${src}" />
+      <classpath>
+        <fileset refid="lib" />
+      </classpath>
+    </javac>
+
+    <rmic base="${build}" includes="org/jminor/framework/server/rmi/EntityDbRemoteServer.class,
+                                    org/jminor/framework/server/rmi/EntityDbRemoteAdapter.class">
+      <classpath>
+        <fileset refid="lib" />
+      </classpath>
+    </rmic>
+
+    <copy todir="${build}" >
+      <fileset refid="common_resources" />
+      <fileset refid="framework_resources" />
+    </copy>
+
+    <javac destdir="${buildtest}" debug="true" >
+      <src path="${srctest}" />
+      <classpath>
+        <fileset refid="lib" />
+        <path location="${build}" />
+      </classpath>
+    </javac>
+    <concat destfile="${build}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
+
+    <copy todir="${buildtest}" >
+      <fileset refid="common_test_resources" />
+      <fileset refid="framework_test_resources" />
+    </copy>
+  </target>
+
+  <!--todo fix tests depends="run_tests"-->
+  <target name="dist" depends="build">
+    <tstamp />
+    <mkdir dir="dist/${version}" />
+    <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build}"
+         excludes="org/jminor/framework/demos/**"/> <!-- exclude the example classes -->
+    <zip destfile="${dist}/${version}/${ant.project.name}.jar" update="true" duplicate="add" >
+      <fileset refid="common_resources" />
+      <fileset refid="framework_resources" />
+    </zip>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-common.jar" basedir="${build}"
+         includes="org/jminor/common/**"/>
+    <zip destfile="${dist}/${version}/${ant.project.name}-common.jar" update="true" duplicate="add" >
+      <fileset refid="common_resources" />
+    </zip>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-client.jar" basedir="${build}"
+         includes="org/jminor/framework/FrameworkSettings*,
+                org/jminor/framework/FrameworkConstants*,
+                org/jminor/framework/client/**,
+                org/jminor/framework/profiling/**,
+                org/jminor/framework/model/**,
+                org/jminor/framework/db/**,
+                org/jminor/framework/i18n/**,
+                org/jminor/framework/server/IEntityDbRemote.class,
+                org/jminor/framework/server/IEntityDbRemoteServer.class,
+                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-client-remote.jar" basedir="${build}"
+         includes="org/jminor/framework/FrameworkSettings*,
+                org/jminor/framework/FrameworkConstants*,
+                org/jminor/framework/client/**,
+                org/jminor/framework/profiling/**,
+                org/jminor/framework/model/**,
+                org/jminor/framework/db/IEntityDb*,
+                org/jminor/framework/i18n/**,
+                org/jminor/framework/server/IEntityDbRemote.class,
+                org/jminor/framework/server/IEntityDbRemoteServer.class,
+                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-server.jar" basedir="${build}"
+         includes="org/jminor/framework/FrameworkSettings*,
+                org/jminor/framework/FrameworkConstants*,
+                org/jminor/framework/model/*,
+                org/jminor/framework/db/**,
+                org/jminor/framework/server/*.class"/>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-server-monitor.jar" basedir="${build}"
+         includes="org/jminor/framework/FrameworkSettings*,
+                org/jminor/framework/FrameworkConstants*,
+                org/jminor/framework/model/EntityRepository.class,
+                org/jminor/framework/db/IEntityDb.class,
+                org/jminor/framework/db/DbException.class,
+                org/jminor/framework/server/monitor/**,
+                org/jminor/framework/server/IEntityDbRemote.class,
+                org/jminor/framework/server/IEntityDbRemoteServer.class,
+                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-demos.jar" basedir="${buildtest}"
+         includes="org/jminor/framework/demos/**"/>
+
+    <jar jarfile="${dist}/${version}/${ant.project.name}-src.jar" basedir="${src}" />
+    <jar jarfile="${dist}/${version}/${ant.project.name}-api-doc.jar" basedir="${docsapi}" />
+
+    <copy file="${basedir}/changelog.txt" todir="${dist}/${version}" />
+    <copy todir="${dist}/current">
+      <fileset dir="${dist}/${version}" />
+    </copy>
+  </target>
+
+  <target name="doc" depends="build">
+    <delete dir="${docsapi}" includeEmptyDirs="true" />
+    <mkdir dir="${docsapi}" />
+    <mkdir dir="${docstestapi}" />
+    <javadoc destdir="${docstestapi}" sourcepath="${srctest}" packagenames="org.jminor.*"
+             author="true" version="true" use="true" windowtitle="Framework Test API docs"
+             link="http://java.sun.com/javase/6/docs/api/"
+             group="Common org.jminor.common*,
+                    Client org.jminor.framework.client*,
+                    Db org.jminor.framework.db*,
+                    Model org.jminor.framework.model*,
+                    Demos org.jminor.framework.demos*">
+      <classpath>
+        <fileset refid="lib" />
+        <path location="${build}" />
+      </classpath>
+    </javadoc>
+    <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*"
+             author="true" version="true" use="true" windowtitle="Framework API docs"
+             link="http://java.sun.com/javase/6/docs/api/"
+             group="Common org.jminor.common*,
+                    Client org.jminor.framework.client*,
+                    Db org.jminor.framework.db*,
+                    Model org.jminor.framework.model*,
+                    Server org.jminor.framework.server*">
+      <classpath>
+        <fileset refid="lib" />
+      </classpath>
+    </javadoc>
+  </target>
+
+  <target name="run_tests" depends="build">
+    <junit printsummary="yes" haltonfailure="on" haltonerror="on" >
+      <classpath>
+        <dirset dir="${build}" />
+        <fileset refid="lib" />
+      </classpath>
+      <formatter type="xml" usefile="true" />
+      <batchtest todir="${reports}">
+        <fileset dir="${build}" includes="**/*Test.class" />
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="report" depends="run_tests, deploy">
+    <junitreport todir="${reports}">
+      <fileset dir="${reports}" includes="TEST-*.xml" />
+      <report format="noframes" todir="${htmlreports}" />
+    </junitreport>
+  </target>
+
+  <target name="deploy" depends="dist" >
+    <copy file="${dist}/current/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-src.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/current/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
+  </target>
+
+  <target name="deploy_server" >
+    <mkdir dir="${deploy.server.path}" />
+    <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}" />
+    <copy file="${libdir}/${lib.log4j}" todir="${deploy.server.path}/lib" />
+    <copy file="${libdir}/${lib.jdbc.oracle}" todir="${deploy.server.path}/lib" />
+    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.server.path}/lib" />
+    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
+    <copy file="${deploy.server.localhost.run_mysql_nix}" todir="${deploy.server.path}" />
+    <copy file="${deploy.server.localhost.run_mysql_win}" todir="${deploy.server.path}" />
+    <copy file="${deploy.server.localhost.run_oracle_nix}" todir="${deploy.server.path}" />
+    <copy file="${deploy.server.localhost.run_oracle_win}" todir="${deploy.server.path}" />
+    <copy file="${deploy.server.policy}" todir="${deploy.server.path}" />
+    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
+  </target>
+
+  <target name="deploy_server_monitor" >
+    <mkdir dir="${deploy.server.monitor.path}" />
+    <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}" />
+    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${libdir}/${lib.substance}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${libdir}/${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${libdir}/${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${libdir}/${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${libdir}/${lib.jdbc.oracle}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${deploy.server.monitor.launchfile_win_mysql}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.launchfile_win_oracle}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
+  </target>
+
+  <target name="deploy_profiling" >
+    <mkdir dir="${deploy.profiling.path}" />
+    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.profiling.path}" />
+    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.profiling.path}" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.profiling.path}" />
+    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${libdir}/${lib.substance}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${libdir}/${lib.log4j}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${libdir}/${lib.jfreechart.base}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${libdir}/${lib.jfreechart.common}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${deploy.profiling.empdept.launchfile_win}" todir="${deploy.profiling.path}" />
+    <copy file="${deploy.profiling.schema_browser.launchfile_win}" todir="${deploy.profiling.path}" />
+    <copy file="${deploy.profiling.petstore.launchfile_win}" todir="${deploy.profiling.path}" />
+    <copy file="${deploy.profiling.policy}" todir="${deploy.profiling.path}" />
+    <copy file="${deploy.profiling.truststore}" todir="${deploy.profiling.path}" />
+  </target>
+
+  <target name="deploy_demos" >
+    <mkdir dir="${deploy.demos.path}" />
+    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}" />
+    <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}" />
+    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.demos.path}" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}" />
+    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.demos.path}/lib" />
+    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
+    <copy file="${libdir}/${lib.substance}" todir="${deploy.demos.path}/lib" />
+    <copy file="${libdir}/${lib.log4j}" todir="${deploy.demos.path}/lib" />
+    <copy file="${deploy.demos.empdept.remote.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.empdept.local.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.schema_browser.remote.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.schema_browser.local.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.petstore.remote.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.petstore.local.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
+  </target>
+
+  <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_profiling, deploy_demos">
+    <delete file="${dist}/current/jminor-${version}.zip"/>
+    <zip basedir="${dist}/current/" destfile="${dist}/current/jminor-${version}.zip"/>
+  </target>
+</project>

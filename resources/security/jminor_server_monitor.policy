@@ -1,0 +1,12 @@
+grant {
+  permission java.io.FilePermission "${user.home}/jminor.log", "read,write";
+  permission java.io.FilePermission "${user.home}/jminor.log-CREATED", "read,write,delete";
+
+  permission java.net.SocketPermission "*:80-", "connect";
+
+  permission java.util.PropertyPermission "*", "read";
+
+  permission java.awt.AWTPermission "showWindowWithoutWarningBanner";
+  permission java.awt.AWTPermission "accessClipboard";
+  permission java.awt.AWTPermission "setWindowAlwaysOnTop";
+};

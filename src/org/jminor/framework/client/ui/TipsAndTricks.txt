@@ -1,0 +1,30 @@
+Query Range
+By default, the program only selects a range of available records from each table, to limit the query time and memory usage.
+The range settings can be edited via the Configure Query... option found in the table popup menu. The number of records in the underlying database table and the current query range is indicated in the bottom right corner of each table.
+  Example:
+If there are 1000 records in the underlying database table and you only want to retrieve the last 100 records entered, choose the range as 1 to 100, if you want to retrieve the oldest 100 records choose the range 900 to 1000.
+
+Filtering
+There are two ways to filter data; filtering it before it is sent to the client (by configuring the underlying query), this filtering method is restricted to properties mapping directly to columns in the underlying table.
+Data can also be filtered after it is retrieved from the database, with this method you are not restricted to table column properties.
+To query configuration panel is accessible via the table popup menu. After activating the required filters you must refresh the table to retrieve the filtered data.
+To show the filter dialog for a table column, click the column header while holding down the SHIFT button. A * prefix on the column caption indicates an active filter.
+
+To enable/disable the automatic filtering of detail tables, use the Selection Filter setting found in the menu (Settings->Selection Filter).
+
+Sorting
+To sort a table, click a column header once to sort ascending, twice to sort descending and three times to reset the sorting.
+
+To sort by more than one column, hold down the CTR key while repeating the method described above for subsequent columns.
+
+Navigation
+To navigate between panels with the keyboard, use the arrow keys while holding down the SHIFT and ALT keys.
+
+Layout
+To resize or hide the active panel with the keyboard, use the arrow keys while holding down the SHIFT, ALT and CTR keys.
+
+Dependencies
+To view the records that depend on the selected record(s), right click to pop up a context menu and select the View Dependencies option.
+
+Table Menu
+To show a popup menu in the active table using the keyboard, press space while holding down the SHIFT key.

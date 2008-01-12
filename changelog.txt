@@ -1,0 +1,231 @@
+0.9
+  EntityTableModel.getRowBackgroundColor() added, used in EntityTableCellRenderer
+  Property.SubQueryProperty added
+  EntityDefinition.getSelectColumnString() handles Property.SubQueryProperty;
+    entitySelectColumnNames cache removed from EntityDefinition
+  EntityDbConnection and FrameworkDbUtil changed accordingly
+  Version info added to ant build files
+0.9.1
+  Confirm on exit option added, set FrameworkSettings.confirmExit to true
+  Some rather crude i18n work in EntityPanel (Update/Insert), EntityTablePanel, EntityApplicationPanel and FrameworkUiUtil
+  MessageFactory.getMessage() renamed to MessageFactory.get()
+  Unused caption constants removed from EntityPanel
+  *EntityModel property change notification was problematic when Property.DenormalizedProperty was
+    processed, skipped it, since denormalized properties are functionally immutable
+  Some code reordering in EntityDbConnection
+  EntityDbConnection.getDependentEntities() now works for multi column references
+0.9.2
+  Embedded search panel now resizes appropriately when the first property search panel is a null panel
+  Restructured FrameworkConstants
+  Added information on filtering via query configuration to TipsAndTricks
+  Improved db profiling code
+  Removed unused events from EntityApplicationModel
+  Refactored EntityApplicationPanel.startApplication()
+  Removed unused local variable from ClientWrapper
+  Added a separate port for the rmi db connection, runtime property framework.server.db.port
+  Updated rmi server launch files to reflect changes in property names
+  Added typical jnlp file code to the framework walkthrough file
+  Added a dialog asking the user whether to retry if login fails
+0.9.3
+  Some i18n in EntityCriteriaPanel and EntityTablePanel
+  EntityTableModel.getQuerySearchProperties() can be overridden to remove query configuration filters for certain properties
+  EntityTableModel.clearQueryCriterias() added
+  EntityTableModel.getQuerySearchCriteria() parameter changed from Property to String (propertyName)
+  Fixed PropertyCriteria so that is provides "is not null" when appropriate
+  Fixed DateTextProperty so that it returns a Timestamp object instead of Date, in accordance with the db layer which uses Timestamp exclusively, due to lack of an exact time element in Date
+  EntityPanel.createLabel() added
+  TextProperty.immediateUpdate can be activated even if the field is a JFormattedTextField
+  EntityTablePanel.doubleClickAction property added
+  EntityTableSearchPanel now shows correct indicator colors when initialized
+  Prevented a NullPointerException in cases when login failes in EntityApplicationPanel.startApplication
+  EntityPanel.initCommandPanels() added, override to initialize panels that depend on the commands being initialized
+  A minor change in EntityTablePanel.configureQuery(), dialog not disposed of between showings
+  FrameworkUiUtil.showInDialog() now takes boolean parameter includeButtonPanel and returns the dialog
+  EntityCriteria.getWhereClause() now available with boolean parameter includeWhere, if false "where" is replaced with "and"
+  EntityDbConnection.selectMany() handles the above change
+  EntityPanel.getDefaultCommands() renamed to EntityPanel.getPanelCommandSet()
+  Entity.setValue() now translates null entities into actual null values
+  FrameworkUtil.createNullEntity() does not initialize null entities for all reference properties anymore
+  Reordered functions according to access rights in PropertyChangePanel
+0.9.4
+  Improved EntityModel.getPropertyChangeDebugString()
+  Added PropertyChangeEvent.isInitialization boolean property
+  java.util.Date changed to java.sql.Timestamp where possible
+  FrameworkUtil.hashByPropertyValue() added
+  FrameworkUtil.getPropertyValues() added
+  Date panel text fields have immediateUpdate set as true as default
+  TextProperty.getTextField() added, protected
+  DateTextProperty.fieldMaskString property added
+  DateTextProperty now regards an empty text field as valid
+  FilteredComboBoxModel; setting and filtering the contents does not interfere with the selected item
+  FilteredComboBoxModel/Test moved to package ...framework.common.model
+  FrameworkUiUtil.createDateFieldPanel() fixed, now it handles null Timestamp values correctly
+  FrameworkUiUtil.showEntityPanelDialog() now takes a JPanel parameter as owner instead of Container
+  Clear button now uses mnenonic charAt(1) instaed of charAt(0) due to conflict with the Help menu item (in icelandic)
+  Wait cursor is shown while waiting for a support panel initialization
+  FrameworkUiUtil.getParentWindow() used instead of getParentFrame where applicable
+  ExceptionDialog added to package client.ui, copied from general, used throughout
+  EntityModel notifies property value changes in an order which does not interfere with combo box bindings
+  Prevented a potential null pointer exception in EntityDefinition.getEntityReferenceProperties()
+0.9.5
+  EntityModel.setValue() protected, added public EntityModel.uiSetValue()
+  Property links updated according to the change above
+  Changed maximum log file size from 20 megabytes to a more reasonable 2 megabytes
+  TextProperty.getFormattedValue() added, called when format is not null
+  DateTextProperty overrides TextProperty.getFormattedValue() and returns a Timestamp object instead of Date
+  EntityDefinition.get... methods now throw rational exceptions instead of NullPointerExceptions
+  EntityPanel.getPropertyToUpdate() improved, sorts combo box contents
+  PropertyListener added to package ...client.property, replaces ActionListener for property change events
+  Moved EntityModel.PropertyChangeEvent to package ...client.property
+  Replaced EntityApplicationPanel.getTabPlacement() with FrameworkSettings.tabPlacement property
+  EntityPropertyEditor does not try to set current value if it is null
+  EntityTablePanel, removed vertical scrollbar when not needed
+  ItemComboBoxModel moved from ...client.model to ...common.model
+  FrameworkUiUtil.chooseFileToSave() added, copied and improved from UiUtil
+  Some i18n work in FrameworkUiUtil
+  EntityTablePanel.allowQueryConfiguration property added
+  FilteredComboBoxModel.setSelectedItem() fixed, now selects nullValueItem when initialized
+  TextProperty now handles both JTextField and JTextArea, uses JTextComponent
+  FrameworkUiUtil.createTextArea() added
+  EntityPanel.createTextArea() added
+  EntityModel.getEntityValue() added
+  EntityModel.getPropertyInitializedEvent() added
+  EntityModel.setValue() now updates stEntityActive accordingly
+0.9.6
+  FrameworkSettings.resetComboBoxModelsOnClear property added, defaults to false
+  EntityModel.resetComboBoxModelOnClear() added, enabling EntityComboBoxModels to be reset when the model is cleared, returns the above property by default
+  EntityModel.getEntitiesForInsert() and getEntitiesForUpdate() now return copies of the the active entity, instead of a reference, which was problematic
+  Entity.Key.setValue() now copies null value keys as well
+  DateTextProperty now returns Constants.TIMESTAMP_NULL_VALUE instead of null when the date string is unparsable
+  EntityModel.updateEntityModifiedState() added, can be overridden
+  Constructor added to ComboBoxPropertyLink
+  EntityDbConnection.selectMany() fixed so that it can handle data sources containing the WHERE keyword
+  Entity.Key.hashCode() returns Constants.INT_NULL_VALUE when all key values are null
+  EntityDbConnection.selectMany() implementation bug causing f.ex. getDependentEntities() not to work, fixed, IN_LIST instead of EXACT
+  EntityPanel returned by FrameworkUiUtil.createStaticEntityPanel() has query configuration disabled, as per panel definition (static data)
+  FrameworkUiUtil.createStaticEntityPanel() changed to createStaticEntityTablePanel()
+  PropertyCriteria.getConditionString() fixed so that filtering on Property.SubQueryProperty is possible
+  EntityModel.getPropertyNotificationOrder() added, override to provide the model with a specific property change notification order
+  Unused IEntityDb.selectSingle() and IEntityDb.selectMany() implementations removed
+  EntityApplicationPanel.showApplicationPanel() added
+  EntityTableModel.includeCriteriaComboBoxModel() added, override to disable a the column criteria combobox for a given property
+  EntitySearchPanel.initEntityComboBox() changed to initEntityField(), creates a JTextField for the column criteria if no combo box model is available
+0.9.7
+  FilteredComboBoxModel.setSelectedItem() returns if the item is already selected since MaximumMatch results in two setSelectedItem() calls each time a change is made
+  FilteredComboBoxModel now selects the nullValueItem on init if one is specified
+  EntityModel.notifyPropertiesInitialized() bug introduced in 0.9.6 (propertyNotificationOrder) fixed, didn't exclude Property.DenormalizedProperty as it should
+  EntityPanel repaints its JTable on EntityModel.evtEntitiesChanged
+  KeyCriteria added to ...framework.db
+  EntityDbConnection.selectMany(entityClass, primarKeys) implementation changed so that it uses EntityDbConnection.selectMany(entityCriteria)
+  EntityModel.lastUpdatedEntityPrimarykeys changed to lastUpdatedEntities
+  EntityModel.doUpdate() now returns the updated entities
+  EntityModel.update() now uses the entities returned by IEntityDb.update(), see above
+  Removed redundant refresh of last updated entities when replacing them in the EntityTableModel, see above
+  New overloaded version of EntityTableModel.replaceEntities() added
+  FrameworkUtil.createColumnComboBoxModel() now takes a Property object as parameter instead of a columnName string
+  EntityModel.entityComboBoxModels changed to EntityModel.propertyComboBoxModels since it now alos contains column combobox models
+  EntityModel.getColumnComboBoxModel() added
+  FrameworkUtil.createColumnComboBoxModel() fixed so that it selects the correct item on reset
+  FrameworkUiUtil.createColumnComboBox() now takes a refresh trigger Event parameter
+  FrameworkUtil.createColumnComboBoxModel() now takes a refresh trigger Event parameter, if null it defaults to EntityModel.evtEntitiesChanged
+0.9.8
+  Access to EntityModel.activeEntity and originalActiveEntity removed
+  EntityModel.getActiveEntity() changed to getActiveEntityCopy()
+  EntityModel.isActiveEntityNull() added
+  EntityModel.isActiveEntityModified() added
+  EntityModel.refreshDetailModelsAfterInsertOrUpdate() now throws UserException, DbException and RemoteException instead of RuntimeException
+  Events evtEntitiesUpdated and evtEntitiesDeleted fired before refreshDetailModelsAfterInsertOrUpdate() is called, since an exception during that method would prevent those from firing
+  FrameworkUtil.cloneMap() removed, unused
+  Entity.copy() renamed to getCopy() and improved, now it truly makes a deep copy by calling Entity.getCopy() for all entity reference property values
+  Entity.Key.setValue() now makes a deep copy
+  Entity.rsEntity() overloaded with a Type parameter, implemented for Type.INT and Type.STRING
+  Replaced RuntimeException with IllegalArgumentException where appropriate and removed a few redundant try/catch clauses
+  EntityModel.initTableModel() renamed to initializeTableModel for consistency
+  PropertySearchModel constructor now takes a EntityComboBoxModel as parameter instead of EntityTableModel, removing a cyclical package dependency
+  EntityDefinition.getPropertyByColumnName/ByIndex renamed to getProperty
+  EntityDefinition.getColumnIndex() removed
+  EntityModel.updateDetailModelsByActiveEntity() now sends a null value as a parameter if the active entity is null
+  EntityComboBoxModel.setSelectedItem() now sends a null value forward to super.setSelectedItem() if the value to be selected is a null entity
+  FrameworkUiUtil.viewSelectionDependencies() removed, inlined in EntityPanel.viewSelectionDependencies()
+  EntityPanel.initUI, initAssociatedPanels, initEntityTablePanel, initCommandPanels renamed to initialize... for consistency
+  EntityPanel.getSetQueryRangeCommand() removed
+  Removed redundant i18n constants regarding query range
+  FrameworkUiUtil.chooseFileToSave() now caches the JFileChooser for quicker subsequent execution time
+  FrameworkUiUtil.createStaticEntityTablePanel() changed back to createStaticEntityPanel(), since EntityTablePanel has no popup commands by default
+  WaitCursor added to EntityPanel.viewSelectionDependencies(), .handleInsert(), .handleUpdate(), .handleDelete(), .updateSelectedEntities(), FrameworkUiUtil.showDependenciesDialog() and FrameworkUiUtil.chooseFileToSave()
+  FrameworkUiUtil.createDateChooserPanel() added
+  Util.DateMaskFormat subclasses including time element format changed from ..H:mm.. to ..HH:mm.. to force double digit 24 hour time
+  FrameworkUiUtil.DateInputPanel now keeps a reference to the DateMaskFormat
+  EntityPropertyEditor now uses the aforementioned FrameworkUiUtil.createDateChooserPanel()
+  FilteredComboBoxModel does not set its contents on initialization
+  EntityComboBoxModel.setSelectedItem() returns if the combobox model is empty
+  EntityPanel restructured
+  EntityTablePanel.init... renamed to initialize... for consistency
+  FrameworkUiUtil.initFilterPanels() renamed to initializeFilterPanels
+  FrameworkUiUtil.initFilterPanel() renamed to initializeFilterPanel
+  FrameworkUiUtil.selectEntities() now throws UserCancelException when the user presses the cancel button
+  Popup menus are now triggerd correctly with a MouseListener.mouseReleased() MouseEvent.isPopupTrigger() combo, instead of a MouseListener.mouseClicked() MouseEvent.getButton() == MouseEvent.BUTTON3 combo
+  EntityApplicationPanel.getApplicationInfo() renamed to getRootEntityPanelInfo(), getSupportApplicationPanelInfo() to getSupportEntityPanelInfo(), showApplicationPanel() to showEntityPanel()
+  Added a popup menu with a refresh action to EntityComboBox
+  EntityTableModel.getQuerySearchProperties() now returns primary key properties as well by default
+  Static inner class EntityApplicationPanel.ApplicationPanelInfo moved to own file and renamed to EntityPanelInfo
+  ComboBoxPropertyLink now makes an editable combobox post its edits on each keystroke without hiding the popup
+  FrameworkUiUtil.createColumnComboBox() overloaded to add a editable boolean parameter
+  EntityPanel.createColumnComboBox() overloaded to add a editable boolean parameter
+  TextProperty, IntTextProperty, DoubleTextProperty and DateTextProperty renamed to ...TextPropertyLink
+  ColumnComboBoxModel added to package ...client.model
+  Removed a bunch of unused methods from FrameworkUtil
+  Access to EntityPropertyLink.entityModel and .property restricted to private, protected get methods added
+  EntityModel.evtActiveEntityChanged renamed to evtActiveEntityModified
+  EntityTableModel.evtQueryRangeChanged removed
+  PropertyCriteria.get/setValues() added
+  EntityTableModel.queryRange Point removed and queryRangeCriteria added
+  Added a few verbose logging messages
+  Version info added, accessible via Help->About
+  PropertySearchPanel now only initializes the lower bound field if it applies, as in, not for boolean or entity properties
+  PropertySearchPanel does not refresh EntityComboBoxModels on initilization
+  Added a couple of test cases to TestEntity
+  Fixed a bug in FrameworkUiUtil.showAndPreparePanel which prevented the keyboard navigation feature from working unless each panel had set the default focus component
+  Added valueContainsLiteralCharacters parameter to EntityPanel/FrameworkUiUtil.createTextField, used for formatted text fields
+  Refactored detail panel handling in EntityPanel and added the option (dialogDetailPanels via constructor) to have them open in a non-modal dialog instead of embedding them in the parent panel
+  Ctr-click on table header to show column filters disabled since it conflicted with sorting multiple columns, now this is only available via the table popup menu
+  PropertySearchPanel fixed so that is shows initial value for date fields
+  EntityModel.evtBeforeInsert, evtBeforeUpdate and evtBeforeDelete added
+  Mnemonics added to i18n for the most common actions
+  EntityPanel.allowQueryConfiguration added, is propagated to the EntityTablePanel and controls if Query Configuration appears in the table popup menu
+  PropertySearchPanel does not reset SearchType anymore when going from advanced to simple search
+  EntityTableModel.setSortingStatus(columnName, status) added
+  EntityTableModel.whereLikeValue renamed to simpleSearchString
+  EntityPanel floatingFilters property removed from constructor
+  EntityPanel.getDetailPanel() removed
+  EntityModel.getSelectionDependencies() moved to EntityTableModel
+  EntityPanel.detailViewStatus added
+  EntityTablePanel now trigger query configuration on status label double click
+  Added action buttons to EntityPanel south
+  EntityTableCellRenderer does not change the font of the topmost selected record
+  PropertySearchPanel checkBox instead of togglebutton
+  EntityCriteriaPanel refactored, added toggle command for the underlying EntityTableModel.showAllWhenNotFiltered property
+  EntityTablePanel.configureQuery now sets the wait cursor while constructing the EntityCriteriaPanel
+  EntityComboBoxModel and ColumnComboBoxModel now implement a new interface IRefreshable
+  EntityPanel calls EntityModel.refreshComboBoxModels() on initialization if refreshOnInit is set to false
+  PropertyCriteria removed redundant parenthesis
+  EntityTableModel.queryCriteriaComboBoxModels not cleared when the search panel is hidden
+  {EntityModel.setValue() now updates stEntityActive accordingly} from 0.9.5 changed back
+  EntityTablePanel table summary panel added
+  PropertySummaryPanel added
+  EntityPanel.getDetailSplitPaneResizeWeight() added
+  EntityTableModel.getColumnValues() added
+  EntityTableModel.searchStateOnRefresh added
+  EntityTableCellRenderer now uses the system default NumberFormat for all numbers
+  EntityPanel SwingWorker used for the CRUD actions
+  EntityTablePanel summary panel added
+  PropertySummaryPanel added
+  Fixed a few icons
+  EntityTablePanel refresh button is now aware of the search state, enabled when the search state is different from the one when last refreshed
+  PropertySearchModel.hashCode() added
+  Replaced Framework*Util.toList() with Arrays.asList() throughout and removed the unused methods
+  PropertySearchModel now selects the current value in the EntityComboBoxModel after it's refreshed
+  PropertySearchPanel turned from butt ugly to absolutely stunning
+  EntityTablePanel refresh button is now activated by pressing F5
+  EntityTableModel simpleSearchString changes trigger stDataDirty to be activated
+  EntityTablePanel.initializeSimpleSearchPanel made even simpler

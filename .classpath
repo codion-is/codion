@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="base" path="src"/>
+	<classpathentry kind="src" path="srctest"/>
+	<classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/jasperreports-1.2.7.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/jcalendar.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/jcommon-1.0.12.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/jfreechart-1.0.8a.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/mysql-connector-java-5.1.5-bin.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="C:/projects/jminor/lib/substance.jar"/>
+	<classpathentry kind="output" path="classes/test"/>
+</classpath>
