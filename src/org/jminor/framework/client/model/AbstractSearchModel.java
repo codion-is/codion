@@ -14,7 +14,7 @@ import org.jminor.framework.model.Type;
 import java.sql.Timestamp;
 
 /**
- * User: Bjï¿½rn Darri
+ * User: Björn Darri
  * Date: 26.12.2007
  * Time: 14:48:22
  */

@@ -16,7 +16,7 @@ import javax.swing.JPopupMenu;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjï¿½rn Darri
+ * User: Björn Darri
  * Date: 10.12.2007
  * Time: 15:54:36
  */

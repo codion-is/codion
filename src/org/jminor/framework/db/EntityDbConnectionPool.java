@@ -29,7 +29,7 @@ import java.util.TimerTask;
 
 /**
  * A simple connection pool implementation, pools connections on username basis
- * User: Bjï¿½rn Darri
+ * User: Björn Darri
  * Date: 7.12.2007
  * Time: 00:04:08
  */
