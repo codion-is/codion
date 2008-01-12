@@ -387,7 +387,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   private static void unexport(final UnicastRemoteObject connection) {
     try {
-      UnicastRemoteObject.unexportObject(connection, false);//todo is forcing the right thing to do?
+      UnicastRemoteObject.unexportObject(connection, false);
     }
     catch (NoSuchObjectException e) {
       log.error(e);

@@ -428,61 +428,6 @@ public abstract class DbConnection {
 
   protected abstract String getDatabaseURL();
 
-//  /**
-//   * @param schema the schema of the table for which to retrieve dependencies
-//   * @param table the table for which to retrieve dependencies
-//   * @return a TableDependencies object containing information about
-//   * the tables that have foreign keys to <code>schema</code>.<code>table</code>
-//   * @throws SQLException in case of a database error
-//   */
-  //todo oracle specific
-//  private TableDependencies getDependencies(final String schema, final String table) throws SQLException {
-//    final String schemaUpper = schema.toUpperCase();
-//    final String tableUpper = table.toUpperCase();
-//    final DbUtil.PrimaryKey primaryKey = getPrimaryKey(schemaUpper, tableUpper);
-//    final TableDependencies ret =
-//            new TableDependencies(schemaUpper+"."+tableUpper, primaryKey.getColumns());
-//
-//    final List<String> foreignKeyNames = queryStrings(
-//            "select constraint_name from all_constraints " +
-//                    "where r_constraint_name = '" + primaryKey.getName() + "' " +
-//                    "and constraint_type = 'R'");
-//
-//    if (foreignKeyNames.size() == 0)
-//      return ret;
-//
-//    final String sql = "select ac.owner || '.' || ac.table_name, acc.column_name "
-//            + "from all_constraints ac, all_cons_columns acc where "
-//            + DbUtil.generateInList("ac.constraint_name", foreignKeyNames, Type.STRING)
-//            + " and ac.constraint_name = acc.constraint_name";
-//
-//    return packDependencies(sql, ret);
-//  }
-
-//  private TableDependencies packDependencies(final String sql, final TableDependencies ret) throws SQLException {
-//    query(sql, new DbUtil.TableDependenciesPacker(ret));
-//
-//    return ret;
-//  }
-
-  //todo oracle specific
-//  private DbUtil.PrimaryKey getPrimaryKey(final String schema, final String table) throws SQLException {
-//    final String sql = "select ac.constraint_name, acc.column_name " +
-//            "from all_constraints ac, all_cons_columns acc " +
-//            "where ac.owner = '" + schema + "' " +
-//            "and ac.table_name = '" + table + "' " +
-//            "and ac.constraint_type = 'P' " +
-//            "and ac.constraint_name = acc.constraint_name " +
-//            "order by position";
-//
-//    final List qRet = query(sql, DbUtil.PRIMARY_KEY_PACKER);
-//
-//    if (qRet.size() > 0)
-//      return (DbUtil.PrimaryKey) qRet.get(0);
-//
-//    return null;
-//  }
-
   private boolean checkConnection() throws Exception {
     if (connection != null) {
       try {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="jminor" default="report" basedir=".">
 
-  <description>JMinor RAD Framework Ant build file</description>
+  <description>JMinor RAD Framework build file</description>
 
   <property file="build.properties"/>
 
@@ -31,17 +31,17 @@
   </target>
 
   <target name="clean">
-    <delete dir="${build}" includeEmptyDirs="true" />
-    <delete dir="${buildtest}" includeEmptyDirs="true" />
-    <delete dir="${buildroot}" includeEmptyDirs="true" />
+    <delete dir="${build.base}" includeEmptyDirs="true" />
+    <delete dir="${build.test}" includeEmptyDirs="true" />
+    <delete dir="${build.root}" includeEmptyDirs="true" />
     <delete dir="${reports}" includeEmptyDirs="true" />
     <delete dir="${htmlreports}" includeEmptyDirs="true" />
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
   <target name="init" depends="clean">
-    <mkdir dir="${build}" />
-    <mkdir dir="${buildtest}" />
+    <mkdir dir="${build.base}" />
+    <mkdir dir="${build.test}" />
     <mkdir dir="${dist}" />
     <mkdir dir="${dist}/current" />
     <mkdir dir="${reports}" />
@@ -49,66 +49,64 @@
   </target>
 
   <target name="cvs_checkout">
-    <cvs passfile="${cvspassfile}" dest="${basedir}/../../.."
-         cvsroot="${cvsroot}" package="${ant.project.name}" />
+    <cvs passfile="${cvspassfile}" dest="${basedir}/../../.." cvsroot="${cvsroot}" package="${ant.project.name}" />
   </target>
 
   <target name="build" depends="init">
     <tstamp>
       <format property="DSTAMP" pattern="dd-MM-yy HH:mm" />
     </tstamp>
-    <javac destdir="${build}" debug="true" >
+    <javac destdir="${build.base}" debug="true" >
       <src path="${src}" />
       <classpath>
         <fileset refid="lib" />
       </classpath>
     </javac>
 
-    <rmic base="${build}" includes="org/jminor/framework/server/rmi/EntityDbRemoteServer.class,
+    <rmic base="${build.base}" includes="org/jminor/framework/server/rmi/EntityDbRemoteServer.class,
                                     org/jminor/framework/server/rmi/EntityDbRemoteAdapter.class">
       <classpath>
         <fileset refid="lib" />
       </classpath>
     </rmic>
 
-    <copy todir="${build}" >
+    <copy todir="${build.base}" >
       <fileset refid="common_resources" />
       <fileset refid="framework_resources" />
     </copy>
 
-    <javac destdir="${buildtest}" debug="true" >
+    <javac destdir="${build.test}" debug="true" >
       <src path="${srctest}" />
       <classpath>
         <fileset refid="lib" />
-        <path location="${build}" />
+        <path location="${build.base}" />
       </classpath>
     </javac>
-    <concat destfile="${build}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
+    <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
 
-    <copy todir="${buildtest}" >
+    <copy todir="${build.test}" >
       <fileset refid="common_test_resources" />
       <fileset refid="framework_test_resources" />
     </copy>
   </target>
 
-  <!--todo fix tests depends="run_tests"-->
-  <target name="dist" depends="build">
+  <target name="dist" depends="report">
     <tstamp />
     <mkdir dir="dist/${version}" />
-    <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}"
          excludes="org/jminor/framework/demos/**"/> <!-- exclude the example classes -->
     <zip destfile="${dist}/${version}/${ant.project.name}.jar" update="true" duplicate="add" >
       <fileset refid="common_resources" />
       <fileset refid="framework_resources" />
     </zip>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-common.jar" basedir="${build}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}-common.jar" basedir="${build.base}"
          includes="org/jminor/common/**"/>
     <zip destfile="${dist}/${version}/${ant.project.name}-common.jar" update="true" duplicate="add" >
       <fileset refid="common_resources" />
     </zip>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-client.jar" basedir="${build}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}-client.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/client/**,
@@ -120,7 +118,7 @@
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-client-remote.jar" basedir="${build}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/client/**,
@@ -132,14 +130,14 @@
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-server.jar" basedir="${build}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}-server.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/model/*,
                 org/jminor/framework/db/**,
                 org/jminor/framework/server/*.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-server-monitor.jar" basedir="${build}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/model/EntityRepository.class,
@@ -150,7 +148,7 @@
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-demos.jar" basedir="${buildtest}"
+    <jar jarfile="${dist}/${version}/${ant.project.name}-demos.jar" basedir="${build.test}"
          includes="org/jminor/framework/demos/**"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-src.jar" basedir="${src}" />
@@ -176,7 +174,7 @@
                     Demos org.jminor.framework.demos*">
       <classpath>
         <fileset refid="lib" />
-        <path location="${build}" />
+        <path location="${build.base}" />
       </classpath>
     </javadoc>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*"
@@ -194,22 +192,27 @@
   </target>
 
   <target name="run_tests" depends="build">
-    <junit printsummary="yes" haltonfailure="on" haltonerror="on" >
+    <junit printsummary="yes" haltonfailure="on" haltonerror="on" fork="yes" >
+      <formatter type="xml" usefile="true" />
+      <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <classpath>
-        <dirset dir="${build}" />
+        <pathelement path="${build.base}" />
+        <pathelement path="${build.test}" />
         <fileset refid="lib" />
       </classpath>
-      <formatter type="xml" usefile="true" />
       <batchtest todir="${reports}">
-        <fileset dir="${build}" includes="**/*Test.class" />
+        <fileset dir="${srctest}" includes="**/Test*.java" />
       </batchtest>
     </junit>
   </target>
 
-  <target name="report" depends="run_tests, deploy">
+  <target name="report" depends="run_tests">
     <junitreport todir="${reports}">
       <fileset dir="${reports}" includes="TEST-*.xml" />
-      <report format="noframes" todir="${htmlreports}" />
+      <report format="frames" todir="${htmlreports}" />
     </junitreport>
   </target>
 
@@ -297,6 +300,7 @@
 
   <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_profiling, deploy_demos">
     <delete file="${dist}/current/jminor-${version}.zip"/>
-    <zip basedir="${dist}/current/" destfile="${dist}/current/jminor-${version}.zip"/>
+    <zip basedir="${dist}/current" destfile="${dist}/current/jminor-${version}.zip"/>
   </target>
+
 </project>

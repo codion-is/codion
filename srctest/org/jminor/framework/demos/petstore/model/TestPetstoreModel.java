@@ -2,7 +2,7 @@
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  *
  */
-package org.jminor.framework.demos.empdept.model;
+package org.jminor.framework.demos.petstore.model;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
@@ -18,12 +18,17 @@ import junit.framework.TestCase;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class EmpDeptModelTest extends TestCase {
+/**
+ * User: Björn Darri
+ * Date: 24.12.2007
+ * Time: 13:20:26
+ */
+public class TestPetstoreModel extends TestCase {
 
   private static IEntityDb db;
 
   static {
-    new EmpDept();
+    new Petstore();
     FrameworkSettings.get().useQueryRange = false;
     FrameworkSettings.get().useSmartRefresh = false;
     try {
@@ -43,15 +48,39 @@ public class EmpDeptModelTest extends TestCase {
     }
   }
 
-  public EmpDeptModelTest(String name) {
+  public TestPetstoreModel(String name) {
     super(name);
   }
 
-  public void testDepartment() throws Exception {
-    Util.printListContents(db.selectAll(EmpDept.T_DEPARTMENT));
+  public void testAddress() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_ADDRESS));
   }
 
-  public void testEmployee() throws Exception {
-    Util.printListContents(db.selectAll(EmpDept.T_EMPLOYEE));
+  public void testCategory() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_CATEGORY));
+  }
+
+  public void testItem() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_ITEM));
+  }
+
+  public void testProduct() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_PRODUCT));
+  }
+
+  public void testSellerInfo() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_SELLER_CONTACT_INFO));
+  }
+
+  public void testTag() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_TAG));
+  }
+
+  public void testTagItem() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_TAG_ITEM));
+  }
+
+  public void testZipLocation() throws Exception {
+    Util.printListContents(db.selectAll(Petstore.T_ZIP_LOCATION));
   }
 }

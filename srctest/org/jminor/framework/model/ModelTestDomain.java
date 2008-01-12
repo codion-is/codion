@@ -6,7 +6,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.db.IdSource;
 
-public class TestDb {
+public class ModelTestDomain {
 
   public static final String ID = "id";
   public static final String NAME = "name";

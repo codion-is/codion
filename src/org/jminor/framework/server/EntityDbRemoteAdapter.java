@@ -649,7 +649,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       }
     }
 
-    if (entityDbConnection == null)//todo not really working when enabling/disabling the pool
+    if (entityDbConnection == null)//todo this is not exactly stable when enabling/disabling the pool
       entityDbConnection = new EntityDbConnection(client.getUser(), repository, settings);
 
     return entityDbConnection;

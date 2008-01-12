@@ -355,7 +355,7 @@ public class Property implements Serializable {
 
     public final String referenceEntityID;
 
-    public final List<Property> referenceProperties;//todo Map<String, Property> where string is parent property name
+    public final List<Property> referenceProperties;
     public final boolean isWeakReference;
 
     public EntityProperty(final String propertyName, final String caption, final String referenceEntityID,
