@@ -54,7 +54,7 @@
                 </action>
                 <action name="test">
                     <script>${ant.script}</script>
-                    <target>run_tests</target>
+                    <target>report</target>
                 </action>
                 <action name="rebuild">
                     <script>${ant.script}</script>

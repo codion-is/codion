@@ -155,9 +155,8 @@ public class RMIEntityDbProvider implements IEntityDbProvider {
   private static IEntityDbRemoteServer checkServer(final IEntityDbRemoteServer server) throws RemoteException {
     final int port = server.getServerPort();
     final String requestedPort = System.getProperty(FrameworkConstants.SERVER_PORT_PROPERTY);
-    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort))) {
+    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))
       return server;
-    }
 
     return null;
   }
