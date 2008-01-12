@@ -162,6 +162,7 @@
 
   <target name="doc" depends="build">
     <delete dir="${docsapi}" includeEmptyDirs="true" />
+    <delete dir="${docstestapi}" includeEmptyDirs="true" />
     <mkdir dir="${docsapi}" />
     <mkdir dir="${docstestapi}" />
     <javadoc destdir="${docstestapi}" sourcepath="${srctest}" packagenames="org.jminor.*"
