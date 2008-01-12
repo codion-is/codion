@@ -34,6 +34,8 @@
     <delete dir="${build}" includeEmptyDirs="true" />
     <delete dir="${buildtest}" includeEmptyDirs="true" />
     <delete dir="${buildroot}" includeEmptyDirs="true" />
+    <delete dir="${docsapi}" includeEmptyDirs="true" />
+    <delete dir="${docstestapi}" includeEmptyDirs="true" />
     <delete dir="${reports}" includeEmptyDirs="true" />
     <delete dir="${htmlreports}" includeEmptyDirs="true" />
     <delete dir="${test}" includeEmptyDirs="true" />
@@ -44,8 +46,6 @@
     <mkdir dir="${buildtest}" />
     <mkdir dir="${dist}" />
     <mkdir dir="${dist}/current" />
-    <mkdir dir="${docs}" />
-    <mkdir dir="${docsapi}" />
     <mkdir dir="${reports}" />
     <mkdir dir="${htmlreports}" />
   </target>
