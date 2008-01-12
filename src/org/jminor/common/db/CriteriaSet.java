@@ -13,7 +13,7 @@ import java.util.List;
 public class CriteriaSet implements ICriteria {
 
   public enum Conjunction {
-    AND, OR//todo enum overkill
+    AND, OR
   }
 
   final Conjunction conjunction;

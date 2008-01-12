@@ -1154,7 +1154,7 @@ public class EntityModel implements IRefreshable {
     final Object newValue = doSetValue(property, value, validate);
 
     if (!Util.equal(newValue, oldValue)) {
-//      stEntityActive.setActive(!activeEntity.isNull()); //todo
+      stEntityActive.setActive(!activeEntity.isNull());
       if (notify)
         notifyPropertyChanged(property, newValue, oldValue, isModelChange, false);
     }

@@ -168,7 +168,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
   }
 
   protected String prepareForRegex(final String string) {
-    //todo a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
+    //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
     return string.replaceAll(Constants.WILDCARD, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 

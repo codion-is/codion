@@ -4,6 +4,8 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.db.IdSource;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,27 +19,6 @@ import java.util.Map;
  * A static repository for all Entity related meta-data
  */
 public class EntityRepository implements Serializable {
-
-  /**
-   * the id value is set automatically from a sequnce or is automatically incremented
-   */
-  public static final int ID_AUTO_INCREMENT = 0;//todo enum
-  /**
-   * the id value is derived from the max id value in the table
-   */
-  public static final int ID_MAX_PLUS_ONE = 1;
-  /**
-   * the source of the id value can be safely disregarded
-   */
-  public static final int ID_NONE = 2;
-  /**
-   * the id value should be selected from a sequence
-   */
-  public static final int ID_SEQUENCE = 3;
-  /**
-   * the id value should be queried
-   */
-  public static final int ID_QUERY = 4;
 
   private final Map<String, Map<String, Property>> properties = new HashMap<String, Map<String, Property>>();
 
@@ -56,7 +37,7 @@ public class EntityRepository implements Serializable {
   private final Map<String, String> entitySelectTableNames = new HashMap<String, String>();
   private final Map<String, String> entityOrderByColumns = new HashMap<String, String>();
   private final Map<String, String> entityIdSources = new HashMap<String, String>();
-  private final Map<String, Integer> idSources = new HashMap<String, Integer>();
+  private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
 
   private transient final HashMap<String, EntityProxy> entityProxy = new HashMap<String, EntityProxy>();
@@ -198,8 +179,8 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
-  public int getIdSource(final String entityID) {
-    final Integer ret = idSources.get(entityID);
+  public IdSource getIdSource(final String entityID) {
+    final IdSource ret = idSources.get(entityID);
     if (ret == null)
       throw new RuntimeException("No id source defined for entity: " + entityID);
 
@@ -318,38 +299,38 @@ public class EntityRepository implements Serializable {
 
   public void initialize(final String entityID, final String orderByColumns,
                          final Property... initialPropertyDefinitions) {
-    initialize(entityID, ID_AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
+    initialize(entityID, IdSource.ID_AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
   }
 
   public void initialize(final String entityID,
                          final Property... initialPropertyDefinitions) {
-    initialize(entityID, ID_AUTO_INCREMENT, initialPropertyDefinitions);
+    initialize(entityID, IdSource.ID_AUTO_INCREMENT, initialPropertyDefinitions);
   }
 
-  public void initialize(final String entityID, final int idSource,
+  public void initialize(final String entityID, final IdSource idSource,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, idSource, null, initialPropertyDefinitions);
   }
 
-  public void initialize(final String entityID, final int idSource,
+  public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final Property... initialPropertyDefinitions) {
     initialize(entityID, idSource, entityIdSource, null, initialPropertyDefinitions);
   }
 
-  public void initialize(final String entityID, final int idSource,
+  public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, null, idSource, entityIdSource, orderByColumns, null, false, initialPropertyDefinitions);
   }
 
-  public void initialize(final String entityID, final int idSource,
+  public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns, final String dbSelectTableName,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, idSource, entityIdSource, orderByColumns, dbSelectTableName,
             false, initialPropertyDefinitions);
   }
 
-  public void initialize(final String entityID, final int idSource,
+  public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
                          final Property... initialPropertyDefinitions) {
@@ -357,15 +338,10 @@ public class EntityRepository implements Serializable {
             isReadOnly, initialPropertyDefinitions);
   }
 
-  public void initialize(final String entityID, final String dbTableName, final int idSource,
+  public void initialize(final String entityID, final String dbTableName, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
                          final Property... initialPropertyDefinitions) {
-    if (idSource != ID_AUTO_INCREMENT && idSource != ID_MAX_PLUS_ONE
-            && idSource != ID_NONE && idSource != ID_SEQUENCE && idSource != ID_QUERY)
-      throw new IllegalArgumentException("Id source for entity must be either "
-              + "sequence, trigger sequence, max plus one, query or none");
-
     this.readOnly.put(entityID, isReadOnly);
     this.entityTableNames.put(entityID, dbTableName == null ? entityID : dbTableName.toLowerCase());
     this.entitySelectTableNames.put(entityID,
@@ -373,7 +349,7 @@ public class EntityRepository implements Serializable {
     this.idSources.put(entityID, idSource);
     this.entityOrderByColumns.put(entityID, orderByColumns == null ? "" : orderByColumns);
     this.entityIdSources.put(entityID,
-            (idSource == ID_SEQUENCE || idSource == ID_AUTO_INCREMENT) ?
+            (idSource == IdSource.ID_SEQUENCE || idSource == IdSource.ID_AUTO_INCREMENT) ?
                     (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null);
 
     final HashMap<String, Property> properties =

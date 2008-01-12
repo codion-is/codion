@@ -208,9 +208,7 @@ public class UiUtil {
     final int searchPanePreferredlHeight = pnlColumn.getPreferredSize().height;
     final Dimension newDim = new Dimension(tableColumnWidth, searchPanePreferredlHeight);
     pnlColumn.setPreferredSize(newDim);
-    //todo addNotify should not have to be here
     pnlColumn.getParent().addNotify();
-    pnlColumn.getParent().validate();
   }
 
   public static Action linkToEnabledState(final State enabledState, final Action action) {

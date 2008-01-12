@@ -35,7 +35,6 @@ public class DbUtil {
   public static final String MYSQL = "mysql";
 
   public static final String ORACLE_DRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
-  public static final String ORACLE_DRIVER_CLASS_14 = "oracle.jdbc.OracleDriver";//todo wtf?
   public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
   public static final String SQLITE_DRIVER = "org.sqlite.JDBC";
 
@@ -211,6 +210,13 @@ public class DbUtil {
               "str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')";
     else
       throw new RuntimeException("SQL string to date, unsupported db type: " + DB_TYPE);
+  }
+
+  public static String getSequenceSQL(final String sequenceName) {
+    if (isOracle())
+      return "select " + sequenceName + ".nextval from dual";
+
+    throw new RuntimeException("Sequence support for MySQL has not been implemented");      
   }
 
   public static class PrimaryKey implements Serializable {

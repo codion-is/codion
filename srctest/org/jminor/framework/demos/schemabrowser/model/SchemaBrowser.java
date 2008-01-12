@@ -5,9 +5,9 @@
 package org.jminor.framework.demos.schemabrowser.model;
 
 import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.IdSource;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityProxy;
-import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -51,17 +51,17 @@ public class SchemaBrowser {
 
   static {
     Entity.repository.initialize(T_SCHEMA,
-            EntityRepository.ID_NONE, null, SCHEMA_NAME, null, true,
+            IdSource.ID_NONE, null, SCHEMA_NAME, null, true,
             new Property.PrimaryKeyProperty(SCHEMA_NAME, Type.STRING, "Name"));
 
     Entity.repository.initialize(T_TABLE,
-            EntityRepository.ID_NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true,
+            IdSource.ID_NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true,
             new Property.EntityProperty(TABLE_SCHEMA_REF, "Schema", T_SCHEMA,
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING)),
             new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name", 1));
 
     Entity.repository.initialize(T_COLUMN,
-            EntityRepository.ID_NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
+            IdSource.ID_NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
             new Property.EntityProperty(COLUMN_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING, null, 0),
                     new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING, null, 1)),
@@ -69,7 +69,7 @@ public class SchemaBrowser {
             new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"));
 
     Entity.repository.initialize(T_CONSTRAINT,
-            EntityRepository.ID_NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true,
+            IdSource.ID_NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true,
             new Property.EntityProperty(CONSTRAINT_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING, null, 0),
                     new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING, null, 1)),
@@ -77,7 +77,7 @@ public class SchemaBrowser {
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"));
 
     Entity.repository.initialize(T_COLUMN_CONSTRAINT,
-            EntityRepository.ID_NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
+            IdSource.ID_NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
             null, true,
             new Property.EntityProperty(COLUMN_CONSTRAINT_CONSTRAINT_REF, "Constraint", T_CONSTRAINT,
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING, null, 0),

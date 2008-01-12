@@ -40,13 +40,12 @@ public class EntityKey implements Externalizable {
   /**
    * True if this is a single integer key
    */
-  private boolean isSingleIntegerKey;// todo does this lend itself to even more optimizations?
+  private boolean isSingleIntegerKey;
 
   /**
    * Caching the hash code
    */
-  //todo not really, explain perhaps?
-  private int hashCode = Constants.INT_NULL_VALUE;//for caching
+  private int hashCode = Constants.INT_NULL_VALUE;
 
   /**
    * True if the hash code value has been invalidated and needs to be recalculated

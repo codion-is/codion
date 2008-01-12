@@ -8,6 +8,7 @@ import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
 import org.jminor.common.db.IResultPacker;
+import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
@@ -161,14 +162,14 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         if (Entity.repository.isReadOnly(entityID))
           throw new DbException("Cannot insert a read only entity");
 
-        final int idSource = Entity.repository.getIdSource(entityID);
-        if (idSource == EntityRepository.ID_MAX_PLUS_ONE || idSource == EntityRepository.ID_SEQUENCE
-                || idSource == EntityRepository.ID_QUERY)
+        final IdSource idSource = Entity.repository.getIdSource(entityID);
+        if (idSource == IdSource.ID_MAX_PLUS_ONE || idSource == IdSource.ID_SEQUENCE
+                || idSource == IdSource.ID_QUERY)
           entity.getPrimaryKey().setValue(getNextIdValue(entityID, idSource));
 
         execute(sql = EntityUtil.getInsertSQL(entity));
 
-        if (idSource == EntityRepository.ID_AUTO_INCREMENT)
+        if (idSource == IdSource.ID_AUTO_INCREMENT)
           entity.getPrimaryKey().setValue(getAutoIncrementValue(
                   DbUtil.getAutoIncrementValueSQL(Entity.repository.getEntityIdSource(entityID))));
 
@@ -630,7 +631,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static List<EntityKey> getPrimaryKeysOfEntityValues(final List<Entity> entities,
                                                               final Property.EntityProperty property) {
-    final HashSet<EntityKey> ret = new HashSet<EntityKey>(entities.size());//todo test this one well with multi col-keys
+    final HashSet<EntityKey> ret = new HashSet<EntityKey>(entities.size());
     for (final Entity entity : entities) {
       EntityKey key = entity.getReferencedKey(property);
       if (key != null)
@@ -648,16 +649,21 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return packer;
   }
 
-  private int getNextIdValue(final String entityID, final int idSource) throws DbException {
+  private int getNextIdValue(final String entityID, final IdSource idSource) throws DbException {
     String sql;
-    if (idSource == EntityRepository.ID_MAX_PLUS_ONE)
-      sql = "select max(" + Entity.repository.getPrimaryKeyColumnNames(entityID)[0] + ") + 1 from " + entityID;
-    else if (idSource == EntityRepository.ID_QUERY)
-      sql = Entity.repository.getEntityIdSource(entityID);
-    else if (idSource == EntityRepository.ID_SEQUENCE)
-      sql = "select " + Entity.repository.getEntityIdSource(entityID) + ".nextval from dual";//todo oracle specific
-    else
-      throw new IllegalArgumentException(idSource + " is not a valid auto-increment ID source constant");
+    switch (idSource) {
+      case ID_MAX_PLUS_ONE:
+        sql = "select max(" + Entity.repository.getPrimaryKeyColumnNames(entityID)[0] + ") + 1 from " + entityID;
+        break;
+      case ID_QUERY:
+        sql = Entity.repository.getEntityIdSource(entityID);
+        break;
+      case ID_SEQUENCE:
+        sql = DbUtil.getSequenceSQL(Entity.repository.getEntityIdSource(entityID));
+        break;
+      default:
+        throw new IllegalArgumentException(idSource + " is not a valid auto-increment ID source constant");
+    }
     try {
       return queryInteger(sql);
     }

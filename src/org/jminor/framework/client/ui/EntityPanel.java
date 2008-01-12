@@ -135,9 +135,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   private final boolean allowQueryConfiguration;
   private final boolean compactPanel;
-  private final boolean buttonOrientationHorizontal;
-//  private final String buttonPlacement = BorderLayout.EAST;//todo finish this
   private boolean usePreferredSize = false;
+  private final String buttonPlacement;
 
   private final boolean specialRendering;
   private final boolean refreshOnInit;
@@ -179,8 +178,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     this.refreshOnInit = refreshOnInit;
     this.allowQueryConfiguration = allowQueryConfiguration;
     this.specialRendering = specialRendering;
-    this.buttonOrientationHorizontal = horizontalButtons;
-//    this.buttonPlacement = buttonPlacement;
+    this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.compactPanel = compactPanel;
   }
@@ -482,6 +480,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * @return true in case of successful insert, false otherwise
+   * @deprecated use handleSave instead
+   */
   public final boolean handleInsert() {
     try {
       validateData();
@@ -776,7 +778,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getInsertControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleSave", insertCaption,//todo deprecate handleInsert?
+    return ControlFactory.methodControl(this, "handleSave", insertCaption,
             new AggregateState(AggregateState.AND, model.stActive, model.getAllowInsertState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
@@ -846,7 +848,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     editPanel.setMinimumSize(new Dimension(0,0));
     editPanel.setBorder(BorderFactory.createEtchedBorder());
     final JPanel propertyBase =
-            new JPanel(new FlowLayout(buttonOrientationHorizontal ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
+            new JPanel(new FlowLayout(buttonPlacement.equals(BorderLayout.SOUTH) ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
     editPanel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     propertyBase.add(propertyPanel);
     editPanel.add(propertyBase, BorderLayout.CENTER);
@@ -854,8 +856,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             initializeActionToolBar() : initializeActionPanel();
     if (actionPanel != null)
       editPanel.add(actionPanel, FrameworkSettings.get().toolbarActions ?
-              (buttonOrientationHorizontal ? BorderLayout.NORTH : BorderLayout.WEST) :
-              (buttonOrientationHorizontal ? BorderLayout.SOUTH : BorderLayout.EAST));
+              (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
+              (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 
     return editPanel;
   }
@@ -879,8 +881,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   protected JPanel initializeActionPanel() {
     JPanel ret;
-//    if (buttonPlacement.equals(BorderLayout.NORTH) || buttonPlacement.equals(BorderLayout.SOUTH)) {
-    if (buttonOrientationHorizontal) {
+    if (buttonPlacement.equals(BorderLayout.SOUTH)) {
       ret = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
       ret.add(ControlProvider.createHorizontalButtonPanel(getPanelControlSet()));
     }

@@ -67,7 +67,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * Used to cache this frequently referenced attribute
-   * todo: may not be necessary, performance wise
+   * may not be necessary, performance wise
    */
   private transient boolean hasDenormalizedProperties;
 

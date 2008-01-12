@@ -6,6 +6,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Constants;
 import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 
@@ -349,7 +350,7 @@ public static Object[] getPropertyValue(final String propertyName, final List<En
   private static List<Property> getInsertProperties(final String entityID) {
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : Entity.repository.getDatabaseProperties(entityID,
-            Entity.repository.getIdSource(entityID) != EntityRepository.ID_AUTO_INCREMENT, false, true)) {
+            Entity.repository.getIdSource(entityID) != IdSource.ID_AUTO_INCREMENT, false, true)) {
       if (!(property instanceof Property.EntityProperty))
         ret.add(property);
     }

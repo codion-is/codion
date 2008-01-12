@@ -64,7 +64,7 @@ public class ControlProvider {
 
   public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
     final JPanel btnPanel = new JPanel(new GridLayout(0,1,5,5));
-    controlSet.iterate(new ButtonControlIterator(btnPanel));
+    controlSet.iterate(new ButtonControlIterator(btnPanel, true));
 
     return btnPanel;
   }
@@ -75,7 +75,7 @@ public class ControlProvider {
 
   public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
     final JPanel btnPanel = new JPanel(new GridLayout(1,0,5,5));
-    controlSet.iterate(new ButtonControlIterator(btnPanel));
+    controlSet.iterate(new ButtonControlIterator(btnPanel, false));
 
     return btnPanel;
   }
@@ -153,9 +153,11 @@ public class ControlProvider {
   private static class ButtonControlIterator implements ControlIterator {
 
     private final JPanel btnPanel;
+    private final boolean vertical;
 
-    public ButtonControlIterator(final JPanel btnPanel) {
+    public ButtonControlIterator(final JPanel btnPanel, final boolean vertical) {
       this.btnPanel = btnPanel;
+      this.vertical = vertical;
     }
 
     /** {@inheritDoc} */
@@ -173,7 +175,10 @@ public class ControlProvider {
 
     /** {@inheritDoc} */
     public void doControlSet(final ControlSet controlSet) {
-      createVerticalButtonPanel(btnPanel, controlSet);//todo vertial horizontal?
+      if (vertical)
+        createVerticalButtonPanel(btnPanel, controlSet);
+      else
+        createHorizontalButtonPanel(btnPanel, controlSet);
     }
 
     /** {@inheritDoc} */

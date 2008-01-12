@@ -4,6 +4,8 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.db.IdSource;
+
 public class TestDb {
 
   public static final String ID = "id";
@@ -28,7 +30,7 @@ public class TestDb {
             new Property.PrimaryKeyProperty(ID),
             new Property(NAME, Type.STRING));
 
-    EntityRepository.get().initialize(T_TEST_MASTER_ENTITY, EntityRepository.ID_NONE, null,
+    EntityRepository.get().initialize(T_TEST_MASTER_ENTITY, IdSource.ID_NONE, null,
             STRING_PROP, SELECT_TABLE_NAME, false,
             new Property.PrimaryKeyProperty(ID_PROP).setDefaultValue(420),
             new Property(INT_PROP, Type.INT, INT_PROP),
