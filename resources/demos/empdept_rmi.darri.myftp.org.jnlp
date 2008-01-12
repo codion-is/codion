@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" codebase="http://darri.myftp.org/java/framework/" href="empdept_rmi.darri.myftp.org.jnlp">
+
+  <information>
+
+    <!-- Application title -->
+    <title>empdept</title>
+
+    <!-- The vendor of the application -->
+    <vendor>Darri</vendor>
+
+    <!-- A link to a web page related to
+         the application -->
+    <homepage href="http://www.darri.is/"/>
+
+    <!-- Description elements are displayed
+         in various places in the Application
+         Manager -->
+    <description>empdept</description>
+    <description kind="short">empdept</description>
+
+    <!-- Declares that the application can
+         run without access to the server it
+         was downloaded from -->
+    <offline-allowed/>
+
+  </information>
+
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+
+    <!-- Specify the versions of the Java
+         Runtime Environment (JRE) that are
+         supported by the application.
+         Multiple entries of this kind are
+         allowed, in which case they are
+         considered to be in order of
+         preference -->
+    <j2se version="1.5+"/>
+
+    <!-- Specify the relative URL of a .jar
+         file containing code or data.
+         Specifying lazy tells the JAWS
+         system that the file does not need
+         to be downloaded before the
+         application can be run -->
+
+    <jar href="jminor-client-remote.jar"/>
+    <jar href="jminor-common.jar"/>
+
+    <!--  libraries-->
+    <jar href="lib/jcalendar.jar"/>
+    <jar href="lib/log4j-1.2.15.jar"/>
+    <jar href="lib/jasperreports-1.2.7.jar"/>
+
+    <property name="jminor.client.connection.type" value="remote"/>
+    <property name="jminor.server.hostname" value="black-beauty"/>
+    <property name="clientDescription" value="empdept"/>
+    <property name="java.rmi.server.codebase" value="http://darri.myftp.org/java/framework/framework.jar" />
+
+  </resources>
+
+  <application-desc main-class="framework.empdept.client.ui.EmpDeptAppPanel"/>
+</jnlp>
