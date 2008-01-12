@@ -30,5 +30,5 @@ public class FrameworkConstants {
   public static final String PROFILING_LOGIN_WAIT_PROPERTY = "jminor.profiling.loginwait";
   public static final String PROFILING_BATCH_SIZE_PROPERTY = "jminor.profiling.batchsize";
 
-  public static final String ENTITY_SERVER_NAME_PREFIX = "EntityDbServer";
+  public static final String JMINOR_SERVER_NAME_PREFIX = "JMinor EntityDb Server";
 }

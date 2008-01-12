@@ -76,7 +76,7 @@ public class HostMonitor extends DefaultMutableTreeNode {
     final ArrayList<String> ret = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames) {
-      if (name.startsWith(FrameworkConstants.ENTITY_SERVER_NAME_PREFIX)) {
+      if (name.startsWith(FrameworkConstants.JMINOR_SERVER_NAME_PREFIX)) {
         ret.add(name);
       }
     }

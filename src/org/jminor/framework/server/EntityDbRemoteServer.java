@@ -86,7 +86,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (port == null || port.length() == 0)
       throw new IllegalArgumentException("Db port must be specified");
 
-    serverName = FrameworkConstants.ENTITY_SERVER_NAME_PREFIX + " " + Util.getVersion()
+    serverName = FrameworkConstants.JMINOR_SERVER_NAME_PREFIX + " " + Util.getVersion()
             + " @ " + sid.toUpperCase()
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
     dbConnectionProperties.put(FrameworkConstants.DATABASE_SID_PROPERTY, sid);

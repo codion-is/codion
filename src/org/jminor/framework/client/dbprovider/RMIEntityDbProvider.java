@@ -169,7 +169,7 @@ public class RMIEntityDbProvider implements IEntityDbProvider {
       final String version = Util.getVersion();
       final String[] boundNames = registry.list();
       for (final String name : boundNames) {
-        if (name.startsWith(FrameworkConstants.ENTITY_SERVER_NAME_PREFIX) && name.contains(version)) {
+        if (name.startsWith(FrameworkConstants.JMINOR_SERVER_NAME_PREFIX) && name.contains(version)) {
           try {
             final IEntityDbRemoteServer server = checkServer((IEntityDbRemoteServer) registry.lookup(name));
             if (server != null)
