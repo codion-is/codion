@@ -58,7 +58,7 @@ public class ClientInstanceMonitorPanel extends JPanel implements IPopupProvider
   }
 
   public void disconnectSelected() throws RemoteException {
-    //todo
+    throw new RuntimeException("ClientInstanceMonitorPanel.disconnectSelected() has not been implemented");
   }
 
   public JPopupMenu getPopupMenu() {

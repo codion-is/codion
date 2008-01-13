@@ -154,7 +154,6 @@ public class EntityKey implements Externalizable {
    * @return the value of the property identified by propertyID, if the key
    * does not contain a value for the property, the default value is returned
    */
-  //todo is this logical behaviour?
   public Object getValue(final String propertyID) {
     if (!keyValues.containsKey(propertyID))
       return getProperty(propertyID).getDefaultValue();
@@ -298,7 +297,6 @@ public class EntityKey implements Externalizable {
   /**
    * @return true if one of the properties has a null value
    */
-   // todo is one null property enough to deem the whole key as null?
   public boolean isNull() {
     if (isSingleIntegerKey)
       return hashCode() == Constants.INT_NULL_VALUE;

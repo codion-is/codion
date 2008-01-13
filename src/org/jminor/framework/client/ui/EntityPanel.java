@@ -206,7 +206,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       FrameworkUiUtil.initializeResizing(this);
       if (FrameworkSettings.get().useKeyboardNavigation)
         FrameworkUiUtil.initializeNavigation(getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), getActionMap());
-      if (FrameworkSettings.get().useFocusActivation) {//todo mind that darn memory leak!!
+      if (FrameworkSettings.get().useFocusActivation) {//todo mind that darn memory leak!! only use for persistent panels?
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
                 "focusOwner", new java.beans.PropertyChangeListener() {
           public void propertyChange(final PropertyChangeEvent evt) {
@@ -481,7 +481,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * @return true in case of successful insert, false otherwise
-   * @deprecated use handleSave instead
    */
   public final boolean handleInsert() {
     try {

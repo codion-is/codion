@@ -395,6 +395,17 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
+   * @return the linked detail model or the first detail model if none is linked,
+   * returns null in case this model contains no detail models
+   */
+  public EntityModel getLinkedDetailModel() {
+    if (detailModels.size() == 0)
+      return null;
+
+    return linkedDetailModels.size() > 0 ? linkedDetailModels.get(0) : detailModels.get(0);
+  }
+
+  /**
    * Sets the currently linked detail model, that is, the one that should be
    * updated according to the selected item
    * @param detailModel the detail model to link

@@ -53,21 +53,22 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
       throw e;
     }
   }
-//todo, need to change a value before we can update, do that in a generic way, abstract method perhaps, hmm?
-//  public void testUpdate() throws Exception {
-//    try {
-//      final Entity testEntity = createTestEntities().get(0);
-//
-//      getDbConnection().update(Arrays.asList(testEntity));
-//
-//      final Entity tmp = getDbConnection().selectSingle(getEntityID(), testEntity.getPrimaryKey());
-//      assertEquals(testEntity, tmp);
-//    }
-//    catch (Exception e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//  }
+
+  public void testUpdate() throws Exception {
+    try {
+      final Entity testEntity = createTestEntities().get(0);
+
+      modifyEntity(testEntity);
+      getDbConnection().update(Arrays.asList(testEntity));
+
+      final Entity tmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
+      assertEquals(testEntity, tmp);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
 
   public void testDelete() throws Exception {
     try {
@@ -95,4 +96,10 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
       throw e;
     }
   }
+
+  /**
+   * This method should leave the entity modified, so that is can be used for the update test
+   * @param testEntity the entity to modify
+   */
+  protected abstract void modifyEntity(Entity testEntity);
 }

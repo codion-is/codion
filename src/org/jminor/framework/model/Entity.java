@@ -413,6 +413,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   /**
    * Makes this entity identical to <code>sourceEntity</code>.
    * Entity values, which are mutable, are copied with getCopy()
+   * Original property values, if any are not deep-copied
    * @param sourceEntity the entity to copy
    */
   public final void setAs(final Entity sourceEntity) {
@@ -427,7 +428,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (sourceEntity.originalPropertyValues != null && !sourceEntity.originalPropertyValues.isEmpty()) {
       if (originalPropertyValues == null)
         originalPropertyValues = new HashMap<String, Object>();
-      originalPropertyValues.putAll(sourceEntity.originalPropertyValues);//todo deep copy?
+      originalPropertyValues.putAll(sourceEntity.originalPropertyValues);
     }
     if (evtPropertyChanged != null)
       for (final Property property : Entity.repository.getProperties(getEntityID(), true))

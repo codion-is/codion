@@ -9,3 +9,8 @@
   Added a couple logos, used in demos f.x.
   Profiling.selectRandomRows() added
   EntityDbConnection does not add EntityRepository info if it's already initialized
+  Property.BooleanProperty.toBoolean() improved
+  Navigation now selects correct detail model
+  Removed CTR from resizing key combination
+  Improved FrameworkUiUtil.showInDialog()
+  Re-enabled EntityTestUnit.testUpdate(), added abstract modifyEntity() to accomodate

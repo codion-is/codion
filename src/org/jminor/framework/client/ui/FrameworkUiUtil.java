@@ -394,11 +394,11 @@ public class FrameworkUiUtil {
     final InputMap inputMap = panel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = panel.getActionMap();
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK + KeyEvent.CTRL_MASK, false), DIV_LEFT);
+            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK, false), DIV_LEFT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK + KeyEvent.CTRL_MASK, false), DIV_RIGHT);
+            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK, false), DIV_RIGHT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK + KeyEvent.CTRL_MASK, false), DIV_UP);
+            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK, false), DIV_UP);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
             KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK + KeyEvent.CTRL_MASK, false), DIV_DOWN);
 
@@ -473,7 +473,7 @@ public class FrameworkUiUtil {
           break;
         case DOWN:
           if (active.getDetailModels().size() > 0 && active.getLinkedDetailModels().size() > 0)
-            activateModel(active.getDetailModels().get(0));//todo missing ui link to selected detail panel, activeDetailModel or smth?
+            activateModel(active.getLinkedDetailModel());
           else
             activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
           break;
@@ -787,11 +787,8 @@ public class FrameworkUiUtil {
                                      final Dimension size, final Point location, final Action closeAction) {
     final JDialog dialog = new JDialog(owner, title);
     dialog.setLayout(new BorderLayout());
-    if (closeAction == null) {
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    }
-    else {
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);//todo
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
           closeAction.actionPerformed(new ActionEvent(dialog, -1, null));

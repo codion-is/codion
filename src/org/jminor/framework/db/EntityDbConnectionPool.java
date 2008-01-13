@@ -125,7 +125,7 @@ public class EntityDbConnectionPool {
       throw new IllegalStateException("Trying to check a connection into a closed connection pool!");
 
     synchronized (connectionPool) {
-      synchronized (connectionsInUse) {//todo is this inner synchronization necessary?
+      synchronized (connectionsInUse) {
         connectionsInUse.remove(connection);
       }
       if (connection.isConnectionValid()) {
@@ -198,6 +198,8 @@ public class EntityDbConnectionPool {
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {
     connectionPoolSettings = poolSettings;
+    if (!poolSettings.isEnabled())
+      close();
   }
 
   public ConnectionPoolSettings getConnectionPoolSettings() {

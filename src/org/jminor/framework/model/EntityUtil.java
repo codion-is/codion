@@ -75,7 +75,7 @@ public class EntityUtil {
     switch (property.propertyType) {
       case INT :
       case DOUBLE :
-        return value.toString();//todo localization?
+        return value.toString();//localize?
       case LONG_DATE :
       case SHORT_DATE :
         return DbUtil.getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);

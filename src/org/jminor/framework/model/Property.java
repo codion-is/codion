@@ -4,7 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Constants;
-import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 
 import java.io.Serializable;
@@ -543,6 +542,9 @@ public class Property implements Serializable {
     private final Object falseValue;
     private final Object nullValue;
 
+    private final int trueValueHash;
+    private final int falseValueHash;
+
     public BooleanProperty(final String propertyName, final String caption) {
       this(propertyName, Type.INT, caption);
     }
@@ -561,41 +563,21 @@ public class Property implements Serializable {
                            final Object trueValue, final Object falseValue, final Object nullValue) {
       super(propertyName, Type.BOOLEAN, caption, caption == null);
       this.columnType = columnType;
+      this.nullValue = nullValue;
       this.trueValue = trueValue;
       this.falseValue = falseValue;
-      this.nullValue = nullValue;
-    }
-
-    /**
-     * @return Value for property 'falseValue'.
-     */
-    public Object getFalseValue() {
-      return falseValue;
-    }
-
-    /**
-     * @return Value for property 'nullValue'.
-     */
-    public Object getNullValue() {
-      return nullValue;
-    }
-
-    /**
-     * @return Value for property 'trueValue'.
-     */
-    public Object getTrueValue() {
-      return trueValue;
+      this.trueValueHash = trueValue.hashCode();
+      this.falseValueHash = falseValue.hashCode();
     }
 
     public Type.Boolean toBoolean(final Object object) {
-      if (Util.equal(object, nullValue))
-        return null;
-      else if (object.equals(trueValue))
+      final int hashCode = object == null ? 0 : object.hashCode();
+      if (hashCode == trueValueHash)
         return Type.Boolean.TRUE;
-      else if (object.equals(falseValue))
+      else if (hashCode == falseValueHash)
         return Type.Boolean.FALSE;
-      else
-        return Type.Boolean.NULL;
+
+      return null;
     }
 
     public String toSQLString(final Type.Boolean value) {

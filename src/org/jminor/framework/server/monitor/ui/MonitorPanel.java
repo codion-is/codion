@@ -93,7 +93,7 @@ public class MonitorPanel extends JPanel {
   }
 
   public void disconnectSelected() throws RemoteException {
-    //todo popup
+    throw new RuntimeException("MonitorPanel.disconnectSelected() has not been implemented");
   }
 
   public void exit() {
