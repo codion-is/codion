@@ -81,7 +81,7 @@ public class ProfilingPanel extends JPanel {
 
   public void showFrame() {
     final String title = "JMinor - " + model.getClass().getSimpleName();
-    frame = UiUtil.createFrame(Images.loadImage("profiling.gif").getImage());
+    frame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.gif").getImage());
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         frame.setTitle(title + " - Closing...");

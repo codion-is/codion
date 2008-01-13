@@ -9,6 +9,7 @@ import org.jminor.framework.FrameworkSettings;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -309,6 +310,23 @@ public class Property implements Serializable {
     }
 
     throw new IllegalArgumentException("Unknown type " + propertyType);
+  }
+
+  public static Class getValueClass(final Type type, final Object value) {
+    if (type == Type.INT)
+      return Integer.class;
+    if (type == Type.DOUBLE)
+      return Double.class;
+    if (type == Type.BOOLEAN)
+      return Type.Boolean.class;
+    if (type == Type.SHORT_DATE || type == Type.LONG_DATE)
+      return Date.class;
+    if (type == Type.CHAR)
+      return Character.class;
+    if (type == Type.ENTITY)
+      return Entity.class;
+
+    return value == null ? Object.class : value.getClass();
   }
 
   /**

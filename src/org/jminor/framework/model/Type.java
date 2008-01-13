@@ -6,27 +6,9 @@ package org.jminor.framework.model;
 import org.jminor.common.i18n.Messages;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public enum Type implements Serializable {
   INT, DOUBLE, STRING, BOOLEAN, CHAR, SHORT_DATE, LONG_DATE, BLOB, ENTITY;
-
-  public static Class getValueClass(final Type type, final Object value) {
-    if (type == INT)
-      return Integer.class;
-    if (type == DOUBLE)
-      return Double.class;
-    if (type == BOOLEAN)
-      return Boolean.class;
-    if (type == SHORT_DATE || type == LONG_DATE)
-      return Date.class;
-    if (type == CHAR)
-      return Character.class;
-    if (type == ENTITY)
-      return Entity.class;
-
-    return value == null ? Object.class : value.getClass();
-  }
 
   public static enum Boolean implements Serializable {
     FALSE, TRUE, NULL;

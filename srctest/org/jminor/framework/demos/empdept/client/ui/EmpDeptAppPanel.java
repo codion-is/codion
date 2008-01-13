@@ -39,6 +39,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     FrameworkSettings.get().useQueryRange = false;
     Util.setDefaultLoggingLevel(Level.DEBUG);
     startApplication("Emp-Dept", EmpDeptAppPanel.class, EmpDeptAppModel.class,
-            "emp_dept.gif", false, UiUtil.getSize(0.6), new User("scott", "tiger"));
+            null, false, UiUtil.getSize(0.6), new User("scott", "tiger"));
   }
 }

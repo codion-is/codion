@@ -310,8 +310,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    */
   protected JPanel getAboutPanel() {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
-    final String versionString = "JMinor - " + Util.getVersionAndBuildNumber();
-    ret.add(new JLabel(FrameworkMessages.get(FrameworkMessages.VERSION)+":"), BorderLayout.NORTH);
+    final String versionString = Util.getVersionAndBuildNumber();
+    ret.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField txtVersion = new JTextField(versionString);
     txtVersion.setEditable(false);
     ret.add(txtVersion, BorderLayout.CENTER);
@@ -516,7 +516,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     boolean retry = true;
     while (retry) {
       try {
-        final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(panelClass, iconName) : null;
+        final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(panelClass, iconName) :
+                Images.loadImage("jminor_logo32.gif");
         applicationPanel = constructApplicationPanel(panelClass);
         if (FrameworkSettings.get().printMemoryUsageInterval > 0)
           Util.printMemoryUsage(FrameworkSettings.get().printMemoryUsageInterval);

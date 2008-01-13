@@ -3,3 +3,7 @@
   Some javadoc improvements
   Added tests to org.jminor.common.ui.control, TestBeanPropertyLink and TestMethodControl
   Added test to org.jminor.framework.client.ui.property, TestEntityPropertyLink
+  Refactored and lessened package dependencies
+  Moved getValueClass() from Type to Property (smaller dep. cycle in org.jminor.framework.model)
+  Fixed and renamed checkout target in build.xml, tiny cleanup
+  Added a couple logos, used in demos f.x.
