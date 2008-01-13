@@ -12,9 +12,9 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 

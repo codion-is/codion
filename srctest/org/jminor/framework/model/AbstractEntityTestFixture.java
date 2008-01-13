@@ -7,9 +7,9 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.client.dbprovider.EntityDbProviderFactory;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
+import org.jminor.framework.db.IEntityDbProvider;
 
 import java.util.Collection;
 import java.util.HashMap;

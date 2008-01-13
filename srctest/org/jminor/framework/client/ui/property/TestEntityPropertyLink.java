@@ -11,8 +11,8 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.dbprovider.LocalEntityDbProvider;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
@@ -35,7 +35,7 @@ public class TestEntityPropertyLink extends TestCase {
   public TestEntityPropertyLink() throws UserException {
     super("TestEntityPropertyLink");
     new EmpDept();
-    model = new EmployeeModel(new LocalEntityDbProvider(new User("scott", "tiger")));
+    model = new EmployeeModel(new EntityDbProvider(new User("scott", "tiger")));
   }
 
   @SuppressWarnings({"UnnecessaryBoxing"})

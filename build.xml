@@ -94,7 +94,10 @@
     <tstamp />
     <mkdir dir="dist/${version}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}"
-         excludes="org/jminor/framework/demos/**"/> <!-- exclude the example classes -->
+         excludes="org/jminor/framework/demos/**"/>
+    <zip destfile="${dist}/${version}/${ant.project.name}.jar" update="true" duplicate="add" >
+      <fileset dir="${build.test}" includes="**/*" excludes="**/Test*"/>
+    </zip>
     <zip destfile="${dist}/${version}/${ant.project.name}.jar" update="true" duplicate="add" >
       <fileset refid="common_resources" />
       <fileset refid="framework_resources" />
@@ -114,6 +117,7 @@
                 org/jminor/framework/model/**,
                 org/jminor/framework/db/**,
                 org/jminor/framework/i18n/**,
+                org/jminor/framework/server/EntityDbRemoteProvider*,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
@@ -125,7 +129,9 @@
                 org/jminor/framework/profiling/**,
                 org/jminor/framework/model/**,
                 org/jminor/framework/db/IEntityDb*,
+                org/jminor/framework/db/EntityDbProviderFactory*,
                 org/jminor/framework/i18n/**,
+                org/jminor/framework/server/EntityDbRemoteProvider*,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>

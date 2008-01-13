@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.dbprovider;
+package org.jminor.framework.server;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
@@ -10,9 +10,8 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.server.IEntityDbRemote;
-import org.jminor.framework.server.IEntityDbRemoteServer;
 
 import org.apache.log4j.Logger;
 
@@ -33,14 +32,14 @@ import java.util.List;
 /**
  * A class responisble for managing remote db connections
  */
-public class RMIEntityDbProvider implements IEntityDbProvider {
+public class EntityDbRemoteProvider implements IEntityDbProvider {
 
   /**
    * Fired when a successful connection has been made
    */
-  public final Event evtConnected = new Event("RMIEntityDbProvider.evtConnected");
+  public final Event evtConnected = new Event("EntityDbRemoteProvider.evtConnected");
 
-  private static final Logger log = Util.getLogger(RMIEntityDbProvider.class);
+  private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
 
   static {
     System.setSecurityManager(new RMISecurityManager());
@@ -55,7 +54,7 @@ public class RMIEntityDbProvider implements IEntityDbProvider {
   private IEntityDb entityDbProxy;
   private String serverName;
 
-  public RMIEntityDbProvider(final User user, final String clientID, final String clientTypeID) {
+  public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
     this.user = user;
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.AbstractEntityTestFixture;
 
 public abstract class AbstractEntityModelTestFixture extends AbstractEntityTestFixture {

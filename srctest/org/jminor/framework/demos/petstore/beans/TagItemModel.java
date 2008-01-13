@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.petstore.beans;
 
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.combo.ItemComboBoxModel;
 import org.jminor.framework.demos.petstore.beans.combo.TagComboBoxModel;
 import org.jminor.framework.demos.petstore.model.Petstore;

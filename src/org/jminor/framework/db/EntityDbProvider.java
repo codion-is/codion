@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.dbprovider;
+package org.jminor.framework.db;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
@@ -9,8 +9,6 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.db.EntityDbConnection;
-import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.model.Entity;
 
 import org.apache.log4j.Logger;
@@ -23,20 +21,20 @@ import java.lang.reflect.Proxy;
 /**
  * A class responsible for managing local db connections
  */
-public class LocalEntityDbProvider implements IEntityDbProvider {
+public class EntityDbProvider implements IEntityDbProvider {
 
-  private static final Logger log = Util.getLogger(LocalEntityDbProvider.class);
+  private static final Logger log = Util.getLogger(EntityDbProvider.class);
 
   /**
    * Fired when a successful connection has been made
    */
-  public final Event evtConnected = new Event("LocalEntityDbProvider.evtConnected");
+  public final Event evtConnected = new Event("EntityDbProvider.evtConnected");
 
   protected final User user;
   protected IEntityDb entityDb;
   protected IEntityDb entityDbProxy;
 
-  public LocalEntityDbProvider(final User user) {
+  public EntityDbProvider(final User user) {
     this.user = user;
     user.setProperty(FrameworkConstants.DATABASE_SID_PROPERTY, System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY));
   }

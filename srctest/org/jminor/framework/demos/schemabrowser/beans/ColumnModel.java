@@ -4,9 +4,9 @@
 package org.jminor.framework.demos.schemabrowser.beans;
 
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
 import org.jminor.framework.model.Property;
 

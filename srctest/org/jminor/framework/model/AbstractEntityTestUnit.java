@@ -4,8 +4,8 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
 import org.jminor.framework.db.IEntityDb;
+import org.jminor.framework.db.IEntityDbProvider;
 
 import junit.framework.TestCase;
 

@@ -6,16 +6,16 @@ package org.jminor.framework.demos.empdept.profiling;
 import org.jminor.common.Constants;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.EntityDbProviderFactory;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
-import org.jminor.framework.client.dbprovider.RMIEntityDbProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.EntityDbProviderFactory;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.profiling.Profiling;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
+import org.jminor.framework.server.EntityDbRemoteProvider;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -58,7 +58,7 @@ public class EmpDeptProfiling extends Profiling {
   /** {@inheritDoc} */
   protected EntityApplicationModel initializeApplicationModel() throws UserException {
     final EntityApplicationModel applicationModel =
-            new EmpDeptAppModel(new RMIEntityDbProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
+            new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
 
     final EntityModel model = applicationModel.getMainApplicationModels().values().iterator().next();
     model.setLinkedDetailModel(model.getDetailModels().get(0));
@@ -99,8 +99,8 @@ public class EmpDeptProfiling extends Profiling {
 
   private void loadTestRMIServer() {
     try {
-      final RMIEntityDbProvider dbProvider =
-              new RMIEntityDbProvider(new User("scott", "tiger"), "scott@tiger"+System.currentTimeMillis(), getClass().getSimpleName());
+      final EntityDbRemoteProvider dbProvider =
+              new EntityDbRemoteProvider(new User("scott", "tiger"), "scott@tiger"+System.currentTimeMillis(), getClass().getSimpleName());
 
       for (int i = 0; i < 100; i++)
         dbProvider.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);

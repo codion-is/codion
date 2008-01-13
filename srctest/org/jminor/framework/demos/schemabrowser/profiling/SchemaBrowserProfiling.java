@@ -6,13 +6,13 @@ package org.jminor.framework.demos.schemabrowser.profiling;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.RMIEntityDbProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
 import org.jminor.framework.profiling.Profiling;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
+import org.jminor.framework.server.EntityDbRemoteProvider;
 
 import javax.swing.UIManager;
 
@@ -54,7 +54,7 @@ public class SchemaBrowserProfiling extends Profiling {
   /** {@inheritDoc} */
   protected EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException {
     final EntityApplicationModel ret =
-            new SchemaBrowserAppModel(new RMIEntityDbProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
+            new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = ret.getMainApplicationModels().values().iterator().next();
     schemaModel.setLinkedDetailModel(schemaModel.getDetailModels().get(0));
     final EntityModel dbObjectModel = schemaModel.getDetailModels().get(0);

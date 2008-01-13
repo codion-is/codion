@@ -50,6 +50,10 @@ import java.util.Set;
  */
 public class EntityDbConnection extends DbConnection implements IEntityDb {
 
+  static {
+    DbUtil.DB_TYPE = System.getProperty(FrameworkConstants.DATABASE_TYPE_PROPERTY, DbUtil.MYSQL);
+  }
+
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
   private static final Map<String, EntityDependencies> entityDependencies = new HashMap<String, EntityDependencies>();
 

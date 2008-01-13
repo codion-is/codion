@@ -5,8 +5,8 @@ package org.jminor.framework.demos.empdept.beans.combo;
 
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
 

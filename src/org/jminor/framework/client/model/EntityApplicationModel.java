@@ -7,8 +7,8 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.EntityDbProviderFactory;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProviderFactory;
+import org.jminor.framework.db.IEntityDbProvider;
 
 import javax.swing.tree.DefaultTreeModel;
 import java.lang.reflect.InvocationTargetException;

@@ -5,9 +5,9 @@ package org.jminor.framework.demos.empdept.client;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 

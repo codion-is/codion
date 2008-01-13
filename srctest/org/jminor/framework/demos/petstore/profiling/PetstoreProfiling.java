@@ -5,13 +5,13 @@ package org.jminor.framework.demos.petstore.profiling;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.client.dbprovider.RMIEntityDbProvider;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.model.Petstore;
 import org.jminor.framework.profiling.Profiling;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
+import org.jminor.framework.server.EntityDbRemoteProvider;
 
 import javax.swing.UIManager;
 
@@ -50,7 +50,7 @@ public class PetstoreProfiling extends Profiling {
   /** {@inheritDoc} */
   protected EntityApplicationModel initializeApplicationModel() throws UserException {
     final EntityApplicationModel applicationModel =
-            new PetstoreAppModel(new RMIEntityDbProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
+            new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().values().iterator().next();
     categoryModel.setLinkedDetailModel(categoryModel.getDetailModels().get(0));
     final EntityModel productModel = categoryModel.getDetailModels().get(0);

@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.dbprovider;
+package org.jminor.framework.db;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.db.IEntityDb;
 
 /**
  * Interface for a class responsible for providing IEntityDb objects

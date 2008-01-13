@@ -10,7 +10,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.client.dbprovider.IEntityDbProvider;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 

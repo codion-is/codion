@@ -7,7 +7,6 @@ import org.jminor.common.Constants;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.framework.FrameworkConstants;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -37,7 +36,7 @@ public class DbUtil {
   public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
   public static final String SQLITE_DRIVER = "org.sqlite.JDBC";
 
-  public static final String DB_TYPE = System.getProperty(FrameworkConstants.DATABASE_TYPE_PROPERTY, ORACLE);
+  public static String DB_TYPE = MYSQL;
 
   static {
     oracleSqlErrorCodes.put(1, Messages.get(Messages.UNIQUE_KEY_ERROR));
