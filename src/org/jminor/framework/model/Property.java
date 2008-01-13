@@ -537,7 +537,7 @@ public class Property implements Serializable {
    */
   public static class BooleanProperty extends Property {
 
-    private final Type columnType;
+    public final Type columnType;
 
     private final Object trueValue;
     private final Object falseValue;
@@ -564,13 +564,6 @@ public class Property implements Serializable {
       this.trueValue = trueValue;
       this.falseValue = falseValue;
       this.nullValue = nullValue;
-    }
-
-    /**
-     * @return Value for property 'columnType'.
-     */
-    public Type getColumnType() {
-      return columnType;
     }
 
     /**

@@ -233,6 +233,17 @@ public abstract class Profiling {
     model.getTableModel().setSelectedItemIdx(random.nextInt(model.getTableModel().getRowCount()));
   }
 
+  protected void selectRandomRows(final EntityModel model, final int count) {
+    if (model.getTableModel().getRowCount() == 0)
+      return;
+
+    final IntArray indexes = new IntArray();
+    for (int i = 0; i < count; i++)
+      indexes.addInt(random.nextInt(model.getTableModel().getRowCount()));
+
+    model.getTableModel().setSelectedItemIndexes(indexes.toIntArray());
+  }
+
   protected void selectRandomRows(final EntityModel model, final double ratio) {
     if (model.getTableModel().getRowCount() == 0)
       return;

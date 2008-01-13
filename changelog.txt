@@ -7,3 +7,5 @@
   Moved getValueClass() from Type to Property (smaller dep. cycle in org.jminor.framework.model)
   Fixed and renamed checkout target in build.xml, tiny cleanup
   Added a couple logos, used in demos f.x.
+  Profiling.selectRandomRows() added
+  EntityDbConnection does not add EntityRepository info if it's already initialized

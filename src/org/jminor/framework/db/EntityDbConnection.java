@@ -454,10 +454,12 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   void initialize(final EntityRepository repository, final FrameworkSettings settings) {
-    repository.initializeAll();
-    Entity.repository.add(repository);
+    if (!Entity.repository.contains(repository.getEntityIDs())) {
+      repository.initializeAll();
+      Entity.repository.add(repository);
+      resolveEntityDependencies();
+    }
     this.settings = settings;
-    resolveEntityDependencies();
   }
 
   private void execute(final String[] sql) throws DbException {

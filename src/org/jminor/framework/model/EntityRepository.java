@@ -296,6 +296,14 @@ public class EntityRepository implements Serializable {
     return idSource;
   }
 
+  public boolean contains(final Collection<String> initializedEntities) {
+    for (final String entityID : initializedEntities)
+      if (!readOnly.containsKey(entityID))
+        return false;
+
+    return true;
+  }
+
   public void initialize(final String entityID, final String orderByColumns,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, IdSource.ID_AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
@@ -423,6 +431,10 @@ public class EntityRepository implements Serializable {
       this.primaryKeyColumnNames = new HashMap<String, String[]>();
     if (this.entitySelectStrings == null)
       this.entitySelectStrings = new HashMap<String, String>();
+  }
+
+  public Collection<String> getEntityIDs() {
+    return properties.keySet();
   }
 
   public void initializeAll() {

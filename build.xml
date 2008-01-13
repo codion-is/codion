@@ -56,15 +56,19 @@
     <tstamp>
       <format property="DSTAMP" pattern="dd-MM-yy HH:mm" />
     </tstamp>
-    <javac destdir="${build.base}" debug="${build.debug}" >
+    <javac destdir="${build.base}" debug="${build.debuginfo}" >
       <src path="${src}" />
       <classpath>
         <fileset refid="lib" />
       </classpath>
     </javac>
 
-    <rmic base="${build.base}" includes="org/jminor/framework/server/rmi/EntityDbRemoteServer.class,
-                                         org/jminor/framework/server/rmi/EntityDbRemoteAdapter.class"/>
+    <rmic base="${build.base}" includes="org/jminor/framework/server/EntityDbRemoteServer.class,
+                                         org/jminor/framework/server/EntityDbRemoteAdapter.class">
+      <classpath>
+        <fileset refid="lib" />
+      </classpath>
+    </rmic>
 
     <copy todir="${build.base}" >
       <fileset refid="common_resources" />
