@@ -16,6 +16,11 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   private final ButtonModel buttonModel;
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName,
+                                final Event propertyChangeEvent, final String text) {
+    this(owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+  }
+
+  public ToggleBeanPropertyLink(final Object owner, final String propertyName,
                                 final Event propertyChangeEvent, final String text, final LinkType linkType,
                                 final State enabledState) {
     super(owner, propertyName, boolean.class, propertyChangeEvent, text, linkType, enabledState);

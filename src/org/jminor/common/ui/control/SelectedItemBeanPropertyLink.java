@@ -18,6 +18,12 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
 
   public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
                                       final Class propertyClass, final Event propertyChangeEvent,
+                                      final String text) {
+    this(box, owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+  }                                      
+
+  public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
+                                      final Class propertyClass, final Event propertyChangeEvent,
                                       final String text, final LinkType linkType, final State enabledState) {
     super(owner, propertyName, propertyClass, propertyChangeEvent, text, linkType, enabledState);
     this.comboBoxModel = box.getModel();

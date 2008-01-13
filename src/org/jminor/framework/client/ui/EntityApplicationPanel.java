@@ -283,8 +283,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'helpPanel'.
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * @return the panel shown when Help -> Help is selected
+   * @throws org.jminor.common.model.UserException in case there is an error reading the help file
    */
   protected JPanel getHelpPanel() throws UserException {
     try {
@@ -307,13 +307,12 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   /**
    * @return the panel shown when Help -> About is selected
-   * @throws org.jminor.common.model.UserException case of an exception
    */
   protected JPanel getAboutPanel() {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
-    final String contents = Util.getVersionAndBuildNumber();
-    ret.add(new JLabel(FrameworkMessages.get(FrameworkMessages.VERSION)+":"), BorderLayout.WEST);
-    final JTextField txtVersion = new JTextField(contents);
+    final String versionString = "JMinor - " + Util.getVersionAndBuildNumber();
+    ret.add(new JLabel(FrameworkMessages.get(FrameworkMessages.VERSION)+":"), BorderLayout.NORTH);
+    final JTextField txtVersion = new JTextField(versionString);
     txtVersion.setEditable(false);
     ret.add(txtVersion, BorderLayout.CENTER);
 
