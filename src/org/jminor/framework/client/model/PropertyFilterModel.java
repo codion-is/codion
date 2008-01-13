@@ -87,17 +87,17 @@ public class PropertyFilterModel extends AbstractSearchModel {
       realComp = Util.floorLongDate((Timestamp) realComp);
 
     switch (getSearchType()) {
-      case EXACT:
+      case LIKE:
         return acceptExact(realComp);
-      case NOT_EXACT:
+      case NOT_LIKE:
         return acceptNotExact(realComp);
       case MAX:
         return acceptMax(realComp);
       case MIN:
         return acceptMin(realComp);
-      case MIN_MAX_INSIDE:
+      case INSIDE:
         return acceptMinMaxInside(realComp);
-      case MIN_MAX_OUTSIDE:
+      case OUTSIDE:
         return acceptMinMaxOutside(realComp);
     }
 
@@ -108,7 +108,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
    * @param value Value to set for property 'exactValue'.
    */
   public void setExactValue(final Comparable value) {
-    setSearchType(SearchType.EXACT);
+    setSearchType(SearchType.LIKE);
     setUpperBound(value);
     final boolean on = value != null;
     if (stSearchEnabled.isActive() != on)

@@ -73,7 +73,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   protected boolean searchTypeAllowed(final SearchType searchType) {
     return !(((PropertySearchModel)model).getProperty() instanceof Property.EntityProperty || model.getColumnType() == Type.BOOLEAN)
-            || searchType == SearchType.EXACT || searchType == SearchType.NOT_EXACT;
+            || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
 
   protected JComponent getInputField(final boolean isUpperBound) {

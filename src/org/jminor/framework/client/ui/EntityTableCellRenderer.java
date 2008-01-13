@@ -74,10 +74,10 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     return component;
   }
 
-  protected TableCellRenderer getRenderer(final int colIdx) {
-    TableCellRenderer renderer = renderers.get(colIdx);
+  protected TableCellRenderer getRenderer(final int columnIndex) {
+    TableCellRenderer renderer = renderers.get(columnIndex);
     if (renderer == null) {
-      final Type propType = tableModel.getTableColumnProperties()[colIdx].getPropertyType();
+      final Type propType = tableModel.getTableColumnProperties().get(columnIndex).getPropertyType();
       switch (propType) {
         case BOOLEAN:
           renderer = new BooleanRenderer();
@@ -95,7 +95,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
         default:
           renderer = new DefaultTableCellRenderer();
       }
-      renderers.put(colIdx, renderer);
+      renderers.put(columnIndex, renderer);
     }
 
     return renderer;

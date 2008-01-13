@@ -7,7 +7,7 @@ package org.jminor.common.db;
 import java.io.Serializable;
 
 /**
- * A generic interface for objects serving as a database query where condition
+ * A generic interface for objects serving as where conditions
  */
 public interface ICriteria extends Serializable {
   /**

@@ -44,7 +44,7 @@ public class EntityDbConnectionPool {
   private final Date creationDate = new Date();
   private Date resetDate = new Date();
   private ConnectionPoolSettings connectionPoolSettings;
-  private int inPoolStatsIndex = 0;
+  private int poolStatisticsIndex = 0;
   private int liveConnections = 0;
   private int connectionsCreated = 0;
   private int connectionsDestroyed = 0;
@@ -58,7 +58,7 @@ public class EntityDbConnectionPool {
 
   private final User user;
   private boolean closed = false;
-  private int inPoolStatsSize = 1000;
+  private int poolStatisticsSize = 1000;
 
   public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
     this.user = user;
@@ -159,7 +159,7 @@ public class EntityDbConnectionPool {
     cleanPool(true);
   }
 
-  public void resetCollectedStats() {
+  public void resetPoolStatistics() {
     connectionsCreated = 0;
     connectionsDestroyed = 0;
     connectionRequests = 0;
@@ -171,7 +171,7 @@ public class EntityDbConnectionPool {
    * @param since the time
    * @return stats collected since <code>since</code>, the results are not garanteed to be ordered
    */
-  public List<ConnectionPoolState> getInPoolStats(final long since) {
+  public List<ConnectionPoolState> getPoolStatistics(final long since) {
     final List<ConnectionPoolState> ret = new ArrayList<ConnectionPoolState>();
     synchronized (inPoolStats) {
       final ListIterator<ConnectionPoolState> iterator = inPoolStats.listIterator();
@@ -205,8 +205,8 @@ public class EntityDbConnectionPool {
     return getConnectionPoolSettings(false, -1);
   }
 
-  public ConnectionPoolSettings getConnectionPoolSettings(final boolean includeStats, final long since) {
-    if (includeStats) {
+  public ConnectionPoolSettings getConnectionPoolSettings(final boolean includeStatistics, final long since) {
+    if (includeStatistics) {
       synchronized (connectionPool) {
         synchronized (connectionsInUse) {
           connectionPoolSettings.setConnectionsInUse(connectionsInUse.size());
@@ -226,7 +226,7 @@ public class EntityDbConnectionPool {
       connectionPoolSettings.setResetDate(resetDate);
       connectionPoolSettings.setTimestamp(System.currentTimeMillis());
       if (since >= 0)
-        connectionPoolSettings.setInPoolStats(getInPoolStats(since));
+        connectionPoolSettings.setPoolStatistics(getPoolStatistics(since));
     }
 
     return connectionPoolSettings;
@@ -248,13 +248,13 @@ public class EntityDbConnectionPool {
 
   private void addInPoolStats(final int size, final int inUse, final long time) {
     synchronized (inPoolStats) {
-      inPoolStatsIndex = inPoolStatsIndex == inPoolStatsSize ? 0 : inPoolStatsIndex;
-      if (inPoolStats.size() == inPoolStatsSize) //filled already, reuse
-        inPoolStats.get(inPoolStatsIndex).set(time, size, inUse);
+      poolStatisticsIndex = poolStatisticsIndex == poolStatisticsSize ? 0 : poolStatisticsIndex;
+      if (inPoolStats.size() == poolStatisticsSize) //filled already, reuse
+        inPoolStats.get(poolStatisticsIndex).set(time, size, inUse);
       else
         inPoolStats.add(new ConnectionPoolState(time, size, inUse));
 
-      inPoolStatsIndex++;
+      poolStatisticsIndex++;
     }
   }
 

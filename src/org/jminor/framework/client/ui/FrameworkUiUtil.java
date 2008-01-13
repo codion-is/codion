@@ -1159,7 +1159,7 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static TableColumnModel getTableColumnModel(final Property[] columnProperties,
+  public static TableColumnModel getTableColumnModel(final List<Property> columnProperties,
                                                      final TableCellRenderer renderer) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn[] columns = getTableColumns(columnProperties);
@@ -1173,8 +1173,8 @@ public class FrameworkUiUtil {
     return columnModel;
   }
 
-  public static TableColumn[] getTableColumns(final Property[] columnProperties) {
-    final ArrayList<TableColumn> ret = new ArrayList<TableColumn>(columnProperties.length);
+  public static TableColumn[] getTableColumns(final List<Property> columnProperties) {
+    final ArrayList<TableColumn> ret = new ArrayList<TableColumn>(columnProperties.size());
     int i = 0;
     for (final Property property : columnProperties) {
       final TableColumn col = new TableColumn(i++);

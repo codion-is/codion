@@ -237,10 +237,10 @@ public abstract class DbConnection {
   }
 
   /**
-   * Performs the given sql query and returns the result as an Object array
+   * Performs the given sql query and returns the result in a List
    * @param sql the query
-   * @param resultPacker a IResultPacker instance for creating the return object
-   * @return the query result in an Object array
+   * @param resultPacker a IResultPacker instance for creating the return List
+   * @return the query result in a List
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
   public final synchronized List query(final String sql, final IResultPacker resultPacker) throws SQLException {
@@ -280,9 +280,9 @@ public abstract class DbConnection {
   }
 
   /**
-   * Performes the given query and returns the result as a String array
+   * Performes the given query and returns the result as a List of Strings
    * @param sql the query, it must select a single string column
-   * @return a String array representing the result of the query
+   * @return a List of Strings representing the query result
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final List<String> queryStrings(final String sql) throws SQLException {
@@ -310,9 +310,9 @@ public abstract class DbConnection {
   }
 
   /**
-   * Performes the given query and returns the result as an integer array
+   * Performes the given query and returns the result as a List of Integers
    * @param sql the query, it must select a single number column
-   * @return an integer array representing the result of the query
+   * @return a List of Integers representing the query result
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   @SuppressWarnings({"unchecked"})
@@ -321,7 +321,7 @@ public abstract class DbConnection {
   }
 
   /**
-   * Performs a commit on the connection
+   * Performs a commit
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final void commit() throws SQLException {
@@ -330,7 +330,7 @@ public abstract class DbConnection {
   }
 
   /**
-   * Performs a rollback on the connection
+   * Performs a rollback
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final void rollback() throws SQLException {

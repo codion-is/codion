@@ -111,8 +111,8 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   private List<JPanel> initializeSearchPanels(final EntityTableModel tableModel) {
-    final Property[] properties = tableModel.getTableColumnProperties();
-    final ArrayList<JPanel> ret = new ArrayList<JPanel>(properties.length);
+    final List<Property> properties = tableModel.getTableColumnProperties();
+    final ArrayList<JPanel> ret = new ArrayList<JPanel>(properties.size());
     for (final Property property : properties) {
       final PropertySearchModel searchModel = tableModel.getPropertySearchModel(property.propertyID);
       if (searchModel != null)

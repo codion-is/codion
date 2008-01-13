@@ -12,5 +12,5 @@ import java.io.Serializable;
  * Time: 23:22:01
  */
 public enum SearchType implements Serializable {
-  EXACT, NOT_EXACT, MAX, MIN, MIN_MAX_INSIDE, MIN_MAX_OUTSIDE, IN_LIST
+  LIKE, NOT_LIKE, MAX, MIN, INSIDE, OUTSIDE, IN
 }

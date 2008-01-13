@@ -15,8 +15,8 @@ import org.jminor.framework.model.Property;
 
 import javax.swing.ComboBoxModel;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Björn Darri
@@ -36,7 +36,7 @@ public class ItemModel extends EntityModel {
   }
 
   /** {@inheritDoc} */
-  protected HashMap<Property, ComboBoxModel> initializeEntityComboBoxModels() {
+  protected Map<Property, ComboBoxModel> initializeEntityComboBoxModels() {
     return super.initializeEntityComboBoxModels(
             new ProductComboBoxModel(getDbConnectionProvider()),
             new ContactInfoComboBoxModel(getDbConnectionProvider()),

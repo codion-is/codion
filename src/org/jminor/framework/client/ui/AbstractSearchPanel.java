@@ -40,8 +40,8 @@ public abstract class AbstractSearchPanel extends JPanel {
   public final State stTwoSearchFields = new State("AbstractSearchPanel.stTwoSearchFields", false);
 
   protected static final SearchType[] searchTypes = new SearchType[] {
-          SearchType.EXACT, SearchType.NOT_EXACT, SearchType.MAX, SearchType.MIN,
-          SearchType.MIN_MAX_INSIDE, SearchType.MIN_MAX_OUTSIDE};
+          SearchType.LIKE, SearchType.NOT_LIKE, SearchType.MAX, SearchType.MIN,
+          SearchType.INSIDE, SearchType.OUTSIDE};
 
   protected static final String[] searchTypeImageNames = new String[] {
           "Equals60x16.gif", "NotEquals60x16.gif", "LessThanOrEquals60x16.gif",
@@ -152,8 +152,8 @@ public abstract class AbstractSearchPanel extends JPanel {
     });
     model.evtSearchTypeChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        stTwoSearchFields.setActive(model.getSearchType() == SearchType.MIN_MAX_INSIDE
-                || model.getSearchType() == SearchType.MIN_MAX_OUTSIDE);
+        stTwoSearchFields.setActive(model.getSearchType() == SearchType.INSIDE
+                || model.getSearchType() == SearchType.OUTSIDE);
       }
     });
     stTwoSearchFields.evtStateChanged.addListener(new ActionListener() {

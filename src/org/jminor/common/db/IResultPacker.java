@@ -15,8 +15,7 @@ import java.util.List;
 public interface IResultPacker<T> extends Serializable {
 
   /**
-   * Packs the contents of the given ResultSet into a List, does not
-   * close <code>resultSet</code>
+   * Iterates through the given ResultSet, packing its contents into a List
    * @param resultSet the object containing the query result to process
    * @return a List containing the data from the query result
    * @throws SQLException thrown if anyhing goes wrong during the execution

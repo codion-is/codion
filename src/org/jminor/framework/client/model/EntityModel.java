@@ -41,10 +41,9 @@ public class EntityModel implements IRefreshable {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
-  /**
-   * Codes for actions
-   */
+  /** Code for the insert action */
   public static final int INSERT = 1;
+  /** Code for the update action */
   public static final int UPDATE = 2;
 
   /**
@@ -159,7 +158,7 @@ public class EntityModel implements IRefreshable {
    * are refreshed when refreshComboBoxModels() is called
    * @see org.jminor.common.model.IRefreshable
    */
-  private final HashMap<Property, ComboBoxModel> propertyComboBoxModels;
+  private final Map<Property, ComboBoxModel> propertyComboBoxModels;
 
   /**
    * Holds the detail EntityModels used by this EntityModel
@@ -194,22 +193,22 @@ public class EntityModel implements IRefreshable {
   /**
    * Holds events signaling initializations made to the active entity via the model
    */
-  private final HashMap<Property, Event> propertyInitializedEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyInitializedEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling changes made to the active entity via the ui
    */
-  private final HashMap<Property, Event> uiChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> uiChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling changes made to the active entity via the model
    */
-  private final HashMap<Property, Event> modelChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> modelChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling changes made to the active entity, via the model or ui
    */
-  private final HashMap<Property, Event> changeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds property names ordered for a bug free change notification
@@ -219,7 +218,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Keeps the history of updated entities
    */
-  private final HashMap<EntityKey, List<Entity>> entityHistory = new HashMap<EntityKey, List<Entity>>();
+  private final Map<EntityKey, List<Entity>> entityHistory = new HashMap<EntityKey, List<Entity>>();
 
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
   private boolean entityHistoryEnabled = false;
@@ -461,18 +460,22 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Fetches the ComboBoxModel associated with this property
+   * Fetches the ComboBoxModel associated with this property, these must be initialized beforehand,
+   * by overriding initializeEntityComboBoxModels()
    * @param propertyName the property identifier
    * @return the ComboBoxModel associated with this property
+   * @see #initializeEntityComboBoxModels()
+   * @see #initializeEntityComboBoxModels(org.jminor.framework.client.model.combobox.EntityComboBoxModel[])()
    */
   public ComboBoxModel getComboBoxModel(final String propertyName) {
     return getComboBoxModel(Entity.repository.getProperty(getEntityID(), propertyName));
   }
 
   /**
-   * Fetches the ComboBoxModel associated with this property
+   * Fetches the ComboBoxModel associated with this property,
+   * returns null if none is associated with the given property
    * @param property the property
-   * @return the ComboBoxModel associated with this property
+   * @return the ComboBoxModel associated with this property, null if none is available
    */
   public ComboBoxModel getComboBoxModel(final Property property) {
     return propertyComboBoxModels.get(property);
@@ -489,6 +492,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return true if the active entity is null
+   * @see org.jminor.framework.model.Entity#isNull()
    */
   public boolean isActiveEntityNull() {
     return activeEntity.isNull();
@@ -496,6 +500,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return a copy of the active entity
+   * @see org.jminor.framework.model.Entity#getCopy()
    */
   public Entity getActiveEntityCopy() {
     return activeEntity.getCopy();
@@ -503,33 +508,43 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return true if the active entity has been modified
+   * @see org.jminor.framework.model.Entity#isModified()
    */
   public boolean isActiveEntityModified() {
     return activeEntity.isModified();
   }
 
   /**
+   * Default behaviour is returning a copy of the active entity
+   * This method should return an empty List instead of null.
    * @return the entities to use when insert is triggered
-   * @see #insert
+   * @see #insert()
    */
   public List<Entity> getEntitiesForInsert() {
     return Arrays.asList(getActiveEntityCopy());
   }
 
   /**
+   * This method should return an empty List instead of null.
+   * Default behaviour is returning a copy of the active entity
    * @return the entities to use when update is triggered
-   * @see #update
+   * @see #update()
    */
   public List<Entity> getEntitiesForUpdate() {
     return Arrays.asList(getActiveEntityCopy());
   }
 
   /**
+   * Returns the entities to use when delete is triggered.
+   * Default behaviour is returning the active entity or the
+   * selected entities in case the active entity is null.
+   * This method should return an empty List instead of null.
    * @return the entities to use when delete is triggered
-   * @see #delete
+   * @see #delete()
    */
   public List<Entity> getEntitiesForDelete() {
-    return Arrays.asList(getActiveEntityCopy());
+    return isActiveEntityNull() ? (getTableModel() != null ? getTableModel().getSelectedEntities()
+            : new ArrayList<Entity>()) :  Arrays.asList(getActiveEntityCopy());
   }
 
   /**
@@ -628,6 +643,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return the state which indicates the modified state of the active entity
+   * @see org.jminor.framework.model.Entity#getModifiedState()
    */
   public State getEntityModifiedState() {
     return activeEntity.getModifiedState();
@@ -727,6 +743,13 @@ public class EntityModel implements IRefreshable {
     return getEntityValue(property.propertyID);
   }
 
+  /**
+   * Performes a insert, using the entities returned by getEntitiesForInsert()
+   * @throws UserException
+   * @throws UserCancelException
+   * @throws DbException
+   * @see #getEntitiesForInsert()
+   */
   public final void insert() throws UserException, UserCancelException, DbException {
     insert(getEntitiesForInsert());
   }
@@ -755,6 +778,13 @@ public class EntityModel implements IRefreshable {
     refreshDetailModelsAfterInsertOrUpdate();
   }
 
+  /**
+   * Performes a update, using the entities returned by getEntitiesForUpdate()
+   * @throws UserException
+   * @throws UserCancelException
+   * @throws DbException
+   * @see #getEntitiesForUpdate()
+   */
   public final void update() throws UserException, UserCancelException, DbException {
     update(getEntitiesForUpdate());
   }
@@ -790,10 +820,11 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Deletes the selected entities
+   * Deletes the entities returned by getEntitiesForDelete()
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
+   * @see #getEntitiesForDelete()
    * @see #evtBeforeDelete
    * @see #evtEntityDeleted
    */
@@ -801,7 +832,7 @@ public class EntityModel implements IRefreshable {
     if (isReadOnly())
       throw new UserException("This is a read-only model, deleting is not allowed!");
 
-    final List<Entity> entities = getTableModel().getSelectedEntities();
+    final List<Entity> entities = getEntitiesForDelete();
     log.debug(modelCaption + " - delete " + Util.getListContents(entities, false));
 
     evtBeforeDelete.fire();
@@ -1026,12 +1057,17 @@ public class EntityModel implements IRefreshable {
    * @return a map of initialized EntityComboBoxModels associated with
    * their respective properties
    */
-  protected HashMap<Property, ComboBoxModel> initializeEntityComboBoxModels() {
+  protected Map<Property, ComboBoxModel> initializeEntityComboBoxModels() {
     return initializeEntityComboBoxModels(new EntityComboBoxModel[0]);
   }
 
-  //temporary, or maybe not?
-  protected final HashMap<Property, ComboBoxModel> initializeEntityComboBoxModels(final EntityComboBoxModel... comboBoxModels) {
+  /**
+   * Returns a Map, mapping the EntityComboBoxModels provided to their respective
+   * properties according to the entityID
+   * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
+   * @return a Map of EntityComboBoxModels mapped to their respective properties
+   */
+  protected final Map<Property, ComboBoxModel> initializeEntityComboBoxModels(final EntityComboBoxModel... comboBoxModels) {
     final HashMap<Property, ComboBoxModel> ret = new HashMap<Property, ComboBoxModel>();
     if (comboBoxModels == null || comboBoxModels.length == 0)
       return ret;

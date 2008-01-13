@@ -25,65 +25,65 @@ public class TestPropertyCriteria extends TestCase {
   public void testConditionEntity() {
     final Property property = new Property.EntityProperty("colName", "entity", EmpDept.T_DEPARTMENT,
             new Property("entityId", Type.INT));
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "entityId is null", testCrit.toString());
 
     final Entity dept = new Entity(EmpDept.T_DEPARTMENT);
     dept.setValue(EmpDept.DEPARTMENT_ID, 42);
 
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, dept);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, dept);
     assertEquals("Condition should fit", "entityId = 42", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, dept);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, dept);
     assertEquals("Condition should fit", "entityId <> 42", testCrit.toString());
   }
 
   public void testConditionString() {
     //string, is null
     final Property property = new Property("colName", Type.STRING);
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, "");
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, "");
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
     String value = "value";
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, value);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
     assertEquals("Condition should fit", "colName = '" + value + "'", testCrit.toString());
 
     //string, like
     value = "val%ue";
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, value);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
     assertEquals("Condition should fit",  "colName like '" + value + "'", testCrit.getConditionString());
 
     //string, <>
     value = "value";
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, value);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
     assertEquals("Condition should fit", "colName <> '" + value + "'", testCrit.getConditionString());
 
     //string, not like
     value = "val%ue";
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, value);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
     assertEquals("Condition should fit",  "colName not like '" + value + "'", testCrit.getConditionString());
 
     //string, between
     value = "min";
     String value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_INSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2);
     assertEquals("Condition should fit",  "(colName >= '" + value + "' and colName <= '"+value2+"')", testCrit.toString());
 
     //string, outside
     value = "min";
     value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_OUTSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2);
     assertEquals("Condition should fit",  "(colName <= '" + value + "' or colName >= '"+value2+"')", testCrit.toString());
 
     //string, in
     value = "min";
     value2 = "max";
     String value3 = "bla";
-    testCrit = new PropertyCriteria(property, SearchType.IN_LIST, value, value2, value3);
+    testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3);
     assertEquals("Condition should fit", "colName in ('"+value+"', '"+value2+"', '"+value3+"')", testCrit.toString());
 
     //
@@ -91,43 +91,43 @@ public class TestPropertyCriteria extends TestCase {
     //case insensitive
     //
     //
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null}).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null}).setCaseSensitive(false);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, "").setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, "").setCaseSensitive(false);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
     value = "value";
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, value).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value).setCaseSensitive(false);
     assertEquals("Condition should fit", "upper(colName) = upper('" + value + "')", testCrit.toString());
 
     //string, like
     value = "val%ue";
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, value).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value).setCaseSensitive(false);
     assertEquals("Condition should fit",  "upper(colName) like upper('" + value + "')", testCrit.getConditionString());
 
     //string, <>
     value = "value";
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, value).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value).setCaseSensitive(false);
     assertEquals("Condition should fit", "upper(colName) <> upper('" + value + "')", testCrit.getConditionString());
 
     //string, not like
     value = "val%ue";
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, value).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value).setCaseSensitive(false);
     assertEquals("Condition should fit",  "upper(colName) not like upper('" + value + "')", testCrit.getConditionString());
 
     //string, between
     value = "min";
     value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_INSIDE, value, value2).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2).setCaseSensitive(false);
     assertEquals("Condition should fit",  "(upper(colName) >= upper('" + value
             + "') and upper(colName) <= upper('" +value2+ "'))", testCrit.toString());
 
     //string, outside
     value = "min";
     value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_OUTSIDE, value, value2).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2).setCaseSensitive(false);
     assertEquals("Condition should fit",  "(upper(colName) <= upper('" + value
             + "') or upper(colName) >= upper('"+value2+"'))", testCrit.toString());
 
@@ -135,7 +135,7 @@ public class TestPropertyCriteria extends TestCase {
     value = "min";
     value2 = "max";
     value3 = "bla";
-    testCrit = new PropertyCriteria(property, SearchType.IN_LIST, value, value2, value3).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3).setCaseSensitive(false);
     assertEquals("Condition should fit", "upper(colName) in (upper('" + value + "'), upper('" + value2
             + "'), upper('" + value3 + "'))", testCrit.toString());
   }
@@ -143,27 +143,27 @@ public class TestPropertyCriteria extends TestCase {
   public void testConditionInt() {
     //int, =
     final Property property = new Property("colName", Type.INT);
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //int, =
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, 124);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, 124);
     assertEquals("Condition should fit", "colName = 124", testCrit.toString());
 
     //<=>=
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, 124);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, 124);
     assertEquals("Condition should fit", "colName <> 124", testCrit.toString());
 
     //between
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_INSIDE, 2, 4);
+    testCrit = new PropertyCriteria(property, SearchType.INSIDE, 2, 4);
     assertEquals("Condition should fit",  "(colName >= 2 and colName <= 4)", testCrit.toString());
 
     //outside
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_OUTSIDE, 2, 4);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, 2, 4);
     assertEquals("Condition should fit",  "(colName <= 2 or colName >= 4)", testCrit.toString());
 
     //in
-    testCrit = new PropertyCriteria(property, SearchType.IN_LIST, 2, 3, 4);
+    testCrit = new PropertyCriteria(property, SearchType.IN, 2, 3, 4);
     assertEquals("Condition should fit", "colName in (2, 3, 4)", testCrit.toString());
   }
 
@@ -172,91 +172,91 @@ public class TestPropertyCriteria extends TestCase {
   public void testConditionDouble() {
     //int, =
     final Property property = new Property("colName", Type.DOUBLE);
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //int, =
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, 124.2);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, 124.2);
     assertEquals("Condition should fit", "colName = 124.2", testCrit.toString());
 
     //<=>=
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, 124.2);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, 124.2);
     assertEquals("Condition should fit", "colName <> 124.2", testCrit.toString());
 
     //between
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_INSIDE, 2.2, 4.2);
+    testCrit = new PropertyCriteria(property, SearchType.INSIDE, 2.2, 4.2);
     assertEquals("Condition should fit",  "(colName >= 2.2 and colName <= 4.2)", testCrit.toString());
 
     //outside
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_OUTSIDE, 2.2, 4.2);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, 2.2, 4.2);
     assertEquals("Condition should fit",  "(colName <= 2.2 or colName >= 4.2)", testCrit.toString());
 
     //in
-    testCrit = new PropertyCriteria(property, SearchType.IN_LIST, 2.2, 3.2, 4.2);
+    testCrit = new PropertyCriteria(property, SearchType.IN, 2.2, 3.2, 4.2);
     assertEquals("Condition should fit", "colName in (2.2, 3.2, 4.2)", testCrit.toString());
   }
 
 
   public void testConditionChar() {
     final Property property = new Property("colName", Type.CHAR);
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //int, =
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, 'a');
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, 'a');
     assertEquals("Condition should fit", "colName = 'a'", testCrit.toString());
 
     //<=>=
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, 'a');
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, 'a');
     assertEquals("Condition should fit", "colName <> 'a'", testCrit.toString());
 
     //between
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_INSIDE, 'a', 'd');
+    testCrit = new PropertyCriteria(property, SearchType.INSIDE, 'a', 'd');
     assertEquals("Condition should fit",  "(colName >= 'a' and colName <= 'd')", testCrit.toString());
 
     //outside
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_OUTSIDE, 'd', 'f');
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, 'd', 'f');
     assertEquals("Condition should fit",  "(colName <= 'd' or colName >= 'f')", testCrit.toString());
 
     //in
-    testCrit = new PropertyCriteria(property, SearchType.IN_LIST, 'a', 'b', 'c');
+    testCrit = new PropertyCriteria(property, SearchType.IN, 'a', 'b', 'c');
     assertEquals("Condition should fit", "colName in ('a', 'b', 'c')", testCrit.toString());
   }
 
   public void testConditionBoolean() {
     //string, =
     final Property property = new Property("colName", Type.BOOLEAN);
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, Type.Boolean.FALSE);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, Type.Boolean.FALSE);
     assertEquals("Condition should fit", "colName = 0", testCrit.toString());
 
     //<=>=
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, Type.Boolean.TRUE);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, Type.Boolean.TRUE);
     assertEquals("Condition should fit", "colName <> 1", testCrit.toString());
   }
 
   public void testConditionDate() throws Exception {
     //string, =
     final Property property = new Property("colName", Type.SHORT_DATE);
-    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.EXACT, new Object[] {null});
+    PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, Constants.TIMESTAMP_NULL_VALUE);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, Constants.TIMESTAMP_NULL_VALUE);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
     Date value = ShortDashDateFormat.get().parse("10-12-2004");
-    testCrit = new PropertyCriteria(property, SearchType.EXACT, value);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
     String requiredValue =  DbUtil.isMySQL()
             ? "colName = str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')"
             : "colName = to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, <>
-    testCrit = new PropertyCriteria(property, SearchType.NOT_EXACT, value);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
     requiredValue =  DbUtil.isMySQL()
             ? "colName <> str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')"
             : "colName <> to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
@@ -264,7 +264,7 @@ public class TestPropertyCriteria extends TestCase {
 
     //string, between
     Date value2 = ShortDashDateFormat.get().parse("10-09-2001");
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_INSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2);
     requiredValue =  DbUtil.isMySQL()
             ? "(colName >= str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y') and "
       + "colName <= str_to_date('" + ShortDashDateFormat.get().format(value2) + "', '%d-%m-%Y'))"
@@ -273,7 +273,7 @@ public class TestPropertyCriteria extends TestCase {
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, outside
-    testCrit = new PropertyCriteria(property, SearchType.MIN_MAX_OUTSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2);
     requiredValue =  DbUtil.isMySQL()
             ? "(colName <= str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y') or "
       + "colName >= str_to_date('" + ShortDashDateFormat.get().format(value2) + "', '%d-%m-%Y'))"
@@ -283,7 +283,7 @@ public class TestPropertyCriteria extends TestCase {
 
     //string, in
     final Date value3 = ShortDashDateFormat.get().parse("12-10-2001");
-    testCrit = new PropertyCriteria(property, SearchType.IN_LIST, value, value2, value3);
+    testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3);
     final String expected = DbUtil.isMySQL()
             ? "colName in (str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')," +
                  " str_to_date('" + ShortDashDateFormat.get().format(value2) + "', '%d-%m-%Y')," +
@@ -297,19 +297,19 @@ public class TestPropertyCriteria extends TestCase {
   public void testConditionSet() {
     final Property property1 = new Property("colName1", Type.STRING);
     final Property property2 = new Property("colName2", Type.INT);
-    final PropertyCriteria criteria1 = new PropertyCriteria(property1, SearchType.EXACT, "value");
+    final PropertyCriteria criteria1 = new PropertyCriteria(property1, SearchType.LIKE, "value");
     final PropertyCriteria criteria2 = new PropertyCriteria(property2, SearchType.MAX, 10);
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR, criteria1, criteria2);
     assertEquals("Set condition should fit", "(colName1 = 'value' or colName2 <= 10)", set.toString());
 
     final Property property3 = new Property("colName3", Type.DOUBLE);
-    final PropertyCriteria criteria3 = new PropertyCriteria(property3, SearchType.NOT_EXACT, 34.5);
+    final PropertyCriteria criteria3 = new PropertyCriteria(property3, SearchType.NOT_LIKE, 34.5);
     final CriteriaSet set2 = new CriteriaSet(CriteriaSet.Conjunction.AND, set, criteria3);
     assertEquals("Set condition should fit", "((colName1 = 'value' or colName2 <= 10) and colName3 <> 34.5)",
             set2.toString());
 
     final Property property4 = new Property("colName4", Type.CHAR);
-    final PropertyCriteria criteria4 = new PropertyCriteria(property4, SearchType.IN_LIST, 'a', 'b', 'c');
+    final PropertyCriteria criteria4 = new PropertyCriteria(property4, SearchType.IN, 'a', 'b', 'c');
     final CriteriaSet set3 = new CriteriaSet(CriteriaSet.Conjunction.OR, set2, criteria4);
     assertEquals("Set condition should fit", "(((colName1 = 'value' or colName2 <= 10) and colName3 <> 34.5)"
             + " or colName4 in ('a', 'b', 'c'))", set3.toString());

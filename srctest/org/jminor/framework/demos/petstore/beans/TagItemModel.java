@@ -13,7 +13,7 @@ import org.jminor.framework.demos.petstore.model.Petstore;
 import org.jminor.framework.model.Property;
 
 import javax.swing.ComboBoxModel;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Björn Darri
@@ -28,7 +28,7 @@ public class TagItemModel extends EntityModel {
   }
 
   /** {@inheritDoc} */
-  protected HashMap<Property, ComboBoxModel> initializeEntityComboBoxModels() {
+  protected Map<Property, ComboBoxModel> initializeEntityComboBoxModels() {
     return super.initializeEntityComboBoxModels(
             new ItemComboBoxModel(getDbConnectionProvider()),
             new TagComboBoxModel(getDbConnectionProvider()));

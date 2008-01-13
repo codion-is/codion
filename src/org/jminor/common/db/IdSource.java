@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2008, Your Corporation. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-
 package org.jminor.common.db;
 
 /**
@@ -11,7 +10,7 @@ package org.jminor.common.db;
  */
 public enum IdSource {
   /**
-   * the id value is set automatically from a sequnce or is automatically incremented
+   * the id value is set automatically from a sequence (e.g. by trigger) or is automatically incremented
    */
   ID_AUTO_INCREMENT,
   /**

@@ -170,7 +170,7 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
     delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsDelayedPerSecond());
     queriesPerSecond.add(poolStats.getTimestamp(), poolStats.getQueriesPerSecond());
     cachedQueriesPerSecond.add(poolStats.getTimestamp(), poolStats.getCachedQueriesPerSecond());
-    final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getInPoolStats());
+    final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getPoolStatistics());
     if (stats.size() > 0) {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");
       final XYSeries inUseSeries = new XYSeries("Connections in active use");

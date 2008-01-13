@@ -34,7 +34,7 @@ public abstract class AbstractSearchModel {
 
   private Object upperBound = null;
   private Object lowerBound = null;
-  private SearchType searchType = SearchType.EXACT;
+  private SearchType searchType = SearchType.LIKE;
 
   public AbstractSearchModel() {
     bindEvents();
@@ -241,20 +241,20 @@ public abstract class AbstractSearchModel {
     setSearchEnabled(false);
     setUpperBound((Object) null);
     setLowerBound((Object) null);
-    setSearchType(SearchType.EXACT);
+    setSearchType(SearchType.LIKE);
     evtSearchModelCleared.fire();
   }
 
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
-      case EXACT :
+      case LIKE:
       case MAX :
       case MIN :
-      case NOT_EXACT :
-      case IN_LIST :
+      case NOT_LIKE:
+      case IN:
         return 1;
-      case MIN_MAX_INSIDE :
-      case MIN_MAX_OUTSIDE :
+      case INSIDE:
+      case OUTSIDE:
         return 2;
     }
 

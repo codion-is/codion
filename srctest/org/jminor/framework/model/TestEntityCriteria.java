@@ -19,14 +19,14 @@ public class TestEntityCriteria extends TestCase {
   public void test() {
     final CriteriaSet set1 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,
-            new PropertyCriteria(new Property("stringProperty", Type.STRING), SearchType.EXACT, "value"),
-            new PropertyCriteria(new Property("intProperty", Type.INT), SearchType.EXACT, 666)
+            new PropertyCriteria(new Property("stringProperty", Type.STRING), SearchType.LIKE, "value"),
+            new PropertyCriteria(new Property("intProperty", Type.INT), SearchType.LIKE, 666)
     );
     Assert.assertEquals("where (stringProperty = 'value' and intProperty = 666)", new EntityCriteria(null, set1).getWhereClause());
     final CriteriaSet set2 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,
-            new PropertyCriteria(new Property("doubleProperty", Type.DOUBLE), SearchType.EXACT, 666.666),
-            new PropertyCriteria(new Property("stringProperty2", Type.STRING), SearchType.EXACT, "value2").setCaseSensitive(false)
+            new PropertyCriteria(new Property("doubleProperty", Type.DOUBLE), SearchType.LIKE, 666.666),
+            new PropertyCriteria(new Property("stringProperty2", Type.STRING), SearchType.LIKE, "value2").setCaseSensitive(false)
     );
     final CriteriaSet set3 = new CriteriaSet(CriteriaSet.Conjunction.OR, set1, set2);
     assertEquals("where ((stringProperty = 'value' and intProperty = 666) " + "or"

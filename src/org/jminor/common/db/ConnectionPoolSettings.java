@@ -25,7 +25,7 @@ public class ConnectionPoolSettings implements Serializable {
   private int connectionsDestroyed;
   private Date creationDate;
 
-  private List<ConnectionPoolState> inPoolStats;
+  private List<ConnectionPoolState> poolStatistics;
   private Date resetDate;
   private int connectionRequests;
   private int connectionRequestsDelayed;
@@ -57,12 +57,12 @@ public class ConnectionPoolSettings implements Serializable {
     return poolCleanupInterval;
   }
 
-  public void setInPoolStats(final List<ConnectionPoolState> stats) {
-    this.inPoolStats = stats;
+  public void setPoolStatistics(final List<ConnectionPoolState> stats) {
+    this.poolStatistics = stats;
   }
 
-  public List<ConnectionPoolState> getInPoolStats() {
-    return inPoolStats;
+  public List<ConnectionPoolState> getPoolStatistics() {
+    return poolStatistics;
   }
 
   public int getAvailableInPool() {

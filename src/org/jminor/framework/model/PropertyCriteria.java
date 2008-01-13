@@ -86,7 +86,7 @@ public class PropertyCriteria implements ICriteria {
       columnName = property.propertyID;
 
     if (values.size() == 1 && EntityUtil.isValueNull(property.getPropertyType(), values.get(0)))
-      return columnName + (searchType == SearchType.EXACT ? " is null" : " is not null");
+      return columnName + (searchType == SearchType.LIKE ? " is null" : " is not null");
 
     String sqlValue = EntityUtil.getSQLStringValue(property, values.get(0));
     String sqlValue2 = values.size() == 2 ? EntityUtil.getSQLStringValue(property, values.get(1)) : null;
@@ -98,21 +98,21 @@ public class PropertyCriteria implements ICriteria {
     }
 
     switch(searchType) {
-      case EXACT :
+      case LIKE:
         return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
                 ? " like " + sqlValue : " = " + sqlValue);
-      case NOT_EXACT :
+      case NOT_LIKE:
         return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
                 ? " not like " + sqlValue : " <> " + sqlValue);
       case MAX :
         return columnName + " <= " + sqlValue;
       case MIN :
         return columnName + " >= " + sqlValue;
-      case MIN_MAX_INSIDE :
+      case INSIDE:
         return "(" + columnName + " >= " + sqlValue + " and " + columnName +  " <= " + sqlValue2 + ")";
-      case MIN_MAX_OUTSIDE :
+      case OUTSIDE:
         return "(" + columnName + " <= "+ sqlValue + " or " + columnName + " >= " + sqlValue2 + ")";
-      case IN_LIST :
+      case IN:
         return getInList(columnName);
     }
 

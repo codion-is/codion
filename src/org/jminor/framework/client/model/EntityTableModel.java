@@ -53,14 +53,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
 
-  /**
-   * The default query range
-   */
+  /** The default query range */
   public static final int DEFAULT_QUERY_RANGE = 1000;
 
-  /**
-   * Fired when the model is about to be refreshed
-   */
+  /** Fired when the model is about to be refreshed */
   public final Event evtRefreshStarted = new Event("EntityTableModel.evtRefreshStarted");
 
   /**
@@ -69,19 +65,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public final Event evtRefreshDone = new Event("EntityTableModel.evtRefreshDone");
 
-  /**
-   * Fired when the model is about to be filtered
-   */
+  /** Fired when the model is about to be filtered */
   public final Event evtBeforeFiltering = new Event("EntityTableModel.evtBeforeFiltering");
 
-  /**
-   * Fired when the model has been filtered
-   */
+  /** Fired when the model has been filtered */
   public final Event evtAfterFiltering = new Event("EntityTableModel.evtAfterFiltering");
 
-  /**
-   * Fired after the table data has changed
-   */
+  /** Fired after the table data has changed */
   public final Event evtTableDataChanged = new Event("EntityTableModel.evtTableDataChanged");
 
   public final Event evtMinSelectionIndexChanged = new Event("EntityTableModel.evtMinSelectedIndexChanged");
@@ -89,20 +79,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public final Event evtSelectionChanged = new Event("EntityTableModel.evtSelectionChanged");
   public final Event evtSimpleSearchStringChanged = new Event("EntityTableModel.evtSimpleSearchStringChanged");
 
-  /**
-   * Active when the selection is empty
-   */
+  /** Active when the selection is empty */
   public final State stSelectionEmpty = new State("EntityTableModel.stSelectionEmpty", true);
 
-  /**
-   * Active when the data does not represent the state of the property search models
-   */
+  /** Active when the data does not represent the state of the property search models */
   public final State stDataDirty = new State("EntityTableModel.stDataDirty", false);
-
-  /**
-   * Holds the selected items while sorting
-   */
-  private List<EntityKey> selectedPrimaryKeys;
 
   /**
    * If set to true, then a full refresh is forced when <code>refresh()</code> is called,
@@ -110,45 +91,38 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   private boolean forceRefresh = false;
 
-  /**
-   * true while the model is refreshing
-   */
+  /** true while the model is refreshing */
   private boolean isRefreshing = false;
 
-  /**
-   * true while the model is filtering
-   */
+  /** true while the model is filtering */
   private boolean isFiltering = false;
 
-  /**
-   * true while the model is sorting
-   */
+  /** true while the model is sorting */
   private boolean isSorting = false;
 
-  /**
-   * False if the table should ignore the query range when refreshing
-   */
+  /** False if the table should ignore the query range when refreshing */
   private boolean queryRangeEnabled = FrameworkSettings.get().useQueryRange;
 
-  /**
-   * Represents the range of records to select from the underlying table
-   */
+  /** Represents the range of records to select from the underlying table */
   private final PropertyCriteria queryRangeCriteria =
-          new PropertyCriteria(new Property("row_num", Type.INT), SearchType.MIN_MAX_INSIDE, 1, DEFAULT_QUERY_RANGE);
+          new PropertyCriteria(new Property("row_num", Type.INT), SearchType.INSIDE, 1, DEFAULT_QUERY_RANGE);
 
-  /**
-   * Holds the status of the underlying table
-   */
+  /** Holds the status of the underlying table */
   private final TableStatus tableStatus = new TableStatus();
 
-  /**
-   * The IEntityDb connection provider
-   */
+  /** The IEntityDb connection provider */
   private final IEntityDbProvider dbConnectionProvider;
+
+  /** The entity ID */
+  private final String entityID;
 
   private final List<Entity> visibleEntities = new ArrayList<Entity>();
   private final List<Entity> filteredEntities = new ArrayList<Entity>();
 
+  /** Holds the selected items while sorting */
+  private List<EntityKey> selectedPrimaryKeys;
+
+  /** Holds the topmost (minimum) selected index */
   private int currentMinSelectionIndex = -1;
 
   private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
@@ -167,12 +141,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
   };
 
-  private final String entityID;
-  private final Property[] tableColumnProperties;
+  private final List<Property> tableColumnProperties;
   private final TableSorter tableSorter;
   private final List<AbstractSearchModel> propertyFilterModels;
   private final List<AbstractSearchModel> propertySearchModels;
-  private final HashMap<Property, EntityComboBoxModel> propertySearchComboBoxModels =
+  private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels =
           new HashMap<Property, EntityComboBoxModel>();
 
   //reporting
@@ -185,9 +158,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private boolean showAllWhenNotFiltered = false;
   private boolean updatingSelection = false;
 
-  /*
-   * Initializes a new EntityTableModel
-   */
+  /* Initializes a new EntityTableModel */
   public EntityTableModel(final IEntityDbProvider dbProvider, final String entityID) {
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
@@ -202,7 +173,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return Value for property 'tableColumnProperties'.
    */
-  public Property[] getTableColumnProperties() {
+  public List<Property> getTableColumnProperties() {
     return tableColumnProperties;
   }
 
@@ -275,6 +246,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return dbConnectionProvider;
   }
 
+  /**
+   * @return true if the model is either refreshing, filtering or sorting
+   */
   public boolean isChangingState() {
     return isRefreshing || isFiltering || isSorting;
   }
@@ -326,6 +300,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * Selects all visible entities
+   * @see #evtSelectionChanged
    */
   public void selectAll() {
     getSelectionModel().setSelectionInterval(0, visibleEntities.size()-1);
@@ -333,6 +308,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * Clears the selection
+   * @see #evtSelectionChanged
    */
   public void clearSelection() {
     getSelectionModel().clearSelection();
@@ -412,13 +388,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /** {@inheritDoc} */
   public Class getColumnClass(final int columnIndex) {
-    return Type.getValueClass(tableColumnProperties[columnIndex].getPropertyType(),
-            getEntityAtViewIndex(0).getValue(tableColumnProperties[columnIndex].propertyID));
+    return Type.getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
+            getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).propertyID));
   }
 
   /** {@inheritDoc} */
   public synchronized int getColumnCount() {
-    return tableColumnProperties.length;
+    return tableColumnProperties.size();
   }
 
   /** {@inheritDoc} */
@@ -428,7 +404,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /** {@inheritDoc} */
   public synchronized Object getValueAt(final int rowIndex, final int columnIndex) {
-    return visibleEntities.get(rowIndex).getTableValue(tableColumnProperties[columnIndex].propertyID);
+    return visibleEntities.get(rowIndex).getTableValue(tableColumnProperties.get(columnIndex).propertyID);
   }
 
   /**
@@ -1112,7 +1088,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return table filters initialized according to the model
    */
   protected List<AbstractSearchModel> initPropertyFilters() {
-    final List<AbstractSearchModel> filters = new ArrayList<AbstractSearchModel>(tableColumnProperties.length);
+    final List<AbstractSearchModel> filters = new ArrayList<AbstractSearchModel>(tableColumnProperties.size());
     int i = 0;
     for (final Property property : tableColumnProperties)
       filters.add(new PropertyFilterModel(property, i++));
@@ -1120,9 +1096,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return filters;
   }
 
-  protected Property[] initColumnProperties() {
+  protected List<Property> initColumnProperties() {
     final Collection<Property> properties = Entity.repository.getVisibleProperties(getEntityID());
-    return properties.toArray(new Property[properties.size()]);
+
+    return Arrays.asList(properties.toArray(new Property[properties.size()]));
   }
 
   protected void bindEvents() {
@@ -1250,9 +1227,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   private int getColumnIndex(final String masterEntityID) {
-    for (int i = 0; i < tableColumnProperties.length; i++)
-      if (tableColumnProperties[i] instanceof Property.EntityProperty
-              && ((Property.EntityProperty) tableColumnProperties[i]).referenceEntityID.equals(masterEntityID))
+    for (int i = 0; i < tableColumnProperties.size(); i++)
+      if (tableColumnProperties.get(i) instanceof Property.EntityProperty
+              && ((Property.EntityProperty) tableColumnProperties.get(i)).referenceEntityID.equals(masterEntityID))
         return i;
 
     return -1;
