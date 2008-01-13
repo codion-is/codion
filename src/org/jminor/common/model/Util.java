@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
- *
  */
 package org.jminor.common.model;
-
 
 import org.jminor.common.Constants;
 import org.jminor.common.model.formats.LongDateFormat;

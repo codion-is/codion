@@ -43,11 +43,11 @@
           <option name="filler" value=" " />
         </value>
       </option>
-      <option name="notice" value="Copyright (c) &amp;#36;today.year, Your Corporation. All Rights Reserved." />
+      <option name="notice" value="Copyright (c) &amp;#36;today.year, Björn Darri Sigurðsson. All Rights Reserved." />
       <option name="keyword" value="Copyright" />
       <option name="fileTypeOverride" value="4" />
       <option name="relativeBefore" value="true" />
-      <option name="addBlankAfter" value="true" />
+      <option name="addBlankAfter" value="false" />
       <option name="fileLocation" value="1" />
       <option name="useAlternate" value="false" />
     </LanguageOptions>
@@ -66,7 +66,7 @@
       </option>
       <option name="notice" value="Copyright (c) &amp;#36;today.year, Your Corporation. All Rights Reserved." />
       <option name="keyword" value="Copyright" />
-      <option name="fileTypeOverride" value="2" />
+      <option name="fileTypeOverride" value="1" />
       <option name="relativeBefore" value="true" />
       <option name="addBlankAfter" value="true" />
       <option name="fileLocation" value="1" />
