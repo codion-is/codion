@@ -39,7 +39,7 @@ public class TestEmployee extends EntityTestUnit {
     ret.setValue(EmpDept.EMPLOYEE_MGR_REF, manager);
     ret.setValue(EmpDept.EMPLOYEE_MGR, manager.getValue(EmpDept.EMPLOYEE_ID));
     ret.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
-    ret.setValue(EmpDept.EMPLOYEE_SALARY, 10000d);
+    ret.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     return Arrays.asList(ret);
   }

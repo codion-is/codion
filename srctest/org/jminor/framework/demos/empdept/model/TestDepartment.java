@@ -27,10 +27,10 @@ public class TestDepartment extends EntityTestUnit {
 
   protected List<Entity> initTestEntities() {
     final Entity ret = new Entity(EmpDept.T_DEPARTMENT);
-    ret.setValue(EmpDept.DEPARTMENT_ID, 10000);
+    ret.setValue(EmpDept.DEPARTMENT_ID, 1000);
     ret.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
     ret.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
-    
+
     return Arrays.asList(ret);
   }
 }
