@@ -6,8 +6,8 @@ package org.jminor.common.ui;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlIterator;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.IControlIterator;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
@@ -149,7 +149,7 @@ public class ControlProvider {
     return menuBar;
   }
 
-  private static class ButtonControlIterator implements ControlIterator {
+  private static class ButtonControlIterator implements IControlIterator {
 
     private final JPanel btnPanel;
     private final boolean vertical;
@@ -186,7 +186,7 @@ public class ControlProvider {
     }
   }
 
-  private static class MenuControlIterator implements ControlIterator {
+  private static class MenuControlIterator implements IControlIterator {
 
     private final JMenu menu;
 
@@ -241,7 +241,7 @@ public class ControlProvider {
     }
   }
 
-  private static class ToolBarControlIterator implements ControlIterator {
+  private static class ToolBarControlIterator implements IControlIterator {
 
     private boolean includeCaption = true;
     private final JToolBar toolbar;

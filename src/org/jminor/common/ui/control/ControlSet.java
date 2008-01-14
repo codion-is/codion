@@ -138,7 +138,7 @@ public class ControlSet extends Control {
     actions.add(idx, null);
   }
 
-  public void iterate(final ControlIterator controlIterator) {
+  public void iterate(final IControlIterator controlIterator) {
     if (controlIterator == null)
       throw new IllegalArgumentException("Iterator can't be null");
 
