@@ -17,3 +17,5 @@
   Removed redundant entityID parameter from IEntityDb.selectMany(String entityID, List<EntityKey>)
   Completed the unit tests for EmpDept demo
   ControlIterator renamed to IControlIterator for consistency
+  Fixed EmpDept test so they run on Oracle (2 digit deptno values)
+  Updated TipsAndTricks.txt

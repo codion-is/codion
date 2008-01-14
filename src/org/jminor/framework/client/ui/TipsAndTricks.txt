@@ -18,10 +18,10 @@ To sort a table, click a column header once to sort ascending, twice to sort des
 To sort by more than one column, hold down the CTR key while repeating the method described above for subsequent columns.
 
 Navigation
-To navigate between panels with the keyboard, use the arrow keys while holding down the SHIFT and ALT keys.
+To navigate between panels with the keyboard, use the arrow keys while holding down the ALT key.
 
 Layout
-To resize or hide the active panel with the keyboard, use the arrow keys while holding down the SHIFT, ALT and CTR keys.
+To resize or hide the active panel with the keyboard, use the arrow keys while holding down the SHIFT and ALT keys.
 
 Dependencies
 To view the records that depend on the selected record(s), right click to pop up a context menu and select the View Dependencies option.
