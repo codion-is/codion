@@ -50,6 +50,7 @@ public class Util {
 
   static {
     final String loggingLevel = System.getProperty(LOGGING_LEVEL_PROPERTY, LOGGING_LEVEL_INFO);
+    System.out.println("Initial logging level: " + loggingLevel);
     if (loggingLevel.equals(LOGGING_LEVEL_INFO))
       defaultLoggingLevel = Level.INFO;
     else if (loggingLevel.equals(LOGGING_LEVEL_DEBUG))

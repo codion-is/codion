@@ -552,7 +552,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public void addEntitiesByPrimaryKeys(final List<EntityKey> primaryKeys, boolean atFrontOfList)
           throws UserException, DbException {
     try {
-      addEntities(getDbConnectionProvider().getEntityDb().selectMany(getEntityID(), primaryKeys), atFrontOfList);
+      addEntities(getDbConnectionProvider().getEntityDb().selectMany(primaryKeys), atFrontOfList);
     }
     catch (DbException dbe) {
       throw dbe;

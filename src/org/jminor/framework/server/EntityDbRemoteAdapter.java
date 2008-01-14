@@ -491,9 +491,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final String entityID, final List<EntityKey> keys) throws DbException, RemoteException {
+  public List<Entity> selectMany(final List<EntityKey> keys) throws DbException, RemoteException {
     try {
-      return loggingEntityDbProxy.selectMany(entityID, keys);
+      return loggingEntityDbProxy.selectMany(keys);
     }
     catch (DbException dbe) {
       throw dbe;

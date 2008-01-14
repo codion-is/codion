@@ -14,3 +14,5 @@
   Removed CTR from resizing key combination
   Improved FrameworkUiUtil.showInDialog()
   Re-enabled EntityTestUnit.testUpdate(), added abstract modifyEntity() to accomodate
+  Removed redundant entityID parameter from IEntityDb.selectMany(String entityID, List<EntityKey>)
+  Completed the unit tests for EmpDept demo

@@ -11,22 +11,17 @@ import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class AbstractEntityTestFixture {
 
   public final IEntityDb db;
-  public final Class entityTestClass;
   private static IEntityDbProvider dbProvider;
 
-  /** Constructs a new AbstractEntityTestFixture. */
   public AbstractEntityTestFixture() {
-    this(null);
-  }
-
-  public AbstractEntityTestFixture(final Class entityTestClass) {
-    this.entityTestClass = entityTestClass;
     try {
       if (dbProvider == null)
         dbProvider = EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName());
@@ -72,5 +67,16 @@ public abstract class AbstractEntityTestFixture {
     return UiUtil.getUser(null, new User(FrameworkSettings.getDefaultUsername(), null));
   }
 
-  public abstract HashMap<String, Entity> initReferenceEntities(final Collection<String> entityIDs) throws Exception;
+  protected Entity initialize(final Entity ret) throws Exception {
+    final IEntityDb db = getIEntityDbProvider().getEntityDb();
+    final List<Entity> entities = db.selectMany(Arrays.asList(ret.getPrimaryKey()));
+    if (entities.size() > 0)
+      return entities.get(0);      
+
+    return db.selectSingle(db.insert(Arrays.asList(ret)).get(0));
+  }
+
+  public HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
+    return new HashMap<String, Entity>(0);
+  }
 }

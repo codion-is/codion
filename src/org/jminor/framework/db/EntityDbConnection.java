@@ -217,7 +217,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     for (final Entity entity : entities)
       primaryKeys.add(entity.getPrimaryKey());
 
-    return selectMany(entities.get(0).getEntityID(), primaryKeys);
+    return selectMany(primaryKeys);
   }
 
   /** {@inheritDoc} */
@@ -281,8 +281,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final String entityID, final List<EntityKey> primaryKeys) throws DbException {
-    return selectMany(entityID, null, primaryKeys);
+  public List<Entity> selectMany(final List<EntityKey> primaryKeys) throws DbException {
+    return selectMany(null, primaryKeys);
   }
 
   /** {@inheritDoc} */
@@ -315,7 +315,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final EntityCriteria criteria, final boolean order) throws DbException {
     if (criteria.isKeyCriteria())
-      return selectMany(criteria.getEntityID(), ((EntityKeyCriteria) criteria.getCriteria()).getProperties(),
+      return selectMany(((EntityKeyCriteria) criteria.getCriteria()).getProperties(),
               ((EntityKeyCriteria) criteria.getCriteria()).getKeys());
 
     addCacheQueriesRequest();
@@ -486,13 +486,14 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   @SuppressWarnings({"unchecked"})
-  private List<Entity> selectMany(final String entityID, final List<Property> properties,
+  private List<Entity> selectMany(final List<Property> properties,
                                   final List<EntityKey> primaryKeys) throws DbException {
     if (primaryKeys == null || primaryKeys.size() == 0)
       return new ArrayList<Entity>(0);
 
     addCacheQueriesRequest();
 
+    final String entityID = primaryKeys.get(0).getEntityID();
     final ArrayList<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
     final List<Entity> returnList = new ArrayList<Entity>(primaryKeyList.size());
     if (entityCacheEnabled)
@@ -553,7 +554,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       if (referencedPrimaryKeys.size() > 0) {
         final HashMap<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
                 ? initWeakReferences(referencedPrimaryKeys)
-                : EntityUtil.hashByPrimaryKey(selectMany(entityProperty.referenceEntityID, referencedPrimaryKeys));
+                : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
         for (final Entity entity : entities) {
           final EntityKey referenceEntityKey = entity.getReferencedKey(entityProperty);
           if (referenceEntityKey != null) {

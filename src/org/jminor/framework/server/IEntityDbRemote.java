@@ -197,15 +197,13 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
   public Entity selectSingle(final EntityCriteria criteria) throws DbException, RemoteException;
 
   /**
-   * Returns entities of the type <code>entityID</code> according to <code>keys</code>
-   * @param entityID the Class of the entities to select
+   * Returns entities according to <code>keys</code>
    * @param keys the keys used in the condition
-   * @return entities of the type <code>entityID</code> according to <code>keys</code>
+   * @return entities according to <code>keys</code>
    * @throws DbException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  public List<Entity> selectMany(final String entityID,
-                                 final List<EntityKey> keys) throws DbException, RemoteException;
+  public List<Entity> selectMany(final List<EntityKey> keys) throws DbException, RemoteException;
 
   /**
    * Selects entities according to the specified criteria

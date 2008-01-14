@@ -10,12 +10,8 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.model.AbstractEntityTestFixture;
-import org.jminor.framework.model.Entity;
 
 import junit.framework.TestCase;
-
-import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * User: Björn Darri
@@ -34,10 +30,6 @@ public class TestPetstoreModel extends TestCase {
       db = new AbstractEntityTestFixture() {
         public User getTestUser() throws UserCancelException {
           return new User("scott", "tiger");
-        }
-
-        public HashMap<String, Entity> initReferenceEntities(final Collection<String> classes) throws Exception {
-          return null;
         }
       }.getIEntityDbProvider().getEntityDb();
     }

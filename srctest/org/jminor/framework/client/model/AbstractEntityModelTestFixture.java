@@ -10,22 +10,16 @@ public abstract class AbstractEntityModelTestFixture extends AbstractEntityTestF
 
   protected final EntityModel testModel;
 
-  /** Constructs a new AbstractEntityModelTestFixture. */
-  public AbstractEntityModelTestFixture() {
-    this(null);
+  private final Class<? extends EntityModel> entityModelClass;
+
+  public AbstractEntityModelTestFixture(final Class<? extends EntityModel> entityModelClass) {
+    this.entityModelClass = entityModelClass;
+    testModel = initializeEntityModel();
   }
 
-  public AbstractEntityModelTestFixture(final Class entityModelTestClass) {
-    super(entityModelTestClass);
-    testModel = initEntityModel();
-  }
-
-  public EntityModel initEntityModel() {
-    if (entityTestClass == null || !EntityModel.class.isAssignableFrom(entityTestClass))
-      throw new RuntimeException("Class of type EntityModel required!");
-
+  public EntityModel initializeEntityModel() {
     try {
-      return (EntityModel) entityTestClass.getConstructor(IEntityDbProvider.class).newInstance(getIEntityDbProvider());
+      return entityModelClass.getConstructor(IEntityDbProvider.class).newInstance(getIEntityDbProvider());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

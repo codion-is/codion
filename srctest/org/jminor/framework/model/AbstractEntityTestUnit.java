@@ -10,10 +10,8 @@ import org.jminor.framework.db.IEntityDbProvider;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public abstract class AbstractEntityTestUnit extends TestCase {
@@ -67,16 +65,6 @@ public abstract class AbstractEntityTestUnit extends TestCase {
     return this.entityID;
   }
 
-  public String[] getReferencedEntityIDs(final String entityID) {
-    if (entityID == null)
-      return new String[0];
-
-    final HashSet<String> ret = new HashSet<String>();
-    addAllReferenceIDs(entityID, ret);
-
-    return ret.toArray(new String[ret.size()]);
-  }
-
   public void addAllReferenceIDs(final String entityID, final Collection<String> container) {
     final Collection<Property.EntityProperty> properties = Entity.repository.getEntityProperties(entityID);
     for (final Property.EntityProperty property : properties) {
@@ -100,18 +88,18 @@ public abstract class AbstractEntityTestUnit extends TestCase {
   }
 
   protected List<Entity> createTestEntities() throws Exception {
-    return getDbConnection().selectMany(getEntityID(), getDbConnection().insert(initTestEntities()));
+    return getDbConnection().selectMany(getDbConnection().insert(initTestEntities()));
   }
 
   protected HashMap<String, Entity> initReferenceEntities()throws Exception {
-    return fixture.initReferenceEntities(getReferenceEntityIDs());
+    return fixture.initializeReferenceEntities(getReferenceEntityIDs());
   }
 
   /**
    * @return Value for property 'referenceEntityIDs'.
    */
   protected Collection<String> getReferenceEntityIDs() {
-    return new ArrayList<String>(Arrays.asList(getReferencedEntityIDs(getEntityID())));
+    return new ArrayList<String>(0);
   }
 
   /** {@inheritDoc} */

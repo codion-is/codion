@@ -40,7 +40,7 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
           found = true;
       }
       assertTrue(found);
-      allEntities = getDbConnection().selectMany(getEntityID(), Arrays.asList(testEntity.getPrimaryKey()));
+      allEntities = getDbConnection().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
       found = false;
       for (Entity entity : allEntities) {
         if (testEntity.getPrimaryKey().equals(entity.getPrimaryKey()))

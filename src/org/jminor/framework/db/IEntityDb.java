@@ -197,14 +197,13 @@ public interface IEntityDb{
   public Entity selectSingle(final EntityCriteria criteria) throws Exception;
 
   /**
-   * Returns entities of the type <code>entityID</code> according to <code>keys</code>
-   * @param entityID the Class of the entities to select
+   * Returns entities according to <code>keys</code>
    * @param keys the keys used in the condition
-   * @return entities of the type <code>entityID</code> according to <code>keys</code>
+   * @return entities according to <code>keys</code>
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of exception
    */
-  public List<Entity> selectMany(final String entityID, final List<EntityKey> keys) throws Exception;
+  public List<Entity> selectMany(final List<EntityKey> keys) throws Exception;
 
   /**
    * Selects entities according to the specified criteria

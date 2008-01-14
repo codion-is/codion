@@ -15,7 +15,7 @@ public abstract class EntityModelTestUnit extends AbstractEntityTestUnit {
 
   public EntityModelTestUnit(final String name, final AbstractEntityModelTestFixture fixture) throws UserException {
     super(name, fixture);
-    this.testModel = fixture.initEntityModel();
+    this.testModel = fixture.initializeEntityModel();
     setEntityID(testModel.getEntityID());
   }
 
