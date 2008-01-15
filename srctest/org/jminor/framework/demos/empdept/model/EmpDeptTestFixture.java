@@ -48,7 +48,7 @@ public class EmpDeptTestFixture extends AbstractEntityTestFixture {
 
   private Entity getDepartment() throws Exception {
     final Entity ret = new Entity(EmpDept.T_DEPARTMENT);
-    ret.setValue(EmpDept.DEPARTMENT_ID, 1000);
+    ret.setValue(EmpDept.DEPARTMENT_ID, 98);
     ret.setValue(EmpDept.DEPARTMENT_LOCATION, "Abyss");
     ret.setValue(EmpDept.DEPARTMENT_NAME, "Marketing");
 
