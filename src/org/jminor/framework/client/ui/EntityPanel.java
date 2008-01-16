@@ -381,6 +381,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         compactBase.add(editPanel, BorderLayout.NORTH);
       else
         add(editPanel, BorderLayout.NORTH);
+      prepareUI(true, false);
     }
     else if (state == HIDDEN) {
       if (compactPanel)
@@ -657,7 +658,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (clearUI)
       model.clear();
     if (requestDefaultFocus && !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
-      if (defaultFocusComponent != null)
+      if (getEditPanelState() != EMBEDDED && entityTablePanel != null)
+        entityTablePanel.requestFocusInWindow();
+      else if (defaultFocusComponent != null)
         defaultFocusComponent.requestFocusInWindow();
       else if (getComponentCount() > 0)
         getComponents()[0].requestFocusInWindow();
@@ -1260,6 +1263,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         setEditPanelState(HIDDEN);
       }
     });
+    prepareUI(true, false);
   }
 
   protected void printReportForSelected(final String reportPath, final HashMap reportParams) throws UserException {
@@ -1319,6 +1323,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     ret.addMouseListener(new MouseAdapter() {
       public void mouseReleased(final MouseEvent e) {
         menu.show(ret, e.getX(), e.getY()-menu.getPreferredSize().height);
+      }
+    });
+    ret.addActionListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        menu.show(ret, (int) ret.getLocation().getX()+ret.getWidth()/2, (int) ret.getLocation().getY()+ret.getHeight()/2-menu.getPreferredSize().height);
       }
     });
     ret.setPreferredSize(getSouthButtonSize());

@@ -29,6 +29,7 @@ public class FrameworkSettings implements Serializable {
   public Object sqlBooleanValueNull = null;
   public long printMemoryUsageInterval = 0;
   public String usernamePrefix = "ops$";
+  public boolean transferTextFieldFocusOnEnter = true;
 
   private final static FrameworkSettings instance = new FrameworkSettings();
 

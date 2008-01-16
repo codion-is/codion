@@ -98,7 +98,7 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
   }
 
   /**
-   * This method should leave the entity modified, so that is can be used for the update test
+   * This method should leave the entity modified, so that it can be used for the update test
    * @param testEntity the entity to modify
    */
   protected abstract void modifyEntity(Entity testEntity);

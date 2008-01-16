@@ -5,7 +5,7 @@
   Added test to org.jminor.framework.client.ui.property, TestEntityPropertyLink
   Refactored and lessened package dependencies
   Moved getValueClass() from Type to Property (smaller dep. cycle in org.jminor.framework.model)
-  Fixed and renamed checkout target in build.xml, tiny cleanup
+  Fixed and renamed checkout target in build.xml, minor code cleanup
   Added a couple logos, used in demos f.x.
   Profiling.selectRandomRows() added
   EntityDbConnection does not add EntityRepository info if it's already initialized
@@ -17,5 +17,14 @@
   Removed redundant entityID parameter from IEntityDb.selectMany(String entityID, List<EntityKey>)
   Completed the unit tests for EmpDept demo
   ControlIterator renamed to IControlIterator for consistency
-  Fixed EmpDept test so they run on Oracle (2 digit deptno values)
+  Fixed EmpDept test so they run on Oracle (oh the irony) (2 digit deptno values)
   Updated TipsAndTricks.txt
+  Added FrameworkSettings.transferTextFieldFocusOnEnter
+  Added UiUtil.transferFocusOnEnter(JTextField)
+  IntField and FrameworkUiUtil changed according to the above
+  South toolbar is now focusable
+  Search sensitive refresh button now only visible when the search panel is visible
+  Tentative fix of ToggleBeanPropertyLink
+  Navigation is now CTR based with resizing enabled by adding SHIFT
+  Added action listener to toolbar update button, showing the update popup menu (wrong position though)
+  EntityPanel.prepareUI() now transfers focus to the table (not 100%, header seems to get focus) if the edit panel is hidden

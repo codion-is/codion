@@ -245,9 +245,8 @@ public class ExceptionDialog extends JDialog {
   private void initUI() {
     addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
-       if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+       if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
           close();
-        }
       }
     });
 

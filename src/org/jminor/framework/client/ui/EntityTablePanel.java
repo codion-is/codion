@@ -60,21 +60,21 @@ public class EntityTablePanel extends JPanel {
 
   private final JTable entityTable;
   private final EntityTableModel tableModel;
+  private final JScrollPane tableScroller;
   private final ControlSet tableControls;
+  private final JPanel searchPanel;
 
   private final HashMap<String, PropertySummaryPanel> propertySummaryPanels = new HashMap<String, PropertySummaryPanel>();
-  private List<PropertyFilterPanel> propertyFilterPanels;
+  private final List<PropertyFilterPanel> propertyFilterPanels;
+
   private JScrollPane searchScroller;
-  private JScrollPane tableScroller;
   private JPanel scrollerSummaryBase;
   private JScrollBar horizontalScrollBar;
-  private JPanel searchPanel;
   private JScrollPane tableSummaryPanelScroller;
   private JToolBar southToolBar;
   private JLabel lblStatusMessage;
   private Action doubleClickAction;
-
-  private boolean allowQueryConfiguration = true;
+  private JToolBar searchRefreshToolBar;
 
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls) {
     this(tableModel, popupControls, false, true);
@@ -94,10 +94,13 @@ public class EntityTablePanel extends JPanel {
                           final boolean specialRendering, final boolean allowQueryConfiguration,
                           final JButton detailPanelButton) {
     this.tableModel = tableModel;
-    this.entityTable = initializeJTable(tableModel, specialRendering);
+    this.entityTable = initializeJTable(tableModel, specialRendering);    
+    this.tableScroller = new JScrollPane(entityTable);
     this.tableControls = popupControls;
-    this.allowQueryConfiguration = allowQueryConfiguration;
-    initializeUI(detailPanelButton);
+    this.searchPanel = initializeSearchPanel();
+    this.propertyFilterPanels = FrameworkUiUtil.initializeFilterPanels(entityTable.getColumnModel(),
+            entityTable.getTableHeader(), tableModel.getPropertyFilterModels(), true, true);
+    initializeUI(detailPanelButton, allowQueryConfiguration);
     bindEvents();
     updateStatusMessage();
   }
@@ -203,11 +206,9 @@ public class EntityTablePanel extends JPanel {
    */
   public void setSearchPanelVisible(final boolean visible) {
     if (searchScroller != null) {
-      if (visible)
-        searchScroller.getViewport().setView(searchPanel);
-      else
-        searchScroller.getViewport().setView(null);
-
+      searchScroller.getViewport().setView(visible ? searchPanel : null);
+      if (searchRefreshToolBar != null)
+        searchRefreshToolBar.setVisible(visible);
       evtSearchPanelVisibleChanged.fire();
       revalidate();
     }
@@ -245,16 +246,14 @@ public class EntityTablePanel extends JPanel {
       throw new RuntimeException("No south panel");
 
     for (final AbstractButton button : buttons) {
-      if (button != null) {
-        button.setFocusable(false);
+      if (button != null)
         southToolBar.add(button);
-      }
       else
         southToolBar.addSeparator();
     }
   }
 
-  protected JPanel initializeSouthPanel() {
+  protected JPanel initializeSouthPanel(final boolean allowQueryConfiguration) {
     southToolBar = new JToolBar(JToolBar.HORIZONTAL);
     southToolBar.setFocusable(false);
     southToolBar.setFloatable(false);
@@ -328,23 +327,14 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  protected void initializeUI(final JButton detailPanelButton) {
+  protected void initializeUI(final JButton detailPanelButton, final boolean allowQueryConfiguration) {
     final JPanel base = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
-
-    initTableComponents();
-
-    tableScroller = new JScrollPane(entityTable,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-    searchPanel = initializeSearchPanel();
     if (searchPanel != null) {
       searchScroller = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       searchScroller.getHorizontalScrollBar().setModel(tableScroller.getHorizontalScrollBar().getModel());
       base.add(searchScroller, BorderLayout.NORTH);
-      setSearchPanelVisible(false);
     }
 
     final ControlSet popupControls = tableControls == null ? new ControlSet() : tableControls;
@@ -385,7 +375,8 @@ public class EntityTablePanel extends JPanel {
       scrollerSummaryBase = new JPanel(new BorderLayout());
       base.add(scrollerSummaryBase, BorderLayout.SOUTH);
     }
-    final JPanel southPanel = initializeSouthPanel();
+
+    final JPanel southPanel = initializeSouthPanel(allowQueryConfiguration);
     if (southPanel != null) {
       if (detailPanelButton != null)
         addSouthPanelButtons(detailPanelButton);
@@ -397,6 +388,7 @@ public class EntityTablePanel extends JPanel {
       southBase.add(southPanel, BorderLayout.CENTER);
       add(southBase, BorderLayout.SOUTH);
     }
+    setSearchPanelVisible(false);
 
     entityTable.repaint();
   }
@@ -496,14 +488,14 @@ public class EntityTablePanel extends JPanel {
       }
     });
 
-    final JToolBar ret = new JToolBar(JToolBar.HORIZONTAL);
-    ret.setFocusable(false);
-    ret.setFloatable(false);
-    ret.setRollover(true);
+    searchRefreshToolBar = new JToolBar(JToolBar.HORIZONTAL);
+    searchRefreshToolBar.setFocusable(false);
+    searchRefreshToolBar.setFloatable(false);
+    searchRefreshToolBar.setRollover(true);
 
-    ret.add(button);
+    searchRefreshToolBar.add(button);
 
-    return ret;
+    return searchRefreshToolBar;
   }
 
   private JTable initializeJTable(final EntityTableModel tableModel, final boolean specialRendering) {
@@ -522,21 +514,15 @@ public class EntityTablePanel extends JPanel {
       }
     });
 
-    return ret;
-  }
-
-  private void initTableComponents() {
-    final JTableHeader header = entityTable.getTableHeader();
+    final JTableHeader header = ret.getTableHeader();
     header.setFocusable(false);
     header.setReorderingAllowed(false);
 
-    entityTable.setColumnSelectionAllowed(false);
-    entityTable.setAutoResizeMode(FrameworkSettings.get().tableAutoResizeMode);
-
-    propertyFilterPanels = FrameworkUiUtil.initializeFilterPanels(entityTable.getColumnModel(), header,
-            tableModel.getPropertyFilterModels(), true, true);
-
+    ret.setColumnSelectionAllowed(false);
+    ret.setAutoResizeMode(FrameworkSettings.get().tableAutoResizeMode);
     tableModel.getTableSorter().setTableHeader(header);
+
+    return ret;
   }
 
   private void updateStatusMessage() {

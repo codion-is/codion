@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
@@ -176,7 +177,9 @@ public class EntityPropertyEditor extends JPanel {
     setLayout(new BorderLayout(5,5));
     setBorder(BorderFactory.createTitledBorder(propertyName));
     add(this.field, BorderLayout.CENTER);
-    add(getButtonPanel(), BorderLayout.SOUTH);
+    final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    btnBase.add(getButtonPanel());
+    add(btnBase, BorderLayout.SOUTH);
   }
 
   private JPanel getButtonPanel() {

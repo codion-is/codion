@@ -3,6 +3,8 @@
  */
 package org.jminor.common.ui.textfield;
 
+import org.jminor.common.ui.UiUtil;
+
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -20,16 +22,17 @@ public class TextFieldPlus extends JTextField {
 
   private double min = Double.NEGATIVE_INFINITY;
   private double max = Double.POSITIVE_INFINITY;
-
-  /** Constructs a new TextFieldPlus. */
-  public TextFieldPlus() {
-    super();
-    setMargin(new Insets(0, 2, 0, 0));
+  
+  public TextFieldPlus(final boolean transerFocusOnEnter) {
+    this(0, transerFocusOnEnter);
   }
 
-  public TextFieldPlus(final int columns) {
+  /** Constructs a new TextFieldPlus. */
+  public TextFieldPlus(final int columns, final boolean transferFocusOnEnter) {
     super(columns);
     setMargin(new Insets(0, 2, 0, 0));
+    if (transferFocusOnEnter)
+      UiUtil.transferFocusOnEnter(this);
   }
 
   /**

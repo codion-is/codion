@@ -24,6 +24,7 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -394,13 +395,13 @@ public class FrameworkUiUtil {
     final InputMap inputMap = panel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = panel.getActionMap();
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK, false), DIV_LEFT);
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_LEFT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK, false), DIV_RIGHT);
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_RIGHT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK, false), DIV_UP);
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_UP);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
-            KeyEvent.SHIFT_MASK + KeyEvent.ALT_MASK + KeyEvent.CTRL_MASK, false), DIV_DOWN);
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_DOWN);
 
     actionMap.put(DIV_RIGHT, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
@@ -434,10 +435,10 @@ public class FrameworkUiUtil {
 
   public static void initializeNavigation(final InputMap inputMap, final ActionMap actionMap,
                                           final DefaultTreeModel applicationTreeModel) {
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_MASK, true), NAV_UP);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_MASK, true), NAV_DOWN);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_MASK, true), NAV_RIGHT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_MASK, true), NAV_LEFT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK, true), NAV_UP);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK, true), NAV_DOWN);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK, true), NAV_RIGHT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK, true), NAV_LEFT);
 
     actionMap.put(NAV_UP, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
@@ -463,9 +464,8 @@ public class FrameworkUiUtil {
 
   private static void navigate(final int direction, final DefaultTreeModel applicationTreeModel) {
     final EntityModel active = getActivePanel(applicationTreeModel);
-    if (active == null) {
-      activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next()); //fallback on default if no active panel found
-    }
+    if (active == null) //fallback on default if no active panel found
+      activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
     else {
       switch(direction) {
         case UP:
@@ -598,8 +598,7 @@ public class FrameworkUiUtil {
       };
       final JButton btnClose = new JButton(closeAction);
       btnClose.setMnemonic('L');
-      dialog.getRootPane().getInputMap(
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+      dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
       dialog.getRootPane().getActionMap().put("close", closeAction);
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -740,8 +739,7 @@ public class FrameworkUiUtil {
     final JButton btnClose  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     final JButton btnSearch = new JButton(searchAction);
-    dialog.getRootPane().getInputMap(
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
     dialog.getRootPane().getActionMap().put("cancel", cancelAction);
     entityPanel.getJTable().getInputMap(
@@ -843,6 +841,8 @@ public class FrameworkUiUtil {
     }
     if (defaultButton != null)
       dialog.getRootPane().setDefaultButton(defaultButton);
+    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
 
     dialog.add(component, BorderLayout.CENTER);
     if (size == null)
@@ -1073,19 +1073,23 @@ public class FrameworkUiUtil {
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final AbstractDateMaskFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
+    final boolean transferFocusOnEnter = FrameworkSettings.get().transferTextFieldFocusOnEnter;
     final JTextField ret;
     switch (property.getPropertyType()) {
       case STRING:
         new TextPropertyLink(entityModel, property, ret = formatMaskString == null
-                ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters),
+                ? new TextFieldPlus(transferFocusOnEnter) :
+                UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters, false, transferFocusOnEnter),
                 null, immediateUpdate, linkType);
         break;
       case INT:
-        new IntTextPropertyLink(entityModel, property, (IntField) (ret = new IntField()),
+        new IntTextPropertyLink(entityModel, property,
+                (IntField) (ret = new IntField(transferFocusOnEnter, 0)),
                 null, immediateUpdate, linkType, null);
         break;
       case DOUBLE:
-        new DoubleTextPropertyLink(entityModel, property, (DoubleField) (ret = new DoubleField()),
+        new DoubleTextPropertyLink(entityModel, property,
+                (DoubleField) (ret = new DoubleField(transferFocusOnEnter, 0)),
                 null, immediateUpdate, linkType, null);
         break;
       case SHORT_DATE:

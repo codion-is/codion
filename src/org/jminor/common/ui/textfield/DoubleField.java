@@ -22,6 +22,10 @@ public class DoubleField extends IntField {
     super(columns);
   }
 
+  public DoubleField(final boolean transferFocusOnEnter, final int columns) {
+    super(transferFocusOnEnter, columns);
+  }
+
   public DoubleField(final double min, final double max) {
     super();
     setRange(min, max);

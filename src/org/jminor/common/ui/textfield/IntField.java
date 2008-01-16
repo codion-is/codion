@@ -15,11 +15,15 @@ public class IntField extends TextFieldPlus {
 
   /** Constructs a new IntField. */
   public IntField() {
-    super();
+    this(0);
   }
 
   public IntField(final int columns) {
-    super(columns);
+    this(false, columns);
+  }
+
+  public IntField(final boolean transferFocusOnEnter, final int columns) {
+    super(columns, transferFocusOnEnter);
   }
 
   public IntField(final int min, final int max) {

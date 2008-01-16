@@ -150,6 +150,13 @@ public class UiUtil {
   public static JFormattedTextField createFormattedField(final String mask,
                                                          final boolean valueContainsLiteralCharacter,
                                                          final boolean charsAsUpper) {
+    return createFormattedField(mask, valueContainsLiteralCharacter, charsAsUpper, false);
+  }
+
+  public static JFormattedTextField createFormattedField(final String mask,
+                                                         final boolean valueContainsLiteralCharacter,
+                                                         final boolean charsAsUpper,
+                                                         final boolean transferFocusOnEnter) {
     try {
       final MaskFormatter formatter = new MaskFormatter(mask) {
         public Object stringToValue(final String value) throws ParseException {
@@ -166,6 +173,8 @@ public class UiUtil {
 
       final JFormattedTextField ret = new JFormattedTextField(formatter);
       ret.setFocusLostBehavior(JFormattedTextField.COMMIT);
+      if (transferFocusOnEnter)
+        UiUtil.transferFocusOnEnter(ret);
 
       return ret;
     }
@@ -489,10 +498,10 @@ public class UiUtil {
     return textField.getPreferredSize().height;
   }
 
-  public static void showToolTip(final JComponent txtSearchString) {
-    final Action toolTipAction = txtSearchString.getActionMap().get("postTip");
+  public static void showToolTip(final JComponent component) {
+    final Action toolTipAction = component.getActionMap().get("postTip");
     if (toolTipAction != null)
-      toolTipAction.actionPerformed(new ActionEvent(txtSearchString, ActionEvent.ACTION_PERFORMED, ""));
+      toolTipAction.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, ""));
   }
 
   /**
@@ -535,6 +544,15 @@ public class UiUtil {
     });
 
     return textField;
+  }
+
+  public static void transferFocusOnEnter(final JTextField txtField) {
+    txtField.addKeyListener(new KeyAdapter() {
+      public void keyPressed(final KeyEvent evt) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER)
+          txtField.transferFocus();
+      }
+    });
   }
 
   public static class DateInputPanel extends JPanel {
