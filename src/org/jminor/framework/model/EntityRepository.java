@@ -403,7 +403,8 @@ public class EntityRepository implements Serializable {
     this.visibleProperties.put(entityID, visibleProperties);
     this.visiblePropertyIndexes.put(entityID, visiblePropertyIndexes);
     this.entityProperties.put(entityID, entityProperties);
-    this.denormalizedProperties.put(entityID, denormalizedProperties);
+    if (denormalizedProperties.size() > 0)
+      this.denormalizedProperties.put(entityID, denormalizedProperties);
     this.primaryKeyProperties.put(entityID, primaryKeyProperties);
     this.primaryKeyColumnNames.put(entityID, primaryKeyColumnNames.toArray(new String[primaryKeyColumnNames.size()]));
 

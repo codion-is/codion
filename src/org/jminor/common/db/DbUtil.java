@@ -36,7 +36,7 @@ public class DbUtil {
   public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
   public static final String SQLITE_DRIVER = "org.sqlite.JDBC";
 
-  public static String DB_TYPE = MYSQL;
+  public static String DB_TYPE = ORACLE;
 
   static {
     oracleSqlErrorCodes.put(1, Messages.get(Messages.UNIQUE_KEY_ERROR));
@@ -214,7 +214,7 @@ public class DbUtil {
     if (isOracle())
       return "select " + sequenceName + ".nextval from dual";
 
-    throw new RuntimeException("Sequence support for MySQL has not been implemented");      
+    throw new RuntimeException("Sequence support for MySQL has not been implemented");
   }
 
   public static class PrimaryKey implements Serializable {

@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.db;
 
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
@@ -29,11 +33,6 @@ import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
 
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ import java.util.Set;
 public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   static {
-    DbUtil.DB_TYPE = System.getProperty(FrameworkConstants.DATABASE_TYPE_PROPERTY, DbUtil.MYSQL);
+    DbUtil.DB_TYPE = System.getProperty(FrameworkConstants.DATABASE_TYPE_PROPERTY, DbUtil.ORACLE);
   }
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);

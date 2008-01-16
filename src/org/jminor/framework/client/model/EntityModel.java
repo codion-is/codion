@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
@@ -20,8 +21,6 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
-
-import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
@@ -755,9 +754,9 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Performes a insert, using the entities returned by getEntitiesForInsert()
-   * @throws UserException
-   * @throws UserCancelException
-   * @throws DbException
+   * @throws DbException in case of a database exception
+   * @throws UserException in case of a user exception
+   * @throws UserCancelException in case the user cancels the operation
    * @see #getEntitiesForInsert()
    */
   public final void insert() throws UserException, UserCancelException, DbException {
@@ -790,9 +789,9 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Performes a update, using the entities returned by getEntitiesForUpdate()
-   * @throws UserException
-   * @throws UserCancelException
-   * @throws DbException
+   * @throws DbException in case of a database exception
+   * @throws UserException in case of a user exception
+   * @throws UserCancelException in case the user cancels the operation
    * @see #getEntitiesForUpdate()
    */
   public final void update() throws UserException, UserCancelException, DbException {
@@ -1214,11 +1213,15 @@ public class EntityModel implements IRefreshable {
     final Entity ret = new Entity(getEntityID());
     //correctly represent the gui by setting the values from ComboBoxModels that should not be reset on clearStateData
     for (final Map.Entry<Property, ComboBoxModel> entry : propertyComboBoxModels.entrySet()) {
-      if (!resetComboBoxModelOnClear(entry.getKey())) {
-        if (entry.getValue() instanceof EntityComboBoxModel)
-          ret.setValue(entry.getKey(), ((EntityComboBoxModel)entry.getValue()).getSelectedEntity(), false);
-        else
-          ret.setValue(entry.getKey(), entry.getValue().getSelectedItem(), false);
+      final Property property = entry.getKey();
+      if (!resetComboBoxModelOnClear(property)) {
+        final ComboBoxModel boxModel = entry.getValue();
+        Object value = boxModel.getSelectedItem();
+        if (boxModel instanceof EntityComboBoxModel && ((EntityComboBoxModel) boxModel).isNullValueSelected())
+          value = null;
+        final Object currentValue = ret.getValue(property);
+        if (!EntityUtil.equal(property.propertyType, value, currentValue))
+          ret.setValue(property, value, false);
       }
     }
 

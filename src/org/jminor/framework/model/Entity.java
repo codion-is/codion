@@ -525,7 +525,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
             (initialization || !EntityUtil.equal(property.propertyType, newValue, oldValue)))
       firePropertyChangeEvent(property, newValue, oldValue, initialization);
 
-    if (property instanceof Property.EntityProperty && !initialization) {
+    if (property instanceof Property.EntityProperty) {// && !initialization) {
       referencedKeys = null;
       setReferenceKeyValues(property, (Entity) newValue);
       if (hasDenormalizedProperties) {
