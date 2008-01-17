@@ -312,4 +312,24 @@
     <zip basedir="${dist}/current" destfile="${dist}/current/jminor-${version}.zip"/>
   </target>
 
+  <target name="deploy_to_wiki" depends="doc, report">
+    <delete dir="${wiki.media.project}"/>
+    <mkdir dir="${wiki.media.project}"/>
+    <copy todir="${wiki.media.project}/src">
+      <fileset dir="${src}" excludes="*CVS*"/>
+    </copy>
+    <copy todir="${wiki.media.project}/src">
+      <fileset dir="${srctest}" excludes="*CVS*"/>
+    </copy>
+    <copy todir="${wiki.media.project}/docs">
+      <fileset dir="${docs}" excludes="*CVS*"/>
+    </copy>
+    <copy todir="${wiki.media.project}/resources">
+      <fileset dir="${resources}" excludes="*CVS*"/>
+    </copy>
+    <copy todir="${wiki.media.project}/test">
+      <fileset dir="${test}" />
+    </copy>
+  </target>
+
 </project>

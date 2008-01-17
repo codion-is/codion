@@ -6,7 +6,7 @@
   <property file="build.properties"/>
 
   <fileset id="libs" dir="${lib}" />
-  
+
   <fileset id="resources" dir="${src}" includes="**/*.jpg,**/*.gif,**/*.png,**/*.properties,**/*.jasper" />
 
   <target name="clean">
@@ -37,6 +37,7 @@
     <mkdir dir="${lib}" />
     <copy file="${ilibdir}/${lib.jminor}" todir="${lib}" />
     <copy file="${elibdir}/${lib.jcalendar}" todir="${lib}" />
+    <copy file="${elibdir}/${lib.jdbc}" todir="${lib}" />
     <copy file="${elibdir}/${lib.log4j}" todir="${lib}" />
     <copy file="${elibdir}/${lib.jasperreports.base}" todir="${lib}" />
   </target>
