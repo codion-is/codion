@@ -28,3 +28,5 @@
   Navigation is now CTR based with resizing enabled by adding SHIFT
   Added action listener to toolbar update button, showing the update popup menu (wrong position though)
   EntityPanel.prepareUI() now transfers focus to the table (not 100%, header seems to get focus) if the edit panel is hidden
+  Added jminor-srctest.jar to dist
+  We now throw intelligible exceptions on initialization if required system properties are not found

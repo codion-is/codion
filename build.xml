@@ -159,6 +159,7 @@
          includes="org/jminor/framework/demos/**"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-src.jar" basedir="${src}" />
+    <jar jarfile="${dist}/${version}/${ant.project.name}-srctest.jar" basedir="${srctest}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}-api-doc.jar" basedir="${docsapi}" />
 
     <copy file="${basedir}/changelog.txt" todir="${dist}/${version}" />

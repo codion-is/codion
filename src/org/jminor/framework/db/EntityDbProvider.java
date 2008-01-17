@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
@@ -10,8 +11,6 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.Entity;
-
-import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +35,10 @@ public class EntityDbProvider implements IEntityDbProvider {
 
   public EntityDbProvider(final User user) {
     this.user = user;
-    user.setProperty(FrameworkConstants.DATABASE_SID_PROPERTY, System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY));
+    final String sid = System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY);
+    if (sid == null || sid.length() == 0)
+      throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_SID_PROPERTY);
+    user.setProperty(FrameworkConstants.DATABASE_SID_PROPERTY, sid);
   }
 
   public synchronized final IEntityDb getEntityDb() throws UserException {

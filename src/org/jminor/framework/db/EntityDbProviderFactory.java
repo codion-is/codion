@@ -6,6 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.db.User;
 import org.jminor.framework.FrameworkConstants;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 /**
@@ -44,6 +45,11 @@ public class EntityDbProviderFactory {
         return (IEntityDbProvider) Class.forName("org.jminor.framework.db.EntityDbProvider").getConstructor(User.class).newInstance(user);
     }
     catch (Exception e) {
+      if (e instanceof RuntimeException)
+        throw (RuntimeException) e;
+      else if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof RuntimeException)
+        throw (RuntimeException) ((InvocationTargetException) e).getTargetException();
+
       throw new RuntimeException("Exception while initializing db provider", e);
     }
   }

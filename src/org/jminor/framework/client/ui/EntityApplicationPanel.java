@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
@@ -24,8 +25,6 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.i18n.FrameworkMessages;
-
-import org.apache.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -197,7 +196,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   /**
    * @return Value for property 'settingsControlSet'.
-   * @throws org.jminor.common.model.UserException in case of an exception
    */
   public ControlSet getSettingsControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
@@ -644,6 +642,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       final Throwable target = te.getTargetException();
       if (target instanceof UserException)
         throw (UserException) target;
+      else if (target instanceof RuntimeException)
+        throw (RuntimeException) target;
       else if (target instanceof Exception)
         throw new UserException(target);
 

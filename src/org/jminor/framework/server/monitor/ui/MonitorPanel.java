@@ -249,10 +249,17 @@ public class MonitorPanel extends JPanel {
     try {
       db = new DbConnection(user) {
         protected String getDatabaseURL() {
-          return DbUtil.getDatabaseURL(
-            System.getProperty(FrameworkConstants.DATABASE_HOST_PROPERTY),
-            System.getProperty(FrameworkConstants.DATABASE_PORT_PROPERTY),
-            System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY));
+          final String host = System.getProperty(FrameworkConstants.DATABASE_HOST_PROPERTY);
+          if (host == null || host.length() == 0)
+            throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_HOST_PROPERTY);
+          final String port = System.getProperty(FrameworkConstants.DATABASE_PORT_PROPERTY);
+          if (port == null || port.length() == 0)
+            throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_PORT_PROPERTY);
+          final String sid = System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY);
+          if (sid == null || sid.length() == 0)
+            throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_SID_PROPERTY);
+
+          return DbUtil.getDatabaseURL(host, port,sid);
         }
       };
       System.out.println(user + " is authenticated");

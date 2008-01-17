@@ -3,6 +3,11 @@
  */
 package org.jminor.framework.client.ui;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JRViewer;
+import org.apache.log4j.Logger;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.State;
@@ -24,12 +29,6 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
-import org.apache.log4j.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -446,7 +445,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       return true;
 
     //is editDialog parent?
-    return SwingUtilities.getWindowAncestor(component) == editDialog;
+    return editDialog != null && SwingUtilities.getWindowAncestor(component) == editDialog;
   }
 
   /** {@inheritDoc} */
