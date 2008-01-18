@@ -229,30 +229,6 @@ public class EntityModel implements IRefreshable {
    * @throws org.jminor.common.model.UserException in case of an exception
    */
   public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
-                     final Class<Entity> entityID) throws UserException {
-    this(modelCaption, dbProvider, entityID, true);
-  }
-
-  /**
-   * Initiates a new EntityModel
-   * @param modelCaption a caption describing this EntityModel
-   * @param dbProvider a IEntityDbProvider
-   * @param entityID the ID of the Entity this EntityModel represents
-   * @param includeTableModel true if this EntityModel should include a table model
-   * @throws org.jminor.common.model.UserException in case of an exception
-   */
-  public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
-                     final Class<Entity> entityID, final boolean includeTableModel) throws UserException {
-    this(modelCaption, dbProvider,  entityID.getName(), includeTableModel);
-  }
-  /**
-   * Initiates a new EntityModel
-   * @param modelCaption a caption describing this EntityModel
-   * @param dbProvider a IEntityDbProvider
-   * @param entityID the ID of the Entity this EntityModel represents
-   * @throws org.jminor.common.model.UserException in case of an exception
-   */
-  public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
                      final String entityID) throws UserException {
     this(modelCaption, dbProvider, entityID, true);
   }

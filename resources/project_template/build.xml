@@ -35,7 +35,7 @@
   <target name="prep_libraries" depends="init" >
     <delete dir="${lib}" />
     <mkdir dir="${lib}" />
-    <copy file="${ilibdir}/${lib.jminor}" todir="${lib}" />
+    <copy file="${elibdir}/${lib.jminor}" todir="${lib}" />
     <copy file="${elibdir}/${lib.jcalendar}" todir="${lib}" />
     <copy file="${elibdir}/${lib.jdbc}" todir="${lib}" />
     <copy file="${elibdir}/${lib.log4j}" todir="${lib}" />
