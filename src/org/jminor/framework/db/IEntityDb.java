@@ -3,14 +3,13 @@
  */
 package org.jminor.framework.db;
 
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
-
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 import java.util.HashMap;
 import java.util.List;
@@ -191,7 +190,6 @@ public interface IEntityDb{
    * @return the entities according to the given criteria
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
    * @throws org.jminor.common.db.DbException if an exception occurs
-   * @throws org.jminor.common.db.RecordNotFoundException if the entity was not found
    * @throws Exception
    */
   public Entity selectSingle(final EntityCriteria criteria) throws Exception;
