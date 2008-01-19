@@ -39,7 +39,7 @@ public class EntityDbProviderFactory {
                                                          final String clientTypeID) {
     try {
       if (System.getProperty(FrameworkConstants.CLIENT_CONNECTION_TYPE,
-              FrameworkConstants.CONNECTION_TYPE_LOCAL).equals(FrameworkConstants.CONNECTION_TYPE_REMOTE))
+              FrameworkConstants.CONNECTION_TYPE_REMOTE).equals(FrameworkConstants.CONNECTION_TYPE_REMOTE))
         return (IEntityDbProvider) Class.forName("org.jminor.framework.server.EntityDbRemoteProvider").getConstructor(User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
       else
         return (IEntityDbProvider) Class.forName("org.jminor.framework.db.EntityDbProvider").getConstructor(User.class).newInstance(user);

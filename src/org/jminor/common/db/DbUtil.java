@@ -23,26 +23,20 @@ import java.util.Map;
  */
 public class DbUtil {
 
-  public static final int INVALID_IDENTIFIER_ERR_CODE = 904;
-  public static final int NULL_VALUE_ERR_CODE = 1400;
-  public static final int INTEGRITY_CONSTRAINT_ERR_CODE = 2291;
-  public static final int CHILD_RECORD_ERR_CODE = 2292;
+  public static final int ORA_INVALID_IDENTIFIER_ERR_CODE = 904;
+  public static final int ORA_NULL_VALUE_ERR_CODE = 1400;
+  public static final int ORA_INTEGRITY_CONSTRAINT_ERR_CODE = 2291;
+  public static final int ORA_CHILD_RECORD_ERR_CODE = 2292;
 
   public static final HashMap<Integer, String> oracleSqlErrorCodes = new HashMap<Integer, String>();
-  public static final String ORACLE = "oracle";
-  public static final String MYSQL = "mysql";
 
-  public static final String ORACLE_DRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
-  public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-  public static final String SQLITE_DRIVER = "org.sqlite.JDBC";
-
-  public static String DB_TYPE = ORACLE;
+  public static String DB_TYPE = System.getProperty(Constants.DATABASE_TYPE_PROPERTY, Constants.DATABASE_TYPE_ORACLE);
 
   static {
     oracleSqlErrorCodes.put(1, Messages.get(Messages.UNIQUE_KEY_ERROR));
-    oracleSqlErrorCodes.put(CHILD_RECORD_ERR_CODE, Messages.get(Messages.CHILD_RECORD_ERROR));
-    oracleSqlErrorCodes.put(NULL_VALUE_ERR_CODE, Messages.get(Messages.NULL_VALUE_ERROR));
-    oracleSqlErrorCodes.put(INTEGRITY_CONSTRAINT_ERR_CODE, Messages.get(Messages.INTEGRITY_CONSTRAINT_ERROR));
+    oracleSqlErrorCodes.put(ORA_CHILD_RECORD_ERR_CODE, Messages.get(Messages.CHILD_RECORD_ERROR));
+    oracleSqlErrorCodes.put(ORA_NULL_VALUE_ERR_CODE, Messages.get(Messages.NULL_VALUE_ERROR));
+    oracleSqlErrorCodes.put(ORA_INTEGRITY_CONSTRAINT_ERR_CODE, Messages.get(Messages.INTEGRITY_CONSTRAINT_ERROR));
     oracleSqlErrorCodes.put(2290, Messages.get(Messages.CHECK_CONSTRAINT_ERROR));
     oracleSqlErrorCodes.put(1407, Messages.get(Messages.NULL_VALUE_ERROR));
     oracleSqlErrorCodes.put(1031, Messages.get(Messages.MISSING_PRIVILEGES_ERROR));
@@ -157,23 +151,32 @@ public class DbUtil {
   }
 
   public static boolean isMySQL() {
-    return DB_TYPE.equals(MYSQL);
+    return DB_TYPE.equals(Constants.DATABASE_TYPE_MYSQL);
   }
 
   public static boolean isOracle() {
-    return DB_TYPE.equals(ORACLE);
+    return DB_TYPE.equals(Constants.DATABASE_TYPE_ORACLE);
   }
 
   public static String getDatabaseDriver() {
     if (isOracle())
-      return ORACLE_DRIVER_CLASS;
+      return Constants.ORACLE_DRIVER_CLASS;
     if (isMySQL())
-      return MYSQL_DRIVER;
+      return Constants.MYSQL_DRIVER;
     else
       throw new RuntimeException("Unsopported database type: " + DB_TYPE);
   }
 
-  public static String getDatabaseURL(final String host, final String port, final String sid) {
+  public static String getDatabaseURL() {    
+    final String host = System.getProperty(Constants.DATABASE_HOST_PROPERTY);
+    if (host == null || host.length() == 0)
+      throw new RuntimeException("Required property value not found: " + Constants.DATABASE_HOST_PROPERTY);
+    final String port = System.getProperty(Constants.DATABASE_PORT_PROPERTY);
+    if (port == null || port.length() == 0)
+      throw new RuntimeException("Required property value not found: " + Constants.DATABASE_PORT_PROPERTY);
+    final String sid = System.getProperty(Constants.DATABASE_SID_PROPERTY);
+    if (sid == null || sid.length() == 0)
+      throw new RuntimeException("Required property value not found: " + Constants.DATABASE_SID_PROPERTY);
    if (isOracle())
       return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
     else if (isMySQL())

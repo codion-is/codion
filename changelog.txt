@@ -31,3 +31,6 @@
   Added jminor-srctest.jar to dist
   We now throw intelligible exceptions on initialization if required system properties are not found
   EntityComboBoxModels are now provided automatically by the EntityModel if none has already been provided, changed demos to reflect this
+  Moved all db connection type/host/sid/port property constants from FrameworkConstants to Constants
+  Cleaned up DbUtil.getDatabaseUrl()
+  Renamed a few constants in DbUtil

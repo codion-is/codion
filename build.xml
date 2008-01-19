@@ -121,7 +121,9 @@
                 org/jminor/framework/server/EntityDbRemoteProvider*,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
-                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
+                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
+                org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
+                org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
@@ -135,7 +137,9 @@
                 org/jminor/framework/server/EntityDbRemoteProvider*,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
-                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
+                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
+                org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
+                org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-server.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
@@ -153,7 +157,9 @@
                 org/jminor/framework/server/monitor/**,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
-                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class"/>
+                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
+                org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
+                org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-demos.jar" basedir="${build.test}"
          includes="org/jminor/framework/demos/**"/>

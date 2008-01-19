@@ -119,7 +119,7 @@ public abstract class DbConnection {
 
     Class.forName(DbUtil.getDatabaseDriver());
     try {
-      connection = DriverManager.getConnection(getDatabaseURL(), connectionInfo);
+      connection = DriverManager.getConnection(DbUtil.getDatabaseURL(), connectionInfo);
       connection.setAutoCommit(false);
       checkConnectionStatement = connection.createStatement();
       connected = true;
@@ -424,8 +424,6 @@ public abstract class DbConnection {
   protected Connection getConnection() {
     return connection;
   }
-
-  protected abstract String getDatabaseURL();
 
   private boolean checkConnection() throws Exception {
     if (connection != null) {

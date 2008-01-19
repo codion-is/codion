@@ -107,7 +107,7 @@ public class DbException extends Exception  {
    * @return Value for property 'insertNullValueException'.
    */
   public boolean isInsertNullValueException() {
-    return getORAErrorCode() == DbUtil.NULL_VALUE_ERR_CODE;
+    return getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE;
   }
 
   /**
@@ -121,7 +121,7 @@ public class DbException extends Exception  {
    * @return the name of the column which triggered the "cannot insert NULL into" exception
    */
   public String getNullErrorColumnName() {
-    if (getORAErrorCode() == DbUtil.NULL_VALUE_ERR_CODE) {
+    if (getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE) {
       final String errorMsg = getCause().getMessage();
 
       return errorMsg.substring(errorMsg.lastIndexOf('.')+2, errorMsg.lastIndexOf(')')-1);

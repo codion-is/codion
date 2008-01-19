@@ -296,12 +296,16 @@ public class EntityRepository implements Serializable {
     return idSource;
   }
 
+  /**
+   * @param initializedEntities
+   * @return true if any one of the entities is already initialzed, hmm?
+   */
   public boolean contains(final Collection<String> initializedEntities) {
     for (final String entityID : initializedEntities)
-      if (!readOnly.containsKey(entityID))
-        return false;
+      if (readOnly.containsKey(entityID))
+        return true;
 
-    return true;
+    return false;
   }
 
   public void initialize(final String entityID, final String orderByColumns,

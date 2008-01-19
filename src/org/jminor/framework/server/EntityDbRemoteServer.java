@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.Constants;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.DbUtil;
@@ -75,9 +76,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private EntityDbRemoteServer() throws RemoteException {
     super(SERVER_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    final String host = System.getProperty(FrameworkConstants.DATABASE_HOST_PROPERTY);
-    final String port = System.getProperty(FrameworkConstants.DATABASE_PORT_PROPERTY);
-    final String sid = System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY);
+    final String host = System.getProperty(Constants.DATABASE_HOST_PROPERTY);
+    final String port = System.getProperty(Constants.DATABASE_PORT_PROPERTY);
+    final String sid = System.getProperty(Constants.DATABASE_SID_PROPERTY);
     if (host == null || host.length() == 0)
       throw new IllegalArgumentException("Db host must be specified!");
     if (sid == null || sid.length() == 0)
@@ -88,7 +89,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     serverName = FrameworkConstants.JMINOR_SERVER_NAME_PREFIX + " " + Util.getVersion()
             + " @ " + sid.toUpperCase()
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
-    dbConnectionProperties.put(FrameworkConstants.DATABASE_SID_PROPERTY, sid);
+    dbConnectionProperties.put(Constants.DATABASE_SID_PROPERTY, sid);
     startConnectionCheckTimer();
   }
 
@@ -119,10 +120,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public String getDatabaseURL() {
-    return DbUtil.getDatabaseURL(
-            System.getProperty(FrameworkConstants.DATABASE_HOST_PROPERTY),
-            System.getProperty(FrameworkConstants.DATABASE_PORT_PROPERTY),
-            System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY));
+    return DbUtil.getDatabaseURL();
   }
 
   /** {@inheritDoc} */

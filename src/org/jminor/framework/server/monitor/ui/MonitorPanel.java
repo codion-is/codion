@@ -4,7 +4,6 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.DbUtil;
 import org.jminor.common.db.User;
 import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.Event;
@@ -248,19 +247,6 @@ public class MonitorPanel extends JPanel {
     DbConnection db = null;
     try {
       db = new DbConnection(user) {
-        protected String getDatabaseURL() {
-          final String host = System.getProperty(FrameworkConstants.DATABASE_HOST_PROPERTY);
-          if (host == null || host.length() == 0)
-            throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_HOST_PROPERTY);
-          final String port = System.getProperty(FrameworkConstants.DATABASE_PORT_PROPERTY);
-          if (port == null || port.length() == 0)
-            throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_PORT_PROPERTY);
-          final String sid = System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY);
-          if (sid == null || sid.length() == 0)
-            throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_SID_PROPERTY);
-
-          return DbUtil.getDatabaseURL(host, port,sid);
-        }
       };
       System.out.println(user + " is authenticated");
     }

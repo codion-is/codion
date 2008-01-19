@@ -15,7 +15,6 @@ import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
@@ -49,10 +48,6 @@ import java.util.Set;
  * Implements the database layer accessible to the client
  */
 public class EntityDbConnection extends DbConnection implements IEntityDb {
-
-  static {
-    DbUtil.DB_TYPE = System.getProperty(FrameworkConstants.DATABASE_TYPE_PROPERTY, DbUtil.ORACLE);
-  }
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
   private static final Map<String, EntityDependencies> entityDependencies = new HashMap<String, EntityDependencies>();
@@ -443,21 +438,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
       throw new DbException(e, statement);
     }
-  }
-
-  /** {@inheritDoc} */
-  protected String getDatabaseURL() {
-    final String host = System.getProperty(FrameworkConstants.DATABASE_HOST_PROPERTY);
-    if (host == null || host.length() == 0)
-      throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_HOST_PROPERTY);
-    final String port = System.getProperty(FrameworkConstants.DATABASE_PORT_PROPERTY);
-    if (port == null || port.length() == 0)
-      throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_PORT_PROPERTY);
-    final String sid = System.getProperty(FrameworkConstants.DATABASE_SID_PROPERTY);
-    if (sid == null || sid.length() == 0)
-      throw new RuntimeException("Required property value not found: " + FrameworkConstants.DATABASE_SID_PROPERTY);
-
-    return DbUtil.getDatabaseURL(host, port,sid);
   }
 
   void initialize(final EntityRepository repository, final FrameworkSettings settings) {
