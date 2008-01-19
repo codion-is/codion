@@ -923,13 +923,13 @@ public class FrameworkUiUtil {
     return box;
   }
 
-  public static EntityComboBox createEntityComboBox(final Property property, final EntityModel entityModel,
+  public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final EntityPanelInfo appInfo,
                                                     final boolean newButtonFocusable) {
     return createEntityComboBox(property, entityModel, appInfo, newButtonFocusable, null);
   }
 
-  public static EntityComboBox createEntityComboBox(final Property property, final EntityModel entityModel,
+  public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final EntityPanelInfo appInfo,
                                                     final boolean newButtonFocusable, final State enabledState) {
     final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);

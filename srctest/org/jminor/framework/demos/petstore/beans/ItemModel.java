@@ -6,16 +6,10 @@ package org.jminor.framework.demos.petstore.beans;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.demos.petstore.beans.combo.AddressComboBoxModel;
-import org.jminor.framework.demos.petstore.beans.combo.ContactInfoComboBoxModel;
-import org.jminor.framework.demos.petstore.beans.combo.ProductComboBoxModel;
 import org.jminor.framework.demos.petstore.model.Petstore;
-import org.jminor.framework.model.Property;
 
-import javax.swing.ComboBoxModel;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: Björn Darri
@@ -32,13 +26,5 @@ public class ItemModel extends EntityModel {
   /** {@inheritDoc} */
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
     return Arrays.asList(new TagItemModel(getDbConnectionProvider()));
-  }
-
-  /** {@inheritDoc} */
-  protected Map<Property, ComboBoxModel> initializeEntityComboBoxModels() {
-    return super.initializeEntityComboBoxModels(
-            new ProductComboBoxModel(getDbConnectionProvider()),
-            new ContactInfoComboBoxModel(getDbConnectionProvider()),
-            new AddressComboBoxModel(getDbConnectionProvider()));
   }
 }

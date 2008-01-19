@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
@@ -21,6 +20,8 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
@@ -427,12 +428,7 @@ public class EntityModel implements IRefreshable {
    * the EntityComboBoxModel must have been initialized in <code>initializeEntityComboBoxModels</code>
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyName) {
-    final EntityComboBoxModel ret = getEntityComboBoxModel(Entity.repository.getProperty(getEntityID(), propertyName));
-    if (ret == null)
-      throw new RuntimeException("No EntityComboBoxModel found for property " + propertyName +
-              " in model " + this);
-
-    return ret;
+    return getEntityComboBoxModel((Property.EntityProperty) Entity.repository.getProperty(getEntityID(), propertyName));
   }
 
   /**
@@ -440,8 +436,13 @@ public class EntityModel implements IRefreshable {
    * @return the EntityComboBoxModel for the <code>property</code>,
    * the EntityComboBoxModel must have been initialized in <code>initializeEntityComboBoxModels</code>
    */
-  public EntityComboBoxModel getEntityComboBoxModel(final Property property) {
-    return (EntityComboBoxModel) getComboBoxModel(property);
+  public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
+    ComboBoxModel ret = getComboBoxModel(property);
+    if (ret == null)
+      propertyComboBoxModels.put(property,
+              ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID));
+
+    return (EntityComboBoxModel) ret;
   }
 
   /**

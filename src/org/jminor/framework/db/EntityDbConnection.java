@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
@@ -32,6 +28,11 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
+
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -614,16 +615,14 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private Collection<Entity> getCachedEntities(final String entityID, final List<EntityKey> primaryKeyList) {
     final int keyCount = primaryKeyList.size();
     final Collection<Entity> ret = new ArrayList<Entity>(keyCount);
-    final ListIterator<EntityKey> iterator = primaryKeyList.listIterator();
+    final ListIterator<EntityKey> keyIterator = primaryKeyList.listIterator();
     final Map<EntityKey, Entity> cache = entityCache.get(entityID);
-    int cachedCnt = 0;
-    if (cache != null && cache.size() > 0 && cachedCnt < cache.size()) {
-      while (iterator.hasNext()) {
-        final Entity cachedEntity = cache.get(iterator.next());
+    if (cache != null && cache.size() > 0) {
+      while (keyIterator.hasNext()) {
+        final Entity cachedEntity = cache.get(keyIterator.next());
         if (cachedEntity != null) {
           ret.add(cachedEntity);
-          iterator.remove();
-          cachedCnt++;
+          keyIterator.remove();
         }
       }
     }

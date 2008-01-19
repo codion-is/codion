@@ -7,7 +7,6 @@ import org.jminor.common.model.IFilterCriteria;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.demos.empdept.beans.combo.DepartmentComboBoxModel;
 import org.jminor.framework.demos.empdept.beans.combo.ManagerComboBoxModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
@@ -37,8 +36,6 @@ public class EmployeeModel extends EntityModel {
     final HashMap<Property, ComboBoxModel> ret = new HashMap<Property, ComboBoxModel>();
     ret.put(Entity.repository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_MGR_REF),
             new ManagerComboBoxModel(getDbConnectionProvider()));
-    ret.put(Entity.repository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_REF),
-            new DepartmentComboBoxModel(getDbConnectionProvider()));
 
     return ret;
   }
@@ -67,6 +64,7 @@ public class EmployeeModel extends EntityModel {
         }
       }
     });
+    //todo does not work for first time selection
     getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_REF).addListener(new PropertyListener() {
       protected void propertyChanged(final PropertyChangeEvent e) {
         if (!e.isInitialization()) {

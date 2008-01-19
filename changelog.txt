@@ -30,3 +30,4 @@
   EntityPanel.prepareUI() now transfers focus to the table (not 100%, header seems to get focus) if the edit panel is hidden
   Added jminor-srctest.jar to dist
   We now throw intelligible exceptions on initialization if required system properties are not found
+  EntityComboBoxModels are now provided automatically by the EntityModel if none has already been provided, changed demos to reflect this

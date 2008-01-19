@@ -72,23 +72,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   private transient Map<String, EntityKey> referencedKeys;
 
-//  experimental
-//  private boolean fromCache = false;
-//  private long cachedTime = -1;
-//
-//  public boolean isFromCache() {
-//    return fromCache;
-//  }
-//
-//  public long getCachedTime() {
-//    return cachedTime;
-//  }
-//
-//  public void setCachedTime(final long cacheTime) {
-//    this.fromCache = true;
-//    this.cachedTime = cacheTime;
-//  }
-
   /** Not for general usage, required for serialization */
   public Entity() {}
 
