@@ -184,17 +184,18 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
     final boolean initialization =
             !(primarKeyProperty ? primaryKey.keyValues : propertyValues).containsKey(property.propertyID);
-    doSetValue(property, value, primarKeyProperty, initialization);
+    doSetValue(property, value, primarKeyProperty, initialization, true);
   }
 
   /**
    * Initializing a value has the same effect as using <code>setValue()</code> except for Property.EntityProperty's
    * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set
+   * Use with care.
    * @param property the property to initialize
    * @param value the initial value
    */
   public void initializeValue(final Property property, final Object value) {
-    doSetValue(property, value, property instanceof Property.PrimaryKeyProperty, true);
+    doSetValue(property, value, property instanceof Property.PrimaryKeyProperty, true, false);
   }
 
   public Object getValue(final Property property) {
@@ -488,9 +489,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param newValue the new value
    * @param primaryKeyProperty true if the property is part of the primary key
    * @param initialization true if the property value is being initialized
+   * @param propagateReferenceValues if set to true then both reference key values and
+   * denormalized values are set in case <code>property</code> is a Property.EntityProperty.
    */
   private void doSetValue(final Property property, final Object newValue,
-                          final boolean primaryKeyProperty, final boolean initialization) {
+                          final boolean primaryKeyProperty, final boolean initialization,
+                          boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
 
@@ -508,7 +512,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
             (initialization || !EntityUtil.equal(property.propertyType, newValue, oldValue)))
       firePropertyChangeEvent(property, newValue, oldValue, initialization);
 
-    if (property instanceof Property.EntityProperty) {// && !initialization) {
+    if (propagateReferenceValues && property instanceof Property.EntityProperty) {
       referencedKeys = null;
       setReferenceKeyValues(property, (Entity) newValue);
       if (hasDenormalizedProperties) {
@@ -536,7 +540,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = !(isPrimaryKeyProperty ? primaryKey.keyValues : propertyValues).containsKey(referenceProperty.propertyID);
         doSetValue(referenceProperty, entity != null ? entity.getRawValue(primaryKeyProperty.propertyID) : null,
-                isPrimaryKeyProperty, initialization);
+                isPrimaryKeyProperty, initialization, true);
       }
     }
   }
@@ -554,7 +558,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
         final boolean initialization = !propertyValues.containsKey(property.propertyID);
         doSetValue(denormalizedProperty,
                 entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedPropertyName),
-                false, initialization);
+                false, initialization, true);
       }
     }
   }

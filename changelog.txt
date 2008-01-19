@@ -34,3 +34,5 @@
   Moved all db connection type/host/sid/port property constants from FrameworkConstants to Constants
   Cleaned up DbUtil.getDatabaseUrl()
   Renamed a few constants in DbUtil
+  Added boolean parameter propagateReferenceValues to Entity.doSetValue, selectMany->initializeValue from 7.1% to 0.4%
+  
