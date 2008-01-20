@@ -92,4 +92,14 @@ public class FrameworkConstants {
    * The JMinor server name prefix
    */
   public static final String JMINOR_SERVER_NAME_PREFIX = "JMinor EntityDb Server";
+
+  /**
+   * The class providing remote db connections
+   */
+  public static final String REMOTE_CONNECTION_PROVIDER = "org.jminor.framework.server.EntityDbRemoteProvider";
+
+  /**
+   * The class providing local db connections
+   */
+  public static final String LOCAL_CONNECTION_PROVIDER = "org.jminor.framework.db.EntityDbProvider";
 }

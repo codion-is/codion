@@ -190,11 +190,6 @@ public class EntityModel implements IRefreshable {
   private boolean isRefreshing = false;
 
   /**
-   * Holds events signaling initializations made to the active entity via the model
-   */
-  private final Map<Property, Event> propertyInitializedEventMap = new HashMap<Property, Event>();
-
-  /**
    * Holds events signaling changes made to the active entity via the ui
    */
   private final Map<Property, Event> uiChangeEventMap = new HashMap<Property, Event>();
@@ -208,11 +203,6 @@ public class EntityModel implements IRefreshable {
    * Holds events signaling changes made to the active entity, via the model or ui
    */
   private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
-
-  /**
-   * Holds property names ordered for a bug free change notification
-   */
-  private final List<String> propertyNotificationOrder;
 
   /**
    * Keeps the history of updated entities
@@ -252,7 +242,7 @@ public class EntityModel implements IRefreshable {
     this.tableModel = includeTableModel ? initializeTableModel() : null;
     this.activeEntity = getDefaultValue();
     this.detailModels = initializeDetailModels();
-    this.propertyNotificationOrder = getPropertyNotificationOrder(Entity.repository.getProperties(entityID).values());
+//    this.propertyNotificationOrder = getPropertyNotificationOrder(Entity.repository.getProperties(entityID).values());
     this.activeEntity.setFirePropertyChangeEvents(true);
     initializeAssociatedModels();
     bindEvents();
@@ -535,28 +525,6 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @param propertyName the name of the property for which to retrieve the event
-   * @return an Event object which fires when the value of property <code>propertyName</code> is initialized by the model
-   */
-  public Event getPropertyInitializedEvent(final String propertyName) {
-    return getPropertyInitializedEvent(Entity.repository.getProperty(getEntityID(), propertyName));
-  }
-
-  /**
-   * @param property the property for which to retrieve the event
-   * @return an Event object which fires when the value of <code>property</code> is initialized by the model
-   */
-  public Event getPropertyInitializedEvent(final Property property) {
-    if (propertyInitializedEventMap.containsKey(property))
-      return propertyInitializedEventMap.get(property);
-
-    final Event ret = new Event("EntityModel.propertyInitializedEvent " + property);
-    propertyInitializedEventMap.put(property, ret);
-
-    return ret;
-  }
-
-  /**
-   * @param propertyName the name of the property for which to retrieve the event
    * @return an Event object which fires when the value of property <code>propertyName</code> is changed by the UI
    */
   public Event getPropertyUIChangeEvent(final String propertyName) {
@@ -648,8 +616,6 @@ public class EntityModel implements IRefreshable {
     activeEntity.setAs(entity == null ? getDefaultValue() : entity);
 
     stEntityActive.setActive(!activeEntity.isNull());
-
-    notifyPropertiesInitialized();
 
     evtActiveEntityChanged.fire();
   }
@@ -1178,7 +1144,7 @@ public class EntityModel implements IRefreshable {
     if (!Util.equal(newValue, oldValue)) {
       stEntityActive.setActive(!activeEntity.isNull());
       if (notify)
-        notifyPropertyChanged(property, newValue, oldValue, isModelChange, false);
+        notifyPropertyChanged(property, newValue, oldValue, isModelChange);
     }
   }
 
@@ -1412,27 +1378,15 @@ public class EntityModel implements IRefreshable {
     }
   }
 
-  private void notifyPropertiesInitialized() {
-    for (final String propertyName : propertyNotificationOrder) {
-      final Property property = Entity.repository.getProperty(getEntityID(), propertyName);
-      if (!(property instanceof Property.DenormalizedViewProperty)) {
-        final Object value = activeEntity.getValue(propertyName);
-        notifyPropertyChanged(property, value, value, true, true);
-      }
-    }
-  }
-
   private void notifyPropertyChanged(final Property property, final Object newValue, final Object oldValue,
-                                     final boolean isModelChange, final boolean isInitialization) {
+                                     final boolean isModelChange) {
     if (FrameworkSettings.get().propertyDebug) {
-      final String msg = getPropertyChangeDebugString(property, oldValue, newValue, isModelChange, isInitialization);
+      final String msg = getPropertyChangeDebugString(property, oldValue, newValue, isModelChange);
       System.out.println(msg);
       log.trace(msg);
     }
     final PropertyChangeEvent propEvent = new PropertyChangeEvent(property, newValue, oldValue,
-            isModelChange, isInitialization);
-    if (isInitialization)
-      getPropertyInitializedEvent(property).fire(propEvent);
+            isModelChange, false);
     if (isModelChange)
       getPropertyModelChangeEvent(property).fire(propEvent);
     else
@@ -1440,22 +1394,15 @@ public class EntityModel implements IRefreshable {
   }
 
   private String getPropertyChangeDebugString(final Property property, final Object oldValue,
-                                              final Object newValue, final boolean isModelChange,
-                                              final boolean isInitialization) {
+                                              final Object newValue, final boolean isModelChange) {
     final String simpleClassName = getClass().getSimpleName();
     final StringBuffer ret = new StringBuffer().append(simpleClassName.length() > 0 ? (simpleClassName + " ") : "");
-    if (isInitialization)
-      ret.append("INIT ");
-    else
-      ret.append(isModelChange ? "MODEL SET" : "UI SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
+    ret.append(isModelChange ? "MODEL SET" : "UI SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
     ret.append(getEntityID()).append(" -> ").append(property).append("; ");
-    if (!isInitialization) {
-      if (oldValue != null)
-        ret.append(oldValue.getClass().getSimpleName()).append(" ");
-      ret.append(EntityUtil.getValueString(property, oldValue));
-    }
-    if (!isInitialization)
-      ret.append(" : ");
+    if (oldValue != null)
+      ret.append(oldValue.getClass().getSimpleName()).append(" ");
+    ret.append(EntityUtil.getValueString(property, oldValue));
+    ret.append(" : ");
     if (newValue != null)
       ret.append(newValue.getClass().getSimpleName()).append(" ");
     ret.append(EntityUtil.getValueString(property, newValue));

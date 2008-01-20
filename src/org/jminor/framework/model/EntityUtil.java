@@ -46,14 +46,14 @@ public class EntityUtil {
 
     switch (propertyType) {
       case INT :
-        return (Integer) value == Constants.INT_NULL_VALUE;
+        return value.equals(Constants.INTEGER_NULL_VALUE);
       case DOUBLE :
-        return (Double) value == Constants.DOUBLE_NULL_VALUE;
+        return value.equals(Constants.DOUBLE_NULL_VALUE);
       case CHAR :
         if (value instanceof String)
           return ((String)value).length() == 0 || ((String)value).charAt(0) == Constants.CHAR_NULL_VALUE;
         else if (value instanceof Character)
-          return (Character) value == Constants.CHAR_NULL_VALUE;
+          return value.equals(Constants.CHAR_NULL_VALUE);
       case BOOLEAN :
         return value == Type.Boolean.NULL;
       case SHORT_DATE :
@@ -131,14 +131,14 @@ public class EntityUtil {
     return ret.toString();
   }
 
-  public static String getPropertyChangeDebugString(final String entityID,
-                                                    final Property property, final Object oldValue,
-                                                    final Object newValue, final boolean isInitialization) {
+  public static String getPropertyChangeDebugString(final String entityID, final Property property,
+                                                    final Object oldValue, final Object newValue,
+                                                    final boolean isInitialization) {
     final StringBuffer ret = new StringBuffer();
     if (isInitialization)
       ret.append("INIT ");
     else
-      ret.append("ENTITY SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
+      ret.append("SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
     ret.append(entityID).append(" -> ").append(property).append("; ");
     if (!isInitialization) {
       if (oldValue != null)

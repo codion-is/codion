@@ -20,8 +20,7 @@ public class TestEntity extends TestCase {
 
   public static Entity getTestMasterEntity(final int id, final int intValue, final double doubleValue,
                                            final String stringValue, final Date shortDateValue, final Date longDateValue,
-                                           final Type.Boolean booleanValue, final Entity entityValue,
-                                           final int entityValueId) {
+                                           final Type.Boolean booleanValue, final Entity entityValue) {
     final Entity ret = new Entity(ModelTestDomain.T_TEST_MASTER_ENTITY);
     ret.setValue(ModelTestDomain.ID_PROP, id);
     ret.setValue(ModelTestDomain.INT_PROP, intValue);
@@ -31,7 +30,6 @@ public class TestEntity extends TestCase {
     ret.setValue(ModelTestDomain.LONG_DATE_PROP, longDateValue);
     ret.setValue(ModelTestDomain.BOOLEAN_PROP, booleanValue);
     ret.setValue(ModelTestDomain.ENTITY_REF, entityValue);
-    ret.setValue(ModelTestDomain.ENTITY_ID_PROP, entityValueId);
 
     return ret;
   }
@@ -64,7 +62,7 @@ public class TestEntity extends TestCase {
     assertEquals(test.getValue(ModelTestDomain.BOOLEAN_PROP), Type.Boolean.TRUE);
 
     final Entity testEntity = getTestMasterEntity(idValue, intValue, doubleValue,
-            stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue, referenceId);
+            stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue);
     //assert types
     assertEquals(testEntity.getPrimaryKey().getProperty(ModelTestDomain.ID_PROP).getPropertyType(), Type.INT);
     assertEquals(testEntity.getProperty(ModelTestDomain.INT_PROP).getPropertyType(), Type.INT);

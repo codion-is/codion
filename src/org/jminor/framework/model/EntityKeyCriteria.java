@@ -85,9 +85,9 @@ public class EntityKeyCriteria implements ICriteria {
 
   private void appendInCondition(final String whereColumn, final StringBuffer ret, final List<EntityKey> keys) {
     ret.append(whereColumn).append(" in (");
+    final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {
-      ret.append(EntityUtil.getSQLStringValue(
-              keys.get(i).getFirstKeyProperty(), keys.get(i).getFirstKeyValue()));
+      ret.append(EntityUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
       if (cnt == 1000 && i < keys.size()-1) {//Oracle limit
         ret.append(") or ").append(whereColumn).append(" in (");
         cnt = 1;

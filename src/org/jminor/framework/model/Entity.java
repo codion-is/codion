@@ -182,8 +182,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       Property.validateValue(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization =
-            !(primarKeyProperty ? primaryKey.keyValues : propertyValues).containsKey(property.propertyID);
+    final boolean initialization = primarKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)
+            : !propertyValues.containsKey(property.propertyID);
     doSetValue(property, value, primarKeyProperty, initialization, true);
   }
 
@@ -432,8 +432,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     }
     else
       evtPropertyChanged = null;
-
-    this.primaryKey.setPropertyChangeEvent(evtPropertyChanged);
   }
 
   public EntityKey getReferencedKey(final Property.EntityProperty property) {
@@ -450,7 +448,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
         if (key == null)
           (referencedKeys == null ? referencedKeys = new HashMap<String, EntityKey>()
                   : referencedKeys).put(property.referenceEntityID, key = new EntityKey(property.referenceEntityID));
-        key.setValue(key.getProperties().get(i).propertyID, value, null, true);//check the index thing set EntityResultPacker.getReferenceEntity
+        key.setValue(key.getProperties().get(i).propertyID, value);//check the index thing set EntityResultPacker.getReferenceEntity
       }
       else
         break;
@@ -493,25 +491,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * denormalized values are set in case <code>property</code> is a Property.EntityProperty.
    */
   private void doSetValue(final Property property, final Object newValue,
-                          final boolean primaryKeyProperty, final boolean initialization,
-                          boolean propagateReferenceValues) {
+                           final boolean primaryKeyProperty, final boolean initialization,
+                           boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
-
-    final Object oldValue = initialization ? null :
-            (primaryKeyProperty ? primaryKey.keyValues : propertyValues).get(property.propertyID);
-    if (primaryKeyProperty)
-      primaryKey.setValue(property.propertyID, newValue, oldValue, initialization);
-    else
-      propertyValues.put(property.propertyID, newValue);
-
-    if (!initialization)
-      updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
-
-    if (evtPropertyChanged != null &&
-            (initialization || !EntityUtil.equal(property.propertyType, newValue, oldValue)))
-      firePropertyChangeEvent(property, newValue, oldValue, initialization);
-
+    if (newValue == this)
+      throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
     if (propagateReferenceValues && property instanceof Property.EntityProperty) {
       referencedKeys = null;
       setReferenceKeyValues(property, (Entity) newValue);
@@ -521,8 +506,17 @@ public final class Entity implements Externalizable, Comparable<Entity> {
         setDenormalizedValues(property, (Entity) newValue, properties);
       }
     }
-
-    toString = null;//invalidate toString() cache since we don't know which properties are used
+    final Object oldValue = initialization ? null :
+            primaryKeyProperty ? primaryKey.keyValues.get(property.propertyID) : propertyValues.get(property.propertyID);
+    if (primaryKeyProperty)
+      primaryKey.setValue(property.propertyID, newValue);
+    else
+      propertyValues.put(property.propertyID, newValue);
+    
+    if (evtPropertyChanged != null && !EntityUtil.equal(property.propertyType, newValue, oldValue))
+      firePropertyChangeEvent(property, newValue, oldValue, initialization);
+    if (!initialization)
+      updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
   }
 
   /**
@@ -538,7 +532,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       final Property referenceProperty = ((Property.EntityProperty) property).referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
-        final boolean initialization = !(isPrimaryKeyProperty ? primaryKey.keyValues : propertyValues).containsKey(referenceProperty.propertyID);
+        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)
+            : !propertyValues.containsKey(property.propertyID);
         doSetValue(referenceProperty, entity != null ? entity.getRawValue(primaryKeyProperty.propertyID) : null,
                 isPrimaryKeyProperty, initialization, true);
       }
@@ -555,7 +550,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
                                      final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        final boolean initialization = !propertyValues.containsKey(property.propertyID);
+        final boolean initialization = property instanceof Property.PrimaryKeyProperty? !primaryKey.keyValues.containsKey(property.propertyID)
+            : !propertyValues.containsKey(property.propertyID);
         doSetValue(denormalizedProperty,
                 entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedPropertyName),
                 false, initialization, true);
@@ -581,8 +577,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     else if (!EntityUtil.equal(type, oldValue, newValue)) {
       (originalPropertyValues == null ?
               (originalPropertyValues  = new HashMap<String, Object>()) : originalPropertyValues).put(propertyID, oldValue);
-      if (FrameworkSettings.get().propertyDebug)
-        System.out.println(propertyID + " changed from " + oldValue + " to " + newValue);
     }
 
     if (stModified != null)

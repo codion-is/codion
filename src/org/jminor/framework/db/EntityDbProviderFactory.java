@@ -32,6 +32,8 @@ public class EntityDbProviderFactory {
    * @param clientTypeID the client type id
    * @return a IEntityDbProvider
    * @see FrameworkConstants#CLIENT_CONNECTION_TYPE
+   * @see FrameworkConstants#REMOTE_CONNECTION_PROVIDER
+   * @see FrameworkConstants#LOCAL_CONNECTION_PROVIDER
    * @see EntityDbProvider
    * @see org.jminor.framework.server.EntityDbRemoteProvider
    */
@@ -40,9 +42,9 @@ public class EntityDbProviderFactory {
     try {
       if (System.getProperty(FrameworkConstants.CLIENT_CONNECTION_TYPE,
               FrameworkConstants.CONNECTION_TYPE_LOCAL).equals(FrameworkConstants.CONNECTION_TYPE_REMOTE))
-        return (IEntityDbProvider) Class.forName("org.jminor.framework.server.EntityDbRemoteProvider").getConstructor(User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
+        return (IEntityDbProvider) Class.forName(FrameworkConstants.REMOTE_CONNECTION_PROVIDER).getConstructor(User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
       else
-        return (IEntityDbProvider) Class.forName("org.jminor.framework.db.EntityDbProvider").getConstructor(User.class).newInstance(user);
+        return (IEntityDbProvider) Class.forName(FrameworkConstants.LOCAL_CONNECTION_PROVIDER).getConstructor(User.class).newInstance(user);
     }
     catch (Exception e) {
       if (e instanceof RuntimeException)

@@ -163,13 +163,14 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         final IdSource idSource = Entity.repository.getIdSource(entityID);
         if (idSource == IdSource.ID_MAX_PLUS_ONE || idSource == IdSource.ID_SEQUENCE
                 || idSource == IdSource.ID_QUERY)
-          entity.getPrimaryKey().setValue(getNextIdValue(entityID, idSource));
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), getNextIdValue(entityID, idSource), false);
 
         execute(sql = EntityUtil.getInsertSQL(entity));
 
         if (idSource == IdSource.ID_AUTO_INCREMENT)
-          entity.getPrimaryKey().setValue(getAutoIncrementValue(
-                  DbUtil.getAutoIncrementValueSQL(Entity.repository.getEntityIdSource(entityID))));
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
+                  getAutoIncrementValue(DbUtil.getAutoIncrementValueSQL(
+                          Entity.repository.getEntityIdSource(entityID))), false);
 
         ret.add(entity.getPrimaryKey());
       }
@@ -542,14 +543,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         final HashMap<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
                 ? initWeakReferences(referencedPrimaryKeys)
                 : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
-        for (final Entity entity : entities) {
-          final EntityKey referenceEntityKey = entity.getReferencedKey(entityProperty);
-          if (referenceEntityKey != null) {
-            final Entity valueEntity = referencedEntitiesHashed.get(referenceEntityKey);
-            if (valueEntity != null)
-              entity.initializeValue(entityProperty, valueEntity);
-          }
-        }
+        for (final Entity entity : entities)
+          entity.initializeValue(entityProperty, referencedEntitiesHashed.get(entity.getReferencedKey(entityProperty)));
       }
     }
   }

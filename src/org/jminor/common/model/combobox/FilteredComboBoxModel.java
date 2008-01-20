@@ -83,9 +83,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
       for (final Object object : contents) {
         if (filterCriteria != null && !filterCriteria.include(object))
           filteredItems.add(object);
-        else {
+        else
           visibleItems.add(object);
-        }
       }
     }
     if (sortContents)
@@ -93,10 +92,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
     if (nullValueItem != null)
       visibleItems.insertElementAt(nullValueItem, 0);
 
-    if (!visibleItems.contains(selectedItem))
-      setSelectedItem(null);
-    else
-      fireContentsChanged();
+    fireContentsChanged();
   }
 
   public void resetContents() {

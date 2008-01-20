@@ -18,7 +18,7 @@ public class FrameworkSettings implements Serializable {
   public boolean useKeyboardNavigation = true;
   public boolean useFocusActivation = true;
   public int tableAutoResizeMode = JTable.AUTO_RESIZE_OFF;
-  public boolean useSmartRefresh = true;
+  public boolean useSmartRefresh = false;
   public boolean confirmExit = false;
   public boolean propertyDebug = false;
   public int tabPlacement = JTabbedPane.TOP;

@@ -4,8 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Constants;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.Util;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -50,11 +48,6 @@ public class EntityKey implements Externalizable {
    * True if the hash code value has been invalidated and needs to be recalculated
    */
   private boolean hashCodeDirty = true;
-
-  /**
-   * An event fired when a property changes, is null until initialized
-   */
-  private transient Event evtPropertyChanged;
 
   /**
    * Caching this extremely frequently referenced attribute
@@ -143,10 +136,10 @@ public class EntityKey implements Externalizable {
   }
 
   /**
-   * @return the value of the first key property
+   * @return the first value contained in this key, useful for single property keys
    */
   public Object getFirstKeyValue() {
-    return keyValues.get(getFirstKeyProperty().propertyID);
+    return keyValues.values().iterator().next();
   }
 
   /**
@@ -159,66 +152,6 @@ public class EntityKey implements Externalizable {
       return getProperty(propertyID).getDefaultValue();
 
     return keyValues.get(propertyID);
-  }
-
-  /**
-   * Copies the values from key to this entity key
-   * @param key the key to copy
-   */
-  public void setValue(final EntityKey key) {
-    clear();
-    if (key != null) {
-      for (final Property.PrimaryKeyProperty property : properties) {
-        final String propertyID = property.propertyID;
-        final Object oldValue = getValue(propertyID);
-        final Object newValue = key.getValue(propertyID);
-        keyValues.put(propertyID, newValue instanceof Entity ? ((Entity)newValue).getCopy() : newValue);
-        if (evtPropertyChanged != null)
-          evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, true));
-      }
-
-      hashCode = key.hashCode;
-      hashCodeDirty = key.hashCodeDirty;
-    }
-  }
-
-  /**
-   * Sets the value of the property identified by propertyID to newValue
-   * @param propertyID the property identifier
-   * @param newValue the new value
-   */
-  public void setValue(final String propertyID, final Object newValue, final Object oldValue, final boolean initialization) {
-    keyValues.put(propertyID, newValue);
-    hashCodeDirty = true;
-    if (isSingleIntegerKey) {
-      hashCode = newValue == null ? Constants.INT_NULL_VALUE : (Integer) newValue;
-      hashCodeDirty = false;
-    }
-
-    if (evtPropertyChanged != null && (initialization || !Util.equal(newValue, oldValue)))
-      evtPropertyChanged.fire(new PropertyChangeEvent(Entity.repository.getProperty(entityID, propertyID),
-              newValue, oldValue, true, true));
-  }
-
-  /**
-   * Sets the value of this key, assuming it consists of
-   * a single integer column, if not a RuntimeException is thrown
-   * @param newValue the new value for the key
-   */
-  public void setValue(final int newValue) {
-    if (!isSingleIntegerKey)
-      throw new RuntimeException("Key does not consist of a single integer property!");
-
-    final Property property = getFirstKeyProperty();
-    final String propertyID = property.propertyID;
-    final boolean initialization = !keyValues.containsKey(propertyID);
-    final Integer oldValue = (Integer) keyValues.get(propertyID);
-    keyValues.put(propertyID, newValue);
-    hashCode = newValue;
-    hashCodeDirty = false;
-
-    if (evtPropertyChanged != null && (initialization ||!Util.equal(newValue, oldValue)))
-      evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, true));
   }
 
   /**
@@ -252,14 +185,6 @@ public class EntityKey implements Externalizable {
    */
   public int getColumnCount() {
     return columnCount;
-  }
-
-  /**
-   * This event is used for firing property change events
-   * @param evtPropertyChanged the event to use for property change events
-   */
-  public void setPropertyChangeEvent(final Event evtPropertyChanged) {
-    this.evtPropertyChanged = evtPropertyChanged;
   }
 
   /**
@@ -365,5 +290,37 @@ public class EntityKey implements Externalizable {
       ret.add(key.copy());
 
     return ret;
+  }
+
+  /**
+   * Copies the values from key to this entity key
+   * @param key the key to copy
+   */
+  void setValue(final EntityKey key) {
+    clear();
+    if (key != null) {
+      for (final Property.PrimaryKeyProperty property : properties) {
+        final String propertyID = property.propertyID;
+        final Object newValue = key.getValue(propertyID);
+        keyValues.put(propertyID, newValue instanceof Entity ? ((Entity)newValue).getCopy() : newValue);
+      }
+
+      hashCode = key.hashCode;
+      hashCodeDirty = key.hashCodeDirty;
+    }
+  }
+
+  /**
+   * Sets the value of the property identified by propertyID to newValue
+   * @param propertyID the property identifier
+   * @param newValue the new value
+   */
+  void setValue(final String propertyID, final Object newValue) {
+    keyValues.put(propertyID, newValue);
+    hashCodeDirty = true;
+    if (isSingleIntegerKey) {
+      hashCode = newValue == null ? Constants.INT_NULL_VALUE : (Integer) newValue;
+      hashCodeDirty = false;
+    }
   }
 }

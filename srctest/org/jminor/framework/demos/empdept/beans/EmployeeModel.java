@@ -64,18 +64,15 @@ public class EmployeeModel extends EntityModel {
         }
       }
     });
-    //todo does not work for first time selection
     getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_REF).addListener(new PropertyListener() {
       protected void propertyChanged(final PropertyChangeEvent e) {
-        if (!e.isInitialization()) {
-          getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {
-            public boolean include(final Object item) {
-              return item instanceof String //the item representing null
-                      || EntityUtil.equal(Type.ENTITY,
-                      ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue());
-            }
-          });
-        }
+        getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {
+          public boolean include(final Object item) {
+            return item instanceof String //the item representing null
+                    || EntityUtil.equal(Type.ENTITY,
+                    ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue());
+          }
+        });
       }
     });
   }

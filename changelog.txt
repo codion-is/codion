@@ -35,4 +35,7 @@
   Cleaned up DbUtil.getDatabaseUrl()
   Renamed a few constants in DbUtil
   Added boolean parameter propagateReferenceValues to Entity.doSetValue, selectMany->initializeValue from 7.1% to 0.4%
+  FilteredComboBoxModel no longer sets the selected value to null if it does not exist after filtering
+  Refactored and cleaned up Entity.doSetValue/setValue and EntityKey.setValue
+  EntityDbConnection now initializes all reference property values, instead of leaving out the null references, messes up originalValue
   
