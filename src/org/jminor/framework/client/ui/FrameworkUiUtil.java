@@ -1106,24 +1106,24 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyName, final EntityModel entityModel) {
-    return createPropertyComboBox(propertyName, entityModel, null);
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel) {
+    return createPropertyComboBox(propertyID, entityModel, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyName, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
                                                        final Event refreshEvent) {
-    return createPropertyComboBox(propertyName, entityModel, refreshEvent, null);
+    return createPropertyComboBox(propertyID, entityModel, refreshEvent, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyName, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state) {
-    return createPropertyComboBox(propertyName, entityModel, refreshEvent, state, null);
+    return createPropertyComboBox(propertyID, entityModel, refreshEvent, state, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyName, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state,
                                                        final Object nullValue) {
-    return createPropertyComboBox(Entity.repository.getProperty(entityModel.getEntityID(), propertyName),
+    return createPropertyComboBox(Entity.repository.getProperty(entityModel.getEntityID(), propertyID),
             entityModel, refreshEvent, state, nullValue);
   }
 

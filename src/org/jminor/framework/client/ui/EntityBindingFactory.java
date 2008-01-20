@@ -32,55 +32,55 @@ public abstract class EntityBindingFactory extends JPanel {
    */
   public abstract EntityModel getModel();
 
-  public JPanel getControlPanel(final String propertyName, final JComponent inputComponent) {
-    return getControlPanel(propertyName, inputComponent, true);
+  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent) {
+    return getControlPanel(propertyID, inputComponent, true);
   }
 
-  public JPanel getControlPanel(final String propertyName, final JComponent inputComponent,
+  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop) {
-    return getControlPanel(propertyName, inputComponent, labelOnTop, 0, 0);
+    return getControlPanel(propertyID, inputComponent, labelOnTop, 0, 0);
   }
 
-  public JPanel getControlPanel(final String propertyName, final JComponent inputComponent,
+  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap) {
-    return getControlPanel(propertyName, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
+    return getControlPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
   }
 
-  public JPanel getControlPanel(final String propertyName, final JComponent inputComponent,
+  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap, final int labelAlignment) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
-    ret.add(createLabel(propertyName, labelAlignment));
+    ret.add(createLabel(propertyID, labelAlignment));
     ret.add(inputComponent);
 
     return ret;
   }
 
-  protected final JTextArea createTextArea(final String propertyName) {
-    return createTextArea(propertyName, -1, -1);
+  protected final JTextArea createTextArea(final String propertyID) {
+    return createTextArea(propertyID, -1, -1);
   }
 
-  protected final JTextArea createTextArea(final String propertyName, final int rows, final int columns) {
-    return FrameworkUiUtil.createTextArea(Entity.repository.getProperty(getModel().getEntityID(), propertyName),
+  protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
+    return FrameworkUiUtil.createTextArea(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
             getModel(), rows, columns);
   }
 
-  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyName,
+  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyID,
                                                              final AbstractDateMaskFormat dateMaskFormat) {
-    return createDateFieldPanel(propertyName, dateMaskFormat, true);
+    return createDateFieldPanel(propertyID, dateMaskFormat, true);
   }
 
-  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyName,
+  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyID,
                                                              final AbstractDateMaskFormat dateMaskFormat,
                                                              final boolean includeButton) {
-    return createDateFieldPanel(propertyName, dateMaskFormat, includeButton, null);
+    return createDateFieldPanel(propertyID, dateMaskFormat, includeButton, null);
   }
 
-  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyName,
+  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyID,
                                                              final AbstractDateMaskFormat dateMaskFormat,
                                                              final boolean includeButton,
                                                              final State enabledState) {
-    return createDateFieldPanel(Entity.repository.getProperty(getModel().getEntityID(), propertyName),
+    return createDateFieldPanel(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
             dateMaskFormat, includeButton, enabledState);
   }
 
@@ -111,34 +111,34 @@ public abstract class EntityBindingFactory extends JPanel {
             LinkType.READ_WRITE, includeButton, enabledState);
   }
 
-  protected final JTextField createTextField(final String propertyName) {
-    return createTextField(propertyName, LinkType.READ_WRITE);
+  protected final JTextField createTextField(final String propertyID) {
+    return createTextField(propertyID, LinkType.READ_WRITE);
   }
 
-  protected final JTextField createTextField(final String propertyName, final LinkType linkType) {
-    return createTextField(propertyName, linkType, true);
+  protected final JTextField createTextField(final String propertyID, final LinkType linkType) {
+    return createTextField(propertyID, linkType, true);
   }
 
-  protected final JTextField createTextField(final String propertyName, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate) {
-    return createTextField(propertyName, linkType, immediateUpdate, null);
+    return createTextField(propertyID, linkType, immediateUpdate, null);
   }
 
-  protected final JTextField createTextField(final String propertyName, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String formatString) {
-    return createTextField(propertyName, linkType, immediateUpdate, formatString, null);
+    return createTextField(propertyID, linkType, immediateUpdate, formatString, null);
   }
 
-  protected final JTextField createTextField(final String propertyName, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String formatString,
                                              final State enabledState) {
-    return createTextField(propertyName, linkType, immediateUpdate, formatString, enabledState, false);
+    return createTextField(propertyID, linkType, immediateUpdate, formatString, enabledState, false);
   }
 
-  protected final JTextField createTextField(final String propertyName, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String formatString,
                                              final State enabledState, final boolean valueIncludesLiteralCharacters) {
-    return createTextField(Entity.repository.getProperty(getModel().getEntityID(), propertyName),
+    return createTextField(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
             linkType, formatString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
 
@@ -168,17 +168,17 @@ public abstract class EntityBindingFactory extends JPanel {
             null, enabledState, valueContainsLiteralCharacters);
   }
 
-  protected final JCheckBox createCheckBox(final String propertyName) {
-    return createCheckBox(Entity.repository.getProperty(getModel().getEntityID(), propertyName));
+  protected final JCheckBox createCheckBox(final String propertyID) {
+    return createCheckBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID));
   }
 
-  protected final JCheckBox createCheckBox(final String propertyName, final State enabledState) {
-    return createCheckBox(propertyName, enabledState, true);
+  protected final JCheckBox createCheckBox(final String propertyID, final State enabledState) {
+    return createCheckBox(propertyID, enabledState, true);
   }
 
-  protected final JCheckBox createCheckBox(final String propertyName, final State enabledState,
+  protected final JCheckBox createCheckBox(final String propertyID, final State enabledState,
                                            final boolean includeCaption) {
-    return createCheckBox(Entity.repository.getProperty(getModel().getEntityID(), propertyName), enabledState, includeCaption);
+    return createCheckBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID), enabledState, includeCaption);
   }
 
   protected final JCheckBox createCheckBox(final Property property) {
@@ -194,12 +194,12 @@ public abstract class EntityBindingFactory extends JPanel {
     return FrameworkUiUtil.createCheckBox(property, getModel(), enabledState, includeCaption);
   }
 
-  protected final JComboBox createBooleanComboBox(final String propertyName) {
-    return createBooleanComboBox(propertyName, null);
+  protected final JComboBox createBooleanComboBox(final String propertyID) {
+    return createBooleanComboBox(propertyID, null);
   }
 
-  protected final JComboBox createBooleanComboBox(final String propertyName, final State enabledState) {
-    return createBooleanComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyName),enabledState);
+  protected final JComboBox createBooleanComboBox(final String propertyID, final State enabledState) {
+    return createBooleanComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),enabledState);
   }
 
   protected final JComboBox createBooleanComboBox(final Property property) {
@@ -210,14 +210,14 @@ public abstract class EntityBindingFactory extends JPanel {
     return FrameworkUiUtil.createBooleanComboBox(property, getModel(), enabledState);
   }
 
-  protected final SteppedComboBox createComboBox(final String propertyName, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
-    return createComboBox(propertyName, comboBoxModel, maximumMatch, null);
+    return createComboBox(propertyID, comboBoxModel, maximumMatch, null);
   }
 
-  protected final SteppedComboBox createComboBox(final String propertyName, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final State enabledState) {
-    return createComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyName),
+    return createComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
             comboBoxModel, maximumMatch, enabledState);
   }
 
@@ -235,13 +235,13 @@ public abstract class EntityBindingFactory extends JPanel {
     return ret;
   }
 
-  protected final SteppedComboBox createEditableComboBox(final String propertyName, final ComboBoxModel comboBoxModel) {
-    return createEditableComboBox(propertyName, comboBoxModel, null);
+  protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel) {
+    return createEditableComboBox(propertyID, comboBoxModel, null);
   }
 
-  protected final SteppedComboBox createEditableComboBox(final String propertyName, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                          final State enabledState) {
-    return createEditableComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyName),
+    return createEditableComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
             comboBoxModel, enabledState);
   }
 
@@ -250,22 +250,22 @@ public abstract class EntityBindingFactory extends JPanel {
     return FrameworkUiUtil.createComboBox(property, getModel(), comboBoxModel, enabledState, true);
   }
 
-  protected final SteppedComboBox createPropertyComboBox(final String propertyName) {
-    return createPropertyComboBox(propertyName, null);
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID) {
+    return createPropertyComboBox(propertyID, null);
   }
 
-  protected final SteppedComboBox createPropertyComboBox(final String propertyName, final State state) {
-    return createPropertyComboBox(propertyName, state, null);
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State state) {
+    return createPropertyComboBox(propertyID, state, null);
   }
 
-  protected final SteppedComboBox createPropertyComboBox(final String propertyName, final State state,
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State state,
                                                          final Object nullValue) {
-    return createPropertyComboBox(propertyName, state, nullValue, false);
+    return createPropertyComboBox(propertyID, state, nullValue, false);
   }
 
-  protected final SteppedComboBox createPropertyComboBox(final String propertyName, final State state,
+  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State state,
                                                          final Object nullValue, final boolean editable) {
-    return createPropertyComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyName),
+    return createPropertyComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
             state, nullValue, editable);
   }
 
@@ -287,22 +287,22 @@ public abstract class EntityBindingFactory extends JPanel {
     return FrameworkUiUtil.createPropertyComboBox(property, getModel(), null, state, nullValue, editable);
   }
 
-  protected final EntityComboBox createEntityComboBox(final String propertyName) {
-    return createEntityComboBox(propertyName, null);
+  protected final EntityComboBox createEntityComboBox(final String propertyID) {
+    return createEntityComboBox(propertyID, null);
   }
 
-  protected final EntityComboBox createEntityComboBox(final String propertyName, final State enabledState) {
+  protected final EntityComboBox createEntityComboBox(final String propertyID, final State enabledState) {
     return createEntityComboBox((Property.EntityProperty)
-            Entity.repository.getProperty(getModel().getEntityID(), propertyName), enabledState);
+            Entity.repository.getProperty(getModel().getEntityID(), propertyID), enabledState);
   }
 
-  protected final JTextField createEntityField(final String propertyName) {
-    return createEntityField(Entity.repository.getProperty(getModel().getEntityID(), propertyName));
+  protected final JTextField createEntityField(final String propertyID) {
+    return createEntityField(Entity.repository.getProperty(getModel().getEntityID(), propertyID));
   }
 
-  protected final JPanel createEntityFieldPanel(final String propertyName, final EntityTableModel lookupModel) {
+  protected final JPanel createEntityFieldPanel(final String propertyID, final EntityTableModel lookupModel) {
     return createEntityFieldPanel((Property.EntityProperty)
-            Entity.repository.getProperty(getModel().getEntityID(), propertyName), lookupModel);
+            Entity.repository.getProperty(getModel().getEntityID(), propertyID), lookupModel);
   }
 
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property) {
@@ -313,11 +313,11 @@ public abstract class EntityBindingFactory extends JPanel {
     return createEntityComboBox(property, null, false, enabledState);
   }
 
-  protected final EntityComboBox createEntityComboBox(final String propertyName,
+  protected final EntityComboBox createEntityComboBox(final String propertyID,
                                                       final EntityPanelInfo appInfo,
                                                       final boolean newButtonFocusable) {
     return createEntityComboBox((Property.EntityProperty) Entity.repository.getProperty(getModel().getEntityID(),
-            propertyName), appInfo, newButtonFocusable, null);
+            propertyID), appInfo, newButtonFocusable, null);
   }
 
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property,
@@ -334,14 +334,14 @@ public abstract class EntityBindingFactory extends JPanel {
     return FrameworkUiUtil.createEntityFieldPanel(property, getModel(), lookupModel);
   }
 
-  protected final JLabel createLabel(final String propertyName) {
-    return createLabel(propertyName, JLabel.LEFT);
+  protected final JLabel createLabel(final String propertyID) {
+    return createLabel(propertyID, JLabel.LEFT);
   }
 
-  protected final JLabel createLabel(final String propertyName, final int horizontalAlignment) {
-    final String text = Entity.repository.getProperty(getModel().getEntityID(), propertyName).getCaption();
+  protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
+    final String text = Entity.repository.getProperty(getModel().getEntityID(), propertyID).getCaption();
     if (text == null || text.length() == 0)
-      throw new IllegalArgumentException("Cannot create a label for property: " + propertyName + ", no caption");
+      throw new IllegalArgumentException("Cannot create a label for property: " + propertyID + ", no caption");
 
     return new JLabel(text, horizontalAlignment);
   }

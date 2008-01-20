@@ -170,8 +170,8 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
-  public PropertySummaryPanel getSummaryProvider(final String propertyName) {
-    return propertySummaryPanels.get(propertyName);
+  public PropertySummaryPanel getSummaryProvider(final String propertyID) {
+    return propertySummaryPanels.get(propertyID);
   }
 
   /**

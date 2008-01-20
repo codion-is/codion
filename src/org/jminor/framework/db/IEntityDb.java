@@ -3,13 +3,14 @@
  */
 package org.jminor.framework.db;
 
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
+
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 import java.util.HashMap;
 import java.util.List;
@@ -163,15 +164,15 @@ public interface IEntityDb{
   /**
    * Selects a single entity
    * @param entityID the Class of the entity to select
-   * @param propertyName the name of the property to use as a condition
+   * @param propertyID the ID of the property to use as a condition
    * @param value the value to use in the condition
    * @return an entity of the type <code>entityID</code>, having the
-   * value of <code>propertyName</code> as <code>value</code>
+   * value of <code>propertyID</code> as <code>value</code>
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of exception
    */
-  public Entity selectSingle(final String entityID, final String propertyName, final Object value) throws Exception;
+  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws Exception;
 
   /**
    * Selects a single entity
@@ -223,15 +224,15 @@ public interface IEntityDb{
   public List<Entity> selectMany(final EntityCriteria criteria, final boolean order) throws Exception;
 
   /**
-   * Selects entities according to one property (<code>propertyName</code>), using <code>values</code> as a condition
+   * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition
    * @param entityID the Class of the entities to select
-   * @param propertyName the name of the condition property
+   * @param propertyID the ID of the condition property
    * @param values the property values to use as condition
-   * @return entities of the type <code>entityID</code> according to <code>propertyName</code> and <code>values</code>
+   * @return entities of the type <code>entityID</code> according to <code>propertyID</code> and <code>values</code>
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of exception
    */
-  public List<Entity> selectMany(final String entityID, final String propertyName,
+  public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws Exception;
 
   /**

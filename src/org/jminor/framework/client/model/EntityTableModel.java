@@ -678,9 +678,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return propertySearchModels;
   }
 
-  public PropertySearchModel getPropertySearchModel(final String propertyName) {
+  public PropertySearchModel getPropertySearchModel(final String propertyID) {
     for (final AbstractSearchModel searchModel : propertySearchModels) {
-      if (((PropertySearchModel) searchModel).getProperty().propertyID.equals(propertyName))
+      if (((PropertySearchModel) searchModel).getProperty().propertyID.equals(propertyID))
         return (PropertySearchModel) searchModel;
     }
 
@@ -715,9 +715,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return (PropertyFilterModel) propertyFilterModels.get(idx);
   }
 
-  public PropertyFilterModel getPropertyFilter(final String propertyName) {
+  public PropertyFilterModel getPropertyFilter(final String propertyID) {
     for (final AbstractSearchModel filter : propertyFilterModels) {
-      if (filter.getColumnName().equals(propertyName))
+      if (filter.getColumnName().equals(propertyID))
         return (PropertyFilterModel) filter;
     }
 

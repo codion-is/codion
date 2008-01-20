@@ -153,14 +153,14 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
   /**
    * Selects a single entity
    * @param entityID the Class of the entity to select
-   * @param propName the name of the property to use as a condition
+   * @param propertyID the ID of the property to use as a condition
    * @param value the value to use in the condition
    * @return an entity of the type <code>entityID</code>, having the
-   * value of <code>propName</code> as <code>value</code>
+   * value of <code>propertyID</code> as <code>value</code>
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  public Entity selectSingle(final String entityID, final String propName,
+  public Entity selectSingle(final String entityID, final String propertyID,
                              final Object value) throws DbException, RemoteException;
 
   /**
@@ -225,15 +225,15 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
   public List<Entity> selectMany(final EntityCriteria criteria, final boolean order) throws DbException, RemoteException;
 
   /**
-   * Selects entities according to one property (<code>propName</code>), using <code>values</code> as a condition
+   * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition
    * @param entityID the Class of the entities to select
-   * @param propName the name of the condition property
+   * @param propertyID the ID of the condition property
    * @param values the property values to use as condition
-   * @return entities of the type <code>entityID</code> according to <code>propName</code> and <code>values</code>
+   * @return entities of the type <code>entityID</code> according to <code>propertyID</code> and <code>values</code>
    * @throws DbException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  public List<Entity> selectMany(final String entityID, final String propName,
+  public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException, RemoteException;
 
   /**

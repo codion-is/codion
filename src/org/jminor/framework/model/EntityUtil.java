@@ -244,36 +244,37 @@ public class EntityUtil {
             sqlStringValue).toString();
   }
 
-  public static Object[] getPropertyValue(final String propertyName, final List<Entity> entities) {
-    return getPropertyValue(propertyName, entities, true);
+  public static Object[] getPropertyValue(final String propertyID, final List<Entity> entities) {
+    return getPropertyValue(propertyID, entities, true);
   }
-public static Object[] getPropertyValue(final String propertyName, final List<Entity> entities,
+
+  public static Object[] getPropertyValue(final String propertyID, final List<Entity> entities,
                                           final boolean includeNullValues) {
     final List<Object> ret = new ArrayList<Object>(entities.size());
     for (Entity entity : entities) {
       if (includeNullValues)
-        ret.add(entity.getValue(propertyName));
-      else if (!entity.isValueNull(propertyName))
-        ret.add(entity.getValue(propertyName));
+        ret.add(entity.getValue(propertyID));
+      else if (!entity.isValueNull(propertyID))
+        ret.add(entity.getValue(propertyID));
     }
 
     return ret.toArray();
   }
 
-  public static Object[] setPropertyValue(final String propertyName, final Object value,
+  public static Object[] setPropertyValue(final String propertyID, final Object value,
                                           final List<Entity> entities) {
-    final Object[] oldValues = getPropertyValue(propertyName, entities);
+    final Object[] oldValues = getPropertyValue(propertyID, entities);
     for (final Entity entity : entities)
-      entity.setValue(propertyName, value);
+      entity.setValue(propertyID, value);
 
     return oldValues;
   }
 
-  public static Object[] setPropertyValue(final String propertyName, final Object[] values,
+  public static Object[] setPropertyValue(final String propertyID, final Object[] values,
                                           final List<Entity> entities) {
-    final Object[] oldValues = getPropertyValue(propertyName, entities);
+    final Object[] oldValues = getPropertyValue(propertyID, entities);
     for (int i = 0; i < entities.size(); i++)
-      entities.get(i).setValue(propertyName, values[i]);
+      entities.get(i).setValue(propertyID, values[i]);
 
     return oldValues;
   }
@@ -301,10 +302,10 @@ public static Object[] getPropertyValue(final String propertyName, final List<En
     return ret;
   }
 
-  public static HashMap<Object, List<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyName) {
+  public static HashMap<Object, List<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
     final HashMap<Object, List<Entity>> ret = new HashMap<Object, List<Entity>>(entities.size());
     for (final Entity entity : entities) {
-      final Object key = entity.getValue(propertyName);
+      final Object key = entity.getValue(propertyID);
       if (ret.containsKey(key))
         ret.get(key).add(entity);
       else {

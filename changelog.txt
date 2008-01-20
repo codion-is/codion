@@ -38,4 +38,4 @@
   FilteredComboBoxModel no longer sets the selected value to null if it does not exist after filtering
   Refactored and cleaned up Entity.doSetValue/setValue and EntityKey.setValue
   EntityDbConnection now initializes all reference property values, instead of leaving out the null references, messes up originalValue
-  
+  propertyName replaced with propertyID throughout

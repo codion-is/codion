@@ -413,12 +413,12 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param propertyName the name of the property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the property <code>propertyName</code>,
+   * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
+   * @return the EntityComboBoxModel for the property <code>propertyID</code>,
    * the EntityComboBoxModel must have been initialized in <code>initializeEntityComboBoxModels</code>
    */
-  public EntityComboBoxModel getEntityComboBoxModel(final String propertyName) {
-    return getEntityComboBoxModel((Property.EntityProperty) Entity.repository.getProperty(getEntityID(), propertyName));
+  public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
+    return getEntityComboBoxModel((Property.EntityProperty) Entity.repository.getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -438,13 +438,13 @@ public class EntityModel implements IRefreshable {
   /**
    * Fetches the ComboBoxModel associated with this property, these must be initialized beforehand,
    * by overriding initializeEntityComboBoxModels()
-   * @param propertyName the property identifier
+   * @param propertyID the property identifier
    * @return the ComboBoxModel associated with this property
    * @see #initializeEntityComboBoxModels()
    * @see #initializeEntityComboBoxModels(org.jminor.framework.client.model.combobox.EntityComboBoxModel[])()
    */
-  public ComboBoxModel getComboBoxModel(final String propertyName) {
-    return getComboBoxModel(Entity.repository.getProperty(getEntityID(), propertyName));
+  public ComboBoxModel getComboBoxModel(final String propertyID) {
+    return getComboBoxModel(Entity.repository.getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -524,11 +524,11 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param propertyName the name of the property for which to retrieve the event
-   * @return an Event object which fires when the value of property <code>propertyName</code> is changed by the UI
+   * @param propertyID the ID of the property for which to retrieve the event
+   * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the UI
    */
-  public Event getPropertyUIChangeEvent(final String propertyName) {
-    return getPropertyUIChangeEvent(Entity.repository.getProperty(getEntityID(), propertyName));
+  public Event getPropertyUIChangeEvent(final String propertyID) {
+    return getPropertyUIChangeEvent(Entity.repository.getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -546,11 +546,11 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param propertyName the name of the property for which to retrieve the event
-   * @return an Event object which fires when the value of property <code>propertyName</code> is changed by the model
+   * @param propertyID the ID of the property for which to retrieve the event
+   * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the model
    */
-  public Event getPropertyModelChangeEvent(final String propertyName) {
-    return getPropertyModelChangeEvent(Entity.repository.getProperty(getEntityID(), propertyName));
+  public Event getPropertyModelChangeEvent(final String propertyID) {
+    return getPropertyModelChangeEvent(Entity.repository.getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -568,11 +568,11 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param propertyName the name of the property for which to retrieve the event
-   * @return an Event object which fires when the value of property <code>propertyName</code> is changed
+   * @param propertyID the ID of the property for which to retrieve the event
+   * @return an Event object which fires when the value of property <code>propertyID</code> is changed
    */
-  public Event getPropertyChangeEvent(final String propertyName) {
-    return getPropertyChangeEvent(Entity.repository.getProperty(getEntityID(), propertyName));
+  public Event getPropertyChangeEvent(final String propertyID) {
+    return getPropertyChangeEvent(Entity.repository.getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -621,23 +621,23 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Sets the value of the property with name <code>propertyName</code> in the active entity to <code>value</code>,
+   * Sets the value of the property with name <code>propertyID</code> in the active entity to <code>value</code>,
    * basic type validation is performed.
-   * @param propertyName the name of the property to update
+   * @param propertyID the ID of the property to update
    * @param value the new value
    */
-  public final void uiSetValue(final String propertyName, final Object value) {
-    uiSetValue(propertyName, value, true);
+  public final void uiSetValue(final String propertyID, final Object value) {
+    uiSetValue(propertyID, value, true);
   }
 
   /**
-   * Sets the value of the property with name <code>propertyName</code> in the active entity to <code>value</code>
-   * @param propertyName the name of the property to update
+   * Sets the value of the property with name <code>propertyID</code> in the active entity to <code>value</code>
+   * @param propertyID the ID of the property to update
    * @param value the new value
    * @param validate if true basic type validation is performed
    */
-  public final void uiSetValue(final String propertyName, final Object value, final boolean validate) {
-    uiSetValue(Entity.repository.getProperty(getEntityID(), propertyName), value, validate);
+  public final void uiSetValue(final String propertyID, final Object value, final boolean validate) {
+    uiSetValue(Entity.repository.getProperty(getEntityID(), propertyID), value, validate);
   }
 
   /**
@@ -672,23 +672,23 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param propertyName the property identifier
+   * @param propertyID the property identifier
    * @return true if the value of the given property is null
    */
-  public final boolean isValueNull(final String propertyName) {
-    return activeEntity.isValueNull(propertyName);
+  public final boolean isValueNull(final String propertyID) {
+    return activeEntity.isValueNull(propertyID);
   }
 
   public final Object getValue(final Property property) {
     return getValue(property.propertyID);
   }
 
-  public final Object getValue(final String propertyName) {
-    return activeEntity.getValue(propertyName);
+  public final Object getValue(final String propertyID) {
+    return activeEntity.getValue(propertyID);
   }
 
-  public final Entity getEntityValue(final String propertyName) {
-    return activeEntity.getEntityValue(propertyName);
+  public final Entity getEntityValue(final String propertyID) {
+    return activeEntity.getEntityValue(propertyID);
   }
 
   public final Entity getEntityValue(final Property property) {
@@ -1061,37 +1061,37 @@ public class EntityModel implements IRefreshable {
   protected void validateData(final List<Entity> entities, final int action) throws UserException {}
 
   /**
-   * Sets the value of the property with name <code>propertyName</code> in the active entity to <code>value</code>,
+   * Sets the value of the property with name <code>propertyID</code> in the active entity to <code>value</code>,
    * basic type validation is performed. The value change is assumed to be triggered by the model.
-   * @param propertyName the name of the property to update
+   * @param propertyID the ID of the property to update
    * @param value the new value
    */
-  protected final void setValue(final String propertyName, final Object value) {
-    setValue(propertyName, value, true);
+  protected final void setValue(final String propertyID, final Object value) {
+    setValue(propertyID, value, true);
   }
 
   /**
-   * Sets the value of the property with name <code>propertyName</code> in the active entity to <code>value</code>.
+   * Sets the value of the property with name <code>propertyID</code> in the active entity to <code>value</code>.
    * The value change is assumed to be triggered by the model.
-   * @param propertyName the name of the property to update
+   * @param propertyID the ID of the property to update
    * @param value the new value
    * @param validate if true basic type validation is performed
    */
-  protected final void setValue(final String propertyName, final Object value, final boolean validate) {
-    setValue(propertyName, value, validate, true);
+  protected final void setValue(final String propertyID, final Object value, final boolean validate) {
+    setValue(propertyID, value, validate, true);
   }
 
   /**
-   * Sets the value of the property with name <code>propertyName</code> in the active entity to <code>value</code>
-   * @param propertyName the name of the property to update
+   * Sets the value of the property with name <code>propertyID</code> in the active entity to <code>value</code>
+   * @param propertyID the ID of the property to update
    * @param value the new value
    * @param validate if true basic type validation is performed
    * @param isModelChange indicates whether the change is triggered by the model,
    * if false then the UI is assumed to be responsible for the value change
    */
-  protected final void setValue(final String propertyName, final Object value, final boolean validate,
+  protected final void setValue(final String propertyID, final Object value, final boolean validate,
                                 final boolean isModelChange) {
-    setValue(Entity.repository.getProperty(getEntityID(), propertyName), value, validate, isModelChange);
+    setValue(Entity.repository.getProperty(getEntityID(), propertyID), value, validate, isModelChange);
   }
 
   /**

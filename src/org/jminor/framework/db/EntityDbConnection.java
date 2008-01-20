@@ -254,9 +254,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final String entityID, final String propertyName, final Object value) throws Exception {
+  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws Exception {
     return selectSingle(new EntityCriteria(entityID,
-            new PropertyCriteria(Entity.repository.getProperty(entityID, propertyName), SearchType.LIKE, value)));
+            new PropertyCriteria(Entity.repository.getProperty(entityID, propertyID), SearchType.LIKE, value)));
   }
 
   /** {@inheritDoc} */
@@ -295,10 +295,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final String entityID, final String propertyName,
+  public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException {
     return selectMany(new EntityCriteria(entityID,
-            new PropertyCriteria(Entity.repository.getProperty(entityID, propertyName),
+            new PropertyCriteria(Entity.repository.getProperty(entityID, propertyID),
                     values != null && values.length > 1 ? SearchType.IN : SearchType.LIKE, values)));
   }
 

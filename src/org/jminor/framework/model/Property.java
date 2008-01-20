@@ -374,25 +374,25 @@ public class Property implements Serializable {
     public final List<Property> referenceProperties;
     public final boolean isWeakReference;
 
-    public EntityProperty(final String propertyName, final String caption, final String referenceEntityID,
+    public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
                           final Property... referenceProperties) {
-      this(propertyName, caption, referenceEntityID, -1, referenceProperties);
+      this(propertyID, caption, referenceEntityID, -1, referenceProperties);
     }
 
-    public EntityProperty(final String propertyName, final String caption, final String referenceEntityID,
+    public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
                           final int preferredWidth, final Property... referenceProperties) {
-      this(propertyName, caption, referenceEntityID, preferredWidth, false, referenceProperties);
+      this(propertyID, caption, referenceEntityID, preferredWidth, false, referenceProperties);
     }
 
-    public EntityProperty(final String propertyName, final String caption, final String referenceEntityID,
+    public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
                           final int preferredWidth, final boolean isWeakReference,
                           final Property... referenceProperties) {
-      super(propertyName, Type.ENTITY, caption, false, false, preferredWidth);
+      super(propertyID, Type.ENTITY, caption, false, false, preferredWidth);
       for (final Property referenceProperty : referenceProperties)
-        if (referenceProperty.propertyID.equals(propertyName))
-          throw new IllegalArgumentException(referenceEntityID + ", reference property does not have a unique name: " + propertyName);
+        if (referenceProperty.propertyID.equals(propertyID))
+          throw new IllegalArgumentException(referenceEntityID + ", reference property does not have a unique name: " + propertyID);
       if (referenceEntityID == null)
-        throw new IllegalArgumentException("entityID is null: " + propertyName);
+        throw new IllegalArgumentException("entityID is null: " + propertyID);
 
       for (final Property referenceProperty : referenceProperties)
         referenceProperty.setParentProperty(this);
@@ -426,8 +426,8 @@ public class Property implements Serializable {
   //todo better explanation
   public static class MirrorProperty extends Property {
 
-    public MirrorProperty(final String propertyName) {
-      super(propertyName);
+    public MirrorProperty(final String propertyID) {
+      super(propertyID);
     }
   }
 
@@ -439,19 +439,19 @@ public class Property implements Serializable {
     public final String ownerEntityID;
     public final String denormalizedPropertyName;
 
-    public DenormalizedProperty(final String propertyName, final String ownerEntityID,
+    public DenormalizedProperty(final String propertyID, final String ownerEntityID,
                                 final String property) {
-      this(propertyName, ownerEntityID, property, null);
+      this(propertyID, ownerEntityID, property, null);
     }
 
-    public DenormalizedProperty(final String propertyName, final String ownerEntityID,
+    public DenormalizedProperty(final String propertyID, final String ownerEntityID,
                                 final String property, final String caption) {
-      this(propertyName, ownerEntityID, property, caption, -1);
+      this(propertyID, ownerEntityID, property, caption, -1);
     }
 
-    public DenormalizedProperty(final String propertyName, final String ownerEntityID,
+    public DenormalizedProperty(final String propertyID, final String ownerEntityID,
                                 final String property, final String caption, final int preferredWidth) {
-      super(propertyName, Entity.repository.getProperty(ownerEntityID, property).propertyType, caption,
+      super(propertyID, Entity.repository.getProperty(ownerEntityID, property).propertyType, caption,
               caption == null, false, preferredWidth, true);
       this.ownerEntityID = ownerEntityID;
       this.denormalizedPropertyName = property;
@@ -463,17 +463,17 @@ public class Property implements Serializable {
    */
   public static class NonDbProperty extends Property {
 
-    public NonDbProperty(final String propertyName, final Type type) {
-      this(propertyName, type, null);
+    public NonDbProperty(final String propertyID, final Type type) {
+      this(propertyID, type, null);
     }
 
-    public NonDbProperty(final String propertyName, final Type type, final String caption) {
-      this(propertyName, type, caption, -1);
+    public NonDbProperty(final String propertyID, final Type type, final String caption) {
+      this(propertyID, type, caption, -1);
     }
 
-    public NonDbProperty(final String propertyName, final Type type, final String caption,
+    public NonDbProperty(final String propertyID, final Type type, final String caption,
                          final int preferredWidth) {
-      super(propertyName, type, caption, caption == null, false, preferredWidth, false);
+      super(propertyID, type, caption, caption == null, false, preferredWidth, false);
     }
 
     /** {@inheritDoc} */
@@ -491,19 +491,19 @@ public class Property implements Serializable {
     public final String ownerEntityID;
     public final String denormalizedPropertyName;
 
-    public DenormalizedViewProperty(final String propertyName, final String ownerEntityID,
+    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
                                 final String property) {
-      this(propertyName, ownerEntityID, property, null);
+      this(propertyID, ownerEntityID, property, null);
     }
 
-    public DenormalizedViewProperty(final String propertyName, final String ownerEntityID,
+    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
                                 final String property, final String caption) {
-      this(propertyName, ownerEntityID, property, caption, -1);
+      this(propertyID, ownerEntityID, property, caption, -1);
     }
 
-    public DenormalizedViewProperty(final String propertyName, final String ownerEntityID,
+    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
                                 final String property, final String caption, final int preferredWidth) {
-      super(propertyName, Entity.repository.getProperty(ownerEntityID, property).propertyType, caption, preferredWidth);
+      super(propertyID, Entity.repository.getProperty(ownerEntityID, property).propertyType, caption, preferredWidth);
       this.ownerEntityID = ownerEntityID;
       this.denormalizedPropertyName = property;
     }
@@ -516,9 +516,9 @@ public class Property implements Serializable {
 
     private final String subquery;
 
-    public SubQueryProperty(final String propertyName, final Type type, final boolean hidden,
+    public SubQueryProperty(final String propertyID, final Type type, final boolean hidden,
                             final String caption, final String subquery) {
-      super(propertyName, type, caption, hidden || caption == null, true, -1, false);
+      super(propertyID, type, caption, hidden || caption == null, true, -1, false);
       this.subquery = subquery;
     }
 
@@ -545,23 +545,23 @@ public class Property implements Serializable {
     private final int trueValueHash;
     private final int falseValueHash;
 
-    public BooleanProperty(final String propertyName, final String caption) {
-      this(propertyName, Type.INT, caption);
+    public BooleanProperty(final String propertyID, final String caption) {
+      this(propertyID, Type.INT, caption);
     }
 
-    public BooleanProperty(final String propertyName, final Type columnType, final String caption) {
-      this(propertyName, columnType, caption, FrameworkSettings.get().sqlBooleanValueTrue,
+    public BooleanProperty(final String propertyID, final Type columnType, final String caption) {
+      this(propertyID, columnType, caption, FrameworkSettings.get().sqlBooleanValueTrue,
               FrameworkSettings.get().sqlBooleanValueFalse);
     }
 
-    public BooleanProperty(final String propertyName, final Type columnType, final String caption,
+    public BooleanProperty(final String propertyID, final Type columnType, final String caption,
                            final Object trueValue, final Object falseValue) {
-      this(propertyName, columnType, caption, trueValue, falseValue, FrameworkSettings.get().sqlBooleanValueNull);
+      this(propertyID, columnType, caption, trueValue, falseValue, FrameworkSettings.get().sqlBooleanValueNull);
     }
 
-    public BooleanProperty(final String propertyName, final Type columnType, final String caption,
+    public BooleanProperty(final String propertyID, final Type columnType, final String caption,
                            final Object trueValue, final Object falseValue, final Object nullValue) {
-      super(propertyName, Type.BOOLEAN, caption, caption == null);
+      super(propertyID, Type.BOOLEAN, caption, caption == null);
       this.columnType = columnType;
       this.nullValue = nullValue;
       this.trueValue = trueValue;

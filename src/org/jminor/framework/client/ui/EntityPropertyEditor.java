@@ -173,9 +173,9 @@ public class EntityPropertyEditor extends JPanel {
     }
   }
 
-  protected void initUI(final String propertyName) {
+  protected void initUI(final String propertyID) {
     setLayout(new BorderLayout(5,5));
-    setBorder(BorderFactory.createTitledBorder(propertyName));
+    setBorder(BorderFactory.createTitledBorder(propertyID));
     add(this.field, BorderLayout.CENTER);
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnBase.add(getButtonPanel());

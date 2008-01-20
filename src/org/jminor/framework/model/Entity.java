@@ -70,7 +70,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   private transient boolean hasDenormalizedProperties;
 
-  private transient Map<String, EntityKey> referencedKeys;
+  private transient Map<String, EntityKey> referencedKeysCache;
 
   /** Not for general usage, required for serialization */
   public Entity() {}
@@ -189,7 +189,9 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * Initializing a value has the same effect as using <code>setValue()</code> except for Property.EntityProperty's
-   * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set
+   * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set.
+   * It is also assumed that the Entity does not contain a value for the property, so the modified state is
+   * disregarded during the value setting
    * Use with care.
    * @param property the property to initialize
    * @param value the initial value
@@ -435,7 +437,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public EntityKey getReferencedKey(final Property.EntityProperty property) {
-    EntityKey key = referencedKeys == null ? null : referencedKeys.get(property.referenceEntityID);
+    EntityKey key = referencedKeysCache == null ? null : referencedKeysCache.get(property.referenceEntityID);
     if (key != null)
       return key;
 
@@ -446,8 +448,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
               : propertyValues.get(referenceKeyProperty.propertyID);
       if (!EntityUtil.isValueNull(referenceKeyProperty.propertyType, value)) {
         if (key == null)
-          (referencedKeys == null ? referencedKeys = new HashMap<String, EntityKey>()
-                  : referencedKeys).put(property.referenceEntityID, key = new EntityKey(property.referenceEntityID));
+          (referencedKeysCache == null ? referencedKeysCache = new HashMap<String, EntityKey>()
+                  : referencedKeysCache).put(property.referenceEntityID, key = new EntityKey(property.referenceEntityID));
         key.setValue(key.getProperties().get(i).propertyID, value);//check the index thing set EntityResultPacker.getReferenceEntity
       }
       else
@@ -486,37 +488,45 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param property the property
    * @param newValue the new value
    * @param primaryKeyProperty true if the property is part of the primary key
-   * @param initialization true if the property value is being initialized
+   * @param initialization true if the property value is being initialized, if true it is assumed
+   * that this Entity instance does not contain a value for the property, thus the modified state
+   * can be safely disregarded during the value setting
    * @param propagateReferenceValues if set to true then both reference key values and
    * denormalized values are set in case <code>property</code> is a Property.EntityProperty.
+   * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preveting circular references
    */
-  private void doSetValue(final Property property, final Object newValue,
-                           final boolean primaryKeyProperty, final boolean initialization,
-                           boolean propagateReferenceValues) {
+  private void doSetValue(final Property property, final Object newValue, final boolean primaryKeyProperty,
+                          final boolean initialization, boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
     if (newValue == this)
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
-    if (propagateReferenceValues && property instanceof Property.EntityProperty) {
-      referencedKeys = null;
-      setReferenceKeyValues(property, (Entity) newValue);
-      if (hasDenormalizedProperties) {
-        final Collection<Property.DenormalizedProperty> properties =
-                Entity.repository.getDenormalizedProperties(primaryKey.entityID, ((Property.EntityProperty) property).referenceEntityID);
-        setDenormalizedValues(property, (Entity) newValue, properties);
-      }
-    }
+
+    if (propagateReferenceValues && property instanceof Property.EntityProperty)
+      propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
+
     final Object oldValue = initialization ? null :
             primaryKeyProperty ? primaryKey.keyValues.get(property.propertyID) : propertyValues.get(property.propertyID);
     if (primaryKeyProperty)
       primaryKey.setValue(property.propertyID, newValue);
     else
       propertyValues.put(property.propertyID, newValue);
-    
-    if (evtPropertyChanged != null && !EntityUtil.equal(property.propertyType, newValue, oldValue))
-      firePropertyChangeEvent(property, newValue, oldValue, initialization);
+
     if (!initialization)
       updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
+
+    if (evtPropertyChanged != null && !EntityUtil.equal(property.propertyType, newValue, oldValue))
+      firePropertyChangeEvent(property, newValue, oldValue, initialization);
+  }
+
+  private void propagateReferenceValues(final Property.EntityProperty property, final Entity newValue) {
+    referencedKeysCache = null;
+    setReferenceKeyValues(property, newValue);
+    if (hasDenormalizedProperties) {
+      final Collection<Property.DenormalizedProperty> properties =
+              Entity.repository.getDenormalizedProperties(primaryKey.entityID, property.referenceEntityID);
+      setDenormalizedValues(property, newValue, properties);
+    }
   }
 
   /**
