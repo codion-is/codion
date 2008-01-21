@@ -241,7 +241,6 @@ public class EntityModel implements IRefreshable {
     this.tableModel = includeTableModel ? initializeTableModel() : null;
     this.activeEntity = getDefaultValue();
     this.detailModels = initializeDetailModels();
-//    this.propertyNotificationOrder = getPropertyNotificationOrder(Entity.repository.getProperties(entityID).values());
     this.activeEntity.setFirePropertyChangeEvents(true);
     initializeAssociatedModels();
     bindEvents();

@@ -11,8 +11,8 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Defines the database methods the db layer offers
@@ -249,7 +249,7 @@ public interface IEntityDb{
    * @throws org.jminor.common.model.UserException in case of a user exception
    * @throws Exception in case of exception
    */
-  public HashMap<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws Exception;
+  public Map<String,List<Entity>> getDependentEntities(final List<Entity> entities) throws Exception;
 
   /**
    * Selects the number of rows returned according to the given criteria
@@ -268,5 +268,5 @@ public interface IEntityDb{
    * @throws net.sf.jasperreports.engine.JRException in case of a report exception
    * @throws Exception in case of exception
    */
-  public JasperPrint fillReport(final JasperReport report, final HashMap reportParams) throws Exception;
+  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception;
 }

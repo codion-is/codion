@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.db;
 
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
@@ -27,11 +31,6 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
-
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -222,7 +221,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       return;
 
     if (getCheckDependencies()) {
-      final HashMap<String, List<Entity>> dependencies = getDependentEntities(entities);
+      final Map<String, List<Entity>> dependencies = getDependentEntities(entities);
       if (EntityUtil.activeDependencies(dependencies))
         throw new DbException("Entity has dependencies", "", entities.get(0));
     }
@@ -380,7 +379,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public HashMap<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException {
+  public Map<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException {
     final HashMap<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
     if (entities == null || entities.size() == 0)
       return ret;
@@ -414,7 +413,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final HashMap reportParams) throws Exception {
+  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception {
     return JasperFillManager.fillReport(report, reportParams, getConnection());
   }
 

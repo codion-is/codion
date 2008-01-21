@@ -264,7 +264,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final HashMap reportParams) throws JRException, RemoteException {
+  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws JRException, RemoteException {
     try {
       return loggingEntityDbProxy.fillReport(report, reportParams);
     }
@@ -550,7 +550,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public HashMap<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException, UserException, RemoteException {
+  public Map<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException, UserException, RemoteException {
     try {
       return loggingEntityDbProxy.getDependentEntities(entities);
     }

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,7 +25,7 @@ public class EntityUtil {
 
   private EntityUtil() {}
 
-  public static boolean activeDependencies(final HashMap<String, List<Entity>> entities) {
+  public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
     for (final List<Entity> ents : entities.values()) {
       if (ents.size() > 0)
         return true;

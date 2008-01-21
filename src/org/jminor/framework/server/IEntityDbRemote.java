@@ -18,8 +18,8 @@ import org.jminor.framework.model.EntityKey;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface IEntityDbRemote extends IEntityDb, Remote {
 
@@ -241,7 +241,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws org.jminor.common.model.UserException in case of a user exception
    * @throws RemoteException in case of a remote exception
    */
-  public HashMap<String, List<Entity>> getDependentEntities(final List<Entity> entities)
+  public Map<String,List<Entity>> getDependentEntities(final List<Entity> entities)
           throws DbException, UserException, RemoteException;
 
   /**
@@ -261,6 +261,6 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws net.sf.jasperreports.engine.JRException in case of a report exception
    * @throws RemoteException in case of a remote exception
    */
-  public JasperPrint fillReport(final JasperReport report, final HashMap reportParams)
+  public JasperPrint fillReport(final JasperReport report, final Map reportParams)
           throws JRException, RemoteException;
 }

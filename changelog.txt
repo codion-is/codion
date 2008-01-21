@@ -42,4 +42,4 @@
   Removed unused methods from IEntityDb, restructured it and IEntityDbRemote a bit
   Privatized DbConnection.revalidate()
   Added EntityModel.allowInsert/Update/Delete, for overriding. Fx. used when initializing the EntityPanel, also prevents actual insert/update/delete
-  
+  IEntityDb.getDependentEntities now returns a Map instead of a HashMap

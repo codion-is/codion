@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.client.model;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
+import org.apache.log4j.Logger;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
@@ -26,11 +30,6 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
-import org.apache.log4j.Logger;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -336,7 +335,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * @param value Value to set for property 'simpleSearchString'.
-   * @throws UserException in case of exception
    * @see #evtSimpleSearchStringChanged
    */
   public void setSimpleSearchString(final String value) {
@@ -886,7 +884,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
    */
-  public final HashMap<String, List<Entity>> getSelectionDependencies() throws DbException, UserException {
+  public final Map<String, List<Entity>> getSelectionDependencies() throws DbException, UserException {
     try {
       return getDbConnectionProvider().getEntityDb().getDependentEntities(getSelectedEntities());
     }

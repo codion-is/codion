@@ -606,7 +606,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     new SwingWorker() {//just testing this thingy
       protected Object doInBackground() throws Exception {
         try {
-          final HashMap<String, List<Entity>> dependencies;
+          final Map<String, List<Entity>> dependencies;
           try {
             UiUtil.setWaitCursor(true, EntityPanel.this);
             dependencies = model.getTableModel().getSelectionDependencies();
