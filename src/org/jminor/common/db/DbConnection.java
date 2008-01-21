@@ -3,10 +3,9 @@
  */
 package org.jminor.common.db;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
-
-import org.apache.log4j.Logger;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -103,33 +102,6 @@ public abstract class DbConnection {
 
     revalidate();
     evtConnected.fire();
-  }
-
-  public void revalidate() throws UserAccessException, ClassNotFoundException {
-    try {
-      if (connection != null) {
-        log.info("Revalidating connection: " + connectionUser.getUsername());
-        connection.rollback();
-        connection.close();
-      }
-      if (checkConnectionStatement != null && !checkConnectionStatement.isClosed())
-        checkConnectionStatement.close();
-    }
-    catch (SQLException e) {/**/}
-
-    Class.forName(DbUtil.getDatabaseDriver());
-    try {
-      connection = DriverManager.getConnection(DbUtil.getDatabaseURL(), connectionInfo);
-      connection.setAutoCommit(false);
-      checkConnectionStatement = connection.createStatement();
-      connected = true;
-    }
-    catch (SQLException e) {
-      throw new UserAccessException(connectionInfo.getProperty("user"), e);
-    }
-    catch (Exception e) {
-      throw new UserAccessException(connectionInfo.getProperty("user"));
-    }
   }
 
   public synchronized void disconnect() {
@@ -423,6 +395,33 @@ public abstract class DbConnection {
    */
   protected Connection getConnection() {
     return connection;
+  }
+
+  private void revalidate() throws UserAccessException, ClassNotFoundException {
+    try {
+      if (connection != null) {
+        log.info("Revalidating connection: " + connectionUser.getUsername());
+        connection.rollback();
+        connection.close();
+      }
+      if (checkConnectionStatement != null && !checkConnectionStatement.isClosed())
+        checkConnectionStatement.close();
+    }
+    catch (SQLException e) {/**/}
+
+    Class.forName(DbUtil.getDatabaseDriver());
+    try {
+      connection = DriverManager.getConnection(DbUtil.getDatabaseURL(), connectionInfo);
+      connection.setAutoCommit(false);
+      checkConnectionStatement = connection.createStatement();
+      connected = true;
+    }
+    catch (SQLException e) {
+      throw new UserAccessException(connectionInfo.getProperty("user"), e);
+    }
+    catch (Exception e) {
+      throw new UserAccessException(connectionInfo.getProperty("user"));
+    }
   }
 
   private boolean checkConnection() throws Exception {

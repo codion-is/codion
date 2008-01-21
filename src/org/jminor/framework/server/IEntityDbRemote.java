@@ -3,19 +3,17 @@
  */
 package org.jminor.framework.server;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
-import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -25,70 +23,20 @@ import java.util.List;
 
 public interface IEntityDbRemote extends IEntityDb, Remote {
 
-  /**
-   * @param value Value to set for property 'allowCaching'.
-   * @throws java.rmi.RemoteException
-   */
-  public void setAllowCaching(final boolean value) throws RemoteException;
+  /** {@inheritDoc} */
+  public User getUser() throws RemoteException;
 
-  /**
-   * @return Value for property 'allowCaching'.
-   * @throws java.rmi.RemoteException
-   */
-  public boolean getAllowCaching() throws RemoteException;
+  /** {@inheritDoc} */
+  public boolean isConnected() throws RemoteException;
 
-  /**
-   * @param checkReferences Value to set for property 'checkDependencies'.
-   * @throws java.rmi.RemoteException
-   */
-  public void setCheckDependencies(final boolean checkReferences) throws RemoteException;
-
-  /**
-   * @return Value for property 'checkDependencies'.
-   * @throws java.rmi.RemoteException
-   */
-  public boolean getCheckDependencies() throws RemoteException;
-
-  /**
-   * Selects the number of rows returned according to the given criteria
-   * @param criteria the search criteria
-   * @return the number of rows fitting the given criteria
-   * @throws org.jminor.common.db.DbException in case of a db exception
-   * @throws RemoteException in case of a remote exception
-   */
-  public int selectRowCount(final EntityCriteria criteria) throws DbException, RemoteException;
-
-  /**
-   * Executes the given statement
-   * @param statement the statement to execute
-   * @throws DbException in case of a database error
-   * @throws RemoteException in case of remote exception
-   */
-  public void executeStatement(final String statement) throws DbException, RemoteException;
-
-  /**
-   * Executes the given statement
-   * @param statement the statement to execute
-   * @param outParamType the type of the output param, if any, java.sql.Types.*
-   * @throws DbException in case of a database error
-   * @throws RemoteException in case of a remote exception
-   * @return the return paramter if any, otherwise null
-   */
-  public Object executeCallable(final String statement, final int outParamType) throws DbException, RemoteException;
+  /** {@inheritDoc} */
+  public void logout() throws RemoteException;
 
   /**
    * @throws RemoteException in case of a remote exception
    * @return true if this db connection is valid
    */
   public boolean isConnectionValid() throws RemoteException;
-
-  /**
-   * Revalidates a db connection that has been deemed invalid
-   * @throws org.jminor.common.db.UserAccessException when login fails
-   * @throws ClassNotFoundException when a database driver class fails to load
-   * @throws RemoteException in case of a remote exception
-   */
-  public void revalidate()  throws UserAccessException, ClassNotFoundException, RemoteException;
 
   /**
    * @throws RemoteException in case of a remote exception
@@ -111,6 +59,36 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws RemoteException in case of a remote exception
    */
   public void endTransaction(final boolean rollback) throws IllegalStateException, SQLException, RemoteException;
+
+  /**
+   * @param checkReferences Value to set for property 'checkDependencies'.
+   * @throws java.rmi.RemoteException
+   */
+  public void setCheckDependencies(final boolean checkReferences) throws RemoteException;
+
+  /**
+   * @return Value for property 'checkDependencies'.
+   * @throws java.rmi.RemoteException
+   */
+  public boolean getCheckDependencies() throws RemoteException;
+
+  /**
+   * Executes the given statement
+   * @param statement the statement to execute
+   * @throws DbException in case of a database error
+   * @throws RemoteException in case of remote exception
+   */
+  public void executeStatement(final String statement) throws DbException, RemoteException;
+
+  /**
+   * Executes the given statement
+   * @param statement the statement to execute
+   * @param outParamType the type of the output param, if any, java.sql.Types.*
+   * @throws DbException in case of a database error
+   * @throws RemoteException in case of a remote exception
+   * @return the return paramter if any, otherwise null
+   */
+  public Object executeCallable(final String statement, final int outParamType) throws DbException, RemoteException;
 
   /**
    * Returns a TableStatus object for the given table
@@ -267,6 +245,15 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
           throws DbException, UserException, RemoteException;
 
   /**
+   * Selects the number of rows returned according to the given criteria
+   * @param criteria the search criteria
+   * @return the number of rows fitting the given criteria
+   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws RemoteException in case of a remote exception
+   */
+  public int selectRowCount(final EntityCriteria criteria) throws DbException, RemoteException;
+
+  /**
    * Takes a JasperReport object and returns an initialized JasperPrint object
    * @param report the report to fill
    * @param reportParams the report parameters
@@ -276,10 +263,4 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    */
   public JasperPrint fillReport(final JasperReport report, final HashMap reportParams)
           throws JRException, RemoteException;
-
-  public User getUser() throws RemoteException;
-
-  public boolean isConnected() throws RemoteException;
-
-  public void logout() throws RemoteException;
 }

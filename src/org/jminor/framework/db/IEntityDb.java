@@ -3,14 +3,13 @@
  */
 package org.jminor.framework.db;
 
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
-
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,69 +23,28 @@ import java.util.List;
 public interface IEntityDb{
 
   /**
-   * @param value Value to set for property 'allowCaching'.
-   * @throws Exception in case of exception
+   * @return the user being used by this connection
+   * @throws Exception in case of an exception
    */
-  public void setAllowCaching(final boolean value) throws Exception;
+  public User getUser() throws Exception;
 
   /**
-   * @return Value for property 'allowCaching'.
-   * @throws Exception in case of exception
+   * @return true if a connection has been made
+   * @throws Exception in case of an exception
    */
-  public boolean getAllowCaching() throws Exception;
+  public boolean isConnected() throws Exception;
 
   /**
-   * @param checkReferences Value to set for property 'checkDependencies'.
-   * @throws Exception in case of exception
+   * Logs out and disconnects
+   * @throws Exception in case of an exception
    */
-  public void setCheckDependencies(final boolean checkReferences) throws Exception;
-
-  /**
-   * @return Value for property 'checkDependencies'.
-   * @throws Exception in case of exception
-   */
-  public boolean getCheckDependencies() throws Exception;
-
-  /**
-   * Selects the number of rows returned according to the given criteria
-   * @param criteria the search criteria
-   * @return the number of rows fitting the given criteria
-   * @throws org.jminor.common.db.DbException in case of a db exception
-   * @throws Exception in case of exception
-   */
-  public int selectRowCount(final EntityCriteria criteria) throws Exception;
-
-  /**
-   * Executes the given statement
-   * @param statement the statement to execute
-   * @throws org.jminor.common.db.DbException in case of a database error
-   * @throws Exception in case of exception
-   */
-  public void executeStatement(final String statement) throws Exception;
-
-  /**
-   * Executes the given statement
-   * @param statement the statement to execute
-   * @param outParamType the type of the output param, if any, java.sql.Types.*
-   * @throws org.jminor.common.db.DbException in case of a database error
-   * @throws Exception in case of exception
-   * @return the return paramter if any, otherwise null
-   */
-  public Object executeCallable(final String statement, final int outParamType) throws Exception;
+  public void logout() throws Exception;
 
   /**
    * @throws Exception in case of exception
    * @return true if this db connection is valid
    */
   public boolean isConnectionValid() throws Exception;
-
-  /**
-   * Revalidates a db connection that has been deemed invalid
-   * @throws org.jminor.common.db.UserAccessException when login fails
-   * @throws ClassNotFoundException when a database driver class fails to load
-   * @throws Exception in case of exception
-   */
-  public void revalidate() throws Exception;
 
   /**
    * @throws Exception in case of exception
@@ -111,6 +69,36 @@ public interface IEntityDb{
   public void endTransaction(final boolean rollback) throws Exception;
 
   /**
+   * @param checkReferences Value to set for property 'checkDependencies'.
+   * @throws Exception in case of exception
+   */
+  public void setCheckDependencies(final boolean checkReferences) throws Exception;
+
+  /**
+   * @return Value for property 'checkDependencies'.
+   * @throws Exception in case of exception
+   */
+  public boolean getCheckDependencies() throws Exception;
+
+  /**
+   * Executes the given statement
+   * @param statement the statement to execute
+   * @throws org.jminor.common.db.DbException in case of a database error
+   * @throws Exception in case of exception
+   */
+  public void executeStatement(final String statement) throws Exception;
+
+  /**
+   * Executes the given statement
+   * @param statement the statement to execute
+   * @param outParamType the type of the output param, if any, java.sql.Types.*
+   * @throws org.jminor.common.db.DbException in case of a database error
+   * @throws Exception in case of exception
+   * @return the return paramter if any, otherwise null
+   */
+  public Object executeCallable(final String statement, final int outParamType) throws Exception;
+
+  /**
    * Returns a TableStatus object for the given table
    * @param entityID the class of the Entity for which to retrieve the table status
    * @param tableHasAuditColumns set to true if the table in question has audit columns
@@ -118,8 +106,7 @@ public interface IEntityDb{
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of an exception
    */
-  public TableStatus getTableStatus(final String entityID,
-                                    final boolean tableHasAuditColumns) throws Exception;
+  public TableStatus getTableStatus(final String entityID, final boolean tableHasAuditColumns) throws Exception;
 
   /**
    * Inserts the given entities, returning a list containing the
@@ -265,6 +252,15 @@ public interface IEntityDb{
   public HashMap<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws Exception;
 
   /**
+   * Selects the number of rows returned according to the given criteria
+   * @param criteria the search criteria
+   * @return the number of rows fitting the given criteria
+   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws Exception in case of exception
+   */
+  public int selectRowCount(final EntityCriteria criteria) throws Exception;
+
+  /**
    * Takes a JasperReport object using a JDBC datasource and returns an initialized JasperPrint object
    * @param report the report to fill
    * @param reportParams the report parameters
@@ -273,22 +269,4 @@ public interface IEntityDb{
    * @throws Exception in case of exception
    */
   public JasperPrint fillReport(final JasperReport report, final HashMap reportParams) throws Exception;
-
-  /**
-   * @return the user being used by this connection
-   * @throws Exception in case of an exception
-   */
-  public User getUser() throws Exception;
-
-  /**
-   * @return true if a connection has been made
-   * @throws Exception in case of an exception
-   */
-  public boolean isConnected() throws Exception;
-
-  /**
-   * Logs out and disconnects
-   * @throws Exception in case of an exception
-   */
-  public void logout() throws Exception;
 }

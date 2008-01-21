@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
@@ -20,8 +21,6 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
-
-import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
@@ -343,6 +342,27 @@ public class EntityModel implements IRefreshable {
    * @return true if this model allows multiple entities to be updated at a time
    */
   public boolean getAllowMultipleUpdate() {
+    return true;
+  }
+
+  /**
+   * @return true if this model allows records to be inserted
+   */
+  public boolean allowInsert() {
+    return true;
+  }
+
+  /**
+   * @return true if this model allows records to be updated
+   */
+  public boolean allowUpdate() {
+    return true;
+  }
+
+  /**
+   * @return true if this model allows records to be deleted
+   */
+  public boolean allowDelete() {
     return true;
   }
 
@@ -718,6 +738,8 @@ public class EntityModel implements IRefreshable {
   public final void insert(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, inserting is not allowed!");
+    if (!allowInsert())
+      throw new UserException("This is model does not allow inserting!");
 
     log.debug(modelCaption + " - insert "+ Util.getListContents(entities, false));
 
@@ -756,6 +778,8 @@ public class EntityModel implements IRefreshable {
       throw new UserException("This is a read-only model, updating is not allowed!");
     if (!getAllowMultipleUpdate() && entities.size() > 1)
       throw new UserException("Update of multiple entities is not allowed!");
+    if (!allowUpdate())
+      throw new UserException("This is model does not allow updating!");
 
     log.debug(modelCaption + " - update " + Util.getListContents(entities, false));
 
@@ -783,6 +807,8 @@ public class EntityModel implements IRefreshable {
   public final void delete() throws DbException, UserException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, deleting is not allowed!");
+    if (!allowDelete())
+      throw new UserException("This is model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
     log.debug(modelCaption + " - delete " + Util.getListContents(entities, false));
@@ -800,26 +826,26 @@ public class EntityModel implements IRefreshable {
 
   /**
    * NB does not prevent calls to insert()
-   * @return the state used to determine if the insert should be enabled
+   * @return the state used to determine if inserting should be enabled
    */
   public State getAllowInsertState() {
-    return new State("EntityModel.stAllowInsert", true);
+    return new State("EntityModel.stAllowInsert", allowInsert());
   }
 
   /**
    * NB does not prevent calls to update()
-   * @return the state used to determine if the update should be enabled
+   * @return the state used to determine if updating should be enabled
    */
   public State getAllowUpdateState() {
-    return new State("EntityModel.stAllowUpdate", true);
+    return new State("EntityModel.stAllowUpdate", allowUpdate());
   }
 
   /**
    * NB does not prevent calls to delete()
-   * @return the state used to determine if the delete should be enabled
+   * @return the state used to determine if deleting should be enabled
    */
   public State getAllowDeleteState() {
-    return new State("EntityModel.stAllowDelete", true);
+    return new State("EntityModel.stAllowDelete", allowDelete());
   }
 
   /**

@@ -1008,16 +1008,19 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   protected void setupControls() {
     if (!model.isReadOnly()) {
-      controlMap.put(INSERT, getInsertControl());
-      controlMap.put(UPDATE, getUpdateControl());
-      controlMap.put(DELETE, getDeleteControl());
+      if (model.allowInsert())
+        controlMap.put(INSERT, getInsertControl());
+      if (model.allowUpdate())
+        controlMap.put(UPDATE, getUpdateControl());
+      if (model.allowDelete())
+        controlMap.put(DELETE, getDeleteControl());
     }
     controlMap.put(CLEAR, getClearControl());
     if (model.getTableModel() != null) {
-      if (!model.isReadOnly() && model.getAllowMultipleUpdate())
+      if (!model.isReadOnly() && model.allowUpdate() && model.getAllowMultipleUpdate())
         controlMap.put(UPDATE_SELECTED, getUpdateSelectedControl());
       controlMap.put(REFRESH, getRefreshControl());
-      if (!model.isReadOnly())
+      if (!model.isReadOnly() && model.allowDelete())
         controlMap.put(MENU_DELETE, getDeleteSelectedControl());
       controlMap.put(PRINT, getPrintControl());
       controlMap.put(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1311,7 +1314,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private JButton getUpdateButton() {
-    if (model.isReadOnly() || !model.getAllowMultipleUpdate())
+    if (model.isReadOnly() || !model.getAllowMultipleUpdate() || !model.allowUpdate())
       return null;
 
     final ControlSet updateSet = getUpdateSelectedControlSet(null);
@@ -1335,7 +1338,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private JButton getDeleteButton() {
-    if (model.isReadOnly())
+    if (model.isReadOnly() || !model.allowDelete())
       return null;
 
     final Control delete = getDeleteSelectedControl();

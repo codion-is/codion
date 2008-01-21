@@ -39,3 +39,7 @@
   Refactored and cleaned up Entity.doSetValue/setValue and EntityKey.setValue
   EntityDbConnection now initializes all reference property values, instead of leaving out the null references, messes up originalValue
   propertyName replaced with propertyID throughout
+  Removed unused methods from IEntityDb, restructured it and IEntityDbRemote a bit
+  Privatized DbConnection.revalidate()
+  Added EntityModel.allowInsert/Update/Delete, for overriding. Fx. used when initializing the EntityPanel, also prevents actual insert/update/delete
+  

@@ -30,7 +30,6 @@ public abstract class AbstractEntityTestFixture {
       if (!db.isTransactionOpen())
         db.startTransaction();
       db.setCheckDependencies(getCheckDependencies());
-      db.setAllowCaching(getAllowCaching());
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -43,13 +42,6 @@ public abstract class AbstractEntityTestFixture {
    */
   public boolean getCheckDependencies() {
     return false;
-  }
-
-  /**
-   * @return Value for property 'allowCaching'.
-   */
-  public boolean getAllowCaching() {
-    return true;
   }
 
   /**
@@ -71,7 +63,7 @@ public abstract class AbstractEntityTestFixture {
     final IEntityDb db = getIEntityDbProvider().getEntityDb();
     final List<Entity> entities = db.selectMany(Arrays.asList(ret.getPrimaryKey()));
     if (entities.size() > 0)
-      return entities.get(0);      
+      return entities.get(0);
 
     return db.selectSingle(db.insert(Arrays.asList(ret)).get(0));
   }

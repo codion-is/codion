@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.server;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 import org.jminor.common.Constants;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.DbException;
@@ -24,11 +28,6 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
@@ -66,7 +65,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   private static final boolean useSecureConnection =
           Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_SECURE_CONNECTION, "1")) == 1;
   private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
-  
+
   private final IEntityDb loggingEntityDbProxy;
   private boolean loggingEnabled = false;
   private List<LogEntry> log;
@@ -311,19 +310,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public void revalidate() throws UserAccessException, ClassNotFoundException, RemoteException {
-    try {
-      loggingEntityDbProxy.revalidate();
-    }
-    catch (ClassNotFoundException cle) {
-      throw cle;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
   public void startTransaction() throws IllegalStateException, RemoteException {
     try {
       loggingEntityDbProxy.startTransaction();
@@ -353,26 +339,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   public boolean isTransactionOpen() throws RemoteException {
     try {
       return loggingEntityDbProxy.isTransactionOpen();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public boolean getAllowCaching() throws RemoteException {
-    try {
-      return loggingEntityDbProxy.getAllowCaching();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public void setAllowCaching(final boolean val) throws RemoteException {
-    try {
-      loggingEntityDbProxy.setAllowCaching(val);
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
