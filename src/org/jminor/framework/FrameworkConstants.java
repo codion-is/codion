@@ -10,13 +10,13 @@ public class FrameworkConstants {
 
   /**
    * Indicates a local databsae connection
-   * @see %CLIENT_CONNECTION_TYPE
+   * @see #CLIENT_CONNECTION_TYPE
    */
   public static final String CONNECTION_TYPE_LOCAL = "local";
 
   /**
    * Indicates a remote databsae connection
-   * @see %CLIENT_CONNECTION_TYPE
+   * @see #CLIENT_CONNECTION_TYPE
    */
   public static final String CONNECTION_TYPE_REMOTE = "remote";
 
