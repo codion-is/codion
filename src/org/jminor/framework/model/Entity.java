@@ -310,12 +310,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return true if all property values are equal
    */
   public boolean propertyValuesEqual(final Entity entity) {
-    if (!primaryKey.equals(entity.primaryKey))
+    if (!entity.primaryKey.equals(primaryKey))
       return false;
 
-    for (final Map.Entry<String, Object> entry : propertyValues.entrySet()) {
-      if (entity.propertyValues.containsKey(entry.getKey())) {
-        if (!Util.equal(entry.getValue(), entity.propertyValues.get(entry.getKey())))
+    for (final Map.Entry<String, Object> entry : entity.propertyValues.entrySet()) {
+      if (propertyValues.containsKey(entry.getKey())) {
+        if (!Util.equal(entry.getValue(), propertyValues.get(entry.getKey())))
           return false;
       }
       else

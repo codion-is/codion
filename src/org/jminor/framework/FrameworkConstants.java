@@ -9,13 +9,13 @@ package org.jminor.framework;
 public class FrameworkConstants {
 
   /**
-   * Indicates a local databsae connection
+   * Indicates a local database connection
    * @see #CLIENT_CONNECTION_TYPE
    */
   public static final String CONNECTION_TYPE_LOCAL = "local";
 
   /**
-   * Indicates a remote databsae connection
+   * Indicates a remote database connection
    * @see #CLIENT_CONNECTION_TYPE
    */
   public static final String CONNECTION_TYPE_REMOTE = "remote";
@@ -53,7 +53,7 @@ public class FrameworkConstants {
   public static final String SERVER_DB_PORT_PROPERTY = "jminor.server.db.port";
 
   /**
-   * The initial logging status on the server, either 1 (on) or (2) off
+   * The initial logging status on the server, either 1 (on) or (0) off
    */
   public static final String SERVER_LOGGING_ON = "jminor.server.logging.status";
 
@@ -63,7 +63,7 @@ public class FrameworkConstants {
   public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.logging.clientlogsize";
 
   /**
-   * Specifies whether the server should establish connections using a secure sockets layer, 1 or 0
+   * Specifies whether the server should establish connections using a secure sockets layer, 1 (on) or 0 (off)
    */
   public static final String SERVER_SECURE_CONNECTION = "jminor.server.connection.secure";
 
@@ -74,7 +74,7 @@ public class FrameworkConstants {
 
   /**
    * Specifies the initial think time setting for the profiling client
-   * max think time = thinktime, min think time = max think time / 2
+   * (max think time = thinktime, min think time = max think time / 2)
    */
   public static final String PROFILING_THINKTIME_PROPERTY = "jminor.profiling.thinktime";
 

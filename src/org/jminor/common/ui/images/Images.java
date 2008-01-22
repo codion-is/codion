@@ -40,7 +40,7 @@ public class Images {
   public static ImageIcon getImageIcon(final Class resourceOwnerClass, final String resourceName) {
     final URL url = resourceOwnerClass.getResource(resourceName);
     if (url == null)
-      throw new IllegalArgumentException("Resource: " + resourceName + " for class " + resourceOwnerClass + " not found");
+      throw new IllegalArgumentException("Resource: " + resourceName + " for " + resourceOwnerClass + " not found");
 
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }

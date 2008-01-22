@@ -1286,7 +1286,7 @@ public class EntityModel implements IRefreshable {
     tableModel.evtSelectionChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          updateDetailModelsByActiveEntity();
+          updateDetailModelsByActiveEntity();//todo evtActiveEntityChanged
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
