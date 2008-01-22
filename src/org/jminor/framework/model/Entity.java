@@ -499,10 +499,10 @@ public final class Entity implements Externalizable, Comparable<Entity> {
                           final boolean initialization, boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
-    if (newValue == this)
+    if (newValue != null && newValue instanceof Entity && newValue.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
 
-    if (propagateReferenceValues && property instanceof Property.EntityProperty)
+    if (propagateReferenceValues && newValue instanceof Entity)
       propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
