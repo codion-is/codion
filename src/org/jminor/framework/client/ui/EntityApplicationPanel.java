@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.Constants;
 import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
@@ -24,8 +25,6 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.i18n.FrameworkMessages;
-
-import org.apache.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -551,9 +550,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         if (ue instanceof UserCancelException)
           System.exit(0);
 
-        if (initializationDialog != null) {
+        if (initializationDialog != null)
           initializationDialog.dispose();
-        }
 
         if (applicationPanel != null)
           FrameworkUiUtil.handleException(ue, null, applicationPanel);
@@ -645,10 +643,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         throw (UserException) target;
       else if (target instanceof RuntimeException)
         throw (RuntimeException) target;
-      else if (target instanceof Exception)
+      else
         throw new UserException(target);
-
-      throw new RuntimeException(target);
     }
   }
 

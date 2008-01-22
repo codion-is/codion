@@ -363,9 +363,11 @@ public class EntityRepository implements Serializable {
             (idSource == IdSource.ID_SEQUENCE || idSource == IdSource.ID_AUTO_INCREMENT) ?
                     (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null);
 
-    final HashMap<String, Property> properties =
-            new LinkedHashMap<String, Property>(initialPropertyDefinitions.length);
+    final HashMap<String, Property> properties = new LinkedHashMap<String, Property>(initialPropertyDefinitions.length);
     for (final Property property : initialPropertyDefinitions) {
+      if (properties.containsKey(property.propertyID))
+        throw new IllegalArgumentException("Property with ID " + property.propertyID
+                + " has already been defined as: " + properties.get(property.propertyID));
       properties.put(property.propertyID, property);
       if (property instanceof Property.EntityProperty) {
         for (final Property referenceProperty : ((Property.EntityProperty) property).referenceProperties) {
