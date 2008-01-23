@@ -1165,12 +1165,8 @@ public class EntityModel implements IRefreshable {
                                 final boolean isModelChange, final boolean notify) {
     final Object oldValue = getValue(property);
     final Object newValue = doSetValue(property, value, validate);
-
-    if (!Util.equal(newValue, oldValue)) {
-      stEntityActive.setActive(!activeEntity.isNull());
-      if (notify)
+    if (notify && !Util.equal(newValue, oldValue))
         notifyPropertyChanged(property, newValue, oldValue, isModelChange);
-    }
   }
 
   /**
@@ -1286,7 +1282,7 @@ public class EntityModel implements IRefreshable {
     tableModel.evtSelectionChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          updateDetailModelsByActiveEntity();//todo evtActiveEntityChanged
+          updateDetailModelsByActiveEntity();
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();

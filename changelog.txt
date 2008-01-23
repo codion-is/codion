@@ -46,4 +46,5 @@
   Fixed Entity.propertyValuesEqual(), it now uses the entity recieved as parameter as base for the comparison
   EntityRepository.initialize now throws an exception if two properties have the same propertyID
   EntityPanel.handleSave uses tableModel.getSelectionModel().isSelectionEmpty() instead of EntityModel.isActiveEntityNull, which does not really work for non-trivial primary keys
-  
+  EntitModel.setValue does not update stEntityActive anymore, problematic when editing primary key values and thereby activating the state
+  TextBeanPropertyLink now correctly disables the textComponent if LinkType is LinkType.READ_ONLY
