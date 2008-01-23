@@ -588,21 +588,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
-  public void viewEntityHistory() {
-    try {
-      final List<Entity> history = model.getActiveEntityHistory();
-      if (history != null) {
-        final EntityPanel panel = FrameworkUiUtil.createStaticEntityPanel(history, getModel().getDbConnectionProvider(),
-                getModel().getEntityID(), false);
-        FrameworkUiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
-                FrameworkMessages.get(FrameworkMessages.CHANGE_HISTORY) + ": " + model.getActiveEntityCopy(), false, true, null);
-      }
-    }
-    catch (UserException e) {
-      handleException(e);
-    }
-  }
-
   public void viewSelectionDependencies() {
     new SwingWorker() {//just testing this thingy
       protected Object doInBackground() throws Exception {
@@ -678,18 +663,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             model.getTableModel().stSelectionEmpty.getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
-  }
-
-  public Control getViewHistoryControl() {
-    final State enabled = new State();
-    getModel().evtActiveEntityChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        final List<Entity> history = getModel().getActiveEntityHistory();
-        enabled.setActive(history != null && history.size() > 0);
-      }
-    });
-    return ControlFactory.methodControl(this, "viewEntityHistory", FrameworkMessages.get(FrameworkMessages.CHANGE_HISTORY),
-            enabled, null, -1, null, Images.loadImage("Time16.gif"));
   }
 
   public Control getPrintControl() {
@@ -1045,8 +1018,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       ret.add(getUpdateSelectedControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED)));
       seperatorRequired = true;
     }
-    if (model.isEntityHistoryEnabled())
-      ret.add(getViewHistoryControl());
     if (controlMap.containsKey(MENU_DELETE)) {
       ret.add(controlMap.get(MENU_DELETE));
       seperatorRequired = true;

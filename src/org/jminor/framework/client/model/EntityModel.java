@@ -203,13 +203,7 @@ public class EntityModel implements IRefreshable {
    */
   private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
 
-  /**
-   * Keeps the history of updated entities
-   */
-  private final Map<EntityKey, List<Entity>> entityHistory = new HashMap<EntityKey, List<Entity>>();
-
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
-  private boolean entityHistoryEnabled = false;
 
   /**
    * Initiates a new EntityModel
@@ -252,20 +246,6 @@ public class EntityModel implements IRefreshable {
    */
   public String getEntityID() {
     return entityID;
-  }
-
-  /**
-   * @return Value for property 'activeEntityHistory'.
-   */
-  public List<Entity> getActiveEntityHistory() {
-    return entityHistory.get(activeEntity.getPrimaryKey());
-  }
-
-  /**
-   * @return Value for property 'entityHistoryEnabled'.
-   */
-  public boolean isEntityHistoryEnabled() {
-    return entityHistoryEnabled;
   }
 
   /**
@@ -788,8 +768,6 @@ public class EntityModel implements IRefreshable {
     for (final Entity entity : doUpdate(entities))
       lastUpdatedEntities.add(entity);
 
-    if (entityHistoryEnabled)
-      addToEntityHistory(entities);
     evtEntitiesUpdated.fire();
     refreshDetailModelsAfterInsertOrUpdate();
   }
@@ -1387,16 +1365,6 @@ public class EntityModel implements IRefreshable {
     activeEntity.setValue(property.propertyID, value, validate);
 
     return value;
-  }
-
-  private void addToEntityHistory(final List<Entity> entities) {
-    for (final Entity entity : entities) {
-      List<Entity> history = entityHistory.get(entity.getPrimaryKey());
-      if (history == null)
-        entityHistory.put(entity.getPrimaryKey(), history = new ArrayList<Entity>());
-
-      history.add(entity.getOriginalCopy());
-    }
   }
 
   private void notifyPropertyChanged(final Property property, final Object newValue, final Object oldValue,
