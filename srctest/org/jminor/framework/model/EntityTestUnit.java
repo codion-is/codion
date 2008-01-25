@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class EntityTestUnit extends AbstractEntityTestUnit {
 
-  public EntityTestUnit(final String name, final AbstractEntityTestFixture fixture, final String entityID) {
+  public EntityTestUnit(final String name, final EntityTestFixture fixture, final String entityID) {
     super(name, fixture, entityID);
   }
 

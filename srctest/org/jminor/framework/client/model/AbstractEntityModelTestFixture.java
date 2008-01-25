@@ -4,9 +4,9 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.model.AbstractEntityTestFixture;
+import org.jminor.framework.model.EntityTestFixture;
 
-public abstract class AbstractEntityModelTestFixture extends AbstractEntityTestFixture {
+public abstract class AbstractEntityModelTestFixture extends EntityTestFixture {
 
   protected final EntityModel testModel;
 

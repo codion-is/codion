@@ -768,6 +768,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
 
+  public Control getControl(final String controlCode) {
+    return controlMap.get(controlCode);
+  }
+
   protected void showPanelTab() {
     final JTabbedPane tp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, this);
     if (tp != null)

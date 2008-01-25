@@ -16,12 +16,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractEntityTestFixture {
+public class EntityTestFixture {
 
   public final IEntityDb db;
   private static IEntityDbProvider dbProvider;
 
-  public AbstractEntityTestFixture() {
+  public EntityTestFixture() {
     try {
       if (dbProvider == null)
         dbProvider = EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName());

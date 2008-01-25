@@ -21,7 +21,7 @@
   Updated TipsAndTricks.txt
   Added FrameworkSettings.transferTextFieldFocusOnEnter
   Added UiUtil.transferFocusOnEnter(JTextField)
-  IntField and FrameworkUiUtil changed according to the above
+  TextFieldPlus, IntField, and FrameworkUiUtil changed according to the above
   South toolbar is now focusable
   Search sensitive refresh button now only visible when the search panel is visible
   Tentative fix of ToggleBeanPropertyLink
@@ -37,7 +37,7 @@
   Added boolean parameter propagateReferenceValues to Entity.doSetValue, selectMany->initializeValue from 7.1% to 0.4%
   FilteredComboBoxModel no longer sets the selected value to null if it does not exist after filtering
   Refactored and cleaned up Entity.doSetValue/setValue and EntityKey.setValue
-  EntityDbConnection now initializes all reference property values, instead of leaving out the null references, messes up originalValue
+  EntityDbConnection now initializes all reference property values, instead of leaving out the null references, which messes up originalValue
   propertyName replaced with propertyID throughout
   Removed unused methods from IEntityDb, restructured it and IEntityDbRemote a bit
   Privatized DbConnection.revalidate()

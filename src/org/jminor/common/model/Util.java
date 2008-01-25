@@ -3,12 +3,11 @@
  */
 package org.jminor.common.model;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jminor.common.Constants;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -26,6 +25,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -401,5 +401,29 @@ public class Util {
       e.printStackTrace();
       return "N/A";
     }
+  }
+
+  public static Date getFirstDayOfLastMonth() {
+    final Calendar c = Calendar.getInstance();
+    c.add(Calendar.MONTH, -1);
+    c.set(Calendar.DAY_OF_MONTH, 1);
+
+    return c.getTime();
+  }
+
+  public static Date getLastDayOfLastMonth() {
+    final Calendar c = Calendar.getInstance();
+    c.add(Calendar.MONTH, -1);
+    c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+    return c.getTime();
+  }
+
+  public static Date getFirstDayOfMonth(final int toAdd) {
+    final Calendar c = Calendar.getInstance();
+    c.add(Calendar.MONTH, toAdd);
+    c.set(Calendar.DAY_OF_MONTH, 1);
+
+    return c.getTime();
   }
 }

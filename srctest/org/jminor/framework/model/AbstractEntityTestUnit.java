@@ -3,11 +3,10 @@
  */
 package org.jminor.framework.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
-
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,20 +15,20 @@ import java.util.List;
 
 public abstract class AbstractEntityTestUnit extends TestCase {
 
-  private final AbstractEntityTestFixture fixture;
+  private final EntityTestFixture fixture;
   private String entityID;
   private HashMap<String, Entity> referenceEntities = new HashMap<String, Entity>();
 
-  public AbstractEntityTestUnit(final String name, final AbstractEntityTestFixture fixture) {
+  public AbstractEntityTestUnit(final String name, final EntityTestFixture fixture) {
     this(name, fixture, (String) null);
   }
 
-  public AbstractEntityTestUnit(final String name, final AbstractEntityTestFixture fixture,
+  public AbstractEntityTestUnit(final String name, final EntityTestFixture fixture,
                                 final Class<Entity> entityID) {
     this(name, fixture, entityID.getName());
   }
 
-  public AbstractEntityTestUnit(final String name, final AbstractEntityTestFixture fixture,
+  public AbstractEntityTestUnit(final String name, final EntityTestFixture fixture,
                                 final String entityID) {
     super(name);
     this.fixture = fixture;

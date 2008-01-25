@@ -41,6 +41,7 @@ public class EntityModel implements IRefreshable {
 
   /** Code for the insert action */
   public static final int INSERT = 1;
+
   /** Code for the update action */
   public static final int UPDATE = 2;
 

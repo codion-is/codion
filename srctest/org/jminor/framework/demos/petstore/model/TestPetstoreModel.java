@@ -3,15 +3,14 @@
  */
 package org.jminor.framework.demos.petstore.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.model.AbstractEntityTestFixture;
-
-import junit.framework.TestCase;
+import org.jminor.framework.model.EntityTestFixture;
 
 /**
  * User: Björn Darri
@@ -27,7 +26,7 @@ public class TestPetstoreModel extends TestCase {
     FrameworkSettings.get().useQueryRange = false;
     FrameworkSettings.get().useSmartRefresh = false;
     try {
-      db = new AbstractEntityTestFixture() {
+      db = new EntityTestFixture() {
         public User getTestUser() throws UserCancelException {
           return new User("scott", "tiger");
         }

@@ -5,8 +5,8 @@ package org.jminor.framework.demos.empdept.model;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.framework.model.AbstractEntityTestFixture;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityTestFixture;
 
 import java.util.Collection;
 import java.util.Date;
@@ -17,7 +17,7 @@ import java.util.HashMap;
  * Date: 13.1.2008
  * Time: 23:06:05
  */
-public class EmpDeptTestFixture extends AbstractEntityTestFixture {
+public class EmpDeptTestFixture extends EntityTestFixture {
 
   public EmpDeptTestFixture() {
     new EmpDept();
