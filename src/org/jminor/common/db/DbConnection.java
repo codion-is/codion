@@ -142,9 +142,6 @@ public abstract class DbConnection {
   }
 
   public void endTransaction(final boolean rollback) throws SQLException {
-    if (!isTransactionOpen())
-      throw new IllegalStateException("Transaction already closed");
-
     try {
       if (rollback)
         connection.rollback();
@@ -152,7 +149,8 @@ public abstract class DbConnection {
         connection.commit();
     }
     finally {
-      setTransactionOpen(false);
+      if (isTransactionOpen())
+        setTransactionOpen(false);
     }
   }
 

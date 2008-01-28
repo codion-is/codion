@@ -60,9 +60,9 @@ public interface IEntityDb{
   public void startTransaction() throws Exception;
 
   /**
-   * Ends the transaction on this connection
+   * Ends the transaction on this connection, if no transaction is open
+   * then only commit or rollback is performed
    * @param rollback if true then a rollback is performed, otherwise commit
-   * @throws IllegalStateException if a transaction is not open
    * @throws java.sql.SQLException in case of a sql exception
    * @throws Exception in case of an exception
    */
@@ -170,6 +170,17 @@ public interface IEntityDb{
    * @throws Exception in case of exception
    */
   public Entity selectSingle(final EntityKey key) throws Exception;
+
+  /**
+   * Selects for update the entity with the given key.
+   * The update lock is released when the entity is subsequently updated or via endTransaction(true);
+   * @param primaryKey the key of the entity to select for update
+   * @return the entity
+   * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.DbException in case the entity is already locked by another user
+   * @throws Exception in case of exception
+   */
+  public Entity selectForUpdate(final EntityKey primaryKey) throws Exception;
 
   /**
    * Selects a single entity according to the specified criteria, throws a DbException

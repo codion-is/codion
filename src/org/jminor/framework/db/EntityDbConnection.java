@@ -263,6 +263,43 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return selectSingle(new EntityCriteria(primaryKey.getEntityID(), new EntityKeyCriteria(primaryKey)));
   }
 
+  /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
+  public Entity selectForUpdate(final EntityKey primaryKey) throws Exception {
+    if (isTransactionOpen())
+      throw new IllegalStateException("Cannot use select for update within an open transaction");
+
+    String sql = null;
+    try {
+      final EntityCriteria criteria = new EntityCriteria(primaryKey.getEntityID(), new EntityKeyCriteria(primaryKey));
+      final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
+      String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
+      final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
+      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
+      sql += " for update nowait";
+
+      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
+      if (result.size() == 0)
+        throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
+      if (result.size() > 1) {//this means we got the lock for more than one record, better release it
+        try {
+          endTransaction(true);
+        }
+        catch (SQLException e) {/**/}
+        throw new DbException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
+      }
+
+      if (!lastQueryResultCached())
+        setReferencedEntities(result);
+
+      return result.get(0);
+    }
+    catch (SQLException sqle) {
+      log.info(sql);
+      log.error(this, sqle);
+      throw new DbException(sqle, sql);
+    }
+  }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final EntityCriteria criteria) throws DbException {

@@ -445,6 +445,19 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
+  public Entity selectForUpdate(final EntityKey key) throws DbException, RemoteException {
+    try {
+      return loggingEntityDbProxy.selectForUpdate(key);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
   public Entity selectSingle(final EntityCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(criteria);

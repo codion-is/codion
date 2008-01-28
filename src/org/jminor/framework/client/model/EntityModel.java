@@ -40,10 +40,14 @@ public class EntityModel implements IRefreshable {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
-  /** Code for the insert action */
+  /**
+   * Code for the insert action
+   */
   public static final int INSERT = 1;
 
-  /** Code for the update action */
+  /**
+   * Code for the update action
+   */
   public static final int UPDATE = 2;
 
   /**
@@ -207,6 +211,8 @@ public class EntityModel implements IRefreshable {
 
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
+  private State stStrictEditing = new State(FrameworkSettings.get().strictEditing);
+
   /**
    * Initiates a new EntityModel
    * @param modelCaption a caption describing this EntityModel
@@ -248,6 +254,10 @@ public class EntityModel implements IRefreshable {
    */
   public String getEntityID() {
     return entityID;
+  }
+
+  public void setStrictEditMode(final boolean strictEditMode) {
+    this.stStrictEditing.setActive(strictEditMode);
   }
 
   /**
@@ -1146,7 +1156,7 @@ public class EntityModel implements IRefreshable {
     final Object oldValue = getValue(property);
     final Object newValue = doSetValue(property, value, validate);
     if (notify && !Util.equal(newValue, oldValue))
-        notifyPropertyChanged(property, newValue, oldValue, isModelChange);
+      notifyPropertyChanged(property, newValue, oldValue, isModelChange);
   }
 
   /**
@@ -1241,6 +1251,30 @@ public class EntityModel implements IRefreshable {
         }
       }
     });
+    activeEntity.getModifiedState().evtStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          if (stStrictEditing.isActive() && !isActiveEntityNull()) {
+            setActiveEntityWriteLock(activeEntity.getModifiedState().isActive());
+          }
+        }
+        catch (UserException e1) {
+          throw e1.getRuntimeException();
+        }
+      }
+    });
+    evtActiveEntityChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          if (stStrictEditing.isActive()) {
+            setActiveEntityWriteLock(false);
+          }
+        }
+        catch (UserException e1) {
+          throw e1.getRuntimeException();
+        }
+      }
+    });
     if (tableModel == null) {
       evtActiveEntityChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -1252,6 +1286,22 @@ public class EntityModel implements IRefreshable {
           }
         }
       });
+    }
+  }
+
+  private void setActiveEntityWriteLock(final boolean status) throws UserException {
+    try {
+      if (status) {
+        getDbConnectionProvider().getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
+        System.out.println("######################### locked: " + activeEntity);
+      }
+      else {
+        getDbConnectionProvider().getEntityDb().endTransaction(true);
+        System.out.println("######################### unlocked: " + activeEntity);
+      }
+    }
+    catch (Exception e) {
+      throw new UserException(e);
     }
   }
 

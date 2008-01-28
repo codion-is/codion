@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * Settings used throughout the framework
  */
-public class FrameworkSettings implements Serializable {  
+public class FrameworkSettings implements Serializable {
 
   public boolean useQueryRange = true;
   public boolean allModelsEnabled = false;
@@ -30,6 +30,7 @@ public class FrameworkSettings implements Serializable {
   public long printMemoryUsageInterval = 0;
   public String usernamePrefix = "ops$";
   public boolean transferTextFieldFocusOnEnter = true;
+  public boolean strictEditing = false;
 
   private final static FrameworkSettings instance = new FrameworkSettings();
 
