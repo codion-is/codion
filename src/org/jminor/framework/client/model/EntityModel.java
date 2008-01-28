@@ -212,6 +212,7 @@ public class EntityModel implements IRefreshable {
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
   private State stStrictEditing = new State(FrameworkSettings.get().strictEditing);
+  private State stStrictEditLock = new State(false);
 
   /**
    * Initiates a new EntityModel
@@ -1289,22 +1290,6 @@ public class EntityModel implements IRefreshable {
     }
   }
 
-  private void setActiveEntityWriteLock(final boolean status) throws UserException {
-    try {
-      if (status) {
-        getDbConnectionProvider().getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
-        System.out.println("######################### locked: " + activeEntity);
-      }
-      else {
-        getDbConnectionProvider().getEntityDb().endTransaction(true);
-        System.out.println("######################### unlocked: " + activeEntity);
-      }
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
-  }
-
   protected void bindTableModelEvents() {
     if (tableModel == null)
       return;
@@ -1417,6 +1402,25 @@ public class EntityModel implements IRefreshable {
     activeEntity.setValue(property.propertyID, value, validate);
 
     return value;
+  }
+
+  private void setActiveEntityWriteLock(final boolean status) throws UserException {
+    if (stStrictEditLock.isActive() == status)
+      return;
+    try {
+      if (status) {
+        getDbConnectionProvider().getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
+        System.out.println("######################### locked: " + activeEntity.getPrimaryKey());
+      }
+      else {
+        getDbConnectionProvider().getEntityDb().endTransaction(true);
+        System.out.println("######################### unlocked: " + activeEntity.getPrimaryKey());
+      }
+      stStrictEditLock.setActive(status);
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
   }
 
   private void notifyPropertyChanged(final Property property, final Object newValue, final Object oldValue,
