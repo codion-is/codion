@@ -26,6 +26,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
@@ -224,7 +225,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public void setSortingStatus(final String propertyID, final int status) {
     int idx = 0;
     int columnIndex = -1;
-    for (final Property property : Entity.repository.getVisibleProperties(getEntityID())) {
+    for (final Property property : EntityRepository.get().getVisibleProperties(getEntityID())) {
       if (property.propertyID.equals(propertyID)) {
         columnIndex = idx;
         break;
@@ -412,7 +413,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getEntityAtViewIndex(row);
 
-    return Entity.repository.getEntityProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return EntityRepository.get().getEntityProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
   public Collection<Object> getValues(final Property property, final boolean selectedOnly) {
@@ -662,7 +663,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   public void setExactSearchValue(final String entityID, final List<Entity> referenceEntities) throws UserException {
     final PropertySearchModel searchModel = getPropertySearchModel(
-            Entity.repository.getEntityProperty(getEntityID(), entityID).propertyID);
+            EntityRepository.get().getEntityProperty(getEntityID(), entityID).propertyID);
     if (searchModel != null) {
       searchModel.initialize();
       searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
@@ -1025,7 +1026,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   protected List<Property> getSearchableProperties() {
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : Entity.repository.getProperties(getEntityID(), false)) {
+    for (final Property property : EntityRepository.get().getProperties(getEntityID(), false)) {
       if (property.isDatabaseProperty())
         ret.add(property);
     }
@@ -1094,7 +1095,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   protected List<Property> initColumnProperties() {
-    final Collection<Property> properties = Entity.repository.getVisibleProperties(getEntityID());
+    final Collection<Property> properties = EntityRepository.get().getVisibleProperties(getEntityID());
 
     return Arrays.asList(properties.toArray(new Property[properties.size()]));
   }

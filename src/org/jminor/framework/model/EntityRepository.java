@@ -46,7 +46,7 @@ public class EntityRepository implements Serializable {
 
   private EntityRepository() {}
 
-  static EntityRepository get() {
+  public static EntityRepository get() {
     if (instance == null)
       instance = new EntityRepository();
 

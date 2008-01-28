@@ -169,7 +169,7 @@ public class EntityUtil {
    */
   public static String getInsertSQL(final Entity entity) {
     final StringBuffer sql = new StringBuffer("insert into ");
-    sql.append(Entity.repository.getTableName(entity.getEntityID())).append("(");
+    sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append("(");
     final StringBuffer columnValues = new StringBuffer(") values(");
     final List<Property> insertColumns = getInsertProperties(entity.getEntityID());
     int columnIndex = 0;
@@ -196,7 +196,7 @@ public class EntityUtil {
       throw new RuntimeException("Can not get update sql since the entity is unmodified");
 
     final StringBuffer sql = new StringBuffer("update ");
-    sql.append(Entity.repository.getTableName(entity.getEntityID())).append(" set ");
+    sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = getUpdateProperties(entity);
     int columnIndex = 0;
     for (final Property property : properties) {
@@ -214,7 +214,7 @@ public class EntityUtil {
    * @return a query for deleting this entity instance
    */
   public static String getDeleteSQL(final Entity entity) {
-    return "delete from " + Entity.repository.getTableName(entity.getEntityID()) + getWhereCondition(entity);
+    return "delete from " + EntityRepository.get().getTableName(entity.getEntityID()) + getWhereCondition(entity);
   }
 
   /**
@@ -281,7 +281,7 @@ public class EntityUtil {
   }
 
   public static void printPropertyValues(final Entity entity) {
-    final Collection<Property> properties = Entity.repository.getProperties(entity.getEntityID(), true);
+    final Collection<Property> properties = EntityRepository.get().getProperties(entity.getEntityID(), true);
     System.out.println("*********************[" + entity + "]***********************");
     for (final Property property : properties) {
       final Object value = entity.getValue(property.propertyID);
@@ -340,7 +340,7 @@ public class EntityUtil {
    * @return a SQL string version of value
    */
   private static String getSQLStringValue(final String entityID, final String propertyID, final Object value) {
-    return getSQLStringValue(Entity.repository.getProperties(entityID).get(propertyID), value);
+    return getSQLStringValue(EntityRepository.get().getProperties(entityID).get(propertyID), value);
   }
 
   /**
@@ -350,8 +350,8 @@ public class EntityUtil {
    */
   private static List<Property> getInsertProperties(final String entityID) {
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : Entity.repository.getDatabaseProperties(entityID,
-            Entity.repository.getIdSource(entityID) != IdSource.ID_AUTO_INCREMENT, false, true)) {
+    for (final Property property : EntityRepository.get().getDatabaseProperties(entityID,
+            EntityRepository.get().getIdSource(entityID) != IdSource.ID_AUTO_INCREMENT, false, true)) {
       if (!(property instanceof Property.EntityProperty))
         ret.add(property);
     }
@@ -365,7 +365,7 @@ public class EntityUtil {
    */
   private static Collection<Property> getUpdateProperties(final Entity entity) {
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : Entity.repository.getDatabaseProperties(entity.getEntityID(), true, false, false))
+    for (final Property property : EntityRepository.get().getDatabaseProperties(entity.getEntityID(), true, false, false))
       if (entity.isModified(property.propertyID) && !(property instanceof Property.EntityProperty))
         ret.add(property);
 

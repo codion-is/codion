@@ -134,7 +134,7 @@ public class PropertyCriteria implements ICriteria {
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
     final EntityKey entityKey = (EntityKey) values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            Entity.repository.getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
+            EntityRepository.get().getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
       set.addCriteria(new PropertyCriteria(
               ((Property.EntityProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
@@ -145,7 +145,7 @@ public class PropertyCriteria implements ICriteria {
 
   private String getMultiReferenceCriteriaString() {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            Entity.repository.getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
+            EntityRepository.get().getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
     if (primaryKeyProperties.size() > 1) {
       final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
       for (final Object entityKey : values) {

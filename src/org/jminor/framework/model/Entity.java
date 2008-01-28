@@ -26,11 +26,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   /**
    * A central repository containing information about loaded entity definitions
    */
-  public static final EntityRepository repository;
-
-  static {
-    repository = EntityRepository.get();
-  }
+  private static final EntityRepository repository = EntityRepository.get();
 
   /**
    * The primary key of this entity
@@ -417,7 +413,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       originalPropertyValues.putAll(sourceEntity.originalPropertyValues);
     }
     if (evtPropertyChanged != null)
-      for (final Property property : Entity.repository.getProperties(getEntityID(), true))
+      for (final Property property : repository.getProperties(getEntityID(), true))
         firePropertyChangeEvent(property, getRawValue(property.propertyID), null, true);
 
     if (stModified != null)
@@ -524,7 +520,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     setReferenceKeyValues(property, newValue);
     if (hasDenormalizedProperties) {
       final Collection<Property.DenormalizedProperty> properties =
-              Entity.repository.getDenormalizedProperties(primaryKey.entityID, property.referenceEntityID);
+              repository.getDenormalizedProperties(primaryKey.entityID, property.referenceEntityID);
       setDenormalizedValues(property, newValue, properties);
     }
   }

@@ -46,6 +46,7 @@ import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
@@ -624,8 +625,8 @@ public class FrameworkUiUtil {
     else if (dbException.isInsertNullValueException()) {
       String columnName = dbException.getNullErrorColumnName().toLowerCase();
       if (entityID != null) {
-        if (Entity.repository.hasProperty(entityID, columnName)) {
-          final Property property = Entity.repository.getProperty(entityID, columnName);
+        if (EntityRepository.get().hasProperty(entityID, columnName)) {
+          final Property property = EntityRepository.get().getProperty(entityID, columnName);
           if (property.getCaption() != null)
             columnName = property.getCaption();
         }
@@ -1097,7 +1098,7 @@ public class FrameworkUiUtil {
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state,
                                                        final Object nullValue) {
-    return createPropertyComboBox(Entity.repository.getProperty(entityModel.getEntityID(), propertyID),
+    return createPropertyComboBox(EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID),
             entityModel, refreshEvent, state, nullValue);
   }
 

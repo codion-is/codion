@@ -184,7 +184,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * @return the data type of the value of this property 
+   * @return the data type of the value of this property
    */
   public Type getPropertyType() {
     return propertyType;
@@ -451,7 +451,7 @@ public class Property implements Serializable {
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
                                 final String property, final String caption, final int preferredWidth) {
-      super(propertyID, Entity.repository.getProperty(ownerEntityID, property).propertyType, caption,
+      super(propertyID, EntityRepository.get().getProperty(ownerEntityID, property).propertyType, caption,
               caption == null, false, preferredWidth, true);
       this.ownerEntityID = ownerEntityID;
       this.denormalizedPropertyName = property;
@@ -503,7 +503,7 @@ public class Property implements Serializable {
 
     public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
                                 final String property, final String caption, final int preferredWidth) {
-      super(propertyID, Entity.repository.getProperty(ownerEntityID, property).propertyType, caption, preferredWidth);
+      super(propertyID, EntityRepository.get().getProperty(ownerEntityID, property).propertyType, caption, preferredWidth);
       this.ownerEntityID = ownerEntityID;
       this.denormalizedPropertyName = property;
     }

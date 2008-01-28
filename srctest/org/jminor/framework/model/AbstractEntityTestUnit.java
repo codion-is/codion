@@ -65,7 +65,7 @@ public abstract class AbstractEntityTestUnit extends TestCase {
   }
 
   public void addAllReferenceIDs(final String entityID, final Collection<String> container) {
-    final Collection<Property.EntityProperty> properties = Entity.repository.getEntityProperties(entityID);
+    final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);
     for (final Property.EntityProperty property : properties) {
       final String entityValueClass = property.referenceEntityID;
       if (entityValueClass != null) {

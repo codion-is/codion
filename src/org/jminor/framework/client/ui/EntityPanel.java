@@ -27,6 +27,7 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
@@ -1453,7 +1454,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private List<Property> getUpdateProperties() {
-    final List<Property> ret = Entity.repository.getDatabaseProperties(getModel().getEntityID(), false, false, false);
+    final List<Property> ret = EntityRepository.get().getDatabaseProperties(getModel().getEntityID(), false, false, false);
     final ListIterator<Property> iter = ret.listIterator();
     while(iter.hasNext())
       if (iter.next().hasParentProperty())

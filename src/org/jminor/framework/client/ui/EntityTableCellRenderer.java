@@ -8,7 +8,7 @@ import org.jminor.common.model.formats.FullDateFormat;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -101,7 +101,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   private Property getProperty(final int column) {
-    return Entity.repository.getPropertyAtViewIndex(tableModel.getEntityID(), column);
+    return EntityRepository.get().getPropertyAtViewIndex(tableModel.getEntityID(), column);
   }
 
   /**

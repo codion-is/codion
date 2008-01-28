@@ -65,7 +65,7 @@ public class EntityKey implements Externalizable {
    */
   public EntityKey(final String entityID) {
     this.entityID = entityID;
-    this.properties = Entity.repository.getPrimaryKeyProperties(entityID);
+    this.properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
     this.columnCount = properties.size();
     this.isSingleIntegerKey = columnCount == 1 && properties.get(0).propertyType == Type.INT;
     this.keyValues = new HashMap<String, Object>(columnCount);
@@ -105,7 +105,7 @@ public class EntityKey implements Externalizable {
    * @return the column names of the properties comprising this key
    */
   public String[] getKeyColumnNames() {
-    return Entity.repository.getPrimaryKeyColumnNames(entityID);
+    return EntityRepository.get().getPrimaryKeyColumnNames(entityID);
   }
 
   /**
@@ -281,7 +281,7 @@ public class EntityKey implements Externalizable {
     isSingleIntegerKey = in.readBoolean();
     hashCodeDirty = in.readBoolean();
     hashCode = in.readInt();
-    properties = Entity.repository.getPrimaryKeyProperties(entityID);
+    properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
   }
 
   public static List<? extends EntityKey> copyEntityKeys(final List<EntityKey> entityKeys) {

@@ -42,11 +42,11 @@ public class EntityProxy {
   }
 
   public String getStringValue(final Entity entity, final String propertyID) {
-    return getStringValue(entity, Entity.repository.getProperty(entity.getEntityID(), propertyID));
+    return getStringValue(entity, EntityRepository.get().getProperty(entity.getEntityID(), propertyID));
   }
 
   public String getValueAsString(final Entity entity, final String propertyID) {
-    return getValueAsString(entity, Entity.repository.getProperty(entity.getEntityID(), propertyID));
+    return getValueAsString(entity, EntityRepository.get().getProperty(entity.getEntityID(), propertyID));
   }
 
   public Entity getEntityValue(final Entity entity, final Property property) {
@@ -120,7 +120,7 @@ public class EntityProxy {
 
   private Object getDenormalizedValue(final Entity entity, final Property.DenormalizedViewProperty denormalizedViewProperty) {
     final Property.EntityProperty ownerProperty =
-            Entity.repository.getEntityProperty(entity.getEntityID(), denormalizedViewProperty.ownerEntityID);
+            EntityRepository.get().getEntityProperty(entity.getEntityID(), denormalizedViewProperty.ownerEntityID);
     final Entity valueOwner = entity.getEntityValue(ownerProperty.propertyID);
 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedPropertyName) : null;

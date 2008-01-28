@@ -6,6 +6,7 @@ package org.jminor.framework.demos.petstore.model;
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityProxy;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -81,7 +82,7 @@ public class Petstore {
   public static final String ZIP_LOCATION_STATE = "state";
 
   static {
-    Entity.repository.initialize(T_ADDRESS, IdSource.ID_MAX_PLUS_ONE,
+    EntityRepository.get().initialize(T_ADDRESS, IdSource.ID_MAX_PLUS_ONE,
             ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2,
             new Property.PrimaryKeyProperty(ADDRESS_ID),
             new Property(ADDRESS_STREET_1, Type.STRING, "Street 1"),
@@ -92,13 +93,13 @@ public class Petstore {
             new Property(ADDRESS_LATITUDE, Type.DOUBLE, "Latitude"),
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude"));
 
-    Entity.repository.initialize(T_CATEGORY, IdSource.ID_NONE, CATEGORY_NAME,
+    EntityRepository.get().initialize(T_CATEGORY, IdSource.ID_NONE, CATEGORY_NAME,
             new Property.PrimaryKeyProperty(CATEGORY_ID, Type.STRING, "Id"),
             new Property(CATEGORY_NAME, Type.STRING, "Name"),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description"),
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL", true));
 
-    Entity.repository.initialize(T_ITEM, IdSource.ID_MAX_PLUS_ONE, ITEM_NAME,
+    EntityRepository.get().initialize(T_ITEM, IdSource.ID_MAX_PLUS_ONE, ITEM_NAME,
             new Property.PrimaryKeyProperty(ITEM_ID),
             new Property.EntityProperty(ITEM_PRODUCT_REF, "Product", T_PRODUCT,
                     new Property(ITEM_PRODUCT_ID, Type.STRING)),
@@ -112,7 +113,7 @@ public class Petstore {
             new Property.EntityProperty(ITEM_ADDRESS_REF, "Address", T_ADDRESS,
                     new Property(ITEM_ADDRESS_ID)));
 
-    Entity.repository.initialize(T_PRODUCT, IdSource.ID_NONE, PRODUCT_NAME,
+    EntityRepository.get().initialize(T_PRODUCT, IdSource.ID_NONE, PRODUCT_NAME,
             new Property.PrimaryKeyProperty(PRODUCT_ID, Type.STRING),
             new Property.EntityProperty(PRODUCT_CATEGORY_REF, "Category", T_CATEGORY,
                     new Property(PRODUCT_CATEGORY_ID, Type.STRING)),
@@ -120,31 +121,31 @@ public class Petstore {
             new Property(PRODUCT_DESCRIPTION, Type.STRING, "Description"),
             new Property(PRODUCT_IMAGE_URL, Type.STRING, "Image URL", true));
 
-    Entity.repository.initialize(T_SELLER_CONTACT_INFO, IdSource.ID_MAX_PLUS_ONE,
+    EntityRepository.get().initialize(T_SELLER_CONTACT_INFO, IdSource.ID_MAX_PLUS_ONE,
             SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME,
             new Property.PrimaryKeyProperty(SELLER_CONTACT_INFO_ID),
             new Property(SELLER_CONTACT_INFO_FIRST_NAME, Type.STRING, "First name"),
             new Property(SELLER_CONTACT_INFO_LAST_NAME, Type.STRING, "Last name"),
             new Property(SELLER_CONTACT_INFO_EMAIL, Type.STRING, "Email"));
 
-    Entity.repository.initialize(T_TAG, IdSource.ID_MAX_PLUS_ONE, TAG_TAG,
+    EntityRepository.get().initialize(T_TAG, IdSource.ID_MAX_PLUS_ONE, TAG_TAG,
             new Property.PrimaryKeyProperty(TAG_ID),
             new Property(TAG_TAG, Type.STRING, "Tag"),
             new Property.SubQueryProperty(TAG_REFCOUNT, Type.INT, false, "Reference count",
                     "select count(*) from " + T_TAG_ITEM + "  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID));
 
-    Entity.repository.initialize(T_TAG_ITEM, IdSource.ID_NONE,
+    EntityRepository.get().initialize(T_TAG_ITEM, IdSource.ID_NONE,
             new Property.EntityProperty(TAG_ITEM_ITEM_REF, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT, null, 0)),
             new Property.EntityProperty(TAG_ITEM_TAG_REF, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT, null, 1)));
 
-    Entity.repository.initialize(T_ZIP_LOCATION, IdSource.ID_NONE, ZIP_LOCATION_ZIP_CODE,
+    EntityRepository.get().initialize(T_ZIP_LOCATION, IdSource.ID_NONE, ZIP_LOCATION_ZIP_CODE,
             new Property.PrimaryKeyProperty(ZIP_LOCATION_ZIP_CODE, Type.STRING, "Zip code"),
             new Property(ZIP_LOCATION_CITY, Type.STRING, "City"),
             new Property(ZIP_LOCATION_STATE, Type.STRING, "State"));
 
-    Entity.repository.setDefaultEntityProxy(new EntityProxy() {
+    EntityRepository.get().setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
         if (entity.getEntityID().equals(T_ADDRESS))
           return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)

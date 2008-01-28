@@ -3,15 +3,14 @@
  */
 package org.jminor.framework.db;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.Constants;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.model.Entity;
-
-import org.apache.log4j.Logger;
+import org.jminor.framework.model.EntityRepository;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -61,7 +60,7 @@ public class EntityDbProvider implements IEntityDbProvider {
 
   protected void connectServer() throws Exception {
     log.debug("Initializing connection for " + user);
-    entityDb = new EntityDbConnection(user, Entity.repository, FrameworkSettings.get());
+    entityDb = new EntityDbConnection(user, EntityRepository.get(), FrameworkSettings.get());
     evtConnected.fire();
   }
 

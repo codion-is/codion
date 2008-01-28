@@ -8,7 +8,7 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 
 import javax.swing.ComboBoxModel;
@@ -25,7 +25,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
 
   public ComboBoxPropertyLink(final EntityModel entityModel, final String propertyID, final String caption,
                               final JComboBox comboBox) {
-    this(entityModel, Entity.repository.getProperty(entityModel.getEntityID(), propertyID), caption, comboBox);
+    this(entityModel, EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID), caption, comboBox);
   }
 
   public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final String caption,

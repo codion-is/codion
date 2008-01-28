@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.model;
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityProxy;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -31,12 +32,12 @@ public class EmpDept {
   public static final String EMPLOYEE_DEPARTMENT_REF = "dept_ref";
 
   static {
-    Entity.repository.initialize(T_DEPARTMENT, IdSource.ID_NONE, null, DEPARTMENT_NAME,
+    EntityRepository.get().initialize(T_DEPARTMENT, IdSource.ID_NONE, null, DEPARTMENT_NAME,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, "Dept.no "),
             new Property(DEPARTMENT_NAME, Type.STRING, "Name", false, false, 120),
             new Property(DEPARTMENT_LOCATION, Type.STRING, "Location", false, false, 150));
 
-    Entity.repository.initialize(T_EMPLOYEE, IdSource.ID_MAX_PLUS_ONE, null,
+    EntityRepository.get().initialize(T_EMPLOYEE, IdSource.ID_MAX_PLUS_ONE, null,
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, "Employee No"),
             new Property(EMPLOYEE_NAME, Type.STRING, "Name"),
@@ -51,7 +52,7 @@ public class EmpDept {
             new Property.DenormalizedViewProperty(EmpDept.DEPARTMENT_LOCATION, T_DEPARTMENT,
                     EmpDept.DEPARTMENT_LOCATION, "Dept. location", 100));
 
-    Entity.repository.setDefaultEntityProxy(new EntityProxy() {
+    EntityRepository.get().setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
         if (entity.getEntityID().equals(T_DEPARTMENT))
           return entity.getStringValue(DEPARTMENT_NAME);

@@ -11,7 +11,7 @@ import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 
 import javax.swing.ComboBoxModel;
@@ -61,7 +61,7 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    return FrameworkUiUtil.createTextArea(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
+    return FrameworkUiUtil.createTextArea(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             getModel(), rows, columns);
   }
 
@@ -80,7 +80,7 @@ public abstract class EntityBindingFactory extends JPanel {
                                                              final AbstractDateMaskFormat dateMaskFormat,
                                                              final boolean includeButton,
                                                              final State enabledState) {
-    return createDateFieldPanel(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
+    return createDateFieldPanel(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             dateMaskFormat, includeButton, enabledState);
   }
 
@@ -138,7 +138,7 @@ public abstract class EntityBindingFactory extends JPanel {
   protected final JTextField createTextField(final String propertyID, final LinkType linkType,
                                              final boolean immediateUpdate, final String formatString,
                                              final State enabledState, final boolean valueIncludesLiteralCharacters) {
-    return createTextField(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
+    return createTextField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             linkType, formatString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
 
@@ -169,7 +169,7 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final JCheckBox createCheckBox(final String propertyID) {
-    return createCheckBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID));
+    return createCheckBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID));
   }
 
   protected final JCheckBox createCheckBox(final String propertyID, final State enabledState) {
@@ -178,7 +178,7 @@ public abstract class EntityBindingFactory extends JPanel {
 
   protected final JCheckBox createCheckBox(final String propertyID, final State enabledState,
                                            final boolean includeCaption) {
-    return createCheckBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID), enabledState, includeCaption);
+    return createCheckBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), enabledState, includeCaption);
   }
 
   protected final JCheckBox createCheckBox(final Property property) {
@@ -199,7 +199,7 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final JComboBox createBooleanComboBox(final String propertyID, final State enabledState) {
-    return createBooleanComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),enabledState);
+    return createBooleanComboBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),enabledState);
   }
 
   protected final JComboBox createBooleanComboBox(final Property property) {
@@ -217,7 +217,7 @@ public abstract class EntityBindingFactory extends JPanel {
 
   protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final State enabledState) {
-    return createComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
+    return createComboBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             comboBoxModel, maximumMatch, enabledState);
   }
 
@@ -241,7 +241,7 @@ public abstract class EntityBindingFactory extends JPanel {
 
   protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                          final State enabledState) {
-    return createEditableComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
+    return createEditableComboBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             comboBoxModel, enabledState);
   }
 
@@ -265,7 +265,7 @@ public abstract class EntityBindingFactory extends JPanel {
 
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State state,
                                                          final Object nullValue, final boolean editable) {
-    return createPropertyComboBox(Entity.repository.getProperty(getModel().getEntityID(), propertyID),
+    return createPropertyComboBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             state, nullValue, editable);
   }
 
@@ -293,16 +293,16 @@ public abstract class EntityBindingFactory extends JPanel {
 
   protected final EntityComboBox createEntityComboBox(final String propertyID, final State enabledState) {
     return createEntityComboBox((Property.EntityProperty)
-            Entity.repository.getProperty(getModel().getEntityID(), propertyID), enabledState);
+            EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), enabledState);
   }
 
   protected final JTextField createEntityField(final String propertyID) {
-    return createEntityField(Entity.repository.getProperty(getModel().getEntityID(), propertyID));
+    return createEntityField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID));
   }
 
   protected final JPanel createEntityFieldPanel(final String propertyID, final EntityTableModel lookupModel) {
     return createEntityFieldPanel((Property.EntityProperty)
-            Entity.repository.getProperty(getModel().getEntityID(), propertyID), lookupModel);
+            EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), lookupModel);
   }
 
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property) {
@@ -316,7 +316,7 @@ public abstract class EntityBindingFactory extends JPanel {
   protected final EntityComboBox createEntityComboBox(final String propertyID,
                                                       final EntityPanelInfo appInfo,
                                                       final boolean newButtonFocusable) {
-    return createEntityComboBox((Property.EntityProperty) Entity.repository.getProperty(getModel().getEntityID(),
+    return createEntityComboBox((Property.EntityProperty) EntityRepository.get().getProperty(getModel().getEntityID(),
             propertyID), appInfo, newButtonFocusable, null);
   }
 
@@ -339,7 +339,7 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
-    final String text = Entity.repository.getProperty(getModel().getEntityID(), propertyID).getCaption();
+    final String text = EntityRepository.get().getProperty(getModel().getEntityID(), propertyID).getCaption();
     if (text == null || text.length() == 0)
       throw new IllegalArgumentException("Cannot create a label for property: " + propertyID + ", no caption");
 

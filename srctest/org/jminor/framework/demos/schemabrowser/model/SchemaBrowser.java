@@ -7,6 +7,7 @@ import org.jminor.common.db.DbUtil;
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityProxy;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -49,17 +50,17 @@ public class SchemaBrowser {
   public static final String COLUMN_CONSTRAINT_POSITION = DbUtil.isOracle() ? "position" : "ordinal_position";
 
   static {
-    Entity.repository.initialize(T_SCHEMA,
+    EntityRepository.get().initialize(T_SCHEMA,
             IdSource.ID_NONE, null, SCHEMA_NAME, null, true,
             new Property.PrimaryKeyProperty(SCHEMA_NAME, Type.STRING, "Name"));
 
-    Entity.repository.initialize(T_TABLE,
+    EntityRepository.get().initialize(T_TABLE,
             IdSource.ID_NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true,
             new Property.EntityProperty(TABLE_SCHEMA_REF, "Schema", T_SCHEMA,
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING)),
             new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name", 1));
 
-    Entity.repository.initialize(T_COLUMN,
+    EntityRepository.get().initialize(T_COLUMN,
             IdSource.ID_NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
             new Property.EntityProperty(COLUMN_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING, null, 0),
@@ -67,7 +68,7 @@ public class SchemaBrowser {
             new Property.PrimaryKeyProperty(COLUMN_NAME, Type.STRING, "Column name", 2),
             new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"));
 
-    Entity.repository.initialize(T_CONSTRAINT,
+    EntityRepository.get().initialize(T_CONSTRAINT,
             IdSource.ID_NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true,
             new Property.EntityProperty(CONSTRAINT_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING, null, 0),
@@ -75,7 +76,7 @@ public class SchemaBrowser {
             new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Type.STRING, "Constraint name", 2),
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"));
 
-    Entity.repository.initialize(T_COLUMN_CONSTRAINT,
+    EntityRepository.get().initialize(T_COLUMN_CONSTRAINT,
             IdSource.ID_NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
             null, true,
             new Property.EntityProperty(COLUMN_CONSTRAINT_CONSTRAINT_REF, "Constraint", T_CONSTRAINT,
@@ -85,7 +86,7 @@ public class SchemaBrowser {
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Type.STRING, "Column name"),
             new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"));
 
-    Entity.repository.setDefaultEntityProxy(new EntityProxy() {
+    EntityRepository.get().setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
         if (entity.getEntityID().equals(T_COLUMN))
           return entity.getValueAsString(COLUMN_TABLE_REF) + "." + entity.getStringValue(COLUMN_NAME);

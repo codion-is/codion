@@ -17,6 +17,7 @@ import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 
 import javax.swing.AbstractAction;
@@ -94,7 +95,7 @@ public class EntityTablePanel extends JPanel {
                           final boolean specialRendering, final boolean allowQueryConfiguration,
                           final JButton detailPanelButton) {
     this.tableModel = tableModel;
-    this.entityTable = initializeJTable(tableModel, specialRendering);    
+    this.entityTable = initializeJTable(tableModel, specialRendering);
     this.tableScroller = new JScrollPane(entityTable);
     this.tableControls = popupControls;
     this.searchPanel = initializeSearchPanel();
@@ -396,7 +397,7 @@ public class EntityTablePanel extends JPanel {
   protected JPanel initializeSummaryPanel() {
     final List<JPanel> panels = new ArrayList<JPanel>();
     final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-    for (final Property property : Entity.repository.getVisibleProperties(getTableModel().getEntityID())) {
+    for (final Property property : EntityRepository.get().getVisibleProperties(getTableModel().getEntityID())) {
       final PropertySummaryPanel panel = initializeSummaryPanel(property);
       propertySummaryPanels.put(property.propertyID, panel);
       panels.add(panel);

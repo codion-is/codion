@@ -17,6 +17,7 @@ import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
@@ -275,7 +276,7 @@ public class EntityModel implements IRefreshable {
    * @return Value for property 'readOnly'.
    */
   public boolean isReadOnly() {
-    return Entity.repository.isReadOnly(entityID);
+    return EntityRepository.get().isReadOnly(entityID);
   }
 
   /**
@@ -418,7 +419,7 @@ public class EntityModel implements IRefreshable {
    * the EntityComboBoxModel must have been initialized in <code>initializeEntityComboBoxModels</code>
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
-    return getEntityComboBoxModel((Property.EntityProperty) Entity.repository.getProperty(getEntityID(), propertyID));
+    return getEntityComboBoxModel((Property.EntityProperty) EntityRepository.get().getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -444,7 +445,7 @@ public class EntityModel implements IRefreshable {
    * @see #initializeEntityComboBoxModels(org.jminor.framework.client.model.combobox.EntityComboBoxModel[])()
    */
   public ComboBoxModel getComboBoxModel(final String propertyID) {
-    return getComboBoxModel(Entity.repository.getProperty(getEntityID(), propertyID));
+    return getComboBoxModel(EntityRepository.get().getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -528,7 +529,7 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the UI
    */
   public Event getPropertyUIChangeEvent(final String propertyID) {
-    return getPropertyUIChangeEvent(Entity.repository.getProperty(getEntityID(), propertyID));
+    return getPropertyUIChangeEvent(EntityRepository.get().getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -550,7 +551,7 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the model
    */
   public Event getPropertyModelChangeEvent(final String propertyID) {
-    return getPropertyModelChangeEvent(Entity.repository.getProperty(getEntityID(), propertyID));
+    return getPropertyModelChangeEvent(EntityRepository.get().getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -572,7 +573,7 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed
    */
   public Event getPropertyChangeEvent(final String propertyID) {
-    return getPropertyChangeEvent(Entity.repository.getProperty(getEntityID(), propertyID));
+    return getPropertyChangeEvent(EntityRepository.get().getProperty(getEntityID(), propertyID));
   }
 
   /**
@@ -637,7 +638,7 @@ public class EntityModel implements IRefreshable {
    * @param validate if true basic type validation is performed
    */
   public final void uiSetValue(final String propertyID, final Object value, final boolean validate) {
-    uiSetValue(Entity.repository.getProperty(getEntityID(), propertyID), value, validate);
+    uiSetValue(EntityRepository.get().getProperty(getEntityID(), propertyID), value, validate);
   }
 
   /**
@@ -954,7 +955,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of a problem
    */
   public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) throws UserException {
-    final Property property = Entity.repository.getEntityProperty(getEntityID(), masterEntityID);
+    final Property property = EntityRepository.get().getEntityProperty(getEntityID(), masterEntityID);
     if (stSelectionFiltersDetail.isActive() && tableModel != null)
       tableModel.filterByReference(masterValues, masterEntityID);
 
@@ -1029,7 +1030,7 @@ public class EntityModel implements IRefreshable {
       return ret;
 
     for (final EntityComboBoxModel comboBoxModel : comboBoxModels) {
-      final Property property = Entity.repository.getEntityProperty(getEntityID(), comboBoxModel.getEntityID());
+      final Property property = EntityRepository.get().getEntityProperty(getEntityID(), comboBoxModel.getEntityID());
       if (property != null)
         ret.put(property, comboBoxModel);
       else
@@ -1095,7 +1096,7 @@ public class EntityModel implements IRefreshable {
    */
   protected final void setValue(final String propertyID, final Object value, final boolean validate,
                                 final boolean isModelChange) {
-    setValue(Entity.repository.getProperty(getEntityID(), propertyID), value, validate, isModelChange);
+    setValue(EntityRepository.get().getProperty(getEntityID(), propertyID), value, validate, isModelChange);
   }
 
   /**
@@ -1316,7 +1317,7 @@ public class EntityModel implements IRefreshable {
     if (lastDeleted != null && lastDeleted.size() > 0) {
       for (final EntityModel detailModel : detailModels) {
         final EntityComboBoxModel comboModel = detailModel.getEntityComboBoxModel(
-                Entity.repository.getEntityProperty(detailModel.getEntityID(), getEntityID()));
+                EntityRepository.get().getEntityProperty(detailModel.getEntityID(), getEntityID()));
         if (comboModel != null) {
           for (final Entity deletedEntity : lastDeleted)
             comboModel.removeItem(deletedEntity);
@@ -1332,7 +1333,7 @@ public class EntityModel implements IRefreshable {
   protected void refreshDetailModelsAfterInsertOrUpdate() throws UserException {
     for (final EntityModel detailModel : detailModels) {
       final EntityComboBoxModel entityComboBoxModel = detailModel.getEntityComboBoxModel(
-              Entity.repository.getEntityProperty(detailModel.getEntityID(), getEntityID()));
+              EntityRepository.get().getEntityProperty(detailModel.getEntityID(), getEntityID()));
       if (entityComboBoxModel != null)
         entityComboBoxModel.refresh();
     }

@@ -10,6 +10,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.combo.ManagerComboBoxModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
@@ -34,7 +35,7 @@ public class EmployeeModel extends EntityModel {
   /** {@inheritDoc} */
   protected HashMap<Property, ComboBoxModel> initializeEntityComboBoxModels() {
     final HashMap<Property, ComboBoxModel> ret = new HashMap<Property, ComboBoxModel>();
-    ret.put(Entity.repository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_MGR_REF),
+    ret.put(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_MGR_REF),
             new ManagerComboBoxModel(getDbConnectionProvider()));
 
     return ret;
