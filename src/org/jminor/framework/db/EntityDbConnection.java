@@ -276,7 +276,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update nowait";
+      sql += " for update" + (DbUtil.isOracle() ? " nowait" : "");
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
       if (result.size() == 0)
