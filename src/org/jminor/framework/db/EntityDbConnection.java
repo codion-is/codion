@@ -281,7 +281,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
       if (result.size() == 0)
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-      if (result.size() > 1) {//this means we got the lock for more than one record, better release it
+      if (result.size() > 1) {//this means we got the lock, but for more than one record, better release it right away
         try {
           endTransaction(true);
         }

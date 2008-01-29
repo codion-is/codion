@@ -189,7 +189,7 @@ public class ExceptionDialog extends JDialog {
 
   public void saveErrorReport() throws UserException {
     try {
-      Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(this, null));
+      Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }
     catch (UserCancelException e) {
       //cancelled

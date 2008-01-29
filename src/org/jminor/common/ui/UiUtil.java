@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import com.toedter.calendar.JCalendar;
 import org.jminor.common.db.User;
 import org.jminor.common.db.UserAccessException;
 import org.jminor.common.i18n.Messages;
@@ -10,8 +11,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
-
-import com.toedter.calendar.JCalendar;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -40,7 +39,6 @@ import javax.swing.text.PlainDocument;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -80,15 +78,41 @@ public class UiUtil {
 
   private UiUtil() {}
 
-  public static File chooseFileToSave(final Component dialogParent, final String startDir) throws UserCancelException {
-    return chooseFileToSave(dialogParent, startDir, Messages.get(Messages.OVERWRITE_FILE), Messages.get(Messages.FILE_EXISTS));
+  public static File selectDirectory(final JComponent dialogParent, final String startDir) throws UserCancelException {
+    if (fileChooser == null) {
+      try {
+        setWaitCursor(true, dialogParent);
+        fileChooser = new JFileChooser();
+      }
+      finally {
+        setWaitCursor(false, dialogParent);
+      }
+    }
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
+    fileChooser.setMultiSelectionEnabled(false);
+    File selectedFile = new File(startDir == null ? "C://" : startDir);
+    fileChooser.setCurrentDirectory(selectedFile);
+    int ret = fileChooser.showOpenDialog(dialogParent);
+    if (ret == JFileChooser.APPROVE_OPTION)
+      return fileChooser.getSelectedFile();
+    else
+      throw new UserCancelException();
   }
 
-  public static File chooseFileToSave(final Component dialogParent, final String startDir,
-                                      final String overwriteDialogText, final String overwriteDialogTitle)
+  public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName)
           throws UserCancelException {
-    final JFileChooser fileChooser = new JFileChooser();
-    File selectedFile = new File(startDir == null ? "C://" : startDir);
+    if (fileChooser == null) {
+      try {
+        setWaitCursor(true, dialogParent);
+        fileChooser = new JFileChooser();
+      }
+      finally {
+        setWaitCursor(false, dialogParent);
+      }
+    }
+    File selectedFile = new File((startDir == null ? System.getProperty("user.home") : startDir)
+            + (defaultFileName != null ? (System.getProperty("file.separator") + defaultFileName) : ""));
     boolean fileChosen = false;
     while (!fileChosen) {
       if (selectedFile.isDirectory())
@@ -99,8 +123,8 @@ public class UiUtil {
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooser.getSelectedFile();
         if (selectedFile.exists()) {
-          option = JOptionPane.showConfirmDialog(dialogParent, overwriteDialogText,
-                  overwriteDialogTitle, JOptionPane.YES_NO_CANCEL_OPTION);
+          option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.FILE_EXISTS),
+                  Messages.get(Messages.OVERWRITE_FILE), JOptionPane.YES_NO_CANCEL_OPTION);
           if (option == JOptionPane.YES_OPTION)
             fileChosen = true;
           else if (option == JOptionPane.CANCEL_OPTION)
@@ -425,46 +449,6 @@ public class UiUtil {
     });
 
     return table;
-  }
-
-  public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName)
-          throws UserCancelException {
-    if (fileChooser == null) {
-      try {
-        setWaitCursor(true, dialogParent);
-        fileChooser = new JFileChooser();
-      }
-      finally {
-        setWaitCursor(false, dialogParent);
-      }
-    }
-    File selectedFile = new File((startDir == null ? System.getProperty("user.home") : startDir)
-            + (defaultFileName != null ? (System.getProperty("file.separator") + defaultFileName) : ""));
-    boolean fileChosen = false;
-    while (!fileChosen) {
-      if (selectedFile.isDirectory())
-        fileChooser.setCurrentDirectory(selectedFile);
-      else
-        fileChooser.setSelectedFile(selectedFile);
-      int option = fileChooser.showSaveDialog(dialogParent);
-      if (option == JFileChooser.APPROVE_OPTION) {
-        selectedFile = fileChooser.getSelectedFile();
-        if (selectedFile.exists()) {
-          option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.FILE_EXISTS),
-                  Messages.get(Messages.OVERWRITE_FILE), JOptionPane.YES_NO_CANCEL_OPTION);
-          if (option == JOptionPane.YES_OPTION)
-            fileChosen = true;
-          else if (option == JOptionPane.CANCEL_OPTION)
-            throw new UserCancelException();
-        }
-        else
-          fileChosen = true;
-      }
-      else
-        throw new UserCancelException();
-    }
-
-    return selectedFile;
   }
 
   public static void setWaitCursor(final boolean on, final JComponent component) {
