@@ -1264,6 +1264,7 @@ public class EntityModel implements IRefreshable {
         }
       }
     });
+    //always release the write lock if the entity being edited is de-selected
     evtActiveEntityChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {

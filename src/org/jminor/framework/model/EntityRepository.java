@@ -297,11 +297,12 @@ public class EntityRepository implements Serializable {
   }
 
   /**
-   * @param initializedEntities
-   * @return true if any one of the entities is already initialzed, hmm?
+   * @param entityGroup a group of related entities (from the same domain fx), for which
+   * we can deduce that if one has been initialized all have.
+   * @return true if any one of the entities in the group have already initialzed, hmm?
    */
-  public boolean contains(final Collection<String> initializedEntities) {
-    for (final String entityID : initializedEntities)
+  public boolean contains(final Collection<String> entityGroup) {
+    for (final String entityID : entityGroup)
       if (readOnly.containsKey(entityID))
         return true;
 
@@ -367,6 +368,7 @@ public class EntityRepository implements Serializable {
     for (final Property property : initialPropertyDefinitions) {
       if (properties.containsKey(property.propertyID))
         throw new IllegalArgumentException("Property with ID " + property.propertyID
+                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
                 + " has already been defined as: " + properties.get(property.propertyID));
       properties.put(property.propertyID, property);
       if (property instanceof Property.EntityProperty) {
