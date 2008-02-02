@@ -3,10 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
 
 import junit.framework.TestCase;
 
@@ -44,9 +42,7 @@ public class TestEntity extends TestCase {
     final double doubleValue = 1.2;
     final String stringValue = "string";
     final Date shortDateValue = new Date();
-    final String shortDateString = ShortDashDateFormat.get().format(shortDateValue);
     final Date longDateValue = new Date();
-    final String longDateString = LongDateFormat.get().format(longDateValue);
     final Type.Boolean booleanValue = Type.Boolean.TRUE;
     final int referenceId = 2;
 
@@ -130,12 +126,8 @@ public class TestEntity extends TestCase {
     assertTrue("Set value for a denormalized property should cause an error", exception);
 
     //assert dml
-    final String shortDateStringSql = DbUtil.isMySQL()
-            ? "str_to_date('" + shortDateString + "', '%d-%m-%Y')"
-            : "to_date('" + shortDateString + "', 'DD-MM-YYYY')";
-    final String longDateStringSql = DbUtil.isMySQL()
-            ? "str_to_date('" + longDateString + "', '%d-%m-%Y %H:%i')"
-            : "to_date('" +longDateString + "', 'DD-MM-YYYY HH24:MI')";
+    final String shortDateStringSql = Database.getSQLDateString(shortDateValue, false);
+    final String longDateStringSql = Database.getSQLDateString(longDateValue, true);
     assertEquals(EntityUtil.getInsertSQL(testEntity),
             "insert into " + ModelTestDomain.T_TEST_MASTER_ENTITY
                     + "(int, double, string, short_date, long_date, boolean, entity_id, id)"

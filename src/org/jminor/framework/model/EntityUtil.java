@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Constants;
-import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
@@ -79,7 +79,7 @@ public class EntityUtil {
         return value.toString();//localize?
       case LONG_DATE :
       case SHORT_DATE :
-        return DbUtil.getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);
+        return Database.getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);
       case CHAR :
         return "'" + value + "'";
       case STRING :

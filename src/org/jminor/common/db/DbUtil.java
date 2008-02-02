@@ -5,8 +5,6 @@ package org.jminor.common.db;
 
 import org.jminor.common.Constants;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -29,8 +27,6 @@ public class DbUtil {
   public static final int ORA_CHILD_RECORD_ERR_CODE = 2292;
 
   public static final HashMap<Integer, String> oracleSqlErrorCodes = new HashMap<Integer, String>();
-
-  public static String DB_TYPE = System.getProperty(Constants.DATABASE_TYPE_PROPERTY, Constants.DATABASE_TYPE_ORACLE);
 
   static {
     oracleSqlErrorCodes.put(1, Messages.get(Messages.UNIQUE_KEY_ERROR));
@@ -148,76 +144,6 @@ public class DbUtil {
     }
 
     return sql.toString();
-  }
-
-  public static boolean isMySQL() {
-    return DB_TYPE.equals(Constants.DATABASE_TYPE_MYSQL);
-  }
-
-  public static boolean isOracle() {
-    return DB_TYPE.equals(Constants.DATABASE_TYPE_ORACLE);
-  }
-
-  public static String getDatabaseDriver() {
-    if (isOracle())
-      return Constants.ORACLE_DRIVER_CLASS;
-    if (isMySQL())
-      return Constants.MYSQL_DRIVER;
-    else
-      throw new RuntimeException("Unsopported database type: " + DB_TYPE);
-  }
-
-  public static String getDatabaseURL() {    
-    final String host = System.getProperty(Constants.DATABASE_HOST_PROPERTY);
-    if (host == null || host.length() == 0)
-      throw new RuntimeException("Required property value not found: " + Constants.DATABASE_HOST_PROPERTY);
-    final String port = System.getProperty(Constants.DATABASE_PORT_PROPERTY);
-    if (port == null || port.length() == 0)
-      throw new RuntimeException("Required property value not found: " + Constants.DATABASE_PORT_PROPERTY);
-    final String sid = System.getProperty(Constants.DATABASE_SID_PROPERTY);
-    if (sid == null || sid.length() == 0)
-      throw new RuntimeException("Required property value not found: " + Constants.DATABASE_SID_PROPERTY);
-   if (isOracle())
-      return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
-    else if (isMySQL())
-      return "jdbc:mysql://" + host + ":" + port + "/" + sid;
-    else
-      throw new RuntimeException("Unsopported database type: " + DB_TYPE);
-  }
-
-  /**
-   * Returns a query string for retrieving the last automatically generated id for the given entityID,
-   * in Oracle this means the value from a defined sequence and in MySQL the value fetched from last_inserted_id()
-   * @param idSource the source for the id, for example a sequence name
-   * @return a query string for retrieving the last auto-increment value for entityID
-   */
-  public static String getAutoIncrementValueSQL(final String idSource) {
-    if (isMySQL())
-      return "select last_insert_id() from dual";
-    else if (isOracle())
-      return "select " + idSource + ".currval from dual";
-    else
-      throw new RuntimeException("getAutoIncrementValue, unsupported db type: " + DB_TYPE);
-  }
-
-  public static String getSQLDateString(final Date value, final boolean longDate) {
-    if (isOracle())
-      return longDate ?
-              "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
-              "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
-    else if (isMySQL())
-      return longDate ?
-              "str_to_date('" + LongDateFormat.get().format(value) + "', '%d-%m-%Y %H:%i')" :
-              "str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')";
-    else
-      throw new RuntimeException("SQL string to date, unsupported db type: " + DB_TYPE);
-  }
-
-  public static String getSequenceSQL(final String sequenceName) {
-    if (isOracle())
-      return "select " + sequenceName + ".nextval from dual";
-
-    throw new RuntimeException("Sequence support for MySQL has not been implemented");
   }
 
   public static class PrimaryKey implements Serializable {

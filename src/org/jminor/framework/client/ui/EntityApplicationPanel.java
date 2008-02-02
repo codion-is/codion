@@ -3,8 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.apache.log4j.Logger;
-import org.jminor.common.Constants;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
@@ -25,6 +24,8 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.i18n.FrameworkMessages;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -536,7 +537,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
         final Properties properties = applicationModel.getDbConnectionProvider().getEntityDb().getUser().getProperties();
         final String frameTitle = frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(Constants.DATABASE_SID_PROPERTY) : null);
+            properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
         if (showFrame)
           FrameworkUiUtil.prepareFrame(applicationPanel, applicationIcon, frameTitle, maximize, northToolBar, true, size).setVisible(true);
 

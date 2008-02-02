@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Constants;
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.demos.empdept.model.EmpDept;
@@ -249,48 +249,35 @@ public class TestPropertyCriteria extends TestCase {
     //string, =
     Date value = ShortDashDateFormat.get().parse("10-12-2004");
     testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
-    String requiredValue =  DbUtil.isMySQL()
-            ? "colName = str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')"
-            : "colName = to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
+    String requiredValue =  "colName = " + Database.getSQLDateString(value, false);
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, <>
     testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
-    requiredValue =  DbUtil.isMySQL()
-            ? "colName <> str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')"
-            : "colName <> to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
+    requiredValue =  "colName <> " + Database.getSQLDateString(value, false);
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, between
     Date value2 = ShortDashDateFormat.get().parse("10-09-2001");
     testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2);
-    requiredValue =  DbUtil.isMySQL()
-            ? "(colName >= str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y') and "
-      + "colName <= str_to_date('" + ShortDashDateFormat.get().format(value2) + "', '%d-%m-%Y'))"
-            : "(colName >= to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY') and "
-      + "colName <= to_date('" + ShortDashDateFormat.get().format(value2) + "', 'DD-MM-YYYY'))";
+    requiredValue =  "(colName >= " + Database.getSQLDateString(value, false) + " and " +
+            "colName <= " + Database.getSQLDateString(value2, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, outside
     testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2);
-    requiredValue =  DbUtil.isMySQL()
-            ? "(colName <= str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y') or "
-      + "colName >= str_to_date('" + ShortDashDateFormat.get().format(value2) + "', '%d-%m-%Y'))"
-            : "(colName <= to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY') or "
-      + "colName >= to_date('" + ShortDashDateFormat.get().format(value2) + "', 'DD-MM-YYYY'))";
+    requiredValue =  "(colName <= " + Database.getSQLDateString(value, false) + " or " +
+            "colName >= " + Database.getSQLDateString(value2, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, in
     final Date value3 = ShortDashDateFormat.get().parse("12-10-2001");
     testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3);
-    final String expected = DbUtil.isMySQL()
-            ? "colName in (str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')," +
-                 " str_to_date('" + ShortDashDateFormat.get().format(value2) + "', '%d-%m-%Y')," +
-                 " str_to_date('" + ShortDashDateFormat.get().format(value3) + "', '%d-%m-%Y'))"
-            : "colName in (to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')," +
-                 " to_date('" + ShortDashDateFormat.get().format(value2) + "', 'DD-MM-YYYY')," +
-                 " to_date('" + ShortDashDateFormat.get().format(value3) + "', 'DD-MM-YYYY'))";
-    assertEquals("Condition should fit", expected, testCrit.toString());
+    requiredValue = "colName in ("
+            + Database.getSQLDateString(value, false) + ", "
+            + Database.getSQLDateString(value2, false) + ", "
+            + Database.getSQLDateString(value3, false) + ")";
+    assertEquals("Condition should fit", requiredValue, testCrit.toString());
   }
 
   public void testConditionSet() {

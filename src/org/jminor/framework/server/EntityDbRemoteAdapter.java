@@ -3,12 +3,8 @@
  */
 package org.jminor.framework.server;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
-import org.jminor.common.Constants;
 import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
@@ -28,6 +24,11 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
@@ -118,8 +119,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     if (connectionPools.containsKey(client.getUser()))
       connectionPools.get(client.getUser()).setPassword(client.getUser().getPassword());
     this.client = client;
-    this.client.getUser().setProperty(Constants.DATABASE_SID_PROPERTY,
-            System.getProperty(Constants.DATABASE_SID_PROPERTY));
+    this.client.getUser().setProperty(Database.DATABASE_SID_PROPERTY,
+            System.getProperty(Database.DATABASE_SID_PROPERTY));
     this.repository = repository;
     this.settings = settings;
     this.loggingEntityDbProxy = initializeProxy();

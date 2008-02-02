@@ -3,10 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
@@ -31,6 +28,11 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
+
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -168,7 +170,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
         if (idSource == IdSource.ID_AUTO_INCREMENT)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
-                  getAutoIncrementValue(DbUtil.getAutoIncrementValueSQL(
+                  getAutoIncrementValue(Database.getAutoIncrementValueSQL(
                           EntityRepository.get().getEntityIdSource(entityID))), false);
 
         ret.add(entity.getPrimaryKey());
@@ -276,7 +278,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update" + (DbUtil.isOracle() ? " nowait" : "");
+      sql += " for update" + (Database.isMySQL() ? "" : " nowait");
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
       if (result.size() == 0)
@@ -404,9 +406,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (!tableHasAuditColumns)
       return getRecordCount(tableName);
 
-    final String sql = DbUtil.isMySQL() ?
-            "select count(*), greatest(max(snt), max(ifnull(sbt,snt))) last_change from " + tableName
-            : "select count(*), greatest(max(snt), max(nvl(sbt,snt))) last_change from " + tableName;
+    final String sql = Database.getTableStatusQueryString(tableName);
     try {
       return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER).get(0);
     }
@@ -681,7 +681,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         sql = EntityRepository.get().getEntityIdSource(entityID);
         break;
       case ID_SEQUENCE:
-        sql = DbUtil.getSequenceSQL(EntityRepository.get().getEntityIdSource(entityID));
+        sql = Database.getSequenceSQL(EntityRepository.get().getEntityIdSource(entityID));
         break;
       default:
         throw new IllegalArgumentException(idSource + " is not a valid auto-increment ID source constant");

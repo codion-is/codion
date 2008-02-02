@@ -11,50 +11,6 @@ import java.sql.Timestamp;
 public class Constants {
 
   /**
-   * Specifies the database type
-   * @see #DATABASE_TYPE_MYSQL
-   * @see #DATABASE_TYPE_ORACLE
-   */
-  public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
-
-  /**
-   * Specifies the machine hosting the database
-   */
-  public static final String DATABASE_HOST_PROPERTY = "jminor.db.host";
-
-  /**
-   * Specifies the datbase sid (used for initial for MySQL connections)
-   */
-  public static final String DATABASE_SID_PROPERTY = "jminor.db.sid";
-
-  /**
-   * Specifies the database port
-   */
-  public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
-
-  /**
-   * Oracle database type
-   * @see #DATABASE_TYPE_PROPERTY
-   */
-  public static final String DATABASE_TYPE_ORACLE = "oracle";
-
-  /**
-   * MySQL database type
-   * @see #DATABASE_TYPE_PROPERTY
-   */
-  public static final String DATABASE_TYPE_MYSQL = "mysql";
-
-  /**
-   * The driver class name use for Oracle connections
-   */
-  public static final String ORACLE_DRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
-
-  /**
-   * The driver class name used for MySQL connections
-   */
-  public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-
-  /**
    * The String used as wildcard in String filters
    */
   public static final String WILDCARD = "%";

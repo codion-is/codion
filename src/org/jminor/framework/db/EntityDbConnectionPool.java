@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.Constants;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.UserException;
@@ -61,8 +61,8 @@ public class EntityDbConnectionPool {
 
   public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
     this.user = user;
-    this.user.setProperty(Constants.DATABASE_SID_PROPERTY,
-            System.getProperty(Constants.DATABASE_SID_PROPERTY));
+    this.user.setProperty(Database.DATABASE_SID_PROPERTY,
+            System.getProperty(Database.DATABASE_SID_PROPERTY));
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       public void run() {

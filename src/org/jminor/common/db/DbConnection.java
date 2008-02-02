@@ -3,9 +3,10 @@
  */
 package org.jminor.common.db;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
+
+import org.apache.log4j.Logger;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -88,7 +89,7 @@ public abstract class DbConnection {
    */
   public boolean isConnectionValid() {
     try {
-      return DbUtil.isMySQL() ? connection.isValid(0) : checkConnection();
+      return Database.isOracle() ? checkConnection() : connection.isValid(0);//todo postgresql
     }
     catch (Exception e) {
       log.error(this, e);
@@ -407,9 +408,9 @@ public abstract class DbConnection {
     }
     catch (SQLException e) {/**/}
 
-    Class.forName(DbUtil.getDatabaseDriver());
+    Database.loadDriver();
     try {
-      connection = DriverManager.getConnection(DbUtil.getDatabaseURL(), connectionInfo);
+      connection = DriverManager.getConnection(Database.getURL(), connectionInfo);
       connection.setAutoCommit(false);
       checkConnectionStatement = connection.createStatement();
       connected = true;

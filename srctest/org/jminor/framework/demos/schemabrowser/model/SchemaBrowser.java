@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.schemabrowser.model;
 
-import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityProxy;
@@ -13,41 +13,41 @@ import org.jminor.framework.model.Type;
 
 public class SchemaBrowser {
 
-  public static final String T_SCHEMA = DbUtil.isOracle() ? "all_users" : "information_schema.schemata";
+  public static final String T_SCHEMA = Database.isOracle() ? "all_users" : "information_schema.schemata";
 
-  public static final String SCHEMA_NAME = DbUtil.isOracle() ? "username" : "schema_name";
+  public static final String SCHEMA_NAME = Database.isOracle() ? "username" : "schema_name";
 
-  public static final String T_TABLE = DbUtil.isOracle() ? "all_objects where upper(object_type) = upper('table')" : "information_schema.tables";
+  public static final String T_TABLE = Database.isOracle() ? "all_objects where upper(object_type) = upper('table')" : "information_schema.tables";
 
-  public static final String TABLE_SCHEMA = DbUtil.isOracle() ? "owner" : "table_schema";
+  public static final String TABLE_SCHEMA = Database.isOracle() ? "owner" : "table_schema";
   public static final String TABLE_SCHEMA_REF = "schema_ref";
-  public static final String TABLE_NAME = DbUtil.isOracle() ? "object_name" : "table_name";
+  public static final String TABLE_NAME = Database.isOracle() ? "object_name" : "table_name";
 
-  public static final String T_COLUMN = DbUtil.isOracle() ? "all_tab_cols" : "information_schema.columns";
+  public static final String T_COLUMN = Database.isOracle() ? "all_tab_cols" : "information_schema.columns";
 
-  public static final String COLUMN_SCHEMA = DbUtil.isOracle() ? "owner" : "table_schema";
+  public static final String COLUMN_SCHEMA = Database.isOracle() ? "owner" : "table_schema";
   public static final String COLUMN_TABLE_NAME = "table_name";
   public static final String COLUMN_TABLE_REF = "table_ref";
   public static final String COLUMN_NAME = "column_name";
   public static final String COLUMN_DATA_TYPE = "data_type";
 
-  public static final String T_CONSTRAINT = DbUtil.isOracle() ?
+  public static final String T_CONSTRAINT = Database.isOracle() ?
           "all_constraints" : "information_schema.table_constraints";
 
-  public static final String CONSTRAINT_SCHEMA = DbUtil.isOracle() ? "owner" : "table_schema";
+  public static final String CONSTRAINT_SCHEMA = Database.isOracle() ? "owner" : "table_schema";
   public static final String CONSTRAINT_TABLE_NAME = "table_name";
   public static final String CONSTRAINT_TABLE_REF = "table_ref";
   public static final String CONSTRAINT_NAME = "constraint_name";
   public static final String CONSTRAINT_TYPE = "constraint_type";
 
-  public static final String T_COLUMN_CONSTRAINT = DbUtil.isOracle() ? "all_cons_columns" : "information_schema.key_column_usage";
+  public static final String T_COLUMN_CONSTRAINT = Database.isOracle() ? "all_cons_columns" : "information_schema.key_column_usage";
 
-  public static final String COLUMN_CONSTRAINT_SCHEMA = DbUtil.isOracle() ? "owner" : "constraint_schema";
+  public static final String COLUMN_CONSTRAINT_SCHEMA = Database.isOracle() ? "owner" : "constraint_schema";
   public static final String COLUMN_CONSTRAINT_CONSTRAINT_NAME = "constraint_name";
   public static final String COLUMN_CONSTRAINT_CONSTRAINT_REF = "constraint_ref";
   public static final String COLUMN_CONSTRAINT_TABLE_NAME = "table_name";
   public static final String COLUMN_CONSTRAINT_COLUMN_NAME = "column_name";
-  public static final String COLUMN_CONSTRAINT_POSITION = DbUtil.isOracle() ? "position" : "ordinal_position";
+  public static final String COLUMN_CONSTRAINT_POSITION = Database.isOracle() ? "position" : "ordinal_position";
 
   static {
     EntityRepository.get().initialize(T_SCHEMA,

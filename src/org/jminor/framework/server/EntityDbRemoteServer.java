@@ -3,10 +3,9 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.Constants;
 import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.DbLog;
-import org.jminor.common.db.DbUtil;
 import org.jminor.common.db.User;
 import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.UserException;
@@ -76,9 +75,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private EntityDbRemoteServer() throws RemoteException {
     super(SERVER_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    final String host = System.getProperty(Constants.DATABASE_HOST_PROPERTY);
-    final String port = System.getProperty(Constants.DATABASE_PORT_PROPERTY);
-    final String sid = System.getProperty(Constants.DATABASE_SID_PROPERTY);
+    final String host = System.getProperty(Database.DATABASE_HOST_PROPERTY);
+    final String port = System.getProperty(Database.DATABASE_PORT_PROPERTY);
+    final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
     if (host == null || host.length() == 0)
       throw new IllegalArgumentException("Db host must be specified!");
     if (sid == null || sid.length() == 0)
@@ -89,7 +88,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     serverName = FrameworkConstants.JMINOR_SERVER_NAME_PREFIX + " " + Util.getVersion()
             + " @ " + sid.toUpperCase()
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
-    dbConnectionProperties.put(Constants.DATABASE_SID_PROPERTY, sid);
+    dbConnectionProperties.put(Database.DATABASE_SID_PROPERTY, sid);
     startConnectionCheckTimer();
   }
 
@@ -120,7 +119,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public String getDatabaseURL() {
-    return DbUtil.getDatabaseURL();
+    return Database.getURL();
   }
 
   /** {@inheritDoc} */

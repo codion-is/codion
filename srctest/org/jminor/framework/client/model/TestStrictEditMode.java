@@ -1,6 +1,6 @@
 package org.jminor.framework.client.model;
 
-import junit.framework.TestCase;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbProviderFactory;
@@ -8,6 +8,8 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.EntityKey;
+
+import junit.framework.TestCase;
 
 public class TestStrictEditMode extends TestCase {
 
@@ -20,17 +22,23 @@ public class TestStrictEditMode extends TestCase {
   }
 
   protected void setUp() throws Exception {
+    if (Database.isMySQL())
+      return;
     FrameworkSettings.get().useSmartRefresh = false;
     FrameworkSettings.get().useQueryRange = false;
     new EmpDept();
   }
 
   protected void tearDown() throws Exception {
+    if (Database.isMySQL())
+      return;
     dbProvider.getEntityDb().logout();
     model.getDbConnectionProvider().getEntityDb().logout();
   }
 
   public void testStrictEditModel() throws Exception {
+    if (Database.isMySQL())
+      return;
     model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));
     model.refresh();
