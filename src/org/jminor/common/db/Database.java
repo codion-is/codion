@@ -6,6 +6,8 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 import java.util.Date;
 
 /**
+ * A class encapsulating database specific code, such as retrieval of auto increment values,
+ * string to date conversions and driver class loading.
  * User: Björn Darri
  * Date: 2.2.2008
  * Time: 12:53:14
@@ -30,10 +32,16 @@ public class Database {
   public static final String DATABASE_TYPE_POSTGRESQL = "postgresql";
 
   /**
-   * PostgreSQL database type
+   * Microsoft SQL Server database type
    * @see #DATABASE_TYPE_PROPERTY
    */
   public static final String DATABASE_TYPE_SQL_SERVER = "sqlserver";
+
+  /**
+   * Derby database type
+   * @see #DATABASE_TYPE_PROPERTY
+   */
+  public static final String DATABASE_TYPE_DERBY = "derby";
 
   /**
    * The driver class name use for Oracle connections
@@ -56,11 +64,17 @@ public class Database {
   public static final String SQL_SERVER_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
   /**
+   * The driver class name used for connections to a networked Derby database (as opposed to embedded)
+   */
+  public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
+
+  /**
    * Specifies the database type
    * @see Database#DATABASE_TYPE_MYSQL
    * @see Database#DATABASE_TYPE_ORACLE
    * @see Database#DATABASE_TYPE_POSTGRESQL
    * @see Database#DATABASE_TYPE_SQL_SERVER
+   * @see Database#DATABASE_TYPE_DERBY
    */
   public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
 
@@ -80,7 +94,7 @@ public class Database {
   public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
 
   public static enum DbType {
-    ORACLE, MYSQL, POSTGRESQL, SQLSERVER
+    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY
   }
 
   public static final String TABLE_STATUS_MYSQL = "select count(*), greatest(max(snt), max(ifnull(sbt,snt))) last_change from ";
@@ -105,6 +119,10 @@ public class Database {
     return DB_TYPE == DbType.SQLSERVER;
   }
 
+  public static boolean isDerby() {
+    return DB_TYPE == DbType.DERBY;
+  }
+
   public static void loadDriver() throws ClassNotFoundException {
     Class.forName(getDriverName());
   }
@@ -121,84 +139,92 @@ public class Database {
       throw new RuntimeException("Required property value not found: " + DATABASE_SID_PROPERTY);
 
     switch (DB_TYPE) {
-      case MYSQL :
+      case MYSQL:
         return "jdbc:mysql://" + host + ":" + port + "/" + sid;
-      case POSTGRESQL :
+      case POSTGRESQL:
         return "jdbc:postgresql://" + host + ":" + port + "/" + sid;
-      case ORACLE :
+      case ORACLE:
         return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
-      case SQLSERVER :
+      case SQLSERVER:
         return "jdbc:sqlserver://" + host + ":" + port + ";databaseName=" + sid;
-      default :
+      case DERBY:
+        return "jdbc:derby://" + host + ":" + port + "/" + sid;
+      default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
   }
 
   /**
    * Returns a query string for retrieving the last automatically generated id from the given id source,
-   * in Oracle/PostgreSQL this means the value from a defined sequence, in MySQL the value fetched from last_inserted_id()
-   * and in SQL server the last generated IDENTITY value
-   * @param idSource the source for the id, for example a sequence name
+   * in Oracle/PostgreSQL this means the value from a defined sequence, in MySQL the value fetched from last_inserted_id(),
+   * in SQL server the last generated IDENTITY value and in Derby the result from IDENTITY_VAL_LOCAL()
+   * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table
    * @return a query string for retrieving the last auto-increment value from idSource
    */
   public static String getAutoIncrementValueSQL(final String idSource) {
     switch (DB_TYPE) {
-      case MYSQL :
+      case MYSQL:
         return "select last_insert_id() from dual";
-      case POSTGRESQL :
+      case POSTGRESQL:
         return "select currval(" + idSource + ")";
-      case ORACLE :
+      case ORACLE:
         return "select " + idSource + ".currval from dual";
-      case SQLSERVER :
-        return "select @@IDENTITY";        
+      case SQLSERVER:
+        return "select @@IDENTITY";
+      case DERBY:
+        return "select IDENTITY_VAL_LOCAL() from " + idSource;
       default :
-        throw new IllegalArgumentException("Database type not recognized: " + DB_TYPE);
+        throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
   }
 
   public static String getSQLDateString(final Date value, final boolean longDate) {
     switch (DB_TYPE) {
-      case MYSQL :
+      case MYSQL:
         return longDate ?
                 "str_to_date('" + LongDateFormat.get().format(value) + "', '%d-%m-%Y %H:%i')" :
                 "str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')";
-      case POSTGRESQL :
+      case POSTGRESQL:
         return longDate ?
                 "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
                 "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
-      case ORACLE :
+      case ORACLE:
         return longDate ?
                 "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
                 "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
-      case SQLSERVER :
+      case SQLSERVER:
         return longDate ?
                 "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
                 "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
-      default :
+      case DERBY:
+        return longDate ?
+                "DATE('" + LongDateFormat.get().format(value) + "')" :
+                "DATE('" + ShortDashDateFormat.get().format(value) + "')";
+      default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
   }
 
   public static String getSequenceSQL(final String sequenceName) {
     switch (DB_TYPE) {
-      case POSTGRESQL :
+      case POSTGRESQL:
         return "select nextval(" + sequenceName + ")";
-      case ORACLE :
+      case ORACLE:
         return "select " + sequenceName + ".nextval from dual";
-      default :
+      default:
         throw new IllegalArgumentException("Sequence support is not implemented for database type: " + DB_TYPE);
     }
   }
 
   public static String getTableStatusQueryString(String tableName) {
     switch (DB_TYPE) {
-      case MYSQL :
+      case MYSQL:
         return TABLE_STATUS_MYSQL + tableName;
-      case POSTGRESQL :
+      case POSTGRESQL:
         return TABLE_STATUS_POSTGRESQL + tableName;
-      case ORACLE :
+      case ORACLE:
         return TABLE_STATUS_ORACLE + tableName;
-      default :
+      default:
         throw new IllegalArgumentException("Database type does not support table status queries: " + DB_TYPE);
     }
   }
@@ -213,21 +239,25 @@ public class Database {
       return DbType.ORACLE;
     else if (dbType.equals(DATABASE_TYPE_SQL_SERVER))
       return DbType.SQLSERVER;
+    else if (dbType.equals(DATABASE_TYPE_DERBY))
+      return DbType.DERBY;
 
     throw new IllegalArgumentException("Unknown database type: " + dbType);
   }
 
   private static String getDriverName() {
     switch (DB_TYPE) {
-      case MYSQL :
+      case MYSQL:
         return MYSQL_DRIVER;
-      case POSTGRESQL :
+      case POSTGRESQL:
         return POSTGRESQL_DRIVER;
-      case ORACLE :
+      case ORACLE:
         return ORACLE_DRIVER;
-      case SQLSERVER :
+      case SQLSERVER:
         return SQL_SERVER_DRIVER;
-      default :
+      case DERBY:
+        return DERBY_DRIVER;
+      default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
   }
