@@ -1219,9 +1219,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return "";
 
     return " " + FrameworkMessages.get(FrameworkMessages.RANGE) + " " + getQueryRangeFrom() + " "
-            + FrameworkMessages.get(FrameworkMessages.TO) + " " + getQueryRangeTo() + " "
+            + FrameworkMessages.get(FrameworkMessages.TO) + " " + getQueryRangeTo()
+            + (tableStatus.getRecordCount() < 0 ? "" : (" "
             + FrameworkMessages.get(FrameworkMessages.OF) + " "
-            + tableStatus.getRecordCount();
+            + tableStatus.getRecordCount()));
   }
 
   private int getColumnIndex(final String masterEntityID) {
