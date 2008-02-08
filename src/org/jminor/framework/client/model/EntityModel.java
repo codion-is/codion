@@ -366,6 +366,18 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
+   * @param modelClass the detail model class
+   * @return true if this model contains a detail model of the given class
+   */
+  public boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
+    for (final EntityModel detailModel : detailModels)
+      if (detailModel.getClass().equals(modelClass))
+        return true;
+
+    return false;
+  }
+
+  /**
    * @return the detail models this model contains
    */
   public List<? extends EntityModel> getDetailModels() {
