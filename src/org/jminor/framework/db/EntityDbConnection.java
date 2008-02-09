@@ -79,16 +79,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return poolTime;
   }
 
-  public int getEntityCacheSize() {
-    int ret = 0;
-    synchronized (entityCache) {
-      for (final Map.Entry<String, Map<EntityKey, Entity>> entry : entityCache.entrySet())
-        ret += entry.getValue().size();
-    }
-
-    return ret;
-  }
-
   public static int getCachedKeyQueries() {
     return cachedKeyQueries;
   }
@@ -161,15 +151,14 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
           throw new DbException("Cannot insert a read only entity");
 
         final IdSource idSource = EntityRepository.get().getIdSource(entityID);
-        if (idSource == IdSource.ID_MAX_PLUS_ONE || idSource == IdSource.ID_SEQUENCE
-                || idSource == IdSource.ID_QUERY)
+        if (idSource == IdSource.ID_MAX_PLUS_ONE || idSource == IdSource.ID_SEQUENCE || idSource == IdSource.ID_QUERY)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), getNextIdValue(entityID, idSource), false);
 
         execute(sql = EntityUtil.getInsertSQL(entity));
 
         if (idSource == IdSource.ID_AUTO_INCREMENT)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
-                  getAutoIncrementValue(Database.getAutoIncrementValueSQL(
+                  queryInteger(Database.getAutoIncrementValueSQL(
                           EntityRepository.get().getEntityIdSource(entityID))), false);
 
         ret.add(entity.getPrimaryKey());
@@ -211,7 +200,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
     for (final Entity entity : entities)
-      primaryKeys.add(entity.getPrimaryKey());
+      primaryKeys.add(entity.getPrimaryKey());//todo what if the primary key changed?
 
     return selectMany(primaryKeys);
   }
@@ -277,7 +266,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update" + (Database.isMySQL() ? "" : " nowait");
+      sql += " for update" + (Database.isOracle() ? " nowait" : "");
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
       if (result.size() == 0)

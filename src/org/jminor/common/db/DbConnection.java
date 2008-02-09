@@ -372,15 +372,6 @@ public abstract class DbConnection {
     }
   }
 
-  public int getAutoIncrementValue(final String sql) throws DbException {
-    try {
-      return queryInteger(sql);
-    }
-    catch (SQLException e) {
-      throw new DbException(e, sql);
-    }
-  }
-
   public static int getQueriesPerSecond() {
     return queriesPerSecond;
   }

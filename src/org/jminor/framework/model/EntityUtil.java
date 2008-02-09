@@ -69,6 +69,12 @@ public class EntityUtil {
     }
   }
 
+  /**
+   * Returns a SQL string version of the given value
+   * @param property the property
+   * @param value the value
+   * @return a SQL string version of value
+   */
   public static String getSQLStringValue(final Property property, final Object value) {
     if (isValueNull(property.propertyType, value))
       return "null";
@@ -171,13 +177,12 @@ public class EntityUtil {
     final StringBuffer sql = new StringBuffer("insert into ");
     sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append("(");
     final StringBuffer columnValues = new StringBuffer(") values(");
-    final List<Property> insertColumns = getInsertProperties(entity.getEntityID());
+    final List<Property> insertProperties = getInsertProperties(entity.getEntityID());
     int columnIndex = 0;
-    for (final Property property : insertColumns) {
+    for (final Property property : insertProperties) {
       sql.append(property.propertyID);
-      columnValues.append(getSQLStringValue(entity.getEntityID(), property.propertyID,
-              entity.getValue(property.propertyID)));
-      if (columnIndex++ < insertColumns.size()-1) {
+      columnValues.append(getSQLStringValue(property, entity.getValue(property.propertyID)));
+      if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
         columnValues.append(", ");
       }
@@ -200,8 +205,7 @@ public class EntityUtil {
     final Collection<Property> properties = getUpdateProperties(entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      final String columnName = property.propertyID;
-      sql.append(columnName).append(" = ").append(getSQLStringValue(entity.getEntityID(), columnName, entity.getValue(columnName)));
+      sql.append(property.propertyID).append(" = ").append(getSQLStringValue(property, entity.getValue(property.propertyID)));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
@@ -330,17 +334,6 @@ public class EntityUtil {
     }
 
     return ret;
-  }
-
-  /**
-   * Returns a SQL string version of the given value
-   * @param entityID the entityID
-   * @param propertyID the property identifier
-   * @param value the value
-   * @return a SQL string version of value
-   */
-  private static String getSQLStringValue(final String entityID, final String propertyID, final Object value) {
-    return getSQLStringValue(EntityRepository.get().getProperties(entityID).get(propertyID), value);
   }
 
   /**
