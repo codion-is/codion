@@ -18,7 +18,7 @@ import java.util.List;
 
 public class EntityTestFixture {
 
-  public final IEntityDb db;
+  private final IEntityDb db;
   private static IEntityDbProvider dbProvider;
 
   public EntityTestFixture() {
@@ -37,18 +37,15 @@ public class EntityTestFixture {
     }
   }
 
+  public IEntityDb getDbConnection() {
+    return db;
+  }
+
   /**
    * @return Value for property 'checkDependencies'.
    */
   public boolean getCheckDependencies() {
     return false;
-  }
-
-  /**
-   * @return Value for property 'IEntityDbProvider'.
-   */
-  public IEntityDbProvider getIEntityDbProvider() {
-    return dbProvider;
   }
 
   /**
@@ -60,7 +57,7 @@ public class EntityTestFixture {
   }
 
   protected Entity initialize(final Entity ret) throws Exception {
-    final IEntityDb db = getIEntityDbProvider().getEntityDb();
+    final IEntityDb db = dbProvider.getEntityDb();
     final List<Entity> entities = db.selectMany(Arrays.asList(ret.getPrimaryKey()));
     if (entities.size() > 0)
       return entities.get(0);

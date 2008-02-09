@@ -25,7 +25,7 @@ public class TestDepartment extends EntityTestUnit {
     testEntity.setValue(EmpDept.DEPARTMENT_NAME, "Huh");
   }
 
-  protected List<Entity> initTestEntities() {
+  protected List<Entity> initializeTestEntities() {
     final Entity ret = new Entity(EmpDept.T_DEPARTMENT);
     ret.setValue(EmpDept.DEPARTMENT_ID, 99);
     ret.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");

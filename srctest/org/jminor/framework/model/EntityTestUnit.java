@@ -5,19 +5,30 @@ package org.jminor.framework.model;
 
 import org.jminor.common.db.DbException;
 
+import junit.framework.TestCase;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
-public abstract class EntityTestUnit extends AbstractEntityTestUnit {
+public abstract class EntityTestUnit extends TestCase {
+
+  protected final EntityTestFixture fixture;
+  protected final String entityID;
+  private final HashMap<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   public EntityTestUnit(final String name, final EntityTestFixture fixture, final String entityID) {
-    super(name, fixture, entityID);
+    super(name);
+    this.fixture = fixture;
+    this.entityID = entityID;
   }
 
   public void testInsert() throws Exception {
     try {
       final Entity testEntity = createTestEntities().get(0);
-      final Entity tmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
+      final Entity tmp = fixture.getDbConnection().selectSingle(testEntity.getPrimaryKey());
       assertEquals(testEntity, tmp);
     }
     catch (Exception e) {
@@ -30,17 +41,17 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
     try {
       final Entity testEntity = createTestEntities().get(0);
 
-      final Entity etmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
+      final Entity etmp = fixture.getDbConnection().selectSingle(testEntity.getPrimaryKey());
       assertEquals(testEntity, etmp);
 
-      List<Entity> allEntities = getDbConnection().selectAll(getEntityID());
+      List<Entity> allEntities = fixture.getDbConnection().selectAll(getEntityID());
       boolean found = false;
       for (Entity entity : allEntities) {
         if (testEntity.getPrimaryKey().equals(entity.getPrimaryKey()))
           found = true;
       }
       assertTrue(found);
-      allEntities = getDbConnection().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
+      allEntities = fixture.getDbConnection().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
       found = false;
       for (Entity entity : allEntities) {
         if (testEntity.getPrimaryKey().equals(entity.getPrimaryKey()))
@@ -59,9 +70,9 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
       final Entity testEntity = createTestEntities().get(0);
 
       modifyEntity(testEntity);
-      getDbConnection().update(Arrays.asList(testEntity));
+      fixture.getDbConnection().update(Arrays.asList(testEntity));
 
-      final Entity tmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
+      final Entity tmp = fixture.getDbConnection().selectSingle(testEntity.getPrimaryKey());
       assertEquals(testEntity, tmp);
     }
     catch (Exception e) {
@@ -77,13 +88,13 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
       for (int i = testEntities.size() - 1; i >= 0; i--) {
         //in case the entities depend on each other via a foreign key
         //they must be deleted in the opposite order of creation
-        getDbConnection().delete(Arrays.asList(testEntities.get(i)));
+        fixture.getDbConnection().delete(Arrays.asList(testEntities.get(i)));
       }
 
       for (final Entity testEntity : testEntities) {
         boolean caught = false;
         try {
-          getDbConnection().selectSingle(testEntity.getPrimaryKey());
+          fixture.getDbConnection().selectSingle(testEntity.getPrimaryKey());
         }
         catch (DbException e) {
           caught = true;
@@ -102,4 +113,81 @@ public abstract class EntityTestUnit extends AbstractEntityTestUnit {
    * @param testEntity the entity to modify
    */
   protected abstract void modifyEntity(Entity testEntity);
+
+  /**
+   * @return Value for property 'entityID'.
+   */
+  protected String getEntityID() {
+    return this.entityID;
+  }
+
+  protected abstract List<Entity> initializeTestEntities();
+
+  /**
+   * @return Value for property 'referenceEntities'.
+   */
+  protected HashMap<String, Entity> getReferencedEntities() {
+    return this.referencedEntities;
+  }
+
+  protected List<Entity> createTestEntities() throws Exception {
+    return fixture.getDbConnection().selectMany(fixture.getDbConnection().insert(initializeTestEntities()));
+  }
+
+  protected HashMap<String, Entity> initReferenceEntities()throws Exception {
+    return fixture.initializeReferenceEntities(getReferenceEntityIDs());
+  }
+
+  /**
+   * @return Value for property 'referenceEntityIDs'.
+   */
+  protected Collection<String> getReferenceEntityIDs() {
+    return new ArrayList<String>(0);
+  }
+
+  /** {@inheritDoc} */
+  protected void setUp() throws Exception {
+    super.setUp();
+    try { // in case the last test case did not end gracefully, with an exception that is
+      if (fixture.getDbConnection().isTransactionOpen())
+        fixture.getDbConnection().endTransaction(true);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    try {
+      fixture.getDbConnection().startTransaction();
+      referencedEntities.putAll(initReferenceEntities());
+    }
+    catch (Exception e) { //this exception will cause the test case not to be run,
+      fixture.getDbConnection().endTransaction(true); //so we must end the transaction manually
+      throw e;
+    }
+  }
+
+  /** {@inheritDoc} */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    referencedEntities.clear();
+    try {
+      fixture.getDbConnection().endTransaction(true);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  //todo use this one
+  private void addAllReferenceIDs(final String entityID, final Collection<String> container) {
+    final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);
+    for (final Property.EntityProperty property : properties) {
+      final String entityValueClass = property.referenceEntityID;
+      if (entityValueClass != null) {
+        if (!container.contains(entityValueClass)) {
+          container.add(entityValueClass);
+          addAllReferenceIDs(entityValueClass, container);
+        }
+      }
+    }
+  }
 }

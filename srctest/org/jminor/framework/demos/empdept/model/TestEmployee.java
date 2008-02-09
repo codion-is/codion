@@ -27,10 +27,10 @@ public class TestEmployee extends EntityTestUnit {
     testEntity.setValue(EmpDept.EMPLOYEE_SALARY, 10000d);
   }
 
-  protected List<Entity> initTestEntities() {
+  protected List<Entity> initializeTestEntities() {
     final Entity ret = new Entity(EmpDept.T_EMPLOYEE);
-    final Entity department = getReferenceEntities().get(EmpDept.T_DEPARTMENT);
-    final Entity manager = getReferenceEntities().get(EmpDept.T_EMPLOYEE);
+    final Entity department = getReferencedEntities().get(EmpDept.T_DEPARTMENT);
+    final Entity manager = getReferencedEntities().get(EmpDept.T_EMPLOYEE);
     ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
     ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department.getValue(EmpDept.DEPARTMENT_ID));
     ret.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);

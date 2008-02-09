@@ -53,3 +53,4 @@
   Refactored EntityRepository
   Moved getEntityDependencies from EntityDbConnection to EntityRepository
   Fixed getEntityDependencies, by adding somewhat of a hack to EntityCriteria.isKeyCriteria()
+  Removed AbstractEntityTestUnit and refactored EntityTestUnit
