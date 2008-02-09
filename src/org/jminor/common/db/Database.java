@@ -196,7 +196,7 @@ public class Database {
         return longDate ?
                 "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
                 "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
-      case DERBY:
+      case DERBY://todo hmm, no format string?
         return longDate ?
                 "DATE('" + LongDateFormat.get().format(value) + "')" :
                 "DATE('" + ShortDashDateFormat.get().format(value) + "')";
