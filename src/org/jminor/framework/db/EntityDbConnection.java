@@ -51,7 +51,6 @@ import java.util.Set;
 public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
-  private static final Map<String, EntityDependencies> entityDependencies = new HashMap<String, EntityDependencies>();
 
   private final State stCheckDependenciesOnDelete = new State("EntityDbConnection.stCheckDependenciesOnDelete");
   private final Map<String, Map<EntityKey, Entity>> entityCache = new HashMap<String, Map<EntityKey, Entity>>();
@@ -421,13 +420,26 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (entities == null || entities.size() == 0)
       return ret;
 
-    final EntityDependencies info = entityDependencies.get(entities.get(0).getEntityID());
-    if (info == null)
-      throw new DbException("Entity dependencies have not been initialized for " + entities.get(0).getEntityID());
-
     try {
       addCacheQueriesRequest();
-      return getDependentEntities(info, entities);
+      final Set<EntityDependencies.Dependency> dependencies =
+              EntityRepository.get().getEntityDependencies(entities.get(0).getEntityID()).getDependencies();
+      for (final EntityDependencies.Dependency dependency : dependencies) {
+        final String dependentEntityID = dependency.getEntityID();
+        if (dependentEntityID != null) {
+          final ArrayList<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
+          for (final Entity entity : entities)
+            primaryKeys.add(entity.getPrimaryKey());
+
+          final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependentEntityID,
+                  new EntityKeyCriteria(dependency.getDependingProperties(),
+                          primaryKeys.toArray(new EntityKey[primaryKeys.size()]))));
+          if (dependentEntities.size() > 0)
+            ret.put(dependentEntityID, dependentEntities);
+        }
+      }
+
+      return ret;
     }
     finally {
       try {
@@ -478,11 +490,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   void initialize(final EntityRepository repository, final FrameworkSettings settings) {
-    if (!EntityRepository.get().contains(repository.getEntityIDs())) {
-      repository.initializeAll();
-      EntityRepository.get().add(repository);
-      resolveEntityDependencies();
-    }
+    if (!EntityRepository.get().contains(repository.getEntityIDs()))
+      EntityRepository.get().add(repository.initializeAll());
+
     this.settings = settings;
   }
 
@@ -593,28 +603,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return ret;
   }
 
-  private HashMap<String, List<Entity>>getDependentEntities(final EntityDependencies entityDependencies,
-                                                            final List<Entity> entities) throws DbException {
-    final HashMap<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
-    final Set<EntityDependencies.Dependency> dependencies = entityDependencies.getDependencies();
-    for (final EntityDependencies.Dependency dependency : dependencies) {
-      final String dependentEntityID = dependency.getEntityID();
-      if (dependentEntityID != null) {
-        final ArrayList<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
-        for (final Entity entity : entities)
-          primaryKeys.add(entity.getPrimaryKey());
-
-        final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependentEntityID,
-                new EntityKeyCriteria(dependency.getDependingProperties(),
-                        primaryKeys.toArray(new EntityKey[primaryKeys.size()]))));
-        if (dependentEntities.size() > 0)
-          ret.put(dependentEntityID, dependentEntities);
-      }
-    }
-
-    return ret;
-  }
-
   private void addToEntityCache(final String entityID, final Collection<Entity> entities) {
     if (!entityCache.containsKey(entityID))
       entityCache.put(entityID, new HashMap<EntityKey, Entity>(entities.size()));
@@ -691,21 +679,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
     catch (SQLException e) {
       throw new DbException(e, sql);
-    }
-  }
-
-  private void resolveEntityDependencies() {
-    final String[] entityIDs = EntityRepository.get().getInitializedEntities();
-    for (final String entityID : entityIDs) {
-      final EntityDependencies info = new EntityDependencies(entityID);
-      for (final String entityCheckClass : entityIDs) {
-        for (final Property.EntityProperty entityProperty : EntityRepository.get().getEntityProperties(entityCheckClass)) {
-          final String dependentClass = entityProperty.referenceEntityID;
-          if (dependentClass.equals(entityID))
-            info.addDependency(entityCheckClass, entityProperty.referenceProperties);
-        }
-      }
-      entityDependencies.put(entityID, info);
     }
   }
 

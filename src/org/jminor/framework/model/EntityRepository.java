@@ -21,23 +21,24 @@ public class EntityRepository implements Serializable {
 
   private final Map<String, Map<String, Property>> properties = new HashMap<String, Map<String, Property>>();
 
-  private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
-  private transient Map<String, Map<Integer, Property>> visiblePropertyIndexes;
-  private transient Map<String, LinkedHashMap<String, Property>> databaseProperties;
-
-  private transient Map<String, Map<String, Property.EntityProperty>> entityProperties;
-  private transient Map<String, Map<String, Collection<Property.DenormalizedProperty>>> denormalizedProperties;
-  private transient Map<String, List<Property.PrimaryKeyProperty>> primaryKeyProperties;
-
-  private transient Map<String, String> entitySelectStrings;
-  private transient Map<String, String[]> primaryKeyColumnNames;
-
   private final Map<String, String> entityTableNames = new HashMap<String, String>();
   private final Map<String, String> entitySelectTableNames = new HashMap<String, String>();
   private final Map<String, String> entityOrderByColumns = new HashMap<String, String>();
   private final Map<String, String> entityIdSources = new HashMap<String, String>();
   private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
+  private final Map<String, EntityDependencies> entityDependencies = new HashMap<String, EntityDependencies>();
+
+  private transient final Map<String, LinkedHashMap<String, Property>> visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+  private transient final Map<String, Map<Integer, Property>> visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
+  private transient final Map<String, LinkedHashMap<String, Property>> databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+
+  private transient final Map<String, Map<String, Property.EntityProperty>> entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
+  private transient final Map<String, Map<String, Collection<Property.DenormalizedProperty>>> denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
+  private transient final Map<String, List<Property.PrimaryKeyProperty>> primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
+
+  private transient final Map<String, String> entitySelectStrings = new HashMap<String, String>();
+  private transient final Map<String, String[]> primaryKeyColumnNames = new HashMap<String, String[]>();
 
   private transient final HashMap<String, EntityProxy> entityProxy = new HashMap<String, EntityProxy>();
   private transient EntityProxy defaultEntityProxy = new EntityProxy();
@@ -54,7 +55,6 @@ public class EntityRepository implements Serializable {
   }
 
   public void add(final EntityRepository ed) {
-    initContainers();
     instance.readOnly.putAll(ed.readOnly);
     instance.properties.putAll(ed.properties);
     instance.visibleProperties.putAll(ed.visibleProperties);
@@ -69,6 +69,7 @@ public class EntityRepository implements Serializable {
     instance.entityTableNames.putAll(ed.entityTableNames);
     instance.entitySelectTableNames.putAll(ed.entitySelectTableNames);
     instance.entityIdSources.putAll(ed.entityIdSources);
+    instance.entityDependencies.putAll(ed.entityDependencies);
   }
 
   public String[] getInitializedEntities() {
@@ -405,8 +406,6 @@ public class EntityRepository implements Serializable {
       addProperty(visibleProperties, visiblePropertyIndexes, databaseProperties,
               entityProperties, denormalizedProperties, primaryKeyProperties, primaryKeyColumnNames, property);
 
-    initContainers();
-
     this.databaseProperties.put(entityID, databaseProperties);
     this.visibleProperties.put(entityID, visibleProperties);
     this.visiblePropertyIndexes.put(entityID, visiblePropertyIndexes);
@@ -423,32 +422,34 @@ public class EntityRepository implements Serializable {
     this.entitySelectStrings.put(entityID, getSelectColumnsString(entityID));
   }
 
-  private void initContainers() {
-    if (this.databaseProperties == null)
-      this.databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-    if (this.visibleProperties == null)
-      this.visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-    if (this.visiblePropertyIndexes == null)
-      this.visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
-    if (this.entityProperties == null)
-      this.entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
-    if (this.denormalizedProperties == null)
-      this.denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
-    if (this.primaryKeyProperties == null)
-      this.primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
-    if (this.primaryKeyColumnNames == null)
-      this.primaryKeyColumnNames = new HashMap<String, String[]>();
-    if (this.entitySelectStrings == null)
-      this.entitySelectStrings = new HashMap<String, String>();
-  }
-
   public Collection<String> getEntityIDs() {
     return properties.keySet();
   }
 
-  public void initializeAll() {
+  public EntityRepository initializeAll() {
     for (final String entityID : properties.keySet())
       initialize(entityID);
+
+    return this;
+  }
+
+  public EntityDependencies getEntityDependencies(final String entityID) {
+    if (!entityDependencies.containsKey(entityID))
+      entityDependencies.put(entityID, resolveEntityDependencies(entityID));
+
+    return entityDependencies.get(entityID);
+  }
+
+  private EntityDependencies resolveEntityDependencies(final String entityID) {
+    final String[] entityIDs = get().getInitializedEntities();
+    final EntityDependencies dependencies = new EntityDependencies(entityID);
+    for (final String entityCheckClass : entityIDs) {
+      for (final Property.EntityProperty entityProperty : get().getEntityProperties(entityCheckClass))
+        if (entityProperty.referenceEntityID.equals(entityID))
+          dependencies.addDependency(entityCheckClass, entityProperty.referenceProperties);
+    }
+    
+    return dependencies;
   }
 
   private void addProperty(final Map<String, Property> visibleProperties,
@@ -515,9 +516,5 @@ public class EntityRepository implements Serializable {
     }
 
     return ret.toString();
-  }
-
-  public int getPropertyCount(final String entityID) {
-    return getProperties(entityID).size();
   }
 }

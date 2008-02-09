@@ -52,8 +52,12 @@ public class EntityCriteria implements Serializable {
     return isRangeCriteria;
   }
 
+  /**
+   * @return true if the criteria is an instance of EntityKeyCriteria and the entityID
+   * matches the entityID of said primary keys
+   */
   public boolean isKeyCriteria() {
-    return criteria instanceof EntityKeyCriteria;
+    return criteria instanceof EntityKeyCriteria && ((EntityKeyCriteria) criteria).getEntityID().equals(entityID);
   }
 
   public boolean tableHasAuditColumns() {

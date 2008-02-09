@@ -40,6 +40,10 @@ public class EntityKeyCriteria implements ICriteria {
     return keys;
   }
 
+  public String getEntityID() {
+    return keys.get(0).entityID;
+  }
+
   public List<Property> getProperties() {
     return properties;
   }

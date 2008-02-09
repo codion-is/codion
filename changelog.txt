@@ -50,3 +50,6 @@
   TextBeanPropertyLink now correctly disables the textComponent if LinkType is LinkType.READ_ONLY
   Removed entity history functionality, not mature enough and not really required
   Added EntityModel.containsDetailModel()
+  Refactored EntityRepository
+  Moved getEntityDependencies from EntityDbConnection to EntityRepository
+  Fixed getEntityDependencies, by adding somewhat of a hack to EntityCriteria.isKeyCriteria()
