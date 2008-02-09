@@ -27,20 +27,20 @@ public class EntityRepository implements Serializable {
   private final Map<String, String> entityIdSources = new HashMap<String, String>();
   private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
-  private final Map<String, EntityDependencies> entityDependencies = new HashMap<String, EntityDependencies>();
 
-  private transient final Map<String, LinkedHashMap<String, Property>> visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-  private transient final Map<String, Map<Integer, Property>> visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
-  private transient final Map<String, LinkedHashMap<String, Property>> databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+  private transient Map<String, EntityDependencies> entityDependencies;
+  private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
+  private transient Map<String, Map<Integer, Property>> visiblePropertyIndexes;
+  private transient Map<String, LinkedHashMap<String, Property>> databaseProperties;
 
-  private transient final Map<String, Map<String, Property.EntityProperty>> entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
-  private transient final Map<String, Map<String, Collection<Property.DenormalizedProperty>>> denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
-  private transient final Map<String, List<Property.PrimaryKeyProperty>> primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
+  private transient Map<String, Map<String, Property.EntityProperty>> entityProperties;
+  private transient Map<String, Map<String, Collection<Property.DenormalizedProperty>>> denormalizedProperties;
+  private transient Map<String, List<Property.PrimaryKeyProperty>> primaryKeyProperties;
 
-  private transient final Map<String, String> entitySelectStrings = new HashMap<String, String>();
-  private transient final Map<String, String[]> primaryKeyColumnNames = new HashMap<String, String[]>();
+  private transient Map<String, String> entitySelectStrings;
+  private transient Map<String, String[]> primaryKeyColumnNames;
 
-  private transient final HashMap<String, EntityProxy> entityProxy = new HashMap<String, EntityProxy>();
+  private transient HashMap<String, EntityProxy> entityProxies;
   private transient EntityProxy defaultEntityProxy = new EntityProxy();
 
   private static EntityRepository instance;
@@ -55,6 +55,7 @@ public class EntityRepository implements Serializable {
   }
 
   public void add(final EntityRepository ed) {
+    initContainers();
     instance.readOnly.putAll(ed.readOnly);
     instance.properties.putAll(ed.properties);
     instance.visibleProperties.putAll(ed.visibleProperties);
@@ -84,12 +85,15 @@ public class EntityRepository implements Serializable {
   }
 
   public void addEntityProxy(final String entityID, final EntityProxy entityProxy) {
-    this.entityProxy.put(entityID, entityProxy);
+    if (this.entityProxies == null)
+      this.entityProxies = new HashMap<String, EntityProxy>();
+
+    this.entityProxies.put(entityID, entityProxy);
   }
 
   public EntityProxy getEntityProxy(final String entityID) {
-    if (entityProxy.containsKey(entityID))
-      return entityProxy.get(entityID);
+    if (entityProxies != null && entityProxies.containsKey(entityID))
+      return entityProxies.get(entityID);
 
     return defaultEntityProxy;
   }
@@ -406,6 +410,8 @@ public class EntityRepository implements Serializable {
       addProperty(visibleProperties, visiblePropertyIndexes, databaseProperties,
               entityProperties, denormalizedProperties, primaryKeyProperties, primaryKeyColumnNames, property);
 
+    initContainers();
+
     this.databaseProperties.put(entityID, databaseProperties);
     this.visibleProperties.put(entityID, visibleProperties);
     this.visiblePropertyIndexes.put(entityID, visiblePropertyIndexes);
@@ -420,6 +426,27 @@ public class EntityRepository implements Serializable {
       initialPropertyDefinitions.get(selectColumnNames[idx]).setSelectIndex(idx+1);
 
     this.entitySelectStrings.put(entityID, getSelectColumnsString(entityID));
+  }
+
+  private void initContainers() {
+    if (this.databaseProperties == null)
+      this.databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+    if (this.visibleProperties == null)
+      this.visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+    if (this.visiblePropertyIndexes == null)
+      this.visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
+    if (this.entityProperties == null)
+      this.entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
+    if (this.denormalizedProperties == null)
+      this.denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
+    if (this.primaryKeyProperties == null)
+      this.primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
+    if (this.primaryKeyColumnNames == null)
+      this.primaryKeyColumnNames = new HashMap<String, String[]>();
+    if (this.entitySelectStrings == null)
+      this.entitySelectStrings = new HashMap<String, String>();
+    if (this.entityDependencies == null)
+      this.entityDependencies = new HashMap<String, EntityDependencies>();
   }
 
   public Collection<String> getEntityIDs() {
@@ -487,10 +514,9 @@ public class EntityRepository implements Serializable {
   private String[] initSelectColumnNames(final String entityID) {
     final Collection<Property> dbProperties = getDatabaseProperties(entityID);
     final List<String> ret = new ArrayList<String>(dbProperties.size());
-    for (final Property property : dbProperties) {
+    for (final Property property : dbProperties)
       if (!(property instanceof Property.EntityProperty))
         ret.add(property.propertyID);
-    }
 
     return ret.toArray(new String[ret.size()]);
   }
@@ -498,10 +524,10 @@ public class EntityRepository implements Serializable {
   private String getSelectColumnsString(final String entityID) {
     final Collection<Property> dbProperties = getDatabaseProperties(entityID);
     final List<Property> selectProperties = new ArrayList<Property>(dbProperties.size());
-    for (final Property property : dbProperties) {
+    for (final Property property : dbProperties)
       if (!(property instanceof Property.EntityProperty))
         selectProperties.add(property);
-    }
+
     final StringBuffer ret = new StringBuffer();
     int i = 0;
     for (final Property property : selectProperties) {
