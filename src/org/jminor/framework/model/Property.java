@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Constants;
 import org.jminor.framework.FrameworkSettings;
 
 import java.io.Serializable;
@@ -37,7 +36,7 @@ public class Property implements Serializable {
   /**
    * The preferred column width when this property is presented in a table
    */
-  private final int preferredColumnWidth;
+  private final Integer preferredColumnWidth;
 
   /**
    * True if this property should be hidden in table views
@@ -93,16 +92,16 @@ public class Property implements Serializable {
 
   public Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
                   final boolean selectOnly) {
-    this(propertyID, propertyType, caption, hidden, selectOnly, Constants.INT_NULL_VALUE);
+    this(propertyID, propertyType, caption, hidden, selectOnly, null);
   }
 
   public Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
-                  final boolean selectOnly, final int preferredColumnWidth) {
+                  final boolean selectOnly, final Integer preferredColumnWidth) {
     this(propertyID, propertyType, caption, hidden, selectOnly, preferredColumnWidth, !selectOnly);
   }
 
   private Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
-                   final boolean selectOnly, final int preferredColumnWidth, final boolean isUpdatable) {
+                   final boolean selectOnly, final Integer preferredColumnWidth, final boolean isUpdatable) {
     if (propertyID == null)
       throw new IllegalArgumentException("Property ID must be specified");
     this.propertyID = propertyID;
@@ -192,9 +191,9 @@ public class Property implements Serializable {
 
   /**
    * @return the preferred column width of this property when
-   * presented in a table
+   * presented in a table, null if none has been specified
    */
-  public int getPreferredColumnWidth() {
+  public Integer getPreferredColumnWidth() {
     return preferredColumnWidth;
   }
 

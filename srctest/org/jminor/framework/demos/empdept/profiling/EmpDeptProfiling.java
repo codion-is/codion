@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.profiling;
 
-import org.jminor.common.Constants;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -19,10 +18,8 @@ import org.jminor.framework.server.EntityDbRemoteProvider;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * User: Björn Darri
@@ -113,13 +110,6 @@ public class EmpDeptProfiling extends Profiling {
     }
   }
 
-  private void testLoadEntities() {
-    final List<Entity> ret = new ArrayList<Entity>();
-    for (int i = 0; i < 10000; i++) {
-      ret.add(getEmployee(Constants.INT_NULL_VALUE, "One", "none", null, new Date(), 1234.123, 13, null));
-    }
-  }
-
   private void testSelect() {
     try {
       JOptionPane.showMessageDialog(null, "Start");
@@ -144,16 +134,16 @@ public class EmpDeptProfiling extends Profiling {
       db = EntityDbProviderFactory.createEntityDbProvider(user, user.toString());
       db.getEntityDb().startTransaction();
       db.getEntityDb().insert(Arrays.asList(
-              getEmployee(Constants.INT_NULL_VALUE, "One", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Two", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Three", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Four", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Five", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Six", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Seven", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Eight", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Nine", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(Constants.INT_NULL_VALUE, "Ten", "none", null, new Date(), 1234.123, 13, null)));
+              getEmployee(null, "One", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Two", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Three", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Four", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Five", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Six", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Seven", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Eight", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Nine", "none", null, new Date(), 1234.123, 13, null),
+              getEmployee(null, "Ten", "none", null, new Date(), 1234.123, 13, null)));
       JOptionPane.showMessageDialog(null, "Exit");
     }
     catch (Exception e) {
@@ -168,7 +158,7 @@ public class EmpDeptProfiling extends Profiling {
     }
   }
 
-  private Entity getEmployee(final int id, final String name, final String job, final Entity manager,
+  private Entity getEmployee(final Integer id, final String name, final String job, final Entity manager,
                              final Date hiredate, final double salary, final double commission, final Entity department) {
     final Entity ret = new Entity(EmpDept.T_EMPLOYEE);
     ret.setValue(EmpDept.EMPLOYEE_ID, id);

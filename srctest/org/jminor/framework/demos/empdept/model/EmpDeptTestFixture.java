@@ -19,10 +19,6 @@ import java.util.HashMap;
  */
 public class EmpDeptTestFixture extends EntityTestFixture {
 
-  public EmpDeptTestFixture() {
-    new EmpDept();
-  }
-
   public HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
     final HashMap<String, Entity> ret = new HashMap<String, Entity>();
     if (entityIDs.contains(EmpDept.T_DEPARTMENT))
@@ -31,6 +27,10 @@ public class EmpDeptTestFixture extends EntityTestFixture {
       ret.put(EmpDept.T_EMPLOYEE, initialize(getEmployee(ret.get(EmpDept.T_DEPARTMENT))));
 
     return ret;
+  }
+
+  protected void loadDomainModel() {
+    new EmpDept();
   }
 
   private Entity getEmployee(final Entity department) throws Exception {

@@ -14,9 +14,12 @@ import org.jminor.framework.db.IEntityDbProvider;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class EntityTestFixture {
+public abstract class EntityTestFixture {
 
   private final IEntityDb db;
   private static IEntityDbProvider dbProvider;
@@ -29,7 +32,8 @@ public class EntityTestFixture {
       db = dbProvider.getEntityDb();
       if (!db.isTransactionOpen())
         db.startTransaction();
-      db.setCheckDependencies(getCheckDependencies());
+      db.setCheckDependencies(false);
+      loadDomainModel();
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -41,11 +45,11 @@ public class EntityTestFixture {
     return db;
   }
 
-  /**
-   * @return Value for property 'checkDependencies'.
-   */
-  public boolean getCheckDependencies() {
-    return false;
+  public Map<? extends String, ? extends Entity> initializeReferenceEntities(final String entityID) throws Exception {
+    final Set<String> referencedEntityIDs = new HashSet<String>();
+    addAllReferenceIDs(entityID, referencedEntityIDs);
+
+    return initializeReferenceEntities(referencedEntityIDs);
   }
 
   /**
@@ -56,6 +60,8 @@ public class EntityTestFixture {
     return UiUtil.getUser(null, new User(FrameworkSettings.getDefaultUsername(), null));
   }
 
+  protected abstract void loadDomainModel();
+
   protected Entity initialize(final Entity ret) throws Exception {
     final IEntityDb db = dbProvider.getEntityDb();
     final List<Entity> entities = db.selectMany(Arrays.asList(ret.getPrimaryKey()));
@@ -65,7 +71,18 @@ public class EntityTestFixture {
     return db.selectSingle(db.insert(Arrays.asList(ret)).get(0));
   }
 
-  public HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
-    return new HashMap<String, Entity>(0);
+  protected abstract HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception;
+
+  private void addAllReferenceIDs(final String entityID, final Collection<String> container) {
+    final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);
+    for (final Property.EntityProperty property : properties) {
+      final String entityValueClass = property.referenceEntityID;
+      if (entityValueClass != null) {
+        if (!container.contains(entityValueClass)) {
+          container.add(entityValueClass);
+          addAllReferenceIDs(entityValueClass, container);
+        }
+      }
+    }
   }
 }

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -22,10 +21,10 @@ import javax.swing.JTextField;
  */
 public class TestBeanPropertyLink extends TestCase {
 
-  private int intValue;
+  private Integer intValue;
   private Event evtIntValueChanged = new Event("");
 
-  private double doubleValue;
+  private Double doubleValue;
   private Event evtDoubleValueChanged = new Event("");
 
   private String stringValue;
@@ -44,25 +43,25 @@ public class TestBeanPropertyLink extends TestCase {
   public void testIntBeanPropertyLink() throws Exception {
     final IntField txtInt = new IntField();
     new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged, "");
-    assertEquals("Int value should be 0 on initialization", 0, txtInt.getInt());
+    assertNull("Int value should be null on initialization", txtInt.getInt());
     setIntValue(2);
-    assertEquals("Int value should be 2", 2, txtInt.getInt());
+    assertEquals("Int value should be 2", 2, (int) txtInt.getInt());
     txtInt.setText("42");
-    assertEquals("Int value should be 42", 42, getIntValue());
+    assertEquals("Int value should be 42", 42, (int) getIntValue());
     txtInt.setText("");
-    assertEquals("Int value should be null", Constants.INT_NULL_VALUE, getIntValue());
+    assertNull("Int value should be null", getIntValue());
   }
 
   public void testDoubleBeanPropertyLink() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     new DoubleBeanPropertyLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, "");
-    assertEquals("Double value should be 0 on initialization", 0.0, txtDouble.getDouble());
+    assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", 2.2, txtDouble.getDouble());
     txtDouble.setText("42.2");
     assertEquals("Double value should be 42.2", 42.2, getDoubleValue());
     txtDouble.setText("");
-    assertEquals("Double value should be null", Constants.DOUBLE_NULL_VALUE, getDoubleValue());
+    assertNull("Double value should be null", getDoubleValue());
   }
 
   public void testStringBeanPropertyLink() throws Exception {
@@ -97,20 +96,20 @@ public class TestBeanPropertyLink extends TestCase {
     assertEquals("selected item should be 'd'", "d", getSelectedItem());
   }
 
-  public int getIntValue() {
+  public Integer getIntValue() {
     return intValue;
   }
 
-  public void setIntValue(int intValue) {
+  public void setIntValue(final Integer intValue) {
     this.intValue = intValue;
     evtIntValueChanged.fire();
   }
 
-  public double getDoubleValue() {
+  public Double getDoubleValue() {
     return doubleValue;
   }
 
-  public void setDoubleValue(double doubleValue) {
+  public void setDoubleValue(final Double doubleValue) {
     this.doubleValue = doubleValue;
     evtDoubleValueChanged.fire();
   }
@@ -119,7 +118,7 @@ public class TestBeanPropertyLink extends TestCase {
     return stringValue;
   }
 
-  public void setStringValue(String stringValue) {
+  public void setStringValue(final String stringValue) {
     this.stringValue = stringValue;
     evtStringValueChanged.fire();
   }
@@ -128,7 +127,7 @@ public class TestBeanPropertyLink extends TestCase {
     return booleanValue;
   }
 
-  public void setBooleanValue(boolean booleanValue) {
+  public void setBooleanValue(final boolean booleanValue) {
     this.booleanValue = booleanValue;
     evtBooleanValueChanged.fire();
   }
@@ -137,7 +136,7 @@ public class TestBeanPropertyLink extends TestCase {
     return selectedItem;
   }
 
-  public void setSelectedItem(String selectedItem) {
+  public void setSelectedItem(final String selectedItem) {
     this.selectedItem = selectedItem;
     evtSelectedItemChanged.fire();
   }

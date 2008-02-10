@@ -225,11 +225,11 @@ public final class Entity implements Externalizable, Comparable<Entity> {
             repository.getProperty(primaryKey.entityID, propertyID));
   }
 
-  public final int getIntValue(final String propertyID) {
+  public final Integer getIntValue(final String propertyID) {
     return getIntValue(repository.getProperty(primaryKey.entityID, propertyID));
   }
 
-  public final int getIntValue(final Property property) {
+  public final Integer getIntValue(final Property property) {
     return repository.getEntityProxy(primaryKey.entityID).getIntValue(this, property);
   }
 
@@ -238,12 +238,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
             repository.getProperty(primaryKey.entityID, propertyID));
   }
 
-  public final char getCharValue(final String propertyID) {
+  public final Character getCharValue(final String propertyID) {
     return repository.getEntityProxy(primaryKey.entityID).getCharValue(this,
             repository.getProperty(primaryKey.entityID, propertyID));
   }
 
-  public final double getDoubleValue(final String propertyID) {
+  public final Double getDoubleValue(final String propertyID) {
     return repository.getEntityProxy(primaryKey.entityID).getDoubleValue(this,
             repository.getProperty(primaryKey.entityID, propertyID));
   }

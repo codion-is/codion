@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import junit.framework.TestCase;
-import org.jminor.common.Constants;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.ShortDashDateFormat;
@@ -17,6 +15,8 @@ import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.EntityRepository;
+
+import junit.framework.TestCase;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
@@ -43,10 +43,10 @@ public class TestEntityPropertyLink extends TestCase {
     new IntTextPropertyLink(model, EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
             txt, "", true, LinkType.READ_WRITE, null);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
-    txt.setInteger(42);
+    txt.setInt(42);
     assertEquals("Integer value should be 42.2", new Integer(42), model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setText("");
-    assertEquals("Integer value should be null", Constants.INTEGER_NULL_VALUE, model.getValue(EmpDept.EMPLOYEE_ID));
+    assertNull("Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
   }
 
   @SuppressWarnings({"UnnecessaryBoxing"})
@@ -58,7 +58,7 @@ public class TestEntityPropertyLink extends TestCase {
     txt.setDouble(42.2);
     assertEquals("Double value should be 42.2", new Double(42.2), model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setText("");
-    assertEquals("Double value should be null", new Double(Constants.DOUBLE_NULL_VALUE), model.getValue(EmpDept.EMPLOYEE_COMMISSION));
+    assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
   }
 
   public void testStringPropertyLink() {

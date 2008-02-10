@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.Constants;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
@@ -44,7 +43,7 @@ public class EntityPropertyEditor extends JPanel {
   private transient final IEntityDbProvider dbProvider;
 
   private JButton okButton;
-  private int buttonValue = Constants.INT_NULL_VALUE;
+  private int buttonValue = -Integer.MAX_VALUE;
 
   public EntityPropertyEditor(final Object currentValue, final Property property, final boolean multipleEntityUpdate) throws UserException {
     this(currentValue, property, null, multipleEntityUpdate);
@@ -115,7 +114,7 @@ public class EntityPropertyEditor extends JPanel {
         if (txt.length() > 0)
           return txt.charAt(0);
 
-        return Constants.CHARACTER_NULL_VALUE;
+        return null;
       }
       case ENTITY:
         final JComboBox box = (JComboBox)field;

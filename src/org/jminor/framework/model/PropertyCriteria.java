@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Constants;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.FrameworkConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,7 +165,7 @@ public class PropertyCriteria implements ICriteria {
   }
 
   private boolean containsWildcard(final String val) {
-    return val != null && val.length() > 0 && val.indexOf(Constants.WILDCARD) > -1;
+    return val != null && val.length() > 0 && val.indexOf(FrameworkConstants.WILDCARD) > -1;
   }
 
   private String getInList(final String whereColumn) {

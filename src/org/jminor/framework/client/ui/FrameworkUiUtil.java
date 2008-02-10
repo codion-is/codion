@@ -1180,8 +1180,8 @@ public class FrameworkUiUtil {
       final TableColumn col = new TableColumn(i++);
       col.setIdentifier(property);
       col.setHeaderValue(property.getCaption());
-      final int prw = property.getPreferredColumnWidth();
-      if (prw >= 0)
+      final Integer prw = property.getPreferredColumnWidth();
+      if (prw != null)
         col.setMinWidth(prw);
       ret.add(col);
     }

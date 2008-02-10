@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Constants;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.model.Util;
@@ -46,20 +45,11 @@ public class EntityUtil {
       return true;
 
     switch (propertyType) {
-      case INT :
-        return value.equals(Constants.INTEGER_NULL_VALUE);
-      case DOUBLE :
-        return value.equals(Constants.DOUBLE_NULL_VALUE);
       case CHAR :
         if (value instanceof String)
-          return ((String)value).length() == 0 || ((String)value).charAt(0) == Constants.CHAR_NULL_VALUE;
-        else if (value instanceof Character)
-          return value.equals(Constants.CHAR_NULL_VALUE);
+          return ((String)value).length() == 0;
       case BOOLEAN :
         return value == Type.Boolean.NULL;
-      case SHORT_DATE :
-      case LONG_DATE :
-        return value.equals(Constants.TIMESTAMP_NULL_VALUE);
       case STRING :
         return value.equals("");
       case ENTITY :

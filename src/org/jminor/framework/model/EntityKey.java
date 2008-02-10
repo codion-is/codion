@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Constants;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -42,7 +40,7 @@ public class EntityKey implements Externalizable {
   /**
    * Caching the hash code
    */
-  private int hashCode = Constants.INT_NULL_VALUE;
+  private int hashCode = -Integer.MAX_VALUE;
 
   /**
    * True if the hash code value has been invalidated and needs to be recalculated
@@ -212,7 +210,7 @@ public class EntityKey implements Externalizable {
       for (final Object value : keyValues.values())
         hash = hash + (value == null ? 0 : value.hashCode());
 
-      hashCode = hash == 0 ? Constants.INT_NULL_VALUE : hash;//in case all values were null
+      hashCode = hash == 0 ? -Integer.MAX_VALUE : hash;//in case all values were null
       hashCodeDirty = false;
     }
 
@@ -224,9 +222,9 @@ public class EntityKey implements Externalizable {
    */
   public boolean isNull() {
     if (isSingleIntegerKey)
-      return hashCode() == Constants.INT_NULL_VALUE;
+      return hashCode() == -Integer.MAX_VALUE;
 
-    if (hashCode() == Constants.INT_NULL_VALUE)
+    if (hashCode() == -Integer.MAX_VALUE)
       return true;
 
     for (final Property property : properties)
@@ -241,7 +239,7 @@ public class EntityKey implements Externalizable {
    */
   public void clear() {
     keyValues.clear();
-    hashCode = Constants.INT_NULL_VALUE;
+    hashCode = -Integer.MAX_VALUE;
     hashCodeDirty = true;
   }
 
@@ -319,7 +317,7 @@ public class EntityKey implements Externalizable {
     keyValues.put(propertyID, newValue);
     hashCodeDirty = true;
     if (isSingleIntegerKey) {
-      hashCode = newValue == null ? Constants.INT_NULL_VALUE : (Integer) newValue;
+      hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
       hashCodeDirty = false;
     }
   }

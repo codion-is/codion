@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
@@ -65,7 +64,7 @@ public class IntTextPropertyLink extends TextPropertyLink {
   /** {@inheritDoc} */
   protected Object valueFromText(final String text) {
     try {
-      return text.length() > 0 ? Integer.parseInt(text) : Constants.INTEGER_NULL_VALUE;
+      return text.length() > 0 ? Integer.parseInt(text) : null;
     }
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);

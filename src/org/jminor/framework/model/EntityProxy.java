@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Constants;
-
 import java.awt.Color;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -56,7 +54,7 @@ public class EntityProxy {
   public Timestamp getDateValue(final Entity entity, final Property property) {
     final Object value = entity.getValue(property);
     if (value == null)
-      return Constants.TIMESTAMP_NULL_VALUE;
+      return null;
 
     if (value.getClass().equals(Date.class))
       return new Timestamp(((Date)value).getTime());
@@ -64,10 +62,8 @@ public class EntityProxy {
     return (Timestamp) value;
   }
 
-  public int getIntValue(final Entity entity, final Property property) {
-    final Integer value = (Integer) entity.getValue(property);
-
-    return value == null ? Constants.INT_NULL_VALUE : value;
+  public Integer getIntValue(final Entity entity, final Property property) {
+    return (Integer) entity.getValue(property);
   }
 
   public Type.Boolean getBooleanValue(final Entity entity, final Property property) {
@@ -77,15 +73,11 @@ public class EntityProxy {
   }
 
   public char getCharValue(final Entity entity, final Property property) {
-    final Character value = (Character) entity.getValue(property);
-
-    return value == null ? Constants.CHAR_NULL_VALUE : value;
+    return (Character) entity.getValue(property);
   }
 
-  public double getDoubleValue(final Entity entity, final Property property) {
-    final Double value = (Double) entity.getValue(property);
-
-    return value == null ? Constants.DOUBLE_NULL_VALUE : value;
+  public Double getDoubleValue(final Entity entity, final Property property) {
+    return (Double) entity.getValue(property);
   }
 
   public String getValueAsUserString(final Entity entity, final Property property) {

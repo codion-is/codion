@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Entity;
@@ -31,7 +30,6 @@ public class PropertySearchModel extends AbstractSearchModel {
   public PropertySearchModel(final Property property, final EntityComboBoxModel entityComboBoxModel) {
     this.property = property;
     this.entityComboBoxModel = entityComboBoxModel;
-    setUpperBound(initValue(property.getPropertyType()));
     bindComboBoxEvents();
   }
 
@@ -111,14 +109,6 @@ public class PropertySearchModel extends AbstractSearchModel {
   /** {@inheritDoc} */
   public String toString() {
     return property.toString();
-  }
-
-  private Object initValue(final Type propertyType) {
-    switch (propertyType) {
-      case INT: return Constants.INTEGER_NULL_VALUE;
-      case DOUBLE: return Constants.DOUBLE_NULL_VALUE;
-      default: return null;
-    }
   }
 
   private long getHashCode(Object obj) {

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.Constants;
 import org.jminor.common.i18n.Messages;
 
 import java.io.Serializable;
@@ -11,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,18 +107,6 @@ public class DbUtil {
       return ret;
     }
   };
-
-  public static Date nvl(final Date val) {
-    return val == null ? Constants.TIMESTAMP_NULL_VALUE : val;
-  }
-
-  public static Timestamp nvl(final Timestamp val) {
-    return val == null ? Constants.TIMESTAMP_NULL_VALUE : val;
-  }
-
-  public static String nvl(final String val) {
-    return val == null ? "" : val;
-  }
 
   /**
    * Generates a sql select query with the given parameters

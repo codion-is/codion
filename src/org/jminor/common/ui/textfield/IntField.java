@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui.textfield;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.Util;
 
 import javax.swing.text.AttributeSet;
@@ -44,8 +43,7 @@ public class IntField extends TextFieldPlus {
   class IntFieldDocument extends PlainDocument {
     /** {@inheritDoc} */
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-      if (getMaxLength() >= 0 && getLength() >= getMaxLength()
-          || string.equals(Constants.INTEGER_NULL_VALUE.toString()))
+      if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;
       if (string.equals("")) {
         super.insertString(offset, string, a);
@@ -76,22 +74,18 @@ public class IntField extends TextFieldPlus {
     }
   }
 
-  public int getInt(final String text) {
-    return Util.getInt(text);
-  }
-
   /**
    * @return Value for property 'int'.
    */
-  public int getInt() {
-    return getInt(getText());
+  public Integer getInt() {
+    return Util.getInt(getText());
   }
 
   /**
    * @param value Value to set for property 'int'.
    */
-  public void setInt(final int value) {
-    setText(String.valueOf(value));
+  public void setInt(final Integer value) {
+    setText(value == null ? "" : value.toString());
   }
 
   /**
@@ -99,12 +93,5 @@ public class IntField extends TextFieldPlus {
    */
   public Integer getInteger() {
     return getInt();
-  }
-
-  /**
-   * @param value Value to set for property 'integer'.
-   */
-  public void setInteger(final Integer value) {
-    setInt(value);
   }
 }

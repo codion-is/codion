@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -265,7 +264,7 @@ public class PropertySummaryPanel extends JPanel {
         sum += (Integer)obj;
         count++;
       }
-      if (count > 0 && sum != 0 && sum != Constants.INT_NULL_VALUE)
+      if (count > 0)
         txt = format.format(sum/count);
     }
     else if (property.getPropertyType() == Type.DOUBLE) {
@@ -275,7 +274,7 @@ public class PropertySummaryPanel extends JPanel {
         sum += (Double)obj;
         count++;
       }
-      if (count > 0 || sum != 0 && sum != Constants.DOUBLE_NULL_VALUE)
+      if (count > 0)
         txt = format.format(sum/count);
     }
 
@@ -288,15 +287,13 @@ public class PropertySummaryPanel extends JPanel {
       int sum = 0;
       for (final Object obj : values)
         sum += (Integer)obj;
-      if (sum != 0 && sum != Constants.INT_NULL_VALUE)
-        txt = format.format(sum);
+      txt = format.format(sum);
     }
     else if (property.getPropertyType() == Type.DOUBLE) {
       double sum = 0;
       for (final Object obj : values)
         sum += (Double)obj;
-      if (sum != 0 && sum != Constants.DOUBLE_NULL_VALUE)
-        txt = format.format(sum);
+      txt = format.format(sum);
     }
 
     return txt;

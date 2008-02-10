@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Constants;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.SearchType;
@@ -243,7 +242,7 @@ public class TestPropertyCriteria extends TestCase {
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.LIKE, Constants.TIMESTAMP_NULL_VALUE);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, null);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =

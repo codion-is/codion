@@ -5,7 +5,6 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.IResultPacker;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -28,9 +27,9 @@ public class EntityResultPacker implements IResultPacker<Entity> {
 
   private ResultSet resultSet;
 
-  public EntityResultPacker(final String entityID) {
+  public EntityResultPacker(final String entityID, final Collection<Property> properties) {
     this.entityID = entityID;
-    this.properties = EntityRepository.get().getDatabaseProperties(entityID);
+    this.properties = properties;
   }
 
   /**

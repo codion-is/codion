@@ -134,10 +134,6 @@ public abstract class EntityTestUnit extends TestCase {
     return fixture.getDbConnection().selectMany(fixture.getDbConnection().insert(initializeTestEntities()));
   }
 
-  protected HashMap<String, Entity> initReferenceEntities()throws Exception {
-    return fixture.initializeReferenceEntities(getReferenceEntityIDs());
-  }
-
   /**
    * @return Value for property 'referenceEntityIDs'.
    */
@@ -157,7 +153,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
     try {
       fixture.getDbConnection().startTransaction();
-      referencedEntities.putAll(initReferenceEntities());
+      referencedEntities.putAll(fixture.initializeReferenceEntities(entityID));
     }
     catch (Exception e) { //this exception will cause the test case not to be run,
       fixture.getDbConnection().endTransaction(true); //so we must end the transaction manually
@@ -174,20 +170,6 @@ public abstract class EntityTestUnit extends TestCase {
     }
     catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  //todo use this one
-  private void addAllReferenceIDs(final String entityID, final Collection<String> container) {
-    final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);
-    for (final Property.EntityProperty property : properties) {
-      final String entityValueClass = property.referenceEntityID;
-      if (entityValueClass != null) {
-        if (!container.contains(entityValueClass)) {
-          container.add(entityValueClass);
-          addAllReferenceIDs(entityValueClass, container);
-        }
-      }
     }
   }
 }

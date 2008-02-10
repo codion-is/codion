@@ -642,7 +642,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private EntityResultPacker getResultPacker(final String entityID) {
     EntityResultPacker packer = resultPackers.get(entityID);
     if (packer == null)
-      resultPackers.put(entityID, packer = new EntityResultPacker(entityID));
+      resultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.get().getDatabaseProperties(entityID)));
 
     return packer;
   }

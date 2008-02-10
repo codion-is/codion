@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.model.Type;
 
 import java.sql.Timestamp;
@@ -70,15 +70,15 @@ public abstract class AbstractSearchModel {
   /**
    * @param value Value to set for property 'upperBound'.
    */
-  public void setUpperBound(final double value) {
-    setUpperBound(new Double(value));
+  public void setUpperBound(final Double value) {
+    setUpperBound((Object) value);
   }
 
   /**
    * @param value Value to set for property 'upperBound'.
    */
-  public void setUpperBound(final int value) {
-    setUpperBound(new Integer(value));
+  public void setUpperBound(final Integer value) {
+    setUpperBound((Object) value);
   }
 
   /**
@@ -124,7 +124,7 @@ public abstract class AbstractSearchModel {
    */
   public Object getUpperBound() {
     if (getColumnType() == Type.STRING && stAutomaticWildcardOn.isActive())
-      return Constants.WILDCARD + this.upperBound + Constants.WILDCARD;
+      return FrameworkConstants.WILDCARD + this.upperBound + FrameworkConstants.WILDCARD;
     else
       return this.upperBound;
   }
@@ -139,15 +139,15 @@ public abstract class AbstractSearchModel {
   /**
    * @param value Value to set for property 'lowerBound'.
    */
-  public void setLowerBound(final double value) {
-    setLowerBound(new Double(value));
+  public void setLowerBound(final Double value) {
+    setLowerBound((Object) value);
   }
 
   /**
    * @param value Value to set for property 'lowerBound'.
    */
-  public void setLowerBound(final int value) {
-    setLowerBound(new Integer(value));
+  public void setLowerBound(final Integer value) {
+    setLowerBound((Object) value);
   }
 
   /**
@@ -193,7 +193,7 @@ public abstract class AbstractSearchModel {
    */
   public Object getLowerBound() {
     if (getColumnType() == Type.STRING && stAutomaticWildcardOn.isActive())
-      return Constants.WILDCARD + this.lowerBound + Constants.WILDCARD;
+      return FrameworkConstants.WILDCARD + this.lowerBound + FrameworkConstants.WILDCARD;
     else
       return this.lowerBound;
   }
@@ -261,7 +261,7 @@ public abstract class AbstractSearchModel {
   }
 
   public static boolean containsWildcard(final String value) {
-    return value != null && value.length() > 0 && value.indexOf(Constants.WILDCARD) > -1;
+    return value != null && value.length() > 0 && value.indexOf(FrameworkConstants.WILDCARD) > -1;
   }
 
   protected void bindEvents() {

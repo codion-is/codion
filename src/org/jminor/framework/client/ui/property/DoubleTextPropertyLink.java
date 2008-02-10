@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -68,7 +67,7 @@ public class DoubleTextPropertyLink extends TextPropertyLink {
       if (text != null && text.equals("-"))
         return -1;
 
-      return text.length() > 0 ? Double.parseDouble(text) : Constants.DOUBLE_NULL_VALUE;
+      return text.length() > 0 ? Double.parseDouble(text) : null;
     }
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);

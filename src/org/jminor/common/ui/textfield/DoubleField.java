@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui.textfield;
 
-import org.jminor.common.Constants;
 import org.jminor.common.model.Util;
 
 import javax.swing.text.AttributeSet;
@@ -33,24 +32,21 @@ public class DoubleField extends IntField {
 
   /** {@inheritDoc} */
   public Object getValue() {
-    return this.getDouble();
+    return getDouble();
   }
 
   /**
    * @return Value for property 'double'.
    */
-  public double getDouble() {
+  public Double getDouble() {
     return Util.getDouble(getText());
   }
 
   /**
    * @param value Value to set for property 'double'.
    */
-  public void setDouble(final double value) {
-    if (value == Constants.DOUBLE_NULL_VALUE)
-      setText("");
-    else
-      setText(String.valueOf(value));
+  public void setDouble(final Double value) {
+    setText(value == null ? "" : value.toString());
   }
 
   /** {@inheritDoc} */
@@ -60,8 +56,7 @@ public class DoubleField extends IntField {
 
   class DoubleFieldDocument extends PlainDocument {
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-      if (getMaxLength() >= 0 && getLength() >= getMaxLength()
-          || string.equals(Double.toString(Constants.DOUBLE_NULL_VALUE)))
+      if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;
       if (string.equals("")) {
         super.insertString(offset, string, a);

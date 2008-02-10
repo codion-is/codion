@@ -3,11 +3,11 @@
  */
 package org.jminor.common.model;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.jminor.common.Constants;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -65,8 +65,6 @@ public class Util {
 
   private static final ArrayList<Logger> loggers = new ArrayList<Logger>();
 
-  private Util() {}
-
   public static String formatLatitude(final String latitude) {
     if (latitude == null || latitude.length() == 0)
       return "";
@@ -123,9 +121,9 @@ public class Util {
     return ret;
   }
 
-  public static int getInt(String text) {
+  public static Integer getInt(String text) {
     if (text == null || text.length() == 0)
-      return Constants.INT_NULL_VALUE;
+      return null;
 
     int value;
     if ((text.length() > 0) && (!text.equals("-")))
@@ -137,9 +135,9 @@ public class Util {
     return value;
   }
 
-  public static double getDouble(String text) {
+  public static Double getDouble(String text) {
     if (text == null || text.length() == 0)
-      return Constants.DOUBLE_NULL_VALUE;
+      return null;
 
     double value;
     if ((text.length() > 0) && (!text.equals("-"))) {
