@@ -632,7 +632,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
                                                               final Property.EntityProperty property) {
     final HashSet<EntityKey> ret = new HashSet<EntityKey>(entities.size());
     for (final Entity entity : entities) {
-      EntityKey key = entity.getReferencedKey(property);
+      final EntityKey key = entity.getReferencedKey(property);
       if (key != null)
         ret.add(key);
     }
@@ -640,7 +640,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return EntityUtil.toList(ret);
   }
 
-  private EntityResultPacker getResultPacker(String entityID) {
+  private EntityResultPacker getResultPacker(final String entityID) {
     EntityResultPacker packer = resultPackers.get(entityID);
     if (packer == null)
       resultPackers.put(entityID, packer = new EntityResultPacker(entityID));
@@ -682,6 +682,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
               break;
             case DOUBLE:
               ret.add(resultSet.getDouble(1));
+              break;
             default:
               ret.add(resultSet.getObject(1));
           }
