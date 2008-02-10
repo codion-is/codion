@@ -186,7 +186,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (entities.size() == 0)
       throw new DbException("Empty update batch!");
 
-    final ArrayList<String> statements = new ArrayList<String>();
+    final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
       if (EntityRepository.get().isReadOnly(entity.getEntityID()))
         throw new DbException("Cannot update a read only entity");
@@ -196,7 +196,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         statements.add(EntityUtil.getUpdateSQL(entity));
     }
 
-    execute(statements.toArray(new String[statements.size()]));
+    execute(statements);
 
     final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
     for (final Entity entity : entities)
@@ -216,14 +216,14 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         throw new DbException("Entity has dependencies", "", entities.get(0));
     }
 
-    final ArrayList<String> statements = new ArrayList<String>();
+    final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
       if (EntityRepository.get().isReadOnly(entity.getEntityID()))
         throw new DbException("Cannot delete a read only entity");
       statements.add(0, EntityUtil.getDeleteSQL(entity));
     }
 
-    execute(statements.toArray(new String[statements.size()]));
+    execute(statements);
   }
 
   /** {@inheritDoc} */
@@ -405,7 +405,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   /** {@inheritDoc} */
   public Map<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException {
-    final HashMap<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
+    final Map<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
     if (entities == null || entities.size() == 0)
       return ret;
 
@@ -416,7 +416,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       for (final EntityDependencies.Dependency dependency : dependencies) {
         final String dependentEntityID = dependency.getEntityID();
         if (dependentEntityID != null) {
-          final ArrayList<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
+          final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
           for (final Entity entity : entities)
             primaryKeys.add(entity.getPrimaryKey());
 
@@ -485,12 +485,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     this.settings = settings;
   }
 
-  private void execute(final String[] sql) throws DbException {
-    int i = 0;
+  private void execute(final List<String> statements) throws DbException {
+    String sql = null;
     try {
-      for (; i < sql.length; i++) {
-        execute(sql[i]);
-      }
+      for (final String statement : statements)
+        execute(sql = statement);
       if (!isTransactionOpen())
         commit();
     }
@@ -500,11 +499,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
           rollback();
       }
       catch (SQLException ex) {
-        log.info(sql[i]);
+        log.info(sql);
         log.error(this, ex);
       }
 
-      throw new DbException(e, sql[i]);
+      throw new DbException(e, sql);
     }
   }
 
@@ -517,7 +516,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     addCacheQueriesRequest();
 
     final String entityID = primaryKeys.get(0).getEntityID();
-    final ArrayList<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
+    final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
     final List<Entity> returnList = new ArrayList<Entity>(primaryKeyList.size());
     if (entityCacheEnabled)
       returnList.addAll(getCachedEntities(entityID, primaryKeyList));//removes those primary keys from the list
@@ -575,7 +574,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
             EntityRepository.get().getEntityProperties(entities.get(0).getEntityID())) {
       final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, entityProperty);
       if (referencedPrimaryKeys.size() > 0) {
-        final HashMap<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
+        final Map<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
                 ? initWeakReferences(referencedPrimaryKeys)
                 : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
         for (final Entity entity : entities)
@@ -584,8 +583,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
   }
 
-  private HashMap<EntityKey, Entity> initWeakReferences(final List<EntityKey> referencedPrimaryKeys) {
-    final HashMap<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
+  private Map<EntityKey, Entity> initWeakReferences(final List<EntityKey> referencedPrimaryKeys) {
+    final Map<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
     for (final EntityKey key : referencedPrimaryKeys)
       ret.put(key, new Entity(key));
 
@@ -630,7 +629,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static List<EntityKey> getPrimaryKeysOfEntityValues(final List<Entity> entities,
                                                               final Property.EntityProperty property) {
-    final HashSet<EntityKey> ret = new HashSet<EntityKey>(entities.size());
+    final Set<EntityKey> ret = new HashSet<EntityKey>(entities.size());
     for (final Entity entity : entities) {
       final EntityKey key = entity.getReferencedKey(property);
       if (key != null)
