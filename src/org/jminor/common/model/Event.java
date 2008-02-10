@@ -59,10 +59,6 @@ public class Event implements ActionListener, Serializable {
     }
   }
 
-  public void clearListeners() {
-    listeners.clear();
-  }
-
   public void fire() {
     fire(defaultEvent);
   }

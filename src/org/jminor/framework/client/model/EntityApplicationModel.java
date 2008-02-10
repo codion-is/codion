@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -20,8 +19,6 @@ public abstract class EntityApplicationModel {
 
   public final Event evtSelectionFiltersDetailChanged = new Event("EntityApplicationModel.evtSelectionFiltersDetailChanged");
   public final Event evtCascadeRefreshChanged = new Event("EntityApplicationModel.evtCascadeRefreshChanged");
-
-  public final State stSelectionEmpty = new State("EntityApplicationModel.stSelectionEmpty", true);
 
   private final IEntityDbProvider dbProvider;
   private final HashMap<String, EntityModel> mainApplicationModels;
@@ -82,10 +79,6 @@ public abstract class EntityApplicationModel {
     return dbProvider;
   }
 
-  public EntityModel getEntityModel(final String modelKey) {
-    return mainApplicationModels.get(modelKey);
-  }
-
   /**
    * @return Value for property 'mainApplicationModels'.
    */
@@ -123,20 +116,6 @@ public abstract class EntityApplicationModel {
     final Collection<EntityModel> models = mainApplicationModels.values();
 
     return models.size() > 0 && models.iterator().next().getSelectionFiltersDetail();
-  }
-
-  /**
-   * fires: evtSelectionFiltersDetailChanged
-   * @param value the new value
-   */
-  public void setSelectionFiltersDetail(boolean value) {
-    final Collection<EntityModel> models = mainApplicationModels.values();
-    if (models.size() > 0 && isSelectionFiltersDetail() != value) {
-      for (final EntityModel mainApplicationModel : models)
-        mainApplicationModel.setSelectionFiltersDetail(value);
-
-      evtSelectionFiltersDetailChanged.fire();
-    }
   }
 
   public void forceRefreshAll() throws UserException {

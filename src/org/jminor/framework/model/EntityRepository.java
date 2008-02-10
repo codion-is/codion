@@ -98,10 +98,6 @@ public class EntityRepository implements Serializable {
     return defaultEntityProxy;
   }
 
-  public String getStringValue(final String entityID, final Entity entity) {
-    return new StringBuffer(entityID).append(": ").append(entity.getPrimaryKey()).toString();
-  }
-
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(
           final String entityID) {
     final List<Property.PrimaryKeyProperty> ret = primaryKeyProperties.get(entityID);
@@ -117,18 +113,6 @@ public class EntityRepository implements Serializable {
       throw new RuntimeException("No primary key column names defined for entity: " + entityID);
 
     return ret;
-  }
-
-  public int getPropertyViewIndex(final String entityID, final String propertyID) {
-    int idx = 0;
-    for (final Property property: visibleProperties.get(entityID).values()) {
-      if (property.propertyID.equals(propertyID))
-        return idx;
-
-      idx++;
-    }
-
-    return -1;
   }
 
   public Property getPropertyAtViewIndex(final String entityID, final int idx) {
@@ -215,14 +199,6 @@ public class EntityRepository implements Serializable {
     final Collection<Property> ret = visibleProperties.get(entityID).values();
     if (ret == null)
       throw new RuntimeException("No visible properties defined for entity: " + entityID);
-
-    return ret;
-  }
-
-  public Property getProperty(final String entityID, final Integer index) {
-    final Property ret = visiblePropertyIndexes.get(entityID).get(index);
-    if (ret == null)
-      throw new RuntimeException("No property found at index " + index + " in entity: " + entityID);
 
     return ret;
   }

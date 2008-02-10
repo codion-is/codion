@@ -8,7 +8,6 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.common.model.formats.ShortDotDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -135,44 +134,6 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     field.setToolTipText(isUpperBound ? "a" : "b");
 
     return field;
-  }
-
-  protected TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
-    switch(model.getColumnType()) {
-      case INT :
-        return new IntBeanPropertyLink((IntField) component, model,
-                isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
-          public void setPropertyValue(final Object obj) {
-            if (obj instanceof String && obj.equals(""))
-              super.setPropertyValue(null);
-            else
-              super.setPropertyValue(obj);
-          }
-        };
-      case DOUBLE :
-        return new DoubleBeanPropertyLink((DoubleField) component, model,
-                isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null){
-          public void setPropertyValue(final Object obj) {
-            if (obj instanceof String && obj.equals(""))
-              super.setPropertyValue(null);
-            else
-              super.setPropertyValue(obj);
-          }
-        };
-      case SHORT_DATE :
-      case LONG_DATE :
-        return new TextBeanPropertyLink((JTextField) component, model,
-                isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, model.getColumnType() == Type.SHORT_DATE
-                ? new ShortDotDateFormat() : new LongDateFormat(), null);
-      default :
-        return new TextBeanPropertyLink((JTextField) component, model,
-                isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                String.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
-    }
   }
 
   private JComponent initEntityField(final Property property) {

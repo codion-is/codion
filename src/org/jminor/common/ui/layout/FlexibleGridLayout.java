@@ -20,11 +20,6 @@ public class FlexibleGridLayout extends GridLayout {
   private int fixedColumnWidth;
   private int fixedRowHeight;
 
-  /** Constructs a new FlexibleGridLayout. */
-  public FlexibleGridLayout() {
-    this(1, 0);
-  }
-
   public FlexibleGridLayout(final int rows, final int cols) {
     this(rows, cols, 0, 0, false, false);
   }

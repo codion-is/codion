@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.formats.ExactDateFormat;
-import org.jminor.common.model.formats.FullDateFormat;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -12,7 +10,6 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
-import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -124,12 +121,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
-  public static class DoubleRenderer extends NumberRenderer {
-    public DoubleRenderer() {
-      super();
-    }
-  }
-
   public static class ShortDateRenderer extends DefaultTableCellRenderer {
     public ShortDateRenderer() {
       super();
@@ -160,51 +151,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
         txt = LongDateFormat.get().format(value);
 
       setText(txt);
-    }
-  }
-
-  public static class FullDateRenderer extends DefaultTableCellRenderer {
-    /** Constructs a new FullDateRenderer. */
-    public FullDateRenderer() {
-      super();
-    }
-
-    /** {@inheritDoc} */
-    public void setValue(final Object value) {
-      String txt = "";
-      if (value != null && value instanceof Date)
-        txt = FullDateFormat.get().format(value);
-
-      setText(txt);
-    }
-  }
-
-  public static class ExactDateRenderer extends DefaultTableCellRenderer {
-    /** Constructs a new ExactDateRenderer. */
-    public ExactDateRenderer() {
-      super();
-    }
-
-    /** {@inheritDoc} */
-    public void setValue(final Object value) {
-      String txt = "";
-      if (value != null && value instanceof Date)
-        txt = ExactDateFormat.get().format(value);
-
-      setText(txt);
-    }
-  }
-
-  public static class IconRenderer extends DefaultTableCellRenderer {
-    /** Constructs a new IconRenderer. */
-    public IconRenderer() {
-      super();
-      setHorizontalAlignment(JLabel.CENTER);
-    }
-
-    /** {@inheritDoc} */
-    public void setValue(final Object value) {
-      setIcon((value instanceof Icon) ? (Icon) value : null);
     }
   }
 

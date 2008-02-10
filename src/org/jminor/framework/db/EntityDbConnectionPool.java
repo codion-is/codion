@@ -8,7 +8,6 @@ import org.jminor.common.db.ConnectionPoolState;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.UserAccessException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.EntityRepository;
@@ -77,7 +76,7 @@ public class EntityDbConnectionPool {
   }
 
   public EntityDbConnection checkOutConnection(final EntityRepository repository, final FrameworkSettings settings)
-          throws ClassNotFoundException, UserAccessException, UserException {
+          throws ClassNotFoundException, UserAccessException {
     if (closed)
       throw new IllegalStateException("Trying to check out a connection from a closed connection pool!");
 
@@ -182,18 +181,6 @@ public class EntityDbConnectionPool {
     }
 
     return ret;
-  }
-
-  public int getConnectionsCreated() {
-    return connectionsCreated;
-  }
-
-  public int getConnectionsDestroyed() {
-    return connectionsDestroyed;
-  }
-
-  public Date getCreationDate() {
-    return creationDate;
   }
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {

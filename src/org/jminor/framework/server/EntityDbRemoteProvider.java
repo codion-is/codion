@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
@@ -13,6 +12,8 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.EntityRepository;
+
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -81,14 +82,6 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     catch (Exception e) {
       throw new UserException(e);
     }
-  }
-
-  protected void connectServer() throws Exception {
-    this.server = getRemoteEntityDbServer();
-  }
-
-  protected String getClientID() {
-    return clientID;
   }
 
   private boolean connectionValid() {

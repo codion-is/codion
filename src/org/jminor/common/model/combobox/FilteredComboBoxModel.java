@@ -54,7 +54,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
     this.selectedItem = nullValueItem != null ? nullValueItem : null;
   }
 
-  public boolean sortContents() {
+  public boolean isSortContents() {
     return this.sortContents;
   }
 

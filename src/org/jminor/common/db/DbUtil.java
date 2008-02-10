@@ -5,14 +5,12 @@ package org.jminor.common.db;
 
 import org.jminor.common.i18n.Messages;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A static utility class
@@ -40,32 +38,6 @@ public class DbUtil {
     oracleSqlErrorCodes.put(1401, Messages.get(Messages.VALUE_TOO_LARGE_FOR_COLUMN_ERROR));
     oracleSqlErrorCodes.put(4063, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
   }
-
-  public static final IResultPacker<PrimaryKey> PRIMARY_KEY_PACKER = new IResultPacker<PrimaryKey>() {
-    public List<PrimaryKey> pack(final ResultSet rs) throws SQLException {
-      final List<String> columns = new ArrayList<String>();
-      String keyName = null;
-      while (rs.next()) {
-        if (keyName == null)
-          keyName = rs.getString(1);
-        columns.add(rs.getString(2));
-      }
-      final List<PrimaryKey> ret = new ArrayList<PrimaryKey>(1);
-      ret.add(new PrimaryKey(keyName, columns.toArray(new String[columns.size()])));
-
-      return ret;
-    }
-  };
-
-  public static final IResultPacker<Object> OBJECT_PACKER = new IResultPacker<Object>() {
-    public List<Object> pack(final ResultSet rs) throws SQLException {
-      final ArrayList<Object> ret = new ArrayList<Object>();
-      while (rs.next())
-        ret.add(rs.getObject(1));
-
-      return ret;
-    }
-  };
 
   public static final IResultPacker<Integer> INT_PACKER = new IResultPacker<Integer>() {
     public List<Integer> pack(final ResultSet rs) throws SQLException {
@@ -130,54 +102,5 @@ public class DbUtil {
     }
 
     return sql.toString();
-  }
-
-  public static class PrimaryKey implements Serializable {
-
-    private final String name;
-    private final String[] columns;
-
-    public PrimaryKey(final String name, final String[] columns) {
-      this.name = name;
-      this.columns = columns;
-    }
-
-    /**
-     * @return Value for property 'columns'.
-     */
-    public String[] getColumns() {
-      return columns;
-    }
-
-    /**
-     * @return Value for property 'name'.
-     */
-    public String getName() {
-      return name;
-    }
-  }
-
-  public static class TableDependenciesPacker implements IResultPacker<Object> {
-    private final TableDependencies info;
-
-    public TableDependenciesPacker(final TableDependencies info) {
-      this.info = info;
-    }
-
-    /** {@inheritDoc} */
-    public List<Object> pack(final ResultSet resultSet) throws SQLException {
-      final HashMap<String, ArrayList<String>> dependencyMap = new HashMap<String, ArrayList<String>>();
-      while (resultSet.next()) {
-        final String tableName = resultSet.getString(1);
-        ArrayList<String> columnNames = dependencyMap.get(tableName);
-        if (columnNames == null)
-          dependencyMap.put(tableName, columnNames = new ArrayList<String>());
-        columnNames.add(resultSet.getString(2));
-      }
-      for (final Map.Entry<String, ArrayList<String>> entry : dependencyMap.entrySet())
-        info.addDependency(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]));
-
-      return null;
-    }
   }
 }

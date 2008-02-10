@@ -8,7 +8,6 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -96,7 +95,7 @@ public class EntityResultPacker implements IResultPacker<Entity> {
     return resultSet.getTimestamp(columnIndex);
   }
 
-  private Entity loadEntity() throws InvocationTargetException, NoSuchMethodException, SQLException, IllegalAccessException, InstantiationException {
+  private Entity loadEntity() throws SQLException {
     final Entity entity = new Entity(entityID);
     for (final Property property : properties)
       if (!(property instanceof Property.EntityProperty))

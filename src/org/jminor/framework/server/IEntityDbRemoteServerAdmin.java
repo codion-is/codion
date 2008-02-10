@@ -75,12 +75,11 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void setCheckMaintenanceInterval(final int interval) throws RemoteException;
 
   /**
-   * @param user the user
    * @param connectionKey the key of the connection for which to retrieve the log @return the log for the given connection
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  public DbLog getConnectionLog(final User user, final String connectionKey) throws RemoteException;
+  public DbLog getConnectionLog(final String connectionKey) throws RemoteException;
 
   /**
    * @return Value for property 'activeConnections'.
@@ -90,21 +89,19 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
 
   /**
    * Returns true if logging is enabled for the given connection
-   * @param user the user
    * @param connectionKey the key of the clint @return true if logging is enabled
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
-  public boolean isLoggingOn(final User user, final String connectionKey) throws RemoteException;
+  public boolean isLoggingOn(final String connectionKey) throws RemoteException;
 
   /**
    * Sets the logging status for the given connection
-   * @param user the user
    * @param connectionKey the key of the connection
    * @param status the new logging status @throws RemoteException in case of a communication error
    * @throws RemoteException in case of a communication error
    */
-  public void setLoggingOn(final User user, final String connectionKey, final boolean status) throws RemoteException;
+  public void setLoggingOn(final String connectionKey, final boolean status) throws RemoteException;
 
   /**
    * @return Value for property 'memoryUsage'.

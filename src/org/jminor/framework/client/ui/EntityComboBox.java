@@ -80,13 +80,6 @@ public class EntityComboBox extends SteppedComboBox {
     return ret;
   }
 
-  /**
-   * @return Value for property 'newRecordButtonFocusable'.
-   */
-  public boolean isNewRecordButtonFocusable() {
-    return btnNewRecord.isFocusable();
-  }
-
   private JButton initializeNewRecordButton(final boolean newRecordButtonFocusable) {
     final JButton ret = new JButton(initializeNewRecordAction());
     ret.setIcon(Images.loadImage(Images.IMG_ADD_16));

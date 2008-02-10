@@ -641,13 +641,9 @@ public class FrameworkUiUtil {
     return Messages.get(Messages.EXCEPTION);
   }
 
-  public static void handleDbException(final DbException dbException,
-                                       final String entityID, final JComponent dialogParent) {
-    if (dbException.isDeleteException()) {
-      JOptionPane.showMessageDialog(dialogParent, dbException.getTableDependencyInfo(),
-              FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), JOptionPane.ERROR_MESSAGE);
-    }
-    else if (dbException.isInsertNullValueException()) {
+  public static void handleDbException(final DbException dbException, final String entityID,
+                                       final JComponent dialogParent) {
+    if (dbException.isInsertNullValueException()) {
       String columnName = dbException.getNullErrorColumnName().toLowerCase();
       if (entityID != null) {
         if (EntityRepository.get().hasProperty(entityID, columnName)) {

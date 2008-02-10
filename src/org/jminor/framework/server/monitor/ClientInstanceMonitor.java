@@ -33,10 +33,10 @@ public class ClientInstanceMonitor extends DefaultMutableTreeNode {
   }
 
   public long getCreationDate() throws RemoteException {
-    return server.getConnectionLog(client.getUser(), client.getClientID()).getConnectionCreationDate();
+    return server.getConnectionLog(client.getClientID()).getConnectionCreationDate();
   }
 
   public DbLog getLog() throws RemoteException {
-    return server.getConnectionLog(client.getUser(), client.getClientID());
+    return server.getConnectionLog(client.getClientID());
   }
 }

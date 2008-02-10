@@ -55,10 +55,6 @@ public class EntityDbProvider implements IEntityDbProvider {
     return evtConnected;
   }
 
-  protected String getClientID() {
-    return user.toString();
-  }
-
   protected void connectServer() throws Exception {
     log.debug("Initializing connection for " + user);
     entityDb = new EntityDbConnection(user, EntityRepository.get(), FrameworkSettings.get());
@@ -105,7 +101,7 @@ public class EntityDbProvider implements IEntityDbProvider {
 //      finally {
 //        final long delta = System.currentTimeMillis()-time.getTime();
 //        if (delta > 200)
-//          System.out.println(time + " " + delta + " ms: " + methodName + "::" + getClientID());
+//          System.out.println(time + " " + delta + " ms: " + methodName + "::" + user.toString());
 //      }
     }
   }

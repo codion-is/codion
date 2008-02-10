@@ -12,7 +12,6 @@ public class DbException extends Exception  {
 
   private String sql;
   private String table;
-  private TableDependencies dependencyInfo;
   private boolean isDeleteException = false;
   private Object userObject;
 
@@ -38,13 +37,6 @@ public class DbException extends Exception  {
     this.userObject = userObject;
   }
 
-  public DbException(final String message, final String sql, final TableDependencies deps) {
-    super(message);
-    this.isDeleteException = true;
-    this.sql = sql;
-    this.dependencyInfo = deps;
-  }
-
   /**
    * Constructs a new DbException instance
    * @param cause the Throwable cause of the exception
@@ -66,13 +58,6 @@ public class DbException extends Exception  {
     this.isDeleteException = true;
     this.sql = sql;
     this.userObject = userObject;
-  }
-
-  public DbException(final Throwable cause, final String sql, final TableDependencies deps) {
-    super(cause);
-    this.isDeleteException = true;
-    this.sql = sql;
-    this.dependencyInfo = deps;
   }
 
   /**
@@ -108,13 +93,6 @@ public class DbException extends Exception  {
    */
   public boolean isInsertNullValueException() {
     return getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE;
-  }
-
-  /**
-   * @return Value for property 'tableDependencyInfo'.
-   */
-  public TableDependencies getTableDependencyInfo() {
-    return this.dependencyInfo;
   }
 
   /**

@@ -4,8 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.User;
-import org.jminor.common.db.UserAccessException;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.EntityRepository;
 
@@ -22,7 +20,7 @@ public interface IEntityDbRemoteServer extends Remote {
 
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
                                  final EntityRepository repository, final FrameworkSettings settings)
-          throws RemoteException, ClassNotFoundException, UserException, UserAccessException;
+          throws RemoteException;
 
   /**
    * @return Value for property 'serverName'.

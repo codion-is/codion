@@ -206,13 +206,6 @@ public class Property implements Serializable {
   }
 
   /**
-   * @return the select column index
-   */
-  public int getSelectIndex() {
-    return selectIndex;
-  }
-
-  /**
    * @return true if this property maps to a database column
    */
   public boolean isDatabaseProperty() {
@@ -473,11 +466,6 @@ public class Property implements Serializable {
     public NonDbProperty(final String propertyID, final Type type, final String caption,
                          final int preferredWidth) {
       super(propertyID, type, caption, caption == null, false, preferredWidth, false);
-    }
-
-    /** {@inheritDoc} */
-    public int getSelectIndex() {
-      throw new RuntimeException("Non-db  properties do not have select indexes");
     }
   }
 

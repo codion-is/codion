@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -31,8 +30,6 @@ public abstract class DbConnection {
   private static final Logger log = Util.getLogger(DbConnection.class);
 
   public static final String OUT_PARAM_NAME = "procout";
-
-  public final Event evtConnected = new Event("DbConnection.evtConnected");
 
   private final Properties connectionInfo = new Properties();
   private final Map<String, List> queryCache = Collections.synchronizedMap(new HashMap<String, List>());
@@ -95,14 +92,6 @@ public abstract class DbConnection {
       log.error(this, e);
       return false;
     }
-  }
-
-  public void connect() throws ClassNotFoundException, UserAccessException {
-    if (isConnected())
-      return;
-
-    revalidate();
-    evtConnected.fire();
   }
 
   public synchronized void disconnect() {

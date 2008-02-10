@@ -7,8 +7,6 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
-import org.jminor.common.db.UserAccessException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.FrameworkConstants;
@@ -166,7 +164,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   /** {@inheritDoc} */
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
                                  final EntityRepository repository, final FrameworkSettings settings)
-          throws RemoteException, ClassNotFoundException, UserException, UserAccessException {
+          throws RemoteException {
     if (connectionKey == null)
       return null;
 
@@ -291,7 +289,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public DbLog getConnectionLog(final User user, final String connectionKey) {
+  public DbLog getConnectionLog(final String connectionKey) {
     synchronized (connections) {
       final RemoteClient client = new RemoteClient(connectionKey);
       for (final EntityDbRemoteAdapter adapter : connections.values())
@@ -303,7 +301,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public boolean isLoggingOn(final User user, final String connectionKey) throws RemoteException {
+  public boolean isLoggingOn(final String connectionKey) throws RemoteException {
     synchronized (connections) {
       final RemoteClient client = new RemoteClient(connectionKey);
       for (final EntityDbRemoteAdapter connection : connections.values()) {
@@ -317,7 +315,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public void setLoggingOn(final User user, final String connectionKey, final boolean status) {
+  public void setLoggingOn(final String connectionKey, final boolean status) {
     synchronized (connections) {
       final RemoteClient client = new RemoteClient(connectionKey);
       for (final EntityDbRemoteAdapter connection : connections.values()) {

@@ -267,7 +267,7 @@ public abstract class Profiling {
         addClient();
   }
 
-  private synchronized void addClient() throws UserException {
+  private synchronized void addClient() {
     final Runnable clientRunner = new Runnable() {
       public void run() {
         try {

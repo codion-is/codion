@@ -176,7 +176,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
   }
 
-  public static void exit(final EntityApplicationPanel panel) throws UserException, UserCancelException {
+  public static void exit(final EntityApplicationPanel panel) throws UserCancelException {
     panel.exit();
   }
 

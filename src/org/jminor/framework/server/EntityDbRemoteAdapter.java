@@ -127,10 +127,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     this.loggingEnabled = loggingEnabled;
   }
 
-  public static EntityDbConnectionPool getConnectionPool(final User user) {
-    return connectionPools.get(user);
-  }
-
   public static ConnectionPoolSettings getConnectionPoolSettings(final User user, final long includeStatsSince) {
     return connectionPools.get(user).getConnectionPoolSettings(true, includeStatsSince);
   }
@@ -164,14 +160,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     return client;
   }
 
-  public void setClient(final RemoteClient client) {
-    this.client = client;
-    this.lastAccessDate = System.currentTimeMillis();
-    this.lastExitDate = lastAccessDate;
-    this.lastAccessedMethod = null;
-    this.lastAccessMessage = null;
-  }
-
   public boolean isLoggingEnabled() {
     return loggingEnabled;
   }
@@ -182,16 +170,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       log.clear();
   }
 
-  public long getLastAccessDate() {
-    return lastAccessDate;
-  }
-
-  public long getLastExitDate() {
-    return lastExitDate;
-  }
-
   public boolean hasBeenInactive(final long timout) {
-    return System.currentTimeMillis() - getLastAccessDate() > timout;
+    return System.currentTimeMillis() - lastAccessDate > timout;
   }
 
   public static List<ConnectionPoolSettings> getActiveConnectionPoolSettings() {
