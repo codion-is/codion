@@ -101,19 +101,17 @@ public class State implements Serializable {
   }
 
   /**
-   * @param value Value to set for property 'active'.
+   * @param newValue Value to set for property 'active'.
    */
-  public void setActive(final boolean value) {
-    boolean wasActive = active;
-    if (value) {
-      active = value;
+  public void setActive(final boolean newValue) {
+    final boolean oldValue = active;
+    active = newValue;
+    if (active)
       evtSetActive.fire();
-    }
-    else {
-      active = value;
+    else
       evtSetInactive.fire();
-    }
-    if (wasActive != isActive())
+
+    if (oldValue != newValue)
       evtStateChanged.fire();
   }
 

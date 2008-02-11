@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.client.ui;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JRViewer;
+import org.apache.log4j.Level;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.i18n.Messages;
@@ -49,36 +53,7 @@ import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
 import org.jminor.framework.model.Type;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
-import org.apache.log4j.Level;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -463,7 +438,7 @@ public class FrameworkUiUtil {
   }
 
   private static void navigate(final int direction, final DefaultTreeModel applicationTreeModel) {
-    final EntityModel active = getActivePanel(applicationTreeModel);
+    final EntityModel active = getActiveModel(applicationTreeModel);
     if (active == null) //fallback on default if no active panel found
       activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
     else {
@@ -496,7 +471,7 @@ public class FrameworkUiUtil {
     return model != null;
   }
 
-  public static EntityModel getActivePanel(final DefaultTreeModel applicationTreeModel) {
+  public static EntityModel getActiveModel(final DefaultTreeModel applicationTreeModel) {
     final Enumeration enu = ((DefaultMutableTreeNode) applicationTreeModel.getRoot()).breadthFirstEnumeration();
     while (enu.hasMoreElements()) {
       final EntityModel model = (EntityModel) ((DefaultMutableTreeNode) enu.nextElement()).getUserObject();

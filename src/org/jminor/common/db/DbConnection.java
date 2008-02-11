@@ -3,9 +3,8 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.model.Util;
-
 import org.apache.log4j.Logger;
+import org.jminor.common.model.Util;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -225,7 +224,6 @@ public abstract class DbConnection {
       return ret;
     }
     catch (SQLException e) {
-      System.out.println(sql);
       log.debug(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }

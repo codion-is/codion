@@ -187,6 +187,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       throw new RuntimeException("EntityPanel already has a model: " + this.model);
 
     this.model = model;
+    bindModelEvents();
+
     return this;
   }
 
@@ -195,6 +197,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return this.model;
   }
 
+  /**
+   * Initializes this EntityPanel, override to add any specific initialization
+   * functionality, to show the search panel for example.
+   * Remember to return right away if isInitialized() returns true and to call super.initialize()
+   * After this method has finished isInitialized() returns true
+   * @see #isInitialized()
+   */
   public void initialize() {
     if (initialized)
       return;
@@ -204,6 +213,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     try {
       UiUtil.setWaitCursor(true, this);
       bindEvents();
+      addComponentListener(new ComponentAdapter() {
+        public void componentHidden(ComponentEvent e) {
+          setFilterPanelsVisible(false);
+        }
+        public void componentShown(ComponentEvent e) {
+          setFilterPanelsVisible(true);
+        }
+      });
       FrameworkUiUtil.initializeResizing(this);
       if (FrameworkSettings.get().useKeyboardNavigation)
         FrameworkUiUtil.initializeNavigation(getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), getActionMap());
@@ -1078,39 +1095,19 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   //override to provide specific print actions, i.e. reports
   protected ControlSet getPrintControls() {
     return controlMap.containsKey(PRINT) ? new ControlSet(Messages.get(Messages.PRINT), (char) 0, null,
-              Images.loadImage("Print16.gif"), controlMap.get(PRINT)) : null;
+            Images.loadImage("Print16.gif"), controlMap.get(PRINT)) : null;
   }
 
-  protected void bindEvents() {
-    model.stActive.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        if (model.stActive.isActive()) {
-          initialize();
-          showPanelTab();
-          prepareUI(true, false);
-        }
-      }
-    });
-    model.evtRefreshStarted.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        UiUtil.setWaitCursor(true, EntityPanel.this);
-      }
-    });
-    model.evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        UiUtil.setWaitCursor(false, EntityPanel.this);
-      }
-    });
-    addComponentListener(new ComponentAdapter() {
-      public void componentHidden(ComponentEvent e) {
-        setFilterPanelsVisible(false);
-      }
-      public void componentShown(ComponentEvent e) {
-        setFilterPanelsVisible(true);
-      }
-    });
-  }
+  /**
+   * Override to keep event bindings in one place,
+   * this method is called during initialization
+   */
+  protected void bindEvents() {}
 
+  /**
+   * Override to keep table model event bindings in one place,
+   * this method is called during initialization
+   */
   protected void bindTableModelEvents() {}
 
   protected void bindTablePanelEvents() {
@@ -1468,6 +1465,28 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     });
 
     return ret;
+  }
+
+  private void bindModelEvents() {
+    model.stActive.evtStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        if (model.stActive.isActive()) {
+          initialize();
+          showPanelTab();
+          prepareUI(true, false);
+        }
+      }
+    });
+    model.evtRefreshStarted.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        UiUtil.setWaitCursor(true, EntityPanel.this);
+      }
+    });
+    model.evtRefreshDone.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        UiUtil.setWaitCursor(false, EntityPanel.this);
+      }
+    });
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {

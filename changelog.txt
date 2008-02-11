@@ -59,3 +59,5 @@
   Fixed EntityTestFixture and EntityTestUnit, now initializing referenced entities is simpler and problem free
   Constants removed along with all its evil machinations (INT_NULL_VALUE...), changes throughout to accommodate
   Wait cursor now active during EntityPanel.initialize()
+  Navigating through uninitialized panels now works as expected, that is, the panels are initialized and shown on demand (events were not bound until the panel was initialized)
+  Some javadoc added in EntityPanel
