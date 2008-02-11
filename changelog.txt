@@ -58,3 +58,4 @@
   Removed DbConnection.getAutoIncrementValue()
   Fixed EntityTestFixture and EntityTestUnit, now initializing referenced entities is simpler and problem free
   Constants removed along with all its evil machinations (INT_NULL_VALUE...), changes throughout to accommodate
+  Wait cursor now active during EntityPanel.initialize()

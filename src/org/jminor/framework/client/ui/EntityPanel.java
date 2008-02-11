@@ -202,6 +202,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (model == null)
       throw new RuntimeException("Cannot initialize a EntityPanel without a model, call setModel() first");
     try {
+      UiUtil.setWaitCursor(true, this);
       bindEvents();
       FrameworkUiUtil.initializeResizing(this);
       if (FrameworkSettings.get().useKeyboardNavigation)
@@ -255,6 +256,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
     finally {
       this.initialized = true;
+      UiUtil.setWaitCursor(false, this);
     }
   }
 

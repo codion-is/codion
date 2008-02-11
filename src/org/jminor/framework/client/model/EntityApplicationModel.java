@@ -118,6 +118,20 @@ public abstract class EntityApplicationModel {
     return models.size() > 0 && models.iterator().next().getSelectionFiltersDetail();
   }
 
+  /**
+   * fires: evtSelectionFiltersDetailChanged
+   * @param value the new value
+   */
+  public void setSelectionFiltersDetail(boolean value) {
+    final Collection<EntityModel> models = mainApplicationModels.values();
+    if (models.size() > 0 && isSelectionFiltersDetail() != value) {
+      for (final EntityModel mainApplicationModel : models)
+        mainApplicationModel.setSelectionFiltersDetail(value);
+
+      evtSelectionFiltersDetailChanged.fire();
+    }
+  }
+
   public void forceRefreshAll() throws UserException {
     final boolean cascade = isCascadeRefresh();
     try {
