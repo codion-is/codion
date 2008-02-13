@@ -175,7 +175,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public void setValue(final Property property, final Object value, final boolean validate) {
     if (validate)
-      Property.validateValue(property, value);
+      EntityUtil.validateValue(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
     final boolean initialization = primarKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)

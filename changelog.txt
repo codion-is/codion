@@ -62,3 +62,4 @@
   Navigating through uninitialized panels now works as expected, that is, the panels are initialized and shown on demand (events were not bound until the panel was initialized)
   Some javadoc added in EntityPanel
   EntityComboBoxModel contents are now sorted by default
+  Moved validateValue() and getValueClass() from Property to EntityUtil, lessening dependencies

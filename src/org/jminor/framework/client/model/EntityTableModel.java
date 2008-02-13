@@ -386,7 +386,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /** {@inheritDoc} */
   public Class getColumnClass(final int columnIndex) {
-    return Property.getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
+    return EntityUtil.getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
             getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).propertyID));
   }
 

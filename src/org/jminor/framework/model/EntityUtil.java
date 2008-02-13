@@ -24,6 +24,80 @@ public class EntityUtil {
 
   private EntityUtil() {}
 
+  /**
+   * Performes a basic data validation of <code>value</code>, checking if the
+   * <code>value</code> data type is consistent with the data type of this
+   * property, returns the value
+   * @param value the value to validate
+   * @param property the property
+   * @return the value
+   * @throws IllegalArgumentException when the value is not of the same type as the propertyValue
+   */
+  public static Object validateValue(final Property property, final Object value) throws IllegalArgumentException {
+    final Type propertyType = property.propertyType;
+    if (value == null)
+      return value;
+
+    final String propertyID = property.propertyID;
+    switch (propertyType) {
+      case INT : {
+        if (!(value instanceof Integer))
+          throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case DOUBLE : {
+        if (!(value instanceof Double))
+          throw new IllegalArgumentException("Double value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case BOOLEAN : {
+        if (!(value instanceof Type.Boolean))
+          throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case LONG_DATE :
+      case SHORT_DATE : {
+        if (!(value instanceof Date))
+          throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case ENTITY : {
+        if (!(value instanceof Entity) && !(value instanceof EntityKey))
+          throw new IllegalArgumentException("Entity or EntityKey value expected for property: " + propertyID + "(" + value.getClass() + ")");
+        return value;
+      }
+      case CHAR : {
+        if (!(value instanceof Character))
+          throw new IllegalArgumentException("Character value expected for property: " + propertyID + "(" + value.getClass() + ")");
+        return value;
+      }
+      case STRING : {
+        if (!(value instanceof String))
+          throw new IllegalArgumentException("String value expected for propertyValue: " + propertyID + "(" + value.getClass() + ")");
+        return value;
+      }
+    }
+
+    throw new IllegalArgumentException("Unknown type " + propertyType);
+  }
+
+  public static Class getValueClass(final Type type, final Object value) {
+    if (type == Type.INT)
+      return Integer.class;
+    if (type == Type.DOUBLE)
+      return Double.class;
+    if (type == Type.BOOLEAN)
+      return Type.Boolean.class;
+    if (type == Type.SHORT_DATE || type == Type.LONG_DATE)
+      return Date.class;
+    if (type == Type.CHAR)
+      return Character.class;
+    if (type == Type.ENTITY)
+      return Entity.class;
+
+    return value == null ? Object.class : value.getClass();
+  }
+
   public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
     for (final List<Entity> ents : entities.values()) {
       if (ents.size() > 0)
