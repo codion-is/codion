@@ -1035,7 +1035,8 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return a map of initialized EntityComboBoxModels associated with
-   * their respective properties
+   * their respective properties.
+   * Use this method to provide combo box models with specific functionality.
    */
   protected Map<Property, ComboBoxModel> initializeEntityComboBoxModels() {
     return initializeEntityComboBoxModels(new EntityComboBoxModel[0]);

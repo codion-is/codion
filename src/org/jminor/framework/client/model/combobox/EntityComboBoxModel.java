@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model.combobox;
 
+import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.model.Event;
@@ -13,8 +14,6 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
-
-import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -46,7 +45,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   public EntityComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
                              final boolean staticData, final String firstItem) {
-    this(dbProvider, entityID, staticData, firstItem, false);
+    this(dbProvider, entityID, staticData, firstItem, true);
   }
 
   public EntityComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
