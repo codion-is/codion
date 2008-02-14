@@ -8,7 +8,6 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.images.Images;
-import org.jminor.framework.client.model.FrameworkModelUtil;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
@@ -17,11 +16,9 @@ import org.jminor.framework.model.EntityKey;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -31,30 +28,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.List;
 
 public class EntityComboBox extends SteppedComboBox {
 
   private final JButton btnNewRecord;
-  private final EntityPanelInfo applicationInfo;
+  private final EntityPanel.EntityPanelInfo applicationInfo;
   private final Action closeAction;
 
   private JPopupMenu popupMenu;
 
   public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanelInfo newRecordPanelInfo) {
+                        final EntityPanel.EntityPanelInfo newRecordPanelInfo) {
     this(model, newRecordPanelInfo, true);
   }
 
   public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanelInfo newRecordPanelInfo,
+                        final EntityPanel.EntityPanelInfo newRecordPanelInfo,
                         final boolean newRecordButtonTakesFocus) {
     this(model, newRecordPanelInfo, newRecordButtonTakesFocus, null);
   }
 
   public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanelInfo newRecordPanelInfo,
+                        final EntityPanel.EntityPanelInfo newRecordPanelInfo,
                         final boolean newRecordButtonTakesFocus,
                         final Action closeAction) {
     super(model);
@@ -97,10 +93,6 @@ public class EntityComboBox extends SteppedComboBox {
                   applicationInfo.getInstance(((EntityComboBoxModel) getModel()).getDbProvider());
           entityPanel.initialize();
           entityPanel.getModel().getTableModel().setSelectedEntity(((EntityComboBoxModel) getModel()).getSelectedEntity());
-          final DefaultTreeModel applicationTree = FrameworkModelUtil.createApplicationTree(Arrays.asList(entityPanel.getModel()));
-          FrameworkUiUtil.initializeNavigation(entityPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW),
-                  entityPanel.getActionMap(), applicationTree);
-          FrameworkUiUtil.initializeResizing(entityPanel);
           final Window parentWindow = UiUtil.getParentWindow(EntityComboBox.this);
           final JDialog dialog = new JDialog(parentWindow, applicationInfo.getCaption());
           dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

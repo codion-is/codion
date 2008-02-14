@@ -25,11 +25,9 @@ public class EntityTableSearchPanel extends JPanel {
 
   private final List<JPanel> searchPanels;
 
-  public EntityTableSearchPanel(final EntityTablePanel entityTable) {
-    searchPanels = initializeSearchPanels(entityTable.getTableModel());
+  public EntityTableSearchPanel(final EntityTableModel entityTableModel) {
+    searchPanels = initializeSearchPanels(entityTableModel);
     initializeUI();
-    UiUtil.bindColumnSizesAndPanelSizes(entityTable.getJTable(),
-            searchPanels.toArray(new JPanel[searchPanels.size()]));
   }
 
   /**

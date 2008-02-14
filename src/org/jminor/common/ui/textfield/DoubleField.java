@@ -14,19 +14,15 @@ public class DoubleField extends IntField {
 
   /** Constructs a new DoubleField. */
   public DoubleField() {
-    super();
+    this(0);
   }
 
   public DoubleField(final int columns) {
     super(columns);
   }
 
-  public DoubleField(final boolean transferFocusOnEnter, final int columns) {
-    super(transferFocusOnEnter, columns);
-  }
-
   public DoubleField(final double min, final double max) {
-    super();
+    this(0);
     setRange(min, max);
   }
 

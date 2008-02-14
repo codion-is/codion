@@ -59,7 +59,7 @@ public class EntityKeyCriteria implements ICriteria {
     if (multiColumnPk) {
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
-        ret.append(keys.get(i).getQueryConditionString(getColumnNames()));
+        ret.append(EntityUtil.getQueryConditionString(keys.get(i), getColumnNames()));
         if (i < keys.size() - 1)
           ret.append(" or ");
       }
@@ -67,7 +67,7 @@ public class EntityKeyCriteria implements ICriteria {
     else {
       //a = b
       if (keys.size() == 1)
-        ret.append(keys.get(0).getQueryConditionString(getColumnNames()));
+        ret.append(EntityUtil.getQueryConditionString(keys.get(0), getColumnNames()));
       else //a in (c, v, d, s)
         appendInCondition(properties != null ? properties.get(0).propertyID
                 : keys.get(0).getKeyColumnNames()[0], ret, keys);

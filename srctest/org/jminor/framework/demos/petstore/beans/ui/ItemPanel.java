@@ -7,7 +7,6 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelInfo;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;

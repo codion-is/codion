@@ -14,7 +14,7 @@ import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.model.EntityUtil;
+import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 
 import javax.swing.AbstractAction;
@@ -63,7 +63,7 @@ public class EntityPropertyEditor extends JPanel {
     this.dbProvider = dbProvider;
     this.property = property;
     this.currentValue = currentValue;
-    this.field = getInputField(!multipleEntityUpdate && !EntityUtil.isValueNull(property.getPropertyType(), currentValue));
+    this.field = getInputField(!multipleEntityUpdate && !Entity.isValueNull(property.getPropertyType(), currentValue));
     initUI(property.getCaption());
   }
 

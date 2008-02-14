@@ -5,7 +5,6 @@ package org.jminor.framework.demos.schemabrowser.beans.ui;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelInfo;
 import org.jminor.framework.demos.schemabrowser.beans.DbObjectModel;
 
 import javax.swing.JPanel;

@@ -24,6 +24,19 @@ public class EntityUtil {
 
   private EntityUtil() {}
 
+  public static String getQueryConditionString(final EntityKey key, final List<String> columnNames) {
+    final StringBuffer ret = new StringBuffer("(");
+    int i = 0;
+    for (final Property.PrimaryKeyProperty property : key.properties) {
+      ret.append(EntityUtil.getQueryString(property, columnNames != null ? columnNames.get(i) : null,
+              EntityUtil.getSQLStringValue(property, key.keyValues.get(property.propertyID))));
+      if (i++ < key.columnCount-1)
+        ret.append(" and ");
+    }
+
+    return ret.append(")").toString();
+  }
+
   /**
    * Performes a basic data validation of <code>value</code>, checking if the
    * <code>value</code> data type is consistent with the data type of this
@@ -108,29 +121,10 @@ public class EntityUtil {
   }
 
   public static boolean equal(final Type type, final Object one, final Object two) {
-    final boolean oneNull = isValueNull(type, one);
-    final boolean twoNull = isValueNull(type, two);
+    final boolean oneNull = Entity.isValueNull(type, one);
+    final boolean twoNull = Entity.isValueNull(type, two);
 
     return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
-  }
-
-  public static boolean isValueNull(final Type propertyType, final Object value) {
-    if (value == null)
-      return true;
-
-    switch (propertyType) {
-      case CHAR :
-        if (value instanceof String)
-          return ((String)value).length() == 0;
-      case BOOLEAN :
-        return value == Type.Boolean.NULL;
-      case STRING :
-        return value.equals("");
-      case ENTITY :
-        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
-      default :
-        return false;
-    }
   }
 
   /**
@@ -140,7 +134,7 @@ public class EntityUtil {
    * @return a SQL string version of value
    */
   public static String getSQLStringValue(final Property property, final Object value) {
-    if (isValueNull(property.propertyType, value))
+    if (Entity.isValueNull(property.propertyType, value))
       return "null";
 
     switch (property.propertyType) {
@@ -194,7 +188,7 @@ public class EntityUtil {
   }
 
   public static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = isValueNull(property.propertyType, value);
+    final boolean valueIsNull = Entity.isValueNull(property.propertyType, value);
     final StringBuffer ret = new StringBuffer("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)
       ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");

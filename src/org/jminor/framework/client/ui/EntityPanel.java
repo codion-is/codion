@@ -8,12 +8,15 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
+import org.jminor.common.db.DbException;
+import org.jminor.common.db.TableStatus;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.IExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -24,35 +27,26 @@ import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.printing.JPrinter;
 import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -71,10 +65,12 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -101,6 +97,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   public static final int DIVIDER_JUMP = 30;
 
+  public static final int UP = 0;
+  public static final int DOWN = 1;
+  public static final int RIGHT = 2;
+  public static final int LEFT = 3;
+
   //Control codes
   public static final String INSERT = "insert";
   public static final String UPDATE = "update";
@@ -112,6 +113,15 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public static final String VIEW_DEPENDENCIES = "viewDependencies";
   public static final String UPDATE_SELECTED = "updateSelected";
   public static final String CONFIGURE_QUERY = "configureQuery";
+
+  private static final String NAV_UP = "navigateUp";
+  private static final String NAV_DOWN = "navigateDown";
+  private static final String NAV_RIGHT = "navigateRight";
+  private static final String NAV_LEFT = "navigateLeft";
+  private static final String DIV_LEFT = "divLeft";
+  private static final String DIV_RIGHT = "divRight";
+  private static final String DIV_UP = "divUp";
+  private static final String DIV_DOWN = "divDown";
 
   private EntityModel model;
   private EntityTablePanel entityTablePanel;
@@ -221,9 +231,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
           setFilterPanelsVisible(true);
         }
       });
-      FrameworkUiUtil.initializeResizing(this);
+      initializeResizing();
       if (FrameworkSettings.get().useKeyboardNavigation)
-        FrameworkUiUtil.initializeNavigation(getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), getActionMap());
+        initializeNavigation();
       if (FrameworkSettings.get().useFocusActivation) {//todo mind that darn memory leak!! only use for persistent panels?
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
                 "focusOwner", new java.beans.PropertyChangeListener() {
@@ -436,20 +446,20 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   public void resizePanel(final int direction) {
     switch(direction) {
-      case FrameworkUiUtil.UP :
+      case UP :
         setEditPanelState(HIDDEN);
         break;
-      case FrameworkUiUtil.DOWN :
+      case DOWN :
         setEditPanelState(EMBEDDED);
         break;
-      case FrameworkUiUtil.RIGHT :
+      case RIGHT :
         int newPos = leftRightSplitPane.getDividerLocation() + DIVIDER_JUMP;
         if (newPos <= leftRightSplitPane.getMaximumDividerLocation())
           leftRightSplitPane.setDividerLocation(newPos);
         else
           leftRightSplitPane.setDividerLocation(leftRightSplitPane.getMaximumDividerLocation());
         break;
-      case FrameworkUiUtil.LEFT :
+      case LEFT :
         newPos = leftRightSplitPane.getDividerLocation() - DIVIDER_JUMP;
         if (newPos >= 0)
           leftRightSplitPane.setDividerLocation(newPos);
@@ -585,7 +595,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
               selectedEntities.get(0).getValue(propertyToUpdate.propertyID), propertyToUpdate,
               model.getDbConnectionProvider(),
               getInputManager(propertyToUpdate), selectedEntities.size() > 1);
-      FrameworkUiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
+      UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.getButtonValue() == JOptionPane.OK_OPTION) {
         final Object[] oldValues = EntityUtil.setPropertyValue(
@@ -621,7 +631,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             UiUtil.setWaitCursor(false, EntityPanel.this);
           }
           if (EntityUtil.activeDependencies(dependencies)) {
-            FrameworkUiUtil.showDependenciesDialog(dependencies, model.getDbConnectionProvider(), EntityPanel.this);
+            showDependenciesDialog(dependencies, model.getDbConnectionProvider(), EntityPanel.this);
           }
           else {
             JOptionPane.showMessageDialog(EntityPanel.this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
@@ -790,6 +800,68 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   public Control getControl(final String controlCode) {
     return controlMap.get(controlCode);
+  }
+
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities) throws UserException {
+    if (entities == null || entities.size() == 0)
+      throw new UserException("Cannot create an EntityPanel without the entities");
+
+    return createStaticEntityPanel(entities, null);
+  }
+
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
+                                                    final IEntityDbProvider dbProvider) throws UserException {
+    if (entities == null || entities.size() == 0)
+      throw new UserException("Cannot create an EntityPanel without the entities");
+
+    return createStaticEntityPanel(entities, dbProvider, entities.get(0).getEntityID(), true);
+  }
+
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
+                                                    final IEntityDbProvider dbProvider,
+                                                    final String entityID) throws UserException {
+    return createStaticEntityPanel(entities, dbProvider, entityID, true);
+  }
+
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
+                                                    final String entityID, final boolean includePopupMenu) throws UserException {
+    final EntityModel model = new EntityModel(entityID, dbProvider, entityID) {
+      protected EntityTableModel initializeTableModel() {
+        return new EntityTableModel(dbProvider, entityID) {
+          protected List<Entity> getAllEntitiesFromDb() throws DbException, UserException {
+            return entities;
+          }
+
+          protected void setCurrentTableStatus(final TableStatus currentTableStatus) {
+            currentTableStatus.setRecordCount(entities.size());
+            super.setCurrentTableStatus(currentTableStatus);
+          }
+        };
+      }
+    };
+
+    final EntityPanel ret = new EntityPanel(true, false, false, EMBEDDED, false) {
+      protected EntityTablePanel initializeEntityTablePanel(final boolean specialRendering) {
+        return new EntityTablePanel(model.getTableModel(), getTablePopupControlSet(), false, false) {
+          protected JPanel initializeSearchPanel() {
+            return null;
+          }
+          protected JToolBar getRefreshToolbar() {
+            return null;
+          }
+        };
+      }
+      protected ControlSet getTablePopupControlSet() {
+        return includePopupMenu ? super.getTablePopupControlSet() : null;
+      }
+      protected JPanel initializePropertyPanel() {
+        return null;
+      }
+    };
+    ret.setModel(model);
+    ret.initialize();
+
+    return ret;
   }
 
   protected void showPanelTab() {
@@ -1217,7 +1289,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)-29);
-    detailDialog = FrameworkUiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailTabPane, false,
+    detailDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailTabPane, false,
             getModel().getModelCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
@@ -1234,7 +1306,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   protected void showEditDialog() {
     final Point location = getLocationOnScreen();
     location.setLocation(location.x+1, location.y + getSize().height-editPanel.getSize().height-98);
-    editDialog = FrameworkUiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
+    editDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
             getModel().getModelCaption(), false, true,
             null, null, location, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
@@ -1489,6 +1561,226 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     });
   }
 
+  private void initializeResizing() {
+    final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    final ActionMap actionMap = getActionMap();
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_LEFT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_RIGHT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_UP);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_DOWN);
+
+    actionMap.put(DIV_RIGHT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, EntityPanel.this);
+        if (parent != null)
+          parent.resizePanel(RIGHT);
+      }
+    });
+    actionMap.put(DIV_LEFT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, EntityPanel.this);
+        if (parent != null)
+          parent.resizePanel(LEFT);
+      }
+    });
+    actionMap.put(DIV_DOWN, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        resizePanel(DOWN);
+      }
+    });
+    actionMap.put(DIV_UP, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        resizePanel(UP);
+      }
+    });
+  }
+
+  private void initializeNavigation() {
+    final InputMap inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    final ActionMap actionMap = getActionMap();
+    final DefaultTreeModel applicationTreeModel = EntityApplicationModel.getApplicationModel().getApplicationTreeModel();
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK, true), NAV_UP);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK, true), NAV_DOWN);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK, true), NAV_RIGHT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK, true), NAV_LEFT);
+
+    actionMap.put(NAV_UP, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(UP, applicationTreeModel);
+      }
+    });
+    actionMap.put(NAV_DOWN, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(DOWN, applicationTreeModel);
+      }
+    });
+    actionMap.put(NAV_RIGHT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(RIGHT, applicationTreeModel);
+      }
+    });
+    actionMap.put(NAV_LEFT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(LEFT, applicationTreeModel);
+      }
+    });
+  }
+
+  private void navigate(final int direction, final DefaultTreeModel applicationTreeModel) {
+    final EntityModel active = getActiveModel();
+    if (active == null) //fallback on default if no active panel found
+      activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
+    else {
+      switch(direction) {
+        case UP:
+          activateModel(getParent(active));
+          break;
+        case DOWN:
+          if (active.getDetailModels().size() > 0 && active.getLinkedDetailModels().size() > 0)
+            activateModel(active.getLinkedDetailModel());
+          else
+            activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
+          break;
+        case LEFT:
+          if (!activateModel(getLeftSibling(active, applicationTreeModel))) //wrap around
+            activateModel(getRightmostSibling(active, applicationTreeModel));
+          break;
+        case RIGHT:
+          if (!activateModel(getRightSibling(active, applicationTreeModel))) //wrap around
+            activateModel(getLeftmostSibling(active, applicationTreeModel));
+          break;
+      }
+    }
+  }
+
+  private static boolean activateModel(final EntityModel model) {
+    if (model != null)
+      model.stActive.setActive(true);
+
+    return model != null;
+  }
+
+  private EntityModel getActiveModel() {
+    final Enumeration enu = ((DefaultMutableTreeNode) EntityApplicationModel.getApplicationModel().getApplicationTreeModel().getRoot()).breadthFirstEnumeration();
+    while (enu.hasMoreElements()) {
+      final EntityModel model = (EntityModel) ((DefaultMutableTreeNode) enu.nextElement()).getUserObject();
+      if (model != null && model.stActive.isActive())
+        return model;
+    }
+
+    return null;
+  }
+
+  private EntityModel getParent(final EntityModel entityModel) {
+    final TreePath path = findObject((DefaultMutableTreeNode) EntityApplicationModel.getApplicationModel().getApplicationTreeModel().getRoot(), entityModel);
+    if (path != null) {
+      final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+      if (node.getParent() != null) {
+        final EntityModel parent = (EntityModel) ((DefaultMutableTreeNode) node.getParent()).getUserObject();
+        if (parent != null)
+          return parent;
+      }
+    }
+
+    return null;
+  }
+
+  private static EntityModel getRightSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
+    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
+    final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+    if (node.getNextSibling() != null)
+      return (EntityModel) node.getNextSibling().getUserObject();
+
+    return null;
+  }
+
+  private static EntityModel getRightmostSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
+    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
+    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+            ((DefaultMutableTreeNode) path.getLastPathComponent()).getParent();
+
+    return (EntityModel) ((DefaultMutableTreeNode) node.getLastChild()).getUserObject();
+  }
+
+  private static EntityModel getLeftSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
+    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
+    final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+    if (node.getPreviousSibling() != null)
+      return (EntityModel) node.getPreviousSibling().getUserObject();
+
+    return null;
+  }
+
+  private static EntityModel getLeftmostSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
+    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
+    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+            ((DefaultMutableTreeNode) path.getLastPathComponent()).getParent();
+
+    return (EntityModel) ((DefaultMutableTreeNode) node.getFirstChild()).getUserObject();
+  }
+
+  private static TreePath findObject(final DefaultMutableTreeNode root, final Object object) {
+    if (object == null)
+      return null;
+
+    final Enumeration nodes = root.preorderEnumeration();
+    while (nodes.hasMoreElements()) {
+      final DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes.nextElement();
+      if (node.getUserObject() == object)
+        return new TreePath(node.getPath());
+    }
+
+    return null;
+  }
+
+  private static Container createDependenciesPanel(final Map<String, List<Entity>> dependencies,
+                                                  final IEntityDbProvider dbProvider) throws UserException {
+    try {
+      final JPanel ret = new JPanel(new BorderLayout());
+      final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
+      tabPane.setUI(new BorderlessTabbedPaneUI());
+      for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
+        final List<Entity> dependantEntities = entry.getValue();
+        if (dependantEntities.size() > 0)
+          tabPane.addTab(entry.getKey(), createStaticEntityPanel(dependantEntities, dbProvider));
+      }
+      ret.add(tabPane, BorderLayout.CENTER);
+
+      return ret;
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
+  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
+                                            final IEntityDbProvider model,
+                                            final JComponent dialogParent) throws UserException {
+    JDialog dialog;
+    try {
+      UiUtil.setWaitCursor(true, dialogParent);
+
+      final JOptionPane optionPane = new JOptionPane(createDependenciesPanel(dependencies, model),
+              JOptionPane.PLAIN_MESSAGE, JOptionPane.NO_OPTION, null,
+              new String[] {Messages.get(Messages.CLOSE)});
+      dialog = optionPane.createDialog(dialogParent,
+              FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND));
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      UiUtil.resizeWindow(dialog, 0.4, new Dimension(800, 400));
+      dialog.setLocationRelativeTo(dialogParent);
+      dialog.setResizable(true);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, dialogParent);
+    }
+
+    dialog.setVisible(true);
+  }
+
   private static class ActivationFocusAdapter extends MouseAdapter {
 
     private final JComponent target;
@@ -1498,7 +1790,120 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
 
     public void mouseReleased(MouseEvent e) {
-      target.requestFocusInWindow();//activates this EntityPanel, see FrameworkUiUtil.initFocusActivation()
+      target.requestFocusInWindow();//activates this EntityPanel, see initFocusActivation()
+    }
+  }
+
+  public static class EntityPanelInfo  implements Comparable {
+
+    private final String caption;
+    private final Class<? extends EntityPanel> entityPanelClass;
+    private final Class<? extends EntityModel> entityModelClass;
+
+    public EntityPanelInfo(final Class<? extends EntityModel> entityModelClass,
+                           final Class<? extends EntityPanel> entityPanelClass) {
+      this(null, entityModelClass, entityPanelClass);
+    }
+
+    public EntityPanelInfo(final String caption,
+                           final Class<? extends EntityModel> entityModelClass,
+                           final Class<? extends EntityPanel> entityPanelClass) {
+      this.caption = caption == null ? "" : caption;
+      this.entityModelClass = entityModelClass;
+      this.entityPanelClass = entityPanelClass;
+    }
+
+    /**
+     * @return Value for property 'caption'.
+     */
+    public String getCaption() {
+      return caption;
+    }
+
+    /**
+     * @return Value for property 'entityModelClass'.
+     */
+    public Class<? extends EntityModel> getEntityModelClass() {
+      return entityModelClass;
+    }
+
+    /**
+     * @return Value for property 'entityPanelClass'.
+     */
+    public Class<? extends EntityPanel> getEntityPanelClass() {
+      return entityPanelClass;
+    }
+
+    public EntityPanel getInstance(final EntityModel model) throws UserException {
+      if (model == null)
+        throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
+      try {
+        return getEntityPanelClass().getConstructor().newInstance().setModel(model);
+      }
+      catch (RuntimeException e) {
+        throw e;
+      }
+      catch (InvocationTargetException ite) {
+        if (ite.getCause() instanceof UserException)
+          throw (UserException) ite.getCause();
+
+        throw new UserException(ite.getCause());
+      }
+      catch (Exception e) {
+        throw new UserException(e);
+      }
+    }
+
+    public EntityPanel getInstance(final IEntityDbProvider provider) throws UserException {
+      try {
+        return getEntityPanelClass().getConstructor().newInstance().setModel(
+            getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
+      }
+      catch (RuntimeException e) {
+        throw e;
+      }
+      catch (InvocationTargetException ite) {
+        if (ite.getCause() instanceof UserException)
+          throw (UserException) ite.getCause();
+
+        throw new UserException(ite.getCause());
+      }
+      catch (Exception e) {
+        throw new UserException(e);
+      }
+    }
+
+    /** {@inheritDoc} */
+    public boolean equals(Object obj) {
+      if(this == obj)
+        return true;
+      if((obj == null) || (obj.getClass() != this.getClass()))
+        return false;
+
+      final EntityPanelInfo panelInfo = (EntityPanelInfo) obj;
+
+      return getCaption().equals(panelInfo.getCaption())
+              && getEntityModelClass().equals(panelInfo.getEntityModelClass())
+              && getEntityPanelClass().equals(panelInfo.getEntityPanelClass());
+    }
+
+    /** {@inheritDoc} */
+    public int hashCode() {
+      int hash = 7;
+      hash = 31 * hash + getCaption().hashCode();
+      hash = 31 * hash + getEntityModelClass().hashCode();
+      hash = 31 * hash + getEntityPanelClass().hashCode();
+
+      return hash;
+    }
+
+    /** {@inheritDoc} */
+    public int compareTo(Object o) {
+      final String thisCompare = getCaption() == null ? entityPanelClass.getSimpleName() : getCaption();
+      final String thatCompare = ((EntityPanelInfo)o).getCaption() == null
+              ? ((EntityPanelInfo)o).entityPanelClass.getSimpleName() : ((EntityPanelInfo)o).getCaption();
+
+      return thisCompare.compareTo(thatCompare);
     }
   }
 }

@@ -7,7 +7,6 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.EntityPanelInfo;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 

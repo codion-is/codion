@@ -314,14 +314,14 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final EntityComboBox createEntityComboBox(final String propertyID,
-                                                      final EntityPanelInfo appInfo,
+                                                      final EntityPanel.EntityPanelInfo appInfo,
                                                       final boolean newButtonFocusable) {
     return createEntityComboBox((Property.EntityProperty) EntityRepository.get().getProperty(getModel().getEntityID(),
             propertyID), appInfo, newButtonFocusable, null);
   }
 
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property,
-                                                      final EntityPanelInfo appInfo,
+                                                      final EntityPanel.EntityPanelInfo appInfo,
                                                       final boolean newButtonFocusable, final State enabledState) {
     return FrameworkUiUtil.createEntityComboBox(property, getModel(), appInfo, newButtonFocusable, enabledState);
   }

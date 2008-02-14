@@ -353,24 +353,24 @@ public class Property implements Serializable {
   public static class DenormalizedProperty extends Property {
 
     public final String ownerEntityID;
-    public final String denormalizedPropertyName;
+    public final Property denormalizedProperty;
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final String property) {
+                                final Property property) {
       this(propertyID, ownerEntityID, property, null);
     }
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final String property, final String caption) {
+                                final Property property, final String caption) {
       this(propertyID, ownerEntityID, property, caption, -1);
     }
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final String property, final String caption, final int preferredWidth) {
-      super(propertyID, EntityRepository.get().getProperty(ownerEntityID, property).propertyType, caption,
+                                final Property property, final String caption, final int preferredWidth) {
+      super(propertyID, property.propertyType, caption,
               caption == null, false, preferredWidth, true);
       this.ownerEntityID = ownerEntityID;
-      this.denormalizedPropertyName = property;
+      this.denormalizedProperty = property;
     }
   }
 
@@ -400,23 +400,22 @@ public class Property implements Serializable {
   public static class DenormalizedViewProperty extends NonDbProperty {
 
     public final String ownerEntityID;
-    public final String denormalizedPropertyName;
+    public final Property denormalizedProperty;
 
-    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
-                                final String property) {
+    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID, final Property property) {
       this(propertyID, ownerEntityID, property, null);
     }
 
-    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
-                                final String property, final String caption) {
+    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID, final Property property,
+                                    final String caption) {
       this(propertyID, ownerEntityID, property, caption, -1);
     }
 
-    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID,
-                                final String property, final String caption, final int preferredWidth) {
-      super(propertyID, EntityRepository.get().getProperty(ownerEntityID, property).propertyType, caption, preferredWidth);
+    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID, final Property property,
+                                    final String caption, final int preferredWidth) {
+      super(propertyID, property.propertyType, caption, preferredWidth);
       this.ownerEntityID = ownerEntityID;
-      this.denormalizedPropertyName = property;
+      this.denormalizedProperty = property;
     }
   }
 

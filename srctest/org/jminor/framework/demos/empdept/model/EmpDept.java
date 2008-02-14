@@ -50,7 +50,8 @@ public class EmpDept {
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.SHORT_DATE, "Hiredate"),
             new Property.DenormalizedViewProperty(EmpDept.DEPARTMENT_LOCATION, T_DEPARTMENT,
-                    EmpDept.DEPARTMENT_LOCATION, "Dept. location", 100));
+                    EntityRepository.get().getProperty(T_DEPARTMENT, EmpDept.DEPARTMENT_LOCATION),
+                    "Dept. location", 100));
 
     EntityRepository.get().setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {

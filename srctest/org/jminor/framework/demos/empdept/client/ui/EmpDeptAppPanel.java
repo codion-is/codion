@@ -9,7 +9,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
-import org.jminor.framework.client.ui.EntityPanelInfo;
+import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
@@ -21,8 +21,8 @@ import java.util.List;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getRootEntityPanelInfo() {
-    return Arrays.asList(new EntityPanelInfo(DepartmentModel.class, DepartmentPanel.class));
+  protected List<EntityPanel.EntityPanelInfo> getRootEntityPanelInfo() {
+    return Arrays.asList(new EntityPanel.EntityPanelInfo(DepartmentModel.class, DepartmentPanel.class));
   }
 
   public static void main(final String[] args) {

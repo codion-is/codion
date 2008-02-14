@@ -99,7 +99,7 @@ public class EntityCriteriaPanel extends JPanel {
   }
 
   private JList initializePropertyList(final EntityTableModel entityModel, final JPanel editorPanel) {
-    final List<AbstractSearchModel> searchCriterias = getSortedCriterias(entityModel);
+    final List<PropertySearchModel> searchCriterias = getSortedCriterias(entityModel);
     final Vector<AbstractSearchModel> models = new Vector<AbstractSearchModel>(searchCriterias);
     final JList propertyList = new JList(models);
     for (final AbstractSearchModel model : searchCriterias) {
@@ -144,8 +144,8 @@ public class EntityCriteriaPanel extends JPanel {
     return propertyList;
   }
 
-  private List<AbstractSearchModel> getSortedCriterias(final EntityTableModel entityModel) {
-    final List<AbstractSearchModel> searchCriterias = entityModel.getPropertySearchModels();
+  private List<PropertySearchModel> getSortedCriterias(final EntityTableModel entityModel) {
+    final List<PropertySearchModel> searchCriterias = entityModel.getPropertySearchModels();
     Collections.sort(searchCriterias, new Comparator<AbstractSearchModel>() {
       public int compare(final AbstractSearchModel searchModelOne, final AbstractSearchModel searchModelTwo) {
         final Property propertyOne = ((PropertySearchModel) searchModelOne).getProperty();

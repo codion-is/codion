@@ -3,13 +3,12 @@
  */
 package org.jminor.framework.client.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.ModelTestDomain;
-
-import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +24,7 @@ public class TestEntityTableModel extends TestCase {
 
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = new Entity(ModelTestDomain.T_TEST_MASTER_ENTITY);
+      testEntities[i] = new Entity(ModelTestDomain.T_TEST_DETAIL_ENTITY);
       testEntities[i].setValue(ModelTestDomain.ID_PROP, i+1);
       testEntities[i].setValue(ModelTestDomain.STRING_PROP, new String[]{"a", "b", "c", "d", "e"}[i]);
     }
@@ -35,7 +34,7 @@ public class TestEntityTableModel extends TestCase {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(null, ModelTestDomain.T_TEST_MASTER_ENTITY);
+      super(null, ModelTestDomain.T_TEST_DETAIL_ENTITY);
     }
 
     public synchronized void refresh() throws UserException {

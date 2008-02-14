@@ -7,11 +7,13 @@ import com.toedter.calendar.JCalendar;
 import org.jminor.common.db.User;
 import org.jminor.common.db.UserAccessException;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.RootPaneContainer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -42,8 +45,10 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,6 +59,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -61,6 +68,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * A static utility class
@@ -174,13 +182,6 @@ public class UiUtil {
   public static JFormattedTextField createFormattedField(final String mask,
                                                          final boolean valueContainsLiteralCharacter,
                                                          final boolean charsAsUpper) {
-    return createFormattedField(mask, valueContainsLiteralCharacter, charsAsUpper, false);
-  }
-
-  public static JFormattedTextField createFormattedField(final String mask,
-                                                         final boolean valueContainsLiteralCharacter,
-                                                         final boolean charsAsUpper,
-                                                         final boolean transferFocusOnEnter) {
     try {
       final MaskFormatter formatter = new MaskFormatter(mask) {
         public Object stringToValue(final String value) throws ParseException {
@@ -197,8 +198,6 @@ public class UiUtil {
 
       final JFormattedTextField ret = new JFormattedTextField(formatter);
       ret.setFocusLostBehavior(JFormattedTextField.COMMIT);
-      if (transferFocusOnEnter)
-        UiUtil.transferFocusOnEnter(ret);
 
       return ret;
     }
@@ -207,7 +206,7 @@ public class UiUtil {
     }
   }
 
-  public static void bindColumnSizesAndPanelSizes(final JTable table, final JPanel[] pnlColumns) {
+  public static void bindColumnSizesAndPanelSizes(final JTable table, final List<JPanel> pnlColumns) {
     table.addComponentListener(new ComponentAdapter() {
       public void componentShown(ComponentEvent e) {
         syncSearchPanelSize(table, pnlColumns);
@@ -229,10 +228,10 @@ public class UiUtil {
     }
   }
 
-  private static void syncSearchPanelSize(final JTable table, final JPanel[] pnlColumns) {
+  private static void syncSearchPanelSize(final JTable table, final List<JPanel> pnlColumns) {
     final TableColumnModel cm = table.getColumnModel();
     for (int i = 0; i < cm.getColumnCount(); i++)
-      syncColumnSize(cm.getColumn(i), pnlColumns[i]);
+      syncColumnSize(cm.getColumn(i), pnlColumns.get(i));
   }
 
   private static void syncColumnSize(final TableColumn tableColumn, final JPanel pnlColumn) {
@@ -537,6 +536,95 @@ public class UiUtil {
           txtField.transferFocus();
       }
     });
+  }
+
+  public static JDialog showInDialog(final Window owner, final JComponent panel, final boolean modal, final String title,
+                                     final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction) {
+    return showInDialog(owner, panel, modal, title, includeButtonPanel,disposeOnOk, okAction, null);
+  }
+
+  public static JDialog showInDialog(final Window owner, final JComponent panel, final boolean modal, final String title,
+                                     final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
+                                     final Dimension size) {
+    return showInDialog(owner, panel, modal, title, includeButtonPanel,disposeOnOk, okAction, size, null, null);
+  }
+
+  public static JDialog showInDialog(final Window owner, final JComponent panel, final boolean modal, final String title,
+                                     final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
+                                     final Dimension size, final Point location, final Action closeAction) {
+    final JDialog dialog = new JDialog(owner, title);
+    dialog.setLayout(new BorderLayout());
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    if (closeAction != null) {
+      dialog.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent we) {
+          closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
+        }
+      });
+    }
+    final Action ok = new AbstractAction(
+            okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK)) {
+      public void actionPerformed(ActionEvent e) {
+        if (okAction != null)
+          okAction.actionPerformed(e);
+        if (disposeOnOk) {
+          dialog.setVisible(false);
+          dialog.dispose();
+        }
+      }
+    };
+    if (includeButtonPanel) {
+      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
+      final JButton okButton = new JButton(ok);
+      buttonPanel.add(okButton);
+      dialog.getRootPane().setDefaultButton(okButton);
+      dialog.add(buttonPanel, BorderLayout.SOUTH);
+    }
+    dialog.add(panel, BorderLayout.CENTER);
+    if (size == null)
+      dialog.pack();
+    else
+      dialog.setSize(size);
+    if (location == null)
+      dialog.setLocationRelativeTo(owner);
+    else
+      dialog.setLocation(location);
+    dialog.setModal(modal);
+    dialog.setResizable(true);
+    dialog.setVisible(true);
+
+    return dialog;
+  }
+
+  public static JDialog showInDialog(final Container owner, final JComponent component, final boolean modal, final String title,
+                                     final Dimension size, final JButton defaultButton, final Event closeEvent) {
+    final JDialog dialog = new JDialog(getParentWindow(owner), title);
+    dialog.setLayout(new BorderLayout());
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    if (closeEvent != null) {
+      closeEvent.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          dialog.dispose();
+        }
+      });
+    }
+    if (defaultButton != null)
+      dialog.getRootPane().setDefaultButton(defaultButton);
+    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
+
+    dialog.add(component, BorderLayout.CENTER);
+    if (size == null)
+      dialog.pack();
+    else
+      dialog.setSize(size);
+
+    dialog.setLocationRelativeTo(owner);
+    dialog.setModal(modal);
+    dialog.setResizable(true);
+    dialog.setVisible(true);
+
+    return dialog;
   }
 
   public static class DateInputPanel extends JPanel {

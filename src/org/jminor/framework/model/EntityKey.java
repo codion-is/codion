@@ -30,7 +30,7 @@ public class EntityKey implements Externalizable {
   /**
    * The number of columns in this this key
    */
-  private int columnCount;
+  int columnCount;
 
   /**
    * True if this is a single integer key
@@ -228,7 +228,7 @@ public class EntityKey implements Externalizable {
       return true;
 
     for (final Property property : properties)
-      if (EntityUtil.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
+      if (Entity.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
         return true;
 
     return false;
@@ -241,23 +241,6 @@ public class EntityKey implements Externalizable {
     keyValues.clear();
     hashCode = -Integer.MAX_VALUE;
     hashCodeDirty = true;
-  }
-
-  /**
-   * @param columnNames the column names to use in the criteria
-   * @return a string to use in a query where condition
-   */
-  public String getQueryConditionString(final List<String> columnNames) {
-    final StringBuffer ret = new StringBuffer("(");
-    int i = 0;
-    for (final Property.PrimaryKeyProperty property : properties) {
-      ret.append(EntityUtil.getQueryString(property, columnNames != null ? columnNames.get(i) : null,
-              EntityUtil.getSQLStringValue(property, keyValues.get(property.propertyID))));
-      if (i++ < columnCount-1)
-        ret.append(" and ");
-    }
-
-    return ret.append(")").toString();
   }
 
   /** {@inheritDoc} */

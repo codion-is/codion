@@ -142,8 +142,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   private final List<Property> tableColumnProperties;
   private final TableSorter tableSorter;
-  private final List<AbstractSearchModel> propertyFilterModels;
-  private final List<AbstractSearchModel> propertySearchModels;
+  private final List<PropertyFilterModel> propertyFilterModels;
+  private final List<PropertySearchModel> propertySearchModels;
   private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels =
           new HashMap<Property, EntityComboBoxModel>();
 
@@ -673,7 +673,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
   }
 
-  public List<AbstractSearchModel> getPropertySearchModels() {
+  public List<PropertySearchModel> getPropertySearchModels() {
     return propertySearchModels;
   }
 
@@ -711,7 +711,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return the property filter
    */
   public PropertyFilterModel getPropertyFilter(final int idx) {
-    return (PropertyFilterModel) propertyFilterModels.get(idx);
+    return propertyFilterModels.get(idx);
   }
 
   public PropertyFilterModel getPropertyFilter(final String propertyID) {
@@ -900,7 +900,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return the property filters this table model uses
    */
-  public List<AbstractSearchModel> getPropertyFilterModels() {
+  public List<PropertyFilterModel> getPropertyFilterModels() {
     return propertyFilterModels;
   }
 
@@ -1085,8 +1085,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return table filters initialized according to the model
    */
-  protected List<AbstractSearchModel> initPropertyFilters() {
-    final List<AbstractSearchModel> filters = new ArrayList<AbstractSearchModel>(tableColumnProperties.size());
+  protected List<PropertyFilterModel> initPropertyFilters() {
+    final List<PropertyFilterModel> filters = new ArrayList<PropertyFilterModel>(tableColumnProperties.size());
     int i = 0;
     for (final Property property : tableColumnProperties)
       filters.add(new PropertyFilterModel(property, i++));
@@ -1101,7 +1101,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   protected void bindEvents() {
-    final List<AbstractSearchModel> filterModels = getPropertyFilterModels();
+    final List<PropertyFilterModel> filterModels = getPropertyFilterModels();
     for (final AbstractSearchModel filterModel : filterModels) {
       filterModel.evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
@@ -1193,8 +1193,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     fireTableDataChanged();
   }
 
-  private List<AbstractSearchModel> initPropertySearchModels(final List<Property> properties) {
-    final List<AbstractSearchModel> ret = new ArrayList<AbstractSearchModel>();
+  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties) {
+    final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
     for (final Property property : properties) {
       if (property instanceof Property.EntityProperty && includeSearchComboBoxModel(property))
         propertySearchComboBoxModels.put(property, new EntityComboBoxModel(getDbConnectionProvider(),

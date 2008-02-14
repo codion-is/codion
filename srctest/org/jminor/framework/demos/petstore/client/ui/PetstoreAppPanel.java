@@ -3,12 +3,13 @@
  */
 package org.jminor.framework.demos.petstore.client.ui;
 
+import org.apache.log4j.Level;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
-import org.jminor.framework.client.ui.EntityPanelInfo;
+import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
@@ -19,8 +20,6 @@ import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 
-import org.apache.log4j.Level;
-
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.List;
@@ -28,15 +27,15 @@ import java.util.List;
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getRootEntityPanelInfo() {
-    return Arrays.asList(new EntityPanelInfo(CategoryModel.class, CategoryPanel.class));
+  protected List<EntityPanel.EntityPanelInfo> getRootEntityPanelInfo() {
+    return Arrays.asList(new EntityPanel.EntityPanelInfo(CategoryModel.class, CategoryPanel.class));
   }
 
-  protected List<EntityPanelInfo> getSupportEntityPanelInfo() {
+  protected List<EntityPanel.EntityPanelInfo> getSupportEntityPanelInfo() {
     return Arrays.asList(
-            new EntityPanelInfo("Addresses", AddressModel.class, AddressPanel.class),
-            new EntityPanelInfo("Seller info", ContactInfoModel.class, ContactInfoPanel.class),
-            new EntityPanelInfo("Tags", TagModel.class, TagPanel.class));
+            new EntityPanel.EntityPanelInfo("Addresses", AddressModel.class, AddressPanel.class),
+            new EntityPanel.EntityPanelInfo("Seller info", ContactInfoModel.class, ContactInfoPanel.class),
+            new EntityPanel.EntityPanelInfo("Tags", TagModel.class, TagPanel.class));
   }
 
   public static void main(final String[] args) {

@@ -3,10 +3,9 @@
  */
 package org.jminor.framework.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
-
-import junit.framework.TestCase;
 
 import java.util.Date;
 
@@ -19,7 +18,7 @@ public class TestEntity extends TestCase {
   public static Entity getTestMasterEntity(final int id, final int intValue, final double doubleValue,
                                            final String stringValue, final Date shortDateValue, final Date longDateValue,
                                            final Type.Boolean booleanValue, final Entity entityValue) {
-    final Entity ret = new Entity(ModelTestDomain.T_TEST_MASTER_ENTITY);
+    final Entity ret = new Entity(ModelTestDomain.T_TEST_DETAIL_ENTITY);
     ret.setValue(ModelTestDomain.ID_PROP, id);
     ret.setValue(ModelTestDomain.INT_PROP, intValue);
     ret.setValue(ModelTestDomain.DOUBLE_PROP, doubleValue);
@@ -46,11 +45,11 @@ public class TestEntity extends TestCase {
     final Type.Boolean booleanValue = Type.Boolean.TRUE;
     final int referenceId = 2;
 
-    final Entity referencedEntityValue = new Entity(ModelTestDomain.T_TEST_DETAIL_ENTITY);
+    final Entity referencedEntityValue = new Entity(ModelTestDomain.T_TEST_MASTER_ENTITY);
     referencedEntityValue.setValue(ModelTestDomain.ID, referenceId);
     referencedEntityValue.setValue(ModelTestDomain.NAME, stringValue);
 
-    Entity test = new Entity(ModelTestDomain.T_TEST_MASTER_ENTITY);
+    Entity test = new Entity(ModelTestDomain.T_TEST_DETAIL_ENTITY);
     //assert not modified
     assertFalse(test.isModified());
     //assert default values
@@ -129,10 +128,10 @@ public class TestEntity extends TestCase {
     final String shortDateStringSql = Database.getSQLDateString(shortDateValue, false);
     final String longDateStringSql = Database.getSQLDateString(longDateValue, true);
     assertEquals(EntityUtil.getInsertSQL(testEntity),
-            "insert into " + ModelTestDomain.T_TEST_MASTER_ENTITY
+            "insert into " + ModelTestDomain.T_TEST_DETAIL_ENTITY
                     + "(int, double, string, short_date, long_date, boolean, entity_id, id)"
                     + " values(2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2, 1)");
-    assertEquals(EntityUtil.getDeleteSQL(testEntity), "delete from " + ModelTestDomain.T_TEST_MASTER_ENTITY + " where (id = 1)");
+    assertEquals(EntityUtil.getDeleteSQL(testEntity), "delete from " + ModelTestDomain.T_TEST_DETAIL_ENTITY + " where (id = 1)");
     exception = false;
     try {
       EntityUtil.getUpdateSQL(testEntity);
@@ -144,12 +143,12 @@ public class TestEntity extends TestCase {
 
     testEntity.setValue(ModelTestDomain.INT_PROP, 42);
     testEntity.setValue(ModelTestDomain.STRING_PROP, "newString");
-    assertEquals(EntityUtil.getUpdateSQL(testEntity), "update " + ModelTestDomain.T_TEST_MASTER_ENTITY + " set int = 42, string = 'newString' where (id = 1)");
+    assertEquals(EntityUtil.getUpdateSQL(testEntity), "update " + ModelTestDomain.T_TEST_DETAIL_ENTITY + " set int = 42, string = 'newString' where (id = 1)");
     testEntity.setValue(ModelTestDomain.STRING_PROP, "string");
-    assertEquals(EntityUtil.getUpdateSQL(testEntity), "update " + ModelTestDomain.T_TEST_MASTER_ENTITY + " set int = 42 where (id = 1)");
+    assertEquals(EntityUtil.getUpdateSQL(testEntity), "update " + ModelTestDomain.T_TEST_DETAIL_ENTITY + " set int = 42 where (id = 1)");
 
     //test setAs()
-    test = new Entity(ModelTestDomain.T_TEST_MASTER_ENTITY);
+    test = new Entity(ModelTestDomain.T_TEST_DETAIL_ENTITY);
     test.setAs(testEntity);
     assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
     assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));

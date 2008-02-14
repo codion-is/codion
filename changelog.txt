@@ -63,3 +63,4 @@
   Some javadoc added in EntityPanel
   EntityComboBoxModel contents are now sorted by default
   Moved validateValue() and getValueClass() from Property to EntityUtil, lessening dependencies
+  Refactored classes in org.jminor.framework.model and ...client.ui, lessening cyclical dependencies

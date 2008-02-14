@@ -15,6 +15,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
@@ -38,12 +39,16 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -54,6 +59,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class EntityTablePanel extends JPanel {
+
+  public final static char FILTER_INDICATOR = '*';
 
   public final Event evtTableDoubleClick = new Event("EntityTablePanel.evtTableDoubleClick");
   public final Event evtSearchPanelVisibleChanged = new Event("EntityTablePanel.evtSearchPanelVisibleChanged");
@@ -99,16 +106,10 @@ public class EntityTablePanel extends JPanel {
     this.tableScroller = new JScrollPane(entityTable);
     this.tableControls = popupControls;
     this.searchPanel = initializeSearchPanel();
-    this.propertyFilterPanels = FrameworkUiUtil.initializeFilterPanels(entityTable.getColumnModel(),
-            entityTable.getTableHeader(), tableModel.getPropertyFilterModels(), true, true);
+    this.propertyFilterPanels = initializeFilterPanels();
     initializeUI(detailPanelButton, allowQueryConfiguration);
     bindEvents();
     updateStatusMessage();
-  }
-
-  public TableColumnModel initializeTableColumnModel(final boolean specialRendering) {
-    return FrameworkUiUtil.getTableColumnModel(this.tableModel.getTableColumnProperties(),
-            new EntityTableCellRenderer(this.tableModel, specialRendering));
   }
 
   /**
@@ -153,7 +154,7 @@ public class EntityTablePanel extends JPanel {
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    FrameworkUiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
+    UiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY),
             true, false, new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
       public void actionPerformed(ActionEvent e) {
@@ -306,8 +307,7 @@ public class EntityTablePanel extends JPanel {
 
     tableModel.getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        FrameworkUiUtil.toggleTableSearchPanel(e, EntityTablePanel.this.entityTable,
-                EntityTablePanel.this.propertyFilterPanels);
+        toggleTableSearchPanel(e);
       }
     });
 
@@ -404,7 +404,7 @@ public class EntityTablePanel extends JPanel {
       ret.add(panel);
     }
 
-    UiUtil.bindColumnSizesAndPanelSizes(getJTable(), panels.toArray(new JPanel[panels.size()]));
+    UiUtil.bindColumnSizesAndPanelSizes(getJTable(), panels);
 
     return ret;
   }
@@ -457,7 +457,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   protected JPanel initializeAdvancedSearchPanel() {
-    return new EntityTableSearchPanel(this);
+    final EntityTableSearchPanel ret = new EntityTableSearchPanel(getTableModel());
+    UiUtil.bindColumnSizesAndPanelSizes(getJTable(), ret.getSearchPanels());
+
+    return ret;
   }
 
   /**
@@ -526,11 +529,96 @@ public class EntityTablePanel extends JPanel {
     return ret;
   }
 
+  private TableColumnModel initializeTableColumnModel(final boolean specialRendering) {
+    final TableColumnModel columnModel = new DefaultTableColumnModel();
+    final List<TableColumn> columns = getTableColumns(tableModel.getTableColumnProperties());
+    for (final TableColumn column : columns) {
+      column.setResizable(true);
+      column.setCellRenderer(new EntityTableCellRenderer(this.tableModel, specialRendering));
+      columnModel.addColumn(column);
+    }
+
+    return columnModel;
+  }
+
   private void updateStatusMessage() {
     if (lblStatusMessage != null) {
       final String status = tableModel.getStatusMessage();
       lblStatusMessage.setText(status);
       lblStatusMessage.setToolTipText(status);
     }
+  }
+
+  private List<PropertyFilterPanel> initializeFilterPanels() {
+    final List<PropertyFilterPanel> columnFilterPanels = new ArrayList<PropertyFilterPanel>(tableModel.getPropertyFilterModels().size());
+    for (final PropertyFilterModel searchModel : tableModel.getPropertyFilterModels()) {
+      final PropertyFilterPanel ret = new PropertyFilterPanel(searchModel, true, true);
+      final TableColumn tableColumn = entityTable.getColumnModel().getColumn(searchModel.getColumnIndex());
+      ret.getModel().evtSearchStateChanged.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          if (ret.getModel().isSearchEnabled())
+            addFilterIndicator(tableColumn);
+          else
+            removeFilterIndicator(tableColumn);
+
+          entityTable.getTableHeader().repaint();
+        }
+      });
+      if (ret.getModel().isSearchEnabled())
+        addFilterIndicator(tableColumn);
+
+      columnFilterPanels.add(ret);
+    }
+
+    return columnFilterPanels;
+  }
+
+  private void toggleTableSearchPanel(final ActionEvent e) {
+    final Point lp = entityTable.getTableHeader().getLocationOnScreen();
+    final Point p = (Point) e.getSource();
+    final Point pos = new Point((int) (lp.getX() + p.getX()), (int) (lp.getY() - p.getY()));
+    final int col = entityTable.getColumnModel().getColumnIndexAtX((int) p.getX());
+    toggleFilterPanel(pos, propertyFilterPanels.get(col), entityTable);
+  }
+
+  private static void toggleFilterPanel(final Point position, final PropertyFilterPanel columnFilterPanel,
+                                        final Container parent) {
+    if (columnFilterPanel.isDialogActive())
+      columnFilterPanel.inactivateDialog();
+    else
+      columnFilterPanel.activateDialog(parent, position);
+  }
+
+  private static void addFilterIndicator(final TableColumn column) {
+    String val = (String) column.getHeaderValue();
+    if (val.length() > 0)
+      if (val.charAt(0) != FILTER_INDICATOR)
+        val = FILTER_INDICATOR + val;
+
+    column.setHeaderValue(val);
+  }
+
+  private static void removeFilterIndicator(final TableColumn column) {
+    String val = (String) column.getHeaderValue();
+    if (val.length() > 0 && val.charAt(0) == FILTER_INDICATOR)
+      val = val.substring(1);
+
+    column.setHeaderValue(val);
+  }
+
+  private static List<TableColumn> getTableColumns(final List<Property> columnProperties) {
+    final ArrayList<TableColumn> ret = new ArrayList<TableColumn>(columnProperties.size());
+    int i = 0;
+    for (final Property property : columnProperties) {
+      final TableColumn col = new TableColumn(i++);
+      col.setIdentifier(property);
+      col.setHeaderValue(property.getCaption());
+      final Integer prw = property.getPreferredColumnWidth();
+      if (prw != null)
+        col.setMinWidth(prw);
+      ret.add(col);
+    }
+
+    return ret;
   }
 }

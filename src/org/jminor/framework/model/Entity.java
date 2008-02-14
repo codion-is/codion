@@ -197,17 +197,18 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public Object getValue(final Property property) {
+    if (property instanceof Property.DenormalizedViewProperty)
+      return getDenormalizedValue((Property.DenormalizedViewProperty) property);
+
     return repository.getEntityProxy(primaryKey.entityID).getValue(this, property);
   }
 
   public Object getValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return getValue(repository.getProperty(primaryKey.entityID, propertyID));
   }
 
   public final Entity getEntityValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getEntityValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return (Entity) getValue(propertyID);
   }
 
   public final String getValueAsString(final String propertyID) {
@@ -216,36 +217,27 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public final Timestamp getDateValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getDateValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return (Timestamp) getValue(propertyID);
   }
 
   public final String getStringValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getStringValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return (String) getValue(propertyID);
   }
 
   public final Integer getIntValue(final String propertyID) {
-    return getIntValue(repository.getProperty(primaryKey.entityID, propertyID));
-  }
-
-  public final Integer getIntValue(final Property property) {
-    return repository.getEntityProxy(primaryKey.entityID).getIntValue(this, property);
+    return (Integer) getValue(propertyID);
   }
 
   public final Type.Boolean getBooleanValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getBooleanValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return (Type.Boolean) getValue(propertyID);
   }
 
   public final Character getCharValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getCharValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return (Character) getValue(propertyID);
   }
 
   public final Double getDoubleValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getDoubleValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return (Double) getValue(propertyID);
   }
 
   public final String getValueAsUserString(final String propertyID) {
@@ -264,10 +256,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * @return true if the this entity instance is null
-   * @see EntityProxy#isNull
    */
   public boolean isNull() {
-    return repository.getEntityProxy(primaryKey.entityID).isNull(this);
+    if (getPrimaryKey() == null)
+      throw new RuntimeException("Can only tell if entity is null if it has a primary key");
+
+    return getPrimaryKey().isNull();
   }
 
   /**
@@ -442,7 +436,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? primaryKey.getValue(referenceKeyProperty.propertyID)
               : propertyValues.get(referenceKeyProperty.propertyID);
-      if (!EntityUtil.isValueNull(referenceKeyProperty.propertyType, value)) {
+      if (!isValueNull(referenceKeyProperty.propertyType, value)) {
         if (key == null)
           (referencedKeysCache == null ? referencedKeysCache = new HashMap<String, EntityKey>()
                   : referencedKeysCache).put(property.referenceEntityID, key = new EntityKey(property.referenceEntityID));
@@ -460,7 +454,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return true if the value of the given property is null
    */
   public final boolean isValueNull(final String propertyID) {
-    return EntityUtil.isValueNull(getProperty(propertyID).propertyType, getValue(propertyID));
+    return isValueNull(getProperty(propertyID).propertyType, getValue(propertyID));
   }
 
   /** {@inheritDoc} */
@@ -477,6 +471,25 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     propertyValues = (Map<String, Object>) in.readObject();
     originalPropertyValues = (Map<String, Object>) in.readObject();
     hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
+  }
+
+  public static boolean isValueNull(final Type propertyType, final Object value) {
+    if (value == null)
+      return true;
+
+    switch (propertyType) {
+      case CHAR :
+        if (value instanceof String)
+          return ((String)value).length() == 0;
+      case BOOLEAN :
+        return value == Type.Boolean.NULL;
+      case STRING :
+        return value.equals("");
+      case ENTITY :
+        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
+      default :
+        return false;
+    }
   }
 
   /**
@@ -559,7 +572,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
         final boolean initialization = property instanceof Property.PrimaryKeyProperty? !primaryKey.keyValues.containsKey(property.propertyID)
             : !propertyValues.containsKey(property.propertyID);
         doSetValue(denormalizedProperty,
-                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedPropertyName),
+                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.propertyID),
                 false, initialization, true);
       }
     }
@@ -602,5 +615,13 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       System.out.println(EntityUtil.getPropertyChangeDebugString(getEntityID(), property, oldValue, newValue, initialization));
 
     evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, initialization));
+  }
+
+  private Object getDenormalizedValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
+    final Property.EntityProperty ownerProperty =
+            EntityRepository.get().getEntityProperty(getEntityID(), denormalizedViewProperty.ownerEntityID);
+    final Entity valueOwner = getEntityValue(ownerProperty.propertyID);
+
+    return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedProperty) : null;
   }
 }

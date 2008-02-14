@@ -18,11 +18,7 @@ public class IntField extends TextFieldPlus {
   }
 
   public IntField(final int columns) {
-    this(false, columns);
-  }
-
-  public IntField(final boolean transferFocusOnEnter, final int columns) {
-    super(columns, transferFocusOnEnter);
+    super(columns);
   }
 
   public IntField(final int min, final int max) {
