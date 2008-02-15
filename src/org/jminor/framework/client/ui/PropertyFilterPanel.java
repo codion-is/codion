@@ -155,17 +155,16 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         field = createDateChooserField(isUpperBound, model.getColumnType() == Type.LONG_DATE);
         break;
       case DOUBLE:
-        createTextProperty(field = new DoubleField(), isUpperBound);
+        createTextProperty(field = new DoubleField(4), isUpperBound);
         break;
       case INT:
-        createTextProperty(field = new IntField(), isUpperBound);
+        createTextProperty(field = new IntField(4), isUpperBound);
         break;
       case BOOLEAN:
         createToggleProperty((JCheckBox) (field = new JCheckBox()), isUpperBound);
         break;
-      default: {
-        createTextProperty(field = new JTextField(), isUpperBound);
-      }
+      default:
+        createTextProperty(field = new JTextField(4), isUpperBound);
     }
     if (field instanceof JTextField) {//enter button toggles the filter on/off
       ((JTextField) field).addActionListener(new ActionListener() {

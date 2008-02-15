@@ -16,6 +16,7 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
+import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
@@ -41,9 +42,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -459,6 +462,13 @@ public class EntityTablePanel extends JPanel {
   protected JPanel initializeAdvancedSearchPanel() {
     final EntityTableSearchPanel ret = new EntityTableSearchPanel(getTableModel());
     UiUtil.bindColumnSizesAndPanelSizes(getJTable(), ret.getSearchPanels());
+    for (final PropertySearchModel searchModel : tableModel.getPropertySearchModels()) {
+      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          entityTable.getTableHeader().repaint();
+        }
+      });
+    }
 
     return ret;
   }
@@ -519,6 +529,19 @@ public class EntityTablePanel extends JPanel {
     });
 
     final JTableHeader header = ret.getTableHeader();
+    final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
+    final Font defaultFont = ret.getFont();
+    final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
+    header.setDefaultRenderer(new TableCellRenderer() {
+      public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                     final boolean hasFocus, final int row, final int column) {
+        final JLabel ret = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
+                hasFocus, row, column);
+        ret.setFont(getTableModel().isSearchEnabled(column) ? searchFont : defaultFont);
+
+        return ret;
+      }
+    });
     header.setFocusable(false);
     header.setReorderingAllowed(false);
 

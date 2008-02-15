@@ -358,7 +358,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return an object containing the field value. The object type must be the field object type.
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
-    return currentReportRecord.getTableValue(jrField.getName());
+    return currentReportRecord.getTableValue(EntityRepository.get().getProperty(getEntityID(), jrField.getName()));
   }
 
   /**
@@ -402,7 +402,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /** {@inheritDoc} */
   public synchronized Object getValueAt(final int rowIndex, final int columnIndex) {
-    return visibleEntities.get(rowIndex).getTableValue(tableColumnProperties.get(columnIndex).propertyID);
+    return visibleEntities.get(rowIndex).getTableValue(tableColumnProperties.get(columnIndex));
   }
 
   /**
@@ -678,26 +678,22 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   public PropertySearchModel getPropertySearchModel(final String propertyID) {
-    for (final AbstractSearchModel searchModel : propertySearchModels) {
-      if (((PropertySearchModel) searchModel).getProperty().propertyID.equals(propertyID))
-        return (PropertySearchModel) searchModel;
-    }
+    for (final PropertySearchModel searchModel : propertySearchModels)
+      if (searchModel.getProperty().propertyID.equals(propertyID))
+        return searchModel;
 
     return null;
   }
 
-  public boolean isSearchEnabled(final String propertyID) {
-    final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
+  public boolean isSearchEnabled(final int columnIdx) {
+    final PropertySearchModel model =
+            getPropertySearchModel(EntityRepository.get().getPropertyAtViewIndex(getEntityID(), columnIdx).propertyID);
 
-    return searchModel != null && searchModel.stSearchEnabled.isActive();
+    return model != null && model.stSearchEnabled.isActive();
   }
 
   public boolean isFilterEnabled(final int columnIndex) {
     return getPropertyFilter(columnIndex).isSearchEnabled();
-  }
-
-  public boolean isFilterEnabled(final String propertyID) {
-    return getPropertyFilter(propertyID).isSearchEnabled();
   }
 
   public void setExactFilterValue(final Comparable value, final int columnIndex) {

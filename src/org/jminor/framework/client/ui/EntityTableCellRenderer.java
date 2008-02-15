@@ -6,8 +6,6 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
 import javax.swing.JCheckBox;
@@ -53,7 +51,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     if (defaultForeground == null)
       defaultForeground = component.getForeground();
 
-    final boolean propertySearchEnabled = tableModel.isSearchEnabled(getProperty(column).propertyID);
+    final boolean propertySearchEnabled = tableModel.isSearchEnabled(column);
     final boolean propertyFilterEnabled = tableModel.isFilterEnabled(column);
     final Color rowColor = specialRendering ? tableModel.getRowBackgroundColor(row) : null;
     if (rowColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
@@ -95,10 +93,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     return renderer;
-  }
-
-  private Property getProperty(final int column) {
-    return EntityRepository.get().getPropertyAtViewIndex(tableModel.getEntityID(), column);
   }
 
   /**

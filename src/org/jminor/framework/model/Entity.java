@@ -187,7 +187,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * Initializing a value has the same effect as using <code>setValue()</code> except for Property.EntityProperty's
    * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set.
    * It is also assumed that the Entity does not contain a value for the property, so the modified state is
-   * disregarded during the value setting
+   * ignored during the value setting
    * Use with care.
    * @param property the property to initialize
    * @param value the initial value
@@ -209,11 +209,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   public final Entity getEntityValue(final String propertyID) {
     return (Entity) getValue(propertyID);
-  }
-
-  public final String getValueAsString(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getValueAsString(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
   }
 
   public final Timestamp getDateValue(final String propertyID) {
@@ -240,14 +235,21 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     return (Double) getValue(propertyID);
   }
 
+  public final String getValueAsString(final String propertyID) {
+    return repository.getEntityProxy(primaryKey.entityID).getValueAsString(this,
+            repository.getProperty(primaryKey.entityID, propertyID));
+  }
+
   public final String getValueAsUserString(final String propertyID) {
     return repository.getEntityProxy(primaryKey.entityID).getValueAsUserString(this,
             repository.getProperty(primaryKey.entityID, propertyID));
   }
 
-  public Object getTableValue(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getTableValue(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+  public Object getTableValue(final Property property) {
+    if (property instanceof Property.DenormalizedViewProperty)
+      return getDenormalizedValue((Property.DenormalizedViewProperty) property);
+
+    return repository.getEntityProxy(primaryKey.entityID).getTableValue(this, property);
   }
 
   public final String getDateStringValue(final String propertyID, final DateFormat dateFormat) {

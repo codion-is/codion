@@ -64,3 +64,5 @@
   EntityComboBoxModel contents are now sorted by default
   Moved validateValue() and getValueClass() from Property to EntityUtil, lessening dependencies
   Refactored classes in org.jminor.framework.model and ...client.ui, lessening cyclical dependencies
+  Table column header is now bold when search is enabled
+  Fixed a couple bugs introduced during the refactoring, see above
