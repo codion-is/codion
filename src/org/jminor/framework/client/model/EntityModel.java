@@ -1351,7 +1351,7 @@ public class EntityModel implements IRefreshable {
       }
     });
 
-    tableModel.evtMinSelectionIndexChanged.addListener(new ActionListener() {
+    tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         setActive(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
       }

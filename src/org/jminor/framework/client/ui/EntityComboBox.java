@@ -103,10 +103,7 @@ public class EntityComboBox extends SteppedComboBox {
           final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
           buttonPanel.add(btnClose);
           dialog.add(buttonPanel, BorderLayout.SOUTH);
-          if (entityPanel.usePreferredSize())
-            dialog.pack();
-          else
-            UiUtil.resizeWindow(dialog, 0.5, new Dimension(800, 400));
+          dialog.pack();
           dialog.setLocationRelativeTo(parentWindow);
           dialog.setModal(true);
           dialog.setResizable(true);
@@ -126,7 +123,7 @@ public class EntityComboBox extends SteppedComboBox {
   }
 
   private JButton initializeOkButton(final EntityPanel entityPanel, final JDialog pane,
-                               final PropertyChangeListener focusListener) {
+                                     final PropertyChangeListener focusListener) {
     return new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         try {

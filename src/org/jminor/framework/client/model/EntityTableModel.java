@@ -52,10 +52,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
 
-  /** The default query range */
+  /**
+   * The default query range
+   */
   public static final int DEFAULT_QUERY_RANGE = 1000;
 
-  /** Fired when the model is about to be refreshed */
+  /**
+   * Fired when the model is about to be refreshed
+   */
   public final Event evtRefreshStarted = new Event("EntityTableModel.evtRefreshStarted");
 
   /**
@@ -64,24 +68,50 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public final Event evtRefreshDone = new Event("EntityTableModel.evtRefreshDone");
 
-  /** Fired when the model is about to be filtered */
-  public final Event evtBeforeFiltering = new Event("EntityTableModel.evtBeforeFiltering");
+  /**
+   * Fired when the model is about to be filtered
+   */
+  public final Event evtFilteringStarted = new Event("EntityTableModel.evtFilteringStarted");
 
-  /** Fired when the model has been filtered */
-  public final Event evtAfterFiltering = new Event("EntityTableModel.evtAfterFiltering");
+  /**
+   * Fired when the model has been filtered
+   */
+  public final Event evtFilteringDone = new Event("EntityTableModel.evtFilteringDone");
 
-  /** Fired after the table data has changed */
+  /**
+   * Fired after the table data has changed
+   */
   public final Event evtTableDataChanged = new Event("EntityTableModel.evtTableDataChanged");
 
-  public final Event evtMinSelectionIndexChanged = new Event("EntityTableModel.evtMinSelectedIndexChanged");
+  /**
+   * Fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
+   */
+  public final Event evtSelectedIndexChanged = new Event("EntityTableModel.evtSelectedIndexChanged");
+
+  /**
+   * Fired when the selection is changing
+   */
   public final Event evtSelectionChangedAdjusting = new Event("EntityTableModel.evtSelectionChangedAdjusting");
+
+  /**
+   * Fired after the selection has changed
+   */
   public final Event evtSelectionChanged = new Event("EntityTableModel.evtSelectionChanged");
+
+  /**
+   * Fired when the simple search string has changed
+   * @see #setSimpleSearchString(String)
+   */
   public final Event evtSimpleSearchStringChanged = new Event("EntityTableModel.evtSimpleSearchStringChanged");
 
-  /** Active when the selection is empty */
+  /**
+   * Active when the selection is empty
+   */
   public final State stSelectionEmpty = new State("EntityTableModel.stSelectionEmpty", true);
 
-  /** Active when the data does not represent the state of the property search models */
+  /**
+   * Active when the data does not represent the state of the property search models
+   */
   public final State stDataDirty = new State("EntityTableModel.stDataDirty", false);
 
   /**
@@ -90,48 +120,75 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   private boolean forceRefresh = false;
 
-  /** true while the model is refreshing */
+  /**
+   * true while the model is refreshing
+   */
   private boolean isRefreshing = false;
 
-  /** true while the model is filtering */
+  /**
+   * true while the model is filtering
+   */
   private boolean isFiltering = false;
 
-  /** true while the model is sorting */
+  /**
+   * true while the model is sorting
+   */
   private boolean isSorting = false;
 
-  /** False if the table should ignore the query range when refreshing */
+  /**
+   * False if the table should ignore the query range when refreshing
+   */
   private boolean queryRangeEnabled = FrameworkSettings.get().useQueryRange;
 
-  /** Represents the range of records to select from the underlying table */
+  /**
+   * Represents the range of records to select from the underlying table
+   */
   private final PropertyCriteria queryRangeCriteria =
           new PropertyCriteria(new Property("row_num", Type.INT), SearchType.INSIDE, 1, DEFAULT_QUERY_RANGE);
 
-  /** Holds the status of the underlying table */
+  /**
+   * Holds the status of the underlying table
+   */
   private final TableStatus tableStatus = new TableStatus();
 
-  /** The IEntityDb connection provider */
+  /**
+   * The IEntityDb connection provider
+   */
   private final IEntityDbProvider dbConnectionProvider;
 
-  /** The entity ID */
+  /**
+   * The entity ID
+   */
   private final String entityID;
 
+  /**
+   * Holds visible entities
+   */
   private final List<Entity> visibleEntities = new ArrayList<Entity>();
+
+  /**
+   * Holds entities that are filtered and hidden
+   */
   private final List<Entity> filteredEntities = new ArrayList<Entity>();
 
-  /** Holds the selected items while sorting */
+  /**
+   * Holds the selected items while sorting
+   */
   private List<EntityKey> selectedPrimaryKeys;
 
-  /** Holds the topmost (minimum) selected index */
-  private int currentMinSelectionIndex = -1;
+  /**
+   * Holds the topmost (minimum) selected index
+   */
+  private int minSelectedIndex = -1;
 
   private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
     public void fireValueChanged(int min, int max, boolean isAdjusting) {
       super.fireValueChanged(min, max, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
       final int minSelIndex = getMinSelectionIndex();
-      if (currentMinSelectionIndex != minSelIndex) {
-        currentMinSelectionIndex = minSelIndex;
-        evtMinSelectionIndexChanged.fire();
+      if (minSelectedIndex != minSelIndex) {
+        minSelectedIndex = minSelIndex;
+        evtSelectedIndexChanged.fire();
       }
       if (isAdjusting || updatingSelection)
         evtSelectionChangedAdjusting.fire();
@@ -157,7 +214,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private boolean showAllWhenNotFiltered = false;
   private boolean updatingSelection = false;
 
-  /* Initializes a new EntityTableModel */
+  /**
+   * Initializes a new EntityTableModel
+   * @param dbProvider a IEntityDbProvider instance
+   * @param entityID the ID of the entity this table model should represent
+   */
   public EntityTableModel(final IEntityDbProvider dbProvider, final String entityID) {
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
@@ -502,10 +563,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     if (isRefreshing)
       return;
 
-    log.trace(this + " refreshing" + (forceRefresh ? " (forced)" : ""));
-    isRefreshing = true;
-    evtRefreshStarted.fire();
     try {
+      log.trace(this + " refreshing" + (forceRefresh ? " (forced)" : ""));
+      isRefreshing = true;
+      evtRefreshStarted.fire();
       if (FrameworkSettings.get().useSmartRefresh && !isRefreshRequired()) {
         log.trace(this + " refresh not required");
         return;
@@ -622,16 +683,16 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * Filters this table model
-   * @see #evtBeforeFiltering
-   * @see #evtAfterFiltering
+   * @see #evtFilteringStarted
+   * @see #evtFilteringDone
    */
   public synchronized void filterTable() {
-    if (propertyFilterModels == null )
+    if (propertyFilterModels == null)
       return;
 
-    evtBeforeFiltering.fire();
-    isFiltering = true;
     try {
+      isFiltering = true;
+      evtFilteringStarted.fire();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       visibleEntities.addAll(filteredEntities);
       filteredEntities.clear();
@@ -647,9 +708,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
     finally {
       isFiltering = false;
+      evtFilteringDone.fire();
     }
-
-    evtAfterFiltering.fire();
   }
 
   public void filterByReference(final List<Entity> referenceEntities, final String entityID)
@@ -693,12 +753,12 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   public boolean isFilterEnabled(final int columnIndex) {
-    return getPropertyFilter(columnIndex).isSearchEnabled();
+    return getPropertyFilterModel(columnIndex).isSearchEnabled();
   }
 
   public void setExactFilterValue(final Comparable value, final int columnIndex) {
     if (columnIndex >= 0)
-      getPropertyFilter(columnIndex).setExactValue(value);
+      getPropertyFilterModel(columnIndex).setExactValue(value);
   }
 
   /**
@@ -706,11 +766,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @param idx the property index
    * @return the property filter
    */
-  public PropertyFilterModel getPropertyFilter(final int idx) {
+  public PropertyFilterModel getPropertyFilterModel(final int idx) {
     return propertyFilterModels.get(idx);
   }
 
-  public PropertyFilterModel getPropertyFilter(final String propertyID) {
+  public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
     for (final AbstractSearchModel filter : propertyFilterModels) {
       if (filter.getColumnName().equals(propertyID))
         return (PropertyFilterModel) filter;
@@ -813,8 +873,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
   }
 
-  public int getMinSelectionIndex() {
-    return currentMinSelectionIndex;
+  public int getSelectedIndex() {
+    return minSelectedIndex;
   }
 
   /**
@@ -1143,19 +1203,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         isSorting = false;
       }
     });
-
-    /*for debugging*/
-//    evtMinSelectionIndexChanged.addListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent e) {
-//        final int[] selIdx = getSelectedModelIndexes();
-//        if (selIdx.length == 0)
-//          return;
-//        final Entity entity = getSelectedEntity();
-//        System.out.println("Selected: " + entity + ", selectedIdx (model): " + selIdx[0]
-//                + " tableSorter.viewIndex(): " + tableSorter.viewIndex(selIdx[0])
-//                + ", viewIndexByPrimaryKey: " + getViewIndexByPrimaryKey(entity.getPrimaryKey()));
-//      }
-//    });
   }
 
   protected boolean include(final Entity entity) {

@@ -103,7 +103,7 @@ public class PropertySummaryPanel extends JPanel {
     final List<SummaryType> summaryTypes = getSummaryStates(property.getPropertyType());
     if (summaryTypes.size() > 0) {
       final ActionListener updater = getUpdater(tableModel);
-      tableModel.evtAfterFiltering.addListener(updater);//todo summary is updated twice per refresh
+      tableModel.evtFilteringDone.addListener(updater);//todo summary is updated twice per refresh
       tableModel.evtRefreshDone.addListener(updater);
       tableModel.evtSelectionChangedAdjusting.addListener(updater);
       tableModel.evtSelectionChanged.addListener(updater);

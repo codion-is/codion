@@ -55,17 +55,17 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
-  protected EntityApplicationModel model;
   protected final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
+
+  protected EntityApplicationModel model;
   protected JTabbedPane applicationTabPane;
-
-  public final Event evtSelectedEntityPanelChanged = new Event("EntityApplicationPanel.evtSelectedEntityPanelChanged");
-
-  private final Event evtAlwaysOnTopChanged = new Event("EntityApplicationPanel.evtAlwaysOnTopChanged");
 
   protected Control ctrSetLoggingLevel;
   protected ToggleBeanPropertyLink ctrSelectDetail;
   protected ToggleBeanPropertyLink ctrCascadeRefresh;
+
+  private final Event evtSelectedEntityPanelChanged = new Event("EntityApplicationPanel.evtSelectedEntityPanelChanged");
+  private final Event evtAlwaysOnTopChanged = new Event("EntityApplicationPanel.evtAlwaysOnTopChanged");
 
   private static EntityApplicationPanel applicationPanel;
 
@@ -75,6 +75,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
+    if (applicationPanel != null)
+      throw new IllegalStateException("EntityApplicationPanel has already been initialized, only one per application please");
     initializeSettings();
     applicationPanel = this;
   }
@@ -498,7 +500,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
                                                         final boolean northToolBar, final boolean showFrame) {
     log.info(frameCaption + " starting");
     EntityApplicationPanel applicationPanel = null;
-    EntityApplicationModel applicationModel;
     JDialog initializationDialog = null;
     boolean retry = true;
     while (retry) {
@@ -517,13 +518,12 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
           throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));
 
         final long now = System.currentTimeMillis();
-        applicationModel = initializeApplicationModel(applicationModelClass, user);
 
-        applicationPanel.setModel(applicationModel);
-
+        applicationPanel.setModel(initializeApplicationModel(applicationModelClass, user));
         initializeApplicationPanel(applicationPanel);
 
-        final Properties properties = applicationModel.getDbConnectionProvider().getEntityDb().getUser().getProperties();
+        final Properties properties =
+                applicationPanel.getModel().getDbConnectionProvider().getEntityDb().getUser().getProperties();
         final String frameTitle = frameCaption + " - " + getUserInfo(user,
                 properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
         if (showFrame)
@@ -569,9 +569,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return null;
   }
 
-  protected static JDialog showInitializationDialog(final Frame owner, final EntityApplicationPanel panel, final Icon icon, String msg) {
-    msg = msg == null ? "Initializing Application" : msg;
-    final JDialog initDlg = new JDialog(owner, msg, false);
+  protected static JDialog showInitializationDialog(final Frame owner, final EntityApplicationPanel panel,
+                                                    final Icon icon, final String msg) {
+    final String message = msg == null ? "Initializing Application" : msg;
+    final JDialog initDlg = new JDialog(owner, message, false);
     initDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     p.add(panel.getInitProgressPane(icon));
@@ -659,11 +660,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   private JScrollPane initializeApplicationTree() {
-    UIManager.put("Tree.openIcon", UIManager.get("Tree.leafIcon"));
-    UIManager.put("Tree.closedIcon", UIManager.get("Tree.leafIcon"));
-    UIManager.put("Tree.openExpanded", UIManager.get("Tree.leafIcon"));
-    UIManager.put("Tree.openCollapsed", UIManager.get("Tree.leafIcon"));
-
     final JTree tree = new JTree(getModel().getApplicationTreeModel());
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
@@ -687,7 +683,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @throws org.jminor.common.model.UserException in case of a user exception
    */
   private JFrame prepareFrame(final ImageIcon applicationIcon, final String title, final boolean maximize, final boolean northToolBar,
-                             final boolean showMenuBar, final Dimension size) throws UserException {
+                              final boolean showMenuBar, final Dimension size) throws UserException {
 
     final JFrame frame = UiUtil.createFrame(applicationIcon != null ? applicationIcon.getImage() : null);
     frame.addWindowListener(new WindowAdapter() {
@@ -742,12 +738,12 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   private static void showEntityPanelDialog(final EntityPanel.EntityPanelInfo appInfo, final IEntityDbProvider dbProvider,
-                                           final JPanel owner) throws UserException {
+                                            final JPanel owner) throws UserException {
     showEntityPanelDialog(appInfo, dbProvider, owner, false);
   }
 
   private static void showEntityPanelDialog(final EntityPanel.EntityPanelInfo appInfo, final IEntityDbProvider dbProvider,
-                                           final JPanel owner, final boolean modalDialog) throws UserException {
+                                            final JPanel owner, final boolean modalDialog) throws UserException {
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, owner);
@@ -770,10 +766,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
       buttonPanel.add(btnClose);
       dialog.add(buttonPanel, BorderLayout.SOUTH);
-      if (entityPanel.usePreferredSize())
-        dialog.pack();
-      else
-        UiUtil.resizeWindow(dialog, 0.5, new Dimension(800, 400));
+      dialog.pack();
       dialog.setLocationRelativeTo(owner);
       if (modalDialog)
         dialog.setModal(true);

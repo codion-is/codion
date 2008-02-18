@@ -305,7 +305,7 @@ public class EntityTablePanel extends JPanel {
       }
     };
     tableModel.evtSelectionChanged.addListener(statusListener);
-    tableModel.evtAfterFiltering.addListener(statusListener);
+    tableModel.evtFilteringDone.addListener(statusListener);
     tableModel.evtTableDataChanged.addListener(statusListener);
 
     tableModel.getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
@@ -314,11 +314,11 @@ public class EntityTablePanel extends JPanel {
       }
     });
 
-    tableModel.evtMinSelectionIndexChanged.addListener(new ActionListener() {
+    tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (!tableModel.stSelectionEmpty.isActive())
           entityTable.scrollRectToVisible(entityTable.getCellRect(
-                  tableModel.getMinSelectionIndex(), entityTable.getSelectedColumn(), true));
+                  tableModel.getSelectedIndex(), entityTable.getSelectedColumn(), true));
       }
     });
 

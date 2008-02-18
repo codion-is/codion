@@ -123,32 +123,29 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   private static final String DIV_UP = "divUp";
   private static final String DIV_DOWN = "divDown";
 
-  private EntityModel model;
-  private EntityTablePanel entityTablePanel;
-
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
-
-  private JPanel editPanel;
-  private JSplitPane leftRightSplitPane;
-  private JTabbedPane detailTabPane;
-  private Map<EntityPanelInfo, EntityPanel> detailEntityPanels;
-  private JPanel compactBase;
-
-  private JComponent defaultFocusComponent;
-
-  private JDialog detailDialog;
-  private JDialog editDialog;
-
-  private int editPanelState = HIDDEN;
-  private int detailPanelState = HIDDEN;
 
   private final boolean allowQueryConfiguration;
   private final boolean compactPanel;
-  private boolean usePreferredSize = false;
-  private final String buttonPlacement;
-
   private final boolean specialRendering;
   private final boolean refreshOnInit;
+  private final String buttonPlacement;
+
+  private EntityModel model;
+  private EntityTablePanel entityTablePanel;
+
+  private JPanel editPanel;
+  private JSplitPane horizontalSplitPane;
+  private Map<EntityPanelInfo, EntityPanel> detailEntityPanels;
+  private JTabbedPane detailTabPane;
+  private JPanel compactBase;
+  private JDialog detailDialog;
+  private JDialog editDialog;
+
+  private JComponent defaultFocusComponent;
+
+  private int editPanelState = HIDDEN;
+  private int detailPanelState = HIDDEN;
 
   private boolean initialized = false;
 
@@ -259,16 +256,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       }
       this.editPanel = initializeEditPanel();
       this.entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
-      this.leftRightSplitPane = this.detailEntityPanels.size() > 0 ? initializeLeftRightSplitPane() : null;
+      this.horizontalSplitPane = this.detailEntityPanels.size() > 0 ? initializeLeftRightSplitPane() : null;
       this.detailTabPane = this.detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
 
       bindTableModelEvents();
       bindTablePanelEvents();
 
-      if (compactPanel)
-        initializeCompactUI();
-      else
-        initializeDefaultUI();
+      initializeUI();
 
       setDetailPanelState(detailPanelState);
       setEditPanelState(EMBEDDED);
@@ -303,16 +297,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
     return this.defaultFocusComponent = defaultFocusComponent;
-  }
-
-  /** {@inheritDoc} */
-  public void setPreferredSize(Dimension preferredSize) {
-    this.usePreferredSize = true;
-    super.setPreferredSize(preferredSize);
-  }
-
-  public boolean usePreferredSize() {
-    return this.usePreferredSize;
   }
 
   /**
@@ -385,9 +369,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       disposeDetailDialog();
 
     if (state == EMBEDDED)
-      leftRightSplitPane.setRightComponent(detailTabPane);
+      horizontalSplitPane.setRightComponent(detailTabPane);
     else if (state == HIDDEN)
-      leftRightSplitPane.setRightComponent(null);
+      horizontalSplitPane.setRightComponent(null);
     else
       showDetailDialog();
 
@@ -453,18 +437,18 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         setEditPanelState(EMBEDDED);
         break;
       case RIGHT :
-        int newPos = leftRightSplitPane.getDividerLocation() + DIVIDER_JUMP;
-        if (newPos <= leftRightSplitPane.getMaximumDividerLocation())
-          leftRightSplitPane.setDividerLocation(newPos);
+        int newPos = horizontalSplitPane.getDividerLocation() + DIVIDER_JUMP;
+        if (newPos <= horizontalSplitPane.getMaximumDividerLocation())
+          horizontalSplitPane.setDividerLocation(newPos);
         else
-          leftRightSplitPane.setDividerLocation(leftRightSplitPane.getMaximumDividerLocation());
+          horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
         break;
       case LEFT :
-        newPos = leftRightSplitPane.getDividerLocation() - DIVIDER_JUMP;
+        newPos = horizontalSplitPane.getDividerLocation() - DIVIDER_JUMP;
         if (newPos >= 0)
-          leftRightSplitPane.setDividerLocation(newPos);
+          horizontalSplitPane.setDividerLocation(newPos);
         else
-          leftRightSplitPane.setDividerLocation(0);
+          horizontalSplitPane.setDividerLocation(0);
         break;
     }
   }
@@ -874,38 +858,22 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   // Begin - initialization methods
   //#############################################################################################
 
-  protected void initializeDefaultUI() {
+  protected void initializeUI() {
     setLayout(new BorderLayout(5,5));
     if (detailTabPane == null) { //no left right split pane
-      if (editPanel == null)
-        add(entityTablePanel, BorderLayout.CENTER);
-      else
-        add(entityTablePanel, BorderLayout.CENTER);
+      add(entityTablePanel, BorderLayout.CENTER);
     }
     else {
-      leftRightSplitPane.setLeftComponent(entityTablePanel);
-      leftRightSplitPane.setRightComponent(detailTabPane);
-      if (editPanel != null)
-        add(leftRightSplitPane, BorderLayout.CENTER);
-      else
-        add(leftRightSplitPane, BorderLayout.CENTER);
-    }
-  }
-
-  protected void initializeCompactUI() {
-    setLayout(new BorderLayout(5,5));
-    if (detailTabPane == null) { //no left right split pane
-      if (editPanel == null)
-        add(entityTablePanel, BorderLayout.CENTER);
-      else
-        add(entityTablePanel, BorderLayout.CENTER);
-    }
-    else {
-      compactBase = new JPanel(new BorderLayout(5,5));
-      compactBase.add(entityTablePanel, BorderLayout.CENTER);
-      leftRightSplitPane.setLeftComponent(compactBase);
-      leftRightSplitPane.setRightComponent(detailTabPane);
-      add(leftRightSplitPane, BorderLayout.CENTER);
+      if (compactPanel) {
+        compactBase = new JPanel(new BorderLayout(5,5));
+        compactBase.add(entityTablePanel, BorderLayout.CENTER);
+        horizontalSplitPane.setLeftComponent(compactBase);
+      }
+      else {
+        horizontalSplitPane.setLeftComponent(entityTablePanel);
+      }
+      horizontalSplitPane.setRightComponent(detailTabPane);
+      add(horizontalSplitPane, BorderLayout.CENTER);
     }
   }
 
@@ -1248,7 +1216,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (entities == null || entities.size() == 0)
       return false;
 
-    final String[] msgs = getConfirmationStrings(CONFIRM_TYPE_DELETE);
+    final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_DELETE);
     final int res = JOptionPane.showConfirmDialog(EntityPanel.this,
             msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
 
@@ -1259,14 +1227,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (object == null)
       return false;
 
-    final String[] msgs = getConfirmationStrings(CONFIRM_TYPE_UPDATE);
+    final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
     final int res = JOptionPane.showConfirmDialog(EntityPanel.this,
             msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
 
-  protected String[] getConfirmationStrings(final int type) {
+  protected String[] getConfirmationMessages(final int type) {
     switch (type) {
       case CONFIRM_TYPE_DELETE :
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
