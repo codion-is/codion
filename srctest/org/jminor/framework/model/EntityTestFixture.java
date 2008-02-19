@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @deprecated Use org.jminor.framework.db.EntityTestUnit instaed
+ */
 public abstract class EntityTestFixture {
 
   private final IEntityDb db;
@@ -45,7 +48,7 @@ public abstract class EntityTestFixture {
     return db;
   }
 
-  public Map<? extends String, ? extends Entity> initializeReferenceEntities(final String entityID) throws Exception {
+  public Map<String, Entity> initializeReferenceEntities(final String entityID) throws Exception {
     final Set<String> referencedEntityIDs = new HashSet<String>();
     addAllReferenceIDs(entityID, referencedEntityIDs);
 
@@ -62,13 +65,13 @@ public abstract class EntityTestFixture {
 
   protected abstract void loadDomainModel();
 
-  protected Entity initialize(final Entity ret) throws Exception {
+  protected Entity initialize(final Entity entity) throws Exception {
     final IEntityDb db = dbProvider.getEntityDb();
-    final List<Entity> entities = db.selectMany(Arrays.asList(ret.getPrimaryKey()));
+    final List<Entity> entities = db.selectMany(Arrays.asList(entity.getPrimaryKey()));
     if (entities.size() > 0)
       return entities.get(0);
 
-    return db.selectSingle(db.insert(Arrays.asList(ret)).get(0));
+    return db.selectSingle(db.insert(Arrays.asList(entity)).get(0));
   }
 
   protected abstract HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception;

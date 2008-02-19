@@ -3,9 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.DbException;
-
 import junit.framework.TestCase;
+import org.jminor.common.db.DbException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +12,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * @deprecated Use org.jminor.framework.db.EntityTestUnit instaed
+ */
 public abstract class EntityTestUnit extends TestCase {
 
   protected final EntityTestFixture fixture;
