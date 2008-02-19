@@ -54,6 +54,7 @@ public class Messages {
   public static final String USER_UNABLE_TO_CONNECT_ERROR = "user_cannot_connect";
   public static final String VALUE_TOO_LARGE_FOR_COLUMN_ERROR = "value_too_large_for_column_error";
   public static final String VIEW_HAS_ERRORS_ERROR = "view_has_errors_error";
+  public static final String DATABASE_EXCEPTION = "database_exception";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

@@ -772,7 +772,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
     for (final AbstractSearchModel filter : propertyFilterModels) {
-      if (filter.getColumnName().equals(propertyID))
+      if (filter.getPropertyName().equals(propertyID))
         return (PropertyFilterModel) filter;
     }
 

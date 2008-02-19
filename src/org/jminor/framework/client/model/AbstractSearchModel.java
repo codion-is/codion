@@ -8,6 +8,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
 import java.sql.Timestamp;
@@ -26,33 +27,41 @@ public abstract class AbstractSearchModel {
   public final Event evtLowerBoundChanged = new Event("AbstractSearchModel.evtLowerBoundChanged");
   public final Event evtSearchTypeChanged = new Event("AbstractSearchModel.evtSearchTypeChanged");
   public final Event evtSearchStateChanged = new Event("AbstractSearchModel.evtSearchStateChanged");
-  public final Event evtSearchModelCleared = new Event("AbstractSearchModel.evtCleared");
+  public final Event evtSearchModelCleared = new Event("AbstractSearchModel.evtSearchModelCleared");
 
   public final State stSearchEnabled = new State("AbstractSearchModel.stSearchEnabled");
   public final State stAutomaticWildcardOn = new State("AbstractSearchModel.stAutomaticWildcardOn");
 
+  private final Property property;
+
+  private SearchType searchType = SearchType.LIKE;
   private Object upperBound = null;
   private Object lowerBound = null;
-  private SearchType searchType = SearchType.LIKE;
 
-  public AbstractSearchModel() {
+  public AbstractSearchModel(final Property property) {
+    this.property = property;
     bindEvents();
   }
 
-  /**
-   * @return Value for property 'columnType'.
-   */
-  public abstract Type getColumnType();
+  public Property getProperty() {
+    return property;
+  }
 
-  /**
-   * @return Value for property 'columnName'.
-   */
-  public abstract String getColumnName();
+  public Type getPropertyType() {
+    return property.getPropertyType();
+  }
 
-  /**
-   * @return Value for property 'caption'.
-   */
-  public abstract String getCaption();
+  public String getPropertyName() {
+    return property.propertyID;
+  }
+
+  public String getCaption() {
+    return property.getCaption();
+  }
+
+  public String toString() {
+    return getProperty().toString();
+  }
 
   /**
    * @param object the object
@@ -123,7 +132,7 @@ public abstract class AbstractSearchModel {
    * @return Value for property 'upperBound'.
    */
   public Object getUpperBound() {
-    if (getColumnType() == Type.STRING && stAutomaticWildcardOn.isActive())
+    if (getPropertyType() == Type.STRING && stAutomaticWildcardOn.isActive())
       return FrameworkConstants.WILDCARD + this.upperBound + FrameworkConstants.WILDCARD;
     else
       return this.upperBound;
@@ -192,7 +201,7 @@ public abstract class AbstractSearchModel {
    * @return Value for property 'lowerBound'.
    */
   public Object getLowerBound() {
-    if (getColumnType() == Type.STRING && stAutomaticWildcardOn.isActive())
+    if (getPropertyType() == Type.STRING && stAutomaticWildcardOn.isActive())
       return FrameworkConstants.WILDCARD + this.lowerBound + FrameworkConstants.WILDCARD;
     else
       return this.lowerBound;

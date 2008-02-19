@@ -24,33 +24,53 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   public final Event evtRefreshDone = new Event("EntityComboBoxModel.evtRefreshDone");
 
-  private boolean forceRefresh = false;
-  private final TableStatus tableStatus = new TableStatus();
-
   private final String entityID;
   private final IEntityDbProvider dbProvider;
+  private final boolean staticData;
+  private final TableStatus tableStatus = new TableStatus();
 
-  //if true prevents refreshing from db
-  private boolean staticData = false;
   private boolean dataInitialized = false;
+  private boolean forceRefresh = false;
 
+  /**
+   * @param dbProvider a IEntityDbProvider instance
+   * @param entityID the ID of the entity this combo box model should represent
+   */
   public EntityComboBoxModel(final IEntityDbProvider dbProvider, final String entityID) {
     this(dbProvider, entityID, false);
   }
 
+  /**
+   * @param dbProvider a IEntityDbProvider instance
+   * @param entityID the ID of the entity this combo box model should represent
+   * @param staticData if true this combo box model is refreshed only on initialization
+   */
   public EntityComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
                              final boolean staticData) {
     this(dbProvider, entityID, staticData, null);
   }
 
+  /**
+   * @param dbProvider a IEntityDbProvider instance
+   * @param entityID the ID of the entity this combo box model should represent
+   * @param staticData if true this combo box model is refreshed only on initialization
+   * @param nullValueItem the item to used to represent a null value
+   */
   public EntityComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
-                             final boolean staticData, final String firstItem) {
-    this(dbProvider, entityID, staticData, firstItem, true);
+                             final boolean staticData, final String nullValueItem) {
+    this(dbProvider, entityID, staticData, nullValueItem, true);
   }
 
+  /**
+   * @param dbProvider a IEntityDbProvider instance
+   * @param entityID the ID of the entity this combo box model should represent
+   * @param staticData if true this combo box model is refreshed only on initialization
+   * @param nullValueItem the item to used to represent a null value
+   * @param sortContents if true, the contents are sorted
+   */
   public EntityComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
-                             final boolean staticData, final String firstItem, final boolean sortContents) {
-    super(sortContents, firstItem);
+                             final boolean staticData, final String nullValueItem, final boolean sortContents) {
+    super(sortContents, nullValueItem);
     this.staticData = staticData;
     this.dbProvider = dbProvider;
     this.entityID = entityID;

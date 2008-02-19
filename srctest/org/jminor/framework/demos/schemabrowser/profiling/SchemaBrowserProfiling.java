@@ -39,7 +39,7 @@ public class SchemaBrowserProfiling extends Profiling {
 
   /** {@inheritDoc} */
   protected void performWork(EntityApplicationModel applicationModel) {
-    final EntityModel schemaModel = applicationModel.getMainApplicationModels().values().iterator().next();
+    final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
     try {
       schemaModel.getTableModel().forceRefresh();
       selectRandomRow(schemaModel);
@@ -55,7 +55,7 @@ public class SchemaBrowserProfiling extends Profiling {
   protected EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException {
     final EntityApplicationModel ret =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
-    final EntityModel schemaModel = ret.getMainApplicationModels().values().iterator().next();
+    final EntityModel schemaModel = ret.getMainApplicationModels().iterator().next();
     schemaModel.setLinkedDetailModel(schemaModel.getDetailModels().get(0));
     final EntityModel dbObjectModel = schemaModel.getDetailModels().get(0);
     dbObjectModel.setLinkedDetailModel(dbObjectModel.getDetailModels().get(0));

@@ -3,6 +3,11 @@
  */
 package org.jminor.framework.server;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
+import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbException;
@@ -10,7 +15,6 @@ import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
-import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
@@ -24,11 +28,6 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
@@ -598,7 +597,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       connectionPools.get(user).checkInConnection(connection);
   }
 
-  private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, UserException, UserAccessException {
+  private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, UserException, AuthenticationException {
     if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()){
       final EntityDbConnection ret = connectionPools.get(user).checkOutConnection(repository, settings);
       if (ret != null) {

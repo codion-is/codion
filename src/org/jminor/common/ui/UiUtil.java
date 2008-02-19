@@ -4,8 +4,8 @@
 package org.jminor.common.ui;
 
 import com.toedter.calendar.JCalendar;
+import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.User;
-import org.jminor.common.db.UserAccessException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
@@ -209,11 +209,11 @@ public class UiUtil {
   public static void bindColumnSizesAndPanelSizes(final JTable table, final List<JPanel> pnlColumns) {
     table.addComponentListener(new ComponentAdapter() {
       public void componentShown(ComponentEvent e) {
-        syncSearchPanelSize(table, pnlColumns);
+        syncColumnPanelSizes(table, pnlColumns);
       }
 
       public void componentResized(ComponentEvent e) {
-        syncSearchPanelSize(table, pnlColumns);
+        syncColumnPanelSizes(table, pnlColumns);
       }
     });
 
@@ -222,13 +222,13 @@ public class UiUtil {
       cm.getColumn(i).addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getPropertyName().equals("width"))
-            syncSearchPanelSize(table, pnlColumns);
+            syncColumnPanelSizes(table, pnlColumns);
         }
       });
     }
   }
 
-  private static void syncSearchPanelSize(final JTable table, final List<JPanel> pnlColumns) {
+  private static void syncColumnPanelSizes(final JTable table, final List<JPanel> pnlColumns) {
     final TableColumnModel cm = table.getColumnModel();
     for (int i = 0; i < cm.getColumnCount(); i++)
       syncColumnSize(cm.getColumn(i), pnlColumns.get(i));
@@ -410,10 +410,10 @@ public class UiUtil {
     if (throwable instanceof UserCancelException)
       return;
 
-    if (throwable instanceof UserException && throwable.getCause() instanceof UserAccessException)
+    if (throwable instanceof UserException && throwable.getCause() instanceof AuthenticationException)
       handleException(throwable.getCause(), dialogParent);
     else {
-      if (!(throwable instanceof UserAccessException))
+      if (!(throwable instanceof AuthenticationException))
         throwable.printStackTrace();
       ExceptionDialog.showExceptionDialog(getParentWindow(dialogParent),
               Messages.get(Messages.EXCEPTION), throwable.getMessage(), throwable);

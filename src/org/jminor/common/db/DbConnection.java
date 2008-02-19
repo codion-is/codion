@@ -24,7 +24,7 @@ import java.util.TimerTask;
 /**
  * A JDBC layer database connection class
  */
-public abstract class DbConnection {
+public class DbConnection {
 
   private static final Logger log = Util.getLogger(DbConnection.class);
 
@@ -62,10 +62,10 @@ public abstract class DbConnection {
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
    * @param user the user for the db-connection
-   * @throws UserAccessException in case the user does not have access to the database
+   * @throws AuthenticationException in case the user does not have access to the database
    * @throws ClassNotFoundException in case the database driver was not found
    */
-  public DbConnection(final User user) throws ClassNotFoundException, UserAccessException {
+  public DbConnection(final User user) throws ClassNotFoundException, AuthenticationException {
     this.connectionUser = user;
     if (user.getUsername() == null)
       throw new IllegalArgumentException("Username must be provided");
@@ -374,7 +374,7 @@ public abstract class DbConnection {
     return connection;
   }
 
-  private void revalidate() throws UserAccessException, ClassNotFoundException {
+  private void revalidate() throws AuthenticationException, ClassNotFoundException {
     try {
       if (connection != null) {
         log.info("Revalidating connection: " + connectionUser.getUsername());
@@ -394,10 +394,10 @@ public abstract class DbConnection {
       connected = true;
     }
     catch (SQLException e) {
-      throw new UserAccessException(connectionInfo.getProperty("user"), e);
+      throw new AuthenticationException(connectionInfo.getProperty("user"), e);
     }
     catch (Exception e) {
-      throw new UserAccessException(connectionInfo.getProperty("user"));
+      throw new AuthenticationException(connectionInfo.getProperty("user"));
     }
   }
 

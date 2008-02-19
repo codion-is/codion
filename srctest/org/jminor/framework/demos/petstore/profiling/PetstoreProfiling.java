@@ -35,7 +35,7 @@ public class PetstoreProfiling extends Profiling {
   /** {@inheritDoc} */
   protected void performWork(final EntityApplicationModel applicationModel) {
     try {
-      final EntityModel categoryModel = applicationModel.getMainApplicationModels().values().iterator().next();
+      final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
       categoryModel.getTableModel().clearSelection();
       categoryModel.forceRefresh();
       selectRandomRow(categoryModel);
@@ -51,7 +51,7 @@ public class PetstoreProfiling extends Profiling {
   protected EntityApplicationModel initializeApplicationModel() throws UserException {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
-    final EntityModel categoryModel = applicationModel.getMainApplicationModels().values().iterator().next();
+    final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
     categoryModel.setLinkedDetailModel(categoryModel.getDetailModels().get(0));
     final EntityModel productModel = categoryModel.getDetailModels().get(0);
     productModel.setLinkedDetailModel(productModel.getDetailModels().get(0));

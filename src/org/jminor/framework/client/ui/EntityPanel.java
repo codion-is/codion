@@ -1601,7 +1601,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   private void navigate(final int direction, final DefaultTreeModel applicationTreeModel) {
     final EntityModel active = getActiveModel();
     if (active == null) //fallback on default if no active panel found
-      activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
+      activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().iterator().next());
     else {
       switch(direction) {
         case UP:
@@ -1611,7 +1611,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
           if (active.getDetailModels().size() > 0 && active.getLinkedDetailModels().size() > 0)
             activateModel(active.getLinkedDetailModel());
           else
-            activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().values().iterator().next());
+            activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().iterator().next());
           break;
         case LEFT:
           if (!activateModel(getLeftSibling(active, applicationTreeModel))) //wrap around

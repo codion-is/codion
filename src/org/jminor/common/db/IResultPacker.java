@@ -19,5 +19,5 @@ public interface IResultPacker<T> extends Serializable {
    * @return a List containing the data from the query result
    * @throws SQLException thrown if anyhing goes wrong during the execution
    */
-  public List<? extends T> pack(final ResultSet resultSet) throws SQLException;
+  public List<T> pack(final ResultSet resultSet) throws SQLException;
 }

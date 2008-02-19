@@ -22,8 +22,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
 
   public final Event evtSelectionChanged = new Event("FilteredComboBoxModel.evtSelectionChanged");
 
-  private final Vector<Object> visibleItems = new Vector<Object>();
-  private final Vector<Object> filteredItems = new Vector<Object>();
+  private final List<Object> visibleItems = new ArrayList<Object>();
+  private final List<Object> filteredItems = new ArrayList<Object>();
 
   private final Object nullValueItem;
   private Object selectedItem;
@@ -31,15 +31,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   private IFilterCriteria filterCriteria;
   private boolean sortContents = false;
 
-  private final Comparator<Object> sortComparator = new Comparator<Object>() {
-    @SuppressWarnings({"unchecked"})
-    public int compare(final Object objectOne, final Object objectTwo) {
-      if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
-        return ((Comparable) objectOne).compareTo(objectTwo);
-      else
-        return objectOne.toString().compareTo(objectTwo.toString());
-    }
-  };
+  private final Comparator<? super Object> sortComparator;
 
   private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
@@ -49,9 +41,23 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   }
 
   public FilteredComboBoxModel(final boolean sortContents, final Object nullValueItem) {
+    this(sortContents, nullValueItem, new Comparator<Object>() {
+      @SuppressWarnings({"unchecked"})
+      public int compare(final Object objectOne, final Object objectTwo) {
+        if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
+          return ((Comparable) objectOne).compareTo(objectTwo);
+        else
+          return objectOne.toString().compareTo(objectTwo.toString());
+      }
+    });
+  }
+
+  public FilteredComboBoxModel(final boolean sortContents, final Object nullValueItem,
+                               final Comparator<? super Object> sortComparator) {
     this.sortContents = sortContents;
     this.nullValueItem = nullValueItem;
     this.selectedItem = nullValueItem != null ? nullValueItem : null;
+    this.sortComparator = sortComparator;
   }
 
   public boolean isSortContents() {
@@ -90,7 +96,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
     if (sortContents)
       Collections.sort(visibleItems, sortComparator);
     if (nullValueItem != null)
-      visibleItems.insertElementAt(nullValueItem, 0);
+      visibleItems.add(0, nullValueItem);
 
     fireContentsChanged();
   }
@@ -186,11 +192,11 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
     return ret;
   }
 
-  protected Vector<Object> getFilteredItems() {
+  protected List<Object> getFilteredItems() {
     return filteredItems;
   }
 
-  protected Vector<Object> getVisibleItems() {
+  protected List<Object> getVisibleItems() {
     return visibleItems;
   }
 }

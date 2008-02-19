@@ -7,12 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-   * A set of ICriteria objects
+ * A set of ICriteria objects
  */
 public class CriteriaSet implements ICriteria {
 
   public enum Conjunction {
-    AND, OR
+    AND, OR;
+
+    public String toString() {
+      switch (this) {
+        case AND:
+          return " and ";
+        case OR:
+          return " or ";
+        default:
+          throw new IllegalArgumentException("Unknown CriteriaSet.Conjunction enum");
+      }
+    }
   }
 
   final Conjunction conjunction;
@@ -50,7 +61,7 @@ public class CriteriaSet implements ICriteria {
     for (final ICriteria criteria : criterias) {
       ret.append(criteria.toString());
       if (i++ < criterias.size()-1)
-        ret.append(conjunction == Conjunction.AND ? " and " : " or ");
+        ret.append(conjunction.toString());
     }
 
     return ret.append(criterias.size() > 1 ? ")" : "").toString();

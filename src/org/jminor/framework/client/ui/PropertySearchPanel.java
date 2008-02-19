@@ -70,17 +70,17 @@ public class PropertySearchPanel extends AbstractSearchPanel {
 
   /** {@inheritDoc} */
   protected boolean searchTypeAllowed(final SearchType searchType) {
-    return !(((PropertySearchModel)model).getProperty() instanceof Property.EntityProperty || model.getColumnType() == Type.BOOLEAN)
+    return !(((PropertySearchModel)model).getProperty() instanceof Property.EntityProperty || model.getPropertyType() == Type.BOOLEAN)
             || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
 
   protected JComponent getInputField(final boolean isUpperBound) {
     JComponent field;
-    switch (model.getColumnType()) {
+    switch (model.getPropertyType()) {
       case LONG_DATE:
       case SHORT_DATE:
         final AbstractDateMaskFormat format =
-                model.getColumnType() == Type.LONG_DATE ? new LongDateFormat() : new ShortDashDateFormat();
+                model.getPropertyType() == Type.LONG_DATE ? new LongDateFormat() : new ShortDashDateFormat();
         field = UiUtil.createFormattedField(format.getDateMask());
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
@@ -115,7 +115,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 LinkType.READ_WRITE, null);
         break;
       case ENTITY:
-        field = initEntityField(((PropertySearchModel) model).getProperty());
+        field = initEntityField(model.getProperty());
         break;
       default: {
         field = new JTextField();

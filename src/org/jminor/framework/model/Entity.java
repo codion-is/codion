@@ -204,7 +204,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public Object getValue(final String propertyID) {
-    return getValue(repository.getProperty(primaryKey.entityID, propertyID));
+    return getValue(getProperty(propertyID));
   }
 
   public final Entity getEntityValue(final String propertyID) {
@@ -243,6 +243,10 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   public final String getValueAsUserString(final String propertyID) {
     return repository.getEntityProxy(primaryKey.entityID).getValueAsUserString(this,
             repository.getProperty(primaryKey.entityID, propertyID));
+  }
+
+  public Object getTableValue(final String propertyId) {
+    return getTableValue(getProperty(propertyId));
   }
 
   public Object getTableValue(final Property property) {

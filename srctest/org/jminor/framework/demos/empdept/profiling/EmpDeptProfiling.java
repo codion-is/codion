@@ -41,7 +41,7 @@ public class EmpDeptProfiling extends Profiling {
 
   /** {@inheritDoc} */
   protected void performWork(final EntityApplicationModel applicationModel) {
-    final EntityModel model = applicationModel.getMainApplicationModels().values().iterator().next();
+    final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     try {
       model.getTableModel().setSelectedItemIndexes(new int[0]);
       model.forceRefresh();
@@ -57,7 +57,7 @@ public class EmpDeptProfiling extends Profiling {
     final EntityApplicationModel applicationModel =
             new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
 
-    final EntityModel model = applicationModel.getMainApplicationModels().values().iterator().next();
+    final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     model.setLinkedDetailModel(model.getDetailModels().get(0));
 
     return applicationModel;

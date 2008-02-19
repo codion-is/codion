@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.User;
-import org.jminor.common.db.UserAccessException;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.IPopupProvider;
@@ -243,7 +243,7 @@ public class MonitorPanel extends JPanel {
     }
   }
 
-  private static void authenticate(final User user) throws UserAccessException, ClassNotFoundException {
+  private static void authenticate(final User user) throws AuthenticationException, ClassNotFoundException {
     DbConnection db = null;
     try {
       db = new DbConnection(user) {

@@ -86,10 +86,8 @@ public class DoubleField extends IntField {
         valueOk = ((lVal <= getMax()) && (lVal >= getMin()));
       }
 
-      if (valueOk) {
+      if (valueOk)
         super.insertString(offset, string, a);
-        valueUpdated();
-      }
     }
   }
 }

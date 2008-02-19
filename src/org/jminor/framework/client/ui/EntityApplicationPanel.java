@@ -436,7 +436,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
     for (final EntityPanel.EntityPanelInfo info : entityPanels) {
       try {
-        final EntityModel entityModel = model.getMainApplicationModels().get(info.getEntityModelClass().getName());
+        final EntityModel entityModel = model.getMainApplicationModel(info.getEntityModelClass());
         final EntityPanel entityPanel = info.getInstance(entityModel);
         mainApplicationPanels.add(entityPanel);
         if (entityPanels.size() > 1) {

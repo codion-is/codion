@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
@@ -104,8 +105,7 @@ public class ExceptionDialog extends JDialog {
     setModal(modal);
     setTitle(title);
 
-    String name = throwable.getClass().getName();
-    name = translateExceptionClassname(name.substring(name.lastIndexOf(".") + 1));
+    final String name = translateExceptionClass(throwable.getClass());
     descriptionLabel.setText(message == null ? name : message);
 
     exceptionField.setText(name);
@@ -127,11 +127,11 @@ public class ExceptionDialog extends JDialog {
     setVisible(true);
   }
 
-  private String translateExceptionClassname(final String name) {
-    if (name.equals("DbException"))
-      return "Gagnagrunnsvilla";
+  private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
+    if (exceptionClass.equals(DbException.class))
+      return Messages.get(Messages.DATABASE_EXCEPTION);
 
-    return name;
+    return exceptionClass.getSimpleName();
   }
 
   public void close() {

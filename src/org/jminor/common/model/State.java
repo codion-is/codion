@@ -125,7 +125,7 @@ public class State implements Serializable {
   /**
    * @return Value for property 'reversedState'.
    */
-  public synchronized State getReversedState() {
+  public State getReversedState() {
     if (reversedState == null)
       reversedState = new ReverseState(this);
 

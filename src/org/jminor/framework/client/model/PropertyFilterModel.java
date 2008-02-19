@@ -16,27 +16,11 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unchecked"})
 public class PropertyFilterModel extends AbstractSearchModel {
 
-  private final Property property;
   private final int columnIndex;
 
   public PropertyFilterModel(final Property property, final int columnIndex) {
-    this.property = property;
+    super(property);
     this.columnIndex = columnIndex;
-  }
-
-  /** {@inheritDoc} */
-  public Type getColumnType() {
-    return property.getPropertyType();
-  }
-
-  /** {@inheritDoc} */
-  public String getColumnName() {
-    return property.propertyID;
-  }
-
-  /** {@inheritDoc} */
-  public String getCaption() {
-    return property.getCaption();
   }
 
   /**
@@ -116,11 +100,6 @@ public class PropertyFilterModel extends AbstractSearchModel {
       evtUpperBoundChanged.fire();
   }
 
-  /** {@inheritDoc} */
-  public String toString() {
-    return property.toString();
-  }
-
   protected boolean acceptExact(final Comparable comparable) {
     if (getUpperBound() == null)
       return true;
@@ -141,7 +120,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
     if (comparable == null)
       return false;
 
-    if (getColumnType() == Type.STRING || getColumnType() == Type.ENTITY)
+    if (getPropertyType() == Type.STRING || getPropertyType() == Type.ENTITY)
       return !acceptExactWildcard((String) comparable, true);
 
     return comparable.compareTo(getUpperBound()) != 0;
@@ -219,10 +198,10 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
   protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getColumnName()))
+    if (entity.isValueNull(getPropertyName()))
       return null;
 
-    final Object value = entity.getValue(getColumnName());
+    final Object value = entity.getValue(getPropertyName());
     if (value instanceof Entity)
       return value.toString();
     else

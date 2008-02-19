@@ -98,9 +98,6 @@ public class TextFieldPlus extends JTextField {
     return (int) max;
   }
 
-  public void valueUpdated() {
-  }
-
   /** {@inheritDoc} */
   public void setText(final String string) {
     super.setText(string == null ? "" : string);
@@ -113,11 +110,11 @@ public class TextFieldPlus extends JTextField {
 
   private class defaultDocument extends PlainDocument {
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-      if (getMaxLength() >= 0 && getLength() >= getMaxLength()) return;
+      if (getMaxLength() >= 0 && getLength() >= getMaxLength())
+        return;
       if (upperCase)
         string = string.toUpperCase();
       super.insertString(offset, string, a);
-      valueUpdated();
     }
   }
 }

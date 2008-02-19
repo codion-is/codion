@@ -101,7 +101,6 @@ public class Event implements ActionListener, Serializable {
 
   private void removeScheduled() {
     if (scheduledForRemoval != null && scheduledForRemoval.size() > 0) {
-      Util.printListContents(scheduledForRemoval);
       listeners.removeAll(scheduledForRemoval);
       scheduledForRemoval.clear();
     }

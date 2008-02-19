@@ -69,3 +69,4 @@
   Renamed a couple events and methods in EntityTableModel
   Removed EntityPanel.usePreferredSize property
   Some restructuring/reordering/refactoring in EntityPanel, EntityTablePanel and EntityApplicationPanel
+  Some more refactoring/restructuring/renaming

@@ -9,10 +9,11 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class EntityApplicationModel {
@@ -21,7 +22,7 @@ public abstract class EntityApplicationModel {
   public final Event evtCascadeRefreshChanged = new Event("EntityApplicationModel.evtCascadeRefreshChanged");
 
   private final IEntityDbProvider dbProvider;
-  private final HashMap<String, EntityModel> mainApplicationModels;
+  private final List<EntityModel> mainApplicationModels;
   private final DefaultTreeModel applicationTreeModel;
 
   private static EntityApplicationModel entityApplicationModel;
@@ -36,7 +37,7 @@ public abstract class EntityApplicationModel {
       loadDbModel();
       mainApplicationModels = initMainApplicationModels();
 
-      applicationTreeModel = FrameworkModelUtil.createApplicationTree(mainApplicationModels.values());
+      applicationTreeModel = createApplicationTree(mainApplicationModels);
       bindEvents();
       entityApplicationModel = this;
     }
@@ -82,7 +83,7 @@ public abstract class EntityApplicationModel {
   /**
    * @return Value for property 'mainApplicationModels'.
    */
-  public HashMap<String, EntityModel> getMainApplicationModels() {
+  public List<EntityModel> getMainApplicationModels() {
     return mainApplicationModels;
   }
 
@@ -90,9 +91,7 @@ public abstract class EntityApplicationModel {
    * @return Value for property 'cascadeRefresh'.
    */
   public boolean isCascadeRefresh() {
-    final Collection<EntityModel> models = mainApplicationModels.values();
-
-    return models.size() > 0 && models.iterator().next().getCascadeRefresh();
+    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().getCascadeRefresh();
   }
 
   /**
@@ -100,9 +99,8 @@ public abstract class EntityApplicationModel {
    * @param value the new value
    */
   public void setCascadeRefresh(final boolean value) {
-    final Collection<EntityModel> models = mainApplicationModels.values();
-    if (models.size() > 0 && isCascadeRefresh() != value) {
-      for (final EntityModel mainApplicationModel : models)
+    if (mainApplicationModels.size() > 0 && isCascadeRefresh() != value) {
+      for (final EntityModel mainApplicationModel : mainApplicationModels)
         mainApplicationModel.setCascadeRefresh(value);
 
       evtCascadeRefreshChanged.fire();
@@ -113,9 +111,7 @@ public abstract class EntityApplicationModel {
    * @return Value for property 'selectionFiltersDetail'.
    */
   public boolean isSelectionFiltersDetail() {
-    final Collection<EntityModel> models = mainApplicationModels.values();
-
-    return models.size() > 0 && models.iterator().next().getSelectionFiltersDetail();
+    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().getSelectionFiltersDetail();
   }
 
   /**
@@ -123,9 +119,8 @@ public abstract class EntityApplicationModel {
    * @param value the new value
    */
   public void setSelectionFiltersDetail(boolean value) {
-    final Collection<EntityModel> models = mainApplicationModels.values();
-    if (models.size() > 0 && isSelectionFiltersDetail() != value) {
-      for (final EntityModel mainApplicationModel : models)
+    if (mainApplicationModels.size() > 0 && isSelectionFiltersDetail() != value) {
+      for (final EntityModel mainApplicationModel : mainApplicationModels)
         mainApplicationModel.setSelectionFiltersDetail(value);
 
       evtSelectionFiltersDetailChanged.fire();
@@ -144,12 +139,32 @@ public abstract class EntityApplicationModel {
   }
 
   public void refreshAll(final boolean forceRefresh) throws UserException {
-    for (final EntityModel mainApplicationModel : mainApplicationModels.values()) {
+    for (final EntityModel mainApplicationModel : mainApplicationModels) {
       if (forceRefresh)
         mainApplicationModel.forceRefresh();
       else
         mainApplicationModel.refresh();
     }
+  }
+
+  /**
+   * @return Value for property 'applicationModel'.
+   */
+  public static EntityApplicationModel getApplicationModel() {
+    return entityApplicationModel;
+  }
+
+  public static String createClientKey(final String reference, final User user) {
+    return (reference != null ? (reference + " - ") : "")
+            + "[" + user.getUsername() + "] " + Long.toHexString(System.currentTimeMillis());
+  }
+
+  public EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass) {
+    for (final EntityModel model : mainApplicationModels)
+      if (model.getClass().equals(modelClass))
+        return model;
+
+    return null;
   }
 
   protected abstract void loadDbModel();
@@ -160,16 +175,15 @@ public abstract class EntityApplicationModel {
    */
   protected abstract List<Class<? extends EntityModel>> getRootEntityModelClasses()throws UserException;
 
-  protected HashMap<String, EntityModel> initMainApplicationModels() throws UserException {
+  protected List<EntityModel> initMainApplicationModels() throws UserException {
     return initMainApplicationModels(getRootEntityModelClasses());
   }
 
-  protected HashMap<String, EntityModel> initMainApplicationModels(final List<Class<? extends EntityModel>> mainModelClasses) throws UserException {
+  protected List<EntityModel> initMainApplicationModels(final List<Class<? extends EntityModel>> mainModelClasses) throws UserException {
     try {
-      final HashMap<String, EntityModel> ret = new HashMap<String, EntityModel>(mainModelClasses.size());
+      final List<EntityModel> ret = new ArrayList<EntityModel>(mainModelClasses.size());
       for (Class<? extends EntityModel> mainModelClass : mainModelClasses)
-        ret.put(mainModelClass.getName(),
-                mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbConnectionProvider()));
+        ret.add(mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbConnectionProvider()));
 
       return ret;
     }
@@ -184,17 +198,21 @@ public abstract class EntityApplicationModel {
     }
   }
 
-  /**
-   * @return Value for property 'applicationModel'.
-   */
-  public static EntityApplicationModel getApplicationModel() {
-    return entityApplicationModel;
-  }
-
   protected void bindEvents() {}
 
-  public static String createClientKey(final String reference, final User user) {
-    return (reference != null ? (reference + " - ") : "")
-            + "[" + user.getUsername() + "] " + Long.toHexString(System.currentTimeMillis());
+  private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityModel> entityModels) {
+    final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+    addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityModels);
+
+    return applicationTreeModel;
+  }
+
+  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends EntityModel> models) {
+    for (final EntityModel model : models) {
+      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(model);
+      root.add(node);
+      if (model.getDetailModels().size() > 0)
+        addModelsToTree(node, model.getDetailModels());
+    }
   }
 }

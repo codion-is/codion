@@ -83,17 +83,21 @@ public abstract class AbstractPropertyLink extends Control {
 
   /**
    * @param value Value to set for property.
-   * @throws org.jminor.common.model.UserException in case of an error
    */
   public abstract void setPropertyValue(final Object value);
 
   /**
    * @return Value the property value.
-   * @throws org.jminor.common.model.UserException in case of an error
    */
   public abstract Object getPropertyValue();
 
+  /**
+   * Update the UI according to the model state
+   */
   protected abstract void updateUI();
 
+  /**
+   * Update the property according to the UI state
+   */
   protected abstract void updateProperty();
 }

@@ -78,11 +78,11 @@ public abstract class AbstractSearchPanel extends JPanel {
       this.model = model;
       this.includeToggleSearchEnabledBtn = includeActivateBtn;
       this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
-      this.upperBooleanComboBoxModel = model.getColumnType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
-      this.lowerBooleanComboBoxModel = model.getColumnType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
+      this.upperBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
+      this.lowerBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
       this.searchTypeCombo = initSearchTypeComboBox();
       this.upperField = getInputField(true);
-      this.lowerField = isLowerFieldRequired(model.getColumnType()) ? getInputField(false) : null;
+      this.lowerField = isLowerFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
 
       this.toggleSearchEnabled = ControlProvider.createToggleButton(
               ControlFactory.toggleControl(model, "searchEnabled", null, model.stSearchEnabled.evtStateChanged));

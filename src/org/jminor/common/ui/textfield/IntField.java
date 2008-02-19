@@ -63,10 +63,8 @@ public class IntField extends TextFieldPlus {
         valueOk = ((lVal <= getMax()) && (lVal >= getMin()));
       }
 
-      if (valueOk) {
+      if (valueOk)
         super.insertString(offset, string, a);
-        valueUpdated();
-      }
     }
   }
 

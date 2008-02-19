@@ -8,7 +8,6 @@ import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
-import org.jminor.framework.model.Type;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import java.util.Collection;
 
 public class PropertySearchModel extends AbstractSearchModel {
 
-  private final Property property;
   private final EntityComboBoxModel entityComboBoxModel;
 
   private boolean updatingModel = false;
@@ -28,28 +26,9 @@ public class PropertySearchModel extends AbstractSearchModel {
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public PropertySearchModel(final Property property, final EntityComboBoxModel entityComboBoxModel) {
-    this.property = property;
+    super(property);
     this.entityComboBoxModel = entityComboBoxModel;
     bindComboBoxEvents();
-  }
-
-  public Property getProperty() {
-    return property;
-  }
-
-  /** {@inheritDoc} */
-  public Type getColumnType() {
-    return property.getPropertyType();
-  }
-
-  /** {@inheritDoc} */
-  public String getColumnName() {
-    return property.propertyID;
-  }
-
-  /** {@inheritDoc} */
-  public String getCaption() {
-    return property.getCaption();
   }
 
   /** {@inheritDoc} */
@@ -72,7 +51,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   public long hashCode(final boolean includeSearchState) {
-    long ret = property.hashCode();
+    long ret = getProperty().hashCode();
     if (includeSearchState) {
       ret += getSearchType().hashCode();
       ret += stSearchEnabled.isActive() ? 1 : 0;
@@ -101,14 +80,9 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   public PropertyCriteria getPropertyCriteria() {
     if (getValueCount(getSearchType()) == 1)
-      return new PropertyCriteria(property, getSearchType(), getUpperBound());
+      return new PropertyCriteria(getProperty(), getSearchType(), getUpperBound());
     else
-      return new PropertyCriteria(property, getSearchType(), getLowerBound(), getUpperBound());
-  }
-
-  /** {@inheritDoc} */
-  public String toString() {
-    return property.toString();
+      return new PropertyCriteria(getProperty(), getSearchType(), getLowerBound(), getUpperBound());
   }
 
   private long getHashCode(Object obj) {

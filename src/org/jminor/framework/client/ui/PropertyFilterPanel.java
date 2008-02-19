@@ -149,10 +149,10 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   protected JComponent getInputField(final boolean isUpperBound) {
     JComponent field;
-    switch (model.getColumnType()) {
+    switch (model.getPropertyType()) {
       case LONG_DATE:
       case SHORT_DATE:
-        field = createDateChooserField(isUpperBound, model.getColumnType() == Type.LONG_DATE);
+        field = createDateChooserField(isUpperBound, model.getPropertyType() == Type.LONG_DATE);
         break;
       case DOUBLE:
         createTextProperty(field = new DoubleField(4), isUpperBound);
@@ -309,7 +309,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   protected TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
-    switch(model.getColumnType()) {
+    switch(model.getPropertyType()) {
       case INT :
         return new IntBeanPropertyLink((IntField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
@@ -337,7 +337,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, model.getColumnType() == Type.SHORT_DATE
+                LinkType.READ_WRITE, model.getPropertyType() == Type.SHORT_DATE
                 ? new ShortDotDateFormat() : new LongDateFormat(), null);
       default :
         return new TextBeanPropertyLink((JTextField) component, model,

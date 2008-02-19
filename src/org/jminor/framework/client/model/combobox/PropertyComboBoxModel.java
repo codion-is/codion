@@ -16,6 +16,12 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
   private final String entityID;
   private final Property property;
 
+  /**
+   * @param dbProvider a IEntityDbProvider instance
+   * @param entityID the ID of the underlying entity
+   * @param property the underlying property
+   * @param nullValue the value to use to represent a null value
+   */
   public PropertyComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
                                final Property property, final Object nullValue) {
     super(true, nullValue);

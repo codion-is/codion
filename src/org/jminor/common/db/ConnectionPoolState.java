@@ -16,16 +16,16 @@ public class ConnectionPoolState implements Serializable, Comparable<ConnectionP
   public int connectionCount;
   public int inUse;
 
-  public ConnectionPoolState(final long time, final int count, final int inUse) {
+  public ConnectionPoolState(final long time, final int connectionCount, final int connectionsInUse) {
     this.time = time;
-    this.connectionCount = count;
-    this.inUse = inUse;
+    this.connectionCount = connectionCount;
+    this.inUse = connectionsInUse;
   }
 
-  public void set(final long time, final int size, final int inUse) {
+  public void set(final long time, final int connectionCount, final int connectionsInUse) {
     this.time = time;
-    this.connectionCount = size;
-    this.inUse = inUse;
+    this.connectionCount = connectionCount;
+    this.inUse = connectionsInUse;
   }
 
   public int compareTo(final ConnectionPoolState poolState) {

@@ -48,7 +48,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
 
   public String toString() {
     final StringBuffer ret = new StringBuffer();
-    if (done) {//tvær línur
+    if (done) {
       ret.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
       ret.append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
