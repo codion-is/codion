@@ -18,7 +18,6 @@ import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -51,10 +50,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
-  private final State stCheckDependenciesOnDelete = new State("EntityDbConnection.stCheckDependenciesOnDelete");
   private final Map<String, Map<EntityKey, Entity>> entityCache = new HashMap<String, Map<EntityKey, Entity>>();
   private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
 
+  private boolean checkDependenciesOnDelete = false;
   private boolean entityCacheEnabled = false;
   private FrameworkSettings settings = FrameworkSettings.get();
 
@@ -123,12 +122,12 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   /** {@inheritDoc} */
   public void setCheckDependencies(final boolean checkDependencies) {
-    stCheckDependenciesOnDelete.setActive(checkDependencies);
+    checkDependenciesOnDelete = checkDependencies;
   }
 
   /** {@inheritDoc} */
   public boolean getCheckDependencies() {
-    return stCheckDependenciesOnDelete.isActive();
+    return checkDependenciesOnDelete;
   }
 
   /**

@@ -5,19 +5,21 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.db.EntityTestUnit;
 import org.jminor.framework.model.Entity;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class TestEmpDeptModel extends EntityTestUnit {
 
-  protected List<String> getTestEntityIDs() {
-    return Arrays.asList(EmpDept.T_DEPARTMENT, EmpDept.T_EMPLOYEE);
+  public void testDepartment() throws Exception {
+    testEntity(EmpDept.T_DEPARTMENT);
   }
 
-  public User getTestUser() throws UserCancelException {
+  public void testEmployee() throws Exception {
+    testEntity(EmpDept.T_EMPLOYEE);
+  }
+
+  protected User getTestUser() throws UserCancelException {
     return new User("scott", "tiger");
   }
 
