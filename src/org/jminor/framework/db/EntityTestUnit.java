@@ -1,6 +1,5 @@
 package org.jminor.framework.db;
 
-import junit.framework.TestCase;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
@@ -11,6 +10,8 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
+
+import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +67,7 @@ public abstract class EntityTestUnit extends TestCase {
               addAllReferencedEntityIDs(entityID, new HashSet<String>())));
       final Entity initialEntity = initializeTestEntity(entityID);
       if (initialEntity == null)
-        throw new Exception("No test entity of type provided " + entityID);
+        throw new Exception("No test entity of provided " + entityID);
 
       final Entity testEntity = doInsertTest(initialEntity);
       doSelectTest(testEntity);
@@ -82,8 +83,6 @@ public abstract class EntityTestUnit extends TestCase {
   protected Entity doInsertTest(final Entity testEntity) throws Exception {
     try {
       final List<EntityKey> keys = getDbConnection().insert(Arrays.asList(testEntity));
-      for (final Property.PrimaryKeyProperty primaryKeyProperty : testEntity.getPrimaryKey().getProperties())
-        testEntity.setValue(primaryKeyProperty, keys.get(0).getValue(primaryKeyProperty.propertyID), false);
       try {
         return getDbConnection().selectSingle(keys.get(0));
       }
