@@ -1,17 +1,18 @@
-package org.jminor.framework.db;
+package org.jminor.framework.testing;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.db.EntityDbProviderFactory;
+import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
-
-import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.Collection;
