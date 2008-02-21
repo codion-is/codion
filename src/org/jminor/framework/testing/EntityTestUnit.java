@@ -68,12 +68,12 @@ public abstract class EntityTestUnit extends TestCase {
               addAllReferencedEntityIDs(entityID, new HashSet<String>())));
       final Entity initialEntity = initializeTestEntity(entityID);
       if (initialEntity == null)
-        throw new Exception("No test entity of provided " + entityID);
+        throw new Exception("No test entity provided " + entityID);
 
-      final Entity testEntity = doInsertTest(initialEntity);
-      doSelectTest(testEntity);
-      doUpdateTest(testEntity);
-      doDeleteTest(testEntity);
+      final Entity testEntity = testInsert(initialEntity);
+      testSelect(testEntity);
+      testUpdate(testEntity);
+      testDelete(testEntity);
     }
     finally {
       referencedEntities.clear();
@@ -81,7 +81,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
   }
 
-  protected Entity doInsertTest(final Entity testEntity) throws Exception {
+  protected Entity testInsert(final Entity testEntity) throws Exception {
     try {
       final List<EntityKey> keys = getDbConnection().insert(Arrays.asList(testEntity));
       try {
@@ -98,22 +98,15 @@ public abstract class EntityTestUnit extends TestCase {
     }
   }
 
-  protected void doSelectTest(final Entity testEntity) throws Exception {
+  protected void testSelect(final Entity testEntity) throws Exception {
     try {
       final Entity etmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
       assertTrue("Entity of type " + testEntity.getEntityID() + " failed select comparison",
               testEntity.propertyValuesEqual(etmp));
 
-      List<Entity> allEntities = getDbConnection().selectAll(testEntity.getEntityID());
+      final List<Entity> allEntities = getDbConnection().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
       boolean found = false;
-      for (Entity entity : allEntities) {
-        if (testEntity.getPrimaryKey().equals(entity.getPrimaryKey()))
-          found = true;
-      }
-      assertTrue("Entity of type " + testEntity.getEntityID() + " was not found when selecting all", found);
-      allEntities = getDbConnection().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
-      found = false;
-      for (Entity entity : allEntities) {
+      for (final Entity entity : allEntities) {
         if (testEntity.getPrimaryKey().equals(entity.getPrimaryKey()))
           found = true;
       }
@@ -125,7 +118,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
   }
 
-  protected void doUpdateTest(final Entity testEntity) throws Exception {
+  protected void testUpdate(final Entity testEntity) throws Exception {
     try {
       modifyEntity(testEntity);
       if (!testEntity.isModified())
@@ -143,7 +136,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
   }
 
-  protected void doDeleteTest(final Entity testEntity) throws Exception {
+  protected void testDelete(final Entity testEntity) throws Exception {
     try {
       getDbConnection().delete(Arrays.asList(testEntity));
 

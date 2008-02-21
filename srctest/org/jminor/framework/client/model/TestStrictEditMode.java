@@ -1,5 +1,6 @@
 package org.jminor.framework.client.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.framework.FrameworkSettings;
@@ -8,8 +9,6 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.EntityKey;
-
-import junit.framework.TestCase;
 
 public class TestStrictEditMode extends TestCase {
 
@@ -36,9 +35,10 @@ public class TestStrictEditMode extends TestCase {
     model.getDbConnectionProvider().getEntityDb().logout();
   }
 
-  public void testStrictEditModel() throws Exception {
+  public void testStrictEditMode() throws Exception {
     if (Database.isMySQL())
-      return;
+      return;//MySQL does not have the NOWAIT option, without which this test simply hangs
+
     model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));
     model.refresh();
