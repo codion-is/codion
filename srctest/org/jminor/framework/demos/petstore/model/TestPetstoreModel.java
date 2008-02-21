@@ -3,18 +3,13 @@
  */
 package org.jminor.framework.demos.petstore.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityTestFixture;
-
-import junit.framework.TestCase;
-
-import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * User: Björn Darri
@@ -28,17 +23,13 @@ public class TestPetstoreModel extends TestCase {
   static {
     FrameworkSettings.get().useQueryRange = false;
     FrameworkSettings.get().useSmartRefresh = false;
-    db = new EntityTestFixture() {
-      public User getTestUser() throws UserCancelException {
-        return new User("scott", "tiger");
-      }
-      protected void loadDomainModel() {
-        new Petstore();
-      }
-      public HashMap<String, Entity> initializeReferenceEntities(Collection<String> entityIDs) throws Exception {
-        return null;
-      }
-    }.getDbConnection();
+    try {
+      new Petstore();
+      db = EntityDbProviderFactory.createEntityDbProvider(new User("scott", "tiger"), "TestPetstoreModel").getEntityDb();
+    }
+    catch (UserException e) {
+      e.printStackTrace();
+    }
   }
 
   public TestPetstoreModel(String name) {

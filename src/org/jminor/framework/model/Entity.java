@@ -460,7 +460,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return true if the value of the given property is null
    */
   public final boolean isValueNull(final String propertyID) {
-    return isValueNull(getProperty(propertyID).propertyType, getValue(propertyID));
+    return isValueNull(getProperty(propertyID).propertyType, getRawValue(propertyID));
   }
 
   /** {@inheritDoc} */

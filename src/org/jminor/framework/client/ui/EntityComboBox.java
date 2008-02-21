@@ -154,7 +154,7 @@ public class EntityComboBox extends SteppedComboBox {
   private void addRefreshPopupMenu() {
     getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
       public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger()) {
+        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {//for linux :|
           if (popupMenu == null)
             popupMenu = initializePopupMenu();
           popupMenu.show(getEditor().getEditorComponent(), e.getX(), e.getY());
