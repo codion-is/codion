@@ -24,11 +24,11 @@ public class PetstoreProfiling extends Profiling {
 
   /** Constructs a new PetstoreProfiling.*/
   public PetstoreProfiling() {
-    super(new User("darri", "nonlocal"));
+    super(new User("scott", "tiger"));
   }
 
   /** {@inheritDoc} */
-  protected void loadDbModel() {
+  protected void loadDomainModel() {
     new Petstore();
   }
 

@@ -23,7 +23,7 @@ import javax.swing.UIManager;
  */
 public class SchemaBrowserProfiling extends Profiling {
 
-  private static final User user = new User("james", "devine");
+  private static final User user = new User("scott", "tiger");
 
   /** Constructs a new SchemaBrowserProfiling.
    * @param user the user to use for database access during profiling
@@ -33,7 +33,7 @@ public class SchemaBrowserProfiling extends Profiling {
   }
 
   /** {@inheritDoc} */
-  protected void loadDbModel() {
+  protected void loadDomainModel() {
     new SchemaBrowser();
   }
 

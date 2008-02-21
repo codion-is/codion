@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.apache.log4j.Level;
-import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
@@ -39,6 +38,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     FrameworkSettings.get().useQueryRange = false;
     FrameworkSettings.get().usernamePrefix = "";
     startApplication("Schema Browser", SchemaBrowserAppPanel.class, SchemaBrowserAppModel.class,
-            null, false, UiUtil.getSize(0.5), new User("darri", "nonlocal"));
+            null, false, UiUtil.getSize(0.5));
   }
 }

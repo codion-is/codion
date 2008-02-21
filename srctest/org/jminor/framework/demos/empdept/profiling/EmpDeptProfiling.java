@@ -35,7 +35,7 @@ public class EmpDeptProfiling extends Profiling {
   }
 
   /** {@inheritDoc} */
-  protected void loadDbModel() {
+  protected void loadDomainModel() {
     new EmpDept();
   }
 

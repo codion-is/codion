@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.profiling;
 
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IntArray;
@@ -12,9 +14,6 @@ import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +55,7 @@ public abstract class Profiling {
   private final XYSeries workRequestsSeries = new XYSeries("Work requests per second");
   private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed requests per second");
   private final XYSeriesCollection workRequestsCollection = new XYSeriesCollection();
-  
+
   private final XYSeries minimumThinkTimeSeries = new XYSeries("Minimum think time");
   private final XYSeries maximumThinkTimeSeries = new XYSeries("Maximum think time");
   private final XYSeriesCollection thinkTimeCollection = new XYSeriesCollection();
@@ -82,7 +81,7 @@ public abstract class Profiling {
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfClientsCollection.addSeries(numberOfClientsSeries);
-    loadDbModel();
+    loadDomainModel();
     new Timer(true).schedule(new TimerTask() {
       public void run() {
         updateRequestsPerSecond();
@@ -220,7 +219,7 @@ public abstract class Profiling {
     evtMinimumThinkTimeChanged.fire();
   }
 
-  protected abstract void loadDbModel();
+  protected abstract void loadDomainModel();
 
   protected abstract void performWork(EntityApplicationModel applicationModel);
 

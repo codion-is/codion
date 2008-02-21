@@ -70,3 +70,4 @@
   Removed EntityPanel.usePreferredSize property
   Some restructuring/reordering/refactoring in EntityPanel, EntityTablePanel and EntityApplicationPanel
   Some more refactoring/restructuring/renaming
+  Replaced the old EntityTestUnit and EntityTestFixture with org.jminor.framework.testing.EntityTestUnit
