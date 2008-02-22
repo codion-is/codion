@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.profiling.ui;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
@@ -15,12 +19,7 @@ import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.profiling.Profiling;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
+import org.jminor.framework.profiling.ProfilingModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -38,7 +37,7 @@ import java.awt.event.WindowEvent;
 
 public class ProfilingPanel extends JPanel {
 
-  private final Profiling model;
+  private final ProfilingModel model;
   private final LoginPanel userPanel;
 
   private final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
@@ -55,12 +54,12 @@ public class ProfilingPanel extends JPanel {
 
   JFrame frame;
 
-  /** Constructs a new Profiling.
-   * @param profiling the profiling model
+  /** Constructs a new ProfilingPanel.
+   * @param profilingModel the profiling model
    */
-  public ProfilingPanel(final Profiling profiling) {
-    this.model = profiling;
-    this.userPanel = new LoginPanel(profiling.getUser(), true, "Username", "Password");
+  public ProfilingPanel(final ProfilingModel profilingModel) {
+    this.model = profilingModel;
+    this.userPanel = new LoginPanel(model.getUser(), true, "Username", "Password");
     this.workRequestsChart.getXYPlot().setDataset(model.getWorkRequestsDataset());
     this.workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     this.thinkTimeChart.getXYPlot().setDataset(model.getThinkTimeDataset());

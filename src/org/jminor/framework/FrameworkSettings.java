@@ -31,6 +31,7 @@ public class FrameworkSettings implements Serializable {
   public String usernamePrefix = "ops$";
   public boolean transferTextFieldFocusOnEnter = true;
   public boolean strictEditing = false;
+  public int tooltipDelay = 500;
 
   private final static FrameworkSettings instance = new FrameworkSettings();
 

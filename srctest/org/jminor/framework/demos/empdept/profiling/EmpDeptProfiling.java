@@ -12,7 +12,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.profiling.Profiling;
+import org.jminor.framework.profiling.ProfilingModel;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
 import org.jminor.framework.server.EntityDbRemoteProvider;
 
@@ -27,7 +27,7 @@ import java.util.Date;
  * Time: 03:33:10
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class EmpDeptProfiling extends Profiling {
+public class EmpDeptProfiling extends ProfilingModel {
 
   /** Constructs a new EmpDeptProfiling.*/
   public EmpDeptProfiling() {

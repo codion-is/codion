@@ -23,20 +23,22 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class Profiling {
+public abstract class ProfilingModel {
 
-  public final Event evtPauseChanged = new Event("Profiling.evtPauseChanged");
-  public final Event evtRelentlessChanged = new Event("Profiling.evtRelentlessChanged");
-  public final Event evtMaximumThinkTimeChanged = new Event("Profiling.evtDelayChanged");
-  public final Event evtMinimumThinkTimeChanged = new Event("Profiling.evtMinDelayChanged");
-  public final Event evtWarningTimeChanged = new Event("Profiling.evtWarningTimeChanged");
-  public final Event evtClientCountChanged = new Event("Profiling.evtClientCountChanged");
-  public final Event evtBatchSizeChanged = new Event("Profiling.evtBatchSizeChanged");
-  public final Event evtDoneExiting = new Event("Profiling.evtDoneExiting");
+  public final Event evtPauseChanged = new Event("ProfilingModel.evtPauseChanged");
+  public final Event evtRelentlessChanged = new Event("ProfilingModel.evtRelentlessChanged");
+  public final Event evtMaximumThinkTimeChanged = new Event("ProfilingModel.evtDelayChanged");
+  public final Event evtMinimumThinkTimeChanged = new Event("ProfilingModel.evtMinDelayChanged");
+  public final Event evtWarningTimeChanged = new Event("ProfilingModel.evtWarningTimeChanged");
+  public final Event evtClientCountChanged = new Event("ProfilingModel.evtClientCountChanged");
+  public final Event evtBatchSizeChanged = new Event("ProfilingModel.evtBatchSizeChanged");
+  public final Event evtDoneExiting = new Event("ProfilingModel.evtDoneExiting");
+
+  protected static final Random random = new Random();
 
   private int maximumThinkTime =
           Integer.parseInt(System.getProperty(FrameworkConstants.PROFILING_THINKTIME_PROPERTY, "20000"));
-  private int minimumThinkTime = maximumThinkTime /2;
+  private int minimumThinkTime = maximumThinkTime/2;
   private int loginWaitFactor =
           Integer.parseInt(System.getProperty(FrameworkConstants.PROFILING_LOGIN_WAIT_PROPERTY, "2"));
   private int batchSize =
@@ -44,8 +46,6 @@ public abstract class Profiling {
 
   private boolean pause = false;
   private boolean stopped = false;
-
-  protected static final Random random = new Random();
 
   private final List<EntityApplicationModel> activeClients = Collections.synchronizedList(new ArrayList<EntityApplicationModel>(0));
   private User user;
@@ -71,10 +71,10 @@ public abstract class Profiling {
 
   private int warningTime = 200;
 
-  /** Constructs a new Profiling.
+  /** Constructs a new ProfilingModel.
    * @param user the user to use for the profiling
    */
-  public Profiling(final User user) {
+  public ProfilingModel(final User user) {
     this.user = user;
     workRequestsCollection.addSeries(workRequestsSeries);
     workRequestsCollection.addSeries(delayedWorkRequestsSeries);
@@ -221,7 +221,7 @@ public abstract class Profiling {
 
   protected abstract void loadDomainModel();
 
-  protected abstract void performWork(EntityApplicationModel applicationModel);
+  protected abstract void performWork(final EntityApplicationModel applicationModel);
 
   protected abstract EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException;
 

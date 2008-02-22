@@ -49,10 +49,6 @@ public abstract class EntityApplicationModel {
     }
   }
 
-  public static EntityApplicationModel getMainEntityApplicationModel() {
-    return entityApplicationModel;
-  }
-
   /**
    * @return Value for property 'user'.
    * @throws org.jminor.common.model.UserException in case of an exception

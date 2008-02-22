@@ -81,17 +81,17 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
     switch (getSearchType()) {
       case LIKE:
-        return acceptExact(realComp);
+        return includeExact(realComp);
       case NOT_LIKE:
-        return acceptNotExact(realComp);
+        return includeNotExact(realComp);
       case MAX:
-        return acceptMax(realComp);
+        return includeMax(realComp);
       case MIN:
-        return acceptMin(realComp);
+        return includeMin(realComp);
       case INSIDE:
-        return acceptMinMaxInside(realComp);
+        return includeMinMaxInside(realComp);
       case OUTSIDE:
-        return acceptMinMaxOutside(realComp);
+        return includeMinMaxOutside(realComp);
     }
 
     throw new RuntimeException("Undefined search type: " + getSearchType());
@@ -110,7 +110,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       evtUpperBoundChanged.fire();
   }
 
-  protected boolean acceptExact(final Comparable comparable) {
+  protected boolean includeExact(final Comparable comparable) {
     if (getUpperBound() == null)
       return true;
 
@@ -118,12 +118,12 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return false;
 
     if (comparable instanceof String) //for Entity and String values
-        return acceptExactWildcard((String) comparable, true);
+        return includeExactWildcard((String) comparable, true);
 
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
-  protected boolean acceptNotExact(final Comparable comparable) {
+  protected boolean includeNotExact(final Comparable comparable) {
     if (getUpperBound() == null)
       return true;
 
@@ -131,12 +131,12 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return false;
 
     if (getPropertyType() == Type.STRING || getPropertyType() == Type.ENTITY)
-      return !acceptExactWildcard((String) comparable, true);
+      return !includeExactWildcard((String) comparable, true);
 
     return comparable.compareTo(getUpperBound()) != 0;
   }
 
-  protected boolean acceptExactWildcard(final String value, final boolean caseSensitive) {
+  protected boolean includeExactWildcard(final String value, final boolean caseSensitive) {
     String upperBound = (String) getUpperBound();
     if (upperBound.equals(FrameworkConstants.WILDCARD))
       return true;
@@ -160,15 +160,15 @@ public class PropertyFilterModel extends AbstractSearchModel {
     return string.replaceAll(FrameworkConstants.WILDCARD, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
-  protected boolean acceptMax(final Comparable comparable) {
+  protected boolean includeMax(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
-  protected boolean acceptMin(final Comparable comparable) {
+  protected boolean includeMin(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
   }
 
-  protected boolean acceptMinMaxInside(final Comparable comparable) {
+  protected boolean includeMinMaxInside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null)
       return true;
 
@@ -187,7 +187,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  protected boolean acceptMinMaxOutside(final Comparable comparable) {
+  protected boolean includeMinMaxOutside(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null)
       return true;
 

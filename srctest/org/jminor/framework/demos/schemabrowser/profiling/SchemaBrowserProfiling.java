@@ -10,7 +10,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
-import org.jminor.framework.profiling.Profiling;
+import org.jminor.framework.profiling.ProfilingModel;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
 import org.jminor.framework.server.EntityDbRemoteProvider;
 
@@ -21,7 +21,7 @@ import javax.swing.UIManager;
  * Date: 30.11.2007
  * Time: 04:00:43
  */
-public class SchemaBrowserProfiling extends Profiling {
+public class SchemaBrowserProfiling extends ProfilingModel {
 
   private static final User user = new User("scott", "tiger");
 

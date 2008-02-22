@@ -67,22 +67,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   private final Event evtSelectedEntityPanelChanged = new Event("EntityApplicationPanel.evtSelectedEntityPanelChanged");
   private final Event evtAlwaysOnTopChanged = new Event("EntityApplicationPanel.evtAlwaysOnTopChanged");
 
-  private static EntityApplicationPanel applicationPanel;
-
-  static {
-    ToolTipManager.sharedInstance().setInitialDelay(500);
-  }
-
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
-    if (applicationPanel != null)
-      throw new IllegalStateException("EntityApplicationPanel has already been initialized, only one per application please");
     initializeSettings();
-    applicationPanel = this;
-  }
-
-  public static EntityApplicationPanel getApplicationPanel() {
-    return applicationPanel;
+    ToolTipManager.sharedInstance().setInitialDelay(FrameworkSettings.get().tooltipDelay);
   }
 
   public EntityApplicationPanel(final EntityApplicationModel model) throws UserCancelException {
@@ -552,8 +540,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (!retry)
           System.exit(0);
-        else
-          EntityApplicationPanel.applicationPanel = null;
       }
     }
 

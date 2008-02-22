@@ -71,4 +71,5 @@
   Some restructuring/reordering/refactoring in EntityPanel, EntityTablePanel and EntityApplicationPanel
   Some more refactoring/restructuring/renaming
   Replaced the old EntityTestUnit and EntityTestFixture with org.jminor.framework.testing.EntityTestUnit
-  ToggleBeanProperty fixed at last
+  ToggleBeanPropertyLink fixed at last
+  Profiling renamed to ProfilingModel

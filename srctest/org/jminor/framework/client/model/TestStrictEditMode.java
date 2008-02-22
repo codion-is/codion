@@ -50,78 +50,60 @@ public class TestStrictEditMode extends TestCase {
     final Object originalValue = model.getValue(EmpDept.DEPARTMENT_LOCATION);
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
-    boolean locked = false;
     try {
       dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      fail("Row should be locked after modification");
     }
-    catch (Exception e) {
-      locked = true;
-    }
+    catch (Exception e) {}
 
-    assertTrue("Row should be locked after modification", locked);
     //revert value to original
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
-    //assert row is not locked, and unlock it please
+    //assert row is not locked, and then unlock it
     try {
       dbProvider.getEntityDb().selectForUpdate(primaryKey);
-      locked = false;
       dbProvider.getEntityDb().endTransaction(true);
     }
     catch (Exception e) {
-      locked = true;
+      fail("Row should not be locked after value has been reverted");
     }
 
-    assertFalse("Row should not be locked after value has been reverted", locked);
     //change value
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
     //assert row is locked
-    locked = false;
     try {
       dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      fail("Row should be locked after modification");
     }
-    catch (Exception e) {
-      locked = true;
-    }
+    catch (Exception e) {}
 
-    assertTrue("Row should be locked after modification", locked);
     //do update
     model.update();
     //assert row is not locked
     try {
       dbProvider.getEntityDb().selectForUpdate(primaryKey);
-      locked = false;
       dbProvider.getEntityDb().endTransaction(true);
     }
     catch (Exception e) {
-      locked = true;
+      fail("Row should not be locked after update");
     }
-
-    assertFalse("Row should not be locked after update", locked);
 
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
-    locked = false;
     try {
       dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      fail("Row should be locked after modification");
     }
-    catch (Exception e) {
-      locked = true;
-    }
-
-    assertTrue("Row should be locked after modification", locked);
+    catch (Exception e) {}
 
     model.getTableModel().setSelectedItemIdx(1);
 
     try {
       dbProvider.getEntityDb().selectForUpdate(primaryKey);
-      locked = false;
       dbProvider.getEntityDb().endTransaction(true);
     }
     catch (Exception e) {
-      locked = true;
+      fail("Row should not be locked after another has been selected");
     }
-
-    assertFalse("Row should not be locked after another has been selected", locked);
 
     //clean up by resetting the value
     model.getTableModel().setSelectedItemIdx(0);
