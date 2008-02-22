@@ -264,13 +264,13 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update" + (Database.isOracle() ? " nowait" : "");
+      sql += " for update" + ((Database.isOracle() || Database.isPostgreSQL()) ? " nowait" : "");
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
       if (result.size() == 0)
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-      if (result.size() > 1) {//this means we got the lock, but for more than one record, better release it right away
-        try {
+      if (result.size() > 1) {
+        try {//this means we got the lock, but for more than one record (shouldn't really happen), better release it right away
           endTransaction(true);
         }
         catch (SQLException e) {/**/}

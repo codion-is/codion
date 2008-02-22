@@ -246,8 +246,7 @@ public class MonitorPanel extends JPanel {
   private static void authenticate(final User user) throws AuthenticationException, ClassNotFoundException {
     DbConnection db = null;
     try {
-      db = new DbConnection(user) {
-      };
+      db = new DbConnection(user);
       System.out.println(user + " is authenticated");
     }
     finally {
