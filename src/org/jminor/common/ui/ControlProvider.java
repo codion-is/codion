@@ -43,13 +43,7 @@ public class ControlProvider {
                                                  final String label, final Event changedEvent, final State enableState) {
     final ToggleBeanPropertyLink propertyLink = new ToggleBeanPropertyLink(owner, property, changedEvent,
             label, LinkType.READ_WRITE, enableState);
-    bindToggleButtonAndPropertyLink(toggleButton, propertyLink, label);
-  }
-
-  public static void bindToggleButtonAndPropertyLink(final JToggleButton toggleButton,
-                                                     final ToggleBeanPropertyLink propertyLink, final String label) {
-    toggleButton.setModel(propertyLink.getButtonModel());
-    toggleButton.setAction(propertyLink);
+    propertyLink.setButton(toggleButton);
     toggleButton.setText(label);
   }
 
@@ -93,7 +87,7 @@ public class ControlProvider {
   public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleBeanPropertyLink propertyLink) {
     try {
       final JCheckBoxMenuItem box = new JCheckBoxMenuItem(propertyLink);
-      box.setModel(propertyLink.getButtonModel());
+      propertyLink.setButton(box);
 
       return box;
     }
@@ -106,7 +100,7 @@ public class ControlProvider {
   public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleBeanPropertyLink propertyLink) {
     try {
       final JRadioButtonMenuItem box = new JRadioButtonMenuItem(propertyLink);
-      box.setModel(propertyLink.getButtonModel());
+      propertyLink.setButton(box);
 
       return box;
     }
@@ -284,7 +278,7 @@ public class ControlProvider {
   public static JCheckBox createCheckBox(final ToggleBeanPropertyLink propertyLink) {
     try {
       final JCheckBox ret = new JCheckBox(propertyLink);
-      ret.setModel(propertyLink.getButtonModel());
+      propertyLink.setButton(ret);
 
       return ret;
     }
@@ -301,7 +295,8 @@ public class ControlProvider {
   public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink, final boolean includeCaption) {
     try {
       final JToggleButton ret = new JToggleButton();
-      bindToggleButtonAndPropertyLink(ret, propertyLink, includeCaption ? propertyLink.getName() : null);
+      propertyLink.setButton(ret);
+      ret.setText(includeCaption ? propertyLink.getName() : null);
 
       return ret;
     }

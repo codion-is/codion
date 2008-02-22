@@ -11,12 +11,12 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.model.formats.ShortDotDateFormat;
+import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.PropertyFilterModel;
@@ -26,14 +26,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,11 +47,11 @@ import java.util.Date;
 
 public class PropertyFilterPanel extends AbstractSearchPanel {
 
-  //filter gui components
-  protected JDialog searchDlg;
-  protected Point lastPosition;
   private final State stIsDialogActive = new State("ColumnSearchPanel.stIsDialogActive");
   private final State stIsDialogShowing = new State("ColumnSearchPanel.stIsDialogShowing");
+
+  private JDialog searchDlg;
+  private Point lastPosition;
 
   public PropertyFilterPanel(final PropertyFilterModel model) {
     this(model, false, false);
@@ -178,7 +176,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     return field;
   }
 
-  protected void initSearchDlg(Container parent) {
+  private void initSearchDlg(Container parent) {
     if (searchDlg != null)
       return;
 
@@ -204,20 +202,6 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         inactivateDialog();
       }
     });
-  }
-
-  protected void refreshFilterPanel(boolean packParent) {
-    if (packParent) {
-      Dialog d = UiUtil.getParentDialog(this);
-      if (d != null)
-        d.pack();
-      else {
-        JFrame f = UiUtil.getParentFrame(this);
-        if (f != null)
-          f.pack();
-      }
-    }
-    revalidate();
   }
 
   private JTextField createDateChooserField(final boolean isUpperBound, final boolean useLongDate) {
@@ -301,14 +285,13 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     return new Date(cal.getTimeInMillis());
   }
 
-  protected void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-    checkBox.setModel(new ToggleBeanPropertyLink(model,
+  private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
+    ControlProvider.bindToggleButtonAndProperty(checkBox, model,
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-            isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-            LinkType.READ_WRITE, null).getButtonModel());
+            null, isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
   }
 
-  protected TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
+  private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
     switch(model.getPropertyType()) {
       case INT :
         return new IntBeanPropertyLink((IntField) component, model,

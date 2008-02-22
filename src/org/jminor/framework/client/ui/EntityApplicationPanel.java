@@ -552,6 +552,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (!retry)
           System.exit(0);
+        else
+          EntityApplicationPanel.applicationPanel = null;
       }
     }
 

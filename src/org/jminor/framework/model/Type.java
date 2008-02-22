@@ -31,5 +31,9 @@ public enum Type implements Serializable {
     public static Boolean get(final java.lang.Boolean aBoolean) {
       return aBoolean == null ? NULL : (aBoolean ? TRUE : FALSE);
     }
+
+    public static java.lang.Boolean get(final Boolean aBoolean) {
+      return aBoolean == TRUE;
+    }
   }
 }

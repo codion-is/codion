@@ -6,14 +6,12 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 
-import javax.swing.ButtonModel;
-import javax.swing.DefaultButtonModel;
-import java.awt.event.ActionEvent;
+import javax.swing.AbstractButton;
 import java.lang.reflect.Method;
 
 public class ToggleBeanPropertyLink extends BeanPropertyLink {
 
-  private final ButtonModel buttonModel;
+  private AbstractButton button;
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName,
                                 final Event propertyChangeEvent, final String text) {
@@ -24,25 +22,12 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
                                 final Event propertyChangeEvent, final String text, final LinkType linkType,
                                 final State enabledState) {
     super(owner, propertyName, boolean.class, propertyChangeEvent, text, linkType, enabledState);
-    this.buttonModel = new DefaultButtonModel() {
-      public boolean isSelected() {
-        final Boolean value = (Boolean) getPropertyValue();
-        return value != null && value;
-      }
-    };
+  }
+
+  public void setButton(final AbstractButton toggleButton) {
+    this.button = toggleButton;
+    this.button.setAction(this);
     refreshUI();
-  }
-
-  /**
-   * @return Value for property 'buttonModel'.
-   */
-  public ButtonModel getButtonModel() {
-    return buttonModel;
-  }
-
-  /** {@inheritDoc} */
-  public void actionPerformed(final ActionEvent e) {
-    setPropertyValue(!(Boolean) getPropertyValue());
   }
 
   /** {@inheritDoc} */
@@ -56,11 +41,13 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected void updateProperty() {}
+  protected void updateProperty() {
+    setPropertyValue(button.isSelected());
+  }
 
   /** {@inheritDoc} */
   protected void updateUI() {
     final Boolean value = (Boolean) getPropertyValue();
-    buttonModel.setPressed(value != null && value);
+    button.setSelected(value != null && value);
   }
 }

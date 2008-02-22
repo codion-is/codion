@@ -22,9 +22,10 @@ public class ControlFactory {
   public static ToggleBeanPropertyLink toggleControl(final Object owner, final String propertyName,
                                                      final String name, final Event changeEvent,
                                                      final String description) {
-    return (ToggleBeanPropertyLink) setControlDesc(
-            new ToggleBeanPropertyLink(owner, propertyName, changeEvent, name,
-                    LinkType.READ_WRITE, null), description);
+    final ToggleBeanPropertyLink link = new ToggleBeanPropertyLink(owner, propertyName, changeEvent, name,
+                    LinkType.READ_WRITE, null);
+
+    return (ToggleBeanPropertyLink) setControlDesc(link, description);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final Icon icon) {
