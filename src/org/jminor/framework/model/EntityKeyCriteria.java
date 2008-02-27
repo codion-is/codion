@@ -29,8 +29,8 @@ public class EntityKeyCriteria implements ICriteria {
   public EntityKeyCriteria(final List<Property> properties, final EntityKey... keys) {
     if (keys == null || keys.length == 0)
       throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
-    if (properties != null && properties.size() != keys[0].getColumnCount())
-      throw new IllegalArgumentException("Reference column count mismatch");
+    if (properties != null && properties.size() != keys[0].getPropertyCount())
+      throw new IllegalArgumentException("Reference property count mismatch");
 
     this.properties = properties;
     this.keys = new ArrayList<EntityKey>(Arrays.asList(keys));
@@ -55,7 +55,7 @@ public class EntityKeyCriteria implements ICriteria {
 
   public String getConditionString() {
     final StringBuffer ret = new StringBuffer();
-    final boolean multiColumnPk = keys.get(0).getColumnCount() > 1;
+    final boolean multiColumnPk = keys.get(0).getPropertyCount() > 1;
     if (multiColumnPk) {
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {

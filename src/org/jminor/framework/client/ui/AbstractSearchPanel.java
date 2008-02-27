@@ -70,8 +70,8 @@ public abstract class AbstractSearchPanel extends JPanel {
   protected final JComponent upperField;
   protected final JComponent lowerField;
 
-  private boolean includeToggleSearchEnabledBtn = false;
-  private boolean includeToggleSearchAdvancedBtn = false;
+  private final boolean includeToggleSearchEnabledBtn;
+  private final boolean includeToggleSearchAdvancedBtn;
 
   public AbstractSearchPanel(final AbstractSearchModel model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
     try {
@@ -137,7 +137,7 @@ public abstract class AbstractSearchPanel extends JPanel {
   }
 
   /**
-   * Binds ModelEvents to relevant GUI actions
+   * Binds events to relevant GUI actions
    */
   protected void bindEvents() {
     stAdvancedSearch.evtStateChanged.addListener(new ActionListener() {

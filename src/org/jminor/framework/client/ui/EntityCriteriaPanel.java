@@ -148,8 +148,8 @@ public class EntityCriteriaPanel extends JPanel {
     final List<PropertySearchModel> searchCriterias = entityModel.getPropertySearchModels();
     Collections.sort(searchCriterias, new Comparator<AbstractSearchModel>() {
       public int compare(final AbstractSearchModel searchModelOne, final AbstractSearchModel searchModelTwo) {
-        final Property propertyOne = ((PropertySearchModel) searchModelOne).getProperty();
-        final Property propertyTwo = ((PropertySearchModel) searchModelTwo).getProperty();
+        final Property propertyOne = searchModelOne.getProperty();
+        final Property propertyTwo = searchModelTwo.getProperty();
         if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null)
           return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
         else

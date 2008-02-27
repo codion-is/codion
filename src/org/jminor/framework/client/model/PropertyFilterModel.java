@@ -75,32 +75,29 @@ public class PropertyFilterModel extends AbstractSearchModel {
     if (!stSearchEnabled.isActive())
       return true;
 
-    Comparable realComp = comparable;
+    Comparable toCompare = comparable;
     if (comparable instanceof Timestamp)//ignore seconds and milliseconds
-      realComp = Util.floorLongDate((Timestamp) realComp);
+      toCompare = Util.floorLongDate((Timestamp) toCompare);
 
     switch (getSearchType()) {
       case LIKE:
-        return includeExact(realComp);
+        return includeExact(toCompare);
       case NOT_LIKE:
-        return includeNotExact(realComp);
+        return includeNotExact(toCompare);
       case MAX:
-        return includeMax(realComp);
+        return includeMax(toCompare);
       case MIN:
-        return includeMin(realComp);
+        return includeMin(toCompare);
       case INSIDE:
-        return includeMinMaxInside(realComp);
+        return includeMinMaxInside(toCompare);
       case OUTSIDE:
-        return includeMinMaxOutside(realComp);
+        return includeMinMaxOutside(toCompare);
     }
 
     throw new RuntimeException("Undefined search type: " + getSearchType());
   }
 
-  /**
-   * @param value Value to set for property 'exactValue'.
-   */
-  public void setExactValue(final Comparable value) {
+  public void setLikeValue(final Comparable value) {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
     final boolean on = value != null;

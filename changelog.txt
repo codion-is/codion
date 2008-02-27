@@ -73,3 +73,4 @@
   Replaced the old EntityTestUnit and EntityTestFixture with org.jminor.framework.testing.EntityTestUnit
   ToggleBeanPropertyLink fixed at last
   Profiling renamed to ProfilingModel
+  Fixed bug in UiUtil.makeUpperCase, null values were not handled correctly

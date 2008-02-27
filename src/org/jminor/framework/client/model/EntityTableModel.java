@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
@@ -31,6 +27,11 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
+import org.apache.log4j.Logger;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -717,7 +718,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     if (filterQueryByMaster)
       setExactSearchValue(entityID, referenceEntities);
     else
-      setExactFilterValue((referenceEntities == null || referenceEntities.size() == 0)
+      setLikeFilterValue((referenceEntities == null || referenceEntities.size() == 0)
               ? null : referenceEntities.get(0).toString(), getColumnIndex(entityID));
   }
 
@@ -756,9 +757,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return getPropertyFilterModel(columnIndex).isSearchEnabled();
   }
 
-  public void setExactFilterValue(final Comparable value, final int columnIndex) {
+  public void setLikeFilterValue(final Comparable value, final int columnIndex) {
     if (columnIndex >= 0)
-      getPropertyFilterModel(columnIndex).setExactValue(value);
+      getPropertyFilterModel(columnIndex).setLikeValue(value);
   }
 
   /**

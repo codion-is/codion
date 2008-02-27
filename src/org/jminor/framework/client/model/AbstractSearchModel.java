@@ -30,11 +30,11 @@ public abstract class AbstractSearchModel {
   public final Event evtSearchModelCleared = new Event("AbstractSearchModel.evtSearchModelCleared");
 
   public final State stSearchEnabled = new State("AbstractSearchModel.stSearchEnabled");
-  public final State stAutomaticWildcardOn = new State("AbstractSearchModel.stAutomaticWildcardOn");
 
   private final Property property;
 
   private SearchType searchType = SearchType.LIKE;
+  private boolean automaticWildcard = false;
   private Object upperBound = null;
   private Object lowerBound = null;
 
@@ -123,7 +123,7 @@ public abstract class AbstractSearchModel {
    */
   public void setUpperBound(final Object upper) {
     if (!Util.equal(upperBound, upper)) {
-      this.upperBound = upper;
+      upperBound = upper;
       evtUpperBoundChanged.fire();
     }
   }
@@ -132,10 +132,10 @@ public abstract class AbstractSearchModel {
    * @return Value for property 'upperBound'.
    */
   public Object getUpperBound() {
-    if (getPropertyType() == Type.STRING && stAutomaticWildcardOn.isActive())
-      return FrameworkConstants.WILDCARD + this.upperBound + FrameworkConstants.WILDCARD;
+    if (getPropertyType() == Type.STRING && automaticWildcard)
+      return FrameworkConstants.WILDCARD + upperBound + FrameworkConstants.WILDCARD;
     else
-      return this.upperBound;
+      return upperBound;
   }
 
   /**
@@ -192,7 +192,7 @@ public abstract class AbstractSearchModel {
    */
   public void setLowerBound(final Object value) {
     if (!Util.equal(lowerBound, value)) {
-      this.lowerBound = value;
+      lowerBound = value;
       evtLowerBoundChanged.fire();
     }
   }
@@ -201,10 +201,10 @@ public abstract class AbstractSearchModel {
    * @return Value for property 'lowerBound'.
    */
   public Object getLowerBound() {
-    if (getPropertyType() == Type.STRING && stAutomaticWildcardOn.isActive())
-      return FrameworkConstants.WILDCARD + this.lowerBound + FrameworkConstants.WILDCARD;
+    if (getPropertyType() == Type.STRING && automaticWildcard)
+      return FrameworkConstants.WILDCARD + lowerBound + FrameworkConstants.WILDCARD;
     else
-      return this.lowerBound;
+      return lowerBound;
   }
 
   /**
@@ -218,8 +218,8 @@ public abstract class AbstractSearchModel {
    * @param type Value to set for property 'searchType'.
    */
   public void setSearchType(final SearchType type) {
-    if (type != this.searchType) {
-      this.searchType = type;
+    if (type != searchType) {
+      searchType = type;
       evtSearchTypeChanged.fire();
     }
   }
@@ -241,8 +241,8 @@ public abstract class AbstractSearchModel {
   /**
    * @param value Value to set for property 'automaticWildcardOn'.
    */
-  public void setAutomaticWildcardOn(final boolean value) {
-    stAutomaticWildcardOn.setActive(value);
+  public void setAutomaticWildcard(final boolean value) {
+    automaticWildcard = value;
   }
 
   public void clear() {
@@ -267,10 +267,6 @@ public abstract class AbstractSearchModel {
     }
 
     throw new IllegalArgumentException("Undefined search type " + searchType);
-  }
-
-  public static boolean containsWildcard(final String value) {
-    return value != null && value.length() > 0 && value.indexOf(FrameworkConstants.WILDCARD) > -1;
   }
 
   protected void bindEvents() {

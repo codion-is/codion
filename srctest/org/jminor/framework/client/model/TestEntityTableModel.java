@@ -3,12 +3,13 @@
  */
 package org.jminor.framework.client.model;
 
-import junit.framework.TestCase;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.ModelTestDomain;
+
+import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +63,7 @@ public class TestEntityTableModel extends TestCase {
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
     //test filters
-    testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).setExactValue("a");
+    testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).setLikeValue("a");
     assertTrue("filter should be enabled", testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).isSearchEnabled());
     assertEquals("4 entities should be filtered", 4, testModel.getFilteredCount());
     assertFalse("Model should not contain all entities",
@@ -74,7 +75,7 @@ public class TestEntityTableModel extends TestCase {
 
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
-    testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).setExactValue("t"); // ekki til
+    testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).setLikeValue("t"); // ekki til
     assertTrue("filter should be enabled", testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).isSearchEnabled());
     assertEquals("all 5 entities should be filtered", 5, testModel.getFilteredCount());
     assertFalse("Model should not contain all entities",
@@ -133,7 +134,7 @@ public class TestEntityTableModel extends TestCase {
     testModel.addSelectedItemIndexes(new int[]{3});
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
 
-    testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).setExactValue("d");
+    testModel.getPropertyFilterModel(ModelTestDomain.STRING_PROP).setLikeValue("d");
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected indexes should fit", new IntArray(new int[]{0}), new IntArray(testModel.getSelectedViewIndexes()));

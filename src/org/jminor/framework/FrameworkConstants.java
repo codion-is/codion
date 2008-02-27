@@ -101,7 +101,7 @@ public class FrameworkConstants {
   /**
    * The class providing local db connections
    */
-  public static final String LOCAL_CONNECTION_PROVIDER = "org.jminor.framework.db.EntityDbProvider";
+  public static final String LOCAL_CONNECTION_PROVIDER = "org.jminor.framework.db.EntityDbLocalProvider";
 
   /**
    * The String used as wildcard in String filters

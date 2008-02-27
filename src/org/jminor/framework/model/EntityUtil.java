@@ -30,7 +30,7 @@ public class EntityUtil {
     for (final Property.PrimaryKeyProperty property : key.properties) {
       ret.append(EntityUtil.getQueryString(property, columnNames != null ? columnNames.get(i) : null,
               EntityUtil.getSQLStringValue(property, key.keyValues.get(property.propertyID))));
-      if (i++ < key.columnCount-1)
+      if (i++ < key.propertyCount -1)
         ret.append(" and ");
     }
 
@@ -288,7 +288,7 @@ public class EntityUtil {
     int i = 0;
     for (final Property.PrimaryKeyProperty property : entity.getPrimaryKey().getProperties()) {
       ret.append(getQueryString(property, null, getSQLStringValue(property, entity.getOriginalValue(property.propertyID))));
-      if (i++ < entity.getPrimaryKey().getColumnCount()-1)
+      if (i++ < entity.getPrimaryKey().getPropertyCount()-1)
         ret.append(" and ");
     }
 

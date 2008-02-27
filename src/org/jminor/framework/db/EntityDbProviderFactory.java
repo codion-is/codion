@@ -34,7 +34,7 @@ public class EntityDbProviderFactory {
    * @see FrameworkConstants#CLIENT_CONNECTION_TYPE
    * @see FrameworkConstants#REMOTE_CONNECTION_PROVIDER
    * @see FrameworkConstants#LOCAL_CONNECTION_PROVIDER
-   * @see EntityDbProvider
+   * @see EntityDbLocalProvider
    * @see org.jminor.framework.server.EntityDbRemoteProvider
    */
   public static IEntityDbProvider createEntityDbProvider(final User user, final String clientKey,

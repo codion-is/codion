@@ -28,9 +28,9 @@ public class EntityKey implements Externalizable {
   Map<String, Object> keyValues;
 
   /**
-   * The number of columns in this this key
+   * The number of properties in this this key
    */
-  int columnCount;
+  int propertyCount;
 
   /**
    * True if this is a single integer key
@@ -64,9 +64,9 @@ public class EntityKey implements Externalizable {
   public EntityKey(final String entityID) {
     this.entityID = entityID;
     this.properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
-    this.columnCount = properties.size();
-    this.isSingleIntegerKey = columnCount == 1 && properties.get(0).propertyType == Type.INT;
-    this.keyValues = new HashMap<String, Object>(columnCount);
+    this.propertyCount = properties.size();
+    this.isSingleIntegerKey = propertyCount == 1 && properties.get(0).propertyType == Type.INT;
+    this.keyValues = new HashMap<String, Object>(propertyCount);
   }
 
   /**
@@ -161,7 +161,7 @@ public class EntityKey implements Externalizable {
     for (final Property.PrimaryKeyProperty property : properties) {
       ret.append(property.propertyID).append("=");
       ret.append(getValue(property.propertyID));
-      if (i++ < columnCount-1)
+      if (i++ < propertyCount -1)
         ret.append(", ");
     }
 
@@ -179,10 +179,10 @@ public class EntityKey implements Externalizable {
   }
 
   /**
-   * @return the number of columns comprising this key
+   * @return the number of properties comprising this key
    */
-  public int getColumnCount() {
-    return columnCount;
+  public int getPropertyCount() {
+    return propertyCount;
   }
 
   /**
@@ -247,7 +247,7 @@ public class EntityKey implements Externalizable {
   public void writeExternal(final ObjectOutput out) throws IOException {
     out.writeObject(entityID);
     out.writeObject(keyValues);
-    out.writeInt(columnCount);
+    out.writeInt(propertyCount);
     out.writeBoolean(isSingleIntegerKey);
     out.writeBoolean(hashCodeDirty);
     out.writeInt(hashCode);
@@ -258,7 +258,7 @@ public class EntityKey implements Externalizable {
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     entityID = (String) in.readObject();
     keyValues = (Map<String, Object>) in.readObject();
-    columnCount = in.readInt();
+    propertyCount = in.readInt();
     isSingleIntegerKey = in.readBoolean();
     hashCodeDirty = in.readBoolean();
     hashCode = in.readInt();

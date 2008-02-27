@@ -38,12 +38,12 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @param val Value to set for property 'automaticWildcardOn'.
+   * @param value Value to set for property 'automaticWildcard'.
    */
-  public void setAutomaticWildcardOn(boolean val) {
+  public void setAutomaticWildcard(final boolean value) {
     for (final JPanel searchPanel : searchPanels) {
       if (searchPanel instanceof PropertySearchPanel)
-        ((PropertySearchPanel)searchPanel).getModel().setAutomaticWildcardOn(val);
+        ((PropertySearchPanel)searchPanel).getModel().setAutomaticWildcard(value);
     }
   }
 

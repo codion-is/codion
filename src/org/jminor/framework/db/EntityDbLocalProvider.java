@@ -13,28 +13,22 @@ import org.jminor.framework.model.EntityRepository;
 
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 /**
  * A class responsible for managing local db connections
  */
-public class EntityDbProvider implements IEntityDbProvider {
+public class EntityDbLocalProvider implements IEntityDbProvider {
 
-  private static final Logger log = Util.getLogger(EntityDbProvider.class);
+  private static final Logger log = Util.getLogger(EntityDbLocalProvider.class);
 
   /**
    * Fired when a successful connection has been made
    */
-  public final Event evtConnected = new Event("EntityDbProvider.evtConnected");
+  public final Event evtConnected = new Event("EntityDbLocalProvider.evtConnected");
 
   protected final User user;
   protected IEntityDb entityDb;
-  protected IEntityDb entityDbProxy;
 
-  public EntityDbProvider(final User user) {
+  public EntityDbLocalProvider(final User user) {
     this.user = user;
     final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
     if (sid == null || sid.length() == 0)
@@ -44,10 +38,8 @@ public class EntityDbProvider implements IEntityDbProvider {
 
   public synchronized final IEntityDb getEntityDb() throws UserException {
     initializeEntityDb();
-    if (entityDbProxy == null)
-      entityDbProxy = initializeDbProxy();
 
-    return entityDbProxy;
+    return entityDb;
   }
 
   /** {@inheritDoc} */
@@ -80,29 +72,6 @@ public class EntityDbProvider implements IEntityDbProvider {
       //try to reconnect once in case db has become reachable
       entityDb = null;
       connectServer();
-    }
-  }
-
-  private IEntityDb initializeDbProxy() {
-    return (IEntityDb) Proxy.newProxyInstance(EntityDbProxy.class.getClassLoader(),
-            new Class[] {IEntityDb.class}, new EntityDbProxy());
-  }
-
-  private class EntityDbProxy implements InvocationHandler {
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-//      final String methodName = method.getName();
-//      final Date time = new Date(System.currentTimeMillis());
-      try {
-        return method.invoke(entityDb, args);
-      }
-      catch (InvocationTargetException ie) {
-        throw ie.getTargetException();
-      }
-//      finally {
-//        final long delta = System.currentTimeMillis()-time.getTime();
-//        if (delta > 200)
-//          System.out.println(time + " " + delta + " ms: " + methodName + "::" + user.toString());
-//      }
     }
   }
 }
