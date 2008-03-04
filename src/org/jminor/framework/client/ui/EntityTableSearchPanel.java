@@ -58,21 +58,11 @@ public class EntityTableSearchPanel extends JPanel {
    * @param value Value to set for property 'advanced'.
    */
   public void setAdvanced(final boolean value) {
-    for (final JPanel searchPanel : searchPanels) {
+    for (final JPanel searchPanel : searchPanels)
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).setAdvancedSearchOn(value);
-      else
-        setPreferredSize(searchPanel);
-    }
-    evtAdvancedChanged.fire();
-  }
 
-  /**
-   * @param searchPanel Value to set for property 'preferredSize'.
-   */
-  private void setPreferredSize(final JPanel searchPanel) {
-    searchPanel.setPreferredSize(new Dimension(searchPanel.getPreferredSize().width,
-            searchPanels.get(0).getPreferredSize().height));
+    evtAdvancedChanged.fire();
   }
 
   /**
@@ -88,6 +78,10 @@ public class EntityTableSearchPanel extends JPanel {
 
   /** {@inheritDoc} */
   public Dimension getPreferredSize() {
+    for (final JPanel searchPanel : searchPanels)
+      if (searchPanel instanceof PropertySearchPanel)
+        return new Dimension(super.getPreferredSize().width, searchPanel.getPreferredSize().height);
+
     return new Dimension(super.getPreferredSize().width, searchPanels.get(0).getPreferredSize().height);
   }
 

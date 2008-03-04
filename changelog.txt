@@ -74,3 +74,4 @@
   ToggleBeanPropertyLink fixed at last
   Profiling renamed to ProfilingModel
   Fixed bug in UiUtil.makeUpperCase, null values were not handled correctly
+  Fixed bug in EntityTableSearchPanel, it did not resize correctly on advanced toggle when the leftmost panel was not a search panel
