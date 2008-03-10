@@ -103,7 +103,7 @@ public class Util {
     return loggers.get(0).getLevel();
   }
 
-  public static void setDefaultLoggingLevel(Level defaultLoggingLevel) {
+  public static void setDefaultLoggingLevel(final Level defaultLoggingLevel) {
     Util.defaultLoggingLevel = defaultLoggingLevel;
   }
 
@@ -120,7 +120,7 @@ public class Util {
     return ret;
   }
 
-  public static Integer getInt(String text) {
+  public static Integer getInt(final String text) {
     if (text == null || text.length() == 0)
       return null;
 
@@ -134,14 +134,13 @@ public class Util {
     return value;
   }
 
-  public static Double getDouble(String text) {
+  public static Double getDouble(final String text) {
     if (text == null || text.length() == 0)
       return null;
 
     double value;
-    if ((text.length() > 0) && (!text.equals("-"))) {
+    if ((text.length() > 0) && (!text.equals("-")))
       value = new Double(text);
-    }
     else if (text.equals("-"))
       value = -1;
     else
@@ -150,7 +149,7 @@ public class Util {
     return value;
   }
 
-  public static long getLong(String text) {
+  public static long getLong(final String text) {
     long value;
     if ((text.length() > 0) && (!text.equals("-")))
       value = Long.parseLong(text);
@@ -287,14 +286,13 @@ public class Util {
    * @return a Timestamp object with the same time as <code>timestamp</code>
    * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
    */
-  public static Timestamp floorLongDate(Timestamp timestamp) {
+  public static Timestamp floorLongDate(final Timestamp timestamp) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(timestamp);
     cal.set(Calendar.SECOND, 0);
     cal.set(Calendar.MILLISECOND, 0);
-    timestamp = new Timestamp(cal.getTimeInMillis());
 
-    return timestamp;
+    return new Timestamp(cal.getTimeInMillis());
   }
 
   public static String getSystemProperties() {
