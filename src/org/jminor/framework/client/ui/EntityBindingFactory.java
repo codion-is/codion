@@ -80,8 +80,16 @@ public abstract class EntityBindingFactory extends JPanel {
                                                              final AbstractDateMaskFormat dateMaskFormat,
                                                              final boolean includeButton,
                                                              final State enabledState) {
+    return createDateFieldPanel(propertyID, dateMaskFormat, includeButton, enabledState, LinkType.READ_WRITE);
+  }
+
+  protected final UiUtil.DateInputPanel createDateFieldPanel(final String propertyID,
+                                                             final AbstractDateMaskFormat dateMaskFormat,
+                                                             final boolean includeButton,
+                                                             final State enabledState,
+                                                             final LinkType linkType) {
     return createDateFieldPanel(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
-            dateMaskFormat, includeButton, enabledState);
+            dateMaskFormat, includeButton, enabledState, getModel(), linkType);
   }
 
   protected final UiUtil.DateInputPanel createDateFieldPanel(final Property property,
@@ -107,8 +115,18 @@ public abstract class EntityBindingFactory extends JPanel {
                                                              final boolean includeButton,
                                                              final State enabledState,
                                                              final EntityModel entityModel) {
+    return createDateFieldPanel(property, dateMaskFormat, includeButton, enabledState,
+            entityModel, LinkType.READ_WRITE);
+  }
+
+  protected final UiUtil.DateInputPanel createDateFieldPanel(final Property property,
+                                                             final AbstractDateMaskFormat dateMaskFormat,
+                                                             final boolean includeButton,
+                                                             final State enabledState,
+                                                             final EntityModel entityModel,
+                                                             final LinkType linkType) {
     return FrameworkUiUtil.createDateFieldPanel(property, entityModel, dateMaskFormat,
-            LinkType.READ_WRITE, includeButton, enabledState);
+            linkType, includeButton, enabledState);
   }
 
   protected final JTextField createTextField(final String propertyID) {

@@ -3,11 +3,10 @@
  */
 package org.jminor.common.model;
 
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jminor.common.model.formats.LongDateFormat;
+import org.jminor.common.model.formats.ShortDashDateFormat;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -399,6 +398,13 @@ public class Util {
       e.printStackTrace();
       return "N/A";
     }
+  }
+
+  public static Date getYesterday() {
+    final Calendar c = Calendar.getInstance();
+    c.add(Calendar.DAY_OF_MONTH, -1);
+
+    return c.getTime();
   }
 
   public static Date getFirstDayOfLastMonth() {
