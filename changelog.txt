@@ -75,3 +75,4 @@
   Profiling renamed to ProfilingModel
   Fixed bug in UiUtil.makeUpperCase, null values were not handled correctly
   Fixed bug in EntityTableSearchPanel, it did not resize correctly on advanced toggle when the leftmost panel was not a search panel
+  Added a condition in EntityPanel.handleSave, which prevents a save/update confirmation if updating is not allowed

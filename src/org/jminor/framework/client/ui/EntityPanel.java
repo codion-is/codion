@@ -478,7 +478,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   public final void handleSave() {
     if ((getModel().getTableModel() != null && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
-            || !getModel().isActiveEntityModified()) {//no entity selected or selected entity is unmodified, can only insert
+            || !getModel().isActiveEntityModified() || !model.allowUpdate()) {
+      //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       handleInsert();
     }
     else {//possibly update
