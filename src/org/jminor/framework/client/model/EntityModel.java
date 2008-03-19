@@ -776,7 +776,7 @@ public class EntityModel implements IRefreshable {
    * @see #evtBeforeUpdate
    * @see #evtEntitiesUpdated
    */
-  //todo known issue, when updating primary key properties the table model state is not exactly fresh afterwards, example: petstore-ItemTags
+  //todo known issue, when updating primary key properties the table model state is not exactly fresh afterwards, example: petstore-ItemTags, proposed solution: force refresh in case primary keys were involved in the update
   public final void update(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, updating is not allowed!");

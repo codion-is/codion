@@ -198,7 +198,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
     for (final Entity entity : entities)
-      primaryKeys.add(entity.getPrimaryKey());//todo what if the primary key changed?
+      primaryKeys.add(entity.getPrimaryKey());//todo what if the primary key changed, force a refresh in the UI?
 
     return selectMany(primaryKeys);
   }
