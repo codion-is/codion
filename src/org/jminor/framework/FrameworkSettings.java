@@ -14,7 +14,6 @@ public class FrameworkSettings implements Serializable {
 
   public boolean useQueryRange = true;
   public boolean allModelsEnabled = false;
-  public boolean useDividers = true;
   public boolean useKeyboardNavigation = true;
   public boolean useFocusActivation = true;
   public int tableAutoResizeMode = JTable.AUTO_RESIZE_OFF;

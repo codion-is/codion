@@ -209,10 +209,20 @@ public class EntityModel implements IRefreshable {
    */
   private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
 
-  private static final State.StateGroup activeStateGroup = new State.StateGroup();
+  /**
+   * If true, then the modification of a record triggers a select for update
+   */
+  private boolean strictEditingEnabled = FrameworkSettings.get().strictEditing;
 
-  private State stStrictEditing = new State(FrameworkSettings.get().strictEditing);
-  private State stStrictEditLock = new State(false);
+  /**
+   * Is true while the active record is in a locked state (selected for update)
+   */
+  private boolean strictEditLockEnabled = false;
+
+  /**
+   * The mechanism for restricting a single active EntityModel at a time
+   */
+  private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
   /**
    * Initiates a new EntityModel
@@ -236,7 +246,8 @@ public class EntityModel implements IRefreshable {
    */
   public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
                      final String entityID, final boolean includeTableModel) throws UserException {
-    activeStateGroup.addState(stActive);//todo potential memory leak
+    if (!FrameworkSettings.get().allModelsEnabled)
+      activeStateGroup.addState(stActive);//todo potential memory leak
     this.modelCaption = modelCaption;
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
@@ -257,8 +268,11 @@ public class EntityModel implements IRefreshable {
     return entityID;
   }
 
-  public void setStrictEditMode(final boolean strictEditMode) {
-    this.stStrictEditing.setActive(strictEditMode);
+  public void setStrictEditMode(final boolean strictEditMode) throws UserException {
+    if (!strictEditMode)
+      setActiveEntityWriteLock(false);
+
+    this.strictEditingEnabled = strictEditMode;
   }
 
   /**
@@ -1268,9 +1282,8 @@ public class EntityModel implements IRefreshable {
     activeEntity.getModifiedState().evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
-          if (stStrictEditing.isActive() && !isActiveEntityNull()) {
+          if (strictEditingEnabled && !isActiveEntityNull())
             setActiveEntityWriteLock(activeEntity.getModifiedState().isActive());
-          }
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
@@ -1281,9 +1294,8 @@ public class EntityModel implements IRefreshable {
     evtActiveEntityChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          if (stStrictEditing.isActive()) {
+          if (strictEditingEnabled)
             setActiveEntityWriteLock(false);
-          }
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
@@ -1419,18 +1431,16 @@ public class EntityModel implements IRefreshable {
   }
 
   private void setActiveEntityWriteLock(final boolean status) throws UserException {
-    if (stStrictEditLock.isActive() == status)
+    if (strictEditLockEnabled == status)
       return;
     try {
-      if (status) {
+      if (status)
         getDbConnectionProvider().getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
-        System.out.println("######################### locked: " + activeEntity.getPrimaryKey());
-      }
-      else {
+      else
         getDbConnectionProvider().getEntityDb().endTransaction(true);
-        System.out.println("######################### unlocked: " + activeEntity.getPrimaryKey());
-      }
-      stStrictEditLock.setActive(status);
+
+      System.out.println("######################### " + (status ? "locked" : "unlocked") + ": " + activeEntity.getPrimaryKey());
+      strictEditLockEnabled = status;
     }
     catch (Exception e) {
       throw new UserException(e);

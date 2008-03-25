@@ -123,7 +123,7 @@ public class State implements Serializable {
   }
 
   /**
-   * @return Value for property 'reversedState'.
+   * @return A State object that is always the reverse of the parent state
    */
   public State getReversedState() {
     if (reversedState == null)
@@ -166,6 +166,9 @@ public class State implements Serializable {
     }
   }
 
+  /**
+   * A StateGroup deactivates all other states when a state in the group is activated
+   */
   public static class StateGroup {
     final List<State> members;
 
