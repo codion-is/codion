@@ -460,7 +460,8 @@ public class FrameworkUiUtil {
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final AbstractDateMaskFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
-    final boolean transferFocusOnEnter = FrameworkSettings.get().transferTextFieldFocusOnEnter;
+    final boolean transferFocusOnEnter =
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_TEXT_FIELD_FOCUS_ON_ENTER);
     final JTextField ret;
     switch (property.getPropertyType()) {
       case STRING:
@@ -545,5 +546,4 @@ public class FrameworkUiUtil {
 
     return ret;
   }
-
 }

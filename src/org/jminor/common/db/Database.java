@@ -3,6 +3,8 @@ package org.jminor.common.db;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -44,6 +46,12 @@ public class Database {
   public static final String DATABASE_TYPE_DERBY = "derby";
 
   /**
+   * Derby database type
+   * @see #DATABASE_TYPE_PROPERTY
+   */
+  public static final String DATABASE_TYPE_EMBEDDED_DERBY = "derby_embedded";
+
+  /**
    * The driver class name use for Oracle connections
    */
   public static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
@@ -67,6 +75,11 @@ public class Database {
    * The driver class name used for connections to a networked Derby database (as opposed to embedded)
    */
   public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
+
+  /**
+   * The driver class name used for connections to a embedded Derby database
+   */
+  public static final String DERBY_EMBEDDED_DRIVER = "org.apache.derby.jdbc.ClientDriver";
 
   /**
    * Specifies the database type
@@ -94,12 +107,11 @@ public class Database {
   public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
 
   public static enum DbType {
-    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY
+    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED
   }
 
   public static final String TABLE_STATUS_MYSQL = "select count(*), greatest(max(snt), max(ifnull(sbt,snt))) last_change from ";
   public static final String TABLE_STATUS_ORACLE = "select count(*), greatest(max(snt), max(nvl(sbt,snt))) last_change from ";
-  public static final String TABLE_STATUS_POSTGRESQL = TABLE_STATUS_ORACLE;//todo
 
   private static final DbType DB_TYPE = getType();
 
@@ -121,6 +133,10 @@ public class Database {
 
   public static boolean isDerby() {
     return DB_TYPE == DbType.DERBY;
+  }
+
+  public static boolean isDerbyEmbedded() {
+    return DB_TYPE == DbType.DERBY_EMBEDDED;
   }
 
   public static void loadDriver() throws ClassNotFoundException {
@@ -149,6 +165,8 @@ public class Database {
         return "jdbc:sqlserver://" + host + ":" + port + ";databaseName=" + sid;
       case DERBY:
         return "jdbc:derby://" + host + ":" + port + "/" + sid;
+      case DERBY_EMBEDDED:
+        return "jdbc:derby://" + host;//todo host should contain database name, document!
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
@@ -172,6 +190,7 @@ public class Database {
       case SQLSERVER:
         return "select @@IDENTITY";
       case DERBY:
+      case DERBY_EMBEDDED:
         return "select IDENTITY_VAL_LOCAL() from " + idSource;
       default :
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
@@ -197,6 +216,7 @@ public class Database {
                 "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
                 "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
       case DERBY://todo hmm, no format string?
+      case DERBY_EMBEDDED:
         return longDate ?
                 "DATE('" + LongDateFormat.get().format(value) + "')" :
                 "DATE('" + ShortDashDateFormat.get().format(value) + "')";
@@ -220,8 +240,6 @@ public class Database {
     switch (DB_TYPE) {
       case MYSQL:
         return TABLE_STATUS_MYSQL + tableName;
-      case POSTGRESQL:
-        return TABLE_STATUS_POSTGRESQL + tableName;
       case ORACLE:
         return TABLE_STATUS_ORACLE + tableName;
       default:
@@ -241,8 +259,21 @@ public class Database {
       return DbType.SQLSERVER;
     else if (dbType.equals(DATABASE_TYPE_DERBY))
       return DbType.DERBY;
+    else if (dbType.equals(DATABASE_TYPE_EMBEDDED_DERBY))
+      return DbType.DERBY_EMBEDDED;
 
     throw new IllegalArgumentException("Unknown database type: " + dbType);
+  }
+
+  public static void onDisconnect() {
+    if (isDerbyEmbedded()) {
+      try {
+        DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true");
+      }
+      catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private static String getDriverName() {
@@ -257,6 +288,8 @@ public class Database {
         return SQL_SERVER_DRIVER;
       case DERBY:
         return DERBY_DRIVER;
+      case DERBY_EMBEDDED:
+        return DERBY_EMBEDDED_DRIVER;
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }

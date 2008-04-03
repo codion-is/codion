@@ -109,7 +109,8 @@ public class EntityModel implements IRefreshable {
   /**
    * Indicates whether the model is active
    */
-  public final State stActive = new State("EntityModel.stActive", FrameworkSettings.get().allModelsEnabled);
+  public final State stActive = new State("EntityModel.stActive",
+          (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_MODELS_ENABLED));
 
   /**
    * Active when a non-null entity is active
@@ -212,7 +213,7 @@ public class EntityModel implements IRefreshable {
   /**
    * If true, then the modification of a record triggers a select for update
    */
-  private boolean strictEditingEnabled = FrameworkSettings.get().strictEditing;
+  private boolean strictEditingEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_STRICT_EDIT_MODE);
 
   /**
    * Is true while the active record is in a locked state (selected for update)
@@ -246,7 +247,7 @@ public class EntityModel implements IRefreshable {
    */
   public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
                      final String entityID, final boolean includeTableModel) throws UserException {
-    if (!FrameworkSettings.get().allModelsEnabled)
+    if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_MODELS_ENABLED))
       activeStateGroup.addState(stActive);//todo potential memory leak
     this.modelCaption = modelCaption;
     this.dbConnectionProvider = dbProvider;
@@ -649,7 +650,7 @@ public class EntityModel implements IRefreshable {
   public final void setActive(final Entity entity) {
     if (entity != null && activeEntity.propertyValuesEqual(entity))
       return;
-    if (FrameworkSettings.get().propertyDebug && entity != null)
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT) && entity != null)
       EntityUtil.printPropertyValues(entity);
     activeEntity.setAs(entity == null ? getDefaultValue() : entity);
 
@@ -1215,11 +1216,11 @@ public class EntityModel implements IRefreshable {
    * By default this method returns the value of <code>FrameworkSettings.resetComboBoxModelsOnClear</code>.
    * @param property the property
    * @return true if the ComboBoxModel should be reset when the model is cleared
-   * @see FrameworkSettings#resetComboBoxModelsOnClear
+   * @see FrameworkSettings#RESET_COMBOBOXMODELS_ON_CLEAR
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected boolean resetComboBoxModelOnClear(final Property property) {
-    return FrameworkSettings.get().resetComboBoxModelsOnClear;
+    return (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR);
   }
 
   protected List<EntityKey> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
@@ -1449,7 +1450,7 @@ public class EntityModel implements IRefreshable {
 
   private void notifyPropertyChanged(final Property property, final Object newValue, final Object oldValue,
                                      final boolean isModelChange) {
-    if (FrameworkSettings.get().propertyDebug) {
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT)) {
       final String msg = getPropertyChangeDebugString(property, oldValue, newValue, isModelChange);
       System.out.println(msg);
       log.trace(msg);

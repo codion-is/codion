@@ -113,7 +113,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   protected List<?> getContents() {
     try {
-      if ((staticData && dataInitialized) || (FrameworkSettings.get().useSmartRefresh && !isRefreshRequired())) {
+      if ((staticData && dataInitialized) ||
+              ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_SMART_REFRESH) && !isRefreshRequired())) {
         log.trace(this + " refresh not required");
         return super.getContents();
       }

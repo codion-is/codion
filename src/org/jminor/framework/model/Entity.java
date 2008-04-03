@@ -68,6 +68,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   private transient Map<String, EntityKey> referencedKeysCache;
 
+  private static boolean propertyDebug = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT);
+
   /** Not for general usage, required for serialization */
   public Entity() {}
 
@@ -595,7 +597,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (originalPropertyValues != null && originalPropertyValues.containsKey(propertyID)) {
       if (EntityUtil.equal(type, originalPropertyValues.get(propertyID), newValue)) {
         originalPropertyValues.remove(propertyID);//we're back to the original value
-        if (FrameworkSettings.get().propertyDebug)
+        if (propertyDebug)
           System.out.println(propertyID + " reverted back to original value " + newValue);
       }
     }
@@ -617,7 +619,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   private void firePropertyChangeEvent(final Property property, final Object newValue, final Object oldValue,
                                        final boolean initialization) {
-    if (FrameworkSettings.get().propertyDebug)
+    if (propertyDebug)
       System.out.println(EntityUtil.getPropertyChangeDebugString(getEntityID(), property, oldValue, newValue, initialization));
 
     evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, initialization));

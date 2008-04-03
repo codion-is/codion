@@ -25,6 +25,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     return Arrays.asList(new EntityPanel.EntityPanelInfo(SchemaModel.class, SchemaPanel.class));
   }
 
+  protected void initializeSettings() {
+    Util.setDefaultLoggingLevel(Level.DEBUG);
+    FrameworkSettings.get().setProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
+  }
+
   public static void main(final String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -32,11 +37,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    Util.setDefaultLoggingLevel(Level.DEBUG);
-    FrameworkSettings.get().tableAutoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS;
-    FrameworkSettings.get().useSmartRefresh = false;
-    FrameworkSettings.get().useQueryRange = false;
-    FrameworkSettings.get().usernamePrefix = "";
     startApplication("Schema Browser", SchemaBrowserAppPanel.class, SchemaBrowserAppModel.class,
             null, false, UiUtil.getSize(0.5));
   }

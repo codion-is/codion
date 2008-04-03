@@ -163,9 +163,9 @@ public class EntityUtil {
       return ((Property.BooleanProperty) property).toSQLString(value);
     else {
       switch(value) {
-        case FALSE : return FrameworkSettings.get().sqlBooleanValueFalse + "";
-        case TRUE: return FrameworkSettings.get().sqlBooleanValueTrue + "";
-        case NULL: return FrameworkSettings.get().sqlBooleanValueNull + "";
+        case FALSE : return FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_FALSE) + "";
+        case TRUE: return FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_TRUE) + "";
+        case NULL: return FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_NULL) + "";
         default : throw new RuntimeException("Unknown boolean value: " + value);
       }
     }

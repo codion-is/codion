@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.FrameworkSettings;
@@ -10,8 +11,6 @@ import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
-
-import junit.framework.TestCase;
 
 import java.sql.Timestamp;
 
@@ -22,7 +21,7 @@ public class TestEntityModel extends TestCase {
   static {
     try {
       new EmpDept();
-      FrameworkSettings.get().useQueryRange = false;
+      FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
       testModel  = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
     }
     catch (UserException e) {

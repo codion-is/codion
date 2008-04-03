@@ -78,3 +78,5 @@
   Added a condition in EntityPanel.handleSave, which prevents a save/update confirmation if updating is not allowed
   Simplified the strict editing functionality a bit, State -> boolean
   Removed a redundant variable, useDividers, from FrameworkSettings
+  PostgreSQL table status query disabled since the function greatest is missing
+  FrameworkSettings now Map based, useQueryRange now defaults to false

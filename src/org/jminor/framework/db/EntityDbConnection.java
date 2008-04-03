@@ -55,7 +55,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private boolean checkDependenciesOnDelete = false;
   private boolean entityCacheEnabled = false;
-  private FrameworkSettings settings = FrameworkSettings.get();
+  private boolean useQueryRange = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE);
 
   private static int cachedKeyQueries = 0;
   private static int partiallyCachedKeyQueries = 0;
@@ -241,7 +241,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws Exception {
+  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
     return selectSingle(new EntityCriteria(entityID,
             new PropertyCriteria(EntityRepository.get().getProperty(entityID, propertyID), SearchType.LIKE, value)));
   }
@@ -345,7 +345,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
-      if (settings.useQueryRange && criteria.isRangeCriteria()) {
+      if (useQueryRange && criteria.isRangeCriteria()) {
         final String innerSubQuery = "(" + DbUtil.generateSelectSql(datasource, selectString, "",
                 criteria.tableHasAuditColumns() ? "snt desc" : "rowid desc") + ")";
         datasource = "(" + DbUtil.generateSelectSql(innerSubQuery,
@@ -480,7 +480,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (!EntityRepository.get().contains(repository.getEntityIDs()))
       EntityRepository.get().add(repository.initializeAll());
 
-    this.settings = settings;
+    useQueryRange = (Boolean) settings.getProperty(FrameworkSettings.USE_QUERY_RANGE);
   }
 
   private void execute(final List<String> statements) throws DbException {

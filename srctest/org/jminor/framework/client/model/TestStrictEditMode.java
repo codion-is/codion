@@ -23,8 +23,8 @@ public class TestStrictEditMode extends TestCase {
   protected void setUp() throws Exception {
     if (Database.isMySQL())
       return;
-    FrameworkSettings.get().useSmartRefresh = false;
-    FrameworkSettings.get().useQueryRange = false;
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
     new EmpDept();
   }
 

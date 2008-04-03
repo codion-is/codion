@@ -229,9 +229,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         }
       });
       initializeResizing();
-      if (FrameworkSettings.get().useKeyboardNavigation)
+      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_KEYBOARD_NAVIGATION))
         initializeNavigation();
-      if (FrameworkSettings.get().useFocusActivation) {//todo mind that darn memory leak!! only use for persistent panels?
+      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION)) {//todo mind that darn memory leak!! only use for persistent panels?
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
                 "focusOwner", new java.beans.PropertyChangeListener() {
           public void propertyChange(final PropertyChangeEvent evt) {
@@ -891,10 +891,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     editPanel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     propertyBase.add(propertyPanel);
     editPanel.add(propertyBase, BorderLayout.CENTER);
-    final JComponent actionPanel = FrameworkSettings.get().toolbarActions ?
+    final JComponent actionPanel = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLBAR_BUTTONS) ?
             initializeActionToolBar() : initializeActionPanel();
     if (actionPanel != null)
-      editPanel.add(actionPanel, FrameworkSettings.get().toolbarActions ?
+      editPanel.add(actionPanel, (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 

@@ -21,8 +21,8 @@ public class TestPetstoreModel extends TestCase {
   private static IEntityDb db;
 
   static {
-    FrameworkSettings.get().useQueryRange = false;
-    FrameworkSettings.get().useSmartRefresh = false;
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
     try {
       new Petstore();
       db = EntityDbProviderFactory.createEntityDbProvider(new User("scott", "tiger"), "TestPetstoreModel").getEntityDb();

@@ -81,6 +81,7 @@ public abstract class ProfilingModel {
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfClientsCollection.addSeries(numberOfClientsSeries);
+    initializeSettings();
     loadDomainModel();
     new Timer(true).schedule(new TimerTask() {
       public void run() {
@@ -225,6 +226,11 @@ public abstract class ProfilingModel {
 
   protected abstract EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException;
 
+  protected void initializeSettings() {
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
+  }
+
   protected void selectRandomRow(final EntityModel model) {
     if (model.getTableModel().getRowCount() == 0)
       return;
@@ -337,9 +343,6 @@ public abstract class ProfilingModel {
     catch (InterruptedException e) {
       e.printStackTrace();
     }
-
-    FrameworkSettings.get().useQueryRange = false;
-    FrameworkSettings.get().useSmartRefresh = false;
 
     System.out.println("Initializing a EntityApplicationModel...");
 

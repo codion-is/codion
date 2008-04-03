@@ -25,6 +25,13 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     return Arrays.asList(new EntityPanel.EntityPanelInfo(DepartmentModel.class, DepartmentPanel.class));
   }
 
+  protected void initializeSettings() {
+    FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);
+    FrameworkSettings.get().setProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT, true);
+    FrameworkSettings.get().setProperty(FrameworkSettings.USE_STRICT_EDIT_MODE, true);
+    Util.setDefaultLoggingLevel(Level.DEBUG);
+  }
+
   public static void main(final String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -32,12 +39,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    FrameworkSettings.get().toolbarActions = true;
-    FrameworkSettings.get().propertyDebug = true;
-    FrameworkSettings.get().useSmartRefresh = false;
-    FrameworkSettings.get().useQueryRange = false;
-    FrameworkSettings.get().strictEditing = true;
-    Util.setDefaultLoggingLevel(Level.DEBUG);
     startApplication("Emp-Dept", EmpDeptAppPanel.class, EmpDeptAppModel.class,
             null, false, UiUtil.getSize(0.6), new User("scott", "tiger"));
   }

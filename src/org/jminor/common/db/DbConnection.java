@@ -112,6 +112,7 @@ public class DbConnection {
     catch (SQLException ex) {
       log.error(this, ex);
     }
+    Database.onDisconnect();
     connection = null;
     checkConnectionStatement = null;
   }

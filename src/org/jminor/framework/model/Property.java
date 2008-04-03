@@ -460,13 +460,14 @@ public class Property implements Serializable {
     }
 
     public BooleanProperty(final String propertyID, final Type columnType, final String caption) {
-      this(propertyID, columnType, caption, FrameworkSettings.get().sqlBooleanValueTrue,
-              FrameworkSettings.get().sqlBooleanValueFalse);
+      this(propertyID, columnType, caption, FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_TRUE),
+              FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_FALSE));
     }
 
     public BooleanProperty(final String propertyID, final Type columnType, final String caption,
                            final Object trueValue, final Object falseValue) {
-      this(propertyID, columnType, caption, trueValue, falseValue, FrameworkSettings.get().sqlBooleanValueNull);
+      this(propertyID, columnType, caption, trueValue, falseValue,
+              FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_NULL));
     }
 
     public BooleanProperty(final String propertyID, final Type columnType, final String caption,

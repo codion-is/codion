@@ -38,6 +38,12 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
             new EntityPanel.EntityPanelInfo("Tags", TagModel.class, TagPanel.class));
   }
 
+  protected void initializeSettings() {
+    FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);
+    FrameworkSettings.get().setProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT, true);
+    Util.setDefaultLoggingLevel(Level.DEBUG);
+  }
+
   public static void main(final String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -45,11 +51,6 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    FrameworkSettings.get().toolbarActions = true;
-    FrameworkSettings.get().propertyDebug = true;
-    FrameworkSettings.get().useSmartRefresh = false;
-    FrameworkSettings.get().useQueryRange = false;
-    Util.setDefaultLoggingLevel(Level.DEBUG);
     startApplication("The Pet Store", PetstoreAppPanel.class, PetstoreAppModel.class,
             null, false, UiUtil.getSize(0.8), new User("scott", "tiger"));
   }

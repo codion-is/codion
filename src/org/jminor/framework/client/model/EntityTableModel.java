@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.client.model;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
+import org.apache.log4j.Logger;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
@@ -27,11 +31,6 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
-import org.apache.log4j.Logger;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -139,7 +138,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * False if the table should ignore the query range when refreshing
    */
-  private boolean queryRangeEnabled = FrameworkSettings.get().useQueryRange;
+  private boolean queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE);
 
   /**
    * Represents the range of records to select from the underlying table
@@ -568,7 +567,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       log.trace(this + " refreshing" + (forceRefresh ? " (forced)" : ""));
       isRefreshing = true;
       evtRefreshStarted.fire();
-      if (FrameworkSettings.get().useSmartRefresh && !isRefreshRequired()) {
+      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_SMART_REFRESH) && !isRefreshRequired()) {
         log.trace(this + " refresh not required");
         return;
       }

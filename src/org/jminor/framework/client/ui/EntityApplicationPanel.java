@@ -70,7 +70,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
     initializeSettings();
-    ToolTipManager.sharedInstance().setInitialDelay(FrameworkSettings.get().tooltipDelay);
+    ToolTipManager.sharedInstance().setInitialDelay(
+            (Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLTIP_DELAY));
   }
 
   public EntityApplicationPanel(final EntityApplicationModel model) throws UserCancelException {
@@ -159,7 +160,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   public void exit() throws UserCancelException {
-    if (FrameworkSettings.get().confirmExit) {
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.CONFIRM_EXIT)) {
       if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
               FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
         throw new UserCancelException();
@@ -338,6 +339,11 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       applicationTabPane.setSelectedComponent(getEntityPanel(entityPanelClass));
   }
 
+  /**
+   * A convenience method for overriding, so that system wide settings paramters can be set
+   * before the application is initialized
+   * @see FrameworkSettings
+   */
   protected void initializeSettings() {}
 
   protected void bindEvents() {
@@ -412,7 +418,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     setLayout(new BorderLayout());
     final List<EntityPanel.EntityPanelInfo> entityPanels = getRootEntityPanelInfo();
     if (entityPanels.size() > 1) {
-      applicationTabPane = new JTabbedPane(FrameworkSettings.get().tabPlacement);
+      applicationTabPane = new JTabbedPane((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TAB_PLACEMENT));
       applicationTabPane.setFocusable(false);
       applicationTabPane.setUI(new BorderlessTabbedPaneUI());
       applicationTabPane.addChangeListener(new ChangeListener() {
@@ -495,8 +501,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(panelClass, iconName) :
                 Images.loadImage("jminor_logo32.gif");
         applicationPanel = constructApplicationPanel(panelClass);
-        if (FrameworkSettings.get().printMemoryUsageInterval > 0)
-          Util.printMemoryUsage(FrameworkSettings.get().printMemoryUsageInterval);
 
         initializationDialog = showInitializationDialog(null, applicationPanel, applicationIcon, frameCaption);
         final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?

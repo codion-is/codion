@@ -546,7 +546,7 @@ public class EntityTablePanel extends JPanel {
     header.setReorderingAllowed(false);
 
     ret.setColumnSelectionAllowed(false);
-    ret.setAutoResizeMode(FrameworkSettings.get().tableAutoResizeMode);
+    ret.setAutoResizeMode((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE));
     tableModel.getTableSorter().setTableHeader(header);
 
     return ret;
