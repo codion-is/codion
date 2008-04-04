@@ -270,8 +270,10 @@
     <copy file="${libdir}/${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${libdir}/${lib.jdbc.oracle}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${deploy.server.monitor.launchfile_win_mysql}" todir="${deploy.server.monitor.path}" />
-    <copy file="${deploy.server.monitor.launchfile_win_oracle}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.launchfile_mysql_win}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.launchfile_oracle_win}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.launchfile_mysql_nix}" todir="${deploy.server.monitor.path}" />
+    <copy file="${deploy.server.monitor.launchfile_oracle_nix}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
   </target>
@@ -287,6 +289,7 @@
     <copy file="${libdir}/${lib.jfreechart.base}" todir="${deploy.profiling.path}/lib" />
     <copy file="${libdir}/${lib.jfreechart.common}" todir="${deploy.profiling.path}/lib" />
     <copy file="${deploy.profiling.empdept.launchfile_win}" todir="${deploy.profiling.path}" />
+    <copy file="${deploy.profiling.empdept.launchfile_nix}" todir="${deploy.profiling.path}" />
     <copy file="${deploy.profiling.schema_browser.launchfile_win}" todir="${deploy.profiling.path}" />
     <copy file="${deploy.profiling.petstore.launchfile_win}" todir="${deploy.profiling.path}" />
     <copy file="${deploy.profiling.policy}" todir="${deploy.profiling.path}" />
@@ -304,10 +307,13 @@
     <copy file="${libdir}/${lib.substance}" todir="${deploy.demos.path}/lib" />
     <copy file="${libdir}/${lib.log4j}" todir="${deploy.demos.path}/lib" />
     <copy file="${deploy.demos.empdept.remote.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.empdept.remote.launchfile_nix}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.empdept.local.launchfile_win}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.schema_browser.remote.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.schema_browser.remote.launchfile_nix}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.schema_browser.local.launchfile_win}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.petstore.remote.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.petstore.remote.launchfile_nix}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.petstore.local.launchfile_win}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
