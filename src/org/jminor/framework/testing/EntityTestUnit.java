@@ -1,6 +1,5 @@
 package org.jminor.framework.testing;
 
-import junit.framework.TestCase;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
@@ -13,6 +12,8 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
+
+import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,8 +65,10 @@ public abstract class EntityTestUnit extends TestCase {
   protected void testEntity(final String entityID) throws Exception {
     try {
       getDbConnection().startTransaction();
-      referencedEntities.putAll(initializeReferenceEntities(
-              addAllReferencedEntityIDs(entityID, new HashSet<String>())));
+      final Map<String, Entity> referenceEntities = initializeReferenceEntities(
+              addAllReferencedEntityIDs(entityID, new HashSet<String>()));
+      if (referenceEntities != null)
+        referencedEntities.putAll(referenceEntities);
       final Entity initialEntity = initializeTestEntity(entityID);
       if (initialEntity == null)
         throw new Exception("No test entity provided " + entityID);
@@ -169,7 +172,7 @@ public abstract class EntityTestUnit extends TestCase {
 
   protected abstract void modifyEntity(final Entity testEntity);
 
-  protected abstract HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception;
+  protected abstract Map<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception;
 
   private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {
     final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);

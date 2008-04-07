@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.model;
 
-import junit.framework.TestCase;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
+
+import junit.framework.TestCase;
 
 import java.util.Date;
 
@@ -158,5 +159,9 @@ public class TestEntity extends TestCase {
     assertFalse("Entity copy should not be == the original", test2 == testEntity);
     assertTrue("Entities should be equal after .getCopy()", Util.equal(test2, testEntity));
     assertTrue("Entity property values should be equal after .getCopy()", test2.propertyValuesEqual(testEntity));
+
+    //test propogate entity reference values
+    testEntity.setValue(ModelTestDomain.ENTITY_REF, null);
+    assertTrue(testEntity.isValueNull(ModelTestDomain.ENTITY_ID_PROP));
   }
 }

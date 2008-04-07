@@ -5,6 +5,8 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -113,6 +115,8 @@ public class Database {
   public static final String TABLE_STATUS_MYSQL = "select count(*), greatest(max(snt), max(ifnull(sbt,snt))) last_change from ";
   public static final String TABLE_STATUS_ORACLE = "select count(*), greatest(max(snt), max(nvl(sbt,snt))) last_change from ";
 
+  private static DateFormat DERBY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
   private static final DbType DB_TYPE = getType();
 
   public static boolean isPostgreSQL() {
@@ -148,11 +152,13 @@ public class Database {
     if (host == null || host.length() == 0)
       throw new RuntimeException("Required property value not found: " + DATABASE_HOST_PROPERTY);
     final String port = System.getProperty(DATABASE_PORT_PROPERTY);
-    if (port == null || port.length() == 0)
-      throw new RuntimeException("Required property value not found: " + DATABASE_PORT_PROPERTY);
+    if (DB_TYPE != DbType.DERBY_EMBEDDED)
+      if (port == null || port.length() == 0)
+        throw new RuntimeException("Required property value not found: " + DATABASE_PORT_PROPERTY);
     final String sid = System.getProperty(DATABASE_SID_PROPERTY);
-    if (sid == null || sid.length() == 0)
-      throw new RuntimeException("Required property value not found: " + DATABASE_SID_PROPERTY);
+    if (DB_TYPE != DbType.DERBY_EMBEDDED)
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException("Required property value not found: " + DATABASE_SID_PROPERTY);
 
     switch (DB_TYPE) {
       case MYSQL:
@@ -166,7 +172,7 @@ public class Database {
       case DERBY:
         return "jdbc:derby://" + host + ":" + port + "/" + sid;
       case DERBY_EMBEDDED:
-        return "jdbc:derby://" + host;//todo host should contain database name, document!
+        return "jdbc:derby:" + host;//todo host should contain database name, document!
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
@@ -219,7 +225,7 @@ public class Database {
       case DERBY_EMBEDDED:
         return longDate ?
                 "DATE('" + LongDateFormat.get().format(value) + "')" :
-                "DATE('" + ShortDashDateFormat.get().format(value) + "')";
+                "DATE('" + DERBY_DATE_FORMAT.format(value) + "')";
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }

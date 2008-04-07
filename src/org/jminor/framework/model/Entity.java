@@ -66,7 +66,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   private transient boolean hasDenormalizedProperties;
 
-  private transient Map<String, EntityKey> referencedKeysCache;
+  private transient Map<Property.EntityProperty, EntityKey> referencedKeysCache;
 
   private static boolean propertyDebug = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT);
 
@@ -435,7 +435,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public EntityKey getReferencedKey(final Property.EntityProperty property) {
-    EntityKey key = referencedKeysCache == null ? null : referencedKeysCache.get(property.referenceEntityID);
+    EntityKey key = referencedKeysCache == null ? null : referencedKeysCache.get(property);
     if (key != null)
       return key;
 
@@ -446,8 +446,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
               : propertyValues.get(referenceKeyProperty.propertyID);
       if (!isValueNull(referenceKeyProperty.propertyType, value)) {
         if (key == null)
-          (referencedKeysCache == null ? referencedKeysCache = new HashMap<String, EntityKey>()
-                  : referencedKeysCache).put(property.referenceEntityID, key = new EntityKey(property.referenceEntityID));
+          (referencedKeysCache == null ? referencedKeysCache = new HashMap<Property.EntityProperty, EntityKey>()
+                  : referencedKeysCache).put(property, key = new EntityKey(property.referenceEntityID));
         key.setValue(key.getProperties().get(i).propertyID, value);//check the index thing set EntityResultPacker.getReferenceEntity
       }
       else
@@ -519,7 +519,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (newValue != null && newValue instanceof Entity && newValue.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
 
-    if (propagateReferenceValues && newValue instanceof Entity)
+    if (propagateReferenceValues && property instanceof Property.EntityProperty)
       propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
