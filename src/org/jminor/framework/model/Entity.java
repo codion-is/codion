@@ -519,7 +519,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (newValue != null && newValue instanceof Entity && newValue.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
 
-    if (propagateReferenceValues && property instanceof Property.EntityProperty)
+    if (propagateReferenceValues && property instanceof Property.EntityProperty && (newValue == null || newValue instanceof Entity))
       propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
@@ -551,12 +551,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param property the entity reference property
    * @param entity the entity value
    */
-  private void setReferenceKeyValues(final Property property, final Entity entity) {
+  private void setReferenceKeyValues(final Property.EntityProperty property, final Entity entity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             entity != null ? entity.primaryKey.properties
-                    : repository.getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
+                    : repository.getPrimaryKeyProperties(property.referenceEntityID);
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
-      final Property referenceProperty = ((Property.EntityProperty) property).referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
+      final Property referenceProperty = property.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = isPrimaryKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)
@@ -573,15 +573,13 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param entity the entity value
    * @param denormalizedProperties the denormalized properties
    */
-  private void setDenormalizedValues(final Property property, final Entity entity,
+  private void setDenormalizedValues(final Property.EntityProperty property, final Entity entity,
                                      final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        final boolean initialization = property instanceof Property.PrimaryKeyProperty? !primaryKey.keyValues.containsKey(property.propertyID)
-            : !propertyValues.containsKey(property.propertyID);
         doSetValue(denormalizedProperty,
                 entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.propertyID),
-                false, initialization, true);
+                false, !propertyValues.containsKey(property.propertyID), true);
       }
     }
   }

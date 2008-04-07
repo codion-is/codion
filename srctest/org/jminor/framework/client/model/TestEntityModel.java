@@ -10,7 +10,6 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
-import org.jminor.framework.model.Entity;
 
 import java.sql.Timestamp;
 
@@ -40,7 +39,7 @@ public class TestEntityModel extends TestCase {
     testModel.getTableModel().setSelectedItemIdx(0);
     assertFalse("Active entity is null after an entity is selected", testModel.isActiveEntityNull());
     assertTrue("Active entity is not equal to the selected entity",
-            entitiesEqual(testModel.getActiveEntityCopy(), testModel.getTableModel().getEntityAtViewIndex(0)));
+            testModel.getActiveEntityCopy().propertyValuesEqual(testModel.getTableModel().getEntityAtViewIndex(0)));
     assertFalse(testModel.getEntityModifiedState().isActive());
     testModel.getTableModel().getSelectionModel().clearSelection();
     assertTrue("Active entity is not null after selection is cleared", testModel.isActiveEntityNull());
@@ -77,9 +76,5 @@ public class TestEntityModel extends TestCase {
 
     testModel.getTableModel().getSelectionModel().clearSelection();
     assertTrue("Active entity is not null after selection is cleared", testModel.getActiveEntityCopy().isNull());
-  }
-
-  private boolean entitiesEqual(final Entity entity, final Entity testEntity) {
-    return entity.getPrimaryKey().equals(testEntity.getPrimaryKey()) && entity.propertyValuesEqual(testEntity);
   }
 }

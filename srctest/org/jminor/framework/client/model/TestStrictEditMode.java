@@ -12,9 +12,9 @@ import org.jminor.framework.model.EntityKey;
 
 public class TestStrictEditMode extends TestCase {
 
-  private final static IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
+  private final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName());
-  private static DepartmentModel model;
+  private DepartmentModel model;
 
   public TestStrictEditMode() {
     super("TestStrictEditMode");
@@ -26,6 +26,8 @@ public class TestStrictEditMode extends TestCase {
     FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
     FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
     new EmpDept();
+    model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
+          new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));
   }
 
   protected void tearDown() throws Exception {
@@ -39,8 +41,6 @@ public class TestStrictEditMode extends TestCase {
     if (Database.isMySQL())
       return;//MySQL does not have the NOWAIT option, without which this test simply hangs
 
-    model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
-          new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));
     model.refresh();
     model.setStrictEditMode(true);
 
