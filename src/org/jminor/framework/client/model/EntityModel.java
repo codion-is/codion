@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
@@ -22,6 +21,8 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
@@ -468,7 +469,7 @@ public class EntityModel implements IRefreshable {
   public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
     ComboBoxModel ret = getComboBoxModel(property);
     if (ret == null)
-      propertyComboBoxModels.put(property,
+      setComboBoxModel(property,
               ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID));
 
     return (EntityComboBoxModel) ret;
@@ -494,6 +495,19 @@ public class EntityModel implements IRefreshable {
    */
   public ComboBoxModel getComboBoxModel(final Property property) {
     return propertyComboBoxModels.get(property);
+  }
+
+  /**
+   * Sets the ComboBoxModel to be associated with the given property
+   * @param property the property
+   * @param model the ComboBoxModel
+   * @throws RuntimeException in case the ComboBoxModel has already been set for this property
+   */
+  public void setComboBoxModel(final Property property, final ComboBoxModel model) {
+    if (propertyComboBoxModels.containsKey(property))
+      throw new RuntimeException("ComboBoxModel already associated with property: " + property);
+
+    propertyComboBoxModels.put(property, model);
   }
 
   /**

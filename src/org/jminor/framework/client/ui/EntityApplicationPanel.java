@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
@@ -27,6 +26,8 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -503,12 +504,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         applicationPanel = constructApplicationPanel(panelClass);
 
         initializationDialog = showInitializationDialog(null, applicationPanel, applicationIcon, frameCaption);
-        final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-                new User(FrameworkSettings.getDefaultUsername(), null) : defaultUser,
-                applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-        if (user.getPassword() == null || user.getPassword().length() == 0)
-          throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));
-
+        final User user = getUser(frameCaption, defaultUser, applicationPanel, applicationIcon);
         final long now = System.currentTimeMillis();
 
         applicationPanel.setModel(initializeApplicationModel(applicationModelClass, user));
@@ -553,6 +549,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       return username.substring(usernamePrefix.length(), username.length());
 
     return username;
+  }
+
+  protected boolean loginRequired() {
+    return true;
   }
 
   protected JPanel initializeSouthPanel() {
@@ -722,6 +722,21 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   private static String getUserInfo(final User user, final String dbSid) {
     return getUsername(user.getUsername().toUpperCase()) + (dbSid != null ? "@" + dbSid.toUpperCase() : "");
+  }
+
+  private static User getUser(final String frameCaption, final User defaultUser,
+                              final EntityApplicationPanel applicationPanel, final ImageIcon applicationIcon)
+          throws UserCancelException, UserException {
+    User user = new User("", "");
+    if (applicationPanel.loginRequired()) {
+      user = LoginPanel.showLoginPanel(null, defaultUser == null ?
+              new User(FrameworkSettings.getDefaultUsername(), null) : defaultUser,
+              applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
+      if (user.getPassword() == null || user.getPassword().length() == 0)
+        throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));
+    }
+
+    return user;
   }
 
   private static void initializeApplicationPanel(final EntityApplicationPanel applicationPanel) throws UserException {

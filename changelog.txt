@@ -86,3 +86,4 @@
   OPS$ removed from EntityApplicationPanel.getUserName(), now it uses the DEFAULT_USERNAME_PREFIX settings parameter
   EntityApplicationPanel.getFrameTitle() added
   Restructured EntityApplicationPanel along with minor access modifier modifications
+  EntityApplicationPanel.loginRequired() added
