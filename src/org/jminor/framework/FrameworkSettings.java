@@ -102,7 +102,7 @@ public class FrameworkSettings implements Serializable {
    * Value type: String
    * Default value: [empty string]
    */
-  public static final String DEFAULT_USER_NAME_PREFIX = "default_user_name_prefix";
+  public static final String DEFAULT_USERNAME_PREFIX = "default_username_prefix";
 
   /**
    * Specifies whether focus should be transfered from text fields on enter
@@ -164,7 +164,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(TAB_PLACEMENT, JTabbedPane.TOP);
     setProperty(TOOLBAR_BUTTONS, false);
     setProperty(RESET_COMBOBOXMODELS_ON_CLEAR, false);
-    setProperty(DEFAULT_USER_NAME_PREFIX, "");
+    setProperty(DEFAULT_USERNAME_PREFIX, "");
     setProperty(TRANSFER_TEXT_FIELD_FOCUS_ON_ENTER, true);
     setProperty(USE_STRICT_EDIT_MODE, false);
     setProperty(TOOLTIP_DELAY, 500);
@@ -190,6 +190,6 @@ public class FrameworkSettings implements Serializable {
    */
   public static String getDefaultUsername() {
     return System.getProperty(FrameworkConstants.DEFAULT_USERNAME_PROPERTY,
-            get().getProperty(DEFAULT_USER_NAME_PREFIX) + System.getProperty("user.name"));
+            get().getProperty(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
   }
 }

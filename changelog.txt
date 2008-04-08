@@ -83,3 +83,6 @@
   Fixed a serious bug in Entity.getReferencedKey, where key values were cached on entityID instead of Property, fu**ing up the case where a table referenced the same table more than once
   Fixed a bug in Entity.doSetValue, it did not propogate the reference values when the new value was null, since it simply checked if the new value was an instance of Entity
   Some test case cleanup
+  OPS$ removed from EntityApplicationPanel.getUserName(), now it uses the DEFAULT_USERNAME_PREFIX settings parameter
+  EntityApplicationPanel.getFrameTitle() added
+  Restructured EntityApplicationPanel along with minor access modifier modifications

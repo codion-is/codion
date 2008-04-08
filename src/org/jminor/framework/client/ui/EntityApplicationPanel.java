@@ -514,10 +514,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         applicationPanel.setModel(initializeApplicationModel(applicationModelClass, user));
         initializeApplicationPanel(applicationPanel);
 
-        final Properties properties =
-                applicationPanel.getModel().getDbConnectionProvider().getEntityDb().getUser().getProperties();
-        final String frameTitle = frameCaption + " - " + getUserInfo(user,
-                properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
+        final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
         if (showFrame)
           applicationPanel.prepareFrame(applicationIcon, frameTitle, maximize, northToolBar, true, size).setVisible(true);
 
@@ -550,9 +547,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return applicationPanel;
   }
 
-  public static String getUsername(String username) {
-    if (username.indexOf("OPS") == 0)
-      username = username.substring(4, username.length());
+  public static String getUsername(final String username) {
+    final String usernamePrefix = (String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_USERNAME_PREFIX);
+    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase()))
+      return username.substring(usernamePrefix.length(), username.length());
 
     return username;
   }
@@ -561,19 +559,11 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return null;
   }
 
-  protected static JDialog showInitializationDialog(final Frame owner, final EntityApplicationPanel panel,
-                                                    final Icon icon, final String msg) {
-    final String message = msg == null ? "Initializing Application" : msg;
-    final JDialog initDlg = new JDialog(owner, message, false);
-    initDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    p.add(panel.getInitProgressPane(icon));
-    initDlg.getContentPane().add(p, BorderLayout.CENTER);
-    initDlg.pack();
-    UiUtil.centerWindow(initDlg);
-    initDlg.setVisible(true);
-
-    return initDlg;
+  protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
+    final Properties properties =
+                getModel().getDbConnectionProvider().getEntityDb().getUser().getProperties();
+    return frameCaption + " - " + getUserInfo(user,
+                properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
   }
 
   protected JPanel getInitProgressPane(final Icon icon) {
@@ -588,67 +578,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
 
     return ret;
-  }
-
-  protected static EntityApplicationPanel constructApplicationPanel(
-          final Class<? extends EntityApplicationPanel> applicationPanelClass) throws UserException {
-    try {
-      try {
-        return applicationPanelClass.getConstructor().newInstance();
-      }
-      catch (InvocationTargetException te) {
-        throw (Exception) te.getTargetException();
-      }
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
-  }
-
-  protected static EntityApplicationModel initializeApplicationModel(
-          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserException {
-    try {
-      return applicationModelClass.getConstructor(User.class).newInstance(user);
-    }
-    catch (NoSuchMethodException ix) {
-      throw new RuntimeException(ix);
-    }
-    catch (InstantiationException ix) {
-      throw new RuntimeException(ix);
-    }
-    catch (IllegalAccessException ix) {
-      throw new RuntimeException(ix);
-    }
-    catch (InvocationTargetException te) {
-      final Throwable target = te.getTargetException();
-      if (target instanceof UserException)
-        throw (UserException) target;
-      else if (target instanceof RuntimeException)
-        throw (RuntimeException) target;
-      else
-        throw new UserException(target);
-    }
-  }
-
-  private void initializeActiveEntityPanel() {
-    if (mainApplicationPanels.size() > 1)
-      ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
-    else
-      ((EntityPanel) getComponent(0)).initialize();
-  }
-
-  private static String getUserInfo(final User user, final String dbSid) {
-    return getUsername(user.getUsername().toUpperCase()) + (dbSid != null ? "@" + dbSid.toUpperCase() : "");
-  }
-
-  private static void initializeApplicationPanel(final EntityApplicationPanel applicationPanel) throws UserException {
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      public void uncaughtException(Thread t, Throwable e) {
-        FrameworkUiUtil.handleException(e, null, applicationPanel);
-      }
-    });
-
-    applicationPanel.initialize();
   }
 
   private JScrollPane initializeApplicationTree() {
@@ -727,6 +656,82 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     menuControlSets.add(getHelpControlSet());
 
     return ControlProvider.createMenuBar(menuControlSets.toArray(new ControlSet[menuControlSets.size()]));
+  }
+
+  private void initializeActiveEntityPanel() {
+    if (mainApplicationPanels.size() > 1)
+      ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
+    else
+      ((EntityPanel) getComponent(0)).initialize();
+  }
+
+  private static EntityApplicationPanel constructApplicationPanel(
+          final Class<? extends EntityApplicationPanel> applicationPanelClass) throws UserException {
+    try {
+      try {
+        return applicationPanelClass.getConstructor().newInstance();
+      }
+      catch (InvocationTargetException te) {
+        throw (Exception) te.getTargetException();
+      }
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
+  private static EntityApplicationModel initializeApplicationModel(
+          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserException {
+    try {
+      return applicationModelClass.getConstructor(User.class).newInstance(user);
+    }
+    catch (NoSuchMethodException ix) {
+      throw new RuntimeException(ix);
+    }
+    catch (InstantiationException ix) {
+      throw new RuntimeException(ix);
+    }
+    catch (IllegalAccessException ix) {
+      throw new RuntimeException(ix);
+    }
+    catch (InvocationTargetException te) {
+      final Throwable target = te.getTargetException();
+      if (target instanceof UserException)
+        throw (UserException) target;
+      else if (target instanceof RuntimeException)
+        throw (RuntimeException) target;
+      else
+        throw new UserException(target);
+    }
+  }
+
+  private static JDialog showInitializationDialog(final Frame owner, final EntityApplicationPanel panel,
+                                                    final Icon icon, final String msg) {
+    final String message = msg == null ? "Initializing Application" : msg;
+    final JDialog initDlg = new JDialog(owner, message, false);
+    initDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    final JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    p.add(panel.getInitProgressPane(icon));
+    initDlg.getContentPane().add(p, BorderLayout.CENTER);
+    initDlg.pack();
+    UiUtil.centerWindow(initDlg);
+    initDlg.setVisible(true);
+
+    return initDlg;
+  }
+
+  private static String getUserInfo(final User user, final String dbSid) {
+    return getUsername(user.getUsername().toUpperCase()) + (dbSid != null ? "@" + dbSid.toUpperCase() : "");
+  }
+
+  private static void initializeApplicationPanel(final EntityApplicationPanel applicationPanel) throws UserException {
+    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      public void uncaughtException(Thread t, Throwable e) {
+        FrameworkUiUtil.handleException(e, null, applicationPanel);
+      }
+    });
+
+    applicationPanel.initialize();
   }
 
   private static void showEntityPanelDialog(final EntityPanel.EntityPanelInfo appInfo, final IEntityDbProvider dbProvider,
