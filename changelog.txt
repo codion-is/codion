@@ -87,3 +87,4 @@
   EntityApplicationPanel.getFrameTitle() added
   Restructured EntityApplicationPanel along with minor access modifier modifications
   EntityApplicationPanel.loginRequired() added
+  EntityTableCellRenderer boolean renderer now indicates row selected status

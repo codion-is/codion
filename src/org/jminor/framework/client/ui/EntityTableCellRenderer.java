@@ -11,7 +11,6 @@ import org.jminor.framework.model.Type;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.plaf.UIResource;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
@@ -26,8 +25,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private final boolean specialRendering;
 
   private final HashMap<Integer, TableCellRenderer> renderers = new HashMap<Integer, TableCellRenderer>();
-  private static Color defaultBackground;
-  private static Color defaultForeground;
 
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
@@ -46,17 +43,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     if (isSelected)
       return component;
 
-    if (defaultBackground == null)
-      defaultBackground = component.getBackground();
-    if (defaultForeground == null)
-      defaultForeground = component.getForeground();
-
     final boolean propertySearchEnabled = tableModel.isSearchEnabled(column);
     final boolean propertyFilterEnabled = tableModel.isFilterEnabled(column);
     final Color rowColor = specialRendering ? tableModel.getRowBackgroundColor(row) : null;
     if (rowColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
-      component.setBackground(defaultBackground);
-      component.setForeground(defaultForeground);
+      component.setBackground(table.getBackground());
+      component.setForeground(table.getForeground());
     }
     else {
       if (rowColor != null)
@@ -148,7 +140,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
-  public static class BooleanRenderer extends JCheckBox implements TableCellRenderer, UIResource {
+  public static class BooleanRenderer extends JCheckBox implements TableCellRenderer {
 
     /** Constructs a new BooleanRenderer. */
     public BooleanRenderer() {
@@ -162,6 +154,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
                                                    final int row, final int column) {
       if (value != null && !(value instanceof Type.Boolean))
         throw new IllegalArgumentException("Non boolean value: " + value.getClass());
+
+      setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+      setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
 
       setSelected(value == Type.Boolean.TRUE);
       setEnabled(value != null);
