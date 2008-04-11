@@ -997,8 +997,6 @@ public class EntityModel implements IRefreshable {
             ? new ArrayList<Entity>(0) : Arrays.asList(masterValue), masterEntityID);
   }
 
-
-
   /**
    * Updates this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
@@ -1007,12 +1005,13 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of a problem
    */
   public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) throws UserException {
-    final Property property = EntityRepository.get().getEntityProperty(getEntityID(), masterEntityID);
     if (stSelectionFiltersDetail.isActive() && tableModel != null)
       tableModel.filterByReference(masterValues, masterEntityID);
 
-    if (masterValues != null && masterValues.size() > 0)
-      setValue(property, masterValues.get(0));
+    if (masterValues != null && masterValues.size() > 0) {
+      for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), masterEntityID))
+        setValue(property, masterValues.get(0));
+    }
   }
 
   /**
@@ -1073,7 +1072,10 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Returns a Map, mapping the EntityComboBoxModels provided to their respective
-   * properties according to the entityID
+   * properties according to the entityID.
+   * This implementation is rather simplistic, since it simply maps the EntityComboBoxModel to
+   * the first (random) Property.EntityProperty with the same entityID, if the underlying Entity
+   * references the same Entity via more than one property, this method should be avoided.
    * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
    * @return a Map of EntityComboBoxModels mapped to their respective properties
    */
@@ -1083,9 +1085,10 @@ public class EntityModel implements IRefreshable {
       return ret;
 
     for (final EntityComboBoxModel comboBoxModel : comboBoxModels) {
-      final Property property = EntityRepository.get().getEntityProperty(getEntityID(), comboBoxModel.getEntityID());
-      if (property != null)
-        ret.put(property, comboBoxModel);
+      final List<Property.EntityProperty > properties =
+              EntityRepository.get().getEntityProperties(getEntityID(), comboBoxModel.getEntityID());
+      if (properties.size() > 0)
+        ret.put(properties.get(0), comboBoxModel);//todo perhaps throw an exception?
       else
         throw new RuntimeException("Property not found for EntityComboBoxModel: " + comboBoxModel);
     }
@@ -1392,15 +1395,17 @@ public class EntityModel implements IRefreshable {
     final List<Entity> lastDeleted = getLastDeletedEntities();
     if (lastDeleted != null && lastDeleted.size() > 0) {
       for (final EntityModel detailModel : detailModels) {
-        final EntityComboBoxModel comboModel = detailModel.getEntityComboBoxModel(
-                EntityRepository.get().getEntityProperty(detailModel.getEntityID(), getEntityID()));
-        if (comboModel != null) {
-          for (final Entity deletedEntity : lastDeleted)
-            comboModel.removeItem(deletedEntity);
-          if (comboModel.getSize() > 0)
-            comboModel.setSelectedItem(comboModel.getElementAt(0));
-          else
-            comboModel.setSelectedItem(null);
+        for (final Property.EntityProperty property :
+                EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
+          final EntityComboBoxModel comboModel = detailModel.getEntityComboBoxModel(property);
+          if (comboModel != null) {
+            for (final Entity deletedEntity : lastDeleted)
+              comboModel.removeItem(deletedEntity);
+            if (comboModel.getSize() > 0)
+              comboModel.setSelectedItem(comboModel.getElementAt(0));
+            else
+              comboModel.setSelectedItem(null);
+          }
         }
       }
     }
@@ -1408,10 +1413,12 @@ public class EntityModel implements IRefreshable {
 
   protected void refreshDetailModelsAfterInsertOrUpdate() throws UserException {
     for (final EntityModel detailModel : detailModels) {
-      final EntityComboBoxModel entityComboBoxModel = detailModel.getEntityComboBoxModel(
-              EntityRepository.get().getEntityProperty(detailModel.getEntityID(), getEntityID()));
-      if (entityComboBoxModel != null)
-        entityComboBoxModel.refresh();
+      for (final Property.EntityProperty property :
+              EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
+        final EntityComboBoxModel entityComboBoxModel = detailModel.getEntityComboBoxModel(property);
+        if (entityComboBoxModel != null)
+          entityComboBoxModel.refresh();
+      }
     }
   }
 

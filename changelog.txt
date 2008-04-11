@@ -88,3 +88,6 @@
   Restructured EntityApplicationPanel along with minor access modifier modifications
   EntityApplicationPanel.loginRequired() added
   EntityTableCellRenderer boolean renderer now indicates row selected status
+  EntityRepository.getEntityProperty() changed to getEntityProperties() since an entity can reference another via more than one property
+  Property.DenormalizedViewProperty, ownerEntityID changed to a more logical referencePropertyID
+  Entity.getDenormalizedValue changed according to the above

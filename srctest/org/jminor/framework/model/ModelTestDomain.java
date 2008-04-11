@@ -41,7 +41,7 @@ public class ModelTestDomain {
             new Property(TEST_DETAIL_BOOLEAN, Type.BOOLEAN, TEST_DETAIL_BOOLEAN).setDefaultValue(Type.Boolean.TRUE),
             new Property.EntityProperty(TEST_DETAIL_ENTITY_REF, TEST_DETAIL_ENTITY_REF, T_TEST_MASTER,
                     new Property(TEST_DETAIL_ENTITY_ID)),
-            new Property.DenormalizedViewProperty(TEST_DETAIL_MASTER_NAME_DENORM, T_TEST_MASTER,
+            new Property.DenormalizedViewProperty(TEST_DETAIL_MASTER_NAME_DENORM, TEST_DETAIL_ENTITY_REF,
                     EntityRepository.get().getProperty(T_TEST_MASTER, TEST_MASTER_NAME), TEST_DETAIL_MASTER_NAME_DENORM));
   }
 }

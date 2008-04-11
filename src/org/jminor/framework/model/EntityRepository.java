@@ -252,13 +252,19 @@ public class EntityRepository implements Serializable {
     return null;
   }
 
-
-  public Property.EntityProperty getEntityProperty(final String entityID, final String referenceEntityID) {
+  /**
+   * Returns the properties referencing entities of the given type
+   * @param entityID the ID of the entity from which to retrieve the reference properties
+   * @param referenceEntityID the ID of the reference entity
+   * @return a List containing the properties
+   */
+  public List<Property.EntityProperty> getEntityProperties(final String entityID, final String referenceEntityID) {
+    final List<Property.EntityProperty > ret = new ArrayList<Property.EntityProperty>();
     for (final Property.EntityProperty property : getEntityProperties(entityID))
       if (property.referenceEntityID.equals(referenceEntityID))
-        return property;
+        ret.add(property);
 
-    return null;
+    return ret;
   }
 
   public Map<String, Property> getProperties(final String entityID) {
@@ -451,7 +457,7 @@ public class EntityRepository implements Serializable {
         if (entityProperty.referenceEntityID.equals(entityID))
           dependencies.addDependency(entityCheckClass, entityProperty.referenceProperties);
     }
-    
+
     return dependencies;
   }
 

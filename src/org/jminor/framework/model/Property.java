@@ -399,22 +399,22 @@ public class Property implements Serializable {
    */
   public static class DenormalizedViewProperty extends NonDbProperty {
 
-    public final String ownerEntityID;
+    public final String referencePropertyID;
     public final Property denormalizedProperty;
 
-    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID, final Property property) {
-      this(propertyID, ownerEntityID, property, null);
+    public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property) {
+      this(propertyID, referencePropertyID, property, null);
     }
 
-    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID, final Property property,
+    public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property,
                                     final String caption) {
-      this(propertyID, ownerEntityID, property, caption, -1);
+      this(propertyID, referencePropertyID, property, caption, -1);
     }
 
-    public DenormalizedViewProperty(final String propertyID, final String ownerEntityID, final Property property,
+    public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property,
                                     final String caption, final int preferredWidth) {
       super(propertyID, property.propertyType, caption, preferredWidth);
-      this.ownerEntityID = ownerEntityID;
+      this.referencePropertyID = referencePropertyID;
       this.denormalizedProperty = property;
     }
   }

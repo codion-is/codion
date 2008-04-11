@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
@@ -31,6 +27,11 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
+import org.apache.log4j.Logger;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -712,25 +713,29 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
   }
 
-  public void filterByReference(final List<Entity> referenceEntities, final String entityID)
+  public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID)
           throws UserException {
     if (filterQueryByMaster)
-      setExactSearchValue(entityID, referenceEntities);
+      setExactSearchValue(referencedEntityID, referenceEntities);
     else
       setLikeFilterValue((referenceEntities == null || referenceEntities.size() == 0)
-              ? null : referenceEntities.get(0).toString(), getColumnIndex(entityID));
+              ? null : referenceEntities.get(0).toString(), getColumnIndex(referencedEntityID));
   }
 
-  public void setExactSearchValue(final String entityID, final List<Entity> referenceEntities) throws UserException {
-    final PropertySearchModel searchModel = getPropertySearchModel(
-            EntityRepository.get().getEntityProperty(getEntityID(), entityID).propertyID);
-    if (searchModel != null) {
-      searchModel.initialize();
-      searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
-      searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
-      searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
-      forceRefresh();
+  public void setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
+    boolean searchValueChanged = false;
+    for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), referencedEntityID)) {
+      final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
+      if (searchModel != null) {
+        searchModel.initialize();
+        searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
+        searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
+        searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
+        searchValueChanged = true;
+      }
     }
+    if (searchValueChanged)
+      forceRefresh();
   }
 
   public List<PropertySearchModel> getPropertySearchModels() {

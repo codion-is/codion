@@ -49,7 +49,7 @@ public class EmpDept {
             new Property.EntityProperty(EMPLOYEE_MGR_REF, "Manager", T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.SHORT_DATE, "Hiredate"),
-            new Property.DenormalizedViewProperty(EmpDept.DEPARTMENT_LOCATION, T_DEPARTMENT,
+            new Property.DenormalizedViewProperty(EmpDept.DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_REF,
                     EntityRepository.get().getProperty(T_DEPARTMENT, EmpDept.DEPARTMENT_LOCATION),
                     "Dept. location", 100));
 

@@ -624,9 +624,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   private Object getDenormalizedValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Property.EntityProperty ownerProperty =
-            EntityRepository.get().getEntityProperty(getEntityID(), denormalizedViewProperty.ownerEntityID);
-    final Entity valueOwner = getEntityValue(ownerProperty.propertyID);
+    final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedProperty) : null;
   }
