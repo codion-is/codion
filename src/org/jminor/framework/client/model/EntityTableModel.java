@@ -1096,12 +1096,20 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   protected ICriteria getSearchCriteria() {
-    final CriteriaSet ret = new CriteriaSet(CriteriaSet.Conjunction.AND);
+    final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
     for (final AbstractSearchModel criteria : propertySearchModels)
       if (criteria.stSearchEnabled.isActive())
         ret.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
 
     return ret.getCriteriaCount() > 0 ? ret : null;
+  }
+
+  /**
+   * @return the conjuction to be used when more than one search criteria is specified, defaults to AND
+   * @see org.jminor.common.db.CriteriaSet.Conjunction
+   */
+  protected CriteriaSet.Conjunction getSearchCriteriaConjunction() {
+    return CriteriaSet.Conjunction.AND;
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
