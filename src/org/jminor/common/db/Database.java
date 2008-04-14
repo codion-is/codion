@@ -277,7 +277,10 @@ public class Database {
         DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true");
       }
       catch (SQLException e) {
-        e.printStackTrace();
+        if (e.getSQLState().equals("08006"))//08006 is expected on Derby shutdown
+          System.out.println("Embedded Derby database successfully shut down!");
+        else
+          e.printStackTrace();
       }
     }
   }

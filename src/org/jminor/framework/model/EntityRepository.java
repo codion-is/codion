@@ -54,23 +54,23 @@ public class EntityRepository implements Serializable {
     return instance;
   }
 
-  public void add(final EntityRepository ed) {
+  public void add(final EntityRepository repository) {
     initContainers();
-    instance.readOnly.putAll(ed.readOnly);
-    instance.properties.putAll(ed.properties);
-    instance.visibleProperties.putAll(ed.visibleProperties);
-    instance.visiblePropertyIndexes.putAll(ed.visiblePropertyIndexes);
-    instance.primaryKeyProperties.putAll(ed.primaryKeyProperties);
-    instance.primaryKeyColumnNames.putAll(ed.primaryKeyColumnNames);
-    instance.databaseProperties.putAll(ed.databaseProperties);
-    instance.idSources.putAll(ed.idSources);
-    instance.entityOrderByColumns.putAll(ed.entityOrderByColumns);
-    instance.entityProperties.putAll(ed.entityProperties);
-    instance.entitySelectStrings.putAll(ed.entitySelectStrings);
-    instance.entityTableNames.putAll(ed.entityTableNames);
-    instance.entitySelectTableNames.putAll(ed.entitySelectTableNames);
-    instance.entityIdSources.putAll(ed.entityIdSources);
-    instance.entityDependencies.putAll(ed.entityDependencies);
+    instance.readOnly.putAll(repository.readOnly);
+    instance.properties.putAll(repository.properties);
+    instance.visibleProperties.putAll(repository.visibleProperties);
+    instance.visiblePropertyIndexes.putAll(repository.visiblePropertyIndexes);
+    instance.primaryKeyProperties.putAll(repository.primaryKeyProperties);
+    instance.primaryKeyColumnNames.putAll(repository.primaryKeyColumnNames);
+    instance.databaseProperties.putAll(repository.databaseProperties);
+    instance.idSources.putAll(repository.idSources);
+    instance.entityOrderByColumns.putAll(repository.entityOrderByColumns);
+    instance.entityProperties.putAll(repository.entityProperties);
+    instance.entitySelectStrings.putAll(repository.entitySelectStrings);
+    instance.entityTableNames.putAll(repository.entityTableNames);
+    instance.entitySelectTableNames.putAll(repository.entitySelectTableNames);
+    instance.entityIdSources.putAll(repository.entityIdSources);
+    instance.entityDependencies.putAll(repository.entityDependencies);
   }
 
   public String[] getInitializedEntities() {
@@ -256,7 +256,7 @@ public class EntityRepository implements Serializable {
    * Returns the properties referencing entities of the given type
    * @param entityID the ID of the entity from which to retrieve the reference properties
    * @param referenceEntityID the ID of the reference entity
-   * @return a List containing the properties
+   * @return a List containing the properties, an empty list is returned in case no properties fit the criteria
    */
   public List<Property.EntityProperty> getEntityProperties(final String entityID, final String referenceEntityID) {
     final List<Property.EntityProperty > ret = new ArrayList<Property.EntityProperty>();

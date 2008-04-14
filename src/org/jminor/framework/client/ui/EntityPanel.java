@@ -3,11 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.i18n.Messages;
@@ -36,6 +31,12 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JRViewer;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -125,7 +126,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
 
-  private final boolean allowQueryConfiguration;
+  private final boolean queryConfigurationAllowed;
   private final boolean compactPanel;
   private final boolean specialRendering;
   private final boolean refreshOnInit;
@@ -171,18 +172,18 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
-                     final int detailPanelState, final boolean allowQueryConfiguration) {
+                     final int detailPanelState, final boolean queryConfigurationAllowed) {
     this(refreshOnInit, specialRendering, horizontalButtons, detailPanelState,
-            allowQueryConfiguration,  false);
+            queryConfigurationAllowed,  false);
   }
 
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
-                     final int detailPanelState, final boolean allowQueryConfiguration, final boolean compactPanel) {
+                     final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactPanel) {
     if (detailPanelState == DIALOG)
       throw new IllegalArgumentException("EntityPanel constructor only accepts HIDDEN or EMBEDDED as default detail states");
 
     this.refreshOnInit = refreshOnInit;
-    this.allowQueryConfiguration = allowQueryConfiguration;
+    this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.specialRendering = specialRendering;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
@@ -256,6 +257,22 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       }
       this.editPanel = initializeEditPanel();
       this.entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
+      if (entityTablePanel != null) {
+        entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
+        if (editPanel != null || detailEntityPanels.size() > 0) {
+          entityTablePanel.setDoubleClickAction(new AbstractAction() {
+            public void actionPerformed(final ActionEvent e) {
+              if (editPanel != null) {
+                if (getEditPanelState() == HIDDEN)
+                  setEditPanelState(DIALOG);
+                else if (getDetailPanelState() == HIDDEN)
+                  setDetailPanelState(DIALOG);
+              }
+            }
+          });
+        }
+        entityTablePanel.setMinimumSize(new Dimension(0,0));
+      }
       this.horizontalSplitPane = this.detailEntityPanels.size() > 0 ? initializeLeftRightSplitPane() : null;
       this.detailTabPane = this.detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
 
@@ -289,6 +306,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
+   * @return Value for property 'queryConfigurationAllowed'.
+   */
+  public boolean isQueryConfigurationAllowed() {
+    return queryConfigurationAllowed;
+  }
+
+  /**
    * @return Value for property 'defaultFocusComponent'.
    */
   public JComponent getDefaultFocusComponent() {
@@ -304,6 +328,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    */
   public EntityTablePanel getTablePanel() {
     return this.entityTablePanel;
+  }
+
+  public JPanel getEditPanel() {
+    return this.editPanel;
   }
 
   /**
@@ -985,24 +1013,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   protected void initializeControlPanels() {}
 
   protected EntityTablePanel initializeEntityTablePanel(final boolean specialRendering) {
-    final EntityTablePanel ret = new EntityTablePanel(model.getTableModel(), getTablePopupControlSet(),
-            specialRendering, allowQueryConfiguration);
-    ret.addSouthPanelButtons(getSouthPanelButtons(ret));
-    if (editPanel != null || detailEntityPanels.size() > 0) {
-      ret.setDoubleClickAction(new AbstractAction() {
-        public void actionPerformed(final ActionEvent e) {
-          if (editPanel != null) {
-            if (getEditPanelState() == HIDDEN)
-              setEditPanelState(DIALOG);
-            else if (getDetailPanelState() == HIDDEN)
-              setDetailPanelState(DIALOG);
-          }
-        }
-      });
-    }
-    ret.setMinimumSize(new Dimension(0,0));
-
-    return ret;
+    return new EntityTablePanel(getModel().getTableModel(), getTablePopupControlSet(),
+            specialRendering, isQueryConfigurationAllowed());
   }
 
   protected AbstractButton[] getSouthPanelButtons(final EntityTablePanel tablePanel) {
@@ -1063,7 +1075,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         controlMap.put(MENU_DELETE, getDeleteSelectedControl());
       controlMap.put(PRINT, getPrintControl());
       controlMap.put(VIEW_DEPENDENCIES, getViewDependenciesControl());
-      if (allowQueryConfiguration)
+      if (isQueryConfigurationAllowed())
         controlMap.put(CONFIGURE_QUERY, getConfigureQueryControl());
     }
   }
@@ -1300,7 +1312,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private JButton getSearchButton(final EntityTablePanel panel) {
-    if (!allowQueryConfiguration)
+    if (!isQueryConfigurationAllowed())
       return null;
 
     final Control toggleSearch = new Control() {

@@ -3,22 +3,28 @@
  */
 package org.jminor.framework.client.model;
 
-import junit.framework.TestCase;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.ModelTestDomain;
 
+import junit.framework.TestCase;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class TestEntityTableModel extends TestCase {
 
-  private final Entity[] testEntities;
+  private static final Entity[] testEntities;
 
   private final EntityTableModel testModel = new EntityTableModelTmp();
 
+  static {
+    new ModelTestDomain();
+    testEntities = initTestEntities(new Entity[5]);
+  }
+  
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     for (int i = 0; i < testEntities.length; i++) {
       testEntities[i] = new Entity(ModelTestDomain.T_TEST_DETAIL);
@@ -31,8 +37,6 @@ public class TestEntityTableModel extends TestCase {
 
   public TestEntityTableModel(final String name) {
     super(name);
-    new ModelTestDomain();
-    testEntities = initTestEntities(new Entity[5]);
   }
 
   public void testEntityTableModel() throws Exception {
@@ -153,7 +157,7 @@ public class TestEntityTableModel extends TestCase {
     return true;
   }
 
-  public class EntityTableModelTmp extends EntityTableModel {
+  public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
       super(null, ModelTestDomain.T_TEST_DETAIL);
     }

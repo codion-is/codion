@@ -512,6 +512,15 @@ public class EntityTablePanel extends JPanel {
     return searchRefreshToolBar;
   }
 
+  /**
+   * Returns the TableCellRenderer used for this EntityTablePanel
+   * @param specialRendering if true then the underlying Entity has specific background coloring
+   * @return the TableCellRenderer
+   */
+  protected TableCellRenderer initializeTableCellRenderer(final boolean specialRendering) {
+    return new EntityTableCellRenderer(this.tableModel, specialRendering);
+  }
+
   private JTable initializeJTable(final EntityTableModel tableModel, final boolean specialRendering) {
     final JTable ret = new JTable(tableModel.getTableSorter(), initializeTableColumnModel(specialRendering),
             tableModel.getSelectionModel());
@@ -557,7 +566,7 @@ public class EntityTablePanel extends JPanel {
     final List<TableColumn> columns = getTableColumns(tableModel.getTableColumnProperties());
     for (final TableColumn column : columns) {
       column.setResizable(true);
-      column.setCellRenderer(new EntityTableCellRenderer(this.tableModel, specialRendering));
+      column.setCellRenderer(initializeTableCellRenderer(specialRendering));
       columnModel.addColumn(column);
     }
 

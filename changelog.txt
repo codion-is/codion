@@ -91,3 +91,6 @@
   EntityRepository.getEntityProperty() changed to getEntityProperties() since an entity can reference another via more than one property
   Property.DenormalizedViewProperty, ownerEntityID changed to a more logical referencePropertyID
   Entity.getDenormalizedValue changed according to the above
+  EntityTablePanel.initializeTableCellRenderer() added
+  EntityTablePanel.allowQueryConfiguration renamed to queryConfigurationAllowed, added getter
+  Moved code from EntityPanel.initializeEntityTablePanel to EntityPanel.initialize, since it prevented simple overriding of said method

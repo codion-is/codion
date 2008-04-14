@@ -281,7 +281,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * Represents a foreign key reference to a defined entity
+   * A property that represents a reference to another entity.
    */
   public static class EntityProperty extends Property {
 
@@ -308,7 +308,7 @@ public class Property implements Serializable {
         if (referenceProperty.propertyID.equals(propertyID))
           throw new IllegalArgumentException(referenceEntityID + ", reference property does not have a unique name: " + propertyID);
       if (referenceEntityID == null)
-        throw new IllegalArgumentException("entityID is null: " + propertyID);
+        throw new IllegalArgumentException("referenceEntityID is null: " + propertyID);
 
       for (final Property referenceProperty : referenceProperties)
         referenceProperty.setParentProperty(this);
