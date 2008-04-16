@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.Database;
@@ -28,6 +24,11 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;

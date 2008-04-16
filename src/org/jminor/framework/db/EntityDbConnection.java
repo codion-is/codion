@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbConnection;
@@ -31,6 +27,11 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
+
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -233,7 +234,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
               (distinct ? "distinct " : "") + columnName,
               "where " + columnName + " is not null", order ? columnName : null);
 
-      return query(sql, getPacker(EntityRepository.get().getProperty(entityID, columnName).propertyType));
+      return query(sql, getPacker(EntityRepository.get().getProperty(entityID, columnName).propertyType), -1);
     }
     catch (SQLException e) {
       throw new DbException(e, sql);
@@ -266,7 +267,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
       sql += " for update" + ((Database.isOracle() || Database.isPostgreSQL()) ? " nowait" : "");
 
-      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
+      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
       if (result.size() == 0)
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
       if (result.size() > 1) {
@@ -354,7 +355,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition,
               order ? EntityRepository.get().getOrderByColumnNames(criteria.getEntityID()) : null);
 
-      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
+      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getRecordCount());
 
       if (!lastQueryResultCached())
         setReferencedEntities(result);
@@ -394,7 +395,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final String sql = Database.getTableStatusQueryString(tableName);
     try {
-      return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER).get(0);
+      return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER, -1).get(0);
     }
     catch (SQLException sqle) {
       return getRecordCount(tableName);
@@ -533,7 +534,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
           sql = DbUtil.generateSelectSql(datasource, EntityRepository.get().getSelectString(criteria.getEntityID()),
                   criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
 
-          final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()));
+          final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
 
           if (entityCacheEnabled)
             addToEntityCache(entityID, result);
@@ -618,7 +619,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private TableStatus getRecordCount(final String tableName) throws DbException {
     final String sql = "select count(*) from " + tableName;
     try {
-      return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER).get(0);
+      return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER, -1).get(0);
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, sql);
@@ -670,9 +671,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static IResultPacker getPacker(final Type propertyType) {
     return new IResultPacker() {
-      public List pack(final ResultSet resultSet) throws SQLException {
+      public List pack(final ResultSet resultSet, final int recordCount) throws SQLException {
         final List<Object> ret = new ArrayList<Object>(50);
-        while (resultSet.next()) {
+        int counter = 0;
+        while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
           switch(propertyType) {
             case INT:
               ret.add(resultSet.getInt(1));

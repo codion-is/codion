@@ -33,16 +33,19 @@ public class EntityResultPacker implements IResultPacker<Entity> {
 
   /**
    * Packs the contents of <code>resultSet</code> into a List of Entity objects.
-   * The resulting entities do not contain values for reference properties (Property.EntityProperty)
+   * The resulting entities do not contain values for reference properties (Property.EntityProperty).
+   * This method does not close the ResultSet object.
    * @param resultSet the ResultSet object
+   * @param recordCount the number of records to retrieve from the result set
    * @return a List of Entity objects representing the contents of <code>resultSet</code>
    * @throws SQLException in case of an exception
    */
-  public synchronized List<Entity> pack(final ResultSet resultSet) throws SQLException {
+  public synchronized List<Entity> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
     try {
       this.resultSet = resultSet;
       final List<Entity> ret = new ArrayList<Entity>();
-      while (resultSet.next())
+      int counter = 0;
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(loadEntity());
 
       return ret;

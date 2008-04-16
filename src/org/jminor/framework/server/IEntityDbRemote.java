@@ -3,9 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
@@ -14,6 +11,10 @@ import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -172,7 +173,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws org.jminor.common.db.DbException in case the entity is already locked by another user
    * @throws Exception in case of exception
    * @throws RemoteException in case of a remote exception
-   */  
+   */
   public Entity selectForUpdate(final EntityKey primaryKey) throws Exception;
 
   /**

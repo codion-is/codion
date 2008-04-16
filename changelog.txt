@@ -94,3 +94,4 @@
   EntityTablePanel.initializeTableCellRenderer() added
   EntityTablePanel.allowQueryConfiguration renamed to queryConfigurationAllowed, added getter
   Moved code from EntityPanel.initializeEntityTablePanel to EntityPanel.initialize, since it prevented simple overriding of said method
+  A parameter to limit the number of records retrieved, recordCount, added to EntityCriteria, DbConnection and relevant EntityDbConnection code

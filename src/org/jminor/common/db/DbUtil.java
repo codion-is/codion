@@ -40,9 +40,10 @@ public class DbUtil {
   }
 
   public static final IResultPacker<Integer> INT_PACKER = new IResultPacker<Integer>() {
-    public List<Integer> pack(final ResultSet rs) throws SQLException {
+    public List<Integer> pack(final ResultSet rs, final int recordCount) throws SQLException {
       final ArrayList<Integer> ret = new ArrayList<Integer>();
-      while (rs.next())
+      int counter = 0;
+      while (rs.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(rs.getInt(1));
 
       return ret;
@@ -50,9 +51,10 @@ public class DbUtil {
   };
 
   public static final IResultPacker<String> STRING_PACKER = new IResultPacker<String>() {
-    public List<String> pack(final ResultSet rs) throws SQLException {
+    public List<String> pack(final ResultSet rs, final int recordCount) throws SQLException {
       final ArrayList<String> ret = new ArrayList<String>();
-      while (rs.next())
+      int counter = 0;
+      while (rs.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(rs.getString(1));
 
       return ret;
@@ -60,7 +62,7 @@ public class DbUtil {
   };
 
   public static final IResultPacker<TableStatus> TABLE_STATUS_PACKER = new IResultPacker<TableStatus>() {
-    public List<TableStatus> pack(final ResultSet rs) throws SQLException {
+    public List<TableStatus> pack(final ResultSet rs, final int recordCount) throws SQLException {
       final TableStatus stat = new TableStatus();
       rs.next();
       stat.setRecordCount(rs.getInt(1));

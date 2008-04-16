@@ -3,8 +3,9 @@
  */
 package org.jminor.common.db;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.model.Util;
+
+import org.apache.log4j.Logger;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -199,12 +200,13 @@ public class DbConnection {
    * Performs the given sql query and returns the result in a List
    * @param sql the query
    * @param resultPacker a IResultPacker instance for creating the return List
+   * @param recordCount the number of records to retrieve, use -1 to retrieve all
    * @return the query result in a List
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
-  public final synchronized List query(final String sql, final IResultPacker resultPacker) throws SQLException {
+  public final synchronized List query(final String sql, final IResultPacker resultPacker, final int recordCount) throws SQLException {
     requestsPerSecondCounter++;
-    if (cacheQueriesRequests > 0) {
+    if (cacheQueriesRequests > 0 && recordCount < 0) {
       if (queryCache.containsKey(sql)) {
         log.debug(connectionUser.getUsername() + " (cached): " + sql.toUpperCase()+";");
         lastResultCached = true;
@@ -218,8 +220,8 @@ public class DbConnection {
     Statement statement = null;
     try {
       statement = connection.createStatement();
-      final List ret = resultPacker.pack(statement.executeQuery(sql));
-      if (cacheQueriesRequests > 0)
+      final List ret = resultPacker.pack(statement.executeQuery(sql), recordCount);
+      if (cacheQueriesRequests > 0 && recordCount < 0)
         queryCache.put(sql, ret);
 
       return ret;
@@ -244,7 +246,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final List<String> queryStrings(final String sql) throws SQLException {
-    final List res = query(sql, DbUtil.STRING_PACKER);
+    final List res = query(sql, DbUtil.STRING_PACKER, -1);
     final List<String> ret = new ArrayList<String>(res.size());
     for (final Object object : res)
       ret.add((String) object);
@@ -275,7 +277,7 @@ public class DbConnection {
    */
   @SuppressWarnings({"unchecked"})
   public final List<Integer> queryIntegers(final String sql) throws SQLException {
-    return (List<Integer>) query(sql, DbUtil.INT_PACKER);
+    return (List<Integer>) query(sql, DbUtil.INT_PACKER, -1);
   }
 
   /**

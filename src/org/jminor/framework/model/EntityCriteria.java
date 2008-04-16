@@ -15,6 +15,7 @@ public class EntityCriteria implements Serializable {
   private final String entityID;
   private final ICriteria criteria;
   private final boolean isRangeCriteria;
+  private final int recordCount;
 
   private boolean tableHasAuditColumns = false;
   private String whereClause;
@@ -29,9 +30,20 @@ public class EntityCriteria implements Serializable {
 
   public EntityCriteria(final String entityID, final ICriteria criteria,
                         final boolean isRangeCriteria) {
+    this(entityID, criteria, isRangeCriteria, -1);
+  }
+
+  public EntityCriteria(final String entityID, final ICriteria criteria,
+                        final int recordCount) {
+    this(entityID, criteria, false, recordCount);
+  }
+
+  public EntityCriteria(final String entityID, final ICriteria criteria,
+                        final boolean isRangeCriteria, final int recordCount) {
     this.entityID = entityID;
     this.criteria = criteria;
     this.isRangeCriteria = isRangeCriteria;
+    this.recordCount = recordCount;
   }
 
   /**
@@ -50,6 +62,13 @@ public class EntityCriteria implements Serializable {
    */
   public boolean isRangeCriteria() {
     return isRangeCriteria;
+  }
+
+  /**
+   * @return the number of records to be returned
+   */
+  public int getRecordCount() {
+    return recordCount;
   }
 
   /**
