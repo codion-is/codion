@@ -18,7 +18,7 @@ public class EntityCriteria implements Serializable {
   private final int recordCount;
 
   private boolean tableHasAuditColumns = false;
-  private String whereClause;
+//  private String whereClause;
 
   public EntityCriteria(final String entityID) {
     this(entityID, null);
@@ -103,15 +103,10 @@ public class EntityCriteria implements Serializable {
   }
 
   public String getWhereClause(final boolean includeWhere) {
-    if (whereClause != null)
-      return whereClause;
-
     final String criteriaString = criteria == null ? "" : criteria.toString();
     if (criteriaString.length() > 0)
-      whereClause = (includeWhere ? "where " : "and ") + criteriaString;
+      return (includeWhere ? "where " : "and ") + criteriaString;
     else
-      whereClause = "";
-
-    return whereClause;
+      return "";
   }
 }
