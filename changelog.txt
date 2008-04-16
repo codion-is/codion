@@ -95,3 +95,4 @@
   EntityTablePanel.allowQueryConfiguration renamed to queryConfigurationAllowed, added getter
   Moved code from EntityPanel.initializeEntityTablePanel to EntityPanel.initialize, since it prevented simple overriding of said method
   A parameter to limit the number of records retrieved, recordCount, added to EntityCriteria, DbConnection and relevant EntityDbConnection code
+  Removed whereClause caching in EntityCriteria, it was the source of a subtle bug, where the criteria got cached with the where keyword during server logging but used without it
