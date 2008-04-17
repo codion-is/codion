@@ -294,7 +294,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * @param propertyID the property identifier
-   * @return the value of the property, sidestepping the EntityProxy
+   * @return the value of the property, circumventing the EntityProxy
    */
   public Object getRawValue(final String propertyID) {
     if (primaryKey.containsProperty(propertyID))
@@ -462,7 +462,10 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return true if the value of the given property is null
    */
   public final boolean isValueNull(final String propertyID) {
-    return isValueNull(getProperty(propertyID).propertyType, getRawValue(propertyID));
+    final Property property = getProperty(propertyID);
+    final Object value = property instanceof Property.NonDbProperty ? getValue(propertyID) : getRawValue(propertyID);
+
+    return isValueNull(property.propertyType, value);
   }
 
   /** {@inheritDoc} */

@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
-import org.apache.log4j.Level;
 import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
@@ -42,6 +38,11 @@ import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
 import org.jminor.framework.model.Type;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JRViewer;
+import org.apache.log4j.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -324,7 +325,7 @@ public class FrameworkUiUtil {
       throw new RuntimeException("No EntityComboBoxModel found in model: " + entityModel + " for property: " + property);
     final EntityComboBox ret = new EntityComboBox(boxModel, appInfo, newButtonFocusable);
     UiUtil.linkToEnabledState(enabledState, ret);
-    new ComboBoxPropertyLink(entityModel, property, null, ret);
+    new ComboBoxPropertyLink(entityModel, property, ret);
     MaximumMatch.enable(ret);
 
     return ret;
@@ -377,7 +378,7 @@ public class FrameworkUiUtil {
     final SteppedComboBox ret = new SteppedComboBox(model);
     ret.setEditable(editable);
     UiUtil.linkToEnabledState(enabledState, ret);
-    new ComboBoxPropertyLink(entityModel, property, null, ret);
+    new ComboBoxPropertyLink(entityModel, property, ret);
 
     return ret;
   }
@@ -427,7 +428,7 @@ public class FrameworkUiUtil {
     ret.setLineWrap(true);
     ret.setWrapStyleWord(true);
 
-    new TextPropertyLink(entityModel, property, ret, null, true, LinkType.READ_WRITE);
+    new TextPropertyLink(entityModel, property, ret, true, LinkType.READ_WRITE);
 
     return ret;
   }
@@ -468,21 +469,21 @@ public class FrameworkUiUtil {
         new TextPropertyLink(entityModel, property, ret = formatMaskString == null
                 ? new TextFieldPlus() :
                 UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters, false),
-                null, immediateUpdate, linkType);
+                immediateUpdate, linkType);
         break;
       case INT:
         new IntTextPropertyLink(entityModel, property,
-                (IntField) (ret = new IntField(0)), null, immediateUpdate, linkType, null);
+                (IntField) (ret = new IntField(0)), immediateUpdate, linkType, null);
         break;
       case DOUBLE:
         new DoubleTextPropertyLink(entityModel, property,
-                (DoubleField) (ret = new DoubleField(0)), null, immediateUpdate, linkType, null);
+                (DoubleField) (ret = new DoubleField(0)), immediateUpdate, linkType, null);
         break;
       case SHORT_DATE:
       case LONG_DATE:
         new DateTextPropertyLink(entityModel, property,
                 (JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
-                null, linkType, null, dateFormat, formatMaskString);
+                linkType, null, dateFormat, formatMaskString);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);

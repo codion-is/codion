@@ -32,26 +32,26 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   private final Format format;
 
   public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
-                          final String caption, final boolean immediateUpdate) {
-    this(owner, property, textComponent, caption, immediateUpdate, LinkType.READ_WRITE);
+                          final boolean immediateUpdate) {
+    this(owner, property, textComponent, immediateUpdate, LinkType.READ_WRITE);
   }
 
   public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
-                          final String caption, final boolean immediateUpdate,
+                          final boolean immediateUpdate,
                           final LinkType linkType) {
-    this(owner, property, textComponent, caption, immediateUpdate, linkType, null);
+    this(owner, property, textComponent, immediateUpdate, linkType, null);
   }
 
   public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
-                          final String caption, final boolean immediateUpdate,
+                          final boolean immediateUpdate,
                           final LinkType linkType, final Format format) {
-    this(owner, property, textComponent, caption, immediateUpdate, linkType, format, null);
+    this(owner, property, textComponent, immediateUpdate, linkType, format, null);
   }
 
   protected TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
-                             final String caption, final boolean immediateUpdate, final LinkType linkType,
+                             final boolean immediateUpdate, final LinkType linkType,
                              final Format format, final State enableState) {
-    super(entityModel, property, caption, linkType, enableState);
+    super(entityModel, property, linkType, enableState);
     this.textComponent = textComponent;
     this.format = format;
     this.immediateUpdate = immediateUpdate;

@@ -15,9 +15,9 @@ public class DoubleTextPropertyLink extends TextPropertyLink {
   private double maxValue = Double.POSITIVE_INFINITY;
 
   public DoubleTextPropertyLink(final EntityModel entityModel, final Property property,
-                                final DoubleField textField, final String caption, final boolean immediateUpdate,
+                                final DoubleField textField, final boolean immediateUpdate,
                                 final LinkType linkType, final State enableState) {
-    super(entityModel, property, textField, caption, immediateUpdate, linkType, null, enableState);
+    super(entityModel, property, textField, immediateUpdate, linkType, null, enableState);
   }
 
   /** {@inheritDoc} */

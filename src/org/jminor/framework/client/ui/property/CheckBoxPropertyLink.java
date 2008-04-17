@@ -23,7 +23,7 @@ public class CheckBoxPropertyLink extends AbstractEntityPropertyLink {
 
   public CheckBoxPropertyLink(final EntityModel entityModel, final Property property, final ButtonModel buttonModel,
                               final LinkType linkType, final State enabledState) {
-    super(entityModel, property, null, linkType, enabledState);
+    super(entityModel, property, linkType, enabledState);
     this.buttonModel = buttonModel;
     updateUI();
     this.buttonModel.addItemListener(new ItemListener() {

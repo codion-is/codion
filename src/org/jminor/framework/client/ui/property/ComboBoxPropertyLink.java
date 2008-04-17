@@ -23,19 +23,17 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
 
   private final ComboBoxModel boxModel;
 
-  public ComboBoxPropertyLink(final EntityModel entityModel, final String propertyID, final String caption,
-                              final JComboBox comboBox) {
-    this(entityModel, EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID), caption, comboBox);
+  public ComboBoxPropertyLink(final EntityModel entityModel, final String propertyID, final JComboBox comboBox) {
+    this(entityModel, EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID), comboBox);
   }
 
-  public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final String caption,
-                              final JComboBox comboBox) {
-    this(entityModel, property, caption, comboBox, LinkType.READ_WRITE, null);
+  public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox) {
+    this(entityModel, property, comboBox, LinkType.READ_WRITE, null);
   }
 
-  public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final String caption,
-                              final JComboBox comboBox, final LinkType linkType, final State enabledState) {
-    super(entityModel, property, caption, linkType, enabledState);
+  public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox,
+                              final LinkType linkType, final State enabledState) {
+    super(entityModel, property, linkType, enabledState);
     this.boxModel = comboBox.getModel();
     updateUI();
     comboBox.addItemListener(new ItemListener() {

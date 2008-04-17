@@ -97,3 +97,7 @@
   A parameter to limit the number of records retrieved, recordCount, added to EntityCriteria, DbConnection and relevant EntityDbConnection code
   Removed whereClause caching in EntityCriteria, it was the source of a subtle bug, where the criteria got cached with the where keyword during server logging but used without it
   EntityPanel.setDetailPanelState() now hides all child detail panels if the state is changing from DIALOG
+  Entity.isValueNull() fixed, it returned a false positive for Property.NonDbProperty values, since it only relied on Entity.getRawValue() which circumvents the EntityProxy, which handles NonDbProperties
+  EntityTable.initialize(), moved model refresh to top, otherwise the combo box models would be empty, thus preventing correct initial selection
+  AbstractEntityPropertyLink, caption removed from constructor, sent property.propertyID forward as action name, removed from subclass constructors also
+  EntityModel.modelCaption shortened to caption

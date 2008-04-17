@@ -220,6 +220,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       throw new RuntimeException("Cannot initialize a EntityPanel without a model, call setModel() first");
     try {
       UiUtil.setWaitCursor(true, this);
+      if (refreshOnInit)
+        model.refresh();//refreshes combo models
+      else
+        model.refreshComboBoxModels();
+
       bindEvents();
       addComponentListener(new ComponentAdapter() {
         public void componentHidden(ComponentEvent e) {
@@ -283,11 +288,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
       setDetailPanelState(detailPanelState);
       setEditPanelState(EMBEDDED);
-
-      if (refreshOnInit)
-        model.refresh();//refreshes combo models
-      else
-        model.refreshComboBoxModels();
     }
     catch (UserException e) {
       throw e.getRuntimeException();
@@ -350,7 +350,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /** {@inheritDoc} */
   public String toString() {
-    return this.model.getModelCaption();
+    return this.model.getCaption();
   }
 
   public void toggleDetailPanelState() {
@@ -978,7 +978,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       }
     });
     for (final EntityPanel detailPanel : detailEntityPanels.values())
-      ret.addTab(detailPanel.model.getModelCaption(), detailPanel);
+      ret.addTab(detailPanel.model.getCaption(), detailPanel);
 
     ret.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
@@ -1139,7 +1139,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       final EntityModel model = detailPanel.getModel();
       if (model == null)
         throw new RuntimeException("EntityPanel does not have a EntityModel associated with it");
-      ret.add(new Control(model.getModelCaption()) {
+      ret.add(new Control(model.getCaption()) {
         public void actionPerformed(ActionEvent e) {
           detailTabPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
@@ -1276,7 +1276,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)-29);
     detailDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailTabPane, false,
-            getModel().getModelCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
+            getModel().getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         setDetailPanelState(HIDDEN);
@@ -1293,7 +1293,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final Point location = getLocationOnScreen();
     location.setLocation(location.x+1, location.y + getSize().height-editPanel.getSize().height-98);
     editDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
-            getModel().getModelCaption(), false, true,
+            getModel().getCaption(), false, true,
             null, null, location, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         setEditPanelState(HIDDEN);

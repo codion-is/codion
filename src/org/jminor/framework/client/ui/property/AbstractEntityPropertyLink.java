@@ -13,12 +13,9 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
 
   private final Property property;
 
-  public AbstractEntityPropertyLink(final EntityModel entityModel, final Property property, final String caption,
-                            final LinkType linkType, final State enabledState) {
-    super(entityModel, caption, entityModel.getPropertyChangeEvent(property), linkType, enabledState);
-    if (property == null)
-      throw new IllegalArgumentException("Property cannot be null");
-
+  public AbstractEntityPropertyLink(final EntityModel entityModel, final Property property,
+                                    final LinkType linkType, final State enabledState) {
+    super(entityModel, property.propertyID, entityModel.getPropertyChangeEvent(property), linkType, enabledState);
     this.property = property;
   }
 

@@ -26,9 +26,9 @@ public class DateTextPropertyLink extends TextPropertyLink {
   private final Event updateValidColor = new Event("DateTextPropertyLink.updateValidColor");
 
   public DateTextPropertyLink(final EntityModel entityModel, final Property property, final JFormattedTextField textField,
-                              final String caption, final LinkType linkType, final State enableState,
+                              final LinkType linkType, final State enableState,
                               final DateFormat dateFormat, final String formatMaskString) {
-    super(entityModel, property, textField, caption, true, linkType, dateFormat, enableState);
+    super(entityModel, property, textField, true, linkType, dateFormat, enableState);
     if (dateFormat == null)
       throw new IllegalArgumentException("DateTextProperty must hava a date format");
 

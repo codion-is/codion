@@ -436,7 +436,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         mainApplicationPanels.add(entityPanel);
         if (entityPanels.size() > 1) {
           final String caption = (info.getCaption() == null || info.getCaption().length() == 0)
-                  ? entityModel.getModelCaption() : info.getCaption();
+                  ? entityModel.getCaption() : info.getCaption();
           applicationTabPane.addTab(caption, entityPanel);
         }
       }

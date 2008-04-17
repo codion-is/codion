@@ -152,7 +152,7 @@ public class EntityModel implements IRefreshable {
   /**
    * A caption describing this EntityModel
    */
-  private final String modelCaption;
+  private final String caption;
 
   /**
    * The ID of the Entity this EntityModel represents
@@ -228,29 +228,29 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Initiates a new EntityModel
-   * @param modelCaption a caption describing this EntityModel
+   * @param caption a caption describing this EntityModel
    * @param dbProvider a IEntityDbProvider
    * @param entityID the ID of the Entity this EntityModel represents
    * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
+  public EntityModel(final String caption, final IEntityDbProvider dbProvider,
                      final String entityID) throws UserException {
-    this(modelCaption, dbProvider, entityID, true);
+    this(caption, dbProvider, entityID, true);
   }
 
   /**
    * Initiates a new EntityModel
-   * @param modelCaption a caption describing this EntityModel
+   * @param caption a caption describing this EntityModel
    * @param dbProvider a IEntityDbProvider
    * @param entityID the ID of the Entity this EntityModel represents
    * @param includeTableModel true if this EntityModel should include a table model
    * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public EntityModel(final String modelCaption, final IEntityDbProvider dbProvider,
+  public EntityModel(final String caption, final IEntityDbProvider dbProvider,
                      final String entityID, final boolean includeTableModel) throws UserException {
     if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_MODELS_ENABLED))
       activeStateGroup.addState(stActive);//todo potential memory leak
-    this.modelCaption = modelCaption;
+    this.caption = caption;
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
     this.propertyComboBoxModels = initializeEntityComboBoxModels();
@@ -282,7 +282,7 @@ public class EntityModel implements IRefreshable {
    * returns the model id by default
    */
   public String toString() {
-    return getModelCaption();
+    return getCaption();
   }
 
   /**
@@ -295,8 +295,8 @@ public class EntityModel implements IRefreshable {
   /**
    * @return the id of this model
    */
-  public String getModelCaption() {
-    return modelCaption;
+  public String getCaption() {
+    return caption;
   }
 
   /**
@@ -774,7 +774,7 @@ public class EntityModel implements IRefreshable {
     if (!allowInsert())
       throw new UserException("This is model does not allow inserting!");
 
-    log.debug(modelCaption + " - insert "+ Util.getListContents(entities, false));
+    log.debug(caption + " - insert "+ Util.getListContents(entities, false));
 
     evtBeforeInsert.fire();
     validateData(entities, INSERT);
@@ -814,7 +814,7 @@ public class EntityModel implements IRefreshable {
     if (!allowUpdate())
       throw new UserException("This is model does not allow updating!");
 
-    log.debug(modelCaption + " - update " + Util.getListContents(entities, false));
+    log.debug(caption + " - update " + Util.getListContents(entities, false));
 
     evtBeforeUpdate.fire();
     validateData(entities, UPDATE);
@@ -842,7 +842,7 @@ public class EntityModel implements IRefreshable {
       throw new UserException("This is model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
-    log.debug(modelCaption + " - delete " + Util.getListContents(entities, false));
+    log.debug(caption + " - delete " + Util.getListContents(entities, false));
 
     evtBeforeDelete.fire();
     getTableModel().getSelectionModel().clearSelection();

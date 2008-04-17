@@ -3,10 +3,6 @@
  */
 package org.jminor.framework.profiling.ui;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
@@ -20,6 +16,11 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.profiling.ProfilingModel;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;

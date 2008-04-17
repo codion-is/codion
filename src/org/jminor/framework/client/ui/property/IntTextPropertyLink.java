@@ -15,9 +15,9 @@ public class IntTextPropertyLink extends TextPropertyLink {
   private int maxValue = Integer.MAX_VALUE;
 
   public IntTextPropertyLink(final EntityModel entityModel, final Property property, final IntField textField,
-                             final String caption, final boolean immediateUpdate, final LinkType linkType,
+                             final boolean immediateUpdate, final LinkType linkType,
                              final State enableState) {
-    super(entityModel, property, textField, caption, immediateUpdate, linkType, null, enableState);
+    super(entityModel, property, textField, immediateUpdate, linkType, null, enableState);
   }
 
   /** {@inheritDoc} */
