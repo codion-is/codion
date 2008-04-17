@@ -101,3 +101,4 @@
   EntityTable.initialize(), moved model refresh to top, otherwise the combo box models would be empty, thus preventing correct initial selection
   AbstractEntityPropertyLink, caption removed from constructor, sent property.propertyID forward as action name, removed from subclass constructors also
   EntityModel.modelCaption shortened to caption
+  EntityCriteria.orderByClause added, EntityDbConnection.selectMany() changed accordingly

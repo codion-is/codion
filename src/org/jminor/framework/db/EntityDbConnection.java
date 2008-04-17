@@ -352,8 +352,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         datasource = "(" + DbUtil.generateSelectSql(innerSubQuery,
                 selectString + ", rownum row_num", "", null) + ")";
       }
-      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition,
-              order ? EntityRepository.get().getOrderByColumnNames(criteria.getEntityID()) : null);
+      String orderByClause = criteria.getOrderByClause();
+      if (orderByClause == null && order)
+        orderByClause = EntityRepository.get().getOrderByColumnNames(criteria.getEntityID());
+      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, orderByClause);
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getRecordCount());
 

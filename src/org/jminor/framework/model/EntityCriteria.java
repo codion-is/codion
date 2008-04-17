@@ -16,6 +16,7 @@ public class EntityCriteria implements Serializable {
   private final ICriteria criteria;
   private final boolean isRangeCriteria;
   private final int recordCount;
+  private final String orderByClause;
 
   private boolean tableHasAuditColumns = false;
 
@@ -29,20 +30,32 @@ public class EntityCriteria implements Serializable {
 
   public EntityCriteria(final String entityID, final ICriteria criteria,
                         final boolean isRangeCriteria) {
-    this(entityID, criteria, isRangeCriteria, -1);
+    this(entityID, criteria, isRangeCriteria, -1, null);
+  }
+
+  public EntityCriteria(final String entityID, final ICriteria criteria,
+                        final String orderByClause) {
+    this(entityID, criteria, orderByClause, -1);
   }
 
   public EntityCriteria(final String entityID, final ICriteria criteria,
                         final int recordCount) {
-    this(entityID, criteria, false, recordCount);
+    this(entityID, criteria, null, recordCount);
   }
 
   public EntityCriteria(final String entityID, final ICriteria criteria,
-                        final boolean isRangeCriteria, final int recordCount) {
+                        final String orderByClause, final int recordCount) {
+    this(entityID, criteria, false, recordCount, orderByClause);
+  }
+
+  public EntityCriteria(final String entityID, final ICriteria criteria,
+                        final boolean isRangeCriteria, final int recordCount,
+                        final String orderByClause) {
     this.entityID = entityID;
     this.criteria = criteria;
     this.isRangeCriteria = isRangeCriteria;
     this.recordCount = recordCount;
+    this.orderByClause = orderByClause;
   }
 
   /**
@@ -54,6 +67,10 @@ public class EntityCriteria implements Serializable {
 
   public ICriteria getCriteria() {
     return criteria;
+  }
+
+  public String getOrderByClause() {
+    return orderByClause;
   }
 
   /**
