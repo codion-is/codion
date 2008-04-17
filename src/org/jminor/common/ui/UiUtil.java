@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui;
 
-import com.toedter.calendar.JCalendar;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
@@ -12,6 +11,8 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
+
+import com.toedter.calendar.JCalendar;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

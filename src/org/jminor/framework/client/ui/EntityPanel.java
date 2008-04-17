@@ -390,7 +390,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (state != HIDDEN)
       getSelectedDetailPanel().initialize();
 
-    model.setLinkedDetailModel(state != HIDDEN ? getSelectedDetailPanel().getModel() : null);
+    if (detailPanelState == DIALOG)//if we are leaving the DIALOG state, hide all child detail dialogs
+      for (final EntityPanel detailPanel : detailEntityPanels.values())
+        if (detailPanel.getDetailPanelState() == DIALOG)
+          detailPanel.setDetailPanelState(HIDDEN);
+
+    model.setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().getModel());
 
     detailPanelState = state;
     if (state != DIALOG)

@@ -18,7 +18,6 @@ public class EntityCriteria implements Serializable {
   private final int recordCount;
 
   private boolean tableHasAuditColumns = false;
-//  private String whereClause;
 
   public EntityCriteria(final String entityID) {
     this(entityID, null);

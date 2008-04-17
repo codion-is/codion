@@ -1,2 +1,3 @@
 Fiskeldisleyfi, opna kvíaglugga með því að tvísmella á starfsleyfi, opna eldisglugga með því að tvísmella á kví,
 embedda kvíaglugga með því að miðjusmella á tab, eldisgluggi lokast en opnast svo ekki þegar tvísmellt er á kví
+**fixed**
