@@ -478,19 +478,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final EntityCriteria criteria, final boolean order) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectMany(criteria, order);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException, RemoteException {
     try {

@@ -213,16 +213,6 @@ public interface IEntityDb{
   public List<Entity> selectMany(final EntityCriteria criteria) throws Exception;
 
   /**
-   * Selects entities according to the specified criteria
-   * @param criteria the criteria specifying which entities to select
-   * @param order if true then the result is orderd according to the entities ordering colomns
-   * @return entities according to the given criteria
-   * @throws org.jminor.common.db.DbException in case of a db exception
-   * @throws Exception in case of exception
-   */
-  public List<Entity> selectMany(final EntityCriteria criteria, final boolean order) throws Exception;
-
-  /**
    * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition
    * @param entityID the Class of the entities to select
    * @param propertyID the ID of the condition property

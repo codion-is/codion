@@ -328,13 +328,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final EntityCriteria criteria) throws DbException {
-    return selectMany(criteria, false);
-  }
-
-  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectMany(final EntityCriteria criteria, final boolean order) throws DbException {
+  public List<Entity> selectMany(final EntityCriteria criteria) throws DbException {
     if (criteria.isKeyCriteria())
       return selectMany(((EntityKeyCriteria) criteria.getCriteria()).getProperties(),
               ((EntityKeyCriteria) criteria.getCriteria()).getKeys());
@@ -352,10 +347,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         datasource = "(" + DbUtil.generateSelectSql(innerSubQuery,
                 selectString + ", rownum row_num", "", null) + ")";
       }
-      String orderByClause = criteria.getOrderByClause();
-      if (orderByClause == null && order)
-        orderByClause = EntityRepository.get().getOrderByColumnNames(criteria.getEntityID());
-      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, orderByClause);
+      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getRecordCount());
 
@@ -385,7 +377,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID, final boolean order) throws DbException {
-    return selectMany(new EntityCriteria(entityID), order);
+    return selectMany(new EntityCriteria(entityID, null,
+            order ? EntityRepository.get().getOrderByColumnNames(entityID) : null));
   }
 
   /** {@inheritDoc} */

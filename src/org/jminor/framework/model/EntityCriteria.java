@@ -69,10 +69,6 @@ public class EntityCriteria implements Serializable {
     return criteria;
   }
 
-  public String getOrderByClause() {
-    return orderByClause;
-  }
-
   /**
    * @return Value for property 'rangeCriteria'.
    */
@@ -124,5 +120,9 @@ public class EntityCriteria implements Serializable {
       return (includeWhere ? "where " : "and ") + criteriaString;
     else
       return "";
+  }
+
+  public String getOrderByClause() {
+    return orderByClause;
   }
 }

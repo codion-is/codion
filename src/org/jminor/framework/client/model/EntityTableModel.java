@@ -1069,10 +1069,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
           set.addCriteria(propertyCriteria);
         if (isQueryRangeEnabled())
           set.addCriteria(getQueryRangeCriteria());
-        final EntityCriteria criteria = new EntityCriteria(getEntityID(), set, isQueryRangeEnabled());
+        final EntityCriteria criteria = new EntityCriteria(getEntityID(), set, isQueryRangeEnabled(),
+                -1, EntityRepository.get().getOrderByColumnNames(getEntityID()));
         criteria.setTableHasAuditColumns(tableStatus.tableHasAuditColumns());
 
-        return getDbConnectionProvider().getEntityDb().selectMany(criteria, true);
+        return getDbConnectionProvider().getEntityDb().selectMany(criteria);
       }
       else
         return getDbConnectionProvider().getEntityDb().selectAll(getEntityID(), true);
