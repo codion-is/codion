@@ -13,6 +13,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
+import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
@@ -290,6 +291,14 @@ public class EntityModel implements IRefreshable {
    */
   public IEntityDbProvider getDbConnectionProvider() {
     return dbConnectionProvider;
+  }
+
+  /**
+   * @return the database connection
+   * @throws UserException in case of an exception
+   */
+  public IEntityDb getEntityDb() throws UserException {
+    return getEntityDb();
   }
 
   /**
@@ -1242,7 +1251,7 @@ public class EntityModel implements IRefreshable {
 
   protected List<EntityKey> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
-      return getDbConnectionProvider().getEntityDb().insert(entities);
+      return getEntityDb().insert(entities);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -1254,7 +1263,7 @@ public class EntityModel implements IRefreshable {
 
   protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
-      return getDbConnectionProvider().getEntityDb().update(entities);
+      return getEntityDb().update(entities);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -1266,7 +1275,7 @@ public class EntityModel implements IRefreshable {
 
   protected void doDelete(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
-      getDbConnectionProvider().getEntityDb().delete(entities);
+      getEntityDb().delete(entities);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -1457,9 +1466,9 @@ public class EntityModel implements IRefreshable {
       return;
     try {
       if (status)
-        getDbConnectionProvider().getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
+        getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
       else
-        getDbConnectionProvider().getEntityDb().endTransaction(true);
+        getEntityDb().endTransaction(true);
 
       System.out.println("######################### " + (status ? "locked" : "unlocked") + ": " + activeEntity.getPrimaryKey());
       strictEditLockEnabled = status;

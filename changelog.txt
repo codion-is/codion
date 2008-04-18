@@ -103,3 +103,4 @@
   EntityModel.modelCaption shortened to caption
   EntityCriteria.orderByClause added, EntityDbConnection.selectMany() changed accordingly
   IEntityDb.selectMany(EntityCriteria criteria, boolean order) removed
+  Added getEntityDb() as a shorthand for getDbConnectionProvider().getEntityDb() to EntityModel and EntityTableModel

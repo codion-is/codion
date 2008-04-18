@@ -17,6 +17,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
@@ -305,6 +306,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public IEntityDbProvider getDbConnectionProvider() {
     return dbConnectionProvider;
+  }
+
+  /**
+   * @return the database connection
+   * @throws UserException in case of an exception
+   */
+  public IEntityDb getEntityDb() throws UserException {
+    return getDbConnectionProvider().getEntityDb();
   }
 
   /**
@@ -613,7 +622,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public void addEntitiesByPrimaryKeys(final List<EntityKey> primaryKeys, boolean atFrontOfList)
           throws UserException, DbException {
     try {
-      addEntities(getDbConnectionProvider().getEntityDb().selectMany(primaryKeys), atFrontOfList);
+      addEntities(getEntityDb().selectMany(primaryKeys), atFrontOfList);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -948,7 +957,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public final Map<String, List<Entity>> getSelectionDependencies() throws DbException, UserException {
     try {
-      return getDbConnectionProvider().getEntityDb().getDependentEntities(getSelectedEntities());
+      return getEntityDb().getDependentEntities(getSelectedEntities());
     }
     catch (DbException dbe) {
       throw dbe;
@@ -1073,10 +1082,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
                 -1, EntityRepository.get().getOrderByColumnNames(getEntityID()));
         criteria.setTableHasAuditColumns(tableStatus.tableHasAuditColumns());
 
-        return getDbConnectionProvider().getEntityDb().selectMany(criteria);
+        return getEntityDb().selectMany(criteria);
       }
       else
-        return getDbConnectionProvider().getEntityDb().selectAll(getEntityID(), true);
+        return getEntityDb().selectAll(getEntityID(), true);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -1125,7 +1134,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   protected boolean isRefreshRequired() throws UserException {
     final TableStatus currentTableStatus;
     try {
-      currentTableStatus = getDbConnectionProvider().getEntityDb().getTableStatus(
+      currentTableStatus = getEntityDb().getTableStatus(
               getEntityID(), tableStatus.tableHasAuditColumns());
       tableStatus.setTableHasAuditColumns(currentTableStatus.tableHasAuditColumns());
       if (forceRefresh || currentTableStatus.isNull() || !currentTableStatus.equals(tableStatus)) {
