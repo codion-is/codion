@@ -298,7 +298,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of an exception
    */
   public IEntityDb getEntityDb() throws UserException {
-    return getEntityDb();
+    return getDbConnectionProvider().getEntityDb();
   }
 
   /**

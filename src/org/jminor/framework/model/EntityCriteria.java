@@ -114,14 +114,21 @@ public class EntityCriteria implements Serializable {
     return getWhereClause(true);
   }
 
-  public String getWhereClause(final boolean includeWhere) {
+  /**
+   * @param includeWhereKeyword if false AND is used instaed of the WHERE keyword
+   * @return a where clause base on this criteria
+   */
+  public String getWhereClause(final boolean includeWhereKeyword) {
     final String criteriaString = criteria == null ? "" : criteria.toString();
     if (criteriaString.length() > 0)
-      return (includeWhere ? "where " : "and ") + criteriaString;
+      return (includeWhereKeyword ? "where " : "and ") + criteriaString;
     else
       return "";
   }
 
+  /**
+   * @return the order by clause specified by this criteria
+   */
   public String getOrderByClause() {
     return orderByClause;
   }
