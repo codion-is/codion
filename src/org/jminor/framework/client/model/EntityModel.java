@@ -271,6 +271,11 @@ public class EntityModel implements IRefreshable {
     return entityID;
   }
 
+  /**
+   * Sets the strict editing mode, if true the model locks the active record while it is being edited
+   * @param strictEditMode the strict editing mode
+   * @throws UserException in case of an exception
+   */
   public void setStrictEditMode(final boolean strictEditMode) throws UserException {
     if (!strictEditMode)
       setActiveEntityWriteLock(false);
@@ -504,19 +509,6 @@ public class EntityModel implements IRefreshable {
    */
   public ComboBoxModel getComboBoxModel(final Property property) {
     return propertyComboBoxModels.get(property);
-  }
-
-  /**
-   * Sets the ComboBoxModel to be associated with the given property
-   * @param property the property
-   * @param model the ComboBoxModel
-   * @throws RuntimeException in case the ComboBoxModel has already been set for this property
-   */
-  public void setComboBoxModel(final Property property, final ComboBoxModel model) {
-    if (propertyComboBoxModels.containsKey(property))
-      throw new RuntimeException("ComboBoxModel already associated with property: " + property);
-
-    propertyComboBoxModels.put(property, model);
   }
 
   /**
@@ -1459,6 +1451,19 @@ public class EntityModel implements IRefreshable {
     activeEntity.setValue(property.propertyID, value, validate);
 
     return value;
+  }
+
+  /**
+   * Sets the ComboBoxModel to be associated with the given property
+   * @param property the property
+   * @param model the ComboBoxModel
+   * @throws RuntimeException in case the ComboBoxModel has already been set for this property
+   */
+  private void setComboBoxModel(final Property property, final ComboBoxModel model) {
+    if (propertyComboBoxModels.containsKey(property))
+      throw new RuntimeException("ComboBoxModel already associated with property: " + property);
+
+    propertyComboBoxModels.put(property, model);
   }
 
   private void setActiveEntityWriteLock(final boolean status) throws UserException {
