@@ -9,7 +9,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
@@ -508,19 +507,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   public List<Entity> selectAll(final String entityID, final boolean order) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectAll(entityID, order);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public TableStatus getTableStatus(final String entityID, boolean tableHasAuditColumns) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.getTableStatus(entityID, tableHasAuditColumns);
     }
     catch (DbException dbe) {
       throw dbe;

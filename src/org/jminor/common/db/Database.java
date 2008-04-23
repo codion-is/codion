@@ -112,9 +112,6 @@ public class Database {
     ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED
   }
 
-  public static final String TABLE_STATUS_MYSQL = "select count(*), greatest(max(snt), max(ifnull(sbt,snt))) last_change from ";
-  public static final String TABLE_STATUS_ORACLE = "select count(*), greatest(max(snt), max(nvl(sbt,snt))) last_change from ";
-
   private static DateFormat DERBY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   private static final DbType DB_TYPE = getType();
@@ -239,17 +236,6 @@ public class Database {
         return "select " + sequenceName + ".nextval from dual";
       default:
         throw new IllegalArgumentException("Sequence support is not implemented for database type: " + DB_TYPE);
-    }
-  }
-
-  public static String getTableStatusQueryString(String tableName) {
-    switch (DB_TYPE) {
-      case MYSQL:
-        return TABLE_STATUS_MYSQL + tableName;
-      case ORACLE:
-        return TABLE_STATUS_ORACLE + tableName;
-      default:
-        throw new IllegalArgumentException("Database type does not support table status queries: " + DB_TYPE);
     }
   }
 

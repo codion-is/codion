@@ -37,7 +37,7 @@ public class PetstoreProfiling extends ProfilingModel {
     try {
       final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
       categoryModel.getTableModel().clearSelection();
-      categoryModel.forceRefresh();
+      categoryModel.refresh();
       selectRandomRow(categoryModel);
       selectRandomRow(categoryModel.getDetailModels().get(0));
       selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0));

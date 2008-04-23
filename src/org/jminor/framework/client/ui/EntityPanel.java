@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.State;
@@ -220,10 +219,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       throw new RuntimeException("Cannot initialize a EntityPanel without a model, call setModel() first");
     try {
       UiUtil.setWaitCursor(true, this);
-      if (refreshOnInit)
-        model.refresh();//refreshes combo models
-      else
-        model.refreshComboBoxModels();
 
       bindEvents();
       addComponentListener(new ComponentAdapter() {
@@ -288,6 +283,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
       setDetailPanelState(detailPanelState);
       setEditPanelState(EMBEDDED);
+
+      if (refreshOnInit)
+        model.refresh();//refreshes combo models
+      else
+        model.refreshComboBoxModels();
     }
     catch (UserException e) {
       throw e.getRuntimeException();
@@ -732,7 +732,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return ControlFactory.methodControl(model, "forceRefresh", refreshCaption,
+    return ControlFactory.methodControl(model, "refresh", refreshCaption,
             model.stActive, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -849,10 +849,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
           protected List<Entity> getAllEntitiesFromDb() throws DbException, UserException {
             return entities;
           }
-
-          protected void setCurrentTableStatus(final TableStatus currentTableStatus) {
-            currentTableStatus.setRecordCount(entities.size());
-            super.setCurrentTableStatus(currentTableStatus);
+          public boolean isQueryRangeEnabled() {
+            return false;
           }
         };
       }

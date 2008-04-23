@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.IntField;
@@ -81,9 +80,8 @@ public class EntityCriteriaPanel extends JPanel {
       panel.add(queryRangeMin);
       panel.add(new JLabel(FrameworkMessages.get(FrameworkMessages.TO)));
       panel.add(queryRangeMax);
-      final TableStatus status = tableModel.getTableStatus();
-      if (status.getRecordCount() > 0)
-        panel.add(new JLabel(FrameworkMessages.get(FrameworkMessages.OF) + " " + status.getRecordCount()
+      if (tableModel.getRecordCount() > 0)
+        panel.add(new JLabel(FrameworkMessages.get(FrameworkMessages.OF) + " " + tableModel.getRecordCount()
                 + " " + FrameworkMessages.get(FrameworkMessages.ROWS)));
       ret.add(panel, BorderLayout.NORTH);
     }

@@ -3,17 +3,16 @@
  */
 package org.jminor.framework.client.model.combobox;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
+
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -27,7 +26,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   private final String entityID;
   private final IEntityDbProvider dbProvider;
   private final boolean staticData;
-  private final TableStatus tableStatus = new TableStatus();
 
   private boolean dataInitialized = false;
   private boolean forceRefresh = false;
@@ -91,30 +89,22 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @param value Value to set for property 'forceRefresh'.
-   */
-  public void setForceRefresh(boolean value) {
-    forceRefresh = value;
-  }
-
-  /**
-   * Forces a refresh of this model, disregarding the status of the underlying table
+   * Forces a refresh of this model, disregarding the staticData directive
    * @throws org.jminor.common.model.UserException in case of an exception
    */
   public void forceRefresh() throws UserException {
     try {
-      setForceRefresh(true);
+      forceRefresh = true;
       refresh();
     }
     finally  {
-      setForceRefresh(false);
+      forceRefresh = false;
     }
   }
 
   protected List<?> getContents() {
     try {
-      if ((staticData && dataInitialized) ||
-              ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_SMART_REFRESH) && !isRefreshRequired())) {
+      if (staticData && dataInitialized && !forceRefresh) {
         log.trace(this + " refresh not required");
         return super.getContents();
       }
@@ -144,7 +134,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   public void clear() {
     setContents(null);
-    tableStatus.setNull();
     dataInitialized = false;
   }
 
@@ -215,33 +204,5 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     catch (Exception e) {
       throw new UserException(e);
     }
-  }
-
-  /**
-   * @return Value for property 'refreshRequired'.
-   * @throws org.jminor.common.model.UserException in case of an exception
-   */
-  protected boolean isRefreshRequired() throws UserException {
-    if (!tableStatus.isNull() && !tableStatus.tableHasAuditColumns())
-      return true;
-
-    final TableStatus currentTableStatus;
-    try {
-      currentTableStatus = dbProvider.getEntityDb().getTableStatus(getEntityID(), tableStatus.tableHasAuditColumns());
-    }
-    catch (UserException ue) {
-      throw ue;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
-    tableStatus.setTableHasAuditColumns(currentTableStatus.tableHasAuditColumns());
-    if (forceRefresh || currentTableStatus.isNull() || !currentTableStatus.equals(tableStatus)) {
-      tableStatus.setLastChange(currentTableStatus.getLastChange());
-      tableStatus.setRecordCount(currentTableStatus.getRecordCount());
-      return true;
-    }
-
-    return false;
   }
 }

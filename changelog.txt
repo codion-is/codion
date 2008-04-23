@@ -98,9 +98,16 @@
   Removed whereClause caching in EntityCriteria, it was the source of a subtle bug, where the criteria got cached with the where keyword during server logging but used without it
   EntityPanel.setDetailPanelState() now hides all child detail panels if the state is changing from DIALOG
   Entity.isValueNull() fixed, it returned a false positive for Property.NonDbProperty values, since it only relied on Entity.getRawValue() which circumvents the EntityProxy, which handles NonDbProperties
-  EntityTable.initialize(), moved model refresh to top, otherwise the combo box models would be empty, thus preventing correct initial selection
+  EntityPanel.initialize(), moved model refresh to top, otherwise the combo box models would be empty, thus preventing correct initial selection
   AbstractEntityPropertyLink, caption removed from constructor, sent property.propertyID forward as action name, removed from subclass constructors also
   EntityModel.modelCaption shortened to caption
   EntityCriteria.orderByClause added, EntityDbConnection.selectMany() changed accordingly
   IEntityDb.selectMany(EntityCriteria criteria, boolean order) removed
   Added getEntityDb() as a shorthand for getDbConnectionProvider().getEntityDb() to EntityModel and EntityTableModel
+  EntityPanel.initialize(), moved model refresh back to bottom since most EntityComboBoxModels are created during UI initialization
+  SmartRefresh/forceRefresh functionality removed
+  TableStatus deprecated
+  IEntityDb.getTableStatus() removed
+  EntityCriteria.isRangeCriteria and tableHasAuditColumns properties removed
+  EntityTableModel.recordCount added in place of TableStatus
+  EntityRepository.createDateColumns added

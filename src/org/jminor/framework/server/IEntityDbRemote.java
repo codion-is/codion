@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.db.IEntityDb;
@@ -90,17 +89,6 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @return the return paramter if any, otherwise null
    */
   public Object executeCallable(final String statement, final int outParamType) throws DbException, RemoteException;
-
-  /**
-   * Returns a TableStatus object for the given table
-   * @param entityID the class of the Entity for which to retrieve the table status
-   * @param tableHasAuditColumns set to true if the table in question has audit columns
-   * @return a TableStatus for <code>tableName</code>
-   * @throws DbException in case of a db exception
-   * @throws RemoteException in case of a remote exception
-   */
-  public TableStatus getTableStatus(final String entityID,
-                                    final boolean tableHasAuditColumns) throws DbException, RemoteException;
 
   /**
    * Inserts the given entities, returning a list containing the

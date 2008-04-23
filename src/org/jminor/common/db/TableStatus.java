@@ -9,6 +9,7 @@ import java.io.Serializable;
  * A class encapsulating the status of the data in a table,
  * the record cound and time of last modification, in case the table
  * has the required stamp columns
+ * @deprecated 
  */
 public class TableStatus implements Serializable {
 

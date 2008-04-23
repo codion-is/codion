@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
 import org.jminor.common.model.IntArray;
@@ -117,12 +116,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public final State stDataDirty = new State("EntityTableModel.stDataDirty", false);
 
   /**
-   * If set to true, then a full refresh is forced when <code>refresh()</code> is called,
-   * regardless if the table data has changed or not
-   */
-  private boolean forceRefresh = false;
-
-  /**
    * true while the model is refreshing
    */
   private boolean isRefreshing = false;
@@ -140,7 +133,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * False if the table should ignore the query range when refreshing
    */
-  private boolean queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE);
+  private final boolean queryRangeEnabled;
 
   /**
    * Represents the range of records to select from the underlying table
@@ -149,9 +142,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
           new PropertyCriteria(new Property("row_num", Type.INT), SearchType.INSIDE, 1, DEFAULT_QUERY_RANGE);
 
   /**
-   * Holds the status of the underlying table
+   * Used for keeping the number of records in the underlying table when query range is being used,
+   * this value is updated on each table model refresh
    */
-  private final TableStatus tableStatus = new TableStatus();
+  private int recordCount = -1;
 
   /**
    * The IEntityDb connection provider
@@ -229,6 +223,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     this.searchStateOnRefresh = getSearchModelState();
     this.tableSorter = new TableSorter(this);
     this.propertyFilterModels = initPropertyFilters();
+    this.queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE)
+            && EntityRepository.get().hasCreateDateColumn(entityID);
     bindEvents();
   }
 
@@ -385,13 +381,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return Value for property 'tableStatus'.
-   */
-  public TableStatus getTableStatus() {
-    return tableStatus;
-  }
-
-  /**
    * @return Value for property 'refreshing'.
    */
   public boolean isRefreshing() {
@@ -541,29 +530,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @param val Value to set for property 'forceRefresh'.
-   */
-  public void setForceRefresh(boolean val) {
-    this.forceRefresh = val;
-  }
-
-  /**
-   * Forces a refresh of this table model, disregarding the status of the underlying table
-   * @throws UserException in case of an exception
-   * @see #evtRefreshStarted
-   * @see #evtRefreshDone
-   */
-  public void forceRefresh() throws UserException {
-    try {
-      setForceRefresh(true);
-      refresh();
-    }
-    finally {
-      setForceRefresh(false);
-    }
-  }
-
-  /**
    * Refreshes this table model
    * @throws UserException in case of an exception
    * @see #evtRefreshStarted
@@ -574,13 +540,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return;
 
     try {
-      log.trace(this + " refreshing" + (forceRefresh ? " (forced)" : ""));
+      log.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_SMART_REFRESH) && !isRefreshRequired()) {
-        log.trace(this + " refresh not required");
-        return;
-      }
+      if (isQueryRangeEnabled())
+        refreshRecordCount();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       removeAll();
       addEntities(getAllEntitiesFromDb(), false);
@@ -595,7 +559,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
-      log.trace(this + " refreshing done" + (forceRefresh ? " (forced)" : ""));
+      log.trace(this + " refreshing done");
     }
   }
 
@@ -744,7 +708,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       }
     }
     if (searchValueChanged)
-      forceRefresh();
+      refresh();
   }
 
   public List<PropertySearchModel> getPropertySearchModels() {
@@ -1006,11 +970,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * Removes all elements from this table model
+   * @return the number of records in the underlying table, available only when query range is active
    */
-  public void clear() {
-    removeAll();
-    tableStatus.setNull();
+  public int getRecordCount() {
+    return recordCount;
   }
 
   /**
@@ -1018,13 +981,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public boolean isQueryRangeEnabled() {
     return queryRangeEnabled;
-  }
-
-  /**
-   * @param enabled Value to set for property 'queryRangeEnabled'.
-   */
-  public void setQueryRangeEnabled(boolean enabled) {
-    this.queryRangeEnabled = enabled;
   }
 
   /**
@@ -1078,9 +1034,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
           set.addCriteria(propertyCriteria);
         if (isQueryRangeEnabled())
           set.addCriteria(getQueryRangeCriteria());
-        final EntityCriteria criteria = new EntityCriteria(getEntityID(), set, isQueryRangeEnabled(),
-                -1, EntityRepository.get().getOrderByColumnNames(getEntityID()));
-        criteria.setTableHasAuditColumns(tableStatus.tableHasAuditColumns());
+        final EntityCriteria criteria = new EntityCriteria(getEntityID(), set,
+                EntityRepository.get().getOrderByColumnNames(getEntityID()));
 
         return getEntityDb().selectMany(criteria);
       }
@@ -1129,24 +1084,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   protected PropertyCriteria getQueryRangeCriteria() {
     return queryRangeCriteria;
-  }
-
-  protected boolean isRefreshRequired() throws UserException {
-    final TableStatus currentTableStatus;
-    try {
-      currentTableStatus = getEntityDb().getTableStatus(
-              getEntityID(), tableStatus.tableHasAuditColumns());
-      tableStatus.setTableHasAuditColumns(currentTableStatus.tableHasAuditColumns());
-      if (forceRefresh || currentTableStatus.isNull() || !currentTableStatus.equals(tableStatus)) {
-        setCurrentTableStatus(currentTableStatus);
-        return true;
-      }
-
-      return false;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
   }
 
   /**
@@ -1240,11 +1177,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return currentReportRecord;
   }
 
-  protected void setCurrentTableStatus(final TableStatus currentTableStatus) {
-    tableStatus.setLastChange(currentTableStatus.getLastChange());
-    tableStatus.setRecordCount(currentTableStatus.getRecordCount());
-  }
-
   protected synchronized void addEntities(final List<Entity> entities, final boolean atFront) {
     for (final Entity entity : entities) {
       if (include(entity)) {
@@ -1286,9 +1218,20 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
     return " " + FrameworkMessages.get(FrameworkMessages.RANGE) + " " + getQueryRangeFrom() + " "
             + FrameworkMessages.get(FrameworkMessages.TO) + " " + getQueryRangeTo()
-            + (tableStatus.getRecordCount() < 0 ? "" : (" "
-            + FrameworkMessages.get(FrameworkMessages.OF) + " "
-            + tableStatus.getRecordCount()));
+            + (getRecordCount() < 0 ? "" : (" " + FrameworkMessages.get(FrameworkMessages.OF) + " "
+            + getRecordCount()));
+  }
+
+  private void refreshRecordCount() throws UserException {
+    try {
+      recordCount = getEntityDb().selectRowCount(new EntityCriteria(getEntityID()));
+    }
+    catch (UserException ue) {
+      throw ue;
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
   }
 
   private int getColumnIndex(final String masterEntityID) {

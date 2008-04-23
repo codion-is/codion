@@ -166,7 +166,7 @@ public class EntityTablePanel extends JPanel {
             getTableModel().setQueryRangeFrom(panel.getQueryRangeFrom());
             getTableModel().setQueryRangeTo(panel.getQueryRangeTo());
           }
-          getTableModel().forceRefresh();
+          getTableModel().refresh();
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
@@ -421,7 +421,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return ControlFactory.methodControl(getTableModel(), "forceRefresh", refreshCaption,
+    return ControlFactory.methodControl(getTableModel(), "refresh", refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -483,7 +483,7 @@ public class EntityTablePanel extends JPanel {
   protected JToolBar getRefreshToolbar() {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
-    final Control refresh = ControlFactory.methodControl(getTableModel(), "forceRefresh", null,
+    final Control refresh = ControlFactory.methodControl(getTableModel(), "refresh", null,
             getTableModel().stDataDirty, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
             + " (" + keyName + ")", 0, null, Images.loadImage("Stop16.gif"));
 

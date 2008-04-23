@@ -7,7 +7,6 @@ import org.jminor.common.i18n.Messages;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,27 +55,6 @@ public class DbUtil {
       int counter = 0;
       while (rs.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(rs.getString(1));
-
-      return ret;
-    }
-  };
-
-  public static final IResultPacker<TableStatus> TABLE_STATUS_PACKER = new IResultPacker<TableStatus>() {
-    public List<TableStatus> pack(final ResultSet rs, final int recordCount) throws SQLException {
-      final TableStatus stat = new TableStatus();
-      rs.next();
-      stat.setRecordCount(rs.getInt(1));
-      if (rs.getMetaData().getColumnCount() == 2) {
-        stat.setTableHasAuditColumns(true);
-        final Timestamp t = rs.getTimestamp(2);
-        if (!rs.wasNull())
-          stat.setLastChange(t.getTime());
-      }
-      else {
-        stat.setTableHasAuditColumns(false);
-      }
-      final List<TableStatus> ret = new ArrayList<TableStatus>(1);
-      ret.add(stat);
 
       return ret;
     }

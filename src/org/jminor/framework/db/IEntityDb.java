@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
@@ -98,16 +97,6 @@ public interface IEntityDb{
    * @return the return paramter if any, otherwise null
    */
   public Object executeCallable(final String statement, final int outParamType) throws Exception;
-
-  /**
-   * Returns a TableStatus object for the given table
-   * @param entityID the class of the Entity for which to retrieve the table status
-   * @param tableHasAuditColumns set to true if the table in question has audit columns
-   * @return a TableStatus for <code>tableName</code>
-   * @throws org.jminor.common.db.DbException in case of a db exception
-   * @throws Exception in case of an exception
-   */
-  public TableStatus getTableStatus(final String entityID, final boolean tableHasAuditColumns) throws Exception;
 
   /**
    * Inserts the given entities, returning a list containing the

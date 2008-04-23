@@ -123,23 +123,15 @@ public abstract class EntityApplicationModel {
     }
   }
 
-  public void forceRefreshAll() throws UserException {
+  public void refreshAll() throws UserException {
     final boolean cascade = isCascadeRefresh();
     try {
       setCascadeRefresh(true);
-      refreshAll(true);
+      for (final EntityModel mainApplicationModel : mainApplicationModels)
+        mainApplicationModel.refresh();
     }
     finally {
       setCascadeRefresh(cascade);
-    }
-  }
-
-  public void refreshAll(final boolean forceRefresh) throws UserException {
-    for (final EntityModel mainApplicationModel : mainApplicationModels) {
-      if (forceRefresh)
-        mainApplicationModel.forceRefresh();
-      else
-        mainApplicationModel.refresh();
     }
   }
 

@@ -905,20 +905,6 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Forces a complete refresh of this model and its combobox models and detail models
-   * @throws UserException in case of a user exception
-   */
-  public void forceRefresh() throws UserException {
-    try {
-      setForceRefresh(true);
-      refresh();
-    }
-    finally {
-      setForceRefresh(false);
-    }
-  }
-
-  /**
    * Refreshes this EntityModel
    * @throws UserException in case of a user exception
    * @see #evtRefreshStarted
@@ -964,26 +950,6 @@ public class EntityModel implements IRefreshable {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
       if (comboBoxModel instanceof IRefreshable)
         ((IRefreshable) comboBoxModel).refresh();
-  }
-
-  /**
-   * Sets the force refresh value. If true then subsequent calls to
-   * <code>refresh()</code> always perform a full refresh, disregarding
-   * the status of the underlaying table.
-   * This method call is propagated to the EntityComboBoxModels and the detail models.
-   * @param value the new force refresh value
-   * @see org.jminor.common.db.TableStatus
-   * @see org.jminor.framework.db.IEntityDb#getTableStatus
-   */
-  public void setForceRefresh(final boolean value) {
-    for (final EntityModel detailModel : detailModels)
-      detailModel.setForceRefresh(value);
-    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
-      if (comboBoxModel instanceof EntityComboBoxModel)
-        ((EntityComboBoxModel) comboBoxModel).setForceRefresh(value);
-
-    if (tableModel != null)
-      tableModel.setForceRefresh(value);
   }
 
   /**

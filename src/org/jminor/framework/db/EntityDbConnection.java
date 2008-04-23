@@ -11,7 +11,6 @@ import org.jminor.common.db.DbUtil;
 import org.jminor.common.db.IResultPacker;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
-import org.jminor.common.db.TableStatus;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
@@ -341,11 +340,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
-      if (useQueryRange && criteria.isRangeCriteria()) {
+      if (useQueryRange && EntityRepository.get().hasCreateDateColumn(criteria.getEntityID())) {
         final String innerSubQuery = "(" + DbUtil.generateSelectSql(datasource, selectString, "",
-                criteria.tableHasAuditColumns() ? "snt desc" : "rowid desc") + ")";
-        datasource = "(" + DbUtil.generateSelectSql(innerSubQuery,
-                selectString + ", rownum row_num", "", null) + ")";
+                EntityRepository.get().getCreateDateColumn(criteria.getEntityID()) + " desc") + ")";
+        datasource = "(" + DbUtil.generateSelectSql(innerSubQuery, selectString + ", rownum row_num", "", null) + ")";
       }
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, criteria.getOrderByClause());
 
@@ -379,22 +377,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   public List<Entity> selectAll(final String entityID, final boolean order) throws DbException {
     return selectMany(new EntityCriteria(entityID, null,
             order ? EntityRepository.get().getOrderByColumnNames(entityID) : null));
-  }
-
-  /** {@inheritDoc} */
-  public TableStatus getTableStatus(final String entityID,
-                                    final boolean tableHasAuditColumns) throws DbException {
-    final String tableName = EntityRepository.get().getSelectTableName(entityID);
-    if (!tableHasAuditColumns)
-      return getRecordCount(tableName);
-
-    final String sql = Database.getTableStatusQueryString(tableName);
-    try {
-      return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER, -1).get(0);
-    }
-    catch (SQLException sqle) {
-      return getRecordCount(tableName);
-    }
   }
 
   /** {@inheritDoc} */
@@ -609,16 +591,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
 
     return ret;
-  }
-
-  private TableStatus getRecordCount(final String tableName) throws DbException {
-    final String sql = "select count(*) from " + tableName;
-    try {
-      return (TableStatus) query(sql, DbUtil.TABLE_STATUS_PACKER, -1).get(0);
-    }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, sql);
-    }
   }
 
   private static List<EntityKey> getPrimaryKeysOfEntityValues(final List<Entity> entities,

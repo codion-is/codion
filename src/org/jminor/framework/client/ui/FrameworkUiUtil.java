@@ -187,7 +187,7 @@ public class FrameworkUiUtil {
     final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(ActionEvent e) {
         try {
-          lookupModel.forceRefresh();
+          lookupModel.refresh();
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();

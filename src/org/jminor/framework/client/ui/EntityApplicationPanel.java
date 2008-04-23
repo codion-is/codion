@@ -204,7 +204,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    */
   public ControlSet getViewControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW));
-    final Control ctrRefreshAll = ControlFactory.methodControl(model, "forceRefreshAll",
+    final Control ctrRefreshAll = ControlFactory.methodControl(model, "refreshAll",
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
     ret.add(ctrRefreshAll);
     ret.addSeparator();

@@ -27,6 +27,7 @@ public class EntityRepository implements Serializable {
   private final Map<String, String> entityIdSources = new HashMap<String, String>();
   private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
+  private final Map<String, String> createDateColumns = new HashMap<String, String>();
 
   private transient Map<String, EntityDependencies> entityDependencies;
   private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
@@ -71,6 +72,7 @@ public class EntityRepository implements Serializable {
     instance.entitySelectTableNames.putAll(repository.entitySelectTableNames);
     instance.entityIdSources.putAll(repository.entityIdSources);
     instance.entityDependencies.putAll(repository.entityDependencies);
+    instance.createDateColumns.putAll(repository.createDateColumns);
   }
 
   public String[] getInitializedEntities() {
@@ -447,6 +449,21 @@ public class EntityRepository implements Serializable {
       entityDependencies.put(entityID, resolveEntityDependencies(entityID));
 
     return entityDependencies.get(entityID);
+  }
+
+  public boolean hasCreateDateColumn(final String entityID) {
+    return createDateColumns.containsKey(entityID);
+  }
+
+  public void setCreateDateColumn(final String entityID, final String createDateColumnName) {
+    if (createDateColumnName == null || createDateColumnName.length() == 0)
+      createDateColumns.remove(entityID);
+    else
+      createDateColumns.put(entityID, createDateColumnName);
+  }
+
+  public String getCreateDateColumn(final String entityID) {
+    return createDateColumns.get(entityID);
   }
 
   private EntityDependencies resolveEntityDependencies(final String entityID) {
