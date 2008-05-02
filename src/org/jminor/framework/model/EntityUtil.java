@@ -143,12 +143,18 @@ public class EntityUtil {
         return value.toString();//localize?
       case LONG_DATE :
       case SHORT_DATE :
+        if (!(value instanceof Date))
+          throw new IllegalArgumentException("Date value expected for property: " + property + ", got: " + value.getClass());
         return Database.getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);
       case CHAR :
         return "'" + value + "'";
       case STRING :
+        if (!(value instanceof String))
+          throw new IllegalArgumentException("String value expected for property: " + property + ", got: " + value.getClass());
         return "'" + Util.sqlEscapeString((String) value) + "'";
       case BOOLEAN :
+        if (!(value instanceof Type.Boolean))
+          throw new IllegalArgumentException("Type.Boolean value expected for property: " + property + ", got: " + value.getClass());
         return getBooleanSQLString(property, (Type.Boolean) value);
       case ENTITY :
         return value instanceof Entity ? getSQLStringValue(property, ((Entity)value).getPrimaryKey().getFirstKeyValue())

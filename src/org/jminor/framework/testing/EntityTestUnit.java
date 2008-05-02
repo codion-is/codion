@@ -4,6 +4,7 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbProviderFactory;
@@ -130,8 +131,16 @@ public abstract class EntityTestUnit extends TestCase {
       getDbConnection().update(Arrays.asList(testEntity));
 
       final Entity tmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
-      assertTrue("Entity of type " + testEntity.getEntityID() + " failed update comparison",
-              testEntity.propertyValuesEqual(tmp));
+      assertEquals("Primary keys of entity and its updated counterpart should be equal",
+              testEntity.getPrimaryKey(), tmp.getPrimaryKey());
+      for (final Property property : EntityRepository.get().getProperties(testEntity.getEntityID()).values()) {
+        final Object beforeUpdate = testEntity.getRawValue(property.propertyID);
+        final Object afterUpdate = tmp.getRawValue(property.propertyID);
+        assertTrue("Values of property " + property + " should be equal after update ["
+                + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
+                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
+                Util.equal(beforeUpdate, afterUpdate));
+      }
     }
     catch (Exception e) {
       e.printStackTrace();

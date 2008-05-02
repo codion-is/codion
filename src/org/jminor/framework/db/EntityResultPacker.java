@@ -101,8 +101,14 @@ public class EntityResultPacker implements IResultPacker<Entity> {
   private Entity loadEntity() throws SQLException {
     final Entity entity = new Entity(entityID);
     for (final Property property : properties)
-      if (!(property instanceof Property.EntityProperty))
-        entity.initializeValue(property, getValue(property));
+      if (!(property instanceof Property.EntityProperty)) {
+        try {
+          entity.initializeValue(property, getValue(property));
+        }
+        catch (SQLException e) {
+          throw new SQLException("Unable to load property: " + property, e);
+        }
+      }
 
     return entity;
   }
