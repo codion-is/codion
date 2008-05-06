@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   private boolean dataInitialized = false;
   private boolean forceRefresh = false;
+  private EntityCriteria entityCriteria;
 
   /**
    * @param dbProvider a IEntityDbProvider instance
@@ -184,6 +186,16 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
+   * Sets the criteria to use when querying data and intiates a refresh
+   * @param entityCriteria the criteria
+   * @throws UserException in case of an exception during refresh
+   */
+  public void setEntityCriteria(final EntityCriteria entityCriteria) throws UserException {
+    this.entityCriteria = entityCriteria;
+    refresh();
+  }
+
+  /**
    * Returns true if the given Entity should be included in this ComboBoxModel.
    * To be overridden in subclasses wishing to exclude some entities
    * @param entity the Entity object to check
@@ -196,7 +208,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   protected List<Entity> getEntitiesFromDb() throws UserException, DbException {
     try {
-      return dbProvider.getEntityDb().selectAll(getEntityID(), true);
+      if (entityCriteria != null)
+        return dbProvider.getEntityDb().selectMany(entityCriteria);
+      else
+        return dbProvider.getEntityDb().selectAll(getEntityID(), true);
     }
     catch (DbException dbe) {
       throw dbe;

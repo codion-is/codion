@@ -111,3 +111,5 @@
   EntityCriteria.isRangeCriteria and tableHasAuditColumns properties removed
   EntityTableModel.recordCount added in place of TableStatus
   EntityRepository.createDateColumns added
+  EntityTablePanel.toggleSearchPanel added, moving code from EntityPanel
+  EntityComboBoxModel.setEntityCriteria() added, getEntitiesFromDb() changed accordingly

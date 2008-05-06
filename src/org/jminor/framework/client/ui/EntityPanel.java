@@ -1314,30 +1314,15 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
-  private JButton getSearchButton(final EntityTablePanel panel) {
+  private JButton getSearchButton(final EntityTablePanel tablePanel) {
     if (!isQueryConfigurationAllowed())
       return null;
 
-    final Control toggleSearch = new Control() {
+    final JButton ret = new JButton(new Control() {
       public void actionPerformed(ActionEvent e) {
-        final JPanel searchPanel = panel.getSearchPanel();
-        if (searchPanel instanceof EntityTableSearchPanel) {
-          if (panel.isSearchPanelVisible()) {
-            if (((EntityTableSearchPanel) searchPanel).isAdvanced())
-              panel.setSearchPanelVisible(false);
-            else
-              ((EntityTableSearchPanel) searchPanel).setAdvanced(true);
-          }
-          else {
-            ((EntityTableSearchPanel) searchPanel).setAdvanced(false);
-            panel.setSearchPanelVisible(true);
-          }
-        }
-        else
-          panel.setSearchPanelVisible(!panel.isSearchPanelVisible());
+        tablePanel.toggleSearchPanel();
       }
-    };
-    final JButton ret = new JButton(toggleSearch);
+    });
     ret.setIcon(Images.loadImage("Filter16.gif"));
     ret.setToolTipText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     ret.setPreferredSize(getSouthButtonSize());

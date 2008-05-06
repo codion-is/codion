@@ -73,7 +73,7 @@ public class EntityTablePanel extends JPanel {
   private final EntityTableModel tableModel;
   private final JScrollPane tableScroller;
   private final ControlSet tableControls;
-  private final JPanel searchPanel;
+  private final JPanel searchPanel;//todo should this implement a ITableSearchPanel perhaps?
 
   private final HashMap<String, PropertySummaryPanel> propertySummaryPanels = new HashMap<String, PropertySummaryPanel>();
   private final List<PropertyFilterPanel> propertyFilterPanels;
@@ -219,10 +219,11 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  public void revalidateAndShowSearchPanel() {
-    searchScroller.getViewport().setView(null);
-    searchScroller.getViewport().setView(searchPanel);
-    revalidate();
+  /**
+   * @return true if the search panel is visible
+   */
+  public boolean isSearchPanelVisible() {
+    return searchScroller != null && searchScroller.getViewport().getView() == searchPanel;
   }
 
   /**
@@ -233,10 +234,25 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'searchPanelVisible'.
+   * Toggles the search panel through the states hidden, visible and
+   * in case it is a EntityTableSearchPanel advanced
    */
-  public boolean isSearchPanelVisible() {
-    return searchScroller != null && searchScroller.getViewport().getView() == searchPanel;
+  public void toggleSearchPanel() {
+    final JPanel searchPanel = getSearchPanel();
+    if (searchPanel instanceof EntityTableSearchPanel) {
+      if (isSearchPanelVisible()) {
+        if (((EntityTableSearchPanel) searchPanel).isAdvanced())
+          setSearchPanelVisible(false);
+        else
+          ((EntityTableSearchPanel) searchPanel).setAdvanced(true);
+      }
+      else {
+        ((EntityTableSearchPanel) searchPanel).setAdvanced(false);
+        setSearchPanelVisible(true);
+      }
+    }
+    else
+      setSearchPanelVisible(!isSearchPanelVisible());
   }
 
   /** {@inheritDoc} */
@@ -310,7 +326,7 @@ public class EntityTablePanel extends JPanel {
 
     tableModel.getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        toggleTableSearchPanel(e);
+        toggleColumnFilterPanel(e);
       }
     });
 
@@ -605,12 +621,18 @@ public class EntityTablePanel extends JPanel {
     return columnFilterPanels;
   }
 
-  private void toggleTableSearchPanel(final ActionEvent e) {
+  private void toggleColumnFilterPanel(final ActionEvent e) {
     final Point lp = entityTable.getTableHeader().getLocationOnScreen();
     final Point p = (Point) e.getSource();
     final Point pos = new Point((int) (lp.getX() + p.getX()), (int) (lp.getY() - p.getY()));
     final int col = entityTable.getColumnModel().getColumnIndexAtX((int) p.getX());
     toggleFilterPanel(pos, propertyFilterPanels.get(col), entityTable);
+  }
+
+  private void revalidateAndShowSearchPanel() {
+    searchScroller.getViewport().setView(null);
+    searchScroller.getViewport().setView(searchPanel);
+    revalidate();
   }
 
   private static void toggleFilterPanel(final Point position, final PropertyFilterPanel columnFilterPanel,

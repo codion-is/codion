@@ -48,9 +48,14 @@ public abstract class EntityBindingFactory extends JPanel {
 
   public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap, final int labelAlignment) {
+    return getControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
+  }
+
+  public JPanel getControlPanel(final JLabel label, final JComponent inputComponent,
+                                final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
-    ret.add(createLabel(propertyID, labelAlignment));
+    ret.add(label);
     ret.add(inputComponent);
 
     return ret;
