@@ -469,7 +469,8 @@ public class EntityModel implements IRefreshable {
   /**
    * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
    * @return the EntityComboBoxModel for the property <code>propertyID</code>,
-   * the EntityComboBoxModel must have been initialized in <code>initializeEntityComboBoxModels</code>
+   * if the EntityComboBoxModel has not been initialized in <code>initializeEntityComboBoxModels</code> one
+   * is automatically created
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     return getEntityComboBoxModel((Property.EntityProperty) EntityRepository.get().getProperty(getEntityID(), propertyID));
@@ -478,8 +479,9 @@ public class EntityModel implements IRefreshable {
   /**
    * @param property the property for which to retrieve the <code>EntityComboBoxModel</code>
    * @return the EntityComboBoxModel for the <code>property</code>,
-   * the EntityComboBoxModel must have been initialized in <code>initializeEntityComboBoxModels</code>
-   */
+   * if the EntityComboBoxModel has not been initialized in <code>initializeEntityComboBoxModels</code> one
+   * is automatically created
+   *///todo parameter for autoCreate?
   public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
     ComboBoxModel ret = getComboBoxModel(property);
     if (ret == null)
@@ -1364,7 +1366,8 @@ public class EntityModel implements IRefreshable {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.EntityProperty property :
                 EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
-          final EntityComboBoxModel comboModel = detailModel.getEntityComboBoxModel(property);
+          final EntityComboBoxModel comboModel =
+                (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
           if (comboModel != null) {
             for (final Entity deletedEntity : lastDeleted)
               comboModel.removeItem(deletedEntity);
@@ -1382,7 +1385,8 @@ public class EntityModel implements IRefreshable {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.EntityProperty property :
               EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
-        final EntityComboBoxModel entityComboBoxModel = detailModel.getEntityComboBoxModel(property);
+        final EntityComboBoxModel entityComboBoxModel =
+                (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
         if (entityComboBoxModel != null)
           entityComboBoxModel.refresh();
       }
