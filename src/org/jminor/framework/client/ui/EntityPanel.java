@@ -262,12 +262,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         if (editPanel != null || detailEntityPanels.size() > 0) {
           entityTablePanel.setDoubleClickAction(new AbstractAction() {
             public void actionPerformed(final ActionEvent e) {
-              if (editPanel != null) {
-                if (getEditPanelState() == HIDDEN)
-                  setEditPanelState(DIALOG);
-                else if (getDetailPanelState() == HIDDEN)
-                  setDetailPanelState(DIALOG);
-              }
+              if (editPanel != null && getEditPanelState() == HIDDEN)
+                setEditPanelState(DIALOG);
+              else if (getDetailPanelState() == HIDDEN)
+                setDetailPanelState(DIALOG);
             }
           });
         }
@@ -1707,7 +1705,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private static Container createDependenciesPanel(final Map<String, List<Entity>> dependencies,
-                                                  final IEntityDbProvider dbProvider) throws UserException {
+                                                   final IEntityDbProvider dbProvider) throws UserException {
     try {
       final JPanel ret = new JPanel(new BorderLayout());
       final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
@@ -1727,8 +1725,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
-                                            final IEntityDbProvider model,
-                                            final JComponent dialogParent) throws UserException {
+                                             final IEntityDbProvider model,
+                                             final JComponent dialogParent) throws UserException {
     JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
@@ -1826,7 +1824,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     public EntityPanel getInstance(final IEntityDbProvider provider) throws UserException {
       try {
         return getEntityPanelClass().getConstructor().newInstance().setModel(
-            getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
+                getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
       }
       catch (RuntimeException e) {
         throw e;

@@ -147,6 +147,13 @@ public class FrameworkSettings implements Serializable {
    */
   public static final String SQL_BOOLEAN_VALUE_NULL = "sql_boolean_value_null";
 
+  /**
+   * Specifies if the default filtering behaviour should be to filter the underlying query
+   * Value type: Boolean
+   * Default value: false
+   */
+  public static final String FILTER_QUERY_BY_MASTER = "filter_query_by_master";
+
   private Map<String, Object> settings = new HashMap<String, Object>();
 
   private final static FrameworkSettings instance = new FrameworkSettings();
@@ -171,6 +178,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(SQL_BOOLEAN_VALUE_FALSE, 0);
     setProperty(SQL_BOOLEAN_VALUE_TRUE, 1);
     setProperty(SQL_BOOLEAN_VALUE_NULL, null);
+    setProperty(FILTER_QUERY_BY_MASTER, false);
   }
 
   public static FrameworkSettings get() {

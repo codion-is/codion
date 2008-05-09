@@ -206,7 +206,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   private String simpleSearchString = "";
   private long searchStateOnRefresh;
-  private boolean filterQueryByMaster = false;
+  private boolean filterQueryByMaster =
+          (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
   private boolean showAllWhenNotFiltered = false;
   private boolean updatingSelection = false;
 

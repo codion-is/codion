@@ -113,3 +113,5 @@
   EntityRepository.createDateColumns added
   EntityTablePanel.toggleSearchPanel added, moving code from EntityPanel
   EntityComboBoxModel.setEntityCriteria() added, getEntitiesFromDb() changed accordingly
+  Fixed bug preventing correct double click behavior if edit panel was null, detail panel was not shown
+  FrameworkSettings.FILTER_QUERY_BY_MASTER property added, default false
