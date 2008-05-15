@@ -35,6 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
@@ -153,15 +155,14 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     else {
       final JTextField field = new JTextField();
       field.setEditable(false);
-      field.setFocusable(false);
       model.evtUpperBoundChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           final Object value = model.getUpperBound();
           field.setText(value != null ? value.toString() : "");
         }
       });
-      field.addMouseListener(new MouseAdapter() {
-        public void mouseClicked(MouseEvent e) {
+      final ActionListener action = new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
           try {
             final List<Entity> entities = FrameworkUiUtil.selectEntities(new EntityTableModel(dbProvider,
                     ((Property.EntityProperty) property).referenceEntityID), UiUtil.getParentWindow(PropertySearchPanel.this), false,
@@ -169,6 +170,17 @@ public class PropertySearchPanel extends AbstractSearchPanel {
             model.setUpperBound(entities.size() > 0 ? entities : null);
           }
           catch (UserCancelException e1) {/**/}
+        }
+      };
+      field.addKeyListener(new KeyAdapter() {
+        public void keyReleased(final KeyEvent e) {
+          if (e.getKeyChar() == KeyEvent.VK_SPACE)
+            action.actionPerformed(null);
+        }
+      });
+      field.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+          action.actionPerformed(null);
         }
       });
 

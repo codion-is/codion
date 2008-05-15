@@ -116,3 +116,6 @@
   Fixed bug preventing correct double click behavior if edit panel was null, detail panel was not shown
   FrameworkSettings.FILTER_QUERY_BY_MASTER property added, default false
   Fixed bug, resulting in a automatically created entity combobox while refreshing detail models after update and delete
+  Added space bar as a selection trigger in a comboboxless PropertySearchPanel
+  Property.EntityProperty is now hidden if caption is null
+  EntityTablePanel, redundant private field tableControls removed

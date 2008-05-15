@@ -72,7 +72,6 @@ public class EntityTablePanel extends JPanel {
   private final JTable entityTable;
   private final EntityTableModel tableModel;
   private final JScrollPane tableScroller;
-  private final ControlSet tableControls;
   private final JPanel searchPanel;//todo should this implement a ITableSearchPanel perhaps?
 
   private final HashMap<String, PropertySummaryPanel> propertySummaryPanels = new HashMap<String, PropertySummaryPanel>();
@@ -107,10 +106,9 @@ public class EntityTablePanel extends JPanel {
     this.tableModel = tableModel;
     this.entityTable = initializeJTable(tableModel, specialRendering);
     this.tableScroller = new JScrollPane(entityTable);
-    this.tableControls = popupControls;
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
-    initializeUI(detailPanelButton, allowQueryConfiguration);
+    initializeUI(detailPanelButton, allowQueryConfiguration, popupControls);
     bindEvents();
     updateStatusMessage();
   }
@@ -347,7 +345,8 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  protected void initializeUI(final JButton detailPanelButton, final boolean allowQueryConfiguration) {
+  protected void initializeUI(final JButton detailPanelButton, final boolean allowQueryConfiguration,
+                              final ControlSet tablePopupControls) {
     final JPanel base = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
@@ -357,7 +356,7 @@ public class EntityTablePanel extends JPanel {
       base.add(searchScroller, BorderLayout.NORTH);
     }
 
-    final ControlSet popupControls = tableControls == null ? new ControlSet() : tableControls;
+    final ControlSet popupControls = tablePopupControls == null ? new ControlSet() : tablePopupControls;
     if (searchPanel instanceof EntityTableSearchPanel) {
       ((EntityTableSearchPanel)searchPanel).evtAdvancedChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {

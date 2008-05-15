@@ -303,7 +303,7 @@ public class Property implements Serializable {
     public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
                           final int preferredWidth, final boolean isWeakReference,
                           final Property... referenceProperties) {
-      super(propertyID, Type.ENTITY, caption, false, false, preferredWidth);
+      super(propertyID, Type.ENTITY, caption, caption == null, false, preferredWidth);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
           throw new IllegalArgumentException(referenceEntityID + ", reference property does not have a unique name: " + propertyID);
