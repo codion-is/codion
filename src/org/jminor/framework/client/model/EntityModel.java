@@ -473,7 +473,11 @@ public class EntityModel implements IRefreshable {
    * is automatically created
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
-    return getEntityComboBoxModel((Property.EntityProperty) EntityRepository.get().getProperty(getEntityID(), propertyID));
+    final Property property = EntityRepository.get().getProperty(getEntityID(), propertyID);
+    if (!(property instanceof Property.EntityProperty))
+      throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.EntityProperty");
+
+    return getEntityComboBoxModel((Property.EntityProperty) property);
   }
 
   /**
@@ -481,12 +485,11 @@ public class EntityModel implements IRefreshable {
    * @return the EntityComboBoxModel for the <code>property</code>,
    * if the EntityComboBoxModel has not been initialized in <code>initializeEntityComboBoxModels</code> one
    * is automatically created
-   *///todo parameter for autoCreate?
+   *///todo parameter for autoCreate or rename methods?
   public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
     ComboBoxModel ret = getComboBoxModel(property);
     if (ret == null)
-      setComboBoxModel(property,
-              ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID));
+      setComboBoxModel(property, ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID));
 
     return (EntityComboBoxModel) ret;
   }

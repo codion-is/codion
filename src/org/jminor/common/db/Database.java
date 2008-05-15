@@ -147,15 +147,15 @@ public class Database {
   public static String getURL() {
     final String host = System.getProperty(DATABASE_HOST_PROPERTY);
     if (host == null || host.length() == 0)
-      throw new RuntimeException("Required property value not found: " + DATABASE_HOST_PROPERTY);
+      throw new RuntimeException("Required system property missing: " + DATABASE_HOST_PROPERTY);
     final String port = System.getProperty(DATABASE_PORT_PROPERTY);
     if (DB_TYPE != DbType.DERBY_EMBEDDED)
       if (port == null || port.length() == 0)
-        throw new RuntimeException("Required property value not found: " + DATABASE_PORT_PROPERTY);
+        throw new RuntimeException("Required system property missing: " + DATABASE_PORT_PROPERTY);
     final String sid = System.getProperty(DATABASE_SID_PROPERTY);
     if (DB_TYPE != DbType.DERBY_EMBEDDED)
       if (sid == null || sid.length() == 0)
-        throw new RuntimeException("Required property value not found: " + DATABASE_SID_PROPERTY);
+        throw new RuntimeException("Required system property missing: " + DATABASE_SID_PROPERTY);
 
     switch (DB_TYPE) {
       case MYSQL:
@@ -240,7 +240,10 @@ public class Database {
   }
 
   public static DbType getType() {
-    final String dbType = System.getProperty(DATABASE_TYPE_PROPERTY, DATABASE_TYPE_ORACLE);
+    final String dbType = System.getProperty(DATABASE_TYPE_PROPERTY);
+    if (dbType == null)
+      throw new IllegalArgumentException("Required system property missing: " + DATABASE_TYPE_PROPERTY);
+
     if (dbType.equals(DATABASE_TYPE_POSTGRESQL))
       return DbType.POSTGRESQL;
     else if (dbType.equals(DATABASE_TYPE_MYSQL))

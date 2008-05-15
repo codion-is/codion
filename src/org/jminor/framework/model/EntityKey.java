@@ -117,7 +117,7 @@ public class EntityKey implements Externalizable {
    * @param propertyID the property identifier
    * @return true if this key contains a value for propertyID
    */
-  public boolean containsValue(final String propertyID) {
+  public boolean hasValue(final String propertyID) {
     return keyValues.containsKey(propertyID);
   }
 

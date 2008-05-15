@@ -119,3 +119,7 @@
   Added space bar as a selection trigger in a comboboxless PropertySearchPanel
   Property.EntityProperty is now hidden if caption is null
   EntityTablePanel, redundant private field tableControls removed
+  EntityPanel, removed redundant getDefaultFocusComponent, isActive methods
+  EntityPanel, getSelectedDetailPanel() now throws IllegalArgumentException if no detail panels are available
+  Update selected entities popup menu now contains the properyID as caption for properties without captions
+  Some minor changes, error handling/messages and javadoc

@@ -3,3 +3,4 @@ embedda kvíaglugga með því að miðjusmella á tab, eldisgluggi lokast en opnast sv
 **fixed**
 Entity reference values are not initialized with null values in the db layer, with the effect that setting such values
 in the client at a later time does not render the entity modified
+**fixed**

@@ -311,12 +311,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'defaultFocusComponent'.
+   * Sets the component that should recieve the focus when the
+   * ui is initialised after a new record has been inserted.
+   * @param defaultFocusComponent the component
+   * @return the component
    */
-  public JComponent getDefaultFocusComponent() {
-    return this.defaultFocusComponent == null ? this : this.defaultFocusComponent;
-  }
-
   public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
     return this.defaultFocusComponent = defaultFocusComponent;
   }
@@ -333,17 +332,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'selectedDetailPanel'.
+   * @return the detail panel selected in the detail tab pane.
+   * If no detail panels are defined an IllegalArgumentException is thrown.
    */
   public EntityPanel getSelectedDetailPanel() {
-    return (EntityPanel) this.detailTabPane.getSelectedComponent();
-  }
+    if (this.detailTabPane == null)
+      throw new IllegalArgumentException("No detail panels available");
 
-  /**
-   * @return Value for property 'active'.
-   */
-  public boolean isActive() {
-    return this.model.stActive.isActive();
+    return (EntityPanel) this.detailTabPane.getSelectedComponent();
   }
 
   /** {@inheritDoc} */
@@ -372,14 +368,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'detailPanelState'.
+   * @return the detail panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public int getDetailPanelState() {
     return detailPanelState;
   }
 
   /**
-   * @param state Value to set for property 'detailPanelState'.
+   * @param state the detail panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public void setDetailPanelState(final int state) {
     if (detailTabPane == null)
@@ -410,7 +406,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @param state Value to set for property 'editPanelState'.
+   * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public void setEditPanelState(final int state) {
     if (editPanel == null)
@@ -440,23 +436,25 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'editPanelState'.
+   * @return the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public int getEditPanelState() {
     return editPanelState;
   }
 
   /**
-   * @param val Value to set for property 'filterPanelsVisible'.
+   * Hides or shows the active filter panels for this panel and all its child panels
+   * (detail panels and their detail panels etc.)
+   * @param value true if the active panels should be shown, false if they should be hidden
    */
-  public void setFilterPanelsVisible(final boolean val) {
+  public void setFilterPanelsVisible(final boolean value) {
     if (!initialized)
       return;
 
     if (model.getTableModel() != null)
-      entityTablePanel.setFilterPanelsVisible(val);
+      entityTablePanel.setFilterPanelsVisible(value);
     for (final EntityPanel detailEntityPanel : detailEntityPanels.values())
-      detailEntityPanel.setFilterPanelsVisible(val);
+      detailEntityPanel.setFilterPanelsVisible(value);
   }
 
   public void resizePanel(final int direction) {
@@ -752,7 +750,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final ControlSet ret = new ControlSet(name, (char) 0, Images.loadImage("Modify16.gif"), enabled);
     ret.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     for (final Property property : getUpdateProperties()) {
-      ret.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(property.getCaption()) {
+      final String caption = property.getCaption() == null ? property.propertyID : property.getCaption();
+      ret.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent e) {
           updateSelectedEntities(property);
         }
@@ -1499,7 +1498,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         iter.remove();
     Collections.sort(ret, new Comparator<Property>() {
       public int compare(final Property propertyOne, final Property propertyTwo) {
-        return propertyOne.toString().compareTo(propertyTwo.toString());
+        return propertyOne.toString().toLowerCase().compareTo(propertyTwo.toString().toLowerCase());
       }
     });
 

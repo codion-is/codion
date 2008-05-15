@@ -86,7 +86,7 @@ public class DbConnection {
    */
   public boolean isConnectionValid() {
     try {
-      return Database.isOracle() ? checkConnection() : connection.isValid(0);//todo postgresql
+      return Database.isOracle() || Database.isPostgreSQL() ? checkConnection() : connection.isValid(0);
     }
     catch (Exception e) {
       log.error(this, e);

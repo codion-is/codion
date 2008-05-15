@@ -549,13 +549,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     for (final Property.EntityProperty entityProperty :
             EntityRepository.get().getEntityProperties(entities.get(0).getEntityID())) {
       final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, entityProperty);
-      if (referencedPrimaryKeys.size() > 0) {
-        final Map<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
-                ? initWeakReferences(referencedPrimaryKeys)
-                : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
-        for (final Entity entity : entities)
-          entity.initializeValue(entityProperty, referencedEntitiesHashed.get(entity.getReferencedKey(entityProperty)));
-      }
+      final Map<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
+              ? initWeakReferences(referencedPrimaryKeys)
+              : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
+      for (final Entity entity : entities)
+        entity.initializeValue(entityProperty, referencedEntitiesHashed.get(entity.getReferencedKey(entityProperty)));
     }
   }
 
