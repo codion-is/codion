@@ -16,20 +16,6 @@
   <fileset id="framework_test_resources" dir="${srctest}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
 
-  <target name="prep_libraries" >
-    <delete dir="${lib}" />
-    <mkdir dir="${lib}" />
-    <copy file="${libdir}/${lib.jdbc.oracle}" todir="${lib}" />
-    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${lib}" />
-    <copy file="${libdir}/${lib.junit}" todir="${lib}" />
-    <copy file="${libdir}/${lib.jasperreports.base}" todir="${lib}" />
-    <copy file="${libdir}/${lib.log4j}" todir="${lib}" />
-    <copy file="${libdir}/${lib.substance}" todir="${lib}" />
-    <copy file="${libdir}/${lib.jcalendar}" todir="${lib}" />
-    <copy file="${libdir}/${lib.jfreechart.base}" todir="${lib}" />
-    <copy file="${libdir}/${lib.jfreechart.common}" todir="${lib}" />
-  </target>
-
   <target name="clean">
     <delete dir="${build.base}" includeEmptyDirs="true" />
     <delete dir="${build.test}" includeEmptyDirs="true" />
@@ -247,10 +233,10 @@
     <mkdir dir="${deploy.server.path}" />
     <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/bin" />
-    <copy file="${libdir}/${lib.log4j}" todir="${deploy.server.path}/lib" />
-    <copy file="${libdir}/${lib.jdbc.oracle}" todir="${deploy.server.path}/lib" />
-    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.server.path}/lib" />
-    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib}/${lib.log4j}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib}/${lib.jdbc.oracle}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib}/${lib.jdbc.mysql}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib}/${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
     <copy file="${deploy.server.localhost.run_mysql_nix}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.localhost.run_mysql_win}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.localhost.run_oracle_nix}" todir="${deploy.server.path}" />
@@ -263,13 +249,13 @@
     <mkdir dir="${deploy.server.monitor.path}" />
     <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/bin" />
-    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${libdir}/${lib.substance}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${libdir}/${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${libdir}/${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${libdir}/${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${libdir}/${lib.jdbc.oracle}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.substance}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.jdbc.oracle}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib}/${lib.jdbc.mysql}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${deploy.server.monitor.launchfile_mysql_win}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.launchfile_oracle_win}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.launchfile_mysql_nix}" todir="${deploy.server.monitor.path}" />
@@ -283,11 +269,11 @@
     <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.profiling.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.profiling.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.profiling.path}/bin" />
-    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${libdir}/${lib.substance}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${libdir}/${lib.log4j}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${libdir}/${lib.jfreechart.base}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${libdir}/${lib.jfreechart.common}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${lib}/${lib.jasperreports.base}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${lib}/${lib.substance}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${lib}/${lib.log4j}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${lib}/${lib.jfreechart.base}" todir="${deploy.profiling.path}/lib" />
+    <copy file="${lib}/${lib.jfreechart.common}" todir="${deploy.profiling.path}/lib" />
     <copy file="${deploy.profiling.empdept.launchfile_win}" todir="${deploy.profiling.path}" />
     <copy file="${deploy.profiling.empdept.launchfile_nix}" todir="${deploy.profiling.path}" />
     <copy file="${deploy.profiling.schema_browser.launchfile_win}" todir="${deploy.profiling.path}" />
@@ -302,10 +288,10 @@
     <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}/bin" />
-    <copy file="${libdir}/${lib.jdbc.mysql}" todir="${deploy.demos.path}/lib" />
-    <copy file="${libdir}/${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
-    <copy file="${libdir}/${lib.substance}" todir="${deploy.demos.path}/lib" />
-    <copy file="${libdir}/${lib.log4j}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib}/${lib.jdbc.mysql}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib}/${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib}/${lib.substance}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib}/${lib.log4j}" todir="${deploy.demos.path}/lib" />
     <copy file="${deploy.demos.empdept.remote.launchfile_win}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.empdept.remote.launchfile_nix}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.empdept.local.launchfile_win}" todir="${deploy.demos.path}" />
