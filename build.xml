@@ -91,7 +91,7 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="dist" depends="report">
+  <target name="dist" depends="report,doc">
     <tstamp />
     <mkdir dir="dist/${version}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}"
