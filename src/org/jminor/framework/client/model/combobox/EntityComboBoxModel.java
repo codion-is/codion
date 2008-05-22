@@ -186,13 +186,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * Sets the criteria to use when querying data and intiates a refresh
+   * Sets the criteria to use when querying data
    * @param entityCriteria the criteria
-   * @throws UserException in case of an exception during refresh
    */
-  public void setEntityCriteria(final EntityCriteria entityCriteria) throws UserException {
+  public void setEntityCriteria(final EntityCriteria entityCriteria) {
     this.entityCriteria = entityCriteria;
-    refresh();
   }
 
   /**

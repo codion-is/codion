@@ -129,19 +129,19 @@ public class DbConnection {
     if (isTransactionOpen())
       throw new IllegalStateException("Transaction already open");
 
-    setTransactionOpen(true);
+    transactionOpen = true;
   }
 
   public void endTransaction(final boolean rollback) throws SQLException {
     try {
       if (rollback)
-        connection.rollback();
+        rollback();
       else
-        connection.commit();
+        commit();
     }
     finally {
-      if (isTransactionOpen())
-        setTransactionOpen(false);
+      if (transactionOpen)
+        transactionOpen = false;
     }
   }
 
@@ -296,13 +296,6 @@ public class DbConnection {
   public final void rollback() throws SQLException {
     log.debug(connectionUser.getUsername() + ": " + "rollback;");
     connection.rollback();
-  }
-
-  /**
-   * @param transactionOpen Value to set for property 'transactionOpen'.
-   */
-  public final void setTransactionOpen(final boolean transactionOpen) {
-    this.transactionOpen = transactionOpen;
   }
 
   public synchronized Object executeCallableStatement(final String sqlStatement,

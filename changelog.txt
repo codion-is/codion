@@ -123,3 +123,6 @@
   EntityPanel, getSelectedDetailPanel() now throws IllegalArgumentException if no detail panels are available
   Update selected entities popup menu now contains the properyID as caption for properties without captions
   Some minor changes, error handling/messages and javadoc
+  EntityComboBoxMOdel.setEntityCriteria() no longer initiates a refresh, must be done seperately
+  DbConnection.endTransaction() now calls DbConnection.commit/rollback, instead of connection.commit/rollback, results in correct logging
+  DbConnection.setTransactionOpen() removed
