@@ -126,3 +126,4 @@
   EntityComboBoxMOdel.setEntityCriteria() no longer initiates a refresh, must be done seperately
   DbConnection.endTransaction() now calls DbConnection.commit/rollback, instead of connection.commit/rollback, results in correct logging
   DbConnection.setTransactionOpen() removed
+  EntityPanel.prepareUI(), bindModelEvents(), default focus fixed, now the focus is only put on the defaultFocusComponent on panel activation if the focus owner is not a child component

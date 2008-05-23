@@ -683,10 +683,19 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   // End - control methods
   //#############################################################################################
 
+  /**
+   * Prepares the UI, by clearing the input fields and setting the default focus,
+   * if both parameters are set to false then there is no effect
+   * @param requestDefaultFocus if true the component defined as the defaultFocusComponent
+   * gets the input focus, if none is defined the first child component of this EntityPanel is used,
+   * if no edit panel is available the table recieves the focus
+   * @param clearUI if true the the input components are cleared
+   * @see #setDefaultFocusComponent(javax.swing.JComponent)
+   */
   public final void prepareUI(boolean requestDefaultFocus, final boolean clearUI) {
     if (clearUI)
       model.clear();
-    if (requestDefaultFocus && !isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
+    if (requestDefaultFocus) {
       if (getEditPanelState() != EMBEDDED && entityTablePanel != null)
         entityTablePanel.requestFocusInWindow();
       else if (defaultFocusComponent != null)
@@ -1511,7 +1520,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         if (model.stActive.isActive()) {
           initialize();
           showPanelTab();
-          prepareUI(true, false);
+          prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
         }
       }
     });
