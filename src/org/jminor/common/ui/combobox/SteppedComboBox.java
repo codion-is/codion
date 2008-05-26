@@ -16,13 +16,13 @@ import java.awt.event.FocusEvent;
 import java.util.Vector;
 
 /**
- * Slightly modified
+ * Slightly modified, automatic popup size according to getDisplaySize()
  * @author Nobuo Tamemasa
  */
 public class SteppedComboBox extends JComboBox {
 
   private final boolean hidePopupOnFocusLoss;
-  private int popupWidth;
+  private int popupWidth = 0;
 
   public SteppedComboBox(final Vector items) {
     this(items.toArray());
@@ -35,7 +35,6 @@ public class SteppedComboBox extends JComboBox {
   public SteppedComboBox(final ComboBoxModel boxModel) {
     super(boxModel);
     initUI();
-    popupWidth = 0;
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
     hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
     bindEvents();
@@ -49,14 +48,13 @@ public class SteppedComboBox extends JComboBox {
   }
 
   /**
+   * @param displaySize the display size provided by the UI
    * @return Value for property 'popupSize'.
    */
-  public Dimension getPopupSize() {
+  public Dimension getPopupSize(final Dimension displaySize) {
     final Dimension size = getSize();
-    if (popupWidth < 1)
-      popupWidth = size.width;
 
-    return new Dimension(Math.max(size.width, popupWidth), size.height);
+    return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
   }
 
   protected void bindEvents() {
@@ -74,7 +72,7 @@ public class SteppedComboBox extends JComboBox {
       protected ComboPopup createPopup() {
         final BasicComboPopup popup = new BasicComboPopup(comboBox) {
           public void show() {
-            final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize();
+            final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
             popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
             final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
             scroller.setMaximumSize(popupBounds.getSize());

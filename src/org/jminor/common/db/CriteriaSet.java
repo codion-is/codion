@@ -36,12 +36,12 @@ public class CriteriaSet implements ICriteria {
   public CriteriaSet(final Conjunction conjunction, final ICriteria... criterias) {
     this.conjunction = conjunction;
     for (final ICriteria criteria : criterias)
-      if (criteria != null)
-        addCriteria(criteria);
+      addCriteria(criteria);
   }
 
   public void addCriteria(final ICriteria criteria) {
-    this.criterias.add(criteria);
+    if (criteria != null)
+      this.criterias.add(criteria);
   }
 
   /**
