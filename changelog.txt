@@ -128,3 +128,4 @@
   DbConnection.setTransactionOpen() removed
   EntityPanel.prepareUI(), bindModelEvents(), default focus fixed, now the focus is only put on the defaultFocusComponent on panel activation if the focus owner is not a child component
   SteppedComboBox now uses dynamic popup sizing if the popupWidth property is <= 0, using the getDisplayWidth property from the UI
+  PropertySearchModel, EntityComboBox now selects correct item on initialization

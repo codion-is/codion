@@ -33,8 +33,6 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -144,23 +142,13 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       final EntityComboBox field = new EntityComboBox(boxModel, null);
       field.setPreferredSize(new Dimension(120,field.getPreferredSize().height));
       MaximumMatch.enable(field);
-      field.addComponentListener(new ComponentAdapter() {
-        public void componentResized(ComponentEvent e) {
-          field.setPopupWidth(Math.max(field.getWidth(),200));
-        }
-      });
 
       return field;
     }
     else {
       final JTextField field = new JTextField();
       field.setEditable(false);
-      model.evtUpperBoundChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          final Object value = model.getUpperBound();
-          field.setText(value != null ? value.toString() : "");
-        }
-      });
+      new TextBeanPropertyLink(field, model, "upperBound", Object.class, model.evtUpperBoundChanged, null);
       final ActionListener action = new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           try {

@@ -74,8 +74,10 @@ public class PropertySearchModel extends AbstractSearchModel {
    * @throws org.jminor.common.model.UserException in case of exception
    */
   public void initialize() throws UserException {
-    if (entityComboBoxModel != null && !entityComboBoxModel.isDataInitialized())
+    if (entityComboBoxModel != null && !entityComboBoxModel.isDataInitialized()) {
       entityComboBoxModel.refresh();
+      entityComboBoxModel.setSelectedItem(getUpperBound());
+    }
   }
 
   public PropertyCriteria getPropertyCriteria() {
