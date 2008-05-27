@@ -148,7 +148,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     else {
       final JTextField field = new JTextField();
       field.setEditable(false);
-      new TextBeanPropertyLink(field, model, "upperBound", Object.class, model.evtUpperBoundChanged, null);
+      new TextBeanPropertyLink(field, model, PropertySearchModel.UPPER_BOUND_PROPERTY, Object.class, model.evtUpperBoundChanged, null);
       final ActionListener action = new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           try {
