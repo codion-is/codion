@@ -320,15 +320,22 @@ public class FrameworkUiUtil {
   public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final EntityPanel.EntityPanelInfo appInfo,
                                                     final boolean newButtonFocusable, final State enabledState) {
-    final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
-    if (boxModel == null)
-      throw new RuntimeException("No EntityComboBoxModel found in model: " + entityModel + " for property: " + property);
-    final EntityComboBox ret = new EntityComboBox(boxModel, appInfo, newButtonFocusable);
-    UiUtil.linkToEnabledState(enabledState, ret);
-    new ComboBoxPropertyLink(entityModel, property, ret);
-    MaximumMatch.enable(ret);
+    try {
+      EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
+      if (boxModel == null) {
+        boxModel = entityModel.createEntityComboBoxModel(property);
+        boxModel.refresh();
+      }
+      final EntityComboBox ret = new EntityComboBox(boxModel, appInfo, newButtonFocusable);
+      UiUtil.linkToEnabledState(enabledState, ret);
+      new ComboBoxPropertyLink(entityModel, property, ret);
+      MaximumMatch.enable(ret);
 
-    return ret;
+      return ret;
+    }
+    catch (UserException e) {
+      throw e.getRuntimeException();
+    }
   }
 
   public static JPanel createEntityFieldPanel(final Property property, final EntityModel model,

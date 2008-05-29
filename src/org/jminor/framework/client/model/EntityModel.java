@@ -256,7 +256,7 @@ public class EntityModel implements IRefreshable {
     this.entityID = entityID;
     this.propertyComboBoxModels = initializeEntityComboBoxModels();
     this.tableModel = includeTableModel ? initializeTableModel() : null;
-    this.activeEntity = getDefaultValue();
+    this.activeEntity = getDefaultEntity();
     this.detailModels = initializeDetailModels();
     this.activeEntity.setFirePropertyChangeEvents(true);
     initializeAssociatedModels();
@@ -468,9 +468,9 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the property <code>propertyID</code>,
-   * if the EntityComboBoxModel has not been initialized in <code>initializeEntityComboBoxModels</code> one
-   * is automatically created
+   * @return the EntityComboBoxModel for the property identified by <code>propertyID</code>,
+   * null if none has been initialized
+   * @see #initializeEntityComboBoxModels()
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.get().getProperty(getEntityID(), propertyID);
@@ -482,16 +482,23 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @param property the property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the <code>property</code>,
-   * if the EntityComboBoxModel has not been initialized in <code>initializeEntityComboBoxModels</code> one
-   * is automatically created
-   *///todo parameter for autoCreate or rename methods?
+   * @return the EntityComboBoxModel for the <code>property</code>, null if none has been initialized
+   * @see #initializeEntityComboBoxModels()
+   */
   public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
-    ComboBoxModel ret = getComboBoxModel(property);
-    if (ret == null)
-      setComboBoxModel(property, ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID));
+    return (EntityComboBoxModel) getComboBoxModel(property);
+  }
 
-    return (EntityComboBoxModel) ret;
+  /**
+   * Creates a default EntityComboBoxModel for the given property and associates it with the property
+   * @param property the property for which to create a EntityComboBoxModel
+   * @return a EntityComboBoxModel for the given property
+   */
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
+    final EntityComboBoxModel ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID);
+    setComboBoxModel(property, ret);
+
+    return ret;
   }
 
   /**
@@ -672,7 +679,7 @@ public class EntityModel implements IRefreshable {
       return;
     if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT) && entity != null)
       EntityUtil.printPropertyValues(entity);
-    activeEntity.setAs(entity == null ? getDefaultValue() : entity);
+    activeEntity.setAs(entity == null ? getDefaultEntity() : entity);
 
     stEntityActive.setActive(!activeEntity.isNull());
 
@@ -1043,7 +1050,7 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Returns a Map, mapping the EntityComboBoxModels provided to their respective
+   * Returns a Map, mapping the provided EntityComboBoxModels to their respective
    * properties according to the entityID.
    * This implementation is rather simplistic, since it simply maps the EntityComboBoxModel to
    * the first (random) Property.EntityProperty with the same entityID, if the underlying Entity
@@ -1179,30 +1186,43 @@ public class EntityModel implements IRefreshable {
 
   /**
    * If this method is overridden then calling super.getDefaultValue() would be proper
-   * @return the default value for this EntitModel, it is set as active when no item is selected
+   * @return the default entity for this EntitModel, it is set as active when no item is selected
    */
-  protected Entity getDefaultValue() {
+  protected Entity getDefaultEntity() {
     final Entity ret = new Entity(getEntityID());
-    //correctly represent the gui by setting the values from ComboBoxModels that should not be reset on clearStateData
-    for (final Map.Entry<Property, ComboBoxModel> entry : propertyComboBoxModels.entrySet()) {
-      final Property property = entry.getKey();
-      if (!resetComboBoxModelOnClear(property)) {
-        final ComboBoxModel boxModel = entry.getValue();
-        Object value = boxModel.getSelectedItem();
-        if (boxModel instanceof EntityComboBoxModel && ((EntityComboBoxModel) boxModel).isNullValueSelected())
-          value = null;
-        final Object currentValue = ret.getValue(property);
-        if (!EntityUtil.equal(property.propertyType, value, currentValue))
-          ret.setValue(property, value, false);
-      }
-    }
+    for (final Property property : EntityRepository.get().getDatabaseProperties(getEntityID()))
+      if (!property.hasParentProperty())//these are set via their respective parent properties
+        ret.setValue(property, getDefaultValue(property), true);
 
     return ret;
   }
 
   /**
-   * Override to enable the reset of entity combo box models when the model is cleared.
-   * By default this method returns the value of <code>FrameworkSettings.resetComboBoxModelsOnClear</code>.
+   * Returns the default value for the given property, used when initializing a new
+   * default entity for this model.
+   * For properties associated with a ComboBoxModel the selected value of that model
+   * is returned unless <code>resetComboBoxModelOnClear</code> returns true for that
+   * given property.
+   * @param property the property
+   * @return the default value for the property
+   * @see #resetComboBoxModelOnClear(org.jminor.framework.model.Property)
+   */
+  protected Object getDefaultValue(final Property property) {
+    if (!resetComboBoxModelOnClear(property) && propertyComboBoxModels.containsKey(property)) {
+      final ComboBoxModel boxModel = propertyComboBoxModels.get(property);
+      if (boxModel instanceof EntityComboBoxModel)
+        return ((EntityComboBoxModel)boxModel).getSelectedEntity();
+      else
+        return boxModel.getSelectedItem();
+    }
+
+    return property.getDefaultValue();
+  }
+
+  /**
+   * Override to enable the reset of entity combo box models when the model is cleared,
+   * that is selecting the item located at index 0
+   * By default this method returns the value of the property <code>FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR</code>.
    * @param property the property
    * @return true if the ComboBoxModel should be reset when the model is cleared
    * @see FrameworkSettings#RESET_COMBOBOXMODELS_ON_CLEAR
@@ -1370,7 +1390,7 @@ public class EntityModel implements IRefreshable {
         for (final Property.EntityProperty property :
                 EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
           final EntityComboBoxModel comboModel =
-                (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
+                  (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
           if (comboModel != null) {
             for (final Entity deletedEntity : lastDeleted)
               comboModel.removeItem(deletedEntity);
