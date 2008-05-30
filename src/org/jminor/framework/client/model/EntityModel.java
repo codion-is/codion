@@ -120,18 +120,17 @@ public class EntityModel implements IRefreshable {
   public final State stEntityActive = new State("EntityModel.stEntityActive");
 
   /**
-   * When active the detail models are updated and filtered according to the selected master entity, if any
+   * Fired when detail models are linked or unlinked
    */
   public final Event evtLinkedDetailModelsChanged = new Event("EntityModel.evtLinkedDetailModelsChanged");
 
   /**
-   * Selection in this model triggers a filtering in all detail models
-   * if this state is active
+   * If this state is active selection in this model triggers the filtering of all linked detail models
    */
   private final State stSelectionFiltersDetail = new State("EntityModel.stSelectionFiltersDetail", true);
 
   /**
-   * Refresh of this model triggers a refresh in all detail models if this state is active
+   * If this state is active a refresh of this model triggers a refresh in all detail models
    */
   private final State stCascadeRefresh = new State("EntityModel.stCascadeRefresh", false);
 
@@ -173,7 +172,7 @@ public class EntityModel implements IRefreshable {
   private final List<? extends EntityModel> detailModels;
 
   /**
-   * Holds detail models that should be updated according to the selected entity
+   * Holds linked detail models that should be updated and filtered according to the selected entity/entities
    */
   private final List<EntityModel> linkedDetailModels = new ArrayList<EntityModel>();
 
@@ -285,7 +284,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return a String represention of this EntityModel,
-   * returns the model id by default
+   * returns the model caption by default
    */
   public String toString() {
     return getCaption();
@@ -307,7 +306,7 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return the id of this model
+   * @return the caption
    */
   public String getCaption() {
     return caption;
@@ -435,7 +434,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Sets the currently linked detail models
+   * Sets the currently linked detail models. Linked models are updated and filtered according
+   * to the entity/entities selected in this (the master) model
    * @param detailModels the detail models to link
    */
   public void setLinkedDetailModels(final List<EntityModel> detailModels) {

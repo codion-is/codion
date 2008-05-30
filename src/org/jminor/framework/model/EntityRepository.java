@@ -362,6 +362,10 @@ public class EntityRepository implements Serializable {
       properties.put(property.propertyID, property);
       if (property instanceof Property.EntityProperty) {
         for (final Property referenceProperty : ((Property.EntityProperty) property).referenceProperties) {
+          if (properties.containsKey(referenceProperty.propertyID))
+            throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
+                + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
+                + " has already been defined as: " + properties.get(referenceProperty.propertyID));
           if (!(referenceProperty instanceof Property.MirrorProperty))
             properties.put(referenceProperty.propertyID, referenceProperty);
         }

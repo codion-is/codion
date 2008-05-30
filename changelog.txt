@@ -133,3 +133,4 @@
   EntityModel.createEntityComboBoxModel added
   FrameworkUiUtil.createEntityComboBox() changed accordingly
   EntityModel.getDefaultValue() renamed to getDefaultEntity
+  Some javadocking
