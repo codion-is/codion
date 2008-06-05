@@ -193,6 +193,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     this.entityCriteria = entityCriteria;
   }
 
+  protected EntityCriteria getEntityCriteria() {
+    return entityCriteria;
+  }
+
   /**
    * Returns true if the given Entity should be included in this ComboBoxModel.
    * To be overridden in subclasses wishing to exclude some entities
@@ -206,8 +210,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   protected List<Entity> getEntitiesFromDb() throws UserException, DbException {
     try {
-      if (entityCriteria != null)
-        return dbProvider.getEntityDb().selectMany(entityCriteria);
+      if (getEntityCriteria() != null)
+        return dbProvider.getEntityDb().selectMany(getEntityCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID(), true);
     }

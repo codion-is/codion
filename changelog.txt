@@ -134,3 +134,4 @@
   FrameworkUiUtil.createEntityComboBox() changed accordingly
   EntityModel.getDefaultValue() renamed to getDefaultEntity
   Some javadocking
+  EntityModel.createPropertyComboBox() added and createEntityComboBox protected

@@ -323,7 +323,7 @@ public class FrameworkUiUtil {
     try {
       EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
       if (boxModel == null) {
-        boxModel = entityModel.createEntityComboBoxModel(property);
+        boxModel = entityModel.createPropertyComboBoxModel(property);
         boxModel.refresh();
       }
       final EntityComboBox ret = new EntityComboBox(boxModel, appInfo, newButtonFocusable);

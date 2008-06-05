@@ -494,8 +494,8 @@ public class EntityModel implements IRefreshable {
    * @param property the property for which to create a EntityComboBoxModel
    * @return a EntityComboBoxModel for the given property
    */
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
-    final EntityComboBoxModel ret = new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID);
+  public final EntityComboBoxModel createPropertyComboBoxModel(final Property.EntityProperty property) {
+    final EntityComboBoxModel ret = createEntityComboBoxModel(property);
     setComboBoxModel(property, ret);
 
     return ret;
@@ -578,15 +578,16 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Returns the entities to use when delete is triggered.
-   * Default behaviour is returning the active entity or the
-   * selected entities in case the active entity is null.
+   * Default behaviour is returning the selected entities
+   * from the table model or if no table model is available
+   * the active entity.
    * This method should return an empty List instead of null.
    * @return the entities to use when delete is triggered
    * @see #delete()
    */
   public List<Entity> getEntitiesForDelete() {
-    return isActiveEntityNull() ? (getTableModel() != null ? getTableModel().getSelectedEntities()
-            : new ArrayList<Entity>()) :  Arrays.asList(getActiveEntityCopy());
+    return getTableModel() != null ? getTableModel().getSelectedEntities() :
+            isActiveEntityNull() ? new ArrayList<Entity>() :  Arrays.asList(getActiveEntityCopy());
   }
 
   /**
@@ -1039,6 +1040,16 @@ public class EntityModel implements IRefreshable {
    * @throws org.jminor.common.model.UserException in case of an exception
    */
   protected void initializeAssociatedModels() throws UserException {}
+
+  /**
+   * Creates a default EntityComboBoxModel for the given property, override to provide
+   * specific EntityComboBoxModels for properties
+   * @param property the property for which to create a EntityComboBoxModel
+   * @return a EntityComboBoxModel for the given property
+   */
+  protected EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
+    return new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID);
+  }
 
   /**
    * @return a map of initialized EntityComboBoxModels associated with
