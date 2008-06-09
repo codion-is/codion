@@ -608,7 +608,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       final EntityPropertyEditor editPanel = new EntityPropertyEditor(
               selectedEntities.get(0).getValue(propertyToUpdate.propertyID), propertyToUpdate,
               model.getDbConnectionProvider(),
-              getInputManager(propertyToUpdate), selectedEntities.size() > 1);
+              getInputManager(propertyToUpdate, selectedEntities), selectedEntities.size() > 1);
       UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.getButtonValue() == JOptionPane.OK_OPTION) {
@@ -1227,10 +1227,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   /**
    * for overriding, to provide specific input components for multi-entity update, see updateSelectedEntities
    * @param property the property for which to get the InputManager
+   * @param toUpdate the entities that are about to be updated
    * @return the InputManager handling input for <code>property</code>
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected EntityPropertyEditor.InputManager getInputManager(final Property property) {
+  protected EntityPropertyEditor.InputManager getInputManager(final Property property, final List<Entity> toUpdate) {
     return null;
   }
 

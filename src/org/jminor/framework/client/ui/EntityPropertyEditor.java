@@ -160,7 +160,7 @@ public class EntityPropertyEditor extends JPanel {
         return ret;
       case ENTITY: {
         final EntityComboBoxModel model = new EntityComboBoxModel(dbProvider,
-                ((Property.EntityProperty) property).referenceEntityID, true, "N/A");
+                ((Property.EntityProperty) property).referenceEntityID, true, "-");
         model.refresh();
         if (setCurrentValue)
           model.setSelectedItem(currentValue);
