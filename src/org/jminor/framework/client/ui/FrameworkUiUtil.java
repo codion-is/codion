@@ -29,6 +29,7 @@ import org.jminor.framework.client.ui.property.CheckBoxPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
 import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
+import org.jminor.framework.client.ui.property.SearchFieldPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -372,6 +373,20 @@ public class FrameworkUiUtil {
     });
 
     return txt;
+  }
+
+  public static EntitySearchField createEntitySearchField(final Property property, final EntityModel model,
+                                                          final String searchEntityID, final String searchPropertyID) {
+    if (!(property instanceof Property.EntityProperty))
+      throw new IllegalArgumentException("Can only create EntitySearchField for a EntityProperty");
+    final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
+    if (searchProperty.getPropertyType() != Type.STRING)
+      throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
+
+    final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchProperty, model.getDbConnectionProvider());
+    new SearchFieldPropertyLink(model, property.propertyID, searchField);
+
+    return searchField;
   }
 
   public static SteppedComboBox createComboBox(final Property property, final EntityModel entityModel,

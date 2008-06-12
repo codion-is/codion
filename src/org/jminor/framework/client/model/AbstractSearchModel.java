@@ -59,10 +59,6 @@ public abstract class AbstractSearchModel {
     return property.getCaption();
   }
 
-  public String toString() {
-    return getProperty().toString();
-  }
-
   /**
    * @param object the object
    * @return true if the object should be included

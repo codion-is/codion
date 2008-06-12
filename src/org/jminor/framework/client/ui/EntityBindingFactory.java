@@ -328,6 +328,14 @@ public abstract class EntityBindingFactory extends JPanel {
             EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), lookupModel);
   }
 
+  protected final EntitySearchField createEntitySearchField(final String propertyID, final String entityID, final String searchPropertyID) {
+    return createEntitySearchField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), entityID, searchPropertyID);
+  }
+
+  protected final EntitySearchField createEntitySearchField(final Property property, final String entityID, final String searchPropertyID) {
+    return FrameworkUiUtil.createEntitySearchField(property, getModel(), entityID, searchPropertyID);
+  }
+
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property) {
     return createEntityComboBox(property, null);
   }

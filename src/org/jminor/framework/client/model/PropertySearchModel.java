@@ -50,16 +50,14 @@ public class PropertySearchModel extends AbstractSearchModel {
     setLowerBound((Object) value);
   }
 
-  public long hashCode(final boolean includeSearchState) {
-    long ret = getProperty().hashCode();
-    if (includeSearchState) {
-      ret += getSearchType().hashCode();
-      ret += stSearchEnabled.isActive() ? 1 : 0;
-      ret += getUpperBound() != null ? getHashCode(getUpperBound()) : 0;
-      ret += getLowerBound() != null ? getHashCode(getLowerBound()) : 0;
+  public String toString() {
+    final StringBuffer ret = new StringBuffer(getProperty().propertyID);
+    if (stSearchEnabled.isActive()) {
+      ret.append(getUpperBound() != null ? toString(getUpperBound()) : "");
+      ret.append(getLowerBound() != null ? toString(getLowerBound()) : "");
     }
 
-    return ret;
+    return ret.toString();
   }
 
   /**
@@ -87,15 +85,15 @@ public class PropertySearchModel extends AbstractSearchModel {
       return new PropertyCriteria(getProperty(), getSearchType(), getLowerBound(), getUpperBound());
   }
 
-  private long getHashCode(Object obj) {
-    long ret = 0;
+  private String toString(final Object obj) {
+    final StringBuffer ret = new StringBuffer();
     if (obj instanceof Collection)
       for (final Object object : ((Collection) obj))
-        ret += getHashCode(object);
+        ret.append(toString(object));
     else
-      ret = obj.hashCode();
+      ret.append(obj);
 
-    return ret;
+    return ret.toString();
   }
 
   private void bindComboBoxEvents() {

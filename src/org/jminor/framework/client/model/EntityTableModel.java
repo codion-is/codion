@@ -205,7 +205,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private Entity currentReportRecord;
 
   private String simpleSearchString = "";
-  private long searchStateOnRefresh;
+  private String searchStateOnRefresh;
   private boolean filterQueryByMaster =
           (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
   private boolean showAllWhenNotFiltered = false;
@@ -1129,7 +1129,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
     final ActionListener dataStateListener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        stDataDirty.setActive(searchStateOnRefresh != getSearchModelState());
+        stDataDirty.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
       }
     };
     evtSimpleSearchStringChanged.addListener(dataStateListener);
@@ -1205,12 +1205,15 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return ret;
   }
 
-  private long getSearchModelState() {
-    long ret = simpleSearchString.hashCode();
+  /**
+   * @return a String representing the state of the search models
+   */
+  private String getSearchModelState() {
+    final StringBuffer ret = new StringBuffer(simpleSearchString);
     for (final AbstractSearchModel model : getPropertySearchModels())
-      ret += ((PropertySearchModel) model).hashCode(model.stSearchEnabled.isActive());
+      ret.append(model.toString());
 
-    return ret;
+    return ret.toString();
   }
 
   private String getRangeDescription() {

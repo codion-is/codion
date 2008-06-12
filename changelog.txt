@@ -136,3 +136,9 @@
   Some javadocking
   EntityModel.createPropertyComboBox() added and createEntityComboBox protected
   EntityPanel.getInputManager, added List<Entity> toUpdate parameter
+  EntityTableModel.searchStateOnRefresh changed from a hash based long to a String due to brokenness
+  Property.hashCode removed
+  AbstractSearchModel.toString() removed
+  PropertySearchModel.hashCode() removed
+  EntitySearchField added
+  SearchFieldPropertyLink added

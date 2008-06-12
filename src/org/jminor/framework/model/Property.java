@@ -64,11 +64,6 @@ public class Property implements Serializable {
   private Object defaultValue = null;
 
   /**
-   * Cached hash code
-   */
-  private final int hashCode;
-
-  /**
    * Cached select column index
    */
   public int selectIndex = -1;
@@ -110,7 +105,6 @@ public class Property implements Serializable {
     this.preferredColumnWidth = preferredColumnWidth;
     this.selectOnly = selectOnly;
     this.isUpdatable = isUpdatable;
-    this.hashCode = initHashCode(propertyID);
   }
 
   /**
@@ -228,23 +222,6 @@ public class Property implements Serializable {
   }
 
   /**
-   * @return the hash code of the property identifier/column name of this property
-   */
-  public int hashCode() {
-    return hashCode;
-  }
-
-  /**
-   * Calculates the hash code for this property instance
-   * @param propertyID the property identifier
-   * @return the hash code of this property, by default the
-   * hash code of the property identifier
-   */
-  protected int initHashCode(final String propertyID) {
-    return propertyID.hashCode();
-  }
-
-  /**
    * A property that is part of a entities primary key
    */
   public static class PrimaryKeyProperty extends Property {
@@ -315,16 +292,6 @@ public class Property implements Serializable {
       this.referenceEntityID = referenceEntityID;
       this.referenceProperties = Arrays.asList(referenceProperties);
       this.isWeakReference = isWeakReference;
-    }
-
-    /** {@inheritDoc} */
-    protected int initHashCode(final String propertyID) {
-      int ret = super.initHashCode(propertyID);
-      if (referenceProperties != null)
-        for (final Property property : referenceProperties)
-          ret += property.hashCode();
-
-      return ret;
     }
 
     /**
