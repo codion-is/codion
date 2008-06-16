@@ -29,8 +29,8 @@ import org.jminor.framework.client.ui.property.CheckBoxPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
 import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
-import org.jminor.framework.client.ui.property.SearchFieldPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
+import org.jminor.framework.client.ui.property.SearchFieldPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
@@ -47,6 +47,7 @@ import org.apache.log4j.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -384,6 +385,7 @@ public class FrameworkUiUtil {
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
     final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchProperty, model.getDbConnectionProvider());
+    searchField.setBorder(BorderFactory.createLoweredBevelBorder());
     new SearchFieldPropertyLink(model, property.propertyID, searchField);
 
     return searchField;
