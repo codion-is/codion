@@ -607,8 +607,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       final List<Entity> selectedEntities = model.getTableModel().getSelectedEntities();
       final EntityPropertyEditor editPanel = new EntityPropertyEditor(
               selectedEntities.get(0).getValue(propertyToUpdate.propertyID), propertyToUpdate,
-              model.getDbConnectionProvider(),
-              getInputManager(propertyToUpdate, selectedEntities), selectedEntities.size() > 1);
+              model, getInputManager(propertyToUpdate, selectedEntities), selectedEntities.size() > 1);
       UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.getButtonValue() == JOptionPane.OK_OPTION) {

@@ -142,3 +142,8 @@
   PropertySearchModel.hashCode() removed
   EntitySearchField added
   SearchFieldPropertyLink added
+  EntityPropertyEditor changed, IEntityDbProvider instance variable removed, takes EntityModel as parameter and uses EntityModel.createEntityComboBoxModel when instantiating a combo box
+  EntityModel.createEntityComboBoxModel made public, added nullValueItem and sortContents parameters
+  EntityPanel.updateSelectedEntities changed to accomodate the above
+  EntityRepository.propertyDescriptions map added, along with set/getPropertyDescription
+  FrameworkUiUtil now adds EntityRepository.getPropertyDescription() as a tooltip on generated property compoments

@@ -11,9 +11,9 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 
@@ -40,7 +40,6 @@ public class EntityPropertyEditor extends JPanel {
   private final Property property;
   private final Object currentValue;
   private transient final InputManager inputManager;
-  private transient final IEntityDbProvider dbProvider;
 
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
@@ -49,21 +48,20 @@ public class EntityPropertyEditor extends JPanel {
     this(currentValue, property, null, multipleEntityUpdate);
   }
 
-  public EntityPropertyEditor(final Object currentValue, final Property property, final IEntityDbProvider db,
+  public EntityPropertyEditor(final Object currentValue, final Property property, final EntityModel entityModel,
                               final boolean multipleEntityUpdate) throws UserException {
-    this(currentValue, property, db, null, multipleEntityUpdate);
+    this(currentValue, property, entityModel, null, multipleEntityUpdate);
   }
 
-  public EntityPropertyEditor(final Object currentValue, final Property property, final IEntityDbProvider dbProvider,
+  public EntityPropertyEditor(final Object currentValue, final Property property, final EntityModel entityModel,
                               final InputManager inputManager, final boolean multipleEntityUpdate) throws UserException {
-    if (property instanceof Property.EntityProperty && dbProvider == null)
-      throw new IllegalArgumentException("No db object provided for entity property editor");
+    if (property instanceof Property.EntityProperty && entityModel == null)
+      throw new IllegalArgumentException("No EntityModel instance provided for entity property editor");
 
     this.inputManager = inputManager;
-    this.dbProvider = dbProvider;
     this.property = property;
     this.currentValue = currentValue;
-    this.field = getInputField(!multipleEntityUpdate && !Entity.isValueNull(property.getPropertyType(), currentValue));
+    this.field = getInputField(!multipleEntityUpdate && !Entity.isValueNull(property.getPropertyType(), currentValue), entityModel);
     initUI(property.getCaption());
   }
 
@@ -131,7 +129,7 @@ public class EntityPropertyEditor extends JPanel {
     }
   }
 
-  protected JComponent getInputField(final boolean setCurrentValue) throws UserException {
+  protected JComponent getInputField(final boolean setCurrentValue, final EntityModel entityModel) throws UserException {
     if (inputManager != null)
       return inputManager.getInputComponent();
 
@@ -159,8 +157,8 @@ public class EntityPropertyEditor extends JPanel {
           ret.setSelectedItem(currentValue);
         return ret;
       case ENTITY: {
-        final EntityComboBoxModel model = new EntityComboBoxModel(dbProvider,
-                ((Property.EntityProperty) property).referenceEntityID, true, "-");
+        final EntityComboBoxModel model =
+                entityModel.createEntityComboBoxModel(((Property.EntityProperty)property), "-", true);
         model.refresh();
         if (setCurrentValue)
           model.setSelectedItem(currentValue);

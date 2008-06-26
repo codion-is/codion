@@ -35,7 +35,7 @@ public class EmployeePanel extends EntityPanel {
 
     final JTextField txtJob = UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_JOB));
     txtJob.setColumns(8);
-    
+
     final SteppedComboBox boxMgr = createEntityComboBox(EmpDept.EMPLOYEE_MGR_REF);
     boxMgr.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     boxMgr.setPopupWidth(200);

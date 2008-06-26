@@ -297,6 +297,7 @@ public class FrameworkUiUtil {
       ret.setToolTipText(property.getCaption());
     UiUtil.linkToEnabledState(enabledState, ret);
     new CheckBoxPropertyLink(entityModel, property, ret.getModel());
+    setPropertyToolTip(property, ret);
 
     return ret;
   }
@@ -332,6 +333,7 @@ public class FrameworkUiUtil {
       UiUtil.linkToEnabledState(enabledState, ret);
       new ComboBoxPropertyLink(entityModel, property, ret);
       MaximumMatch.enable(ret);
+      setPropertyToolTip(property, ret);
 
       return ret;
     }
@@ -367,6 +369,7 @@ public class FrameworkUiUtil {
   public static JTextField createEntityField(final Property property, final EntityModel model) {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
+    setPropertyToolTip(property, txt);
     model.getPropertyChangeEvent(property).addListener(new PropertyListener() {
       protected void propertyChanged(final PropertyChangeEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
@@ -387,6 +390,7 @@ public class FrameworkUiUtil {
     final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchProperty, model.getDbConnectionProvider());
     searchField.setBorder(BorderFactory.createLoweredBevelBorder());
     new SearchFieldPropertyLink(model, property.propertyID, searchField);
+    setPropertyToolTip(property, searchField);
 
     return searchField;
   }
@@ -403,6 +407,7 @@ public class FrameworkUiUtil {
     ret.setEditable(editable);
     UiUtil.linkToEnabledState(enabledState, ret);
     new ComboBoxPropertyLink(entityModel, property, ret);
+    setPropertyToolTip(property, ret);
 
     return ret;
   }
@@ -453,6 +458,7 @@ public class FrameworkUiUtil {
     ret.setWrapStyleWord(true);
 
     new TextPropertyLink(entityModel, property, ret, true, LinkType.READ_WRITE);
+    setPropertyToolTip(property, ret);
 
     return ret;
   }
@@ -515,6 +521,7 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     if (transferFocusOnEnter)
       UiUtil.transferFocusOnEnter(ret);
+    setPropertyToolTip(property, ret);
 
     return ret;
   }
@@ -570,5 +577,11 @@ public class FrameworkUiUtil {
       MaximumMatch.enable(ret);
 
     return ret;
+  }
+
+  public static void setPropertyToolTip(final Property property, final JComponent component) {
+    final String propertyDescription = EntityRepository.get().getPropertyDescription(property);
+    if (propertyDescription != null)
+      component.setToolTipText(propertyDescription);
   }
 }

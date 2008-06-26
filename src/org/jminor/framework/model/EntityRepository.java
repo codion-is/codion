@@ -28,6 +28,7 @@ public class EntityRepository implements Serializable {
   private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
   private final Map<String, String> createDateColumns = new HashMap<String, String>();
+  private final Map<String, String> propertyDescriptions = new HashMap<String, String>();
 
   private transient Map<String, EntityDependencies> entityDependencies;
   private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
@@ -84,6 +85,18 @@ public class EntityRepository implements Serializable {
    */
   public void setDefaultEntityProxy(final EntityProxy object) {
     defaultEntityProxy = object;
+  }
+
+  public void setPropertyDescription(final String propertyID, final String description) {
+    propertyDescriptions.put(propertyID, description);
+  }
+
+  public String getPropertyDescription(final Property property) {
+    return getPropertyDescription(property.propertyID);
+  }
+
+  public String getPropertyDescription(final String propertyID) {
+    return propertyDescriptions.get(propertyID);
   }
 
   public void addEntityProxy(final String entityID, final EntityProxy entityProxy) {
