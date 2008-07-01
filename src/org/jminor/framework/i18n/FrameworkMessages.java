@@ -121,6 +121,7 @@ public class FrameworkMessages {
   public static final String ADVANCED = "advanced";
   public static final String APPLICATION_TREE = "view_application_tree";
   public static final String CHANGE_HISTORY = "change_history";
+  public static final String SELECT_COLUMNS = "select_columns";
 
   public static String get(final String key) {
     return bundle.getString(key);

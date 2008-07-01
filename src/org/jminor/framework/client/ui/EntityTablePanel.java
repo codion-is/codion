@@ -272,6 +272,41 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  public boolean isPropertyColumnVisible(final Property property) {
+    return getJTable() != null && getJTable().getColumn(property).getPreferredWidth() > 0;
+  }
+
+  /**
+   * Toggles the visibility of the column representing the given property.
+   * This is done by setting the column width to 0 when hiding and setting it to the default width when showing.
+   * This method does not prevent the column from being selected while traversing the table grid
+   * with the arrow keys, something we'll call a *known bug*
+   * @param property the property
+   * @param visible if true the column is shown, otherwise it is hidden
+   */
+  public void setPropertyColumnVisible(final Property property, final boolean visible) {
+    if (getJTable() == null)
+      return;
+
+    if (visible) {
+      if (!isPropertyColumnVisible(property)) {
+        final TableColumn column = getJTable().getColumn(property);
+        column.setMaxWidth(Integer.MAX_VALUE);
+        column.setMinWidth(15);
+        Integer prw = property.getPreferredColumnWidth();
+        if (prw == null || prw < 0)
+          prw = 80;
+        column.setPreferredWidth(prw);
+      }
+    }
+    else {
+      final TableColumn column = getJTable().getColumn(property);
+      column.setMinWidth(0);
+      column.setPreferredWidth(0);
+      column.setMaxWidth(0);
+    }
+  }
+
   protected JPanel initializeSouthPanel(final boolean allowQueryConfiguration) {
     southToolBar = new JToolBar(JToolBar.HORIZONTAL);
     southToolBar.setFocusable(false);
@@ -667,8 +702,8 @@ public class EntityTablePanel extends JPanel {
       col.setIdentifier(property);
       col.setHeaderValue(property.getCaption());
       final Integer prw = property.getPreferredColumnWidth();
-      if (prw != null)
-        col.setMinWidth(prw);
+      if (prw != null && prw > 0)
+        col.setPreferredWidth(prw);
       ret.add(col);
     }
 

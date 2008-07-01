@@ -38,6 +38,8 @@ import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -53,6 +55,7 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -113,6 +116,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public static final String VIEW_DEPENDENCIES = "viewDependencies";
   public static final String UPDATE_SELECTED = "updateSelected";
   public static final String CONFIGURE_QUERY = "configureQuery";
+  public static final String SELECT_COLUMNS = "selectTableColumns";
 
   private static final String NAV_UP = "navigateUp";
   private static final String NAV_DOWN = "navigateDown";
@@ -678,6 +682,30 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     getTablePanel().configureQuery();
   }
 
+  public void selectTableColumns() {
+    final JPanel togglePanel = new JPanel(new GridLayout(getTablePanel().getJTable().getColumnCount(), 1));
+    final Enumeration<TableColumn> columns = getTablePanel().getJTable().getColumnModel().getColumns();
+    final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), column.getPreferredWidth() > 0);
+      buttonList.add(chkColumn);
+      togglePanel.add(chkColumn);
+    }
+    final JScrollPane scroller = new JScrollPane(togglePanel);
+    scroller.setPreferredSize(new Dimension(200, 400));
+    final int result = JOptionPane.showOptionDialog(this, scroller,
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, null, null);
+    if (result == JOptionPane.OK_OPTION) {
+      final TableColumnModel columnModel = getTablePanel().getJTable().getColumnModel();
+      for (final JCheckBox chkButton : buttonList) {
+        final TableColumn column = columnModel.getColumn(buttonList.indexOf(chkButton));
+        getTablePanel().setPropertyColumnVisible((Property) column.getIdentifier(), chkButton.isSelected());
+      }
+    }
+  }
+
   //#############################################################################################
   // End - control methods
   //#############################################################################################
@@ -702,6 +730,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       else if (getComponentCount() > 0)
         getComponents()[0].requestFocusInWindow();
     }
+  }
+
+  public Control getSelectColumnsControl() {
+    return ControlFactory.methodControl(this, "selectTableColumns",
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS) + "...", null,
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS));
   }
 
   public Control getConfigureQueryControl() {
@@ -1085,6 +1119,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       controlMap.put(VIEW_DEPENDENCIES, getViewDependenciesControl());
       if (isQueryConfigurationAllowed())
         controlMap.put(CONFIGURE_QUERY, getConfigureQueryControl());
+      controlMap.put(SELECT_COLUMNS, getSelectColumnsControl());
     }
   }
 
@@ -1125,9 +1160,16 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       seperatorRequired = true;
     }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
+      if (seperatorRequired) {
+        ret.addSeparator();
+        seperatorRequired = false;
+      }
+      ret.add(controlMap.get(CONFIGURE_QUERY));
+    }
+    if (controlMap.containsKey(SELECT_COLUMNS)) {
       if (seperatorRequired)
         ret.addSeparator();
-      ret.add(controlMap.get(CONFIGURE_QUERY));
+      ret.add(controlMap.get(SELECT_COLUMNS));
     }
 
     return ret;

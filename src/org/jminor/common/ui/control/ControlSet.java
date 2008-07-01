@@ -95,19 +95,21 @@ public class ControlSet extends Control {
   }
 
   public void add(final Action action) {
-    actions.add(action);
+    if (action != null)
+      actions.add(action);
   }
 
   public void addAt(final Action action, final int idx) {
-    actions.add(idx, action);
+    if (action != null)
+      actions.add(idx, action);
   }
 
   public boolean remove(final Action action) {
-    return actions.remove(action);
+    return action != null && actions.remove(action);
   }
 
   public boolean remove(final ControlSet set) {
-    return actions.remove(set);
+    return set != null && actions.remove(set);
   }
 
   public void removeAll() {
@@ -123,11 +125,13 @@ public class ControlSet extends Control {
   }
 
   public void add(final ControlSet controlSet) {
-    actions.add(controlSet);
+    if (controlSet != null)
+      actions.add(controlSet);
   }
 
   public void addAt(final ControlSet controlSet, final int idx) {
-    actions.add(idx, controlSet);
+    if (controlSet != null)
+      actions.add(idx, controlSet);
   }
 
   public void addSeparator() {

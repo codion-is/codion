@@ -147,3 +147,7 @@
   EntityPanel.updateSelectedEntities changed to accomodate the above
   EntityRepository.propertyDescriptions map added, along with set/getPropertyDescription
   FrameworkUiUtil now adds EntityRepository.getPropertyDescription() as a tooltip on generated property compoments
+  ControlSet added some null checks during additions to prevent adding null controls/actions
+  EntityTablePanel.isPropertyColumnVisible() and setPropertyColumnVisible() added
+  EntityPanel.selectTableColumns() added
+  EntityPanel added "Select columns" action to table popup menu, along with FrameworkMessages
