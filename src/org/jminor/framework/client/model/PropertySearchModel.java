@@ -52,7 +52,7 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   public String toString() {
     final StringBuffer ret = new StringBuffer(getProperty().propertyID);
-    if (stSearchEnabled.isActive()) {
+    if (isSearchEnabled()) {
       ret.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       ret.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
     }
@@ -74,7 +74,13 @@ public class PropertySearchModel extends AbstractSearchModel {
   public void initialize() throws UserException {
     if (entityComboBoxModel != null && !entityComboBoxModel.isDataInitialized()) {
       entityComboBoxModel.refresh();
-      entityComboBoxModel.setSelectedItem(getUpperBound());
+      try {
+        updatingModel = true;//to prevent a round trip to setUpperBound()
+        entityComboBoxModel.setSelectedItem(getUpperBound());
+      }
+      finally {
+        updatingModel = false;
+      }
     }
   }
 
@@ -86,7 +92,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   private String toString(final Object obj) {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuffer ret = new StringBuffer(getSearchType().toString());
     if (obj instanceof Collection)
       for (final Object object : ((Collection) obj))
         ret.append(toString(object));

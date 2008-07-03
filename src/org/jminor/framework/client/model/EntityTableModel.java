@@ -382,6 +382,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
+   * Clears all entities from this EntityTableModel
+   */
+  public void clear() {
+    removeAll();
+  }
+
+  /**
    * @return Value for property 'refreshing'.
    */
   public boolean isRefreshing() {
@@ -728,7 +735,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     final PropertySearchModel model =
             getPropertySearchModel(EntityRepository.get().getPropertyAtViewIndex(getEntityID(), columnIdx).propertyID);
 
-    return model != null && model.stSearchEnabled.isActive();
+    return model != null && model.isSearchEnabled();
   }
 
   public boolean isFilterEnabled(final int columnIndex) {
@@ -764,7 +771,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   public List<Entity> getSelectedEntities() {
     final int[] selectedModelIndexes = getSelectedModelIndexes();
-    final ArrayList<Entity> ret = new ArrayList<Entity>();
+    final List<Entity> ret = new ArrayList<Entity>();
     for (final int modelIndex : selectedModelIndexes)
       ret.add(visibleEntities.get(modelIndex));
 
@@ -1064,7 +1071,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   protected ICriteria getSearchCriteria() {
     final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
     for (final AbstractSearchModel criteria : propertySearchModels)
-      if (criteria.stSearchEnabled.isActive())
+      if (criteria.isSearchEnabled())
         ret.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
 
     return ret.getCriteriaCount() > 0 ? ret : null;
@@ -1168,7 +1175,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   protected boolean include(final Entity entity) {
     for (final AbstractSearchModel columnFilter : propertyFilterModels)
-      if (columnFilter.stSearchEnabled.isActive() && !columnFilter.include(entity))
+      if (columnFilter.isSearchEnabled() && !columnFilter.include(entity))
         return false;
 
     return true;

@@ -1,5 +1,7 @@
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.CriteriaSet;
+import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
@@ -33,6 +35,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;
 
@@ -42,11 +46,18 @@ public class EntitySearchField extends TextFieldPlus {
 
   private String entityID;
   private Property searchProperty;
+  private ICriteria additionalSearchCriteria;
   private Entity selectedEntity;
 
   public EntitySearchField(final String entityID, final Property searchProperty, final IEntityDbProvider dbProvider) {
+    this(entityID, searchProperty, dbProvider, null);
+  }
+
+  public EntitySearchField(final String entityID, final Property searchProperty, final IEntityDbProvider dbProvider,
+                           final ICriteria additionalSearchCriteria) {
     this.entityID = entityID;
     this.searchProperty = searchProperty;
+    this.additionalSearchCriteria = additionalSearchCriteria;
     addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
@@ -81,7 +92,11 @@ public class EntitySearchField extends TextFieldPlus {
   }
 
   protected EntityCriteria getEntityCriteria() {
-    return new EntityCriteria(entityID, new PropertyCriteria(searchProperty, SearchType.LIKE, getText() + FrameworkConstants.WILDCARD));
+    final PropertyCriteria searchCriteria =
+            new PropertyCriteria(searchProperty, SearchType.LIKE, getText() + FrameworkConstants.WILDCARD);
+
+    return new EntityCriteria(entityID, additionalSearchCriteria == null ? searchCriteria :
+            new CriteriaSet(CriteriaSet.Conjunction.AND, additionalSearchCriteria, searchCriteria));
   }
 
   private void performSearch(final IEntityDbProvider dbProvider) throws Exception {
@@ -127,6 +142,12 @@ public class EntitySearchField extends TextFieldPlus {
     dialog.getRootPane().getActionMap().put("cancel", cancelAction);
     list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    list.addMouseListener(new MouseAdapter() {
+      public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2)
+          okAction.actionPerformed(null);
+      }
+    });
     btnClose.setMnemonic('L');
     btnCancel.setMnemonic('H');
     dialog.setLayout(new BorderLayout());

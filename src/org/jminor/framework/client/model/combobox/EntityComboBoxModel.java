@@ -178,7 +178,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   /** {@inheritDoc} */
   public String toString() {
-    return getClass().getSimpleName() + " [" + getEntityID() + "]";
+    return getClass().getSimpleName() + " [entityID: " + getEntityID() + "]";
   }
 
   public boolean isDataInitialized() {

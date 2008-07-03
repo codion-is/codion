@@ -113,7 +113,7 @@ public class EntityCriteriaPanel extends JPanel {
         final PropertySearchModel selected = (PropertySearchModel) value;
         ((JLabel)cellRenderer).setText(selected.getProperty().toString());
 
-        if (selected.stSearchEnabled.isActive())
+        if (selected.isSearchEnabled())
           cellRenderer.setForeground(Color.red);
         else
           cellRenderer.setForeground(Color.black);

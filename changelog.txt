@@ -150,4 +150,16 @@
   ControlSet added some null checks during additions to prevent adding null controls/actions
   EntityTablePanel.isPropertyColumnVisible() and setPropertyColumnVisible() added
   EntityPanel.selectTableColumns() added
-  EntityPanel added "Select columns" action to table popup menu, along with FrameworkMessages
+  EntityPanel added "Select columns" action to table popup menu, added to FrameworkMessages
+  EntityTableModel.clear() added
+  EntityTablePanel added Clear action to popup menu
+  PropertySearchModel.toString() added missing SearchType to result
+  EntityTablePanel.setPropertyColumnVisible() now automatically disables searching on hidden columns
+  EntitySearchField added double click as an OK trigger
+  EntitySearchField.additionalSearchCriteria added
+  EntityBindingFactory.createEntitySearchFieldPanel added
+  FrameworkUiUtil.createEntitySearchFieldPanel added
+  AbstractSearchModel.stLocked added, introducing the ability to lock search models in a certain state
+  AbstractSearchPanel changed according to the above, linking components to the locked state
+  PropertySearchModel.initialize fixed to prevent a property setting roundtrip back to the ui
+  AbstractPropertySearchModel.stSearchEnabled privatized due to locking mechanism

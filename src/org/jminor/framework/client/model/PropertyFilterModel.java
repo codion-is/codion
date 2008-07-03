@@ -72,7 +72,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
   }
 
   public boolean include(final Comparable comparable) {
-    if (!stSearchEnabled.isActive())
+    if (!isSearchEnabled())
       return true;
 
     Comparable toCompare = comparable;
@@ -101,8 +101,8 @@ public class PropertyFilterModel extends AbstractSearchModel {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
     final boolean on = value != null;
-    if (stSearchEnabled.isActive() != on)
-      stSearchEnabled.setActive(on);
+    if (isSearchEnabled() != on)
+      setSearchEnabled(on);
     else
       evtUpperBoundChanged.fire();
   }

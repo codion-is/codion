@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.DbException;
+import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
@@ -381,18 +382,64 @@ public class FrameworkUiUtil {
 
   public static EntitySearchField createEntitySearchField(final Property property, final EntityModel model,
                                                           final String searchEntityID, final String searchPropertyID) {
+    return createEntitySearchField(property, model, searchEntityID, searchPropertyID, null);
+  }
+
+  public static EntitySearchField createEntitySearchField(final Property property, final EntityModel model,
+                                                          final String searchEntityID, final String searchPropertyID,
+                                                          final ICriteria additionalSearchCriteria) {
     if (!(property instanceof Property.EntityProperty))
       throw new IllegalArgumentException("Can only create EntitySearchField for a EntityProperty");
     final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
     if (searchProperty.getPropertyType() != Type.STRING)
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchProperty, model.getDbConnectionProvider());
+    final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchProperty,
+            model.getDbConnectionProvider(), additionalSearchCriteria);
     searchField.setBorder(BorderFactory.createLoweredBevelBorder());
     new SearchFieldPropertyLink(model, property.propertyID, searchField);
     setPropertyToolTip(property, searchField);
 
     return searchField;
+  }
+
+  public static JPanel createEntitySearchFieldPanel(final Property property, final EntityModel model,
+                                                    final String searchEntityID, final String searchPropertyID,
+                                                    final EntityTableModel lookupModel) {
+    return createEntitySearchFieldPanel(property, model, searchEntityID, searchPropertyID, null, lookupModel);
+  }
+
+  public static JPanel createEntitySearchFieldPanel(final Property property, final EntityModel model,
+                                                    final String searchEntityID, final String searchPropertyID,
+                                                    final ICriteria additionalSearchCriteria,
+                                                    final EntityTableModel lookupModel) {
+    if (!(property instanceof Property.EntityProperty))
+      throw new IllegalArgumentException("Can only create EntitySearchField for a EntityProperty");
+    final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
+    if (searchProperty.getPropertyType() != Type.STRING)
+      throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
+
+    final EntitySearchField searchField = createEntitySearchField(property, model, searchEntityID,
+            searchPropertyID, additionalSearchCriteria);
+    final JButton btn = new JButton(new AbstractAction("...") {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel,
+                  UiUtil.getParentWindow(searchField), true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
+          model.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
+        }
+        catch (UserCancelException e1) {
+          //
+        }
+      }
+    });
+    btn.setPreferredSize(FrameworkUiUtil.DIMENSION18x18);
+
+    final JPanel ret = new JPanel(new BorderLayout(5,0));
+    ret.add(searchField, BorderLayout.CENTER);
+    ret.add(btn, BorderLayout.EAST);
+
+    return ret;
   }
 
   public static SteppedComboBox createComboBox(final Property property, final EntityModel entityModel,

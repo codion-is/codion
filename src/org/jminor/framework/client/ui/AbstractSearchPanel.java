@@ -85,12 +85,12 @@ public abstract class AbstractSearchPanel extends JPanel {
       this.lowerField = isLowerFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
 
       this.toggleSearchEnabled = ControlProvider.createToggleButton(
-              ControlFactory.toggleControl(model, "searchEnabled", null, model.stSearchEnabled.evtStateChanged));
+              ControlFactory.toggleControl(model, "searchEnabled", null, model.getSearchStateChangedEvent()));
       toggleSearchEnabled.setIcon(Images.loadImage("Filter16.gif"));
       this.toggleSearchAdvanced = ControlProvider.createToggleButton(
               ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.evtStateChanged));
       toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
-
+      linkComponentsToLockState();
       initUI();
       initializePanel();
       bindEvents();
@@ -256,5 +256,15 @@ public abstract class AbstractSearchPanel extends JPanel {
     setPreferredSize(new Dimension(getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()*2));
 
     revalidate();
+  }
+
+  private void linkComponentsToLockState() {
+    final State stUnlocked = model.stLocked.getReversedState();
+    UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
+    UiUtil.linkToEnabledState(stUnlocked, upperField);
+    if (lowerField != null)
+      UiUtil.linkToEnabledState(stUnlocked, lowerField);
+    UiUtil.linkToEnabledState(stUnlocked, toggleSearchAdvanced);
+    UiUtil.linkToEnabledState(stUnlocked, toggleSearchEnabled);
   }
 }

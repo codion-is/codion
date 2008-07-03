@@ -127,7 +127,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     if (field instanceof JTextField) {//enter button toggles the filter on/off
       ((JTextField) field).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          getModel().setSearchEnabled(!getModel().stSearchEnabled.isActive());
+          getModel().setSearchEnabled(!getModel().isSearchEnabled());
         }
       });
     }

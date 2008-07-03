@@ -29,8 +29,9 @@ public abstract class AbstractSearchModel {
   public final Event evtSearchStateChanged = new Event("AbstractSearchModel.evtSearchStateChanged");
   public final Event evtSearchModelCleared = new Event("AbstractSearchModel.evtSearchModelCleared");
 
-  public final State stSearchEnabled = new State("AbstractSearchModel.stSearchEnabled");
+  public final State stLocked = new State("AbstractSearchModel.stLocked", false);
 
+  private final State stSearchEnabled = new State("AbstractSearchModel.stSearchEnabled");
   private final Property property;
 
   private SearchType searchType = SearchType.LIKE;
@@ -64,6 +65,21 @@ public abstract class AbstractSearchModel {
    * @return true if the object should be included
    */
   public abstract boolean include(final Object object);
+
+  /**
+   * Locks/unlocks this search model, thus preventing changes to either values or search type
+   * @param value the value
+   */
+  public void setLocked(final boolean value) {
+    stLocked.setActive(value);
+  }
+
+  /**
+   * @return the event fired when the search state changes
+   */
+  public Event getSearchStateChangedEvent() {
+    return stSearchEnabled.evtStateChanged;
+  }
 
   /**
    * @param value Value to set for property 'upperBound'.
@@ -116,8 +132,11 @@ public abstract class AbstractSearchModel {
 
   /**
    * @param upper Value to set for property 'upperBound'.
+   * @throws IllegalStateException in case this model has been locked
    */
   public void setUpperBound(final Object upper) {
+    if (stLocked.isActive())
+      throw new IllegalStateException("Search model for property " + property + " is locked");
     if (!Util.equal(upperBound, upper)) {
       upperBound = upper;
       evtUpperBoundChanged.fire();
@@ -185,8 +204,11 @@ public abstract class AbstractSearchModel {
 
   /**
    * @param value Value to set for property 'lowerBound'.
+   * @throws IllegalStateException in case this model has been locked
    */
   public void setLowerBound(final Object value) {
+    if (stLocked.isActive())
+      throw new IllegalStateException("Search model for property " + property + " is locked");
     if (!Util.equal(lowerBound, value)) {
       lowerBound = value;
       evtLowerBoundChanged.fire();
@@ -212,8 +234,11 @@ public abstract class AbstractSearchModel {
 
   /**
    * @param type Value to set for property 'searchType'.
+   * @throws IllegalStateException in case this model has been locked
    */
   public void setSearchType(final SearchType type) {
+    if (stLocked.isActive())
+      throw new IllegalStateException("Search model for property " + property + " is locked");
     if (type != searchType) {
       searchType = type;
       evtSearchTypeChanged.fire();
@@ -229,8 +254,11 @@ public abstract class AbstractSearchModel {
 
   /**
    * @param value Value to set for property 'searchEnabled'.
+   * @throws IllegalStateException in case this model has been locked
    */
   public void setSearchEnabled(final boolean value) {
+    if (stLocked.isActive())
+      throw new IllegalStateException("Search model for property " + property + " is locked");
     stSearchEnabled.setActive(value);
   }
 

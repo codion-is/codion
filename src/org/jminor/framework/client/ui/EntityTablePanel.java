@@ -280,7 +280,8 @@ public class EntityTablePanel extends JPanel {
    * Toggles the visibility of the column representing the given property.
    * This is done by setting the column width to 0 when hiding and setting it to the default width when showing.
    * This method does not prevent the column from being selected while traversing the table grid
-   * with the arrow keys, something we'll call a *known bug*
+   * with the arrow keys, something we'll call a *known bug*.
+   * Hiding a column removes it from the query criteria, by disabling its search model (PropertySearchModel)
    * @param property the property
    * @param visible if true the column is shown, otherwise it is hidden
    */
@@ -300,10 +301,14 @@ public class EntityTablePanel extends JPanel {
       }
     }
     else {
-      final TableColumn column = getJTable().getColumn(property);
-      column.setMinWidth(0);
-      column.setPreferredWidth(0);
-      column.setMaxWidth(0);
+      if (isPropertyColumnVisible(property)) {
+        //disable the search model for the column to be hidden, to prevent confusion
+        getTableModel().getPropertySearchModel(property.propertyID).setSearchEnabled(false);
+        final TableColumn column = getJTable().getColumn(property);
+        column.setMinWidth(0);
+        column.setPreferredWidth(0);
+        column.setMaxWidth(0);
+      }
     }
   }
 
@@ -405,6 +410,7 @@ public class EntityTablePanel extends JPanel {
         searchControls.addAt(ControlFactory.toggleControl(this, "searchPanelVisible",
                 FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibleChanged), 0);
         popupControls.addSeparatorAt(0);
+        popupControls.addAt(getClearControl(), 0);
         popupControls.addAt(getRefreshControl(), 0);
         popupControls.add(searchControls);
       }
@@ -474,6 +480,15 @@ public class EntityTablePanel extends JPanel {
     return ControlFactory.methodControl(getTableModel(), "refresh", refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
+  }
+
+  /**
+   * @return Value for property 'refreshControl'.
+   */
+  protected Control getClearControl() {
+    final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
+    return ControlFactory.methodControl(getTableModel(), "clear", clearCaption,
+            null, null, clearCaption.charAt(0), null, null);
   }
 
   protected JPanel initializeSearchPanel() {

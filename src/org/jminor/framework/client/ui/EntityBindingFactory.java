@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.State;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 import org.jminor.common.ui.UiUtil;
@@ -51,11 +52,11 @@ public abstract class EntityBindingFactory extends JPanel {
     return getControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
-  public JPanel getControlPanel(final JLabel label, final JComponent inputComponent,
+  public JPanel getControlPanel(final JComponent labelComponent, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
-    ret.add(label);
+    ret.add(labelComponent);
     ret.add(inputComponent);
 
     return ret;
@@ -328,12 +329,39 @@ public abstract class EntityBindingFactory extends JPanel {
             EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), lookupModel);
   }
 
-  protected final EntitySearchField createEntitySearchField(final String propertyID, final String entityID, final String searchPropertyID) {
-    return createEntitySearchField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), entityID, searchPropertyID);
+  protected final EntitySearchField createEntitySearchField(final String propertyID, final String entityID,
+                                                            final String searchPropertyID) {
+    return createEntitySearchField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), entityID,
+            searchPropertyID);
   }
 
-  protected final EntitySearchField createEntitySearchField(final Property property, final String entityID, final String searchPropertyID) {
+  protected final EntitySearchField createEntitySearchField(final Property property, final String entityID,
+                                                            final String searchPropertyID) {
     return FrameworkUiUtil.createEntitySearchField(property, getModel(), entityID, searchPropertyID);
+  }
+
+  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String entityID,
+                                                      final String searchPropertyID, final EntityTableModel lookupModel) {
+    return createEntitySearchFieldPanel(propertyID, entityID, searchPropertyID, null, lookupModel);
+  }
+
+  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String entityID,
+                                                      final String searchPropertyID, final ICriteria additionalSearchCriteria,
+                                                      final EntityTableModel lookupModel) {
+    return createEntitySearchFieldPanel(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
+            entityID, searchPropertyID, additionalSearchCriteria, lookupModel);
+  }
+
+  protected final JPanel createEntitySearchFieldPanel(final Property property, final String entityID,
+                                                      final String searchPropertyID, final EntityTableModel lookupModel) {
+    return createEntitySearchFieldPanel(property, entityID, searchPropertyID, null, lookupModel);
+  }
+
+  protected final JPanel createEntitySearchFieldPanel(final Property property, final String entityID,
+                                                      final String searchPropertyID, final ICriteria additionalSearchCriteria,
+                                                      final EntityTableModel lookupModel) {
+    return FrameworkUiUtil.createEntitySearchFieldPanel(property, getModel(), entityID, searchPropertyID,
+            additionalSearchCriteria, lookupModel);
   }
 
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property) {
