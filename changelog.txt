@@ -163,3 +163,4 @@
   AbstractSearchPanel changed according to the above, linking components to the locked state
   PropertySearchModel.initialize fixed to prevent a property setting roundtrip back to the ui
   AbstractPropertySearchModel.stSearchEnabled privatized due to locking mechanism
+  EntityModel.stAllowInsert/Delete/Update, .isAllowInsert/Delete/Update, .setAllowInsert/Delete/Update added

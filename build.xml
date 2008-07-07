@@ -328,6 +328,9 @@
     <copy todir="${wiki.media.project}/test">
       <fileset dir="${test}" />
     </copy>
+    <chmod dir="${wiki.media.project}" perm="ugo+r" type="file" includes="**/*"/>
+    <chmod dir="${wiki.media.project}" perm="ugo+rx" type="dir" includes="**/*"/>
+    <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
   </target>
 
 </project>

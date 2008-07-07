@@ -511,7 +511,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   public final void handleSave() {
     if ((getModel().getTableModel() != null && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
-            || !getModel().isActiveEntityModified() || !model.allowUpdate()) {
+            || !getModel().isActiveEntityModified() || !model.isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       handleInsert();
     }
@@ -761,7 +761,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final String deleteCaption = FrameworkMessages.get(FrameworkMessages.DELETE);
     return ControlFactory.methodControl(this, "handleDelete", deleteCaption,
             new AggregateState(AggregateState.AND,
-                    model.getAllowDeleteState(),
+                    model.getDeleteAllowedState(),
                     model.getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -780,14 +780,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ControlFactory.methodControl(this, "updateSelectedEntities",
             updateSelectedCaption,
             new AggregateState(AggregateState.AND,
-                    model.getAllowUpdateState(),
+                    model.getUpdateAllowedState(),
                     model.getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP), 0,
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
 
   public ControlSet getUpdateSelectedControlSet(final String name) {
-    final State enabled = new AggregateState(AggregateState.AND, model.getAllowUpdateState(),
+    final State enabled = new AggregateState(AggregateState.AND, model.getUpdateAllowedState(),
             model.getTableModel().stSelectionEmpty.getReversedState());
     final ControlSet ret = new ControlSet(name, (char) 0, Images.loadImage("Modify16.gif"), enabled);
     ret.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -809,7 +809,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ControlFactory.methodControl(this, "handleDelete", deleteCaption,
             new AggregateState(AggregateState.AND,
                     model.stActive,
-                    model.getAllowDeleteState(),
+                    model.getDeleteAllowedState(),
                     model.stEntityActive),//changed from stSelectionEmpty.getReversedState()
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -829,7 +829,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ControlFactory.methodControl(this, "handleUpdate", updateCaption,
             new AggregateState(AggregateState.AND,
                     model.stActive,
-                    model.getAllowUpdateState(),
+                    model.getUpdateAllowedState(),
                     model.stEntityActive,
                     model.getEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
@@ -840,15 +840,15 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "handleSave", insertCaption,
-            new AggregateState(AggregateState.AND, model.stActive, model.getAllowInsertState()),
+            new AggregateState(AggregateState.AND, model.stActive, model.getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
 
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = new AggregateState(AggregateState.OR, model.getAllowInsertState(),
-            new AggregateState(AggregateState.AND, model.getAllowUpdateState(), model.getEntityModifiedState()));
+    final State stInsertUpdate = new AggregateState(AggregateState.OR, model.getInsertAllowedState(),
+            new AggregateState(AggregateState.AND, model.getUpdateAllowedState(), model.getEntityModifiedState()));
     return ControlFactory.methodControl(this, "handleSave", insertCaption,
             new AggregateState(AggregateState.AND, model.stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
@@ -1101,19 +1101,19 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   protected void setupControls() {
     if (!model.isReadOnly()) {
-      if (model.allowInsert())
+      if (model.isInsertAllowed())
         controlMap.put(INSERT, getInsertControl());
-      if (model.allowUpdate())
+      if (model.isUpdateAllowed())
         controlMap.put(UPDATE, getUpdateControl());
-      if (model.allowDelete())
+      if (model.isDeleteAllowed())
         controlMap.put(DELETE, getDeleteControl());
     }
     controlMap.put(CLEAR, getClearControl());
     if (model.getTableModel() != null) {
-      if (!model.isReadOnly() && model.allowUpdate() && model.getAllowMultipleUpdate())
+      if (!model.isReadOnly() && model.isUpdateAllowed() && model.isMultipleUpdateAllowed())
         controlMap.put(UPDATE_SELECTED, getUpdateSelectedControl());
       controlMap.put(REFRESH, getRefreshControl());
-      if (!model.isReadOnly() && model.allowDelete())
+      if (!model.isReadOnly() && model.isDeleteAllowed())
         controlMap.put(MENU_DELETE, getDeleteSelectedControl());
       controlMap.put(PRINT, getPrintControl());
       controlMap.put(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1379,7 +1379,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private JButton getUpdateButton() {
-    if (model.isReadOnly() || !model.getAllowMultipleUpdate() || !model.allowUpdate())
+    if (model.isReadOnly() || !model.isMultipleUpdateAllowed() || !model.isUpdateAllowed())
       return null;
 
     final ControlSet updateSet = getUpdateSelectedControlSet(null);
@@ -1403,7 +1403,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private JButton getDeleteButton() {
-    if (model.isReadOnly() || !model.allowDelete())
+    if (model.isReadOnly() || !model.isDeleteAllowed())
       return null;
 
     final Control delete = getDeleteSelectedControl();

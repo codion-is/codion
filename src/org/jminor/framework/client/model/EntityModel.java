@@ -135,6 +135,27 @@ public class EntityModel implements IRefreshable {
   private final State stCascadeRefresh = new State("EntityModel.stCascadeRefresh", false);
 
   /**
+   * This state determines whether this model allowes records to be inserted
+   * @see #setInsertAllowed(boolean)
+   * @see #isInsertAllowed()
+   */
+  private final State stAllowInsert = new State("EntityModel.stAllowInsert", true);
+
+  /**
+   * This state determines whether this model allowes records to be udpated
+   * @see #setUpdateAllowed(boolean)
+   * @see #isUpdateAllowed()
+   */
+  private final State stAllowUpdate = new State("EntityModel.stAllowUpdate", true);
+
+  /**
+   * This state determines whether this model allowes records to be deleted
+   * @see #setDeleteAllowed(boolean)
+   * @see #isDeleteAllowed()
+   */
+  private final State stAllowDelete = new State("EntityModel.stAllowDelete", true);
+
+  /**
    * The table model
    */
   private final EntityTableModel tableModel;
@@ -362,29 +383,77 @@ public class EntityModel implements IRefreshable {
   /**
    * @return true if this model allows multiple entities to be updated at a time
    */
-  public boolean getAllowMultipleUpdate() {
+  public boolean isMultipleUpdateAllowed() {
     return true;
   }
 
   /**
    * @return true if this model allows records to be inserted
    */
-  public boolean allowInsert() {
-    return true;
+  public boolean isInsertAllowed() {
+    return stAllowInsert.isActive();
+  }
+
+  /**
+   * @param value the value
+   */
+  public void setInsertAllowed(final boolean value) {
+    stAllowInsert.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if inserting should be enabled
+   * @see #isInsertAllowed()
+   * @see #setInsertAllowed(boolean)
+   */
+  public State getInsertAllowedState() {
+    return stAllowInsert;
   }
 
   /**
    * @return true if this model allows records to be updated
    */
-  public boolean allowUpdate() {
-    return true;
+  public boolean isUpdateAllowed() {
+    return stAllowUpdate.isActive();
+  }
+
+  /**
+   * @param value the value
+   */
+  public void setUpdateAllowed(final boolean value) {
+    stAllowUpdate.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if updating should be enabled
+   * @see #isUpdateAllowed()
+   * @see #setUpdateAllowed(boolean)
+   */
+  public State getUpdateAllowedState() {
+    return stAllowUpdate;
   }
 
   /**
    * @return true if this model allows records to be deleted
    */
-  public boolean allowDelete() {
-    return true;
+  public boolean isDeleteAllowed() {
+    return stAllowDelete.isActive();
+  }
+
+  /**
+   * @param value the value
+   */
+  public void setDeleteAllowed(final boolean value) {
+    stAllowDelete.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if deleting should be enabled
+   * @see #isDeleteAllowed()
+   * @see #setDeleteAllowed(boolean)
+   */
+  public State getDeleteAllowedState() {
+    return stAllowDelete;
   }
 
   /**
@@ -801,7 +870,7 @@ public class EntityModel implements IRefreshable {
   public final void insert(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, inserting is not allowed!");
-    if (!allowInsert())
+    if (!isInsertAllowed())
       throw new UserException("This is model does not allow inserting!");
 
     log.debug(caption + " - insert "+ Util.getListContents(entities, false));
@@ -839,10 +908,10 @@ public class EntityModel implements IRefreshable {
   public final void update(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, updating is not allowed!");
-    if (!getAllowMultipleUpdate() && entities.size() > 1)
+    if (!isMultipleUpdateAllowed() && entities.size() > 1)
       throw new UserException("Update of multiple entities is not allowed!");
-    if (!allowUpdate())
-      throw new UserException("This is model does not allow updating!");
+    if (!isUpdateAllowed())
+      throw new UserException("This model does not allow updating!");
 
     log.debug(caption + " - update " + Util.getListContents(entities, false));
 
@@ -868,7 +937,7 @@ public class EntityModel implements IRefreshable {
   public final void delete() throws DbException, UserException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, deleting is not allowed!");
-    if (!allowDelete())
+    if (!isDeleteAllowed())
       throw new UserException("This is model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
@@ -883,30 +952,6 @@ public class EntityModel implements IRefreshable {
 
     evtEntityDeleted.fire();
     refreshDetailModelsAfterDelete();
-  }
-
-  /**
-   * NB does not prevent calls to insert()
-   * @return the state used to determine if inserting should be enabled
-   */
-  public State getAllowInsertState() {
-    return new State("EntityModel.stAllowInsert", allowInsert());
-  }
-
-  /**
-   * NB does not prevent calls to update()
-   * @return the state used to determine if updating should be enabled
-   */
-  public State getAllowUpdateState() {
-    return new State("EntityModel.stAllowUpdate", allowUpdate());
-  }
-
-  /**
-   * NB does not prevent calls to delete()
-   * @return the state used to determine if deleting should be enabled
-   */
-  public State getAllowDeleteState() {
-    return new State("EntityModel.stAllowDelete", allowDelete());
   }
 
   /**
@@ -1010,6 +1055,14 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  public ComboBoxModel getColumnComboBoxModel(final Property property) {
+    return getColumnComboBoxModel(property, null);
+  }
+
+  public ComboBoxModel getColumnComboBoxModel(final Property property, final Event refreshEvent) {
+    return getPropertyComboBoxModel(property, refreshEvent, null);
+  }
+
   /**
    * @param property the property for which to create the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
@@ -1031,12 +1084,66 @@ public class EntityModel implements IRefreshable {
     return ret;
   }
 
-  public ComboBoxModel getColumnComboBoxModel(final Property property) {
-    return getColumnComboBoxModel(property, null);
+  public static PropertyComboBoxModel createPropertyComboBoxModel(final Class<Entity> entityID, final Property property,
+                                                                  final IEntityDbProvider dbProvider) {
+    return createPropertyComboBoxModel(entityID, property, dbProvider, null);
   }
 
-  public ComboBoxModel getColumnComboBoxModel(final Property property, final Event refreshEvent) {
-    return getPropertyComboBoxModel(property, refreshEvent, null);
+  public static PropertyComboBoxModel createPropertyComboBoxModel(final Class<Entity> entityID, final Property property,
+                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent) {
+    return createPropertyComboBoxModel(entityID.getName(), property, dbProvider, refreshEvent);
+  }
+
+  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
+                                                                  final IEntityDbProvider dbProvider) {
+    return createPropertyComboBoxModel(entityID, property, dbProvider, null);
+  }
+
+  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
+                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent) {
+    return createPropertyComboBoxModel(entityID, property, dbProvider, refreshEvent, null);
+  }
+
+  /**
+   * @param entityID the class of the entity for which to create a PropertyComboBoxModel
+   * @param property the property for which to create the PropertyComboBoxModel
+   * @param dbProvider the dbProvider instance used for retrieving the values for this PropertyComboBoxModel
+   * @param refreshEvent the combo box model is refreshed when this event fires
+   * @param nullValue the null value at the top of the list
+   * @return a PropertyComboBoxModel containing the distinct values found for the given property
+   */
+  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
+                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent,
+                                                                  final Object nullValue) {
+    try {
+      if (property == null)
+        throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
+      if (property instanceof Property.EntityProperty)
+        throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
+                + property.propertyID + ",\nuse an EntityComboBoxModel instead!");
+      final PropertyComboBoxModel comboBoxModel =
+              new PropertyComboBoxModel(dbProvider, entityID, property, nullValue);
+
+      comboBoxModel.refresh();
+
+      if (refreshEvent != null) {
+        refreshEvent.addListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try {
+              comboBoxModel.refresh();
+            }
+            catch (UserException ex) {
+              throw ex.getRuntimeException();
+            }
+          }
+        });
+      }
+
+      return comboBoxModel;
+    }
+    catch (UserException e) {
+      throw e.getRuntimeException();
+    }
   }
 
   public static List<Class<? extends EntityModel>> asList(final Class<? extends EntityModel>... classes) {
@@ -1523,67 +1630,5 @@ public class EntityModel implements IRefreshable {
     ret.append(EntityUtil.getValueString(property, newValue));
 
     return ret.toString();
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final Class<Entity> entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider) {
-    return createPropertyComboBoxModel(entityID, property, dbProvider, null);
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final Class<Entity> entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent) {
-    return createPropertyComboBoxModel(entityID.getName(), property, dbProvider, refreshEvent);
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider) {
-    return createPropertyComboBoxModel(entityID, property, dbProvider, null);
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent) {
-    return createPropertyComboBoxModel(entityID, property, dbProvider, refreshEvent, null);
-  }
-
-  /**
-   * @param entityID the class of the entity for which to create a PropertyComboBoxModel
-   * @param property the property for which to create the PropertyComboBoxModel
-   * @param dbProvider the dbProvider instance used for retrieving the values for this PropertyComboBoxModel
-   * @param refreshEvent the combo box model is refreshed when this event fires
-   * @param nullValue the null value at the top of the list
-   * @return a PropertyComboBoxModel containing the distinct values found for the given property
-   */
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent,
-                                                                  final Object nullValue) {
-    try {
-      if (property == null)
-        throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
-      if (property instanceof Property.EntityProperty)
-        throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
-                + property.propertyID + ",\nuse an EntityComboBoxModel instead!");
-      final PropertyComboBoxModel comboBoxModel =
-              new PropertyComboBoxModel(dbProvider, entityID, property, nullValue);
-
-      comboBoxModel.refresh();
-
-      if (refreshEvent != null) {
-        refreshEvent.addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            try {
-              comboBoxModel.refresh();
-            }
-            catch (UserException ex) {
-              throw ex.getRuntimeException();
-            }
-          }
-        });
-      }
-
-      return comboBoxModel;
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
   }
 }

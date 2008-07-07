@@ -51,12 +51,10 @@ public class TestEmpDeptModel extends EntityTestUnit {
       final Entity department = getReferencedEntities().get(EmpDept.T_DEPARTMENT);
       final Entity manager = getReferencedEntities().get(EmpDept.T_EMPLOYEE);
       ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
-      ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department.getValue(EmpDept.DEPARTMENT_ID));
       ret.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       ret.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
       ret.setValue(EmpDept.EMPLOYEE_JOB, "Slacker");
       ret.setValue(EmpDept.EMPLOYEE_MGR_REF, manager);
-      ret.setValue(EmpDept.EMPLOYEE_MGR, manager.getValue(EmpDept.EMPLOYEE_ID));
       ret.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
       ret.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
