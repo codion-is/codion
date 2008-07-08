@@ -64,6 +64,9 @@ public class IntTextPropertyLink extends TextPropertyLink {
   /** {@inheritDoc} */
   protected Object valueFromText(final String text) {
     try {
+      if (text != null && text.equals("-"))
+        return -1;
+
       return text.length() > 0 ? Integer.parseInt(text) : null;
     }
     catch (NumberFormatException nf) {
