@@ -164,3 +164,5 @@
   PropertySearchModel.initialize fixed to prevent a property setting roundtrip back to the ui
   AbstractPropertySearchModel.stSearchEnabled privatized due to locking mechanism
   EntityModel.stAllowInsert/Delete/Update, .isAllowInsert/Delete/Update, .setAllowInsert/Delete/Update added
+  EntityKey improved setValue error handling and reporting
+  IntTextPropertyLink fixed valueFromText(), parsing the - sign to -1

@@ -300,6 +300,9 @@ public class EntityKey implements Externalizable {
     keyValues.put(propertyID, newValue);
     hashCodeDirty = true;
     if (isSingleIntegerKey) {
+      if (!(newValue == null || newValue instanceof Integer))
+        throw new IllegalArgumentException("Expecting a Integer value for EntityKey: " + entityID + ", " 
+                + propertyID + ", got " + newValue + "; " + newValue.getClass());
       hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
       hashCodeDirty = false;
     }

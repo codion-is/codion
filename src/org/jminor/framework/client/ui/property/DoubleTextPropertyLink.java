@@ -65,7 +65,7 @@ public class DoubleTextPropertyLink extends TextPropertyLink {
   protected Object valueFromText(final String text) {
     try {
       if (text != null && text.equals("-"))
-        return -1;
+        return -1d;
 
       return text.length() > 0 ? Double.parseDouble(text) : null;
     }
