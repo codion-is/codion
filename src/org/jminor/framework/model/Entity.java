@@ -124,7 +124,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   /**
-   * @return the modified state of this entity
+   * @return a State object indicating whether this entity has been
+   * modified since the it was instantiated
    */
   public State getModifiedState() {
     if (stModified == null)
@@ -135,14 +136,15 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * @return true if one or more properties have been modified
+   * since the entity was instantiated
    */
   public boolean isModified() {
-    return !(originalPropertyValues == null || originalPropertyValues.size() == 0);
+    return originalPropertyValues != null && originalPropertyValues.size() > 0;
   }
 
   /**
    * @param propertyID the property ID
-   * @return true if the property has been modified
+   * @return true if the property has been modified since the entity was instantiated
    */
   public boolean isModified(final String propertyID) {
     return originalPropertyValues != null && originalPropertyValues.containsKey(propertyID);
@@ -337,6 +339,15 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public boolean equals(final Entity entity) {
     return entity.primaryKey.equals(primaryKey);
+  }
+
+  /**
+   * @param propertyID the propertyID
+   * @param value the value
+   * @return true if <code>value</code> is equal to the value of the property identified by <code>propertyID</code>
+   */
+  public boolean isValueEqualTo(final String propertyID, final Object value) {
+    return Util.equal(getValue(propertyID), value);
   }
 
   /**
