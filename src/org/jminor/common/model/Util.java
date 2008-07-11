@@ -3,10 +3,11 @@
  */
 package org.jminor.common.model;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -427,5 +428,23 @@ public class Util {
     c.set(Calendar.DAY_OF_MONTH, 1);
 
     return c.getTime();
+  }
+
+  public static int numberOfDaysInRange(final Date from, final Date to) {
+    final Calendar fromCalendar = Calendar.getInstance();
+    fromCalendar.setTime(from);
+    final Calendar toCalendar = Calendar.getInstance();
+    toCalendar.setTime(to);
+    if (fromCalendar.after(toCalendar))
+      throw new IllegalArgumentException("'To' date should be after 'from' date");
+
+    int numberOfDays = 0;
+    while (fromCalendar.before(toCalendar)) {
+      numberOfDays++;
+      fromCalendar.add(Calendar.DAY_OF_YEAR, 1);
+    }
+    numberOfDays++;
+
+    return numberOfDays;
   }
 }
