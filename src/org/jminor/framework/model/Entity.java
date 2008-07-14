@@ -188,7 +188,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   /**
-   * Initializing a value has the same effect as using <code>setValue()</code> except for Property.EntityProperty's
+   * Initializing a value has the same effect as using <code>setValue()</code> except for Property.EntityPropertys
    * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set.
    * It is also assumed that the Entity does not contain a value for the property, so the modified state is
    * ignored during the value setting

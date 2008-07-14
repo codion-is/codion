@@ -166,5 +166,9 @@
   EntityModel.stAllowInsert/Delete/Update, .isAllowInsert/Delete/Update, .setAllowInsert/Delete/Update added
   EntityKey improved setValue error handling and reporting
   IntTextPropertyLink fixed valueFromText(), parsing the - sign to -1
+  FilteredComboBoxModel.removeItem(), fireContentsChanged() called instead of resetContents(), thus preventing full refresh after removing an item
   UiUtil.selectDirectory() now uses user.home property in case no start directory is specifies (instead of C://)
   UiUtil.selectDirectory() added dialogTitle parameter
+  EntityTablePanel renamed a few fields
+  EntityTablePanel added Copy cell action to JTable popup menu
+  EntityUtil.getUpdateSQL() now throws an exception if no updatable properties have been modified, instead of returning a malformed SQL query

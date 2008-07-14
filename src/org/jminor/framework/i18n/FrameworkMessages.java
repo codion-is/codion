@@ -44,6 +44,7 @@ public class FrameworkMessages {
   public static final String DELETE_SELECTED = "delete_selected";
   public static final String DELETE_TIP = "delete_tip";
   public static final String UPDATE_SELECTED = "update_selected";
+  public static final String UPDATE_SELECTED_RECORD = "update_selected_record";
   public static final String UPDATE_SELECTED_TIP = "update_selected_tip";
   public static final String REFRESH = "refresh";
   public static final String REFRESH_MNEMONIC = "refresh_mnemonic";
@@ -61,6 +62,7 @@ public class FrameworkMessages {
   public static final String SET_PROPERTY_VALUE = "set_property_value";
   public static final String SAVE = "save";
   public static final String INSERT = "insert";
+  public static final String INSERT_NEW = "insert_new";
   public static final String INSERT_MNEMONIC = "insert_mnemonic";
   public static final String INSERT_UPDATE = "insert_update";
   public static final String INSERT_UPDATE_TIP = "insert_update_tip";
@@ -122,6 +124,7 @@ public class FrameworkMessages {
   public static final String APPLICATION_TREE = "view_application_tree";
   public static final String CHANGE_HISTORY = "change_history";
   public static final String SELECT_COLUMNS = "select_columns";
+  public static final String COPY_CELL = "copy_cell";
 
   public static String get(final String key) {
     return bundle.getString(key);

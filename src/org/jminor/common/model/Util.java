@@ -430,6 +430,10 @@ public class Util {
     return c.getTime();
   }
 
+  public static double roundDouble(final double d, final int places) {
+    return Math.round(d * Math.pow(10, (double) places)) / Math.pow(10, (double) places);
+  }
+
   public static int numberOfDaysInRange(final Date from, final Date to) {
     final Calendar fromCalendar = Calendar.getInstance();
     fromCalendar.setTime(from);

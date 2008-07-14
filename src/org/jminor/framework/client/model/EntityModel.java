@@ -1509,7 +1509,7 @@ public class EntityModel implements IRefreshable {
    */
   protected void refreshDetailModelsAfterDelete() {
     final List<Entity> lastDeleted = getLastDeletedEntities();
-    if (lastDeleted != null && lastDeleted.size() > 0) {
+    if (lastDeleted.size() > 0) {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.EntityProperty property :
                 EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {

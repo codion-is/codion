@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -71,16 +72,16 @@ public class EntityTablePanel extends JPanel {
 
   private final JTable entityTable;
   private final EntityTableModel tableModel;
-  private final JScrollPane tableScroller;
+  private final JScrollPane tableScrollPane;
   private final JPanel searchPanel;//todo should this implement a ITableSearchPanel perhaps?
 
   private final HashMap<String, PropertySummaryPanel> propertySummaryPanels = new HashMap<String, PropertySummaryPanel>();
   private final List<PropertyFilterPanel> propertyFilterPanels;
 
-  private JScrollPane searchScroller;
-  private JPanel scrollerSummaryBase;
-  private JScrollBar horizontalScrollBar;
-  private JScrollPane tableSummaryPanelScroller;
+  private JScrollPane searchScrollPane;
+  private JScrollPane summaryScrollPane;
+  private JPanel summaryScrollPaneBase;
+  private JScrollBar horizontalTableScrollBar;
   private JToolBar southToolBar;
   private JLabel lblStatusMessage;
   private Action doubleClickAction;
@@ -105,7 +106,7 @@ public class EntityTablePanel extends JPanel {
                           final JButton detailPanelButton) {
     this.tableModel = tableModel;
     this.entityTable = initializeJTable(tableModel, specialRendering);
-    this.tableScroller = new JScrollPane(entityTable);
+    this.tableScrollPane = new JScrollPane(entityTable);
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
     initializeUI(detailPanelButton, allowQueryConfiguration, popupControls);
@@ -181,15 +182,15 @@ public class EntityTablePanel extends JPanel {
    * @param visible Value to set for property 'summaryPanelVisible'.
    */
   public void setSummaryPanelVisible(final boolean visible) {
-    if (tableSummaryPanelScroller != null) {
-      tableSummaryPanelScroller.setVisible(visible);
+    if (summaryScrollPane != null) {
+      summaryScrollPane.setVisible(visible);
       if (visible) {
-        scrollerSummaryBase.add(tableSummaryPanelScroller, BorderLayout.NORTH);
-        scrollerSummaryBase.add(horizontalScrollBar, BorderLayout.SOUTH);
+        summaryScrollPaneBase.add(summaryScrollPane, BorderLayout.NORTH);
+        summaryScrollPaneBase.add(horizontalTableScrollBar, BorderLayout.SOUTH);
       }
       else {
-        scrollerSummaryBase.remove(horizontalScrollBar);
-        tableScroller.setHorizontalScrollBar(horizontalScrollBar);
+        summaryScrollPaneBase.remove(horizontalTableScrollBar);
+        tableScrollPane.setHorizontalScrollBar(horizontalTableScrollBar);
       }
 
       revalidate();
@@ -201,15 +202,15 @@ public class EntityTablePanel extends JPanel {
    * @return Value for property 'summaryPanelVisible'.
    */
   public boolean isSummaryPanelVisible() {
-    return tableSummaryPanelScroller != null && tableSummaryPanelScroller.isVisible();
+    return summaryScrollPane != null && summaryScrollPane.isVisible();
   }
 
   /**
    * @param visible Value to set for property 'searchPanelVisible'.
    */
   public void setSearchPanelVisible(final boolean visible) {
-    if (searchScroller != null) {
-      searchScroller.getViewport().setView(visible ? searchPanel : null);
+    if (searchScrollPane != null) {
+      searchScrollPane.getViewport().setView(visible ? searchPanel : null);
       if (searchRefreshToolBar != null)
         searchRefreshToolBar.setVisible(visible);
       evtSearchPanelVisibleChanged.fire();
@@ -221,7 +222,7 @@ public class EntityTablePanel extends JPanel {
    * @return true if the search panel is visible
    */
   public boolean isSearchPanelVisible() {
-    return searchScroller != null && searchScroller.getViewport().getView() == searchPanel;
+    return searchScrollPane != null && searchScrollPane.getViewport().getView() == searchPanel;
   }
 
   /**
@@ -281,7 +282,7 @@ public class EntityTablePanel extends JPanel {
    * This is done by setting the column width to 0 when hiding and setting it to the default width when showing.
    * This method does not prevent the column from being selected while traversing the table grid
    * with the arrow keys, something we'll call a *known bug*.
-   * Hiding a column removes it from the query criteria, by disabling its search model (PropertySearchModel)
+   * Hiding a column removes it from the query criteria, by disabling the underlying search model (PropertySearchModel)
    * @param property the property
    * @param visible if true the column is shown, otherwise it is hidden
    */
@@ -390,10 +391,10 @@ public class EntityTablePanel extends JPanel {
     final JPanel base = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
-      searchScroller = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+      searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      searchScroller.getHorizontalScrollBar().setModel(tableScroller.getHorizontalScrollBar().getModel());
-      base.add(searchScroller, BorderLayout.NORTH);
+      searchScrollPane.getHorizontalScrollBar().setModel(tableScrollPane.getHorizontalScrollBar().getModel());
+      base.add(searchScrollPane, BorderLayout.NORTH);
     }
 
     final ControlSet popupControls = tablePopupControls == null ? new ControlSet() : tablePopupControls;
@@ -415,25 +416,27 @@ public class EntityTablePanel extends JPanel {
         popupControls.add(searchControls);
       }
     }
+    popupControls.addSeparator();
+    popupControls.add(getCopyCellControl());
     UiUtil.setTablePopup(entityTable, ControlProvider.createPopupMenu(popupControls));
 
-    base.add(tableScroller, BorderLayout.CENTER);
+    base.add(tableScrollPane, BorderLayout.CENTER);
     add(base, BorderLayout.CENTER);
     final JPanel tableSummaryPanel = initializeSummaryPanel();
     if (tableSummaryPanel != null) {
-      tableSummaryPanelScroller = new JScrollPane(tableSummaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+      summaryScrollPane = new JScrollPane(tableSummaryPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      horizontalScrollBar = tableScroller.getHorizontalScrollBar();
-      tableScroller.getViewport().addChangeListener(new ChangeListener() {
+      horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
+      tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
         public void stateChanged(final ChangeEvent e) {
-          horizontalScrollBar.setVisible(tableScroller.getViewport().getViewSize().width > tableScroller.getSize().width);
+          horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
           revalidate();
         }
       });
-      tableSummaryPanelScroller.getHorizontalScrollBar().setModel(horizontalScrollBar.getModel());
-      tableSummaryPanelScroller.setVisible(false);
-      scrollerSummaryBase = new JPanel(new BorderLayout());
-      base.add(scrollerSummaryBase, BorderLayout.SOUTH);
+      summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
+      summaryScrollPane.setVisible(false);
+      summaryScrollPaneBase = new JPanel(new BorderLayout());
+      base.add(summaryScrollPaneBase, BorderLayout.SOUTH);
     }
 
     final JPanel southPanel = initializeSouthPanel(allowQueryConfiguration);
@@ -626,6 +629,17 @@ public class EntityTablePanel extends JPanel {
     return ret;
   }
 
+  private Control getCopyCellControl() {
+    return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
+            getTableModel().stSelectionEmpty.getReversedState()) {
+      public void actionPerformed(final ActionEvent e) {
+        final JTable table = getJTable();
+        final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
+        Util.setClipboard(value == null ? "" : value.toString());
+      }
+    };
+  }
+
   private TableColumnModel initializeTableColumnModel(final boolean specialRendering) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final List<TableColumn> columns = getTableColumns(tableModel.getTableColumnProperties());
@@ -679,8 +693,8 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void revalidateAndShowSearchPanel() {
-    searchScroller.getViewport().setView(null);
-    searchScroller.getViewport().setView(searchPanel);
+    searchScrollPane.getViewport().setView(null);
+    searchScrollPane.getViewport().setView(searchPanel);
     revalidate();
   }
 

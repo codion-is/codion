@@ -126,7 +126,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
     if (filteredItems.contains(item))
       filteredItems.remove(item);
 
-    resetContents();
+    fireContentsChanged();
   }
 
   /**

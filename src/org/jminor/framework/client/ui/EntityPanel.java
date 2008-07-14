@@ -346,6 +346,15 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return (EntityPanel) this.detailTabPane.getSelectedComponent();
   }
 
+  public EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
+    for (final EntityPanel detailPanel : detailEntityPanels.values()) {
+      if (detailPanel.getClass().equals(detailPanelClass))
+        return detailPanel;
+    }
+
+    throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass()); 
+  }
+
   /** {@inheritDoc} */
   public String toString() {
     return this.model.getCaption();
@@ -518,8 +527,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     else {//possibly update
       final int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT),
               FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE), -1, JOptionPane.QUESTION_MESSAGE, null,
-              new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE),
-                      FrameworkMessages.get(FrameworkMessages.SAVE), Messages.get(Messages.CANCEL)},
+              new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD),
+                      FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) //update
         handleUpdate();

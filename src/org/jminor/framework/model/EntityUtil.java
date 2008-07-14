@@ -267,6 +267,8 @@ public class EntityUtil {
     final StringBuffer sql = new StringBuffer("update ");
     sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = getUpdateProperties(entity);
+    if (properties.size() == 0)
+      throw new RuntimeException("No modified updateable properties found in entity of type: " + entity.getEntityID());
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.propertyID).append(" = ").append(getSQLStringValue(property, entity.getValue(property.propertyID)));
