@@ -88,6 +88,11 @@ public class UiUtil {
   private UiUtil() {}
 
   public static File selectDirectory(final JComponent dialogParent, final String startDir) throws UserCancelException {
+    return selectDirectory(dialogParent, startDir, null);
+  }
+
+  public static File selectDirectory(final JComponent dialogParent, final String startDir,
+                                     final String dialogTitle) throws UserCancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -100,8 +105,10 @@ public class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    File selectedFile = new File(startDir == null ? "C://" : startDir);
+    final File selectedFile = new File(startDir == null ? System.getProperty("user.home") : startDir);
     fileChooser.setCurrentDirectory(selectedFile);
+    if (dialogTitle != null)
+      fileChooser.setDialogTitle(dialogTitle);
     int ret = fileChooser.showOpenDialog(dialogParent);
     if (ret == JFileChooser.APPROVE_OPTION)
       return fileChooser.getSelectedFile();

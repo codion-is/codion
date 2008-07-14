@@ -166,3 +166,5 @@
   EntityModel.stAllowInsert/Delete/Update, .isAllowInsert/Delete/Update, .setAllowInsert/Delete/Update added
   EntityKey improved setValue error handling and reporting
   IntTextPropertyLink fixed valueFromText(), parsing the - sign to -1
+  UiUtil.selectDirectory() now uses user.home property in case no start directory is specifies (instead of C://)
+  UiUtil.selectDirectory() added dialogTitle parameter
