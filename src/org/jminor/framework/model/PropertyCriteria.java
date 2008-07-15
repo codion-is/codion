@@ -84,6 +84,8 @@ public class PropertyCriteria implements ICriteria {
     else
       columnName = property.propertyID;
 
+    if (values.size() == 0)
+      throw new RuntimeException("No values specified for PropertyCriteria: " + property);
     if (values.size() == 1 && Entity.isValueNull(property.getPropertyType(), values.get(0)))
       return columnName + (searchType == SearchType.LIKE ? " is null" : " is not null");
 
@@ -98,10 +100,16 @@ public class PropertyCriteria implements ICriteria {
 
     switch(searchType) {
       case LIKE:
-        return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
+        if (values.size() > 1)
+          return getInList(columnName, false);
+        else
+          return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
                 ? " like " + sqlValue : " = " + sqlValue);
       case NOT_LIKE:
-        return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
+        if (values.size() > 1)
+          return getInList(columnName, true);
+        else
+          return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
                 ? " not like " + sqlValue : " <> " + sqlValue);
       case MAX :
         return columnName + " <= " + sqlValue;
@@ -112,7 +120,7 @@ public class PropertyCriteria implements ICriteria {
       case OUTSIDE:
         return "(" + columnName + " <= "+ sqlValue + " or " + columnName + " >= " + sqlValue2 + ")";
       case IN:
-        return getInList(columnName);
+        return getInList(columnName, false);
     }
 
     throw new IllegalArgumentException("Unknown search type" + searchType);
@@ -161,15 +169,15 @@ public class PropertyCriteria implements ICriteria {
       return set.toString();
     }
     else
-      return getInList(((Property.EntityProperty) property).referenceProperties.get(0).propertyID);
+      return getInList(((Property.EntityProperty) property).referenceProperties.get(0).propertyID, false);
   }
 
   private boolean containsWildcard(final String val) {
     return val != null && val.length() > 0 && val.indexOf(FrameworkConstants.WILDCARD) > -1;
   }
 
-  private String getInList(final String whereColumn) {
-    final StringBuffer ret = new StringBuffer(whereColumn + " in (");
+  private String getInList(final String whereColumn, final boolean notIn) {
+    final StringBuffer ret = new StringBuffer(whereColumn + (notIn ? " not" : "") + " in (");
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
       String sqlValue = EntityUtil.getSQLStringValue(property, values.get(i));

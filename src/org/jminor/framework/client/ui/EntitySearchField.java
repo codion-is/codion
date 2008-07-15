@@ -12,6 +12,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 
@@ -49,14 +50,14 @@ public class EntitySearchField extends TextFieldPlus {
   private ICriteria additionalSearchCriteria;
   private Entity selectedEntity;
 
-  public EntitySearchField(final String entityID, final Property searchProperty, final IEntityDbProvider dbProvider) {
-    this(entityID, searchProperty, dbProvider, null);
+  public EntitySearchField(final String entityID, final String searchPropertyID, final IEntityDbProvider dbProvider) {
+    this(entityID, searchPropertyID, dbProvider, null);
   }
 
-  public EntitySearchField(final String entityID, final Property searchProperty, final IEntityDbProvider dbProvider,
+  public EntitySearchField(final String entityID, final String searchPropertyID, final IEntityDbProvider dbProvider,
                            final ICriteria additionalSearchCriteria) {
     this.entityID = entityID;
-    this.searchProperty = searchProperty;
+    this.searchProperty = EntityRepository.get().getProperty(entityID, searchPropertyID);
     this.additionalSearchCriteria = additionalSearchCriteria;
     addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {

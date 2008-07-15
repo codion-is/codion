@@ -394,7 +394,7 @@ public class FrameworkUiUtil {
     if (searchProperty.getPropertyType() != Type.STRING)
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchProperty,
+    final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchPropertyID,
             model.getDbConnectionProvider(), additionalSearchCriteria);
     searchField.setBorder(BorderFactory.createLoweredBevelBorder());
     new SearchFieldPropertyLink(model, property.propertyID, searchField);
