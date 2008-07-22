@@ -34,6 +34,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * A panel for configuring the PropertySearchModels for a given EntityTableModel
+ */
 public class EntityCriteriaPanel extends JPanel {
 
   private final IntField queryRangeMin = new IntField(4);

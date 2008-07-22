@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
@@ -12,6 +11,8 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.EntityRepository;
+
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class EntityDbConnectionPool {
   public EntityDbConnection checkOutConnection(final EntityRepository repository, final FrameworkSettings settings)
           throws ClassNotFoundException, AuthenticationException {
     if (closed)
-      throw new IllegalStateException("Trying to check out a connection from a closed connection pool!");
+      throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
     connectionRequests++;
     requestsPerSecondCounter++;
@@ -263,7 +264,7 @@ public class EntityDbConnectionPool {
     }
   }
 
-  private void disconnect(EntityDbConnection connection) {
+  private void disconnect(final EntityDbConnection connection) {
     connectionsDestroyed++;
     liveConnections--;
     connection.disconnect();

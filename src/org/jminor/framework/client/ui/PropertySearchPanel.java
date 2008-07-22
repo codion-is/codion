@@ -157,7 +157,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                     FrameworkMessages.get(FrameworkMessages.SELECT_RECORD) + " - " + getModel().getCaption());
             model.setUpperBound(entities.size() > 0 ? entities : null);
           }
-          catch (UserCancelException e1) {/**/}
+          catch (UserCancelException uce) {/**/}
         }
       };
       field.addKeyListener(new KeyAdapter() {

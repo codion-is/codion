@@ -81,6 +81,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
+ */
 public abstract class EntityPanel extends EntityBindingFactory implements IExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
@@ -352,7 +355,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         return detailPanel;
     }
 
-    throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass()); 
+    throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
   }
 
   /** {@inheritDoc} */

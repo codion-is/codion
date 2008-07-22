@@ -174,3 +174,5 @@
   EntityUtil.getUpdateSQL() now throws an exception if no updatable properties have been modified, instead of returning a malformed SQL query
   EntitySearchField constructor now takes a String propertyID instead of Property as parameter
   PropertyCriteria now handles LIKE and NOT LIKE as IN and NOT IN when more than one value is specified
+  EntityTableModel some refactoring, javadoc improvements and additions
+  EntityModel javadoc improvements and additions

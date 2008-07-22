@@ -313,7 +313,7 @@ public class Util {
 
     Collections.sort(orderedPropertyNames);
     final StringBuffer propsString = new StringBuffer();
-    for (String key : orderedPropertyNames)
+    for (final String key : orderedPropertyNames)
       propsString.append(key).append(": ").append(props.getProperty(key)).append("\n");
 
     return propsString.toString();
@@ -326,7 +326,7 @@ public class Util {
   public static void writeDelimitedFile(final String[][] headers, final String[][] data,
                                         final String delimiter, final File file) throws UserException {
     final StringBuffer contents = new StringBuffer();
-    for (String[] header : headers) {
+    for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
         contents.append(header[j]);
         if (j < header.length - 1)
@@ -335,7 +335,7 @@ public class Util {
       contents.append(System.getProperty("line.separator"));
     }
 
-    for (String[] someData : data) {
+    for (final String[] someData : data) {
       for (int j = 0; j < someData.length; j++) {
         contents.append(someData[j]);
         if (j < someData.length - 1)

@@ -262,13 +262,13 @@ public class EntityUtil {
    */
   public static String getUpdateSQL(final Entity entity) {
     if (!entity.isModified())
-      throw new RuntimeException("Can not get update sql since the entity is unmodified");
+      throw new RuntimeException("Can not get update sql for an unmodified entity");
 
     final StringBuffer sql = new StringBuffer("update ");
     sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = getUpdateProperties(entity);
     if (properties.size() == 0)
-      throw new RuntimeException("No modified updateable properties found in entity of type: " + entity.getEntityID());
+      throw new RuntimeException("No modified updateable properties found in entity :" + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.propertyID).append(" = ").append(getSQLStringValue(property, entity.getValue(property.propertyID)));
@@ -304,7 +304,6 @@ public class EntityUtil {
   }
 
   /**
-   *
    * @param property the property
    * @param columnName the columnName
    * @param sqlStringValue the sql string value

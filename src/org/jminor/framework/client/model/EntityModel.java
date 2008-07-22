@@ -831,19 +831,35 @@ public class EntityModel implements IRefreshable {
     return activeEntity.isValueNull(propertyID);
   }
 
+  /**
+   * @param property the property for which to retrieve the value
+   * @return the value associated with <code>property</code>
+   */
   public final Object getValue(final Property property) {
     return getValue(property.propertyID);
   }
 
+  /**
+   * @param propertyID the id of the property for which to retrieve the value
+   * @return the value associated with the property identified by <code>propertyID</code>
+   */
   public final Object getValue(final String propertyID) {
     return activeEntity.getValue(propertyID);
   }
 
+  /**
+   * @param propertyID the id of the property for which to retrieve the value
+   * @return the value associated with the property identified by <code>propertyID</code>
+   */
   public final Entity getEntityValue(final String propertyID) {
     return activeEntity.getEntityValue(propertyID);
   }
 
-  public final Entity getEntityValue(final Property property) {
+  /**
+   * @param property the property for which to retrieve the value
+   * @return the value associated with <code>property</code>
+   */
+  public final Entity getEntityValue(final Property.EntityProperty property) {
     return getEntityValue(property.propertyID);
   }
 
@@ -1055,10 +1071,19 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  /**
+   * @param property the property for which to retrieve a ComboBoxModel
+   * @return the ComboBoxModel associated with <code>property</code>
+   */
   public ComboBoxModel getColumnComboBoxModel(final Property property) {
     return getColumnComboBoxModel(property, null);
   }
 
+  /**
+   * @param property the property for which to retrieve a ComboBoxModel
+   * @param refreshEvent the event on which to refresh that ComboBoxModel
+   * @return the ComboBoxModel associated with <code>property</code>
+   */
   public ComboBoxModel getColumnComboBoxModel(final Property property, final Event refreshEvent) {
     return getPropertyComboBoxModel(property, refreshEvent, null);
   }
@@ -1068,7 +1093,7 @@ public class EntityModel implements IRefreshable {
    * @param refreshEvent the combo box model is refreshed when this event fires,
    * if none is specified EntityModel.evtEntitiesChanged is used
    * @param nullValue the null value at the top of the list
-   * @return a ComboBoxModel containing the distinct values found in the
+   * @return a ComboBoxModel representing <code>property</code>
    */
   public ComboBoxModel getPropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                 final Object nullValue) {
@@ -1146,6 +1171,10 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  /**
+   * @param classes the classes that should be returned in a List
+   * @return the classes in a List
+   */
   public static List<Class<? extends EntityModel>> asList(final Class<? extends EntityModel>... classes) {
     return new ArrayList<Class<? extends EntityModel>>(Arrays.asList(classes));
   }
@@ -1220,6 +1249,8 @@ public class EntityModel implements IRefreshable {
    * @param entities the entities to validate
    * @param action describes the action requiring validation, INSERT or UPDATE
    * @throws UserException in case of a user exception
+   * @see #INSERT
+   * @see #UPDATE
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected void validateData(final List<Entity> entities, final int action) throws UserException {}
@@ -1356,6 +1387,14 @@ public class EntityModel implements IRefreshable {
     return (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR);
   }
 
+  /**
+   * Inserts the given entities from the database
+   * @param entities the entities to insert
+   * @return a list containing the primary keys of the inserted entities
+   * @throws DbException in case of a database exception
+   * @throws UserException in case of a exception
+   * @throws UserCancelException in case the operation is cancelled
+   */
   protected List<EntityKey> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
       return getEntityDb().insert(entities);
@@ -1368,6 +1407,14 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  /**
+   * Updates the given entities in the database
+   * @param entities the entities to update
+   * @return a list the udpated entities
+   * @throws DbException in case of a database exception
+   * @throws UserException in case of a exception
+   * @throws UserCancelException in case the operation is cancelled
+   */
   protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
       return getEntityDb().update(entities);
@@ -1380,6 +1427,13 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  /**
+   * Deletes the given entities from the database
+   * @param entities the entities to delete
+   * @throws DbException in case of a database exception
+   * @throws UserException in case of a exception
+   * @throws UserCancelException in case the operation is cancelled
+   */
   protected void doDelete(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
       getEntityDb().delete(entities);
@@ -1392,6 +1446,9 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  /**
+   * @return the EntityTableModel used by this EntityModel
+   */
   protected EntityTableModel initializeTableModel() {
     return new EntityTableModel(getDbConnectionProvider(), getEntityID());
   }
