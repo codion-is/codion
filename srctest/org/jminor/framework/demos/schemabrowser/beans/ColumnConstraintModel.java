@@ -20,7 +20,7 @@ public class ColumnConstraintModel extends EntityModel {
   /** {@inheritDoc} */
   protected EntityTableModel initializeTableModel() {
     return new EntityTableModel(getDbConnectionProvider(), getEntityID()) {
-      protected boolean includeSearchComboBoxModel(final Property property) {
+      protected boolean includeSearchComboBoxModel(final Property.EntityProperty property) {
         return !property.getColumnName().equals(SchemaBrowser.COLUMN_CONSTRAINT_CONSTRAINT_REF);
       }
     };

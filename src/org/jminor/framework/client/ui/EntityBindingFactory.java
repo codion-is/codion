@@ -321,7 +321,7 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final JTextField createEntityField(final String propertyID) {
-    return createEntityField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID));
+    return createEntityField(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID));
   }
 
   protected final JPanel createEntityFieldPanel(final String propertyID, final EntityTableModel lookupModel) {
@@ -331,11 +331,11 @@ public abstract class EntityBindingFactory extends JPanel {
 
   protected final EntitySearchField createEntitySearchField(final String propertyID, final String entityID,
                                                             final String searchPropertyID) {
-    return createEntitySearchField(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), entityID,
+    return createEntitySearchField(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID), entityID,
             searchPropertyID);
   }
 
-  protected final EntitySearchField createEntitySearchField(final Property property, final String entityID,
+  protected final EntitySearchField createEntitySearchField(final Property.EntityProperty property, final String entityID,
                                                             final String searchPropertyID) {
     return FrameworkUiUtil.createEntitySearchField(property, getModel(), entityID, searchPropertyID);
   }
@@ -348,16 +348,16 @@ public abstract class EntityBindingFactory extends JPanel {
   protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String entityID,
                                                       final String searchPropertyID, final ICriteria additionalSearchCriteria,
                                                       final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
+    return createEntitySearchFieldPanel(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID),
             entityID, searchPropertyID, additionalSearchCriteria, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final Property property, final String entityID,
+  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final String entityID,
                                                       final String searchPropertyID, final EntityTableModel lookupModel) {
     return createEntitySearchFieldPanel(property, entityID, searchPropertyID, null, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final Property property, final String entityID,
+  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final String entityID,
                                                       final String searchPropertyID, final ICriteria additionalSearchCriteria,
                                                       final EntityTableModel lookupModel) {
     return FrameworkUiUtil.createEntitySearchFieldPanel(property, getModel(), entityID, searchPropertyID,
@@ -375,7 +375,7 @@ public abstract class EntityBindingFactory extends JPanel {
   protected final EntityComboBox createEntityComboBox(final String propertyID,
                                                       final EntityPanel.EntityPanelInfo appInfo,
                                                       final boolean newButtonFocusable) {
-    return createEntityComboBox((Property.EntityProperty) EntityRepository.get().getProperty(getModel().getEntityID(),
+    return createEntityComboBox(EntityRepository.get().getEntityProperty(getModel().getEntityID(),
             propertyID), appInfo, newButtonFocusable, null);
   }
 
@@ -385,7 +385,7 @@ public abstract class EntityBindingFactory extends JPanel {
     return FrameworkUiUtil.createEntityComboBox(property, getModel(), appInfo, newButtonFocusable, enabledState);
   }
 
-  protected final JTextField createEntityField(final Property property) {
+  protected final JTextField createEntityField(final Property.EntityProperty property) {
     return FrameworkUiUtil.createEntityField(property, getModel());
   }
 

@@ -343,7 +343,7 @@ public class FrameworkUiUtil {
     }
   }
 
-  public static JPanel createEntityFieldPanel(final Property property, final EntityModel model,
+  public static JPanel createEntityFieldPanel(final Property.EntityProperty property, final EntityModel model,
                                               final EntityTableModel lookupModel) {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
     final JTextField txt = createEntityField(property, model);
@@ -367,7 +367,7 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static JTextField createEntityField(final Property property, final EntityModel model) {
+  public static JTextField createEntityField(final Property.EntityProperty property, final EntityModel model) {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
     setPropertyToolTip(property, txt);
@@ -380,16 +380,14 @@ public class FrameworkUiUtil {
     return txt;
   }
 
-  public static EntitySearchField createEntitySearchField(final Property property, final EntityModel model,
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel model,
                                                           final String searchEntityID, final String searchPropertyID) {
     return createEntitySearchField(property, model, searchEntityID, searchPropertyID, null);
   }
 
-  public static EntitySearchField createEntitySearchField(final Property property, final EntityModel model,
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel model,
                                                           final String searchEntityID, final String searchPropertyID,
                                                           final ICriteria additionalSearchCriteria) {
-    if (!(property instanceof Property.EntityProperty))
-      throw new IllegalArgumentException("Can only create EntitySearchField for a EntityProperty");
     final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
     if (searchProperty.getPropertyType() != Type.STRING)
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
@@ -403,18 +401,16 @@ public class FrameworkUiUtil {
     return searchField;
   }
 
-  public static JPanel createEntitySearchFieldPanel(final Property property, final EntityModel model,
+  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel model,
                                                     final String searchEntityID, final String searchPropertyID,
                                                     final EntityTableModel lookupModel) {
     return createEntitySearchFieldPanel(property, model, searchEntityID, searchPropertyID, null, lookupModel);
   }
 
-  public static JPanel createEntitySearchFieldPanel(final Property property, final EntityModel model,
+  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel model,
                                                     final String searchEntityID, final String searchPropertyID,
                                                     final ICriteria additionalSearchCriteria,
                                                     final EntityTableModel lookupModel) {
-    if (!(property instanceof Property.EntityProperty))
-      throw new IllegalArgumentException("Can only create EntitySearchField for a EntityProperty");
     final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
     if (searchProperty.getPropertyType() != Type.STRING)
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");

@@ -282,6 +282,15 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  public Property.EntityProperty getEntityProperty(final String entityID, final String propertyID) {
+    for (final Property.EntityProperty entityProperty : getEntityProperties(entityID)) {
+      if (entityProperty.propertyID.equals(propertyID))
+        return entityProperty;
+    }
+
+    throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);
+  }
+
   public Map<String, Property> getProperties(final String entityID) {
     final Map<String, Property> ret = properties.get(entityID);
     if (ret == null)
