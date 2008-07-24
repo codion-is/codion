@@ -34,10 +34,11 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -45,21 +46,41 @@ public class EntitySearchField extends TextFieldPlus {
 
   public final Event evtSelectedEntityChanged = new Event("EntitySearchField.selectedEntityChanged");
 
-  private String entityID;
-  private Property searchProperty;
-  private ICriteria additionalSearchCriteria;
+  private final String entityID;
+  private final List<Property> searchProperties;
+  private final ICriteria additionalSearchCriteria;
+  private final boolean caseSensitive;
+  private final boolean wildcardPrefix;
+  private final boolean wildcardPostfix;
+
+  private final Action searchAction;
+
   private Entity selectedEntity;
 
-  public EntitySearchField(final String entityID, final String searchPropertyID, final IEntityDbProvider dbProvider) {
-    this(entityID, searchPropertyID, dbProvider, null);
+  public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final String... searchPropertyIDs) {
+    this(dbProvider, entityID, null, searchPropertyIDs);
   }
 
-  public EntitySearchField(final String entityID, final String searchPropertyID, final IEntityDbProvider dbProvider,
-                           final ICriteria additionalSearchCriteria) {
+  public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
+                           final String... searchPropertyIDs) {
+    this(dbProvider, entityID, additionalSearchCriteria, false, searchPropertyIDs);
+  }
+
+  public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
+                             final boolean caseSensitive, final String... searchPropertyIDs) {
+    this(dbProvider, entityID, additionalSearchCriteria, caseSensitive, true, true, searchPropertyIDs);
+  }
+
+  public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
+                           final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
+                           final String... searchPropertyIDs) {
     this.entityID = entityID;
-    this.searchProperty = EntityRepository.get().getProperty(entityID, searchPropertyID);
+    this.searchProperties = EntityRepository.get().getProperties(entityID, searchPropertyIDs);
     this.additionalSearchCriteria = additionalSearchCriteria;
-    addActionListener(new ActionListener() {
+    this.caseSensitive = caseSensitive;
+    this.wildcardPrefix = wildcardPrefix;
+    this.wildcardPostfix = wildcardPostfix;
+    this.searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
         try {
           performSearch(dbProvider);
@@ -68,7 +89,8 @@ public class EntitySearchField extends TextFieldPlus {
           UiUtil.handleException(ex, EntitySearchField.this);
         }
       }
-    });
+    };
+    addActionListener(searchAction);
     getDocument().addDocumentListener(new DocumentListener() {
       public void changedUpdate(final DocumentEvent e) {
         handleChange();
@@ -92,12 +114,31 @@ public class EntitySearchField extends TextFieldPlus {
     return selectedEntity;
   }
 
-  protected EntityCriteria getEntityCriteria() {
-    final PropertyCriteria searchCriteria =
-            new PropertyCriteria(searchProperty, SearchType.LIKE, getText() + FrameworkConstants.WILDCARD);
+  public boolean isCaseSensitive() {
+    return caseSensitive;
+  }
 
-    return new EntityCriteria(entityID, additionalSearchCriteria == null ? searchCriteria :
-            new CriteriaSet(CriteriaSet.Conjunction.AND, additionalSearchCriteria, searchCriteria));
+  public boolean isWildcardPostfix() {
+    return wildcardPostfix;
+  }
+
+  public boolean isWildcardPrefix() {
+    return wildcardPrefix;
+  }
+
+  public Action getSearchAction() {
+    return searchAction;
+  }
+
+  public EntityCriteria getEntityCriteria() {
+    final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
+    final String searchText = (isWildcardPrefix() ? FrameworkConstants.WILDCARD : "") + getText()
+            + (isWildcardPostfix() ? FrameworkConstants.WILDCARD : "");
+    for (final Property searchProperty : searchProperties)
+      baseCriteria.addCriteria(new PropertyCriteria(searchProperty, SearchType.LIKE, searchText).setCaseSensitive(isCaseSensitive()));
+
+    return new EntityCriteria(entityID, additionalSearchCriteria == null ? baseCriteria :
+            new CriteriaSet(CriteriaSet.Conjunction.AND, additionalSearchCriteria, baseCriteria));
   }
 
   private void performSearch(final IEntityDbProvider dbProvider) throws Exception {
@@ -118,6 +159,11 @@ public class EntitySearchField extends TextFieldPlus {
   }
 
   private void selectEntity(final List<Entity> entities) {
+    Collections.sort(entities, new Comparator<Entity>() {
+      public int compare(final Entity e1, final Entity e2) {
+        return e1.toString().compareTo(e2.toString());
+      }
+    });
     final JList list = new JList(new Vector<Entity>(entities));
     final Window owner = UiUtil.getParentWindow(EntitySearchField.this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
@@ -135,7 +181,6 @@ public class EntitySearchField extends TextFieldPlus {
       }
     };
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
     final JButton btnClose  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(

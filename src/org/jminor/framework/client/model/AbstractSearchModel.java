@@ -36,6 +36,7 @@ public abstract class AbstractSearchModel {
 
   private SearchType searchType = SearchType.LIKE;
   private boolean automaticWildcard = false;
+  private boolean caseSensitive = true;
   private Object upperBound = null;
   private Object lowerBound = null;
 
@@ -72,6 +73,20 @@ public abstract class AbstractSearchModel {
    */
   public void setLocked(final boolean value) {
     stLocked.setActive(value);
+  }
+
+  /**
+   * @return true if this filter is be case sensitive
+   */
+  public boolean isCaseSensitive() {
+    return caseSensitive;
+  }
+
+  /**
+   * @param caseSensitive Value to set for property 'caseSensitive'.
+   */
+  public void setCaseSensitive(final boolean caseSensitive) {
+    this.caseSensitive = caseSensitive;
   }
 
   /**

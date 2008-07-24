@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.ControlProvider;
@@ -11,8 +12,8 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
+import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -22,6 +23,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
+import org.jminor.framework.model.Type;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -31,7 +33,6 @@ import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -393,7 +394,8 @@ public class EntityTablePanel extends JPanel {
     if (searchPanel != null) {
       searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      searchScrollPane.getHorizontalScrollBar().setModel(tableScrollPane.getHorizontalScrollBar().getModel());
+      if (searchPanel instanceof EntityTableSearchPanel)
+        searchScrollPane.getHorizontalScrollBar().setModel(tableScrollPane.getHorizontalScrollBar().getModel());
       base.add(searchScrollPane, BorderLayout.NORTH);
     }
 
@@ -495,34 +497,50 @@ public class EntityTablePanel extends JPanel {
   }
 
   protected JPanel initializeSearchPanel() {
-    return initializeAdvancedSearchPanel();
+    return getTableModel().stSimpleSearch.isActive() ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
   }
 
   protected JPanel initializeSimpleSearchPanel() {
-    final JTextField txtSearchString = new JTextField();
-    new TextBeanPropertyLink(txtSearchString, getTableModel(), "simpleSearchString", String.class,
-            getTableModel().evtSimpleSearchStringChanged, null);
-    getTableModel().evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (getTableModel().getRowCount() > 0) {
-          getTableModel().setSelectedItemIndexes(new int[] {0});
-          getJTable().requestFocusInWindow();
+    final List<Property> searchableProperties = new ArrayList<Property>();
+    for (final Property property : EntityRepository.get().getDatabaseProperties(getTableModel().getEntityID())) {
+      if (property.propertyType == Type.STRING)
+        searchableProperties.add(property);
+    }
+    if (searchableProperties.size() == 0)
+      throw new RuntimeException("Unable to create a simple search panel for entity: "
+              + getTableModel().getEntityID() + ", no STRING based properties found");
+
+    final JTextField txtField = new JTextField();
+    final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          getTableModel().clearPropertySearchModels();
+          if (txtField.getText().length() > 0) {
+            final String searchText = FrameworkConstants.WILDCARD + txtField.getText() + FrameworkConstants.WILDCARD;
+            for (final Property searchProperty : searchableProperties) {
+              final PropertySearchModel searchModel = getTableModel().getPropertySearchModel(searchProperty.propertyID);
+              if (searchModel != null) {
+                searchModel.setCaseSensitive(false);
+                searchModel.setUpperBound(searchText);
+                searchModel.setSearchType(SearchType.LIKE);
+                searchModel.setSearchEnabled(true);
+              }
+            }
+          }
+
+          getTableModel().refresh();
         }
-        else {
-          JOptionPane.showMessageDialog(UiUtil.getParentWindow(txtSearchString),
-                  FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-          txtSearchString.selectAll();
-          txtSearchString.requestFocusInWindow();
+        catch (UserException e1) {
+          throw e1.getRuntimeException();
         }
       }
-    });
-    final Control refreshControl = getRefreshControl();
-    txtSearchString.addActionListener(refreshControl);
+    };
 
+    txtField.addActionListener(action);
     final JPanel searchPanel = new JPanel(new BorderLayout(5,5));
     searchPanel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
-    searchPanel.add(txtSearchString, BorderLayout.CENTER);
-    searchPanel.add(new JButton(refreshControl), BorderLayout.EAST);
+    searchPanel.add(txtField, BorderLayout.CENTER);
+    searchPanel.add(new JButton(action), BorderLayout.EAST);
 
     return searchPanel;
   }
@@ -530,13 +548,6 @@ public class EntityTablePanel extends JPanel {
   protected JPanel initializeAdvancedSearchPanel() {
     final EntityTableSearchPanel ret = new EntityTableSearchPanel(getTableModel());
     UiUtil.bindColumnSizesAndPanelSizes(getJTable(), ret.getSearchPanels());
-    for (final PropertySearchModel searchModel : tableModel.getPropertySearchModels()) {
-      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          entityTable.getTableHeader().repaint();
-        }
-      });
-    }
 
     return ret;
   }
@@ -621,6 +632,14 @@ public class EntityTablePanel extends JPanel {
     });
     header.setFocusable(false);
     header.setReorderingAllowed(false);
+
+    for (final PropertySearchModel searchModel : tableModel.getPropertySearchModels()) {
+      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          header.repaint();
+        }
+      });
+    }
 
     ret.setColumnSelectionAllowed(false);
     ret.setAutoResizeMode((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE));

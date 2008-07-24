@@ -85,10 +85,13 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   public PropertyCriteria getPropertyCriteria() {
-    if (getValueCount(getSearchType()) == 1)
-      return new PropertyCriteria(getProperty(), getSearchType(), getUpperBound());
-    else
-      return new PropertyCriteria(getProperty(), getSearchType(), getLowerBound(), getUpperBound());
+    final PropertyCriteria ret = getValueCount(getSearchType()) == 1 ?
+            new PropertyCriteria(getProperty(), getSearchType(), getUpperBound()) :
+            new PropertyCriteria(getProperty(), getSearchType(), getLowerBound(), getUpperBound());
+
+    ret.setCaseSensitive(isCaseSensitive());
+
+    return ret;
   }
 
   private String toString(final Object obj) {

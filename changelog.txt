@@ -176,3 +176,12 @@
   PropertyCriteria now handles LIKE and NOT LIKE as IN and NOT IN when more than one value is specified
   EntityTableModel some refactoring, javadoc improvements and additions
   EntityModel javadoc improvements and additions
+  AbstractSearchModel.caseInsensitive added
+  PropertyFilterModel changed according to the above
+  PropertySearchModel changed according to the above
+  EntityRepository.initialize now correctly identifies multiple properties with same id
+  EntitySearchField developed further, case sensetivity and wildcards
+  EntityTableModel.simpleSearchString removed
+  EntityTableModel.stSimpleSearch added
+  EntityTablePanel.initializeSimpleSearchPanel improved
+  FrameworkUiUtil changes to accomodate the above

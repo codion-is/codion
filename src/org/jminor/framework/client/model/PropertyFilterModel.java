@@ -115,7 +115,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return false;
 
     if (comparable instanceof String) //for Entity and String values
-        return includeExactWildcard((String) comparable, true);
+        return includeExactWildcard((String) comparable);
 
     return comparable.compareTo(getUpperBound()) == 0;
   }
@@ -128,12 +128,12 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return false;
 
     if (getPropertyType() == Type.STRING || getPropertyType() == Type.ENTITY)
-      return !includeExactWildcard((String) comparable, true);
+      return !includeExactWildcard((String) comparable);
 
     return comparable.compareTo(getUpperBound()) != 0;
   }
 
-  protected boolean includeExactWildcard(final String value, final boolean caseSensitive) {
+  protected boolean includeExactWildcard(final String value) {
     String upperBound = (String) getUpperBound();
     if (upperBound.equals(FrameworkConstants.WILDCARD))
       return true;
@@ -141,7 +141,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return false;
 
     String realValue = value;
-    if (!caseSensitive) {
+    if (!isCaseSensitive()) {
       upperBound = upperBound.toUpperCase();
       realValue = realValue.toUpperCase();
     }

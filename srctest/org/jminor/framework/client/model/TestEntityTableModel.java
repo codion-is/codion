@@ -24,7 +24,7 @@ public class TestEntityTableModel extends TestCase {
     new ModelTestDomain();
     testEntities = initTestEntities(new Entity[5]);
   }
-  
+
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     for (int i = 0; i < testEntities.length; i++) {
       testEntities[i] = new Entity(ModelTestDomain.T_TEST_DETAIL);

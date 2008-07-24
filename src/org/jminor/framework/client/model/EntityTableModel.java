@@ -100,10 +100,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public final Event evtSelectionChanged = new Event("EntityTableModel.evtSelectionChanged");
 
   /**
-   * Fired when the simple search string has changed
-   * @see #setSimpleSearchString(String)
+   * Active when simple searching should be performed
    */
-  public final Event evtSimpleSearchStringChanged = new Event("EntityTableModel.evtSimpleSearchStringChanged");
+  public final State stSimpleSearch = new State("EntityTableModel.stSimpleSearch");
 
   /**
    * Active when the selection is empty
@@ -203,7 +202,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private Iterator<Entity> reportPrintIterator;
   private Entity currentReportRecord;
 
-  private String simpleSearchString = "";
   private String searchStateOnRefresh;
   private boolean filterQueryByMaster = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
   private boolean showAllWhenNotFiltered = false;
@@ -394,22 +392,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return Value for property 'simpleSearchString'.
-   */
-  public String getSimpleSearchString() {
-    return simpleSearchString;
-  }
-
-  /**
-   * @param value Value to set for property 'simpleSearchString'.
-   * @see #evtSimpleSearchStringChanged
-   */
-  public void setSimpleSearchString(final String value) {
-    simpleSearchString = value;
-    evtSimpleSearchStringChanged.fire();
-  }
-
-  /**
    * @return an initialized JRDataSource
    */
   public JRDataSource getJRDataSource() {
@@ -565,7 +547,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         refreshRecordCount();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       removeAll();
-      addEntities(getAllEntitiesFromDb(), false);
+      addEntities(getAllEntitiesFromDb(getSearchCriteria()), false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
     catch (UserException ue) {
@@ -1130,26 +1112,26 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
+   * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
    * @throws UserException in case of an exception
    * @throws DbException in case of a database exception
    */
-  protected List<Entity> getAllEntitiesFromDb() throws DbException, UserException {
-    final ICriteria propertyCriteria = getSearchCriteria();
-    if (filterQueryByMaster && propertyCriteria == null && !showAllWhenNotFiltered)
+  protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) throws DbException, UserException {
+    if (filterQueryByMaster && criteria == null && !showAllWhenNotFiltered)
       return new ArrayList<Entity>();
 
     try {
-      if (propertyCriteria != null || isQueryRangeEnabled()) {
-        final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
-        if (propertyCriteria != null)
-          set.addCriteria(propertyCriteria);
+      if (criteria != null || isQueryRangeEnabled()) {
+        final CriteriaSet criteriaSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
+        if (criteria != null)
+          criteriaSet.addCriteria(criteria);
         if (isQueryRangeEnabled())
-          set.addCriteria(getQueryRangeCriteria());
-        final EntityCriteria criteria = new EntityCriteria(getEntityID(), set,
+          criteriaSet.addCriteria(getQueryRangeCriteria());
+        final EntityCriteria entityCriteria = new EntityCriteria(getEntityID(), criteriaSet,
                 EntityRepository.get().getOrderByColumnNames(getEntityID()));
 
-        return getEntityDb().selectMany(criteria);
+        return getEntityDb().selectMany(entityCriteria);
       }
       else
         return getEntityDb().selectAll(getEntityID(), true);
@@ -1190,11 +1172,12 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return the conjuction to be used when more than one search criteria is specified, defaults to AND
+   * @return the conjuction to be used when more than one search criteria is specified, by default the
+   * result depends on EntityTableModel.stSimpleSearch, being OR when it is active, AND otherwise
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
   protected CriteriaSet.Conjunction getSearchCriteriaConjunction() {
-    return CriteriaSet.Conjunction.AND;
+    return stSimpleSearch.isActive() ? CriteriaSet.Conjunction.OR : CriteriaSet.Conjunction.AND;
   }
 
   /**
@@ -1250,7 +1233,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         stDataDirty.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
       }
     };
-    evtSimpleSearchStringChanged.addListener(dataStateListener);
     for (final AbstractSearchModel searchModel : getPropertySearchModels())
       searchModel.evtSearchStateChanged.addListener(dataStateListener);
 
@@ -1350,7 +1332,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return a String representing the state of the search models
    */
   private String getSearchModelState() {
-    final StringBuffer ret = new StringBuffer(simpleSearchString);
+    final StringBuffer ret = new StringBuffer();
     for (final AbstractSearchModel model : getPropertySearchModels())
       ret.append(model.toString());
 

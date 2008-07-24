@@ -230,6 +230,14 @@ public class EntityRepository implements Serializable {
     return getProperties(entityID).get(propertyID) != null;
   }
 
+  public List<Property> getProperties(final String entityID, final String... propertyIDs) {
+    final List<Property> ret = new ArrayList<Property>();
+    for (final String propertyID : propertyIDs)
+      ret.add(getProperty(entityID, propertyID));
+
+    return ret;
+  }
+
   /**
    * @param entityID the class
    * @param includeHidden true if hidden propertyValues should be included in the result
@@ -380,16 +388,17 @@ public class EntityRepository implements Serializable {
       if (properties.containsKey(property.propertyID))
         throw new IllegalArgumentException("Property with ID " + property.propertyID
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + properties.get(property.propertyID));
+                + " has already been defined as: " + properties.get(property.propertyID) + " in entity: " + entityID);
       properties.put(property.propertyID, property);
       if (property instanceof Property.EntityProperty) {
         for (final Property referenceProperty : ((Property.EntityProperty) property).referenceProperties) {
-          if (properties.containsKey(referenceProperty.propertyID))
-            throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
-                + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                + " has already been defined as: " + properties.get(referenceProperty.propertyID));
-          if (!(referenceProperty instanceof Property.MirrorProperty))
+          if (!(referenceProperty instanceof Property.MirrorProperty)) {
+            if (properties.containsKey(referenceProperty.propertyID))
+              throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
+                      + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
+                      + " has already been defined as: " + properties.get(referenceProperty.propertyID) + " in entity: " + entityID);
             properties.put(referenceProperty.propertyID, referenceProperty);
+          }
         }
       }
     }

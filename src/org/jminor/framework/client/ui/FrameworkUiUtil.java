@@ -187,16 +187,6 @@ public class FrameworkUiUtil {
         dialog.dispose();
       }
     };
-    final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          lookupModel.refresh();
-        }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
-        }
-      }
-    };
 
     final EntityTablePanel entityPanel = new EntityTablePanel(lookupModel, null, false) {
       protected void bindEvents() {
@@ -215,6 +205,25 @@ public class FrameworkUiUtil {
     entityPanel.setSearchPanelVisible(true);
     if (singleSelection)
       entityPanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          lookupModel.refresh();
+          if (lookupModel.getRowCount() > 0) {
+            lookupModel.setSelectedItemIndexes(new int[] {0});
+            entityPanel.getJTable().requestFocusInWindow();
+          }
+          else {
+            JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityPanel),
+                    FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+          }
+        }
+        catch (UserException e1) {
+          throw e1.getRuntimeException();
+        }
+      }
+    };
 
     final JButton btnClose  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
@@ -354,9 +363,7 @@ public class FrameworkUiUtil {
                   UiUtil.getParentWindow(ret), true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           model.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
-        catch (UserCancelException e1) {
-          //
-        }
+        catch (UserCancelException e1) {/**/}
       }
     });
     btn.setPreferredSize(FrameworkUiUtil.DIMENSION18x18);
@@ -381,19 +388,20 @@ public class FrameworkUiUtil {
   }
 
   public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel model,
-                                                          final String searchEntityID, final String searchPropertyID) {
-    return createEntitySearchField(property, model, searchEntityID, searchPropertyID, null);
+                                                          final String searchEntityID, final String... searchPropertyIDs) {
+    return createEntitySearchField(property, model, searchEntityID, null, searchPropertyIDs);
   }
 
   public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel model,
-                                                          final String searchEntityID, final String searchPropertyID,
-                                                          final ICriteria additionalSearchCriteria) {
-    final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
-    if (searchProperty.getPropertyType() != Type.STRING)
-      throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
+                                                          final String searchEntityID, final ICriteria additionalSearchCriteria,
+                                                          final String... searchPropertyIDs) {
+    final List<Property> searchProperties = EntityRepository.get().getProperties(searchEntityID, searchPropertyIDs);
+    for (final Property searchProperty : searchProperties)
+      if (searchProperty.getPropertyType() != Type.STRING)
+        throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = new EntitySearchField(searchEntityID, searchPropertyID,
-            model.getDbConnectionProvider(), additionalSearchCriteria);
+    final EntitySearchField searchField = new EntitySearchField(model.getDbConnectionProvider(), searchEntityID,
+            additionalSearchCriteria, searchPropertyIDs);
     searchField.setBorder(BorderFactory.createLoweredBevelBorder());
     new SearchFieldPropertyLink(model, property.propertyID, searchField);
     setPropertyToolTip(property, searchField);
@@ -416,7 +424,7 @@ public class FrameworkUiUtil {
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
     final EntitySearchField searchField = createEntitySearchField(property, model, searchEntityID,
-            searchPropertyID, additionalSearchCriteria);
+            additionalSearchCriteria, searchPropertyID);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
@@ -424,9 +432,7 @@ public class FrameworkUiUtil {
                   UiUtil.getParentWindow(searchField), true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           model.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
-        catch (UserCancelException e1) {
-          //
-        }
+        catch (UserCancelException e1) {/**/}
       }
     });
     btn.setPreferredSize(FrameworkUiUtil.DIMENSION18x18);
@@ -480,9 +486,7 @@ public class FrameworkUiUtil {
                   Entity.isValueNull(property.getPropertyType(), currentValue) ? null : currentValue,
                   FrameworkMessages.get(FrameworkMessages.SELECT_DATE), field));
         }
-        catch (UserCancelException e1) {
-          //
-        }
+        catch (UserCancelException e1) {/**/}
       }
     } : null, enabledState);
   }
