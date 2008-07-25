@@ -186,4 +186,6 @@
   EntityTablePanel.initializeSimpleSearchPanel improved
   FrameworkUiUtil changes to accomodate the above
   EntityTableSearchModel created, EntityTableModel, EntityTablePanel, EntityCriteriaPanel and EntityTableSearchPanel changed accordingly
-  Property.EntityProperty.isLookup property added, todo rename
+  Property.EntityProperty.isLookup property added
+  EntityTableModel.includeSearchComboBoxModel() removed, see above item
+  EntityTableModel.propertyFilterModels moved to EntityTableSearchModel

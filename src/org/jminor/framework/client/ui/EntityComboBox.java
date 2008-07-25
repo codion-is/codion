@@ -76,6 +76,10 @@ public class EntityComboBox extends SteppedComboBox {
     return ret;
   }
 
+  public EntityComboBoxModel getModel() {
+    return (EntityComboBoxModel) super.getModel();
+  }
+
   private JButton initializeNewRecordButton(final boolean newRecordButtonFocusable) {
     final JButton ret = new JButton(initializeNewRecordAction());
     ret.setIcon(Images.loadImage(Images.IMG_ADD_16));
@@ -89,10 +93,9 @@ public class EntityComboBox extends SteppedComboBox {
     return new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         try {
-          final EntityPanel entityPanel =
-                  applicationInfo.getInstance(((EntityComboBoxModel) getModel()).getDbProvider());
+          final EntityPanel entityPanel = applicationInfo.getInstance(getModel().getDbProvider());
           entityPanel.initialize();
-          entityPanel.getModel().getTableModel().setSelectedEntity(((EntityComboBoxModel) getModel()).getSelectedEntity());
+          entityPanel.getModel().getTableModel().setSelectedEntity(getModel().getSelectedEntity());
           final Window parentWindow = UiUtil.getParentWindow(EntityComboBox.this);
           final JDialog dialog = new JDialog(parentWindow, applicationInfo.getCaption());
           dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -127,10 +130,10 @@ public class EntityComboBox extends SteppedComboBox {
     return new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         try {
-          ((EntityComboBoxModel) getModel()).refresh();
+          getModel().refresh();
           final List<EntityKey> inserted = entityPanel.getModel().getLastInsertedEntityPrimaryKeys();
           if (inserted != null && inserted.size() > 0) {
-            ((EntityComboBoxModel) getModel()).setSelectedEntityByPrimaryKey(inserted.get(0));
+            getModel().setSelectedEntityByPrimaryKey(inserted.get(0));
           }
           else {
             final Entity selEntity = entityPanel.getModel().getTableModel().getSelectedEntity();
@@ -172,7 +175,7 @@ public class EntityComboBox extends SteppedComboBox {
     ret.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
       public void actionPerformed(ActionEvent e) {
         try {
-          ((EntityComboBoxModel) getModel()).forceRefresh();
+          getModel().forceRefresh();
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();

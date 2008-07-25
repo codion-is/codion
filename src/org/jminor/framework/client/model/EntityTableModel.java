@@ -182,7 +182,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   };
 
   private final List<Property> tableColumnProperties;
-  private final List<PropertyFilterModel> propertyFilterModels;
   private final EntityTableSearchModel tableSearchModel;
   private final TableSorter tableSorter;
 
@@ -203,8 +202,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
     this.tableColumnProperties = initColumnProperties();
-    this.propertyFilterModels = initPropertyFilterModels();
-    this.tableSearchModel = initTableSearchModel();
+    this.tableSearchModel = initSearchModel();
     this.tableSorter = new TableSorter(this);
     this.queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE)
             && EntityRepository.get().hasCreateDateColumn(entityID);
@@ -260,6 +258,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return tableSorter;
   }
 
+  /**
+   * @return the EntityTableSearchModel instance used by this table model
+   */
   public EntityTableSearchModel getSearchModel() {
     return tableSearchModel;
   }
@@ -660,9 +661,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @see #evtFilteringDone
    */
   public synchronized void filterTable() {
-    if (propertyFilterModels == null)
-      return;
-
     try {
       isFiltering = true;
       evtFilteringStarted.fire();
@@ -671,7 +669,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       filteredEntities.clear();
       for (final ListIterator<Entity> iterator = visibleEntities.listIterator(); iterator.hasNext();) {
         final Entity entity = iterator.next();
-        if (!include(entity)) {
+        if (!tableSearchModel.include(entity)) {
           filteredEntities.add(entity);
           iterator.remove();
         }
@@ -692,50 +690,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       refresh();
     }
     else {
-      setLikeFilterValue((referenceEntities == null || referenceEntities.size() == 0)
+      tableSearchModel.setExactFilterValue((referenceEntities == null || referenceEntities.size() == 0)
               ? null : referenceEntities.get(0).toString(), getColumnIndex(referencedEntityID));
     }
-  }
-
-  /**
-   * @param columnIndex the column index
-   * @return true if the PropertyFilterModel behind column with index <code>columnIdx</code> is enabled
-   */
-  public boolean isFilterEnabled(final int columnIndex) {
-    return getPropertyFilterModel(columnIndex).isSearchEnabled();
-  }
-
-  /**
-   * Sets the criteria value of the PropertyFilterModel behind the column at <code>columnIndex</code>
-   * @param value the criteria value
-   * @param columnIndex the index of the column
-   */
-  public void setLikeFilterValue(final Comparable value, final int columnIndex) {
-    if (columnIndex >= 0)
-      getPropertyFilterModel(columnIndex).setLikeValue(value);
-  }
-
-  /**
-   * Returns the property filter at index <code>idx</code>
-   * @param idx the property index
-   * @return the property filter
-   */
-  public PropertyFilterModel getPropertyFilterModel(final int idx) {
-    return propertyFilterModels.get(idx);
-  }
-
-  /**
-   * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
-   * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
-   * @return the PropertyFilterModel for the property with id <code>propertyID</code>
-   */
-  public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
-    for (final AbstractSearchModel filter : propertyFilterModels) {
-      if (filter.getPropertyName().equals(propertyID))
-        return (PropertyFilterModel) filter;
-    }
-
-    return null;
   }
 
   /**
@@ -936,13 +893,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return the property filters this table model uses
-   */
-  public List<PropertyFilterModel> getPropertyFilterModels() {
-    return propertyFilterModels;
-  }
-
-  /**
    * @return the number of currently filtered (hidden) items
    */
   public int getFilteredCount() {
@@ -1068,8 +1018,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return ret;
   }
 
-  protected EntityTableSearchModel initTableSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), getSearchableProperties(), getDbConnectionProvider());
+  protected EntityTableSearchModel initSearchModel() {
+    return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(), getDbConnectionProvider());
   }
 
   /**
@@ -1078,16 +1028,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   protected ICriteria getSearchCriteria() {
     return tableSearchModel.getSearchCriteria();
-  }
-
-  /**
-   * @param property the property
-   * @return true if the PropertySearchModel for the given EntityProperty should include a EntityComboBoxModel.
-   */
-  @SuppressWarnings({"UnusedDeclaration"})
-  @Deprecated
-  protected boolean includeSearchComboBoxModel(final Property.EntityProperty property) {
-    return true;
   }
 
   /**
@@ -1120,14 +1060,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   protected void bindEvents() {
-    final List<PropertyFilterModel> filterModels = getPropertyFilterModels();
-    for (final AbstractSearchModel filterModel : filterModels) {
-      filterModel.evtSearchStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          filterTable();
-        }
-      });
-    }
+    tableSearchModel.evtFilterStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        filterTable();
+      }
+    });
 
     evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -1159,18 +1096,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @param entity the entity
-   * @return true if the entity should be included in this table model or filtered (hidden)
-   */
-  protected boolean include(final Entity entity) {
-    for (final AbstractSearchModel columnFilter : propertyFilterModels)
-      if (columnFilter.isSearchEnabled() && !columnFilter.include(entity))
-        return false;
-
-    return true;
-  }
-
-  /**
    * @return the current record when iterating through this table model during a report generation
    */
   protected Entity getCurrentReportRecord() {
@@ -1179,7 +1104,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   protected synchronized void addEntities(final List<Entity> entities, final boolean atFront) {
     for (final Entity entity : entities) {
-      if (include(entity)) {
+      if (tableSearchModel.include(entity)) {
         if (atFront)
           visibleEntities.add(0, entity);
         else
@@ -1189,18 +1114,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         filteredEntities.add(entity);
     }
     fireTableDataChanged();
-  }
-
-  /**
-   * @return a list of PropertyFilterModels initialized according to the model
-   */
-  private List<PropertyFilterModel> initPropertyFilterModels() {
-    final List<PropertyFilterModel> filters = new ArrayList<PropertyFilterModel>(tableColumnProperties.size());
-    int i = 0;
-    for (final Property property : tableColumnProperties)
-      filters.add(new PropertyFilterModel(property, i++));
-
-    return filters;
   }
 
   private String getRangeDescription() {

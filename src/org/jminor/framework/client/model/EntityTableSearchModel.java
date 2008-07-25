@@ -2,21 +2,22 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.ICriteria;
-import org.jminor.common.model.UserException;
+import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
+import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * User: Björn Darri
@@ -25,20 +26,34 @@ import java.awt.event.ActionListener;
  */
 public class EntityTableSearchModel {
 
+  /**
+   * Fired when the state of the filter models changes
+   */
+  public final Event evtFilterStateChanged = new Event("EntityTableSearchModel.evtFilterStateChanged");
+
+  /**
+   * When active the search should be simplified
+   */
   public final State stSimpleSearch = new State("EntityTableSearchModel.stSimpleSearch");
+  /**
+   * Activated each time the search state differs from the state at last reset
+   * @see #resetSearchState()
+   */
   public final State stSearchStateChanged = new State("EntityTableSearchModel.stSearchStateChanged");
 
   private final String entityID;
   private final IEntityDbProvider dbProvider;
+  private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
   private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
-  private CriteriaSet.Conjunction conjunction = CriteriaSet.Conjunction.AND;
+  private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
   private String searchStateOnRefresh;
 
-  public EntityTableSearchModel(final String entityID, final List<Property> searchableProperties,
-                                final IEntityDbProvider dbProvider) {
+  public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
+                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider) {
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.propertyFilterModels = initPropertyFilterModels(tableColumnProperties);
     this.propertySearchModels = initPropertySearchModels(searchableProperties);
     this.searchStateOnRefresh = getSearchModelState();
   }
@@ -68,26 +83,45 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @param properties the properties for which to initialize PropertySearchModels
-   * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
+   * Returns the property filter at index <code>idx</code>
+   * @param idx the property index
+   * @return the property filter
    */
-  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties) {
-    final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
-    for (final Property property : properties) {
-      if (property instanceof Property.EntityProperty && ((Property.EntityProperty) property).isLookup())
-        propertySearchComboBoxModels.put(property, new EntityComboBoxModel(dbProvider,
-                ((Property.EntityProperty) property).referenceEntityID, false, "", true));
+  public PropertyFilterModel getPropertyFilterModel(final int idx) {
+    return propertyFilterModels.get(idx);
+  }
 
-      final PropertySearchModel searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
-      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-        }
-      });
-      ret.add(searchModel);
+  /**
+   * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
+   * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
+   * @return the PropertyFilterModel for the property with id <code>propertyID</code>
+   */
+  public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
+    for (final AbstractSearchModel filter : propertyFilterModels) {
+      if (filter.getPropertyName().equals(propertyID))
+        return (PropertyFilterModel) filter;
     }
 
-    return ret;
+    return null;
+  }
+
+  /**
+   * @return the property filters this table model uses
+   */
+  public List<PropertyFilterModel> getPropertyFilterModels() {
+    return propertyFilterModels;
+  }
+
+  /**
+   * @param entity the entity
+   * @return true if the entity should be included in this table model or filtered (hidden)
+   */
+  public boolean include(final Entity entity) {
+    for (final AbstractSearchModel columnFilter : propertyFilterModels)
+      if (columnFilter.isSearchEnabled() && !columnFilter.include(entity))
+        return false;
+
+    return true;
   }
 
   /**
@@ -150,6 +184,14 @@ public class EntityTableSearchModel {
   }
 
   /**
+   * @param columnIndex the column index
+   * @return true if the PropertyFilterModel behind column with index <code>columnIdx</code> is enabled
+   */
+  public boolean isFilterEnabled(final int columnIndex) {
+    return getPropertyFilterModel(columnIndex).isSearchEnabled();
+  }
+
+  /**
    * Finds the PropertySearchModel associated with the EntityProperty representing
    * the entity identified by <code>referencedEntityID</code> and sets <code>referenceEntities</code>
    * as the search criteria value, enables the PropertySearchModel and initiates a refresh
@@ -170,6 +212,16 @@ public class EntityTableSearchModel {
   }
 
   /**
+   * Sets the criteria value of the PropertyFilterModel behind the column at <code>columnIndex</code>
+   * @param value the criteria value
+   * @param columnIndex the index of the column
+   */
+  public void setExactFilterValue(final Comparable value, final int columnIndex) {
+    if (columnIndex >= 0)
+      getPropertyFilterModel(columnIndex).setLikeValue(value);
+  }
+
+  /**
    * @return a ICriteria object used to filter the result when this
    * table models data is queried
    */
@@ -183,16 +235,15 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return the conjuction to be used when more than one search criteria is specified, by default the
-   * result depends on EntityTableModel.stSimpleSearch, being OR when it is active, AND otherwise
+   * @return the conjuction to be used when more than one search criteria is specified
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
   public CriteriaSet.Conjunction getSearchCriteriaConjunction() {
-    return conjunction;
+    return searchConjunction;
   }
 
-  public void setConjunction(final CriteriaSet.Conjunction conjunction) {
-    this.conjunction = conjunction;
+  public void setSearchConjunction(final CriteriaSet.Conjunction searchConjunction) {
+    this.searchConjunction = searchConjunction;
   }
 
   public void setSearchEnabled(final String propertyID, final boolean value) {
@@ -207,5 +258,44 @@ public class EntityTableSearchModel {
       searchModel.setSearchType(SearchType.LIKE);
       searchModel.setSearchEnabled(true);
     }
+  }
+
+  /**
+   * @param properties the properties for which to initialize PropertySearchModels
+   * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
+   */
+  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties) {
+    final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
+    for (final Property property : properties) {
+      if (property instanceof Property.EntityProperty && ((Property.EntityProperty) property).isLookup())
+        propertySearchComboBoxModels.put(property, new EntityComboBoxModel(dbProvider,
+                ((Property.EntityProperty) property).referenceEntityID, false, "", true));
+
+      final PropertySearchModel searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
+      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
+        }
+      });
+      ret.add(searchModel);
+    }
+
+    return ret;
+  }
+
+  /**
+   * @param tableColumnProperties the properties for which to initialize PropertyFilterModels
+   * @return a list of PropertyFilterModels initialized according to the model
+   */
+  private List<PropertyFilterModel> initPropertyFilterModels(final List<Property> tableColumnProperties) {
+    final List<PropertyFilterModel> filters = new ArrayList<PropertyFilterModel>(tableColumnProperties.size());
+    int i = 0;
+    for (final Property property : tableColumnProperties) {
+      final PropertyFilterModel filterModel = new PropertyFilterModel(property, i++);
+      filterModel.evtSearchStateChanged.addListener(evtFilterStateChanged);
+      filters.add(filterModel);
+    }
+
+    return filters;
   }
 }

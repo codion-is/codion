@@ -19,11 +19,13 @@ import org.jminor.framework.model.PropertyCriteria;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -32,6 +34,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -49,11 +52,13 @@ public class EntitySearchField extends TextFieldPlus {
   private final String entityID;
   private final List<Property> searchProperties;
   private final ICriteria additionalSearchCriteria;
-  private final boolean caseSensitive;
-  private final boolean wildcardPrefix;
-  private final boolean wildcardPostfix;
 
   private final Action searchAction;
+  private JPopupMenu popupMenu;
+
+  private boolean caseSensitive;
+  private boolean wildcardPrefix;
+  private boolean wildcardPostfix;
 
   private Entity selectedEntity;
 
@@ -102,6 +107,7 @@ public class EntitySearchField extends TextFieldPlus {
         handleChange();
       }
     });
+    addSettingsPopupMenu();
   }
 
   public void setSelectedEntity(final Entity entity) {
@@ -118,12 +124,24 @@ public class EntitySearchField extends TextFieldPlus {
     return caseSensitive;
   }
 
+  public void setCaseSensitive(final boolean caseSensitive) {
+    this.caseSensitive = caseSensitive;
+  }
+
   public boolean isWildcardPostfix() {
     return wildcardPostfix;
   }
 
+  public void setWildcardPostfix(final boolean wildcardPostfix) {
+    this.wildcardPostfix = wildcardPostfix;
+  }
+
   public boolean isWildcardPrefix() {
     return wildcardPrefix;
+  }
+
+  public void setWildcardPrefix(final boolean wildcardPrefix) {
+    this.wildcardPrefix = wildcardPrefix;
   }
 
   public Action getSearchAction() {
@@ -217,5 +235,47 @@ public class EntitySearchField extends TextFieldPlus {
       setBackground(Color.LIGHT_GRAY);
     else
       setBackground(Color.WHITE);
+  }
+
+  private void addSettingsPopupMenu() {
+    addMouseListener(new MouseAdapter() {
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {//for linux :|
+          if (popupMenu == null)
+            popupMenu = initializePopupMenu();
+          popupMenu.show(EntitySearchField.this, e.getX(), e.getY());
+        }
+        else {
+          if (popupMenu != null && popupMenu.isShowing())
+            popupMenu.setVisible(false);
+        }
+      }
+    });
+  }
+
+  private JPopupMenu initializePopupMenu() {
+    final JPopupMenu ret = new JPopupMenu();
+    ret.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
+      public void actionPerformed(ActionEvent e) {
+        final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
+        final JCheckBox boxCaseSensitive = new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), isCaseSensitive());
+        final JCheckBox boxPrefixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), isWildcardPrefix());
+        final JCheckBox boxPostfixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), isWildcardPostfix());
+        panel.add(boxCaseSensitive);
+        panel.add(boxPrefixWildcard);
+        panel.add(boxPostfixWildcard);
+        UiUtil.showInDialog(UiUtil.getParentWindow(EntitySearchField.this), panel, true,
+                FrameworkMessages.get(FrameworkMessages.SETTINGS), true, true,
+                new AbstractAction(Messages.get(Messages.OK)) {
+          public void actionPerformed(final ActionEvent e) {
+            setCaseSensitive(boxCaseSensitive.isSelected());
+            setWildcardPrefix(boxPrefixWildcard.isSelected());
+            setWildcardPostfix(boxPostfixWildcard.isSelected());
+          }
+        });
+      }
+    });
+
+    return ret;
   }
 }

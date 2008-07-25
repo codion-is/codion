@@ -126,6 +126,10 @@ public class FrameworkMessages {
   public static final String SELECT_COLUMNS = "select_columns";
   public static final String COPY_CELL = "copy_cell";
 
+  public static final String CASE_SENSITIVE = "case_sensitive";
+  public static final String POSTFIX_WILDCARD = "postfix_wildcard";
+  public static final String PREFIX_WILDCARD = "prefix_wildcard";
+
   public static String get(final String key) {
     return bundle.getString(key);
   }

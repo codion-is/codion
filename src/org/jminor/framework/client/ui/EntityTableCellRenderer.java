@@ -44,7 +44,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       return component;
 
     final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(column);
-    final boolean propertyFilterEnabled = tableModel.isFilterEnabled(column);
+    final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(column);
     final Color rowColor = specialRendering ? tableModel.getRowBackgroundColor(row) : null;
     if (rowColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
       component.setBackground(table.getBackground());

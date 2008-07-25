@@ -98,6 +98,15 @@ public class EntityTableSearchPanel extends JPanel {
     return ret;
   }
 
+  public PropertySearchPanel getSearchPanel(final String propertyID) {
+    for (final JPanel panel : searchPanels) {
+      if (panel instanceof PropertySearchPanel && ((PropertySearchPanel)panel).getModel().getProperty().propertyID.equals(propertyID))
+        return (PropertySearchPanel) panel;
+    }
+
+    return null;
+  }
+
   protected void initializeUI() {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     for (final JPanel searchPanel : searchPanels)

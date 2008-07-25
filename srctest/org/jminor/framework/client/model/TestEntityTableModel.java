@@ -44,28 +44,28 @@ public class TestEntityTableModel extends TestCase {
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
     //test filters
-    testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("a");
-    assertTrue("filter should be enabled", testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("a");
+    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
     assertEquals("4 entities should be filtered", 4, testModel.getFilteredCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
     assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(testEntities, true, testModel));
-    testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
-    assertFalse("filter should not be enabled", testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
+    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
 
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
-    testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("t"); // ekki til
-    assertTrue("filter should be enabled", testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("t"); // ekki til
+    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
     assertEquals("all 5 entities should be filtered", 5, testModel.getFilteredCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
     assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(testEntities, true, testModel));
-    testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
+    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
-    assertFalse("filter should not be enabled", testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
 
     //test selection
     testModel.setSelectedEntity(testEntities[0]);
@@ -115,11 +115,11 @@ public class TestEntityTableModel extends TestCase {
     testModel.addSelectedItemIndexes(new int[]{3});
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
 
-    testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("d");
+    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("d");
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected indexes should fit", new IntArray(new int[]{0}), new IntArray(testModel.getSelectedViewIndexes()));
-    testModel.getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
+    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected item should fit", testEntities[3], testModel.getSelectedEntity());

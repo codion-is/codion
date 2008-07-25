@@ -5,10 +5,8 @@ package org.jminor.framework.demos.schemabrowser.beans;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
-import org.jminor.framework.model.Property;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,14 +21,5 @@ public class ConstraintModel extends EntityModel {
   /** {@inheritDoc} */
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
     return Arrays.asList(new ColumnConstraintModel(getDbConnectionProvider()));
-  }
-
-  /** {@inheritDoc} */
-  protected EntityTableModel initializeTableModel() {
-    return new EntityTableModel(getDbConnectionProvider(), getEntityID()) {
-      protected boolean includeSearchComboBoxModel(final Property.EntityProperty property) {
-        return !property.getColumnName().equals(SchemaBrowser.CONSTRAINT_TABLE_REF);
-      }
-    };
   }
 }

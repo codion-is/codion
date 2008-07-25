@@ -662,8 +662,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private List<PropertyFilterPanel> initializeFilterPanels() {
-    final List<PropertyFilterPanel> columnFilterPanels = new ArrayList<PropertyFilterPanel>(tableModel.getPropertyFilterModels().size());
-    for (final PropertyFilterModel searchModel : tableModel.getPropertyFilterModels()) {
+    final List<PropertyFilterPanel> columnFilterPanels =
+            new ArrayList<PropertyFilterPanel>(tableModel.getSearchModel().getPropertyFilterModels().size());
+    for (final PropertyFilterModel searchModel : tableModel.getSearchModel().getPropertyFilterModels()) {
       final PropertyFilterPanel ret = new PropertyFilterPanel(searchModel, true, true);
       final TableColumn tableColumn = entityTable.getColumnModel().getColumn(searchModel.getColumnIndex());
       ret.getModel().evtSearchStateChanged.addListener(new ActionListener() {
