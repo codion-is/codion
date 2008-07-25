@@ -266,6 +266,7 @@ public class Property implements Serializable {
 
     public final List<Property> referenceProperties;
     public final boolean isWeakReference;
+    public boolean lookup = true;
 
     public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
                           final Property... referenceProperties) {
@@ -299,6 +300,15 @@ public class Property implements Serializable {
      */
     public boolean isMultiColumnReference() {
       return this.referenceProperties.size() > 1;
+    }
+
+    public boolean isLookup() {
+      return lookup;
+    }
+
+    public EntityProperty setLookup(final boolean lookup) {
+      this.lookup = lookup;
+      return this;
     }
   }
 

@@ -8,12 +8,13 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
-import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Property;
 
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
@@ -23,18 +24,16 @@ public class EntityTableSearchPanel extends JPanel {
 
   public final Event evtAdvancedChanged = new Event("EntityTableSearchPanel.evtAdvancedChanged");
 
+  private final EntityTableSearchModel searchModel;
+  private final List<Property> tableColumnProperties;
+
   private final List<JPanel> searchPanels;
 
-  public EntityTableSearchPanel(final EntityTableModel entityTableModel) {
-    searchPanels = initializeSearchPanels(entityTableModel);
+  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final List<Property> tableColumnProperties) {
+    this.searchModel = searchModel;
+    this.tableColumnProperties = tableColumnProperties;
+    this.searchPanels = initializeSearchPanels();
     initializeUI();
-  }
-
-  /**
-   * @return Value for property 'searchPanels'.
-   */
-  public List<JPanel> getSearchPanels() {
-    return searchPanels;
   }
 
   /**
@@ -76,6 +75,10 @@ public class EntityTableSearchPanel extends JPanel {
     return false;
   }
 
+  public void bindSizeToColumns(final JTable table) {
+    UiUtil.bindColumnSizesAndPanelSizes(table, searchPanels);
+  }
+
   /** {@inheritDoc} */
   public Dimension getPreferredSize() {
     for (final JPanel searchPanel : searchPanels)
@@ -101,13 +104,12 @@ public class EntityTableSearchPanel extends JPanel {
       add(searchPanel);
   }
 
-  private List<JPanel> initializeSearchPanels(final EntityTableModel tableModel) {
-    final List<Property> properties = tableModel.getTableColumnProperties();
-    final ArrayList<JPanel> ret = new ArrayList<JPanel>(properties.size());
-    for (final Property property : properties) {
-      final PropertySearchModel searchModel = tableModel.getPropertySearchModel(property.propertyID);
-      if (searchModel != null)
-        ret.add(new PropertySearchPanel(searchModel, true, false, tableModel.getDbConnectionProvider()));
+  private List<JPanel> initializeSearchPanels() {
+    final ArrayList<JPanel> ret = new ArrayList<JPanel>(tableColumnProperties.size());
+    for (final Property property : tableColumnProperties) {
+      final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.propertyID);
+      if (propertySearchModel != null)
+        ret.add(new PropertySearchPanel(propertySearchModel, true, false, searchModel.getDbProvider()));
       else {
         final JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));

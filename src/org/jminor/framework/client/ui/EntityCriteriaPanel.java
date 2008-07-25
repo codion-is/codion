@@ -8,6 +8,7 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Property;
@@ -51,7 +52,7 @@ public class EntityCriteriaPanel extends JPanel {
     editPanel.setPreferredSize(new Dimension(200,150));
     editPanel.setBorder(BorderFactory.createCompoundBorder());
 
-    final JList propertyList = initializePropertyList(tableModel, editPanel);
+    final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel);
     final JScrollPane scroller = new JScrollPane(propertyList);
 
     final JPanel propertyBase = new JPanel(new BorderLayout());
@@ -61,7 +62,7 @@ public class EntityCriteriaPanel extends JPanel {
     propertyBase.add(editPanel, BorderLayout.CENTER);
     add(propertyBase, BorderLayout.CENTER);
 
-    tableModel.refreshSearchComboBoxModels();
+    tableModel.getSearchModel().refreshSearchComboBoxModels();
 
     //south panel
     final JPanel southPanel = initializeSouthPanel(tableModel);
@@ -99,7 +100,7 @@ public class EntityCriteriaPanel extends JPanel {
     return ret;
   }
 
-  private JList initializePropertyList(final EntityTableModel entityModel, final JPanel editorPanel) {
+  private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel) {
     final List<PropertySearchModel> searchCriterias = getSortedCriterias(entityModel);
     final Vector<AbstractSearchModel> models = new Vector<AbstractSearchModel>(searchCriterias);
     final JList propertyList = new JList(models);
@@ -132,9 +133,9 @@ public class EntityCriteriaPanel extends JPanel {
         final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
         if (selected != null) {
           PropertySearchPanel panel = panels.get(selected);
-          if (panel == null) {
-            panels.put(selected, panel = new PropertySearchPanel(selected,true,true,entityModel.getDbConnectionProvider()));
-          }
+          if (panel == null)
+            panels.put(selected, panel = new PropertySearchPanel(selected,true,true,entityModel.getDbProvider()));
+
           editorPanel.add(panel);
           revalidate();
           repaint();
@@ -145,7 +146,7 @@ public class EntityCriteriaPanel extends JPanel {
     return propertyList;
   }
 
-  private List<PropertySearchModel> getSortedCriterias(final EntityTableModel entityModel) {
+  private List<PropertySearchModel> getSortedCriterias(final EntityTableSearchModel entityModel) {
     final List<PropertySearchModel> searchCriterias = entityModel.getPropertySearchModels();
     Collections.sort(searchCriterias, new Comparator<AbstractSearchModel>() {
       public int compare(final AbstractSearchModel searchModelOne, final AbstractSearchModel searchModelTwo) {

@@ -240,7 +240,7 @@ public class DbConnection {
   }
 
   /**
-   * Performes the given query and returns the result as a List of Strings
+   * Performs the given query and returns the result as a List of Strings
    * @param sql the query, it must select a single string column
    * @return a List of Strings representing the query result
    * @throws SQLException thrown if anything goes wrong during the execution
@@ -255,7 +255,7 @@ public class DbConnection {
   }
 
   /**
-   * Performes the given query and returns the result as an integer
+   * Performs the given query and returns the result as an integer
    * @param sql the query must select a single number column
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution
@@ -270,7 +270,7 @@ public class DbConnection {
   }
 
   /**
-   * Performes the given query and returns the result as a List of Integers
+   * Performs the given query and returns the result as a List of Integers
    * @param sql the query, it must select a single number column
    * @return a List of Integers representing the query result
    * @throws SQLException thrown if anything goes wrong during the execution

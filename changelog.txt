@@ -185,3 +185,5 @@
   EntityTableModel.stSimpleSearch added
   EntityTablePanel.initializeSimpleSearchPanel improved
   FrameworkUiUtil changes to accomodate the above
+  EntityTableSearchModel created, EntityTableModel, EntityTablePanel, EntityCriteriaPanel and EntityTableSearchPanel changed accordingly
+  Property.EntityProperty.isLookup property added, todo rename

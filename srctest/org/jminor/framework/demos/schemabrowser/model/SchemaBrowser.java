@@ -64,7 +64,7 @@ public class SchemaBrowser {
             IdSource.ID_NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
             new Property.EntityProperty(COLUMN_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING, null, 0),
-                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING, null, 1)),
+                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING, null, 1)).setLookup(false),
             new Property.PrimaryKeyProperty(COLUMN_NAME, Type.STRING, "Column name", 2),
             new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"));
 
@@ -72,7 +72,7 @@ public class SchemaBrowser {
             IdSource.ID_NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true,
             new Property.EntityProperty(CONSTRAINT_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING, null, 0),
-                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING, null, 1)),
+                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING, null, 1)).setLookup(false),
             new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Type.STRING, "Constraint name", 2),
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"));
 
@@ -82,7 +82,7 @@ public class SchemaBrowser {
             new Property.EntityProperty(COLUMN_CONSTRAINT_CONSTRAINT_REF, "Constraint", T_CONSTRAINT,
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING, null, 0),
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Type.STRING, null, 1),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Type.STRING, null, 2)),
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Type.STRING, null, 2)).setLookup(false),
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Type.STRING, "Column name"),
             new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"));
 

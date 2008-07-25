@@ -15,7 +15,6 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -100,19 +99,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public final Event evtSelectionChanged = new Event("EntityTableModel.evtSelectionChanged");
 
   /**
-   * Active when simple searching should be performed
-   */
-  public final State stSimpleSearch = new State("EntityTableModel.stSimpleSearch");
-
-  /**
    * Active when the selection is empty
    */
   public final State stSelectionEmpty = new State("EntityTableModel.stSelectionEmpty", true);
-
-  /**
-   * Active when the data does not represent the state of the property search models
-   */
-  public final State stDataDirty = new State("EntityTableModel.stDataDirty", false);
 
   /**
    * true while the model is refreshing
@@ -194,15 +183,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   private final List<Property> tableColumnProperties;
   private final List<PropertyFilterModel> propertyFilterModels;
-  private final List<PropertySearchModel> propertySearchModels;
-  private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
+  private final EntityTableSearchModel tableSearchModel;
   private final TableSorter tableSorter;
 
   //reporting
   private Iterator<Entity> reportPrintIterator;
   private Entity currentReportRecord;
 
-  private String searchStateOnRefresh;
   private boolean filterQueryByMaster = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
   private boolean showAllWhenNotFiltered = false;
   private boolean updatingSelection = false;
@@ -217,8 +204,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     this.entityID = entityID;
     this.tableColumnProperties = initColumnProperties();
     this.propertyFilterModels = initPropertyFilterModels();
-    this.propertySearchModels = initPropertySearchModels(getSearchableProperties());
-    this.searchStateOnRefresh = getSearchModelState();
+    this.tableSearchModel = initTableSearchModel();
     this.tableSorter = new TableSorter(this);
     this.queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE)
             && EntityRepository.get().hasCreateDateColumn(entityID);
@@ -272,6 +258,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public TableSorter getTableSorter() {
     return tableSorter;
+  }
+
+  public EntityTableSearchModel getSearchModel() {
+    return tableSearchModel;
   }
 
   /**
@@ -564,35 +554,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * Refreshes all combo box models associated with PropertySearchModels
-   */
-  public void refreshSearchComboBoxModels() {
-    try {
-      for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
-        model.refresh();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Clears the contents from all combo box models associated with PropertySearchModels
-   */
-  public void clearSearchComboBoxModels() {
-    for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
-      model.clear();
-  }
-
-  /**
-   * Clears the state of all PropertySearchModels
-   */
-  public void clearPropertySearchModels() {
-    for (final AbstractSearchModel searchModel : propertySearchModels)
-      searchModel.clear();
-  }
-
-  /**
    * Retrieves the entities identified by the given primary keys and adds them to this table model
    * @param primaryKeys the primary keys
    * @param atFrontOfList if true the entities are added to the front
@@ -726,65 +687,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID)
           throws UserException {
-    if (filterQueryByMaster)
-      setExactSearchValue(referencedEntityID, referenceEntities);
-    else
+    if (filterQueryByMaster) {
+      tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities);
+      refresh();
+    }
+    else {
       setLikeFilterValue((referenceEntities == null || referenceEntities.size() == 0)
               ? null : referenceEntities.get(0).toString(), getColumnIndex(referencedEntityID));
-  }
-
-  /**
-   * Finds the PropertySearchModel associated with the EntityProperty representing
-   * the entity identified by <code>referencedEntityID</code> and sets <code>referenceEntities</code>
-   * as the search criteria value, enables the PropertySearchModel and initiates a refresh
-   * @param referencedEntityID the ID of the entity
-   * @param referenceEntities the entities to use as search criteria value
-   * @throws UserException in case of an exception
-   */
-  public void setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
-    boolean searchValueChanged = false;
-    for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), referencedEntityID)) {
-      final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
-      if (searchModel != null) {
-        searchModel.initialize();
-        searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
-        searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
-        searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
-        searchValueChanged = true;
-      }
     }
-    if (searchValueChanged)
-      refresh();
-  }
-
-  /**
-   * @return a list containing the PropertySearchModels found in this table model
-   */
-  public List<PropertySearchModel> getPropertySearchModels() {
-    return propertySearchModels;
-  }
-
-  /**
-   * @param propertyID the id of the property for which to retrieve the PropertySearchModel
-   * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
-   */
-  public PropertySearchModel getPropertySearchModel(final String propertyID) {
-    for (final PropertySearchModel searchModel : propertySearchModels)
-      if (searchModel.getProperty().propertyID.equals(propertyID))
-        return searchModel;
-
-    return null;
-  }
-
-  /**
-   * @param columnIdx the column index
-   * @return true if the PropertySearchModel behind column with index <code>columnIdx</code> is enabled
-   */
-  public boolean isSearchEnabled(final int columnIdx) {
-    final PropertySearchModel model =
-            getPropertySearchModel(EntityRepository.get().getPropertyAtViewIndex(getEntityID(), columnIdx).propertyID);
-
-    return model != null && model.isSearchEnabled();
   }
 
   /**
@@ -1158,26 +1068,16 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return ret;
   }
 
+  protected EntityTableSearchModel initTableSearchModel() {
+    return new EntityTableSearchModel(getEntityID(), getSearchableProperties(), getDbConnectionProvider());
+  }
+
   /**
    * @return a ICriteria object used to filter the result when this
    * table models data is queried
    */
   protected ICriteria getSearchCriteria() {
-    final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
-    for (final AbstractSearchModel criteria : propertySearchModels)
-      if (criteria.isSearchEnabled())
-        ret.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
-
-    return ret.getCriteriaCount() > 0 ? ret : null;
-  }
-
-  /**
-   * @return the conjuction to be used when more than one search criteria is specified, by default the
-   * result depends on EntityTableModel.stSimpleSearch, being OR when it is active, AND otherwise
-   * @see org.jminor.common.db.CriteriaSet.Conjunction
-   */
-  protected CriteriaSet.Conjunction getSearchCriteriaConjunction() {
-    return stSimpleSearch.isActive() ? CriteriaSet.Conjunction.OR : CriteriaSet.Conjunction.AND;
+    return tableSearchModel.getSearchCriteria();
   }
 
   /**
@@ -1185,6 +1085,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return true if the PropertySearchModel for the given EntityProperty should include a EntityComboBoxModel.
    */
   @SuppressWarnings({"UnusedDeclaration"})
+  @Deprecated
   protected boolean includeSearchComboBoxModel(final Property.EntityProperty property) {
     return true;
   }
@@ -1228,18 +1129,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       });
     }
 
-    final ActionListener dataStateListener = new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        stDataDirty.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-      }
-    };
-    for (final AbstractSearchModel searchModel : getPropertySearchModels())
-      searchModel.evtSearchStateChanged.addListener(dataStateListener);
-
     evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        searchStateOnRefresh = getSearchModelState();
-        stDataDirty.setActive(false);
+        tableSearchModel.resetSearchState();
       }
     });
 
@@ -1300,23 +1192,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @param properties the properties for which to initialize PropertySearchModels
-   * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
-   */
-  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties) {
-    final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
-    for (final Property property : properties) {
-      if (property instanceof Property.EntityProperty && includeSearchComboBoxModel((Property.EntityProperty) property))
-        propertySearchComboBoxModels.put(property, new EntityComboBoxModel(getDbConnectionProvider(),
-                ((Property.EntityProperty) property).referenceEntityID, false, "", true));
-
-      ret.add(new PropertySearchModel(property, propertySearchComboBoxModels.get(property)));
-    }
-
-    return ret;
-  }
-
-  /**
    * @return a list of PropertyFilterModels initialized according to the model
    */
   private List<PropertyFilterModel> initPropertyFilterModels() {
@@ -1326,17 +1201,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       filters.add(new PropertyFilterModel(property, i++));
 
     return filters;
-  }
-
-  /**
-   * @return a String representing the state of the search models
-   */
-  private String getSearchModelState() {
-    final StringBuffer ret = new StringBuffer();
-    for (final AbstractSearchModel model : getPropertySearchModels())
-      ret.append(model.toString());
-
-    return ret.toString();
   }
 
   private String getRangeDescription() {
