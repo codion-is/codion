@@ -686,8 +686,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID)
           throws UserException {
     if (filterQueryByMaster) {
-      tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities);
-      refresh();
+      if (tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities))
+        refresh();
     }
     else {
       tableSearchModel.setExactFilterValue((referenceEntities == null || referenceEntities.size() == 0)
@@ -978,7 +978,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @throws DbException in case of a database exception
    */
   protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) throws DbException, UserException {
-    if (filterQueryByMaster && criteria == null && !showAllWhenNotFiltered)
+    if (filterQueryByMaster && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
     try {

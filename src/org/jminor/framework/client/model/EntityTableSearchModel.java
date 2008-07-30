@@ -197,9 +197,11 @@ public class EntityTableSearchModel {
    * as the search criteria value, enables the PropertySearchModel and initiates a refresh
    * @param referencedEntityID the ID of the entity
    * @param referenceEntities the entities to use as search criteria value
+   * @return true if the search state changed as a result of this method call, false otherwise
    * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public void setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
+  public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
+    final String searchState = getSearchModelState();
     for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), referencedEntityID)) {
       final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
       if (searchModel != null) {
@@ -209,6 +211,7 @@ public class EntityTableSearchModel {
         searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
       }
     }
+    return !searchState.equals(getSearchModelState());
   }
 
   /**
