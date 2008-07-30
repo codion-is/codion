@@ -167,7 +167,7 @@
   EntityKey improved setValue error handling and reporting
   IntTextPropertyLink fixed valueFromText(), parsing the - sign to -1
   FilteredComboBoxModel.removeItem(), fireContentsChanged() called instead of resetContents(), thus preventing full refresh after removing an item
-  UiUtil.selectDirectory() now uses user.home property in case no start directory is specifies (instead of C://)
+  UiUtil.selectDirectory() now uses user.home property in case no start directory is specified (instead of C://)
   UiUtil.selectDirectory() added dialogTitle parameter
   EntityTablePanel renamed a few fields
   EntityTablePanel added Copy cell action to JTable popup menu
@@ -189,3 +189,6 @@
   Property.EntityProperty.isLookup property added
   EntityTableModel.includeSearchComboBoxModel() removed, see above item
   EntityTableModel.propertyFilterModels moved to EntityTableSearchModel
+  NotEquals60x16.gif changed
+  EntitySearchModel.setExactSearchValue() now returns a boolean indicating whether the search state changed
+  EntityTableModel.filterByReference() now only triggers a refresh if the search state changed
