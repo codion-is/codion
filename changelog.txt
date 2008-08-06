@@ -192,3 +192,6 @@
   NotEquals60x16.gif changed
   EntitySearchModel.setExactSearchValue() now returns a boolean indicating whether the search state changed
   EntityTableModel.filterByReference() now only triggers a refresh if the search state changed
+  EntityPanel.setupControls() now uses the setControl() method
+  Control improved error reporting
+  Util.formatLat/Lon improved

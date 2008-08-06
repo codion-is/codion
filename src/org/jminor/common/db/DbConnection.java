@@ -88,7 +88,7 @@ public class DbConnection {
     try {
       return Database.isOracle() || Database.isPostgreSQL() ? checkConnection() : connection.isValid(0);
     }
-    catch (Exception e) {
+    catch (SQLException e) {
       log.error(this, e);
       return false;
     }
@@ -397,7 +397,7 @@ public class DbConnection {
     }
   }
 
-  private boolean checkConnection() throws Exception {
+  private boolean checkConnection() throws SQLException {
     if (connection != null) {
       try {
         checkConnectionStatement.executeQuery("select 1 from dual");

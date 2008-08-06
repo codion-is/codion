@@ -132,6 +132,6 @@ public class Control extends AbstractAction {
       return;
 
     exception.printStackTrace();
-    throw new RuntimeException(exception.getMessage());
+    throw new RuntimeException(exception);
   }
 }

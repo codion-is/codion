@@ -642,7 +642,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         }
       }
     }
-    catch(Exception e) {
+    catch (Exception e) {
       handleException(e);
     }
   }
@@ -867,7 +867,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
 
-  public Control getControl(final String controlCode) {
+  public final void setControl(final String controlCode, final Control control) {
+    controlMap.put(controlCode, control);
+  }
+
+  public final Control getControl(final String controlCode) {
     return controlMap.get(controlCode);
   }
 
@@ -1062,7 +1066,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   protected void initializeAssociatedPanels() {}
 
   /**
-   * Called during construction, after controls have been initialized
+   * Called during construction, after controls have been initialized,
+   * use this method to initialize any application panels that rely on controls having been initialized
+   * @see #setupControls()
    */
   protected void initializeControlPanels() {}
 
@@ -1111,27 +1117,33 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret.toArray(new AbstractButton[ret.size()]);
   }
 
+  /**
+   * Sets up the controls used by this EntityPanel
+   * @see org.jminor.common.ui.control.Control
+   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see #getControl(String)
+   */
   protected void setupControls() {
     if (!model.isReadOnly()) {
       if (model.isInsertAllowed())
-        controlMap.put(INSERT, getInsertControl());
+        setControl(INSERT, getInsertControl());
       if (model.isUpdateAllowed())
-        controlMap.put(UPDATE, getUpdateControl());
+        setControl(UPDATE, getUpdateControl());
       if (model.isDeleteAllowed())
-        controlMap.put(DELETE, getDeleteControl());
+        setControl(DELETE, getDeleteControl());
     }
-    controlMap.put(CLEAR, getClearControl());
+    setControl(CLEAR, getClearControl());
     if (model.getTableModel() != null) {
       if (!model.isReadOnly() && model.isUpdateAllowed() && model.isMultipleUpdateAllowed())
-        controlMap.put(UPDATE_SELECTED, getUpdateSelectedControl());
-      controlMap.put(REFRESH, getRefreshControl());
+        setControl(UPDATE_SELECTED, getUpdateSelectedControl());
+      setControl(REFRESH, getRefreshControl());
       if (!model.isReadOnly() && model.isDeleteAllowed())
-        controlMap.put(MENU_DELETE, getDeleteSelectedControl());
-      controlMap.put(PRINT, getPrintControl());
-      controlMap.put(VIEW_DEPENDENCIES, getViewDependenciesControl());
+        setControl(MENU_DELETE, getDeleteSelectedControl());
+      setControl(PRINT, getPrintControl());
+      setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
       if (isQueryConfigurationAllowed())
-        controlMap.put(CONFIGURE_QUERY, getConfigureQueryControl());
-      controlMap.put(SELECT_COLUMNS, getSelectColumnsControl());
+        setControl(CONFIGURE_QUERY, getConfigureQueryControl());
+      setControl(SELECT_COLUMNS, getSelectColumnsControl());
     }
   }
 
