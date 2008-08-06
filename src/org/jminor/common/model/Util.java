@@ -360,7 +360,7 @@ public class Util {
       writer.write(contents);
       writer.flush();
     }
-    catch (Exception e) {
+    catch (IOException e) {
       e.printStackTrace();
       throw new UserException(e);
     }

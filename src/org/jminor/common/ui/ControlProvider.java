@@ -85,29 +85,17 @@ public class ControlProvider {
   }
 
   public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleBeanPropertyLink propertyLink) {
-    try {
-      final JCheckBoxMenuItem box = new JCheckBoxMenuItem(propertyLink);
-      propertyLink.setButton(box);
+    final JCheckBoxMenuItem box = new JCheckBoxMenuItem(propertyLink);
+    propertyLink.setButton(box);
 
-      return box;
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      throw new RuntimeException(ex.toString());
-    }
+    return box;
   }
 
   public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleBeanPropertyLink propertyLink) {
-    try {
-      final JRadioButtonMenuItem box = new JRadioButtonMenuItem(propertyLink);
-      propertyLink.setButton(box);
+    final JRadioButtonMenuItem box = new JRadioButtonMenuItem(propertyLink);
+    propertyLink.setButton(box);
 
-      return box;
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      throw new RuntimeException(ex.toString());
-    }
+    return box;
   }
 
   public static JToolBar createToolbar(final ControlSet controlSet, final int orientation) {
@@ -276,16 +264,10 @@ public class ControlProvider {
   }
 
   public static JCheckBox createCheckBox(final ToggleBeanPropertyLink propertyLink) {
-    try {
-      final JCheckBox ret = new JCheckBox(propertyLink);
-      propertyLink.setButton(ret);
+    final JCheckBox ret = new JCheckBox(propertyLink);
+    propertyLink.setButton(ret);
 
-      return ret;
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      throw new RuntimeException(ex.toString());
-    }
+    return ret;
   }
 
   public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink) {
@@ -293,16 +275,10 @@ public class ControlProvider {
   }
 
   public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink, final boolean includeCaption) {
-    try {
-      final JToggleButton ret = new JToggleButton();
-      propertyLink.setButton(ret);
-      ret.setText(includeCaption ? propertyLink.getName() : null);
+    final JToggleButton ret = new JToggleButton();
+    propertyLink.setButton(ret);
+    ret.setText(includeCaption ? propertyLink.getName() : null);
 
-      return ret;
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      throw new RuntimeException(ex.toString());
-    }
+    return ret;
   }
 }

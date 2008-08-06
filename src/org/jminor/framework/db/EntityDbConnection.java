@@ -172,7 +172,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         if (!isTransactionOpen())
           rollback();
       }
-      catch (Exception ex) {
+      catch (SQLException ex) {
         log.error(this, ex);
       }
       throw new DbException(e, sql);
@@ -407,12 +407,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       return ret;
     }
     finally {
-      try {
-        removeCacheQueriesRequest();
-      }
-      catch (Exception e) {
-        log.error(this, e);
-      }
+      removeCacheQueriesRequest();
     }
   }
 
@@ -440,12 +435,12 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
       return ret;
     }
-    catch (Exception e) {
+    catch (SQLException e) {
       try {
         if (!isTransactionOpen())
           rollback();
       }
-      catch (Exception ex) {
+      catch (SQLException ex) {
         log.info(statement);
         log.error(this, ex);
       }

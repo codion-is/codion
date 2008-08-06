@@ -95,12 +95,7 @@ public class HostMonitor extends DefaultMutableTreeNode {
       for (final String name : boundNames) {
         System.out.println("HostMonitor found server \"" + name + "\".");
         log.info("HostMonitor found server \"" + name + "\".");
-        try {
-          ret.add(name);
-        }
-        catch (Exception e) {
-          log.error(this, e);
-        }
+        ret.add(name);
       }
 
       return ret;

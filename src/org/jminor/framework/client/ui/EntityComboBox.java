@@ -115,12 +115,6 @@ public class EntityComboBox extends SteppedComboBox {
         catch (UserException ue) {
           throw ue.getRuntimeException();
         }
-        catch (RuntimeException ex) {
-          throw ex;
-        }
-        catch (Exception ex) {
-          throw new RuntimeException(ex);
-        }
       }
     };
   }

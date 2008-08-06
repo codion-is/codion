@@ -26,7 +26,7 @@ public class MethodControl extends Control {
     try {
       this.method = owner.getClass().getMethod(methodName);
     }
-    catch (Exception e) {
+    catch (NoSuchMethodException e) {
       System.out.println("Method " + methodName + " not found in class " + owner.getClass().getName());
       throw new RuntimeException(e.getMessage());
     }

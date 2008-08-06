@@ -46,11 +46,15 @@ public class EntityDbProviderFactory {
       else
         return (IEntityDbProvider) Class.forName(FrameworkConstants.LOCAL_CONNECTION_PROVIDER).getConstructor(User.class).newInstance(user);
     }
+    catch (InvocationTargetException ite) {
+      if (ite.getTargetException() instanceof RuntimeException)
+        throw (RuntimeException) ((InvocationTargetException) ite).getTargetException();
+
+      throw new RuntimeException("Exception while initializing db provider", ite);
+    }
     catch (Exception e) {
       if (e instanceof RuntimeException)
         throw (RuntimeException) e;
-      else if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof RuntimeException)
-        throw (RuntimeException) ((InvocationTargetException) e).getTargetException();
 
       throw new RuntimeException("Exception while initializing db provider", e);
     }

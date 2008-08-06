@@ -50,10 +50,6 @@ public class EntityResultPacker implements IResultPacker<Entity> {
 
       return ret;
     }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new SQLException(e);
-    }
     finally {
       this.resultSet = null;
     }

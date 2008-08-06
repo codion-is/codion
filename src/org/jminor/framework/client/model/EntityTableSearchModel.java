@@ -132,8 +132,8 @@ public class EntityTableSearchModel {
       for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
         model.refresh();
     }
-    catch (Exception e) {
-      throw new RuntimeException(e);
+    catch (UserException e) {
+      throw e.getRuntimeException();
     }
   }
 

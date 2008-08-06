@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
@@ -12,6 +11,8 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -90,7 +91,7 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
     catch (UserException ue) {
       throw ue.getRuntimeException();
     }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new RuntimeException(e);
     }
   }

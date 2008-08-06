@@ -392,9 +392,6 @@ public class DbConnection {
     catch (SQLException e) {
       throw new AuthenticationException(connectionInfo.getProperty("user"), e);
     }
-    catch (Exception e) {
-      throw new AuthenticationException(connectionInfo.getProperty("user"));
-    }
   }
 
   private boolean checkConnection() throws SQLException {

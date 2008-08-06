@@ -5,6 +5,7 @@ import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.UserException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.FrameworkConstants;
@@ -90,7 +91,7 @@ public class EntitySearchField extends TextFieldPlus {
         try {
           performSearch(dbProvider);
         }
-        catch (Exception ex) {
+        catch (UserException ex) {
           UiUtil.handleException(ex, EntitySearchField.this);
         }
       }
@@ -159,7 +160,7 @@ public class EntitySearchField extends TextFieldPlus {
             new CriteriaSet(CriteriaSet.Conjunction.AND, additionalSearchCriteria, baseCriteria));
   }
 
-  private void performSearch(final IEntityDbProvider dbProvider) throws Exception {
+  private void performSearch(final IEntityDbProvider dbProvider) throws UserException {
     final List<Entity> searchResult = getSearchResult(dbProvider);
     if (searchResult.size() == 0) {
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
@@ -172,8 +173,13 @@ public class EntitySearchField extends TextFieldPlus {
     }
   }
 
-  private List<Entity> getSearchResult(final IEntityDbProvider dbProvider) throws Exception {
-    return dbProvider.getEntityDb().selectMany(getEntityCriteria());
+  private List<Entity> getSearchResult(final IEntityDbProvider dbProvider) throws UserException {
+    try {
+      return dbProvider.getEntityDb().selectMany(getEntityCriteria());
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
   }
 
   private void selectEntity(final List<Entity> entities) {

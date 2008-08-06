@@ -79,7 +79,10 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
         evtConnected.fire();
       }
     }
-    catch (Exception e) {
+    catch (RemoteException e) {
+      throw new UserException(e);
+    }
+    catch (NotBoundException e) {
       throw new UserException(e);
     }
   }
@@ -91,7 +94,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
 
       return true;
     }
-    catch (Exception e) {
+    catch (RemoteException e) {
       log.debug("$$$$ connection invalid: " + e.getMessage());
       return false;
     }
@@ -108,7 +111,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
       if (this.server != null)
         this.server.getServerPort();//just to check the connection
     }
-    catch (Exception e) {
+    catch (RemoteException e) {
       e.printStackTrace();
       log.info(serverName + " was unreachable, " + user + " - " + clientID + " reconnecting...");
       unreachable = true;

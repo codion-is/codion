@@ -250,13 +250,8 @@ public class MonitorPanel extends JPanel {
       System.out.println(user + " is authenticated");
     }
     finally {
-      try {
-        if (db != null)
-          db.disconnect();
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
+      if (db != null)
+        db.disconnect();
     }
   }
 

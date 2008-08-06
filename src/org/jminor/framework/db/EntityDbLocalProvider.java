@@ -5,6 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
+import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
@@ -25,7 +26,14 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
    */
   public final Event evtConnected = new Event("EntityDbLocalProvider.evtConnected");
 
+  /**
+   * The user used by this db provider when connecting to the database server
+   */
   protected final User user;
+
+  /**
+   * The IEntityDb instance used by this db provider
+   */
   protected IEntityDb entityDb;
 
   public EntityDbLocalProvider(final User user) {
@@ -37,7 +45,7 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
   }
 
   public synchronized final IEntityDb getEntityDb() throws UserException {
-    initializeEntityDb();
+    validateDbConnection();
 
     return entityDb;
   }
@@ -47,31 +55,26 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
     return evtConnected;
   }
 
-  protected void connectServer() throws Exception {
-    log.debug("Initializing connection for " + user);
-    entityDb = new EntityDbConnection(user, EntityRepository.get(), FrameworkSettings.get());
-    evtConnected.fire();
-  }
-
-  protected void initializeEntityDb() throws UserException {
+  private void validateDbConnection() throws UserException {
     try {
-      validateDbConnection();
+      if (entityDb == null)
+        connectServer();
+
+      if (!entityDb.isConnectionValid()) {
+        //db unreachable
+        //try to reconnect once in case db has become reachable
+        entityDb = null;
+        connectServer();
+      }
     }
     catch (Exception e) {
-      log.error(this, e);
       throw new UserException(e);
     }
   }
 
-  private void validateDbConnection() throws Exception {
-    if (entityDb == null)
-      connectServer();
-
-    if (!entityDb.isConnectionValid()) {
-      //db unreachable
-      //try to reconnect once in case db has become reachable
-      entityDb = null;
-      connectServer();
-    }
+  private void connectServer() throws ClassNotFoundException, AuthenticationException {
+    log.debug("Initializing connection for " + user);
+    entityDb = new EntityDbConnection(user, EntityRepository.get(), FrameworkSettings.get());
+    evtConnected.fire();
   }
 }

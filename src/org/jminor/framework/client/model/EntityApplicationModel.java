@@ -33,20 +33,12 @@ public abstract class EntityApplicationModel {
 
   public EntityApplicationModel(final IEntityDbProvider dbProvider) throws UserException {
     this.dbProvider = dbProvider;
-    try {
-      loadDbModel();
-      mainApplicationModels = initMainApplicationModels();
+    loadDbModel();
+    mainApplicationModels = initMainApplicationModels();
 
-      applicationTreeModel = createApplicationTree(mainApplicationModels);
-      bindEvents();
-      entityApplicationModel = this;
-    }
-    catch (UserException ue) {
-      throw ue;
-    }
-    catch (Exception ue) {
-      throw new UserException(ue);
-    }
+    applicationTreeModel = createApplicationTree(mainApplicationModels);
+    bindEvents();
+    entityApplicationModel = this;
   }
 
   /**
@@ -181,7 +173,13 @@ public abstract class EntityApplicationModel {
 
       throw new UserException(e.getTargetException());
     }
-    catch (Exception e) {
+    catch (NoSuchMethodException e) {
+      throw new UserException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new UserException(e);
+    }
+    catch (InstantiationException e) {
       throw new UserException(e);
     }
   }

@@ -74,31 +74,25 @@ public abstract class AbstractSearchPanel extends JPanel {
   private final boolean includeToggleSearchAdvancedBtn;
 
   public AbstractSearchPanel(final AbstractSearchModel model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-    try {
-      this.model = model;
-      this.includeToggleSearchEnabledBtn = includeActivateBtn;
-      this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
-      this.upperBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
-      this.lowerBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
-      this.searchTypeCombo = initSearchTypeComboBox();
-      this.upperField = getInputField(true);
-      this.lowerField = isLowerFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
+    this.model = model;
+    this.includeToggleSearchEnabledBtn = includeActivateBtn;
+    this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
+    this.upperBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
+    this.lowerBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
+    this.searchTypeCombo = initSearchTypeComboBox();
+    this.upperField = getInputField(true);
+    this.lowerField = isLowerFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
 
-      this.toggleSearchEnabled = ControlProvider.createToggleButton(
-              ControlFactory.toggleControl(model, "searchEnabled", null, model.getSearchStateChangedEvent()));
-      toggleSearchEnabled.setIcon(Images.loadImage("Filter16.gif"));
-      this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-              ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.evtStateChanged));
-      toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
-      linkComponentsToLockState();
-      initUI();
-      initializePanel();
-      bindEvents();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e.getMessage());
-    }
+    this.toggleSearchEnabled = ControlProvider.createToggleButton(
+            ControlFactory.toggleControl(model, "searchEnabled", null, model.getSearchStateChangedEvent()));
+    toggleSearchEnabled.setIcon(Images.loadImage("Filter16.gif"));
+    this.toggleSearchAdvanced = ControlProvider.createToggleButton(
+            ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.evtStateChanged));
+    toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
+    linkComponentsToLockState();
+    initUI();
+    initializePanel();
+    bindEvents();
   }
 
   /**

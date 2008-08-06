@@ -403,9 +403,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     catch (UserException ux) {
       throw ux.getRuntimeException();
     }
-    catch (Exception ex) {
-      throw new RuntimeException(ex);
-    }
   }
 
   /**
@@ -430,27 +427,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
 
     for (final EntityPanel.EntityPanelInfo info : entityPanels) {
-      try {
-        final EntityModel entityModel = model.getMainApplicationModel(info.getEntityModelClass());
-        final EntityPanel entityPanel = info.getInstance(entityModel);
-        mainApplicationPanels.add(entityPanel);
-        if (entityPanels.size() > 1) {
-          final String caption = (info.getCaption() == null || info.getCaption().length() == 0)
-                  ? entityModel.getCaption() : info.getCaption();
-          applicationTabPane.addTab(caption, entityPanel);
-        }
-      }
-      catch (RuntimeException e) {
-        throw e;
-      }
-      catch (Exception e) {
-        if (e instanceof UserException)
-          throw (UserException) e;
-        else if (e.getCause() instanceof UserException)
-          throw (UserException) e.getCause();
-
-        e.printStackTrace();
-        throw new UserException(e);
+      final EntityModel entityModel = model.getMainApplicationModel(info.getEntityModelClass());
+      final EntityPanel entityPanel = info.getInstance(entityModel);
+      mainApplicationPanels.add(entityPanel);
+      if (entityPanels.size() > 1) {
+        final String caption = (info.getCaption() == null || info.getCaption().length() == 0)
+                ? entityModel.getCaption() : info.getCaption();
+        applicationTabPane.addTab(caption, entityPanel);
       }
     }
     if (mainApplicationPanels.size() == 1)
@@ -520,10 +503,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
         retry = false;//successful startup
       }
+      catch (UserCancelException uce) {
+        System.exit(0);
+      }
       catch (Exception ue) {
-        if (ue instanceof UserCancelException)
-          System.exit(0);
-
         if (initializationDialog != null)
           initializationDialog.dispose();
 
@@ -561,9 +544,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
     final Properties properties =
-                getModel().getDbConnectionProvider().getEntityDb().getUser().getProperties();
+            getModel().getDbConnectionProvider().getEntityDb().getUser().getProperties();
     return frameCaption + " - " + getUserInfo(user,
-                properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
+            properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
   }
 
   protected JPanel getInitProgressPane(final Icon icon) {
@@ -668,14 +651,21 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   private static EntityApplicationPanel constructApplicationPanel(
           final Class<? extends EntityApplicationPanel> applicationPanelClass) throws UserException {
     try {
-      try {
-        return applicationPanelClass.getConstructor().newInstance();
-      }
-      catch (InvocationTargetException te) {
-        throw (Exception) te.getTargetException();
-      }
+      return applicationPanelClass.getConstructor().newInstance();
     }
-    catch (Exception e) {
+    catch (InvocationTargetException te) {
+      if (te.getTargetException() instanceof UserException)
+        throw (UserException) te.getTargetException();
+
+      throw new UserException(te.getTargetException());
+    }
+    catch (NoSuchMethodException e) {
+      throw new UserException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new UserException(e);
+    }
+    catch (InstantiationException e) {
       throw new UserException(e);
     }
   }
@@ -684,15 +674,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
           final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserException {
     try {
       return applicationModelClass.getConstructor(User.class).newInstance(user);
-    }
-    catch (NoSuchMethodException ix) {
-      throw new RuntimeException(ix);
-    }
-    catch (InstantiationException ix) {
-      throw new RuntimeException(ix);
-    }
-    catch (IllegalAccessException ix) {
-      throw new RuntimeException(ix);
     }
     catch (InvocationTargetException te) {
       final Throwable target = te.getTargetException();
@@ -703,10 +684,19 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       else
         throw new UserException(target);
     }
+    catch (NoSuchMethodException e) {
+      throw new UserException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new UserException(e);
+    }
+    catch (InstantiationException e) {
+      throw new UserException(e);
+    }
   }
 
   private static JDialog showInitializationDialog(final Frame owner, final EntityApplicationPanel panel,
-                                                    final Icon icon, final String msg) {
+                                                  final Icon icon, final String msg) {
     final String message = msg == null ? "Initializing Application" : msg;
     final JDialog initDlg = new JDialog(owner, message, false);
     initDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

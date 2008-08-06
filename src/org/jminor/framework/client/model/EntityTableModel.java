@@ -541,10 +541,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       addEntities(getAllEntitiesFromDb(getSearchCriteria()), false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
-    catch (UserException ue) {
-      throw ue;
-    }
-    catch (Exception e) {
+    catch (DbException e) {
       throw new UserException(e);
     }
     finally {
@@ -1129,9 +1126,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private void refreshRecordCount() throws UserException {
     try {
       recordCount = getEntityDb().selectRowCount(new EntityCriteria(getEntityID()));
-    }
-    catch (UserException ue) {
-      throw ue;
     }
     catch (Exception e) {
       throw new UserException(e);

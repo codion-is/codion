@@ -195,3 +195,4 @@
   EntityPanel.setupControls() now uses the setControl() method
   Control improved error reporting
   Util.formatLat/Lon improved
+  Removed > 40 instances of generic Exception catch clauses

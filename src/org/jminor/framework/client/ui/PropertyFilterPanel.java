@@ -238,12 +238,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
             else
               model.setLowerBound(useLongDate ? new Timestamp(val.getTime()) : val);
           }
-          catch (Exception ex) {
-            if (ex instanceof UserCancelException)
-              return;
-
-            throw new RuntimeException(ex);
-          }
+          catch (UserCancelException uce) {/**/}
         }
       }
     });
@@ -270,7 +265,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
           model.setLowerBound((Comparable) null);
       }
     }
-    catch (Exception ex) {
+    catch (ParseException ex) {
       throw new RuntimeException(ex);
     }
   }

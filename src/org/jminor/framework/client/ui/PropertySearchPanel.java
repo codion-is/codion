@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
@@ -57,9 +58,9 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       this.dbProvider = dbProvider;
       bindEvents();
     }
-    catch (Exception e) {
+    catch (UserException e) {
       e.printStackTrace();
-      throw new RuntimeException(e.getMessage());
+      throw e.getRuntimeException();
     }
   }
 

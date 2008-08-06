@@ -1018,12 +1018,6 @@ public class EntityModel implements IRefreshable {
 
       updateDetailModelsByActiveEntity();
     }
-    catch(UserException ue) {
-      throw ue;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
@@ -1537,7 +1531,7 @@ public class EntityModel implements IRefreshable {
         catch (UserException ue) {
           throw ue.getRuntimeException();
         }
-        catch (Exception ex) {
+        catch (DbException ex) {
           throw new RuntimeException(ex);
         }
       }
