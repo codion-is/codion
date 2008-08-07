@@ -500,6 +500,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
         log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
+        Util.putUserPreference(Util.PREF_DEFAULT_USERNAME, user.getUsername());
         retry = false;//successful startup
       }
       catch (UserCancelException uce) {

@@ -3,6 +3,8 @@
  */
 package org.jminor.framework;
 
+import org.jminor.common.model.Util;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import java.io.Serializable;
@@ -197,7 +199,8 @@ public class FrameworkSettings implements Serializable {
    * @return Value for property 'defaultUsername'.
    */
   public static String getDefaultUsername() {
-    return System.getProperty(FrameworkConstants.DEFAULT_USERNAME_PROPERTY,
-            get().getProperty(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
+    final String preferredUserName = Util.getUserPreference(Util.PREF_DEFAULT_USERNAME,
+            instance.getProperty(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
+    return System.getProperty(FrameworkConstants.DEFAULT_USERNAME_PROPERTY, preferredUserName);
   }
 }

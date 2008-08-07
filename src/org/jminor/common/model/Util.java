@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
 
 /**
  * A static utility class
@@ -46,7 +47,10 @@ public class Util {
   public static final String LOGGING_LEVEL_FATAL = "fatal";
   public static final String LOGGING_LEVEL_TRACE = "trace";
 
+  public static final String PREF_DEFAULT_USERNAME = "jminor.default.username";
+
   private static Level defaultLoggingLevel;
+  private static final Preferences USER_PREFERENCES = Preferences.userRoot();
 
   static {
     final String loggingLevel = System.getProperty(LOGGING_LEVEL_PROPERTY, LOGGING_LEVEL_INFO);
@@ -64,6 +68,14 @@ public class Util {
   }
 
   private static final ArrayList<Logger> loggers = new ArrayList<Logger>();
+
+  public static String getUserPreference(final String key, final String defaultValue) {
+    return USER_PREFERENCES.get(key, defaultValue);
+  }
+
+  public static void putUserPreference(final String key, final String value) {
+    USER_PREFERENCES.put(key, value);
+  }
 
   public static String formatLatitude(final String latitude) {
     if (latitude == null || latitude.length() == 0)
