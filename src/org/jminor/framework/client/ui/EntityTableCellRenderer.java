@@ -70,7 +70,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
           break;
         case DOUBLE:
         case INT:
-          renderer = new NumberRenderer();
+          renderer = new NumberRenderer(true);
           break;
         case SHORT_DATE:
           renderer = new ShortDateRenderer();
@@ -92,10 +92,12 @@ public class EntityTableCellRenderer implements TableCellRenderer {
    */
   public static class NumberRenderer extends DefaultTableCellRenderer {
     private final NumberFormat formatter;
+    private final boolean formatValue;
 
-    public NumberRenderer() {
+    public NumberRenderer(final boolean formatValue) {
       super();
       formatter = NumberFormat.getInstance();
+      this.formatValue = formatValue;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
@@ -103,7 +105,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       if (value instanceof String)
         setText((String) value);
       else
-        setText((value == null) ? "" : formatter.format(value));
+        setText((value == null) ? "" : (formatValue ? formatter.format(value) : value.toString()));
     }
   }
 
@@ -118,6 +120,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       String txt = "";
       if (value != null && value instanceof Date)
         txt = ShortDashDateFormat.get().format(value);
+      else if (value instanceof String)
+        txt = (String) value;
 
       setText(txt);
     }
@@ -135,6 +139,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       String txt = "";
       if (value != null && value instanceof Date)
         txt = LongDateFormat.get().format(value);
+      else if (value instanceof String)
+        txt = (String) value;
 
       setText(txt);
     }

@@ -119,6 +119,10 @@ public class EntityTablePanel extends JPanel {
     return entityTable;
   }
 
+  public void setTableCellRenderer(final String propertyID, final TableCellRenderer renderer) {
+    entityTable.getColumn(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
+  }
+
   /**
    * @param action Value to set for property 'doubleClickAction'.
    */

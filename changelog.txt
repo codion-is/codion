@@ -196,3 +196,4 @@
   Control improved error reporting
   Util.formatLat/Lon improved
   Removed > 40 instances of generic Exception catch clauses
+  EntityTableCellRenderer date renderers now accept String values as input

@@ -45,7 +45,6 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -370,8 +369,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /**
    * @return Value for property 'additionalMenuControlSet'.
    */
-  protected ControlSet[] getAdditionalMenuControlSet() {
-    return new ControlSet[0];
+  protected List<ControlSet> getAdditionalMenuControlSet() {
+    return new ArrayList<ControlSet>();
   }
 
   /**
@@ -632,9 +631,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final ControlSet supportModelcontrolSet = getSupportModelControlSet();
     if (supportModelcontrolSet != null)
       menuControlSets.add(supportModelcontrolSet);
-    final ControlSet[] additionalMenus = getAdditionalMenuControlSet();
-    if (additionalMenus != null && additionalMenus.length > 0)
-      menuControlSets.addAll(Arrays.asList(additionalMenus));
+    final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
+    if (additionalMenus != null && additionalMenus.size() > 0)
+      menuControlSets.addAll(additionalMenus);
 
     menuControlSets.add(getHelpControlSet());
 
