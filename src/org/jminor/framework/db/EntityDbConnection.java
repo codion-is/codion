@@ -182,7 +182,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public List<Entity> update(final List<Entity> entities) throws DbException {
     if (entities.size() == 0)
-      throw new DbException("Empty update batch!");
+      return entities;
 
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {

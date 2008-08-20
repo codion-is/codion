@@ -24,6 +24,16 @@ public class EntityUtil {
 
   private EntityUtil() {}
 
+  public static List<Entity> getModifiedEntities(final List<Entity> entities) {
+    final List<Entity> ret = new ArrayList<Entity>();
+    for (final Entity entity : entities) {
+      if (entity.isModified())
+        ret.add(entity);
+    }
+
+    return ret;
+  }
+
   public static String getQueryConditionString(final EntityKey key, final List<String> columnNames) {
     final StringBuffer ret = new StringBuffer("(");
     int i = 0;

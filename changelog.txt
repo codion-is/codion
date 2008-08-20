@@ -202,3 +202,5 @@
   EntityApplicationPanel sets the last successfull login name as the default username for the currently logged on OS user
   FrameworkSettings.getDefaultUser() now returns the username found in the OS users preferences, if any
   Added preferences editing permission to jminor_client.policy
+  EntityUtil.getModifiedEntities() added
+  EntityDbConnection.update() does not throw an exception any more if it recieves an empty list
