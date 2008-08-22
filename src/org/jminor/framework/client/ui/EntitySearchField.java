@@ -109,6 +109,7 @@ public class EntitySearchField extends TextFieldPlus {
       }
     });
     addSettingsPopupMenu();
+    handleChange();
   }
 
   public void setSelectedEntity(final Entity entity) {
@@ -237,7 +238,7 @@ public class EntitySearchField extends TextFieldPlus {
 
   private void handleChange() {
     final String selectedAsString = selectedEntity == null ? null : selectedEntity.toString();
-    if (selectedAsString != null && !selectedAsString.equals(getText()))
+    if (selectedEntity == null || (selectedAsString != null && !selectedAsString.equals(getText())))
       setBackground(Color.LIGHT_GRAY);
     else
       setBackground(Color.WHITE);

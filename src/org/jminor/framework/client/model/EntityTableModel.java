@@ -201,7 +201,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public EntityTableModel(final IEntityDbProvider dbProvider, final String entityID) {
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
-    this.tableColumnProperties = initColumnProperties();
+    this.tableColumnProperties = initializeColumnProperties();
     this.tableSearchModel = initSearchModel();
     this.tableSorter = new TableSorter(this);
     this.queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE)
@@ -1050,7 +1050,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return a list of Properties that should be used as basis for this table models column model
    */
-  protected List<Property> initColumnProperties() {
+  protected List<Property> initializeColumnProperties() {
     final Collection<Property> properties = EntityRepository.get().getVisibleProperties(getEntityID());
 
     return Arrays.asList(properties.toArray(new Property[properties.size()]));

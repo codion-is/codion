@@ -94,7 +94,7 @@ public class Util {
     final boolean minus = longitude.startsWith("-");
     String padded = padString(longitude.replaceAll("-", ""), 6, '0');
 
-    return padded.substring(0, 2) + '\'' + padded.substring(2, 4) + ',' + padded.substring(4, 6) + (minus ? 'E' : 'W');
+    return padded.substring(0, 2) + '\'' + padded.substring(2, 4) + ',' + padded.substring(4, 6) + (minus ? 'W' : 'E');
   }
 
   public static String padString(final String orig, int length, char padChar) {

@@ -402,7 +402,7 @@ public class FrameworkUiUtil {
 
     final EntitySearchField searchField = new EntitySearchField(model.getDbConnectionProvider(), searchEntityID,
             additionalSearchCriteria, searchPropertyIDs);
-    searchField.setBorder(BorderFactory.createLoweredBevelBorder());
+    searchField.setBorder(BorderFactory.createEtchedBorder());
     new SearchFieldPropertyLink(model, property.propertyID, searchField);
     setPropertyToolTip(property, searchField);
 
