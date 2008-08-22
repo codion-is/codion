@@ -82,7 +82,7 @@ public class Util {
       return "";
 
     final boolean minus = latitude.startsWith("-");
-    String padded = padString(latitude.replaceAll("-", ""), 6, '0');
+    String padded = padString(latitude.replaceAll("-", ""), 6, '0', false);
 
     return padded.substring(0, 2) + '\'' + padded.substring(2, 4) + ',' + padded.substring(4, 6) + (minus ? 'S' : 'N');
   }
@@ -92,18 +92,23 @@ public class Util {
       return "";
 
     final boolean minus = longitude.startsWith("-");
-    String padded = padString(longitude.replaceAll("-", ""), 6, '0');
+    String padded = padString(longitude.replaceAll("-", ""), 6, '0', false);
 
     return padded.substring(0, 2) + '\'' + padded.substring(2, 4) + ',' + padded.substring(4, 6) + (minus ? 'W' : 'E');
   }
 
-  public static String padString(final String orig, int length, char padChar) {
+  public static String padString(final String orig, final int length,
+                                 final char padChar, final boolean atFront) {
     if (orig.length() == length)
       return orig;
 
     final StringBuffer ret = new StringBuffer(orig);
-    while (ret.length() < length)
-      ret.append(padChar);
+    while (ret.length() < length) {
+      if (atFront)
+        ret.insert(0, padChar);
+      else
+        ret.append(padChar);
+    }
 
     return ret.toString();
   }
@@ -146,6 +151,7 @@ public class Util {
       value = -1;
     else
       value = 0;
+
     return value;
   }
 
@@ -172,6 +178,7 @@ public class Util {
       value = -1;
     else
       value = 0;
+
     return value;
   }
 
