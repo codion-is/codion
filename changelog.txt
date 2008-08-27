@@ -204,3 +204,6 @@
   Added preferences editing permission to jminor_client.policy
   EntityUtil.getModifiedEntities() added
   EntityDbConnection.update() does not throw an exception any more if it recieves an empty list
+  DbConnection.queryObjects() added
+  TestDbConnection added
+  IEntityDb/EntityDbConnection.selectRows() added

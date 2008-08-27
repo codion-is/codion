@@ -261,6 +261,21 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     try {
       loggingEntityDbProxy.executeStatement(statement);
     }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  public List<List> selectRows(final String statement, final int recordCount) throws Exception {
+    try {
+      return loggingEntityDbProxy.selectRows(statement, recordCount);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
     }

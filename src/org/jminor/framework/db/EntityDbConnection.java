@@ -422,6 +422,16 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
+  public List<List> selectRows(final String statement, final int recordCount) throws Exception {
+    try {
+      return queryObjects(statement, recordCount);
+    }
+    catch (SQLException e) {
+      throw new DbException(e, statement);
+    }
+  }
+
+  /** {@inheritDoc} */
   public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception {
     return JasperFillManager.fillReport(report, reportParams, getConnection());
   }

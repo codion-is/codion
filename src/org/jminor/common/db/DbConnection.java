@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -281,6 +282,18 @@ public class DbConnection {
   }
 
   /**
+   *
+   * @param sql the query
+   * @param recordCount the maximum number of records to return, -1 for all
+   * @return the result of this query, in a List of rows represented as Lists
+   * @throws SQLException thrown if anything goes wrong during the query execution
+   */
+  @SuppressWarnings({"unchecked"})
+  public final List<List> queryObjects(final String sql, final int recordCount) throws SQLException {
+    return (List<List>) query(sql, new MixedResultPacker(), recordCount);
+  }
+
+  /**
    * Performs a commit
    * @throws SQLException thrown if anything goes wrong during the execution
    */
@@ -418,6 +431,22 @@ public class DbConnection {
       cachedPerSecondCounter = 0;
       requestsPerSecondCounter = 0;
       requestsPerSecondTime = current;
+    }
+  }
+
+  private static class MixedResultPacker implements IResultPacker<List> {
+    public List<List> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+      final List<List> ret = new ArrayList<List>();
+      final int columnCount = resultSet.getMetaData().getColumnCount();
+      int counter = 0;
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+        final List<Object> row = new ArrayList<Object>(columnCount);
+        for (int index = 1; index <= columnCount; index++)
+          row.add(resultSet.getObject(index));
+        ret.add(row);
+      }
+
+      return ret;
     }
   }
 }

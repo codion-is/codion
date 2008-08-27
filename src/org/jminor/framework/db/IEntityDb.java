@@ -260,4 +260,14 @@ public interface IEntityDb{
    * @throws Exception in case of exception
    */
   public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception;
+
+  /**
+   * Executes the given statement and returns the result in a List of rows, where each row
+   * is represented by a List of Objects
+   * @param statement the sql statement to execute
+   * @param recordCount the maximum number of records to retrieve, -1 for all
+   * @return a List of rows represented by a List of Objects
+   * @throws Exception in case of an exception
+   */
+  public List<List> selectRows(final String statement, final int recordCount) throws Exception;
 }

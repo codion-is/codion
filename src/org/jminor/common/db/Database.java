@@ -81,7 +81,7 @@ public class Database {
   /**
    * The driver class name used for connections to a embedded Derby database
    */
-  public static final String DERBY_EMBEDDED_DRIVER = "org.apache.derby.jdbc.ClientDriver";
+  public static final String DERBY_EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 
   /**
    * Specifies the database type
@@ -90,16 +90,18 @@ public class Database {
    * @see Database#DATABASE_TYPE_POSTGRESQL
    * @see Database#DATABASE_TYPE_SQL_SERVER
    * @see Database#DATABASE_TYPE_DERBY
+   * @see Database#DATABASE_TYPE_EMBEDDED_DERBY
    */
   public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
 
   /**
-   * Specifies the machine hosting the database
+   * Specifies the machine hosting the database, in the case of embedded Derby databases
+   * this specifies the name of the database
    */
   public static final String DATABASE_HOST_PROPERTY = "jminor.db.host";
 
   /**
-   * Specifies the datbase sid (used for initial for MySQL connections)
+   * Specifies the datbase sid (used for dbname for MySQL connections)
    */
   public static final String DATABASE_SID_PROPERTY = "jminor.db.sid";
 
