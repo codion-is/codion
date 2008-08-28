@@ -21,6 +21,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
+import org.jminor.framework.model.EntityProxy;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
@@ -452,7 +453,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getEntityAtViewIndex(row);
 
-    return EntityRepository.get().getEntityProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return EntityProxy.getEntityProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
   /**

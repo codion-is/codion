@@ -11,10 +11,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
-* User: Björn Darri
-* Date: 7.12.2007
-* Time: 12:07:44
-*/
+ * A class encapsulating a simple collection of db access log entries and basic connection access info
+ * User: Björn Darri
+ * Date: 7.12.2007
+ * Time: 12:07:44
+ */
 public class DbLog implements Serializable {
 
   public final Date logCreationDate = new Date();

@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A set of ICriteria objects
+ * A class encapsulating a set of ICriteria objects, that should be either AND'ed
+ * or OR'ed together in a query context
  */
 public class CriteriaSet implements ICriteria {
 

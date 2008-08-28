@@ -42,9 +42,6 @@ public class EntityRepository implements Serializable {
   private transient Map<String, String> entitySelectStrings;
   private transient Map<String, String[]> primaryKeyColumnNames;
 
-  private transient HashMap<String, EntityProxy> entityProxies;
-  private transient EntityProxy defaultEntityProxy = new EntityProxy();
-
   private static EntityRepository instance;
 
   private EntityRepository() {}
@@ -80,13 +77,6 @@ public class EntityRepository implements Serializable {
     return properties.keySet().toArray(new String[properties.keySet().size()]);
   }
 
-  /**
-   * @param object Value to set for property 'defaultEntityProxy'.
-   */
-  public void setDefaultEntityProxy(final EntityProxy object) {
-    defaultEntityProxy = object;
-  }
-
   public void setPropertyDescription(final String propertyID, final String description) {
     propertyDescriptions.put(propertyID, description);
   }
@@ -97,20 +87,6 @@ public class EntityRepository implements Serializable {
 
   public String getPropertyDescription(final String propertyID) {
     return propertyDescriptions.get(propertyID);
-  }
-
-  public void addEntityProxy(final String entityID, final EntityProxy entityProxy) {
-    if (this.entityProxies == null)
-      this.entityProxies = new HashMap<String, EntityProxy>();
-
-    this.entityProxies.put(entityID, entityProxy);
-  }
-
-  public EntityProxy getEntityProxy(final String entityID) {
-    if (entityProxies != null && entityProxies.containsKey(entityID))
-      return entityProxies.get(entityID);
-
-    return defaultEntityProxy;
   }
 
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(

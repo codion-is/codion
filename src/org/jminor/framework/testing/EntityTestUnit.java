@@ -167,6 +167,13 @@ public abstract class EntityTestUnit extends TestCase {
     }
   }
 
+  /**
+   * Initializes the given entity, that is, performes an insert on it in case it doesn't
+   * already exist in the database, returns the same entity
+   * @param entity the entity to initialize
+   * @return the entity
+   * @throws Exception in case of an exception
+   */
   protected Entity initialize(final Entity entity) throws Exception {
     final List<Entity> entities = db.selectMany(Arrays.asList(entity.getPrimaryKey()));
     if (entities.size() > 0)
@@ -175,12 +182,33 @@ public abstract class EntityTestUnit extends TestCase {
     return db.selectSingle(db.insert(Arrays.asList(entity)).get(0));
   }
 
+  /**
+   * This method should load the domain model, for example by instantiating the domain model
+   * class or simply loading it by name
+   */
   protected abstract void loadDomainModel();
 
+  /**
+   * This method should return an instance of the entity specified by <code>entityID</code>
+   * @param entityID the entityID for which to initialize an entity instance
+   * @return an entity
+   */
   protected abstract Entity initializeTestEntity(final String entityID);
 
+  /**
+   * This method should return <code>testEntity</code> in a modified state
+   * @param testEntity the entity to modify
+   */
   protected abstract void modifyEntity(final Entity testEntity);
 
+  /**
+   * This method should return a Map containing initialized (via this.initialize) instances of entities
+   * specified by the entityIDs found in the <code>entityIDs</code> Collection, mapped to their
+   * respective enitityIDs
+   * @param entityIDs the entityIDs for which to initialize entities
+   * @return a Map of initialized entities
+   * @throws Exception in case of an exception
+   */
   protected abstract Map<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception;
 
   private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {

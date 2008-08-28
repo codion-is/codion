@@ -4,6 +4,7 @@
 package org.jminor.common.db;
 
 /**
+ * A enum representing the possible ways of auto incrementing a ID value
  * User: Björn Darri
  * Date: 12.1.2008
  * Time: 20:42:34

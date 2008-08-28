@@ -18,6 +18,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * A ComboBoxModel implementation that allows filtering via IFilterCriteria objects
+ * @see org.jminor.common.model.IFilterCriteria
+ * @see #setFilterCriteria(org.jminor.common.model.IFilterCriteria)
+ */
 public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
 
   public final Event evtSelectionChanged = new Event("FilteredComboBoxModel.evtSelectionChanged");
@@ -80,7 +85,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   }
 
   /**
-   * @param contents Value to set for property 'contents'.
+   * Resets the contents of this model using the values found in <code>contents</code>
+   * @param contents the contents to be used by this model
    */
   public final void setContents(final Collection contents) {
     filteredItems.clear();
@@ -130,21 +136,22 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   }
 
   /**
-   * @return Value for property 'firstNullValue'.
+   * @return true if the first item represents a null value, false otherwise
    */
   public boolean isFirstNullValue() {
     return nullValueItem != null;
   }
 
   /**
-   * @return Value for property 'nullValueItem'.
+   * @return the Object representing the null value, null if none has been specified
    */
   public Object getNullValueItem() {
     return nullValueItem;
   }
 
   /**
-   * @return Value for property 'nullValueSelected'.
+   * @return true if the value representing null is selected, false if none has been specified
+   * or it is not selected
    */
   public boolean isNullValueSelected() {
     return selectedItem != null && nullValueItem != null && selectedItem.equals(nullValueItem);

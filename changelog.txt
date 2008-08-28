@@ -207,3 +207,6 @@
   DbConnection.queryObjects() added
   TestDbConnection added
   IEntityDb/EntityDbConnection.selectRows() added
+  Fixed a bug in Entity, where the toString cache was not cleared on property change
+  Moved EntityProxy handling from EntityRepository to static EntityProxy methods, to remove a circular class dependecy
+  Added some javadocs

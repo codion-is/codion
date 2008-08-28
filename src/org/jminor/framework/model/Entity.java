@@ -204,7 +204,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedValue((Property.DenormalizedViewProperty) property);
 
-    return repository.getEntityProxy(primaryKey.entityID).getValue(this, property);
+    return EntityProxy.getEntityProxy(primaryKey.entityID).getValue(this, property);
   }
 
   public Object getValue(final String propertyID) {
@@ -240,12 +240,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public final String getValueAsString(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getValueAsString(this,
+    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsString(this,
             repository.getProperty(primaryKey.entityID, propertyID));
   }
 
   public final String getValueAsUserString(final String propertyID) {
-    return repository.getEntityProxy(primaryKey.entityID).getValueAsUserString(this,
+    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsUserString(this,
             repository.getProperty(primaryKey.entityID, propertyID));
   }
 
@@ -257,7 +257,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedValue((Property.DenormalizedViewProperty) property);
 
-    return repository.getEntityProxy(primaryKey.entityID).getTableValue(this, property);
+    return EntityProxy.getEntityProxy(primaryKey.entityID).getTableValue(this, property);
   }
 
   public final String getDateStringValue(final String propertyID, final DateFormat dateFormat) {
@@ -355,7 +355,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return the compare result from comparing <code>entity</code> with this Entity instance
    */
   public int compareTo(final Entity entity) {
-    return repository.getEntityProxy(getEntityID()).compareTo(this, entity);
+    return EntityProxy.getEntityProxy(getEntityID()).compareTo(this, entity);
   }
 
   /**
@@ -370,7 +370,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public final String toString() {
     if (toString == null)
-      toString = repository.getEntityProxy(getEntityID()).toString(this);
+      toString = EntityProxy.getEntityProxy(getEntityID()).toString(this);
 
     return toString;
   }
@@ -532,6 +532,9 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
     if (newValue != null && newValue instanceof Entity && newValue.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
+
+    //invalidate the toString cache
+    toString = null;
 
     if (propagateReferenceValues && property instanceof Property.EntityProperty && (newValue == null || newValue instanceof Entity))
       propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);

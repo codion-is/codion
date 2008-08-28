@@ -4,14 +4,37 @@
 package org.jminor.framework.model;
 
 import java.awt.Color;
+import java.util.HashMap;
 
 /**
  * Acts as a proxy for retrieving values from Entity objects, allowing for plugged
- * in entity specific functionality
- * @see EntityRepository#setDefaultEntityProxy
- * @see EntityRepository#addEntityProxy
+ * in entity specific functionality, such as providing toString() implementations
  */
 public class EntityProxy {
+
+  private static HashMap<String, EntityProxy> entityProxies;
+  private static EntityProxy defaultEntityProxy = new EntityProxy();
+
+  /**
+   * @param proxy sets the default EntityProxy instance used if no entity specific one is specified
+   */
+  public static void setDefaultEntityProxy(final EntityProxy proxy) {
+    defaultEntityProxy = proxy;
+  }
+
+  public static void addEntityProxy(final String entityID, final EntityProxy entityProxy) {
+    if (entityProxies == null)
+      entityProxies = new HashMap<String, EntityProxy>();
+
+    entityProxies.put(entityID, entityProxy);
+  }
+
+  public static EntityProxy getEntityProxy(final String entityID) {
+    if (entityProxies != null && entityProxies.containsKey(entityID))
+      return entityProxies.get(entityID);
+
+    return defaultEntityProxy;
+  }
 
   public Object getValue(final Entity entity, final Property property) {
     final String propertyID = property.propertyID;

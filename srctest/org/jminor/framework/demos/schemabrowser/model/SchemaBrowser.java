@@ -86,7 +86,7 @@ public class SchemaBrowser {
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Type.STRING, "Column name"),
             new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"));
 
-    EntityRepository.get().setDefaultEntityProxy(new EntityProxy() {
+    EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
         if (entity.getEntityID().equals(T_COLUMN))
           return entity.getValueAsString(COLUMN_TABLE_REF) + "." + entity.getStringValue(COLUMN_NAME);

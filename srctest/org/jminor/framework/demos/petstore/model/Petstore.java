@@ -145,7 +145,7 @@ public class Petstore {
             new Property(ZIP_LOCATION_CITY, Type.STRING, "City"),
             new Property(ZIP_LOCATION_STATE, Type.STRING, "State"));
 
-    EntityRepository.get().setDefaultEntityProxy(new EntityProxy() {
+    EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
         if (entity.getEntityID().equals(T_ADDRESS))
           return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)
