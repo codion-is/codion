@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
+import org.jminor.common.db.ICriteria;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.ModelTestDomain;
 
@@ -164,10 +165,10 @@ public class TestEntityTableModel extends TestCase {
 
     public synchronized void refresh() throws UserException {
       removeAll();
-      addEntities(getAllEntitiesFromDb(), false);
+      addEntities(getAllEntitiesFromDb(null), false);
     }
 
-    protected List<Entity> getAllEntitiesFromDb() {
+    protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) {
       return Arrays.asList(testEntities);
     }
 

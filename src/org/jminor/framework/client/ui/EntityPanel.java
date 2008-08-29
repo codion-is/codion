@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.DbException;
+import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.State;
@@ -901,7 +902,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final EntityModel model = new EntityModel(entityID, dbProvider, entityID) {
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(dbProvider, entityID) {
-          protected List<Entity> getAllEntitiesFromDb() throws DbException, UserException {
+          protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) throws DbException, UserException {
             return entities;
           }
           public boolean isQueryRangeEnabled() {

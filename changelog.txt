@@ -210,3 +210,4 @@
   Fixed a bug in Entity, where the toString cache was not cleared on property change
   Moved EntityProxy handling from EntityRepository to static EntityProxy methods, to remove a circular class dependecy
   Added some javadocs
+  Fixed a bug in EntityPanel.createStaticEntityPanel() where getAllEntitiesFromDb() was not being overridden due to changes in signature

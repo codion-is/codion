@@ -193,7 +193,7 @@
   </target>
 
   <target name="run_tests" depends="build">
-    <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes" >
+    <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
       <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
       <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
