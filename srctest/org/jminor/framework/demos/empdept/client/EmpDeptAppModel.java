@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.client;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -19,17 +18,13 @@ public class EmpDeptAppModel extends EntityApplicationModel {
     super(dbProvider);
   }
 
-  public EmpDeptAppModel (final User user) throws UserException {
-    super(user, EmpDeptAppModel.class.getSimpleName());
-  }
-
   /** {@inheritDoc} */
   protected List<Class<? extends EntityModel>> getRootEntityModelClasses() throws UserException {
     return EntityModel.asList(DepartmentModel.class);
   }
 
   /** {@inheritDoc} */
-  protected void loadDbModel() {
+  protected void loadDomainModel() {
     new EmpDept();
   }
 }

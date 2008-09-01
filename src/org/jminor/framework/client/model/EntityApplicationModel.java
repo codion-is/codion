@@ -33,7 +33,7 @@ public abstract class EntityApplicationModel {
 
   public EntityApplicationModel(final IEntityDbProvider dbProvider) throws UserException {
     this.dbProvider = dbProvider;
-    loadDbModel();
+    loadDomainModel();
     mainApplicationModels = initMainApplicationModels();
 
     applicationTreeModel = createApplicationTree(mainApplicationModels);
@@ -147,7 +147,7 @@ public abstract class EntityApplicationModel {
     return null;
   }
 
-  protected abstract void loadDbModel();
+  protected abstract void loadDomainModel();
 
   /**
    * @return Value for property 'rootEntityModelClasses'.

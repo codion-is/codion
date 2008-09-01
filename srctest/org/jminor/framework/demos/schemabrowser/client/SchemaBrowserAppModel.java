@@ -29,7 +29,7 @@ public class SchemaBrowserAppModel extends EntityApplicationModel {
   }
 
   /** {@inheritDoc} */
-  protected void loadDbModel() {
+  protected void loadDomainModel() {
     new SchemaBrowser();
   }
 }

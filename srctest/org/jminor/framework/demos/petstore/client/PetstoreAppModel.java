@@ -34,7 +34,7 @@ public class PetstoreAppModel extends EntityApplicationModel {
   }
 
   /** {@inheritDoc} */
-  protected void loadDbModel() {
+  protected void loadDomainModel() {
     new Petstore();
   }
 }
