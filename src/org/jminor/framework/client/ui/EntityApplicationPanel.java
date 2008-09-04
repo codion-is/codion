@@ -47,7 +47,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.HashMap;
 
 public abstract class EntityApplicationPanel extends JPanel implements IExceptionHandler {
 
@@ -67,9 +69,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   private final Event evtSelectedEntityPanelChanged = new Event("EntityApplicationPanel.evtSelectedEntityPanelChanged");
   private final Event evtAlwaysOnTopChanged = new Event("EntityApplicationPanel.evtAlwaysOnTopChanged");
 
+  private static boolean persistEntityPanels;
+  private static Map<EntityPanel.EntityPanelInfo, EntityPanel> persistentEntityPanels = new HashMap<EntityPanel.EntityPanelInfo, EntityPanel>();
+
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
     initializeSettings();
+    persistEntityPanels = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PERSIST_ENTITY_PANELS);
     ToolTipManager.sharedInstance().setInitialDelay(
             (Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLTIP_DELAY));
   }
@@ -749,8 +755,18 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, owner);
-      final EntityPanel entityPanel = appInfo.getInstance(dbProvider);
-      entityPanel.initialize();
+      EntityPanel entityPanel;
+      if (persistEntityPanels && persistentEntityPanels.containsKey(appInfo)) {
+        entityPanel = persistentEntityPanels.get(appInfo);
+        if (entityPanel.isShowing())
+          return;
+      }
+      else {
+        entityPanel = appInfo.getInstance(dbProvider);
+        entityPanel.initialize();
+        if (persistEntityPanels)
+          persistentEntityPanels.put(appInfo, entityPanel);
+      }
       dialog = new JDialog(UiUtil.getParentWindow(owner), appInfo.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());

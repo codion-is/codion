@@ -175,7 +175,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         minSelectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (isAdjusting || updatingSelection)
+      if (isAdjusting || updatingSelection || isSorting)
         evtSelectionChangedAdjusting.fire();
       else
         evtSelectionChanged.fire();

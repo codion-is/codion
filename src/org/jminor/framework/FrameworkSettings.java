@@ -156,6 +156,15 @@ public class FrameworkSettings implements Serializable {
    */
   public static final String FILTER_QUERY_BY_MASTER = "filter_query_by_master";
 
+  /**
+   * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanel</code> method
+   * should be persisted, or kept in memory, when the dialog is closed.
+   * Value type: Boolean
+   * Default value: false
+   * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanel(org.jminor.framework.client.ui.EntityPanel.EntityPanelInfo)
+   */
+  public static final String PERSIST_ENTITY_PANELS = "persist_entity_panels";
+
   private Map<String, Object> settings = new HashMap<String, Object>();
 
   private final static FrameworkSettings instance = new FrameworkSettings();
@@ -181,6 +190,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(SQL_BOOLEAN_VALUE_TRUE, 1);
     setProperty(SQL_BOOLEAN_VALUE_NULL, null);
     setProperty(FILTER_QUERY_BY_MASTER, false);
+    setProperty(PERSIST_ENTITY_PANELS, false);
   }
 
   public static FrameworkSettings get() {

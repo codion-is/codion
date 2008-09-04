@@ -212,3 +212,5 @@
   Added some javadocs
   Fixed a bug in EntityPanel.createStaticEntityPanel() where getAllEntitiesFromDb() was not being overridden due to changes in signature
   EntityApplicationModel.loadDbModel renamed to loadDomainModel
+  FrameworkSettings.PERSIST_ENTITY_PANELS added
+  EntityApplicationPanel changed according to the above
