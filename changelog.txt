@@ -214,3 +214,6 @@
   EntityApplicationModel.loadDbModel renamed to loadDomainModel
   FrameworkSettings.PERSIST_ENTITY_PANELS added
   EntityApplicationPanel changed according to the above
+  EntitySearchField modified to be able to handle multiple entities
+  SearchFieldPropertyLink modified to accommodate the above
+  PropertySearchPanel now uses a EntitySearchField when a ComboBoxModel is not available in the PropertySearchModel, the field searches by every string property found in the entity

@@ -4,13 +4,13 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
+import org.jminor.common.ui.control.BeanPropertyLink;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.LinkType;
@@ -18,12 +18,12 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -34,11 +34,9 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +54,8 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     try {
       model.initialize();
       this.dbProvider = dbProvider;
+      if (upperField instanceof EntitySearchField)
+        ((EntitySearchField) upperField).setDbProvider(dbProvider);
       bindEvents();
     }
     catch (UserException e) {
@@ -65,7 +65,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   }
 
   /** {@inheritDoc} */
-  protected boolean isLowerFieldRequired(Type type) {
+  protected boolean isLowerFieldRequired(final Type type) {
     return !(type == Type.ENTITY || type == Type.BOOLEAN);
   }
 
@@ -125,7 +125,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "");
       }
     }
-    if (field instanceof JTextField) {//enter button toggles the filter on/off
+    if (field instanceof JTextField && !(field instanceof EntitySearchField)) {//enter button toggles the filter on/off
       ((JTextField) field).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           getModel().setSearchEnabled(!getModel().isSearchEnabled());
@@ -147,33 +147,35 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       return field;
     }
     else {
-      final JTextField field = new JTextField();
-      field.setEditable(false);
-      new TextBeanPropertyLink(field, model, PropertySearchModel.UPPER_BOUND_PROPERTY, Object.class, model.evtUpperBoundChanged, null);
-      final ActionListener action = new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          try {
-            final List<Entity> entities = FrameworkUiUtil.selectEntities(new EntityTableModel(dbProvider,
-                    ((Property.EntityProperty) property).referenceEntityID), UiUtil.getParentWindow(PropertySearchPanel.this), false,
-                    FrameworkMessages.get(FrameworkMessages.SELECT_RECORD) + " - " + getModel().getCaption());
-            model.setUpperBound(entities.size() > 0 ? entities : null);
-          }
-          catch (UserCancelException uce) {/**/}
+      final EntitySearchField field = new EntitySearchField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
+              getStringPropertyIDs(((Property.EntityProperty) property).referenceEntityID)) {
+        public List<Entity> getSelectedEntities() {
+          return model.getUpperBound() == null ? new ArrayList<Entity>(0) : (List<Entity>) model.getUpperBound();
+        }
+        public void setSelectedEntities(final List<Entity> entities) {
+          model.setUpperBound(entities);
         }
       };
-      field.addKeyListener(new KeyAdapter() {
-        public void keyReleased(final KeyEvent e) {
-          if (e.getKeyChar() == KeyEvent.VK_SPACE)
-            action.actionPerformed(null);
+
+      new BeanPropertyLink(model, AbstractSearchModel.UPPER_BOUND_PROPERTY, Object.class, model.evtUpperBoundChanged, null) {
+        protected void updateProperty() {}
+        protected void updateUI() {
+          field.refreshText();
         }
-      });
-      field.addMouseListener(new MouseAdapter() {
-        public void mouseClicked(MouseEvent e) {
-          action.actionPerformed(null);
-        }
-      });
+      };
 
       return field;
     }
+  }
+
+  private String[] getStringPropertyIDs(final String entityID) {
+    final Collection<Property> properties = EntityRepository.get().getProperties(entityID, true);
+    final List<String> ret = new ArrayList<String>();
+    for (final Property property : properties) {
+      if (property.getPropertyType().equals(Type.STRING))
+        ret.add(property.propertyID);
+    }
+
+    return ret.toArray(new String[ret.size()]);
   }
 }

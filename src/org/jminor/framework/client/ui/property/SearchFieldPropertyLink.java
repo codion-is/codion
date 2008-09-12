@@ -8,13 +8,15 @@ import org.jminor.framework.model.EntityRepository;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFieldPropertyLink extends AbstractEntityPropertyLink {
 
   private final EntitySearchField searchField;
 
   public SearchFieldPropertyLink(final EntityModel model, final String propertyID,
-                                       final EntitySearchField entitySearchField) {
+                                 final EntitySearchField entitySearchField) {
     super(model, EntityRepository.get().getProperty(model.getEntityID(), propertyID), LinkType.READ_WRITE, null);
     this.searchField = entitySearchField;
     updateUI();
@@ -26,10 +28,14 @@ public class SearchFieldPropertyLink extends AbstractEntityPropertyLink {
   }
 
   protected void updateProperty() {
-    setPropertyValue(searchField.getSelectedEntity());
+    final List<Entity> selectedEntities = searchField.getSelectedEntities();
+    setPropertyValue(selectedEntities.size() == 0 ? null : selectedEntities.get(0));
   }
 
   protected void updateUI() {
-    searchField.setSelectedEntity((Entity) getPropertyValue());
+    final List<Entity> value = new ArrayList<Entity>();
+    if (getPropertyValue() != null)
+      value.add((Entity) getPropertyValue());
+    searchField.setSelectedEntities(value);
   }
 }
