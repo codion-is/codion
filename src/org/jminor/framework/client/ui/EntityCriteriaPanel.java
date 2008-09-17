@@ -48,7 +48,7 @@ public class EntityCriteriaPanel extends JPanel {
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
 
-    final JPanel editPanel = new JPanel(new FlowLayout());
+    final JPanel editPanel = new JPanel(new BorderLayout());
     editPanel.setPreferredSize(new Dimension(200,150));
     editPanel.setBorder(BorderFactory.createCompoundBorder());
 
@@ -136,7 +136,7 @@ public class EntityCriteriaPanel extends JPanel {
           if (panel == null)
             panels.put(selected, panel = new PropertySearchPanel(selected,true,true,entityModel.getDbProvider()));
 
-          editorPanel.add(panel);
+          editorPanel.add(panel, BorderLayout.NORTH);
           revalidate();
           repaint();
         }

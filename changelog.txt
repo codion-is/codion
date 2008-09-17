@@ -217,3 +217,7 @@
   EntitySearchField modified to be able to handle multiple entities
   SearchFieldPropertyLink modified to accommodate the above
   PropertySearchPanel now uses a EntitySearchField when a ComboBoxModel is not available in the PropertySearchModel, the field searches by every string property found in the entity
+  EntityCriteriaPanel fixed so that text fields in PropertySearchPanels are no longer tiny
+  EntityRepository.setPropertyDescription() fixed, it now mappes the description to entityID and propertyID instead of only propertyID, which isn't unique
+  EntityRepository.setEntitySearchProperties/getEntitySearchProperties added, to hold default search by properties for entities
+  EntitySearchField now sets its selected entity value as null on enter when it contains no text, instead of returning a search result containing all underlying records

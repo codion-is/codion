@@ -94,7 +94,10 @@ public class EntitySearchField extends TextFieldPlus {
     this.searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
         try {
-          performSearch();
+          if (getText().length() == 0)
+            setSelectedEntities(null);
+          else
+            performSearch();
         }
         catch (UserException ex) {
           UiUtil.handleException(ex, EntitySearchField.this);
@@ -135,10 +138,6 @@ public class EntitySearchField extends TextFieldPlus {
       this.selectedEntities.addAll(entities);
     refreshText();
     evtSelectedEntityChanged.fire();
-  }
-
-  public void refreshText() {
-    setText(getSelectedEntities().size() == 0 ? "" : toString(getSelectedEntities()));
   }
 
   public List<Entity> getSelectedEntities() {
@@ -185,6 +184,10 @@ public class EntitySearchField extends TextFieldPlus {
 
   public Action getSearchAction() {
     return searchAction;
+  }
+
+  public void refreshText() {
+    setText(getSelectedEntities().size() == 0 ? "" : toString(getSelectedEntities()));
   }
 
   public EntityCriteria getEntityCriteria() {

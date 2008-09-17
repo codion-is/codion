@@ -21,14 +21,45 @@ public class EntityRepository implements Serializable {
 
   private final Map<String, Map<String, Property>> properties = new HashMap<String, Map<String, Property>>();
 
+  /**
+   * Maps the name of the table each entity type is based on to its entityID
+   */
   private final Map<String, String> entityTableNames = new HashMap<String, String>();
+
+  /**
+   * Maps the table (view, query) from which to select the entity to its entityID.
+   * Used if it differs from the one used for inserts/updates
+   */
   private final Map<String, String> entitySelectTableNames = new HashMap<String, String>();
+
+  /**
+   * Holds the order by string for each entity type
+   */
   private final Map<String, String> entityOrderByColumns = new HashMap<String, String>();
+
+  /**
+   * Maps the source of the entities ids (primary key) to each entity type, i.e. sequence names
+   */
   private final Map<String, String> entityIdSources = new HashMap<String, String>();
+
+  /**
+   * Maps the IdSource to each entities entityID
+   * @see IdSource
+   */
   private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
+
+  /**
+   * Maps the readOnly value to each entities entityID
+   */
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
+
+  /**
+   * Maps the name of the create date columns (if any) in the underlying table to each entities entityID
+   */
   private final Map<String, String> createDateColumns = new HashMap<String, String>();
-  private final Map<String, String> propertyDescriptions = new HashMap<String, String>();
+
+  private final Map<String, Map<String, String>> propertyDescriptions = new HashMap<String, Map<String, String>>();
+  private final Map<String, String[]> entitySearchPropertyIDs = new HashMap<String, String[]>();
 
   private transient Map<String, EntityDependencies> entityDependencies;
   private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
@@ -77,16 +108,34 @@ public class EntityRepository implements Serializable {
     return properties.keySet().toArray(new String[properties.keySet().size()]);
   }
 
-  public void setPropertyDescription(final String propertyID, final String description) {
-    propertyDescriptions.put(propertyID, description);
+  public void setPropertyDescription(final String entityID, final String propertyID, final String description) {
+    if (!propertyDescriptions.containsKey(entityID))
+      propertyDescriptions.put(entityID, new HashMap<String, String>());
+
+    propertyDescriptions.get(entityID).put(propertyID, description);
   }
 
-  public String getPropertyDescription(final Property property) {
-    return getPropertyDescription(property.propertyID);
+  public String getPropertyDescription(final String entityID, final Property property) {
+    return getPropertyDescription(entityID, property.propertyID);
   }
 
-  public String getPropertyDescription(final String propertyID) {
-    return propertyDescriptions.get(propertyID);
+  public String getPropertyDescription(final String entityID, final String propertyID) {
+    if (!propertyDescriptions.containsKey(entityID) || !propertyDescriptions.get(entityID).containsKey(propertyID))
+      return null;
+
+    return propertyDescriptions.get(entityID).get(propertyID);
+  }
+
+  public void setEntitySearchProperties(final String entityID, final String... searchPropertyIDs) {
+    for (final String propertyID : searchPropertyIDs)
+      if (getProperty(entityID, propertyID).propertyType != Type.STRING)
+        throw new RuntimeException("Entity search property must be of type String: " + getProperty(entityID, propertyID));
+
+    entitySearchPropertyIDs.put(entityID, searchPropertyIDs);
+  }
+
+  public String[] getEntitySearchPropertyIDs(final String entityID) {
+    return entitySearchPropertyIDs.get(entityID);
   }
 
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(
@@ -384,6 +433,39 @@ public class EntityRepository implements Serializable {
     initialize(entityID);
   }
 
+  public Collection<String> getEntityIDs() {
+    return properties.keySet();
+  }
+
+  public EntityRepository initializeAll() {
+    for (final String entityID : properties.keySet())
+      initialize(entityID);
+
+    return this;
+  }
+
+  public EntityDependencies getEntityDependencies(final String entityID) {
+    if (!entityDependencies.containsKey(entityID))
+      entityDependencies.put(entityID, resolveEntityDependencies(entityID));
+
+    return entityDependencies.get(entityID);
+  }
+
+  public boolean hasCreateDateColumn(final String entityID) {
+    return createDateColumns.containsKey(entityID);
+  }
+
+  public void setCreateDateColumn(final String entityID, final String createDateColumnName) {
+    if (createDateColumnName == null || createDateColumnName.length() == 0)
+      createDateColumns.remove(entityID);
+    else
+      createDateColumns.put(entityID, createDateColumnName);
+  }
+
+  public String getCreateDateColumn(final String entityID) {
+    return createDateColumns.get(entityID);
+  }
+
   private void initialize(final String entityID) {
     final Map<String, Property> initialPropertyDefinitions = properties.get(entityID);
 
@@ -421,60 +503,6 @@ public class EntityRepository implements Serializable {
       initialPropertyDefinitions.get(selectColumnNames[idx]).setSelectIndex(idx+1);
 
     this.entitySelectStrings.put(entityID, getSelectColumnsString(entityID));
-  }
-
-  private void initContainers() {
-    if (this.databaseProperties == null)
-      this.databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-    if (this.visibleProperties == null)
-      this.visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-    if (this.visiblePropertyIndexes == null)
-      this.visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
-    if (this.entityProperties == null)
-      this.entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
-    if (this.denormalizedProperties == null)
-      this.denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
-    if (this.primaryKeyProperties == null)
-      this.primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
-    if (this.primaryKeyColumnNames == null)
-      this.primaryKeyColumnNames = new HashMap<String, String[]>();
-    if (this.entitySelectStrings == null)
-      this.entitySelectStrings = new HashMap<String, String>();
-    if (this.entityDependencies == null)
-      this.entityDependencies = new HashMap<String, EntityDependencies>();
-  }
-
-  public Collection<String> getEntityIDs() {
-    return properties.keySet();
-  }
-
-  public EntityRepository initializeAll() {
-    for (final String entityID : properties.keySet())
-      initialize(entityID);
-
-    return this;
-  }
-
-  public EntityDependencies getEntityDependencies(final String entityID) {
-    if (!entityDependencies.containsKey(entityID))
-      entityDependencies.put(entityID, resolveEntityDependencies(entityID));
-
-    return entityDependencies.get(entityID);
-  }
-
-  public boolean hasCreateDateColumn(final String entityID) {
-    return createDateColumns.containsKey(entityID);
-  }
-
-  public void setCreateDateColumn(final String entityID, final String createDateColumnName) {
-    if (createDateColumnName == null || createDateColumnName.length() == 0)
-      createDateColumns.remove(entityID);
-    else
-      createDateColumns.put(entityID, createDateColumnName);
-  }
-
-  public String getCreateDateColumn(final String entityID) {
-    return createDateColumns.get(entityID);
   }
 
   private EntityDependencies resolveEntityDependencies(final String entityID) {
@@ -552,5 +580,26 @@ public class EntityRepository implements Serializable {
     }
 
     return ret.toString();
+  }
+
+  private void initContainers() {
+    if (this.databaseProperties == null)
+      this.databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+    if (this.visibleProperties == null)
+      this.visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
+    if (this.visiblePropertyIndexes == null)
+      this.visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
+    if (this.entityProperties == null)
+      this.entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
+    if (this.denormalizedProperties == null)
+      this.denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
+    if (this.primaryKeyProperties == null)
+      this.primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
+    if (this.primaryKeyColumnNames == null)
+      this.primaryKeyColumnNames = new HashMap<String, String[]>();
+    if (this.entitySelectStrings == null)
+      this.entitySelectStrings = new HashMap<String, String>();
+    if (this.entityDependencies == null)
+      this.entityDependencies = new HashMap<String, EntityDependencies>();
   }
 }

@@ -10,7 +10,6 @@ import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
-import org.jminor.common.ui.control.BeanPropertyLink;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.LinkType;
@@ -18,7 +17,6 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -148,24 +146,25 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     }
     else {
       final EntitySearchField field = new EntitySearchField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
-              getStringPropertyIDs(((Property.EntityProperty) property).referenceEntityID)) {
+              getSearchPropertyIDs(((Property.EntityProperty) property).referenceEntityID)) {
         public List<Entity> getSelectedEntities() {
           return model.getUpperBound() == null ? new ArrayList<Entity>(0) : (List<Entity>) model.getUpperBound();
         }
         public void setSelectedEntities(final List<Entity> entities) {
           model.setUpperBound(entities);
+          refreshText();
         }
       };
-
-      new BeanPropertyLink(model, AbstractSearchModel.UPPER_BOUND_PROPERTY, Object.class, model.evtUpperBoundChanged, null) {
-        protected void updateProperty() {}
-        protected void updateUI() {
-          field.refreshText();
-        }
-      };
+      field.setAllowMultipleSelection(true);
 
       return field;
     }
+  }
+
+  private String[] getSearchPropertyIDs(final String entityID) {
+    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(entityID);
+
+    return searchPropertyIDs == null ? getStringPropertyIDs(entityID) : searchPropertyIDs;
   }
 
   private String[] getStringPropertyIDs(final String entityID) {

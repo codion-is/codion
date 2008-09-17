@@ -307,7 +307,7 @@ public class FrameworkUiUtil {
       ret.setToolTipText(property.getCaption());
     UiUtil.linkToEnabledState(enabledState, ret);
     new CheckBoxPropertyLink(entityModel, property, ret.getModel());
-    setPropertyToolTip(property, ret);
+    setPropertyToolTip(entityModel.getEntityID(), property, ret);
 
     return ret;
   }
@@ -343,7 +343,7 @@ public class FrameworkUiUtil {
       UiUtil.linkToEnabledState(enabledState, ret);
       new ComboBoxPropertyLink(entityModel, property, ret);
       MaximumMatch.enable(ret);
-      setPropertyToolTip(property, ret);
+      setPropertyToolTip(entityModel.getEntityID(), property, ret);
 
       return ret;
     }
@@ -352,16 +352,16 @@ public class FrameworkUiUtil {
     }
   }
 
-  public static JPanel createEntityFieldPanel(final Property.EntityProperty property, final EntityModel model,
+  public static JPanel createEntityFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
                                               final EntityTableModel lookupModel) {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
-    final JTextField txt = createEntityField(property, model);
+    final JTextField txt = createEntityField(property, entityModel);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel,
-                  UiUtil.getParentWindow(ret), true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          model.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
+          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(ret),
+                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
+          entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
         catch (UserCancelException e1) {/**/}
       }
@@ -374,11 +374,11 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static JTextField createEntityField(final Property.EntityProperty property, final EntityModel model) {
+  public static JTextField createEntityField(final Property.EntityProperty property, final EntityModel entityModel) {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
-    setPropertyToolTip(property, txt);
-    model.getPropertyChangeEvent(property).addListener(new PropertyListener() {
+    setPropertyToolTip(entityModel.getEntityID(), property, txt);
+    entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
       protected void propertyChanged(final PropertyChangeEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
@@ -387,12 +387,22 @@ public class FrameworkUiUtil {
     return txt;
   }
 
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel model,
-                                                          final String searchEntityID, final String... searchPropertyIDs) {
-    return createEntitySearchField(property, model, searchEntityID, null, searchPropertyIDs);
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
+                                                          final String searchEntityID) {
+    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(searchEntityID);
+    if (searchPropertyIDs == null)
+      throw new RuntimeException("No default search properties specified for entity: " + searchEntityID
+              + ", unable to create EntitySearchField, you must specify the searchPropertyIDs");
+
+    return createEntitySearchField(property, entityModel, searchEntityID, searchPropertyIDs);
   }
 
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel model,
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
+                                                          final String searchEntityID, final String... searchPropertyIDs) {
+    return createEntitySearchField(property, entityModel, searchEntityID, null, searchPropertyIDs);
+  }
+
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
                                                           final String searchEntityID, final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     final List<Property> searchProperties = EntityRepository.get().getProperties(searchEntityID, searchPropertyIDs);
@@ -400,22 +410,22 @@ public class FrameworkUiUtil {
       if (searchProperty.getPropertyType() != Type.STRING)
         throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = new EntitySearchField(model.getDbConnectionProvider(), searchEntityID,
+    final EntitySearchField searchField = new EntitySearchField(entityModel.getDbConnectionProvider(), searchEntityID,
             additionalSearchCriteria, searchPropertyIDs);
     searchField.setBorder(BorderFactory.createEtchedBorder());
-    new SearchFieldPropertyLink(model, property.propertyID, searchField);
-    setPropertyToolTip(property, searchField);
+    new SearchFieldPropertyLink(entityModel, property.propertyID, searchField);
+    setPropertyToolTip(entityModel.getEntityID(), property, searchField);
 
     return searchField;
   }
 
-  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel model,
+  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final String searchEntityID, final String searchPropertyID,
                                                     final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(property, model, searchEntityID, searchPropertyID, null, lookupModel);
+    return createEntitySearchFieldPanel(property, entityModel, searchEntityID, searchPropertyID, null, lookupModel);
   }
 
-  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel model,
+  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final String searchEntityID, final String searchPropertyID,
                                                     final ICriteria additionalSearchCriteria,
                                                     final EntityTableModel lookupModel) {
@@ -423,14 +433,14 @@ public class FrameworkUiUtil {
     if (searchProperty.getPropertyType() != Type.STRING)
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = createEntitySearchField(property, model, searchEntityID,
+    final EntitySearchField searchField = createEntitySearchField(property, entityModel, searchEntityID,
             additionalSearchCriteria, searchPropertyID);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel,
-                  UiUtil.getParentWindow(searchField), true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          model.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
+          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(searchField),
+                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
+          entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
         catch (UserCancelException e1) {/**/}
       }
@@ -456,7 +466,7 @@ public class FrameworkUiUtil {
     ret.setEditable(editable);
     UiUtil.linkToEnabledState(enabledState, ret);
     new ComboBoxPropertyLink(entityModel, property, ret);
-    setPropertyToolTip(property, ret);
+    setPropertyToolTip(entityModel.getEntityID(), property, ret);
 
     return ret;
   }
@@ -505,7 +515,7 @@ public class FrameworkUiUtil {
     ret.setWrapStyleWord(true);
 
     new TextPropertyLink(entityModel, property, ret, true, LinkType.READ_WRITE);
-    setPropertyToolTip(property, ret);
+    setPropertyToolTip(entityModel.getEntityID(), property, ret);
 
     return ret;
   }
@@ -568,7 +578,7 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     if (transferFocusOnEnter)
       UiUtil.transferFocusOnEnter(ret);
-    setPropertyToolTip(property, ret);
+    setPropertyToolTip(entityModel.getEntityID(), property, ret);
 
     return ret;
   }
@@ -626,8 +636,8 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static void setPropertyToolTip(final Property property, final JComponent component) {
-    final String propertyDescription = EntityRepository.get().getPropertyDescription(property);
+  public static void setPropertyToolTip(final String entityID, final Property property, final JComponent component) {
+    final String propertyDescription = EntityRepository.get().getPropertyDescription(entityID, property);
     if (propertyDescription != null)
       component.setToolTipText(propertyDescription);
   }
