@@ -1037,22 +1037,10 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Updates this EntityModel according to the given master Entity,
-   * sets the appropriate property value and filters the EntityTableModel
-   * @param masterValue the value of the selected master entity
-   * @param masterEntityID the ID of the master entity, in case the value is null
-   * @throws UserException in case of a problem
-   */
-  public void masterSelectionChanged(final Entity masterValue, final String masterEntityID) throws UserException {
-    masterSelectionChanged((masterValue == null || masterValue.isNull())
-            ? new ArrayList<Entity>(0) : Arrays.asList(masterValue), masterEntityID);
-  }
-
-  /**
    * Updates this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
    * @param masterValues the master entities
-   * @param masterEntityID the ID of the master entity, in case the value is null
+   * @param masterEntityID the ID of the master entity
    * @throws UserException in case of a problem
    */
   public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) throws UserException {
@@ -1611,7 +1599,7 @@ public class EntityModel implements IRefreshable {
         detailModel.masterSelectionChanged(getTableModel().stSelectionEmpty.isActive()
                 ? null : getTableModel().getSelectedEntities(), getEntityID());
       else
-        detailModel.masterSelectionChanged(isActiveEntityNull() ? null : getActiveEntityCopy(), getEntityID());
+        detailModel.masterSelectionChanged(isActiveEntityNull() ? null : Arrays.asList(getActiveEntityCopy()), getEntityID());
     }
   }
 
