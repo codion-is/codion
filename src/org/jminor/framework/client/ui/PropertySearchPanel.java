@@ -152,9 +152,13 @@ public class PropertySearchPanel extends AbstractSearchPanel {
         }
         public void setSelectedEntities(final List<Entity> entities) {
           model.setUpperBound(entities);
-          refreshText();
         }
       };
+      model.evtUpperBoundChanged.addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          field.refreshText();
+        }
+      });
       field.setAllowMultipleSelection(true);
 
       return field;
