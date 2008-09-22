@@ -68,9 +68,9 @@ public class Event implements ActionListener, Serializable {
       this.firing = true;
       if (debug && listeners.size() > 0) {
         if (event != null && event.getSource() instanceof Event && event.getSource() != this)
-          System.out.println(" '-> " + this + " (" + Util.getListContents(listeners, false) + ") @ " + System.currentTimeMillis());
+          System.out.println(" '-> " + this + " (" + Util.getListContentsAsString(listeners, false) + ") @ " + System.currentTimeMillis());
         else
-          System.out.println(this + " (" + Util.getListContents(listeners, false) + ") @ " + System.currentTimeMillis());
+          System.out.println(this + " (" + Util.getListContentsAsString(listeners, false) + ") @ " + System.currentTimeMillis());
       }
       for (final ActionListener listener : listeners)
         listener.actionPerformed(event);

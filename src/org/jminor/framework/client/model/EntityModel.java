@@ -889,7 +889,7 @@ public class EntityModel implements IRefreshable {
     if (!isInsertAllowed())
       throw new UserException("This is model does not allow inserting!");
 
-    log.debug(caption + " - insert "+ Util.getListContents(entities, false));
+    log.debug(caption + " - insert "+ Util.getListContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     validateData(entities, INSERT);
@@ -929,7 +929,7 @@ public class EntityModel implements IRefreshable {
     if (!isUpdateAllowed())
       throw new UserException("This model does not allow updating!");
 
-    log.debug(caption + " - update " + Util.getListContents(entities, false));
+    log.debug(caption + " - update " + Util.getListContentsAsString(entities, false));
 
     evtBeforeUpdate.fire();
     validateData(entities, UPDATE);
@@ -957,7 +957,7 @@ public class EntityModel implements IRefreshable {
       throw new UserException("This is model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
-    log.debug(caption + " - delete " + Util.getListContents(entities, false));
+    log.debug(caption + " - delete " + Util.getListContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
     getTableModel().getSelectionModel().clearSelection();

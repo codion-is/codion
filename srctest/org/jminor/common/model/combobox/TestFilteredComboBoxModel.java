@@ -25,11 +25,11 @@ public class TestFilteredComboBoxModel extends TestCase {
 
   public void testSort() {
     testModel.setSortContents(true);
-    assertTrue(ANNA + " a að vera nr. 0", testModel.getElementAt(0).equals(ANNA));
-    assertTrue(BJORN + " a að vera nr. 1", testModel.getElementAt(1).equals(BJORN));
-    assertTrue(KALLI + " a að vera nr. 2", testModel.getElementAt(2).equals(KALLI));
-    assertTrue(SIGGI + " a að vera nr. 3", testModel.getElementAt(3).equals(SIGGI));
-    assertTrue(TOMAS + " a að vera nr. 4", testModel.getElementAt(4).equals(TOMAS));
+    assertTrue(ANNA + " should be at index 0", testModel.getElementAt(0).equals(ANNA));
+    assertTrue(BJORN + " should be at index 1", testModel.getElementAt(1).equals(BJORN));
+    assertTrue(KALLI + " should be at index 2", testModel.getElementAt(2).equals(KALLI));
+    assertTrue(SIGGI + " should be at index 3", testModel.getElementAt(3).equals(SIGGI));
+    assertTrue(TOMAS + " should be at index 4", testModel.getElementAt(4).equals(TOMAS));
   }
 
   public void testFiltering() {
@@ -38,31 +38,31 @@ public class TestFilteredComboBoxModel extends TestCase {
         return false;
       }
     });
-    assertTrue("Modelið a að vera tomt", testModel.getSize() == 0);
+    assertTrue("The model should be empty", testModel.getSize() == 0);
     testModel.setFilterCriteria(new IFilterCriteria() {
       public boolean include(Object item) {
         return true;
       }
     });
-    assertTrue("Modelið a að vera fullt", testModel.getSize() == 5);
+    assertTrue("The model should be full", testModel.getSize() == 5);
     testModel.setFilterCriteria(new IFilterCriteria() {
       public boolean include(Object item) {
         return !item.equals(ANNA);
       }
     });
-    assertTrue("Modelið a að innihalda 4 stk", testModel.getSize() == 4);
-    assertTrue("Modelið a ekki að innihalda '" + ANNA + "'", !modelContains(ANNA));
+    assertTrue("The model should contain 4 items", testModel.getSize() == 4);
+    assertTrue("The model should not contain '" + ANNA + "'", !modelContains(ANNA));
     testModel.setFilterCriteria(new IFilterCriteria() {
       public boolean include(Object item) {
         return item.equals(ANNA);
       }
     });
-    assertTrue("Mödelið a að innihalda 1 stk", testModel.getSize() == 1);
-    assertTrue("Mödelið a einungis að innihalda '" + ANNA + "'", modelContains(ANNA));
+    assertTrue("The model should only contain 1 item", testModel.getSize() == 1);
+    assertTrue("The mopel should only contain '" + ANNA + "'", modelContains(ANNA));
   }
 
   public void testRemove() {
-    //fjarlÃ¦gja filteraÃ° item
+    //remove filtered item
     testModel.setFilterCriteria(new IFilterCriteria() {
       public boolean include(Object item) {
         return !item.equals(BJORN);
@@ -70,11 +70,11 @@ public class TestFilteredComboBoxModel extends TestCase {
     });
     testModel.removeItem(BJORN);
     testModel.setFilterCriteria(null);
-    assertFalse(BJORN + " a ekki að vera lengur i modelinu", modelContains(BJORN));
+    assertFalse(BJORN + " should no longer be in the model", modelContains(BJORN));
 
-    //fjarlÃ¦gja sÃ½nilegt item
+    //remove visible item
     testModel.removeItem(KALLI);
-    assertFalse(KALLI + " a ekki að vera lengur i modelinu", modelContains(KALLI));
+    assertFalse(KALLI + " should no longer be in the model", modelContains(KALLI));
   }
 
   /** {@inheritDoc} */

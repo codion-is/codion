@@ -191,14 +191,14 @@ public class Util {
   }
 
   public static void printArrayContents(final Object[] objects, boolean onePerLine) {
-    System.out.println(getArrayContents(objects, onePerLine));
+    System.out.println(getArrayContentsAsString(objects, onePerLine));
   }
 
-  public static String getListContents(final List<?> list, final boolean onePerLine) {
-    return getArrayContents(list.toArray(), onePerLine);
+  public static String getListContentsAsString(final List<?> list, final boolean onePerLine) {
+    return getArrayContentsAsString(list.toArray(), onePerLine);
   }
 
-  public static String getArrayContents(Object[] items, boolean onePerLine) {
+  public static String getArrayContentsAsString(Object[] items, boolean onePerLine) {
     if (items == null)
       return "";
 
@@ -206,7 +206,7 @@ public class Util {
     for (int i = 0; i < items.length; i++) {
       final Object item = items[i];
       if (item instanceof Object[])
-        ret.append(getArrayContents((Object[]) item, onePerLine));
+        ret.append(getArrayContentsAsString((Object[]) item, onePerLine));
       else if (!onePerLine)
         ret.append(item).append(i < items.length-1 ? ", " : "");
       else

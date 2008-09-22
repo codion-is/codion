@@ -14,25 +14,7 @@ import org.jminor.common.model.formats.AbstractDateMaskFormat;
 
 import com.toedter.calendar.JCalendar;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.KeyStroke;
-import javax.swing.RootPaneContainer;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.AttributeSet;

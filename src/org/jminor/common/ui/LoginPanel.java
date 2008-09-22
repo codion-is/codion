@@ -56,15 +56,15 @@ public class LoginPanel extends JPanel {
   }
 
   public static User showLoginPanel(final JComponent parent, final User defaultUser,
-                                    final Icon icon, final String dlgTitle,
-                                    final String usrLbl, final String passLbl) throws UserCancelException {
-    final LoginPanel panel = new LoginPanel(defaultUser, false, usrLbl, passLbl);
+                                    final Icon icon, final String dialogTitle,
+                                    final String usernameLabel, final String passwordLabel) throws UserCancelException {
+    final LoginPanel panel = new LoginPanel(defaultUser, false, usernameLabel, passwordLabel);
 
     final JOptionPane pane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION, icon);
 
-    final JDialog dialog = pane.createDialog(parent, dlgTitle == null ?
-            Messages.get(Messages.LOGIN) : dlgTitle);
+    final JDialog dialog = pane.createDialog(parent, dialogTitle == null ?
+            Messages.get(Messages.LOGIN) : dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     UiUtil.centerWindow(dialog);
@@ -115,18 +115,11 @@ public class LoginPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
-    if (txtUsername.getText().length() == 0 || txtUsername.getText().toUpperCase().equals("OPS$")) {
-      txtUsername.requestFocusInWindow();
-      txtUsername.setCaretPosition(txtUsername.getText().length());
-    }
-    else {
-      txtPassword.requestFocusInWindow();
-      txtPassword.setCaretPosition(txtPassword.getPassword().length);
-    }
+    init();
   }
 
   private void init() {
-    if (txtUsername.getText().length() == 0 || txtUsername.getText().toUpperCase().equals("OPS$")) {
+    if (txtUsername.getText().length() == 0) {
       txtUsername.requestFocusInWindow();
       txtUsername.setCaretPosition(txtUsername.getText().length());
     }
