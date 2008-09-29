@@ -603,19 +603,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * Removes the entities identified by the primary keys found in <code>primaryKeys</code>
-   * from this table model
-   * @param primaryKeys the primary keys
-   * @return the indexes of the removed entities
-   */
-  public IntArray removeEntitiesByPrimaryKey(final List<EntityKey> primaryKeys) {
-    final IntArray ret = new IntArray(primaryKeys.size());
-    removeEntities(getEntitiesByPrimaryKeys(primaryKeys, ret));
-
-    return ret;
-  }
-
-  /**
    * Removes the given entities from this table model
    * @param entities the entities to remove from the model
    */
@@ -820,27 +807,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return the entities having the primary key values as in <code>keys</code>
    */
   public List<Entity> getEntitiesByPrimaryKeys(final List<EntityKey> keys) {
-    return getEntitiesByPrimaryKeys(keys, null);
-  }
-
-  /**
-   * Finds entities according to the values in <code>keys</code>
-   * @param keys the primary key values to use as condition
-   * @param indexes this IntArray will contain the indexes of the returned entities
-   * @return the entities having the primary key values as in <code>keys</code>
-   */
-  public List<Entity> getEntitiesByPrimaryKeys(final List<EntityKey> keys, final IntArray indexes) {
     final List<Entity> ret = new ArrayList<Entity>();
     final List<Entity> allEntities = new ArrayList<Entity>(visibleEntities.size() + filteredEntities.size());
     allEntities.addAll(visibleEntities);
     allEntities.addAll(filteredEntities);
-    for (int i = 0; i < allEntities.size(); i++) {
-      final Entity entity = allEntities.get(i);
+    for (final Entity entity : allEntities) {
       for (final EntityKey key : keys) {
         if (entity.getPrimaryKey().equals(key)) {
           ret.add(entity);
-          if (indexes != null && i < visibleEntities.size())
-            indexes.addInt(i);
           break;
         }
       }

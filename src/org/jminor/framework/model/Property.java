@@ -202,7 +202,7 @@ public class Property implements Serializable {
    * @return true if this property maps to a database column
    */
   public boolean isDatabaseProperty() {
-    return !(this instanceof Property.NonDbProperty);
+    return !(this instanceof TransientProperty);
   }
 
   /**
@@ -352,19 +352,23 @@ public class Property implements Serializable {
   }
 
   /**
-   * A property that does not map to a underlying database column
+   * A property that does not map to an underlying database column, the value must
+   * be provided by a EntityProxy, by overriding it's getValue() method
+   * @see EntityProxy#setDefaultEntityProxy(EntityProxy)
+   * @see EntityProxy#addEntityProxy(String, EntityProxy) 
+   * @see EntityProxy#getValue(Entity, Property)
    */
-  public static class NonDbProperty extends Property {
+  public static class TransientProperty extends Property {
 
-    public NonDbProperty(final String propertyID, final Type type) {
+    public TransientProperty(final String propertyID, final Type type) {
       this(propertyID, type, null);
     }
 
-    public NonDbProperty(final String propertyID, final Type type, final String caption) {
+    public TransientProperty(final String propertyID, final Type type, final String caption) {
       this(propertyID, type, caption, -1);
     }
 
-    public NonDbProperty(final String propertyID, final Type type, final String caption,
+    public TransientProperty(final String propertyID, final Type type, final String caption,
                          final int preferredWidth) {
       super(propertyID, type, caption, caption == null, false, preferredWidth, false);
     }
@@ -374,7 +378,7 @@ public class Property implements Serializable {
    * A property that gets its value from a reference entity, but is for
    * display only, and does not map to a database column
    */
-  public static class DenormalizedViewProperty extends NonDbProperty {
+  public static class DenormalizedViewProperty extends TransientProperty {
 
     public final String referencePropertyID;
     public final Property denormalizedProperty;

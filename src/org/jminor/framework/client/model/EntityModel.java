@@ -60,7 +60,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired when an Entity has been inserted
    */
-  public final Event evtEntityInserted = new Event("EntityModel.evtEntityInserterd");
+  public final Event evtEntitiesInserted = new Event("EntityModel.evtEntitiesInserted");
 
   /**
    * Fired before an update is performed
@@ -80,7 +80,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired when an Entity has been deleted
    */
-  public final Event evtEntityDeleted = new Event("EntityModel.evtEntityDeleted");
+  public final Event evtEntitiesDeleted = new Event("EntityModel.evtEntitiesDeleted");
 
   /**
    * Fired when an entity is deleted, inserted or updated
@@ -334,22 +334,22 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return Value for property 'readOnly'.
+   * @return true if this model is read only,
+   * by default this returns the isReadOnly value of the underlying entity
    */
   public boolean isReadOnly() {
     return EntityRepository.get().isReadOnly(entityID);
   }
 
   /**
-   * @return true if the cascade refresh state is active
+   * @return true if a refresh on this model should trigger a refresh in its detail models
    */
   public boolean getCascadeRefresh() {
     return stCascadeRefresh.isActive();
   }
 
   /**
-   * Sets the cascade refresh state
-   * @param value the new casecade refresh value
+   * @param value true if a refresh in this model should trigger a refresh in its detail models
    */
   public void setCascadeRefresh(final boolean value) {
     for (final EntityModel detailModel : detailModels)
@@ -359,15 +359,14 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return true if the selection filters detail state is active
+   * @return true if the selecting a record in this model should filter the detail models
    */
   public boolean getSelectionFiltersDetail() {
     return stSelectionFiltersDetail.isActive();
   }
 
   /**
-   * Sets the selection filters detail state
-   * @param value the new selection filters detail value
+   * @param value true if selecting a record in this model should filter the detail models
    * @see #masterSelectionChanged
    * @see #masterSelectionChanged
    * @see org.jminor.framework.client.model.EntityTableModel#filterByReference(java.util.List, String)
@@ -388,14 +387,14 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return true if this model allows records to be inserted
+   * @return true if this model should allow records to be inserted
    */
   public boolean isInsertAllowed() {
     return stAllowInsert.isActive();
   }
 
   /**
-   * @param value the value
+   * @param value true if this model should allow inserts
    */
   public void setInsertAllowed(final boolean value) {
     stAllowInsert.setActive(value);
@@ -411,14 +410,14 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return true if this model allows records to be updated
+   * @return true if this model should allow records to be updated
    */
   public boolean isUpdateAllowed() {
     return stAllowUpdate.isActive();
   }
 
   /**
-   * @param value the value
+   * @param value true if this model should allow records to be updated
    */
   public void setUpdateAllowed(final boolean value) {
     stAllowUpdate.setActive(value);
@@ -434,14 +433,14 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return true if this model allows records to be deleted
+   * @return true if this model should allow records to be deleted
    */
   public boolean isDeleteAllowed() {
     return stAllowDelete.isActive();
   }
 
   /**
-   * @param value the value
+   * @param value true if this model should allow records to be deleted
    */
   public void setDeleteAllowed(final boolean value) {
     stAllowDelete.setActive(value);
@@ -881,7 +880,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
    * @see #evtBeforeInsert
-   * @see #evtEntityInserted
+   * @see #evtEntitiesInserted
    */
   public final void insert(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
@@ -896,7 +895,7 @@ public class EntityModel implements IRefreshable {
     lastInsertedEntityPrimaryKeys.clear();
     lastInsertedEntityPrimaryKeys.addAll(EntityKey.copyEntityKeys(doInsert(entities)));
 
-    evtEntityInserted.fire();
+    evtEntitiesInserted.fire();
     refreshDetailModelsAfterInsertOrUpdate();
   }
 
@@ -948,7 +947,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserCancelException in case the user cancels the operation
    * @see #getEntitiesForDelete()
    * @see #evtBeforeDelete
-   * @see #evtEntityDeleted
+   * @see #evtEntitiesDeleted
    */
   public final void delete() throws DbException, UserException, UserCancelException {
     if (isReadOnly())
@@ -966,7 +965,7 @@ public class EntityModel implements IRefreshable {
     for (final Entity entity : entities)
       lastDeletedEntities.add(entity.getCopy());
 
-    evtEntityDeleted.fire();
+    evtEntitiesDeleted.fire();
     refreshDetailModelsAfterDelete();
   }
 
@@ -1439,8 +1438,8 @@ public class EntityModel implements IRefreshable {
    * Override to add specific event bindings, remember to call super.bindEvents()
    */
   protected void bindEvents() {
-    evtEntityDeleted.addListener(evtEntitiesChanged);
-    evtEntityInserted.addListener(evtEntitiesChanged);
+    evtEntitiesDeleted.addListener(evtEntitiesChanged);
+    evtEntitiesInserted.addListener(evtEntitiesChanged);
     evtEntitiesUpdated.addListener(evtEntitiesChanged);
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -1504,13 +1503,13 @@ public class EntityModel implements IRefreshable {
       }
     });
 
-    evtEntityDeleted.addListener(new ActionListener() {
+    evtEntitiesDeleted.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         tableModel.removeEntities(getLastDeletedEntities());
       }
     });
 
-    evtEntityInserted.addListener(new ActionListener() {
+    evtEntitiesInserted.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
           tableModel.getSelectionModel().clearSelection();

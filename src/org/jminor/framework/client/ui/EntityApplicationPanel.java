@@ -635,9 +635,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     menuControlSets.add(getFileControlSet());
     menuControlSets.add(getViewControlSet());
     menuControlSets.add(getToolsControlSet());
-    final ControlSet supportModelcontrolSet = getSupportModelControlSet();
-    if (supportModelcontrolSet != null)
-      menuControlSets.add(supportModelcontrolSet);
+    final ControlSet supportModelControlSet = getSupportModelControlSet();
+    if (supportModelControlSet != null)
+      menuControlSets.add(supportModelControlSet);
     final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
     if (additionalMenus != null && additionalMenus.size() > 0)
       menuControlSets.addAll(additionalMenus);

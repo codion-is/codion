@@ -48,7 +48,7 @@ public class Database {
   public static final String DATABASE_TYPE_DERBY = "derby";
 
   /**
-   * Derby database type
+   * Derby embedded database type
    * @see #DATABASE_TYPE_PROPERTY
    */
   public static final String DATABASE_TYPE_EMBEDDED_DERBY = "derby_embedded";
@@ -171,7 +171,7 @@ public class Database {
       case DERBY:
         return "jdbc:derby://" + host + ":" + port + "/" + sid;
       case DERBY_EMBEDDED:
-        return "jdbc:derby:" + host;//todo host should contain database name, document!
+        return "jdbc:derby:" + host;
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }

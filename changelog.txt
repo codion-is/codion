@@ -222,3 +222,6 @@
   EntityRepository.setEntitySearchProperties/getEntitySearchProperties added, to hold default search by properties for entities
   EntitySearchField now sets its selected entity value as null on enter when it contains no text, instead of returning a search result containing all underlying records
   TestState and TestAggregateState added
+  Property.NonDbProperty renamed to TransientProperty
+  Some javadoc additions and changes
+  TestDbConnection improved

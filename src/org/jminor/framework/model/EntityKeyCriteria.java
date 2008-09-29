@@ -16,7 +16,7 @@ import java.util.List;
 public class EntityKeyCriteria implements ICriteria {
 
   private final List<EntityKey> keys;
-  private List<Property> properties;
+  private final List<Property> properties;
 
   public EntityKeyCriteria(final EntityKey... keys) {
     this(null, keys);

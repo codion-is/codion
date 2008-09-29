@@ -20,17 +20,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
   public PropertyFilterModel(final Property property, final int columnIndex) {
     super(property);
-    setUpperBound(getInitialValue(property));
-    setLowerBound(getInitialValue(property));
     this.columnIndex = columnIndex;
-  }
-
-  @SuppressWarnings({"UnnecessaryBoxing"})
-  private Object getInitialValue(final Property property) {
-    if (property.getPropertyType() == Type.BOOLEAN)
-      return Boolean.valueOf(false);
-
-    return null;
   }
 
   /**

@@ -17,6 +17,9 @@ import java.sql.Timestamp;
  * User: Björn Darri
  * Date: 26.12.2007
  * Time: 14:48:22
+ *
+ * Encapsulates the property search parameters search type, upper bound and lower bound,
+ * as well as relevant events and states
  */
 public abstract class AbstractSearchModel {
 

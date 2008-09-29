@@ -197,6 +197,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     this.compactPanel = compactPanel;
   }
 
+  /**
+   * Sets the EntityModel
+   * @param model the EntityModel instance to use with this EntityPanel
+   * @return this EntityPanel instance
+   */
   public EntityPanel setModel(final EntityModel model) {
     if (this.model != null)
       throw new RuntimeException("EntityPanel already has a model: " + this.model);
@@ -305,14 +310,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'initialized'.
+   * @return true if the method initialize() has been called on this EntityPanel instance
    */
   public boolean isInitialized() {
     return initialized;
   }
 
   /**
-   * @return Value for property 'queryConfigurationAllowed'.
+   * @return true if this EntityPanel allows the underlying EntityTableModel query to be configured
    */
   public boolean isQueryConfigurationAllowed() {
     return queryConfigurationAllowed;
@@ -329,27 +334,35 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'tablePanel'.
+   * @return the EntityTablePanel used by this EntityPanel
    */
   public EntityTablePanel getTablePanel() {
     return this.entityTablePanel;
   }
 
+  /**
+   * @return the edit panel
+   */
   public JPanel getEditPanel() {
     return this.editPanel;
   }
 
   /**
    * @return the detail panel selected in the detail tab pane.
-   * If no detail panels are defined an IllegalArgumentException is thrown.
+   * If no detail panels are defined an RuntimeException is thrown.
    */
   public EntityPanel getSelectedDetailPanel() {
     if (this.detailTabPane == null)
-      throw new IllegalArgumentException("No detail panels available");
+      throw new RuntimeException("No detail panels available");
 
     return (EntityPanel) this.detailTabPane.getSelectedComponent();
   }
 
+  /**
+   * Returns the detail panel of the type <code>detailPanelClass</code>, if one is available
+   * @param detailPanelClass the class of the detail panel to retrieve
+   * @return the detail panel of the given type
+   */
   public EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
     for (final EntityPanel detailPanel : detailEntityPanels.values()) {
       if (detailPanel.getClass().equals(detailPanelClass))
@@ -364,6 +377,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return this.model.getCaption();
   }
 
+  /**
+   * Toggles the detail panel state between DIALOG, HIDDEN and EMBEDDED
+   */
   public void toggleDetailPanelState() {
     final int state = getDetailPanelState();
     if (state == DIALOG)
@@ -374,6 +390,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       setDetailPanelState(EMBEDDED);
   }
 
+  /**
+   * Toggles the edit panel state between DIALOG, HIDDEN and EMBEDDED
+   */
   public void toggleEditPanelState() {
     final int state = getEditPanelState();
     if (state == DIALOG)
@@ -1291,10 +1310,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   protected void validateData() throws UserException, UserCancelException {}
 
   /**
-   * for overriding, to provide specific input components for multi-entity update, see updateSelectedEntities
+   * for overriding, to provide specific input components for multi-entity update
    * @param property the property for which to get the InputManager
    * @param toUpdate the entities that are about to be updated
    * @return the InputManager handling input for <code>property</code>
+   * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected EntityPropertyEditor.InputManager getInputManager(final Property property, final List<Entity> toUpdate) {
@@ -1832,7 +1852,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
 
     public void mouseReleased(MouseEvent e) {
-      target.requestFocusInWindow();//activates this EntityPanel, see initFocusActivation()
+      target.requestFocusInWindow();//activates this EntityPanel
     }
   }
 
@@ -1898,8 +1918,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
     public EntityPanel getInstance(final IEntityDbProvider provider) throws UserException {
       try {
-        return getEntityPanelClass().getConstructor().newInstance().setModel(
-                getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
+        return getInstance(getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
+      }
+      catch (UserException e) {
+        throw e;
       }
       catch (RuntimeException e) {
         throw e;

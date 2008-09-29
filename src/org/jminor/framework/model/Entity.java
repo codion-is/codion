@@ -39,7 +39,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   private Map<String, Object> propertyValues = new HashMap<String, Object>();
 
   /**
-   * Holds the original value of a property that has been changed
+   * Holds the original value of a properties which values have changed
    */
   private Map<String, Object> originalPropertyValues;
 
@@ -434,7 +434,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   /**
-   * @param value if true this entity starts firing propertyChangeEvents
+   * @param value if true this entity should start firing propertyChangeEvents, false if it should stop
    */
   public void setFirePropertyChangeEvents(final boolean value) {
     if (value) {
@@ -445,6 +445,11 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       evtPropertyChanged = null;
   }
 
+  /**
+   * Returns the primary key of the entity referenced by the given EntityProperty
+   * @param property the entity reference property for which to retrieve the underlying EntityKey
+   * @return the primary key of the underlying entity, null if no entity is referenced
+   */
   public EntityKey getReferencedKey(final Property.EntityProperty property) {
     EntityKey key = referencedKeysCache == null ? null : referencedKeysCache.get(property);
     if (key != null)
@@ -474,7 +479,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public final boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
-    final Object value = property instanceof Property.NonDbProperty ? getValue(propertyID) : getRawValue(propertyID);
+    final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
 
     return isValueNull(property.propertyType, value);
   }
@@ -495,6 +500,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
   }
 
+  /**
+   * Returns true if <code>value</code> represents a null value for the given property type
+   * @param propertyType the property type
+   * @param value the value to check
+   * @return true if <code>value</code> represents null
+   */
   public static boolean isValueNull(final Type propertyType, final Object value) {
     if (value == null)
       return true;

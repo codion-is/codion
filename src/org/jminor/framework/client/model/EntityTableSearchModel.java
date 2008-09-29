@@ -23,6 +23,8 @@ import java.util.Map;
  * User: Björn Darri
  * Date: 24.7.2008
  * Time: 21:29:55
+ *
+ * This class encapsulates both filtering and searching facilities 
  */
 public class EntityTableSearchModel {
 

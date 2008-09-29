@@ -28,6 +28,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A panel that shows a summary value for a numerical column property in a EntityTableModel.
+ * The following summary types are implemented: Sum, avarage, minimum, maximum and minimum & maximum
+ */
 public class PropertySummaryPanel extends JPanel {
 
   public enum SummaryType {

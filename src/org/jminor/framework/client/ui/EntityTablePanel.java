@@ -119,26 +119,32 @@ public class EntityTablePanel extends JPanel {
     return entityTable;
   }
 
+  /**
+   * Sets the TableCellRenderer for the property with the given property ID
+   * @param propertyID the ID of the property for which to set the renderer
+   * @param renderer the renderer to use for presenting column values for the given property
+   */
   public void setTableCellRenderer(final String propertyID, final TableCellRenderer renderer) {
     entityTable.getColumn(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
   }
 
   /**
-   * @param action Value to set for property 'doubleClickAction'.
+   * @param doubleClickAction the action to perform when a double click is performed on the table
    */
-  public void setDoubleClickAction(final Action action) {
-    this.doubleClickAction = action;
+  public void setDoubleClickAction(final Action doubleClickAction) {
+    this.doubleClickAction = doubleClickAction;
   }
 
   /**
-   * @return Value for property 'tableModel'.
+   * @return the EntityTableModel used by this EntityTablePanel
    */
   public EntityTableModel getTableModel() {
     return tableModel;
   }
 
   /**
-   * @param value Value to set for property 'filterPanelsVisible'.
+   * Hides or shows the active filter panels for this table panel
+   * @param value true if the active filter panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(final boolean value) {
     for (final PropertyFilterPanel columnFilterPanel : propertyFilterPanels) {
@@ -149,6 +155,9 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  /**
+   * Shows a dialog for configuring the underlying EntityTableModel query
+   */
   public void configureQuery() {
     final EntityCriteriaPanel panel;
     try {
@@ -176,12 +185,17 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
+  /**
+   * @param propertyID the ID of the property for which to retrieve the summary provider panel
+   * @return the PropertySummaryPanel for the given property ID
+   */
   public PropertySummaryPanel getSummaryProvider(final String propertyID) {
     return propertySummaryPanels.get(propertyID);
   }
 
   /**
-   * @param visible Value to set for property 'summaryPanelVisible'.
+   * Hides or shows the column summary panel for this EntityTablePanel
+   * @param visible if true then the summary panel is shown, if false it is hidden
    */
   public void setSummaryPanelVisible(final boolean visible) {
     if (summaryScrollPane != null) {
@@ -201,14 +215,15 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'summaryPanelVisible'.
+   * @return true if the column summary panel is visible, false if it is hidden
    */
   public boolean isSummaryPanelVisible() {
     return summaryScrollPane != null && summaryScrollPane.isVisible();
   }
 
   /**
-   * @param visible Value to set for property 'searchPanelVisible'.
+   * Hides or shows the column search panel for this EntityTablePanel
+   * @param visible if true the search panel is shown, if false it is hidden
    */
   public void setSearchPanelVisible(final boolean visible) {
     if (searchScrollPane != null) {
@@ -221,14 +236,14 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return true if the search panel is visible
+   * @return true if the search panel is visible, false if it is hidden
    */
   public boolean isSearchPanelVisible() {
     return searchScrollPane != null && searchScrollPane.getViewport().getView() == searchPanel;
   }
 
   /**
-   * @return Value for property 'searchPanel'.
+   * @return the column search panel being used by this EntityTablePanel
    */
   public JPanel getSearchPanel() {
     return searchPanel;
@@ -261,6 +276,10 @@ public class EntityTablePanel extends JPanel {
     return "EntityTablePanel: " + getTableModel().getEntityID();
   }
 
+  /**
+   * Adds the given buttons to the south toolbar, in the order they are recieved
+   * @param buttons the buttons to add to the south toolbar
+   */
   public void addSouthPanelButtons(final AbstractButton... buttons) {
     if (buttons == null || buttons.length == 0)
       return;
@@ -275,6 +294,10 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  /**
+   * @param property the property for which to query if its column is visible or hidden
+   * @return true if the column is visible, false if it is hidden
+   */
   public boolean isPropertyColumnVisible(final Property property) {
     return getJTable() != null && getJTable().getColumn(property).getPreferredWidth() > 0;
   }
