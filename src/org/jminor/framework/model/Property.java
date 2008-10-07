@@ -330,24 +330,24 @@ public class Property implements Serializable {
   public static class DenormalizedProperty extends Property {
 
     public final String ownerEntityID;
-    public final Property denormalizedProperty;
+    public final Property valueSourceProperty;
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final Property property) {
-      this(propertyID, ownerEntityID, property, null);
+                                final Property valueSourceProperty) {
+      this(propertyID, ownerEntityID, valueSourceProperty, null);
     }
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final Property property, final String caption) {
-      this(propertyID, ownerEntityID, property, caption, -1);
+                                final Property valueSourceProperty, final String caption) {
+      this(propertyID, ownerEntityID, valueSourceProperty, caption, -1);
     }
 
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final Property property, final String caption, final int preferredWidth) {
-      super(propertyID, property.propertyType, caption,
+                                final Property valueSourceProperty, final String caption, final int preferredWidth) {
+      super(propertyID, valueSourceProperty.propertyType, caption,
               caption == null, false, preferredWidth, true);
       this.ownerEntityID = ownerEntityID;
-      this.denormalizedProperty = property;
+      this.valueSourceProperty = valueSourceProperty;
     }
   }
 
@@ -355,7 +355,7 @@ public class Property implements Serializable {
    * A property that does not map to an underlying database column, the value must
    * be provided by a EntityProxy, by overriding it's getValue() method
    * @see EntityProxy#setDefaultEntityProxy(EntityProxy)
-   * @see EntityProxy#addEntityProxy(String, EntityProxy) 
+   * @see EntityProxy#addEntityProxy(String, EntityProxy)
    * @see EntityProxy#getValue(Entity, Property)
    */
   public static class TransientProperty extends Property {

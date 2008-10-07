@@ -892,6 +892,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   public final Control getControl(final String controlCode) {
+    if (!controlMap.containsKey(controlCode))
+      throw new RuntimeException(controlCode + " control not available in panel: " + this);
+
     return controlMap.get(controlCode);
   }
 
@@ -1261,7 +1264,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (entityTablePanel == null)
       return;
 
-    if (!getModel().isReadOnly()) {
+    if (!getModel().isReadOnly() && getModel().isDeleteAllowed()) {
       entityTablePanel.getJTable().addKeyListener(new KeyAdapter() {
         public void keyTyped(KeyEvent e) {
           if (e.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stSelectionEmpty.isActive())
@@ -1589,9 +1592,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   private List<Property> getUpdateProperties() {
     final List<Property> ret = EntityRepository.get().getDatabaseProperties(getModel().getEntityID(), false, false, false);
     final ListIterator<Property> iter = ret.listIterator();
-    while(iter.hasNext())
-      if (iter.next().hasParentProperty())
+    while(iter.hasNext()) {
+      final Property property = iter.next();
+      if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty)
         iter.remove();
+    }
     Collections.sort(ret, new Comparator<Property>() {
       public int compare(final Property propertyOne, final Property propertyTwo) {
         return propertyOne.toString().toLowerCase().compareTo(propertyTwo.toString().toLowerCase());

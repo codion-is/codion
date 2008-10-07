@@ -225,3 +225,5 @@
   Property.NonDbProperty renamed to TransientProperty
   Some javadoc additions and changes
   TestDbConnection improved
+  EntityModel.getDefaultEntity() fixed, now it doesn't set the value of Property.DenormalizedProperty, since that is set via its parent property
+  EntityPanel.getUpdateProperties() no longer includes Property.DenormalizedProperty

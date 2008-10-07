@@ -202,7 +202,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   public Object getValue(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
-      return getDenormalizedValue((Property.DenormalizedViewProperty) property);
+      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
     return EntityProxy.getEntityProxy(primaryKey.entityID).getValue(this, property);
   }
@@ -240,13 +240,19 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   public final String getValueAsString(final String propertyID) {
-    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsString(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return getValueAsString(getProperty(propertyID));
+  }
+
+  public final String getValueAsString(final Property property) {
+    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsString(this, property);
   }
 
   public final String getValueAsUserString(final String propertyID) {
-    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsUserString(this,
-            repository.getProperty(primaryKey.entityID, propertyID));
+    return getValueAsUserString(getProperty(propertyID));
+  }
+
+  public final String getValueAsUserString(final Property property) {
+    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsUserString(this, property);
   }
 
   public Object getTableValue(final String propertyId) {
@@ -255,7 +261,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   public Object getTableValue(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
-      return getDenormalizedValue((Property.DenormalizedViewProperty) property);
+      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
     return EntityProxy.getEntityProxy(primaryKey.entityID).getTableValue(this, property);
   }
@@ -606,7 +612,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         doSetValue(denormalizedProperty,
-                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.propertyID),
+                entity == null ? null : entity.getRawValue(denormalizedProperty.valueSourceProperty.propertyID),
                 false, !propertyValues.containsKey(property.propertyID), true);
       }
     }
@@ -651,7 +657,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, initialization));
   }
 
-  private Object getDenormalizedValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
+  private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
     final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedProperty) : null;

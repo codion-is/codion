@@ -1327,7 +1327,7 @@ public class EntityModel implements IRefreshable {
   protected Entity getDefaultEntity() {
     final Entity ret = new Entity(getEntityID());
     for (final Property property : EntityRepository.get().getDatabaseProperties(getEntityID()))
-      if (!property.hasParentProperty())//these are set via their respective parent properties
+      if (!property.hasParentProperty() && !(property instanceof Property.DenormalizedProperty))//these are set via their respective parent properties
         ret.setValue(property, getDefaultValue(property), true);
 
     return ret;
@@ -1335,7 +1335,9 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Returns the default value for the given property, used when initializing a new
-   * default entity for this model.
+   * default entity for this model. This does not apply to denormalized properties
+   * (Property.DenormalizedProperty) nor properties that are a part of reference properties
+   * (Property.EntityProperty)
    * For properties associated with a ComboBoxModel the selected value of that model
    * is returned unless <code>resetComboBoxModelOnClear</code> returns true for that
    * given property.
