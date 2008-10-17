@@ -863,7 +863,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
                     model.stActive,
                     model.getUpdateAllowedState(),
                     model.stEntityActive,
-                    model.getEntityModifiedState()),
+                    model.getActiveEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -880,7 +880,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
     final State stInsertUpdate = new AggregateState(AggregateState.OR, model.getInsertAllowedState(),
-            new AggregateState(AggregateState.AND, model.getUpdateAllowedState(), model.getEntityModifiedState()));
+            new AggregateState(AggregateState.AND, model.getUpdateAllowedState(), model.getActiveEntityModifiedState()));
     return ControlFactory.methodControl(this, "handleSave", insertCaption,
             new AggregateState(AggregateState.AND, model.stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),

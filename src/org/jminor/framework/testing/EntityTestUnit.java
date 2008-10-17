@@ -48,6 +48,14 @@ public abstract class EntityTestUnit extends TestCase {
     return UiUtil.getUser(null, new User(FrameworkSettings.getDefaultUsername(), null));
   }
 
+  protected Entity getReferenceEntity(final String entityID) {
+    final Entity ret = referencedEntities.get(entityID);
+    if (ret == null)
+      throw new RuntimeException("No reference entity available of type " + entityID);
+
+    return ret;
+  }
+
   protected HashMap<String, Entity> getReferencedEntities() {
     return referencedEntities;
   }

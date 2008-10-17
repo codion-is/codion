@@ -40,12 +40,13 @@
     <copy file="${elibdir}/${lib.jdbc}" todir="${lib}" />
     <copy file="${elibdir}/${lib.log4j}" todir="${lib}" />
     <copy file="${elibdir}/${lib.jasperreports.base}" todir="${lib}" />
+    <copy file="${elibdir}/${lib.junit}" todir="${lib" />
   </target>
 
-  <target name="cvs_checkout">
-    <cvs passfile="${cvspassfile}" dest="${basedir}/../../.."
-        cvsroot="${cvsroot}" package="fiskistofa/Kerfi/${ant.project.name}" />
-  </target>
+  <!--<target name="cvs_checkout">-->
+    <!--<cvs passfile="${cvspassfile}" dest="${basedir}/../../.."-->
+        <!--cvsroot="${cvsroot}" package="fiskistofa/Kerfi/${ant.project.name}" />-->
+  <!--</target>-->
 
   <target name="build" depends="init">
     <javac destdir="${build.base}" debug="true" >
@@ -103,6 +104,24 @@
     <copy todir="${deploy.path.prod}">
       <fileset dir="${dist}/current" excludes="${launch.file.dev},${launch.file.test}"/>
     </copy>
+  </target>
+
+  <target name="chmod_dev">
+    <chmod dir="${deploy.path.dev}" perm="ugo+r" type="file" includes="**/*"/>
+    <chmod dir="${deploy.path.dev}" perm="ugo+rx" type="dir" includes="**/*"/>
+    <chmod file="${deploy.path.dev}" perm="ugo+rx" type="dir"/>
+  </target>
+
+  <target name="chmod_test">
+    <chmod dir="${deploy.path.test}" perm="ugo+r" type="file" includes="**/*"/>
+    <chmod dir="${deploy.path.test}" perm="ugo+rx" type="dir" includes="**/*"/>
+    <chmod file="${deploy.path.test}" perm="ugo+rx" type="dir"/>
+  </target>
+
+  <target name="chmod_prod">
+    <chmod dir="${deploy.path.prod}" perm="ugo+r" type="file" includes="**/*"/>
+    <chmod dir="${deploy.path.prod}" perm="ugo+rx" type="dir" includes="**/*"/>
+    <chmod file="${deploy.path.prod}" perm="ugo+rx" type="dir"/>
   </target>
 
   <target name="doc" depends="init">

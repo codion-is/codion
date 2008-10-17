@@ -265,7 +265,7 @@ public class EntityKey implements Externalizable {
     properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
   }
 
-  public static List<? extends EntityKey> copyEntityKeys(final List<EntityKey> entityKeys) {
+  public static List<EntityKey> copyEntityKeys(final List<EntityKey> entityKeys) {
     final ArrayList<EntityKey> ret = new ArrayList<EntityKey>(entityKeys.size());
     for (final EntityKey key : entityKeys)
       ret.add(key.copy());
@@ -301,7 +301,7 @@ public class EntityKey implements Externalizable {
     hashCodeDirty = true;
     if (isSingleIntegerKey) {
       if (!(newValue == null || newValue instanceof Integer))
-        throw new IllegalArgumentException("Expecting a Integer value for EntityKey: " + entityID + ", " 
+        throw new IllegalArgumentException("Expecting a Integer value for EntityKey: " + entityID + ", "
                 + propertyID + ", got " + newValue + "; " + newValue.getClass());
       hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
       hashCodeDirty = false;

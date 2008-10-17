@@ -9,6 +9,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
@@ -22,12 +23,12 @@ import javax.swing.JPopupMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityComboBox extends SteppedComboBox {
@@ -96,12 +97,19 @@ public class EntityComboBox extends SteppedComboBox {
           final EntityPanel entityPanel = applicationInfo.getInstance(getModel().getDbProvider());
           entityPanel.initialize();
           entityPanel.getModel().getTableModel().setSelectedEntity(getModel().getSelectedEntity());
+          final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
+          entityPanel.getModel().evtEntitiesInserted.addListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+              lastInsertedPrimaryKeys.clear();
+              lastInsertedPrimaryKeys.addAll(((InsertEvent) e).getInsertedKeys());
+            }
+          });
           final Window parentWindow = UiUtil.getParentWindow(EntityComboBox.this);
           final JDialog dialog = new JDialog(parentWindow, applicationInfo.getCaption());
           dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
           dialog.setLayout(new BorderLayout());
           dialog.add(entityPanel, BorderLayout.CENTER);
-          final JButton btnClose = initializeOkButton(entityPanel, dialog, null);
+          final JButton btnClose = initializeOkButton(entityPanel, dialog, lastInsertedPrimaryKeys);
           btnClose.setMnemonic('O');
           final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
           buttonPanel.add(btnClose);
@@ -120,14 +128,13 @@ public class EntityComboBox extends SteppedComboBox {
   }
 
   private JButton initializeOkButton(final EntityPanel entityPanel, final JDialog pane,
-                                     final PropertyChangeListener focusListener) {
+                                     final List<EntityKey> lastInsertedPrimaryKeys) {
     return new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         try {
           getModel().refresh();
-          final List<EntityKey> inserted = entityPanel.getModel().getLastInsertedEntityPrimaryKeys();
-          if (inserted != null && inserted.size() > 0) {
-            getModel().setSelectedEntityByPrimaryKey(inserted.get(0));
+          if (lastInsertedPrimaryKeys != null && lastInsertedPrimaryKeys.size() > 0) {
+            getModel().setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
           }
           else {
             final Entity selEntity = entityPanel.getModel().getTableModel().getSelectedEntity();
@@ -139,7 +146,7 @@ public class EntityComboBox extends SteppedComboBox {
             closeAction.actionPerformed(new ActionEvent(entityPanel, 0, ""));
           //to prevent a memory leak, otherwise the KeyboardFocusManager keeps a live
           //reference to the dialog, preventing it from being garbage collected
-          KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener("focusOwner", focusListener);
+//          KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener("focusOwner", focusListener);
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();

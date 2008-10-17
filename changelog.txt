@@ -227,3 +227,9 @@
   TestDbConnection improved
   EntityModel.getDefaultEntity() fixed, now it doesn't set the value of Property.DenormalizedProperty, since that is set via its parent property
   EntityPanel.getUpdateProperties() no longer includes Property.DenormalizedProperty
+  EntityModel.evtActiveEntityChanging added, fired before the active entity changes
+  PropertySearchModel.toString(Object obj) fixed, now it uses entity.getPrimaryKey().toString() instead of entity.toString(), which resulted in a non-unique EntityTableSearchModel.searchState values
+  EntityModel.lastDeleted/updated... fields removed
+  InsertEvent, UpdateEvent and DeleteEvent added to accomodate the above change
+  EntityModel.isEntityModified renamed to isActiveEntityModified and changed so that is returnes the isActive result of the state returned by getActiveEntityModifiedState
+  UiUtil.selectFile() added

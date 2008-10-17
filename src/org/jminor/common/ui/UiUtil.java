@@ -98,6 +98,29 @@ public class UiUtil {
       throw new UserCancelException();
   }
 
+  public static File selectFile(final JComponent dialogParent, final String startDir) throws UserCancelException {
+    if (fileChooser == null) {
+      try {
+        setWaitCursor(true, dialogParent);
+        fileChooser = new JFileChooser();
+      }
+      finally {
+        setWaitCursor(false, dialogParent);
+      }
+    }
+    File selectedFile = new File(startDir == null ? System.getProperty("user.home") : startDir);
+    fileChooser.setCurrentDirectory(selectedFile);
+    int option = fileChooser.showOpenDialog(dialogParent);
+    if (option == JFileChooser.APPROVE_OPTION) {
+      selectedFile = fileChooser.getSelectedFile();
+      if (selectedFile.exists()) {
+        return selectedFile;
+      }
+    }
+
+    throw new UserCancelException();
+  }
+
   public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName)
           throws UserCancelException {
     if (fileChooser == null) {

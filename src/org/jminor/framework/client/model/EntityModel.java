@@ -13,6 +13,9 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
+import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
@@ -102,6 +105,11 @@ public class EntityModel implements IRefreshable {
    * Fired when the model has been cleared
    */
   public final Event evtModelCleared = new Event("EntityModel.evtModelCleared");
+
+  /**
+   * Fired when the active entity is about to be changed
+   */
+  public final Event evtActiveEntityChanging = new Event("EntityModel.evtActiveEntityChanging");
 
   /**
    * Fired when the active entity is changed
@@ -198,26 +206,6 @@ public class EntityModel implements IRefreshable {
   private final List<EntityModel> linkedDetailModels = new ArrayList<EntityModel>();
 
   /**
-   * Holds the primary key properties of the last insert batch
-   */
-  private final List<EntityKey> lastInsertedEntityPrimaryKeys = new ArrayList<EntityKey>();
-
-  /**
-   * Holds the updated entities from the last update batch
-   */
-  private final List<Entity> lastUpdatedEntities = new ArrayList<Entity>();
-
-  /**
-   * Holds the Entities from the last delete batch
-   */
-  private final List<Entity> lastDeletedEntities = new ArrayList<Entity>();
-
-  /**
-   * True while the model is refreshing itself
-   */
-  private boolean isRefreshing = false;
-
-  /**
    * Holds events signaling changes made to the active entity via the ui
    */
   private final Map<Property, Event> uiChangeEventMap = new HashMap<Property, Event>();
@@ -233,6 +221,11 @@ public class EntityModel implements IRefreshable {
   private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
 
   /**
+   * The mechanism for restricting a single active EntityModel at a time
+   */
+  private static final State.StateGroup activeStateGroup = new State.StateGroup();
+
+  /**
    * If true, then the modification of a record triggers a select for update
    */
   private boolean strictEditingEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_STRICT_EDIT_MODE);
@@ -243,9 +236,9 @@ public class EntityModel implements IRefreshable {
   private boolean strictEditLockEnabled = false;
 
   /**
-   * The mechanism for restricting a single active EntityModel at a time
+   * True while the model is being refreshed
    */
-  private static final State.StateGroup activeStateGroup = new State.StateGroup();
+  private boolean isRefreshing = false;
 
   /**
    * Initiates a new EntityModel
@@ -633,11 +626,19 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
+   * @return the state which indicates the modified state of the active entity
+   * @see org.jminor.framework.model.Entity#getModifiedState()
+   */
+  public State getActiveEntityModifiedState() {
+    return activeEntity.getModifiedState();
+  }
+
+  /**
    * @return true if the active entity has been modified
    * @see org.jminor.framework.model.Entity#isModified()
    */
   public boolean isActiveEntityModified() {
-    return activeEntity.isModified();
+    return getActiveEntityModifiedState().isActive();
   }
 
   /**
@@ -747,16 +748,9 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return the state which indicates the modified state of the active entity
-   * @see org.jminor.framework.model.Entity#getModifiedState()
-   */
-  public State getEntityModifiedState() {
-    return activeEntity.getModifiedState();
-  }
-
-  /**
    * Sets the active entity
    * @param entity the entity to set as active
+   * @see #evtActiveEntityChanging
    * @see #evtActiveEntityChanged
    */
   public final void setActive(final Entity entity) {
@@ -764,6 +758,9 @@ public class EntityModel implements IRefreshable {
       return;
     if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT) && entity != null)
       EntityUtil.printPropertyValues(entity);
+
+    evtActiveEntityChanging.fire();
+
     activeEntity.setAs(entity == null ? getDefaultEntity() : entity);
 
     stEntityActive.setActive(!activeEntity.isNull());
@@ -886,16 +883,20 @@ public class EntityModel implements IRefreshable {
     if (isReadOnly())
       throw new UserException("This is a read-only model, inserting is not allowed!");
     if (!isInsertAllowed())
-      throw new UserException("This is model does not allow inserting!");
+      throw new UserException("This model does not allow inserting!");
 
     log.debug(caption + " - insert "+ Util.getListContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     validateData(entities, INSERT);
-    lastInsertedEntityPrimaryKeys.clear();
-    lastInsertedEntityPrimaryKeys.addAll(EntityKey.copyEntityKeys(doInsert(entities)));
 
-    evtEntitiesInserted.fire();
+    final List<EntityKey> primaryKeys = EntityKey.copyEntityKeys(doInsert(entities));
+    if (tableModel != null) {
+      tableModel.getSelectionModel().clearSelection();
+      tableModel.addEntitiesByPrimaryKeys(primaryKeys, true);
+    }
+
+    evtEntitiesInserted.fire(new InsertEvent(this, primaryKeys));
     refreshDetailModelsAfterInsertOrUpdate();
   }
 
@@ -932,11 +933,18 @@ public class EntityModel implements IRefreshable {
 
     evtBeforeUpdate.fire();
     validateData(entities, UPDATE);
-    lastUpdatedEntities.clear();
-    for (final Entity entity : doUpdate(entities))
-      lastUpdatedEntities.add(entity);
 
-    evtEntitiesUpdated.fire();
+    final List<Entity> updatedEntities = doUpdate(entities);
+    if (tableModel != null) {//replace and select the updated entities
+      final List<Entity> updated = new ArrayList<Entity>();
+      for (final Entity entity : updatedEntities)
+        if (entity.getEntityID().equals(getEntityID()))
+          updated.add(entity);
+      tableModel.replaceEntities(updated);
+      tableModel.setSelectedEntities(updated);
+    }
+
+    evtEntitiesUpdated.fire(new UpdateEvent(this, updatedEntities));
     refreshDetailModelsAfterInsertOrUpdate();
   }
 
@@ -953,44 +961,21 @@ public class EntityModel implements IRefreshable {
     if (isReadOnly())
       throw new UserException("This is a read-only model, deleting is not allowed!");
     if (!isDeleteAllowed())
-      throw new UserException("This is model does not allow deleting!");
+      throw new UserException("This model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
     log.debug(caption + " - delete " + Util.getListContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
-    getTableModel().getSelectionModel().clearSelection();
-    lastDeletedEntities.clear();
+    if (tableModel != null)
+      tableModel.getSelectionModel().clearSelection();
+
     doDelete(entities);
-    for (final Entity entity : entities)
-      lastDeletedEntities.add(entity.getCopy());
+    if (tableModel != null)
+      tableModel.removeEntities(entities);
 
-    evtEntitiesDeleted.fire();
-    refreshDetailModelsAfterDelete();
-  }
-
-  /**
-   * @return the entities in the last update batch,
-   * if no update has been performed an empty list is returned
-   */
-  public List<Entity> getLastUpdatedEntities() {
-    return lastUpdatedEntities;
-  }
-
-  /**
-   * @return the primary keys of the entities in the last insert batch
-   * if no insert has been performed null is returned
-   */
-  public List<EntityKey> getLastInsertedEntityPrimaryKeys() {
-    return lastInsertedEntityPrimaryKeys;
-  }
-
-  /**
-   * @return the Entities from the last delete batch,
-   * if no delete has been performed an empty list is returned
-   */
-  public List<Entity> getLastDeletedEntities() {
-    return lastDeletedEntities;
+    evtEntitiesDeleted.fire(new DeleteEvent(this, entities));
+    refreshDetailModelsAfterDelete(entities);
   }
 
   /**
@@ -1169,7 +1154,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Override this method to initialize any associated EntityModel before bindEvents() is called
+   * Override this method to initialize any associated EntityModel before bindEvents() is called.
+   * Associated models are EntityModels that are used by this model but are not detail models.
    * @throws org.jminor.common.model.UserException in case of an exception
    */
   protected void initializeAssociatedModels() throws UserException {}
@@ -1505,38 +1491,6 @@ public class EntityModel implements IRefreshable {
       }
     });
 
-    evtEntitiesDeleted.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        tableModel.removeEntities(getLastDeletedEntities());
-      }
-    });
-
-    evtEntitiesInserted.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          tableModel.getSelectionModel().clearSelection();
-          tableModel.addEntitiesByPrimaryKeys(getLastInsertedEntityPrimaryKeys(), true);
-        }
-        catch (UserException ue) {
-          throw ue.getRuntimeException();
-        }
-        catch (DbException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    });
-
-    evtEntitiesUpdated.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        final List<Entity> updatedEntities = new ArrayList<Entity>(lastUpdatedEntities.size());
-        for (final Entity entity : lastUpdatedEntities)
-          if (entity.getEntityID().equals(getEntityID()))
-            updatedEntities.add(entity);
-        tableModel.replaceEntities(updatedEntities);
-        tableModel.setSelectedEntities(updatedEntities);
-      }
-    });
-
     tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         setActive(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
@@ -1546,17 +1500,17 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Removes the deleted entities from combobox models
+   * @param deletedEntities the deleted entities
    */
-  protected void refreshDetailModelsAfterDelete() {
-    final List<Entity> lastDeleted = getLastDeletedEntities();
-    if (lastDeleted.size() > 0) {
+  protected void refreshDetailModelsAfterDelete(final List<Entity> deletedEntities) {
+    if (deletedEntities.size() > 0) {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.EntityProperty property :
                 EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
           final EntityComboBoxModel comboModel =
                   (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
           if (comboModel != null) {
-            for (final Entity deletedEntity : lastDeleted)
+            for (final Entity deletedEntity : deletedEntities)
               comboModel.removeItem(deletedEntity);
             if (comboModel.getSize() > 0)
               comboModel.setSelectedItem(comboModel.getElementAt(0));

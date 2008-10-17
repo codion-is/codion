@@ -99,6 +99,8 @@ public class PropertySearchModel extends AbstractSearchModel {
     if (obj instanceof Collection)
       for (final Object object : ((Collection) obj))
         ret.append(toString(object));
+    else if (obj instanceof Entity)
+      ret.append(((Entity)obj).getPrimaryKey().toString());
     else
       ret.append(obj);
 
