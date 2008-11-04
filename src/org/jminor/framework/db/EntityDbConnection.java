@@ -499,7 +499,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final String entityID = primaryKeys.get(0).getEntityID();
     final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
     final List<Entity> returnList = new ArrayList<Entity>(primaryKeyList.size());
-    if (entityCacheEnabled)
+    if (entityCacheEnabled && (properties == null || properties.size() == 0))//dont use the cache unless the query is straight forward
       returnList.addAll(getCachedEntities(entityID, primaryKeyList));//removes those primary keys from the list
     try {
       if (primaryKeyList.size() > 0) {
@@ -518,7 +518,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
           final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
 
-          if (entityCacheEnabled)
+          if (entityCacheEnabled && (properties == null || properties.size() == 0))
             addToEntityCache(entityID, result);
 
           if (!lastQueryResultCached())
