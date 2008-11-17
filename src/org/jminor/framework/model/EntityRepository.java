@@ -104,10 +104,11 @@ public class EntityRepository implements Serializable {
     instance.createDateColumns.putAll(repository.createDateColumns);
   }
 
-  public String[] getInitializedEntities() {
-    return properties.keySet().toArray(new String[properties.keySet().size()]);
-  }
-
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param description a string describing the property
+   */
   public void setPropertyDescription(final String entityID, final String propertyID, final String description) {
     if (!propertyDescriptions.containsKey(entityID))
       propertyDescriptions.put(entityID, new HashMap<String, String>());
@@ -115,10 +116,20 @@ public class EntityRepository implements Serializable {
     propertyDescriptions.get(entityID).put(propertyID, description);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param property the property
+   * @return the description string for the given property, null if none is defined
+   */
   public String getPropertyDescription(final String entityID, final Property property) {
     return getPropertyDescription(entityID, property.propertyID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @return the description string for the given property, null if none is defined
+   */
   public String getPropertyDescription(final String entityID, final String propertyID) {
     if (!propertyDescriptions.containsKey(entityID) || !propertyDescriptions.get(entityID).containsKey(propertyID))
       return null;
@@ -126,6 +137,12 @@ public class EntityRepository implements Serializable {
     return propertyDescriptions.get(entityID).get(propertyID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param searchPropertyIDs the IDs of the properties to use as default search properties for
+   * entities identified by <code>entityID</code>, these must be STRING properties
+   * @throws RuntimeException in case of a non-string property ID
+   */
   public void setEntitySearchProperties(final String entityID, final String... searchPropertyIDs) {
     for (final String propertyID : searchPropertyIDs)
       if (getProperty(entityID, propertyID).propertyType != Type.STRING)
@@ -134,12 +151,20 @@ public class EntityRepository implements Serializable {
     entitySearchPropertyIDs.put(entityID, searchPropertyIDs);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a String array containing the IDs of the properties used as default search properties
+   * for entities identified by <code>entityID</code>
+   */
   public String[] getEntitySearchPropertyIDs(final String entityID) {
     return entitySearchPropertyIDs.get(entityID);
   }
 
-  public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(
-          final String entityID) {
+  /**
+   * @param entityID the entity ID
+   * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
+   */
+  public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final String entityID) {
     final List<Property.PrimaryKeyProperty> ret = primaryKeyProperties.get(entityID);
     if (ret == null)
       throw new RuntimeException("No primary key properties defined for entity: " + entityID);
@@ -147,6 +172,10 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a String array containing the primary column names of the entity identified by <code>entityID</code>
+   */
   public String[] getPrimaryKeyColumnNames(final String entityID) {
     final String[] ret = primaryKeyColumnNames.get(entityID);
     if (ret == null)
@@ -155,6 +184,13 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param idx the index of the property to retrieve
+   * @return the property found at index <code>idx</code> in the entity identified by <code>entityID</code>,
+   * null if no property is at the given index
+   * @throws RuntimeException if property indexes are not defined for the given entity
+   */
   public Property getPropertyAtViewIndex(final String entityID, final int idx) {
     final Map<Integer, Property> indexes = visiblePropertyIndexes.get(entityID);
     if (indexes == null)
@@ -163,6 +199,11 @@ public class EntityRepository implements Serializable {
     return indexes.get(idx);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return true if the entity identified by <code>entityID</code> is read only
+   * @throws RuntimeException if the read only value is undefined
+   */
   public boolean isReadOnly(final String entityID) {
     final Boolean ret = readOnly.get(entityID);
     if (ret == null)
@@ -172,7 +213,7 @@ public class EntityRepository implements Serializable {
   }
 
   /**
-   * @param entityID the entity class
+   * @param entityID the entity ID
    * @return a comma seperated list of columns to use in the order by clause
    */
   public String getOrderByColumnNames(final String entityID) {
@@ -183,6 +224,11 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the name of the table used to select entities identified by <code>entityID</code>
+   * @throws RuntimeException if none is defined
+   */
   public String getSelectTableName(final String entityID) {
     final String ret = entitySelectTableNames.get(entityID);
     if (ret == null)
@@ -191,6 +237,11 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the name of the table on which entities identified by <code>entityID</code> are based
+   * @throws RuntimeException if none is defined
+   */
   public String getTableName(final String entityID) {
     final String ret = entityTableNames.get(entityID);
     if (ret == null)
@@ -199,6 +250,11 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the query string used to select entities identified by <code>entityID</code>
+   * @throws RuntimeException if none is defined
+   */
   public String getSelectString(final String entityID) {
     final String ret = entitySelectStrings.get(entityID);
     if (ret == null)
@@ -207,6 +263,11 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the IdSource of the entity identified by <code>entityID</code>
+   * @throws RuntimeException if none is defined
+   */
   public IdSource getIdSource(final String entityID) {
     final IdSource ret = idSources.get(entityID);
     if (ret == null)
@@ -215,6 +276,15 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * Retrive the database properties comprising the entity identified by <code>entityID</code>
+   * @param entityID the entity ID
+   * @param includePrimaryKeyProperties if true primary key properties are included
+   * @param includeSelectOnly if true then properties that are marked as 'select only' are included
+   * @param includeNonUpdatable if true then non updatable properties are included
+   * @return a list containing the database properties (properties that map to database columns) comprising
+   * the entity identified by <code>entityID</code>
+   */
   public List<Property> getDatabaseProperties(final String entityID,
                                               final boolean includePrimaryKeyProperties,
                                               final boolean includeSelectOnly,
@@ -235,6 +305,12 @@ public class EntityRepository implements Serializable {
     return new ArrayList<Property>(propertyHashSet);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a collection containing the visible (non-hidden) properties
+   * in the entity identified by <code>entityID</code>
+   * @throws RuntimeException if no visible properties are defined for the given entity
+   */
   public Collection<Property> getVisibleProperties(final String entityID) {
     final Collection<Property> ret = visibleProperties.get(entityID).values();
     if (ret == null)
@@ -243,6 +319,12 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @return the property identified by <code>propertyID</code> in the entity identified by <code>entityID</code>
+   * @throws RuntimeException in case no such property exists
+   */
   public Property getProperty(final String entityID, final String propertyID) {
     final Property ret = getProperties(entityID).get(propertyID);
     if (ret == null)
@@ -251,10 +333,22 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @return true if the entity identified by <code>entityID</code> contains
+   * a property identified by <code>propertyId</code>
+   */
   public boolean hasProperty(final String entityID, final String propertyID) {
     return getProperties(entityID).get(propertyID) != null;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyIDs the property IDs of the properties to retrieve
+   * @return a list containing the properties identified by <code>propertyIDs</code>, found in
+   * the entity identified by <code>entityID</code>
+   */
   public List<Property> getProperties(final String entityID, final String... propertyIDs) {
     final List<Property> ret = new ArrayList<Property>();
     for (final String propertyID : propertyIDs)
@@ -264,9 +358,9 @@ public class EntityRepository implements Serializable {
   }
 
   /**
-   * @param entityID the class
-   * @param includeHidden true if hidden propertyValues should be included in the result
-   * @return an array of Property representing the propertyValues of this entity
+   * @param entityID the entity ID
+   * @param includeHidden true if hidden properties should be included in the result
+   * @return a collection containing the properties found in the entity identified by <code>entityID</code>
    */
   public Collection<Property> getProperties(final String entityID, final boolean includeHidden) {
     if (includeHidden)
@@ -275,6 +369,11 @@ public class EntityRepository implements Serializable {
       return getVisibleProperties(entityID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a collection containing all database properties found in the entity identified by <code>entityID</code>,
+   * that is, properties that map to database columns
+   */
   public Collection<Property> getDatabaseProperties(final String entityID) {
     final Collection<Property> ret = databaseProperties.get(entityID).values();
     if (ret == null)
@@ -283,15 +382,30 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a collection containing all the reference properties (entity properties) found in the entity
+   * identified by <code>entityID</code>
+   */
   public Collection<Property.EntityProperty> getEntityProperties(final String entityID) {
     return entityProperties.containsKey(entityID) ?
             entityProperties.get(entityID).values() : new ArrayList<Property.EntityProperty>(0);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return true if the given entity contains denormalized properties
+   */
   public boolean hasDenormalizedProperties(final String entityID) {
     return denormalizedProperties.size() > 0 && denormalizedProperties.containsKey(entityID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyOwnerEntityID the entity ID of the actual property owner entity
+   * @return a collection containing all denormalized properties of the entity identified by <code>entityID</code>
+   * which source is the entity identified by <code>propertyOwnerEntityID</code>
+   */
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
                                                                              final String propertyOwnerEntityID) {
     if (denormalizedProperties.containsKey(entityID))
@@ -315,6 +429,12 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @return the Property.EntityProperty with the given propertyID
+   * @throws RuntimeException in case no such property exists
+   */
   public Property.EntityProperty getEntityProperty(final String entityID, final String propertyID) {
     for (final Property.EntityProperty entityProperty : getEntityProperties(entityID)) {
       if (entityProperty.propertyID.equals(propertyID))
@@ -324,6 +444,10 @@ public class EntityRepository implements Serializable {
     throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
+   */
   public Map<String, Property> getProperties(final String entityID) {
     final Map<String, Property> ret = properties.get(entityID);
     if (ret == null)
@@ -332,6 +456,11 @@ public class EntityRepository implements Serializable {
     return ret;
   }
 
+  /**
+   * @param entityID the entity ID
+   * @return the name of the primary key value source for the given entity
+   * @throws RuntimeException in case no id source name is specified
+   */
   public String getEntityIdSource(final String entityID) {
     final String idSource = entityIdSources.get(entityID);
     if (idSource == null)
@@ -353,32 +482,80 @@ public class EntityRepository implements Serializable {
     return false;
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final String orderByColumns,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, IdSource.ID_AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, IdSource.ID_AUTO_INCREMENT, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final IdSource idSource,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, idSource, null, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final Property... initialPropertyDefinitions) {
     initialize(entityID, idSource, entityIdSource, null, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, null, idSource, entityIdSource, orderByColumns, null, false, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
+   * in case it differs from the table used to insert/update/delete entities
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns, final String dbSelectTableName,
                          final Property... initialPropertyDefinitions) {
@@ -386,6 +563,18 @@ public class EntityRepository implements Serializable {
             false, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
+   * in case it differs from the table used to insert/update/delete entities
+   * @param isReadOnly true if entities of this type should be regarded as read-only
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
@@ -394,6 +583,19 @@ public class EntityRepository implements Serializable {
             isReadOnly, initialPropertyDefinitions);
   }
 
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param dbTableName the name of the table used to insert/update/delete entities of this type
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
+   * in case it differs from the table used to insert/update/delete entities
+   * @param isReadOnly true if entities of this type should be regarded as read-only
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
   public void initialize(final String entityID, final String dbTableName, final IdSource idSource,
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
@@ -433,10 +635,17 @@ public class EntityRepository implements Serializable {
     initialize(entityID);
   }
 
+  /**
+   * @return the IDs of all the entities defined in this repository
+   */
   public Collection<String> getEntityIDs() {
     return properties.keySet();
   }
 
+  /**
+   * Initializes all the entities specified in this repository
+   * @return this EntityRepository instance
+   */
   public EntityRepository initializeAll() {
     for (final String entityID : properties.keySet())
       initialize(entityID);
@@ -444,6 +653,11 @@ public class EntityRepository implements Serializable {
     return this;
   }
 
+  /**
+   * @param entityID the entityID for which to retrieve the dependencies
+   * @return the dependencies of the given entityID, that is, the entities
+   * which depend on this entity via reference properties (foreign keys)
+   */
   public EntityDependencies getEntityDependencies(final String entityID) {
     if (!entityDependencies.containsKey(entityID))
       entityDependencies.put(entityID, resolveEntityDependencies(entityID));
@@ -451,10 +665,20 @@ public class EntityRepository implements Serializable {
     return entityDependencies.get(entityID);
   }
 
+  /**
+   * @param entityID the entityID
+   * @return true if the table on which the entity identified by <code>entityID</code> is based
+   * contains a create date column
+   */
   public boolean hasCreateDateColumn(final String entityID) {
     return createDateColumns.containsKey(entityID);
   }
 
+  /**
+   * Specify the name of the create date column for the given entity
+   * @param entityID the entityID of the entity for which to specify the create date column name
+   * @param createDateColumnName the name of the create date column
+   */
   public void setCreateDateColumn(final String entityID, final String createDateColumnName) {
     if (createDateColumnName == null || createDateColumnName.length() == 0)
       createDateColumns.remove(entityID);
@@ -462,6 +686,11 @@ public class EntityRepository implements Serializable {
       createDateColumns.put(entityID, createDateColumnName);
   }
 
+  /**
+   * @param entityID the entityID
+   * @return the create date column name of the table on which the entity identified
+   * by <code>entityID</code> is based on, null if none is specified
+   */
   public String getCreateDateColumn(final String entityID) {
     return createDateColumns.get(entityID);
   }
@@ -515,6 +744,10 @@ public class EntityRepository implements Serializable {
     }
 
     return dependencies;
+  }
+
+  private String[] getInitializedEntities() {
+    return properties.keySet().toArray(new String[properties.keySet().size()]);
   }
 
   private void addProperty(final Map<String, Property> visibleProperties,

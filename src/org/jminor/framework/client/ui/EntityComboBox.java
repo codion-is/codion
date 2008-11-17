@@ -31,6 +31,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EntityComboBox provides a button for creating a new entity
+ */
 public class EntityComboBox extends SteppedComboBox {
 
   private final JButton btnNewRecord;

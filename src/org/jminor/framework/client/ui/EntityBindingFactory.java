@@ -29,7 +29,7 @@ import java.awt.GridLayout;
 public abstract class EntityBindingFactory extends JPanel {
 
   /**
-   * @return Value for property 'model'.
+   * @return the EntityModel instance to bind controls to
    */
   public abstract EntityModel getModel();
 

@@ -18,18 +18,46 @@ import org.apache.log4j.Logger;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * A ComboBoxModel based on an Entity
+ */
 public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   private static final Logger log = Util.getLogger(EntityComboBoxModel.class);
 
+  /**
+   * fired when after a refresh has been performed
+   */
   public final Event evtRefreshDone = new Event("EntityComboBoxModel.evtRefreshDone");
 
+  /**
+   * the ID of the underlying entity
+   */
   private final String entityID;
+
+  /**
+   * the IEntityDbProvider instance used by this EntityComboBoxModel
+   */
   private final IEntityDbProvider dbProvider;
+
+  /**
+   * true if the data should only be fetched once, unless <code>forceRefresh()</code> is called
+   */
   private final boolean staticData;
 
+  /**
+   * true after the data has been fetched for the first time
+   */
   private boolean dataInitialized = false;
+
+  /**
+   * used to indicate that a refresh is being forced
+   */
   private boolean forceRefresh = false;
+
+  /**
+   * the EntityCriteria used to filter the data
+   */
   private EntityCriteria entityCriteria;
 
   /**
@@ -77,14 +105,14 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @return Value for property 'dbProvider'.
+   * @return the IEntityDbProvider instance used by this EntityComboBoxModel
    */
   public IEntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
   /**
-   * @return Value for property 'entityID'.
+   * @return the ID of the underlying entity
    */
   public String getEntityID() {
     return entityID;
@@ -104,6 +132,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     }
   }
 
+  /**
+   * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
+   */
   protected List<?> getContents() {
     try {
       if (staticData && dataInitialized && !forceRefresh) {
@@ -140,7 +171,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @param primaryKey Value to set for property 'selectedEntityByPrimaryKey'.
+   * Selects the entity with the given primary key
+   * @param primaryKey the primary key of the entity to select
    */
   public void setSelectedEntityByPrimaryKey(final EntityKey primaryKey) {
     final int size = getSize();
@@ -156,7 +188,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @return Value for property 'selectedEntity'.
+   * @return the selected entity
    */
   public Entity getSelectedEntity() {
     if (isNullValueSelected())
@@ -181,6 +213,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     return getClass().getSimpleName() + " [entityID: " + getEntityID() + "]";
   }
 
+  /**
+   * @return true if the data has been initialized
+   */
   public boolean isDataInitialized() {
     return dataInitialized;
   }
@@ -193,6 +228,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     this.entityCriteria = entityCriteria;
   }
 
+  /**
+   * @return the EntityCriteria used by this EntityComboBoxModel
+   */
   protected EntityCriteria getEntityCriteria() {
     return entityCriteria;
   }
@@ -208,6 +246,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     return true;
   }
 
+  /**
+   * Retrieves the entities to present in this EntityComboBoxModel
+   * @return the entities to present in this EntityComboBoxModel
+   * @throws UserException in case of an exception
+   * @throws DbException in case of a database exception
+   */
   protected List<Entity> getEntitiesFromDb() throws UserException, DbException {
     try {
       if (getEntityCriteria() != null)

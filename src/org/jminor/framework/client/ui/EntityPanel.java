@@ -84,6 +84,17 @@ import java.util.Vector;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
+ *
+ * The default layout is as follows:
+ * __________________________________
+ * |     property           |action |
+ * |      panel             | panel | } edit panel
+ * |________________________|_______|
+ * |                  |             |
+ * |   table panel    |   detail    |
+ * |(EntityTablePanel)|   panel     |
+ * |                  |             |
+ * |__________________|_____________|
  */
 public abstract class EntityPanel extends EntityBindingFactory implements IExceptionHandler {
 
@@ -133,57 +144,177 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
 
+  /**
+   * true if this EntityPanel allows its underlying query to be configured
+   */
   private final boolean queryConfigurationAllowed;
+
+  /**
+   * true if this panel should be compact
+   */
   private final boolean compactPanel;
+
+  /**
+   * true if the rows in the table (if any) should be colored according to the underlying entity
+   */
   private final boolean specialRendering;
+
+  /**
+   * true if the data should be refreshed during initialization
+   */
   private final boolean refreshOnInit;
+
+  /**
+   * indicates where the edit panel buttons should be placed, either BorderLayout.SOUTH or BorderLayout.EAST
+   */
   private final String buttonPlacement;
 
+  /**
+   * The EntityModel instance used by this EntityPanel
+   */
   private EntityModel model;
+
+  /**
+   * The EntityTablePanel instance used by this EntityPanel
+   */
   private EntityTablePanel entityTablePanel;
 
+  /**
+   * The edit panel which contains the controls required for editing a entity
+   */
   private JPanel editPanel;
+
+  /**
+   * The horizontal split pane, which is used in case this entity panel has detail panels.
+   * It splits the lower section of this EntityPanel into the EntityTablePanel on the left
+   * and the detail panels on the right
+   */
   private JSplitPane horizontalSplitPane;
+
+  /**
+   * A map containing the detail panels, if any.
+   * Initialized during <code>initialize()</code>
+   */
   private Map<EntityPanelInfo, EntityPanel> detailEntityPanels;
+
+  /**
+   * A tab pane for the detail panels, if any
+   */
   private JTabbedPane detailTabPane;
+
+  /**
+   * A base panel used in case this EntityPanel is configured to be compact
+   */
   private JPanel compactBase;
+
+  /**
+   * The dialog used when detail panels are undocked
+   */
   private JDialog detailDialog;
+
+  /**
+   * The dialog used when the edit panel is undocked
+   */
   private JDialog editDialog;
 
+  /**
+   * The component that should receive focus when the UI is prepared for a new record
+   */
   private JComponent defaultFocusComponent;
 
+  /**
+   * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
+   */
   private int editPanelState = HIDDEN;
+
+  /**
+   * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
+   */
   private int detailPanelState = HIDDEN;
 
+  /**
+   * True after <code>initialize()</code> has been called
+   */
   private boolean initialized = false;
 
+  /**
+   * Initializes a new EntityPanel instance.
+   */
   public EntityPanel() {
     this(true);
   }
 
+  /**
+   * Initializes a new EntityPanel instance.
+   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   */
   public EntityPanel(final boolean refreshOnInit) {
     this(refreshOnInit, true);
   }
 
+  /**
+   * Initializes a new EntityPanel instance.
+   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param specialRendering if true then each row in the table model (if any)
+   * is colored according to the underlying entity
+   */
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering) {
     this(refreshOnInit, specialRendering, false);
   }
 
+  /**
+   * Initializes a new EntityPanel instance.
+   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param specialRendering if true then each row in the table model (if any)
+   * is colored according to the underlying entity
+   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * otherwise vertically on its right side
+   */
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons) {
     this(refreshOnInit, specialRendering, horizontalButtons, EMBEDDED);//embedded perhaps not default?
   }
 
+  /**
+   * Initializes a new EntityPanel instance.
+   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param specialRendering if true then each row in the table model (if any)
+   * is colored according to the underlying entity
+   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * otherwise vertically on its right side
+   * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
+   */
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
                      final int detailPanelState) {
     this(refreshOnInit, specialRendering, horizontalButtons, detailPanelState, true);
   }
 
+  /**
+   * Initializes a new EntityPanel instance.
+   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param specialRendering if true then each row in the table model (if any)
+   * is colored according to the underlying entity
+   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * otherwise vertically on its right side
+   * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
+   * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
+   */
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
                      final int detailPanelState, final boolean queryConfigurationAllowed) {
     this(refreshOnInit, specialRendering, horizontalButtons, detailPanelState,
             queryConfigurationAllowed,  false);
   }
 
+  /**
+   * Initializes a new EntityPanel instance.
+   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param specialRendering if true then each row in the table model (if any)
+   * is colored according to the underlying entity
+   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * otherwise vertically on its right side
+   * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
+   * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
+   * @param compactPanel true if this panel should be laid out in a compact state
+   */
   public EntityPanel(final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
                      final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactPanel) {
     if (detailPanelState == DIALOG)
@@ -198,7 +329,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * Sets the EntityModel
+   * Sets the EntityModel, this method can and should only be called once
    * @param model the EntityModel instance to use with this EntityPanel
    * @return this EntityPanel instance
    */
@@ -220,12 +351,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   /**
    * Initializes this EntityPanel, override to add any specific initialization
    * functionality, to show the search panel for example.
+   * <code>setModel()</code> must be called prior to calling this method.
    * Remember to return right away if isInitialized() returns true and to call super.initialize()
    * After this method has finished isInitialized() returns true
    * @see #isInitialized()
+   * @see #setModel(org.jminor.framework.client.model.EntityModel)
    */
   public void initialize() {
-    if (initialized)
+    if (isInitialized())
       return;
 
     if (model == null)
@@ -324,8 +457,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * Sets the component that should recieve the focus when the
-   * ui is initialised after a new record has been inserted.
+   * Sets the component that should recieve the focus when the ui is initialised after
+   * a new record has been inserted or the panel is activated
    * @param defaultFocusComponent the component
    * @return the component
    */
@@ -349,7 +482,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * @return the detail panel selected in the detail tab pane.
-   * If no detail panels are defined an RuntimeException is thrown.
+   * If no detail panels are defined a RuntimeException is thrown.
    */
   public EntityPanel getSelectedDetailPanel() {
     if (this.detailTabPane == null)
@@ -359,7 +492,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * Returns the detail panel of the type <code>detailPanelClass</code>, if one is available
+   * Returns the detail panel of the type <code>detailPanelClass</code>, if one is available, otherwise
+   * a RuntimeException is thrown
    * @param detailPanelClass the class of the detail panel to retrieve
    * @return the detail panel of the given type
    */
@@ -408,6 +542,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    */
   public int getDetailPanelState() {
     return detailPanelState;
+  }
+
+  /**
+   * @return the edit panel state, either HIDDEN, EMBEDDED or DIALOG
+   */
+  public int getEditPanelState() {
+    return editPanelState;
   }
 
   /**
@@ -472,19 +613,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return the edit panel state, either HIDDEN, EMBEDDED or DIALOG
-   */
-  public int getEditPanelState() {
-    return editPanelState;
-  }
-
-  /**
    * Hides or shows the active filter panels for this panel and all its child panels
    * (detail panels and their detail panels etc.)
    * @param value true if the active panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(final boolean value) {
-    if (!initialized)
+    if (!isInitialized())
       return;
 
     if (model.getTableModel() != null)
@@ -518,6 +652,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * @param component the component
+   * @return true if <code>component</code> is a child component of this EntityPanel
+   */
   public boolean isParentPanel(final Component component) {
     final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, component);
     if (parent == this)
@@ -528,19 +666,28 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /** {@inheritDoc} */
-  public void handleException(final Throwable e) {
-    handleException(e, this);
+  public void handleException(final Throwable throwable) {
+    handleException(throwable, this);
   }
 
-  public void handleException(final Throwable e, final JComponent parent) {
-    log.error(this, e);
-    FrameworkUiUtil.handleException(e, model.getEntityID(), parent);
+  /**
+   * Handles the given exception
+   * @param throwable the exception to handle
+   * @param dialogParent the component to use as exception dialog parent
+   */
+  public void handleException(final Throwable throwable, final JComponent dialogParent) {
+    log.error(this, throwable);
+    FrameworkUiUtil.handleException(throwable, model.getEntityID(), dialogParent);
   }
 
   //#############################################################################################
   // Begin - control methods, see setupControls
   //#############################################################################################
 
+  /**
+   * Saves the active entity, that is, if no entity is selected it performs a insert otherwise the user
+   * is asked whether to update the selected record or insert a new one
+   */
   public final void handleSave() {
     if ((getModel().getTableModel() != null && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
             || !getModel().isActiveEntityModified() || !model.isUpdateAllowed()) {
@@ -561,6 +708,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
+   * Performs a insert on the active entity
    * @return true in case of successful insert, false otherwise
    */
   public final boolean handleInsert() {
@@ -584,9 +732,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return false;
   }
 
+  /**
+   * Performs a delete on the active entity or if a table model is available, the selected entities
+   * @return true if the delete operation was successful
+   */
   public final boolean handleDelete() {
     try {
-      if (confirmDelete(model.getTableModel().getSelectedEntities())) {
+      if (confirmDelete()) {
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
           model.delete();
@@ -605,10 +757,14 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return false;
   }
 
+  /**
+   * Performs an update on the active entity
+   * @return true if the update operation was successful
+   */
   public final boolean handleUpdate() {
     try {
       validateData();
-      if (confirmUpdate(model.getActiveEntityCopy())) {
+      if (confirmUpdate()) {
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
           model.update();
@@ -628,6 +784,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return false;
   }
 
+  /**
+   * Queries the user on which property to update, after which it calls the
+   * <code>updateSelectedEntities(property)</code> with that property
+   * @see #updateSelectedEntities(org.jminor.framework.model.Property)
+   * @see #getInputManager(org.jminor.framework.model.Property, java.util.List)
+   */
   public void updateSelectedEntities() {
     try {
       updateSelectedEntities(getPropertyToUpdate());
@@ -635,6 +797,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     catch (UserCancelException e) {/**/}
   }
 
+  /**
+   * Retrieves a new property value via input dialog and performs an update on the selected entities
+   * @param propertyToUpdate the property to update
+   * @see #getInputManager(org.jminor.framework.model.Property, java.util.List)
+   */
   public void updateSelectedEntities(final Property propertyToUpdate) {
     try {
       if (model.getTableModel() == null || model.getTableModel().stSelectionEmpty.isActive())
@@ -667,6 +834,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * Shows a dialog containing lists of entities which depend on the selected entities
+   */
   public void viewSelectionDependencies() {
     new SwingWorker() {//just testing this thingy
       protected Object doInBackground() throws Exception {
@@ -698,6 +868,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }.execute();
   }
 
+  /**
+   * Prints the table if one is available
+   * @throws UserException in case of a printer exception
+   */
   public void printTable() throws UserException {
     try {
       if (model.getTableModel() != null)
@@ -710,11 +884,21 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * Shows the query configuration dialog if a table panel is available
+   */
   public void configureQuery() {
-    getTablePanel().configureQuery();
+    if (getTablePanel() != null)
+      getTablePanel().configureQuery();
   }
 
+  /**
+   * Shows a dialog for selecting which columns to show/hide if a table panel is available
+   */
   public void selectTableColumns() {
+    if (getTablePanel() == null)
+      return;
+
     final JPanel togglePanel = new JPanel(new GridLayout(getTablePanel().getJTable().getColumnCount(), 1));
     final Enumeration<TableColumn> columns = getTablePanel().getJTable().getColumnModel().getColumns();
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
@@ -764,18 +948,27 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * @return a control for showing the column selection dialog
+   */
   public Control getSelectColumnsControl() {
     return ControlFactory.methodControl(this, "selectTableColumns",
             FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS) + "...", null,
             FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS));
   }
 
+  /**
+   * @return a control for showing the query configuration dialog
+   */
   public Control getConfigureQueryControl() {
     return ControlFactory.methodControl(this, "configureQuery",
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + "...", null,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY));
   }
 
+  /**
+   * @return a control for showing the dependencies dialog
+   */
   public Control getViewDependenciesControl() {
     return ControlFactory.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
@@ -783,15 +976,20 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
+  /**
+   * @return a control for printing the table
+   */
   public Control getPrintControl() {
     final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
     return ControlFactory.methodControl(this, "printTable", printCaption, null,
             printCaption, printCaption.charAt(0));
   }
 
+  /**
+   * @return a control for deleting the selected entities
+   */
   public Control getDeleteSelectedControl() {
-    final String deleteCaption = FrameworkMessages.get(FrameworkMessages.DELETE);
-    return ControlFactory.methodControl(this, "handleDelete", deleteCaption,
+    return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.AND,
                     model.getDeleteAllowedState(),
                     model.getTableModel().stSelectionEmpty.getReversedState()),
@@ -799,18 +997,22 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             Images.loadImage(Images.IMG_DELETE_16));
   }
 
+  /**
+   * @return a control for refreshing the model data
+   */
   public Control getRefreshControl() {
-    final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return ControlFactory.methodControl(model, "refresh", refreshCaption,
+    return ControlFactory.methodControl(model, "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
             model.stActive, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
+  /**
+   * @return a control for updating a property in the selected entities
+   */
   public Control getUpdateSelectedControl() {
-    final String updateSelectedCaption = FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED);
     return ControlFactory.methodControl(this, "updateSelectedEntities",
-            updateSelectedCaption,
+            FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             new AggregateState(AggregateState.AND,
                     model.getUpdateAllowedState(),
                     model.getTableModel().stSelectionEmpty.getReversedState()),
@@ -818,10 +1020,16 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
 
-  public ControlSet getUpdateSelectedControlSet(final String name) {
-    final State enabled = new AggregateState(AggregateState.AND, model.getUpdateAllowedState(),
+  /**
+   * @return a control set containing a set of controls, one for each updatable property in the
+   * underlying entity, for performing an update on the selected entities
+   */
+  public ControlSet getUpdateSelectedControlSet() {
+    final State enabled = new AggregateState(AggregateState.AND,
+            model.getUpdateAllowedState(),
             model.getTableModel().stSelectionEmpty.getReversedState());
-    final ControlSet ret = new ControlSet(name, (char) 0, Images.loadImage("Modify16.gif"), enabled);
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
+            (char) 0, Images.loadImage("Modify16.gif"), enabled);
     ret.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     for (final Property property : getUpdateProperties()) {
       final String caption = property.getCaption() == null ? property.propertyID : property.getCaption();
@@ -835,10 +1043,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret;
   }
 
+  /**
+   * @return a control for deleting the active entity (or the selected entities if a table model is available)
+   */
   public Control getDeleteControl() {
-    final String deleteCaption = FrameworkMessages.get(FrameworkMessages.DELETE);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleDelete", deleteCaption,
+    return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.AND,
                     model.stActive,
                     model.getDeleteAllowedState(),
@@ -847,18 +1057,22 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             Images.loadImage(Images.IMG_DELETE_16));
   }
 
+  /**
+   * @return a control for clearing the UI controls
+   */
   public Control getClearControl() {
-    final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return ControlFactory.methodControl(model, "clear", clearCaption,
+    return ControlFactory.methodControl(model, "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
             model.stActive, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
+  /**
+   * @return a control for performing an update on the active entity
+   */
   public Control getUpdateControl() {
-    final String updateCaption = FrameworkMessages.get(FrameworkMessages.UPDATE);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleUpdate", updateCaption,
+    return ControlFactory.methodControl(this, "handleUpdate", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.AND,
                     model.stActive,
                     model.getUpdateAllowedState(),
@@ -868,15 +1082,20 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
 
+  /**
+   * @return a control for performing an insert on the active entity
+   */
   public Control getInsertControl() {
-    final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT);
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleSave", insertCaption,
+    return ControlFactory.methodControl(this, "handleSave", FrameworkMessages.get(FrameworkMessages.INSERT),
             new AggregateState(AggregateState.AND, model.stActive, model.getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
 
+  /**
+   * @return a control for performing a save on the active entity
+   */
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
     final State stInsertUpdate = new AggregateState(AggregateState.OR, model.getInsertAllowedState(),
@@ -887,10 +1106,20 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
 
+  /**
+   * Associates <code>control</code> with <code>controlCode</code>
+   * @param controlCode the control code
+   * @param control the control to associate with <code>controlCode</code>
+   */
   public final void setControl(final String controlCode, final Control control) {
     controlMap.put(controlCode, control);
   }
 
+  /**
+   * @param controlCode the control code
+   * @return the control associated with <code>controlCode</code>
+   * @throws RuntimeException in case no control is associated with the given control code
+   */
   public final Control getControl(final String controlCode) {
     if (!controlMap.containsKey(controlCode))
       throw new RuntimeException(controlCode + " control not available in panel: " + this);
@@ -898,6 +1127,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return controlMap.get(controlCode);
   }
 
+  /**
+   * Creates a static entity panel showing the given entities
+   * @param entities the entities to show in the panel
+   * @return a static EntityPanel showing the given entities
+   * @throws UserException in case of an exception
+   */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities) throws UserException {
     if (entities == null || entities.size() == 0)
       throw new UserException("Cannot create an EntityPanel without the entities");
@@ -905,6 +1140,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return createStaticEntityPanel(entities, null);
   }
 
+  /**
+   * Creates a static entity panel showing the given entities
+   * @param entities the entities to show in the panel
+   * @param dbProvider the IEntityDbProvider, in case the returned panel should require one
+   * @return a static EntityPanel showing the given entities
+   * @throws UserException in case of an exception
+   */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
                                                     final IEntityDbProvider dbProvider) throws UserException {
     if (entities == null || entities.size() == 0)
@@ -913,12 +1155,29 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return createStaticEntityPanel(entities, dbProvider, entities.get(0).getEntityID(), true);
   }
 
+  /**
+   * Creates a static entity panel showing the given entities
+   * @param entities the entities to show in the panel
+   * @param dbProvider the IEntityDbProvider, in case the returned panel should require one
+   * @param entityID the entityID
+   * @return a static EntityPanel showing the given entities
+   * @throws UserException in case of an exception
+   */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
                                                     final IEntityDbProvider dbProvider,
                                                     final String entityID) throws UserException {
     return createStaticEntityPanel(entities, dbProvider, entityID, true);
   }
 
+  /**
+   * Creates a static entity panel showing the given entities
+   * @param entities the entities to show in the panel
+   * @param dbProvider the IEntityDbProvider, in case the returned panel should require one
+   * @param entityID the entityID
+   * @param includePopupMenu if true then the default popup menu is included in the table panel, otherwise it's hidden
+   * @return a static EntityPanel showing the given entities
+   * @throws UserException in case of an exception
+   */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) throws UserException {
     final EntityModel model = new EntityModel(entityID, dbProvider, entityID) {
@@ -958,6 +1217,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret;
   }
 
+  /**
+   * Finds the next JTabbedPane ancestor and sets the selected component to be this EntityPanel instance
+   */
   protected void showPanelTab() {
     final JTabbedPane tp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, this);
     if (tp != null)
@@ -968,6 +1230,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   // Begin - initialization methods
   //#############################################################################################
 
+  /**
+   * Initializes this EntityPanel's UI
+   */
   protected void initializeUI() {
     setLayout(new BorderLayout(5,5));
     if (detailTabPane == null) { //no left right split pane
@@ -987,6 +1252,17 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * Initializes the edit panel.
+   *
+   * The default layout is as follows:
+   * __________________________________
+   * |     property           |action |
+   * |      panel             | panel | } edit panel
+   * |________________________|_______|
+   *
+   * @return a panel used for editing entities
+   */
   protected JPanel initializeEditPanel() {
     final JPanel propertyPanel = initializePropertyPanel();
     if (propertyPanel == null)
@@ -1010,6 +1286,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return editPanel;
   }
 
+  /**
+   * Initializes the horizontal split pane, used in the case of detail panel(s)
+   * @return the horizontal split pane
+   */
   protected JSplitPane initializeLeftRightSplitPane() {
     final JSplitPane leftRightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
     leftRightSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -1021,30 +1301,44 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * @return Value for property 'detailSplitPaneResizeWeight'.
+   * @return the resize weight value to use when initializing the left/right split pane, which
+   * controls the initial divider placement (0 - 1).
+   * Override to control the initial divider placement
    */
   protected double getDetailSplitPaneResizeWeight() {
     return 0.5;
   }
 
+  /**
+   * Initializes the action panel, that is, the panel containing action buttons for editing entities (Insert, Update...)
+   * @return the action panel
+   */
   protected JPanel initializeActionPanel() {
     JPanel ret;
     if (buttonPlacement.equals(BorderLayout.SOUTH)) {
       ret = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
-      ret.add(ControlProvider.createHorizontalButtonPanel(getPanelControlSet()));
+      ret.add(ControlProvider.createHorizontalButtonPanel(getActionPanelControlSet()));
     }
     else {
       ret = new JPanel(new BorderLayout(5,5));
-      ret.add(ControlProvider.createVerticalButtonPanel(getPanelControlSet()), BorderLayout.NORTH);
+      ret.add(ControlProvider.createVerticalButtonPanel(getActionPanelControlSet()), BorderLayout.NORTH);
     }
 
     return ret;
   }
 
+  /**
+   * Initializes the action toolbar, that is, the toolbar containing action buttons for editing entities (Insert, Update...)
+   * @return the action toolbar
+   */
   protected JToolBar initializeActionToolBar() {
-    return ControlProvider.createToolbar(getPanelControlSet(), JToolBar.VERTICAL);
+    return ControlProvider.createToolbar(getActionPanelControlSet(), JToolBar.VERTICAL);
   }
 
+  /**
+   * Initializes the JTabbedPane containing the detail panels, used in case of multiple detail panels
+   * @return the JTabbedPane for holding detail panels
+   */
   protected JTabbedPane initializeDetailTabPane() {
     final JTabbedPane ret = new JTabbedPane();
     ret.setFocusable(false);
@@ -1074,6 +1368,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret;
   }
 
+  /**
+   * Initializes the property panel, that is, the panel containing the UI controls for editing the active entity
+   * @return the property panel
+   */
   protected abstract JPanel initializePropertyPanel();
 
   /**
@@ -1095,11 +1393,20 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    */
   protected void initializeControlPanels() {}
 
+  /**
+   * Initializes the table panel
+   * @param specialRendering true if the a table row should be colored according to the underlying entity
+   * @return the table panel
+   */
   protected EntityTablePanel initializeEntityTablePanel(final boolean specialRendering) {
     return new EntityTablePanel(getModel().getTableModel(), getTablePopupControlSet(),
             specialRendering, isQueryConfigurationAllowed());
   }
 
+  /**
+   * @param tablePanel the EntityTablePanel
+   * @return an array containing the buttons to include on the south panel toolbar, a null item indicates a seperator
+   */
   protected AbstractButton[] getSouthPanelButtons(final EntityTablePanel tablePanel) {
     final List<AbstractButton> ret = new ArrayList<AbstractButton>();
 
@@ -1158,7 +1465,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     setControl(CLEAR, getClearControl());
     if (model.getTableModel() != null) {
       if (!model.isReadOnly() && model.isUpdateAllowed() && model.isMultipleUpdateAllowed())
-        setControl(UPDATE_SELECTED, getUpdateSelectedControl());
+        setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
       setControl(REFRESH, getRefreshControl());
       if (!model.isReadOnly() && model.isDeleteAllowed())
         setControl(MENU_DELETE, getDeleteSelectedControl());
@@ -1170,6 +1477,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * @return the ControlSet on which the table popup menu is based
+   */
   protected ControlSet getTablePopupControlSet() {
     boolean seperatorRequired = false;
     final ControlSet ret = new ControlSet("");
@@ -1182,7 +1492,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       seperatorRequired = false;
     }
     if (controlMap.containsKey(UPDATE_SELECTED)) {
-      ret.add(getUpdateSelectedControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED)));
+      ret.add(controlMap.get(UPDATE_SELECTED));
       seperatorRequired = true;
     }
     if (controlMap.containsKey(MENU_DELETE)) {
@@ -1222,6 +1532,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret;
   }
 
+  /**
+   * Initializes a ControlSet containing a control for setting the state to <code>status</code> on each detail panel.
+   * @param status the status
+   * @return a ControlSet for controlling the state of the detail panels
+   */
   protected ControlSet getDetailPanelControls(final int status) {
     if (detailEntityPanels.size() == 0)
       return null;
@@ -1242,7 +1557,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret;
   }
 
-  //override to provide specific print actions, i.e. reports
+  /**
+   * Initializes the print control set, override to provide specific printing funtionality, i.e. report printing
+   * @return the print control set
+   */
   protected ControlSet getPrintControls() {
     return controlMap.containsKey(PRINT) ? new ControlSet(Messages.get(Messages.PRINT), (char) 0, null,
             Images.loadImage("Print16.gif"), controlMap.get(PRINT)) : null;
@@ -1260,6 +1578,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    */
   protected void bindTableModelEvents() {}
 
+  /**
+   * Binds events associated to the EntityTablePanel
+   */
   protected void bindTablePanelEvents() {
     if (entityTablePanel == null)
       return;
@@ -1279,7 +1600,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     });
   }
 
-  protected ControlSet getPanelControlSet() {
+  /**
+   * @return the ControlSet on which the action panel is based
+   */
+  protected ControlSet getActionPanelControlSet() {
     final ControlSet ret = new ControlSet("Actions");
     if (controlMap.containsKey(INSERT))
       ret.add(controlMap.get(INSERT));
@@ -1324,10 +1648,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return null;
   }
 
-  protected boolean confirmDelete(final List<Entity> entities) {
-    if (entities == null || entities.size() == 0)
-      return false;
-
+  /**
+   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is cancelled
+   * @return true if the delete action should be performed
+   */
+  protected boolean confirmDelete() {
     final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_DELETE);
     final int res = JOptionPane.showConfirmDialog(EntityPanel.this,
             msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
@@ -1335,10 +1660,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return res == JOptionPane.OK_OPTION;
   }
 
-  protected boolean confirmUpdate(final Object object) {
-    if (object == null)
-      return false;
-
+  /**
+   * Called before an update is performed, if true is returned the update action is performed otherwise it is cancelled
+   * @return true if the update action should be performed
+   */
+  protected boolean confirmUpdate() {
     final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
     final int res = JOptionPane.showConfirmDialog(EntityPanel.this,
             msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
@@ -1346,6 +1672,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return res == JOptionPane.OK_OPTION;
   }
 
+  /**
+   * @param type the confirmation message type
+   * @return a string array containing two elements, the element at index 0 is used
+   * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
+   * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]
+   */
   protected String[] getConfirmationMessages(final int type) {
     switch (type) {
       case CONFIRM_TYPE_DELETE :
@@ -1362,6 +1694,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
   }
 
+  /**
+   * Shows the detail panels in a non-modal dialog
+   */
   protected void showDetailDialog() {
     final Window parent = UiUtil.getParentWindow(this);
     final Dimension parentSize = parent.getSize();
@@ -1378,11 +1713,18 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     });
   }
 
+  /**
+   * @param parentSize the size of the parent window
+   * @return the size to use when showing the detail dialog
+   */
   protected Dimension getDetailDialogSize(final Dimension parentSize) {
     return new Dimension((int) (parentSize.width/1.5),
             (editPanel != null) ? (int) (parentSize.height/1.5) : parentSize.height-54);
   }
 
+  /**
+   * Shows the edit panel in a non-modal dialog
+   */
   protected void showEditDialog() {
     final Point location = getLocationOnScreen();
     location.setLocation(location.x+1, location.y + getSize().height-editPanel.getSize().height-98);
@@ -1396,6 +1738,12 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     prepareUI(true, false);
   }
 
+  /**
+   * Prints a report based on the selected entities
+   * @param reportPath the path to the report object
+   * @param reportParams a map containing the parameters required for the report
+   * @throws UserException in case of an exception
+   */
   protected void printReportForSelected(final String reportPath, final HashMap reportParams) throws UserException {
     try {
       final JFrame frame = new JFrame(FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER));
@@ -1410,6 +1758,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     }
   }
 
+  /**
+   * Initializes the button used to toggle the search panel state (hidden, visible and advanced)
+   * @param tablePanel the table panel
+   * @return a search panel toggle button
+   */
   private JButton getSearchButton(final EntityTablePanel tablePanel) {
     if (!isQueryConfigurationAllowed())
       return null;
@@ -1426,11 +1779,15 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return ret;
   }
 
+  /**
+   * Initializes a button for updating multiple entities
+   * @return the multiple entity update button
+   */
   private JButton getUpdateButton() {
     if (model.isReadOnly() || !model.isMultipleUpdateAllowed() || !model.isUpdateAllowed())
       return null;
 
-    final ControlSet updateSet = getUpdateSelectedControlSet(null);
+    final ControlSet updateSet = getUpdateSelectedControlSet();
     final JPopupMenu menu = ControlProvider.createPopupMenu(updateSet);
     final JButton ret = new JButton(Images.loadImage("Modify16.gif"));
     ret.setToolTipText(updateSet.getDescription());
@@ -1442,7 +1799,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     });
     ret.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        menu.show(ret, (int) ret.getLocation().getX()+ret.getWidth()/2, (int) ret.getLocation().getY()+ret.getHeight()/2-menu.getPreferredSize().height);
+        menu.show(ret, (int) ret.getLocation().getX()+ret.getWidth()/2,
+                (int) ret.getLocation().getY()+ret.getHeight()/2-menu.getPreferredSize().height);
       }
     });
     ret.setPreferredSize(getSouthButtonSize());

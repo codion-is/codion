@@ -64,56 +64,132 @@ public class EntityTablePanel extends JPanel {
 
   public final static char FILTER_INDICATOR = '*';
 
+  /**
+   * fired when the table is double clicked
+   */
   public final Event evtTableDoubleClick = new Event("EntityTablePanel.evtTableDoubleClick");
+
+  /**
+   * fired when the search panel state is changed
+   */
   public final Event evtSearchPanelVisibleChanged = new Event("EntityTablePanel.evtSearchPanelVisibleChanged");
+
+  /**
+   * fired when the summary panel state is changed
+   */
   public final Event evtTableSummaryPanelVisibleChanged = new Event("EventTablePanel.evtTableSummaryPanelVisibleChanged");
 
-  private final JTable entityTable;
+  /**
+   * the EntityTableModel instance used by this EntityTablePanel
+   */
   private final EntityTableModel tableModel;
+
+  /**
+   * the JTable for showing the underlying entities
+   */
+  private final JTable entityTable;
+
+  /**
+   * the scroll pane used by the JTable instance
+   */
   private final JScrollPane tableScrollPane;
+
+  /**
+   * the search panel
+   */
   private final JPanel searchPanel;//todo should this implement a ITableSearchPanel perhaps?
 
+  /**
+   * a map mapping the summary panels to their respective properties
+   */
   private final HashMap<String, PropertySummaryPanel> propertySummaryPanels = new HashMap<String, PropertySummaryPanel>();
+
+  /**
+   * the property filter panels
+   */
   private final List<PropertyFilterPanel> propertyFilterPanels;
 
+  /**
+   * the scroll pane used for the search panel
+   */
   private JScrollPane searchScrollPane;
+
+  /**
+   * the scroll pane used for the summary panel
+   */
   private JScrollPane summaryScrollPane;
+
+  /**
+   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
+   */
   private JPanel summaryScrollPaneBase;
+
+  /**
+   * the horizontal table scroll bar
+   */
   private JScrollBar horizontalTableScrollBar;
+
+  /**
+   * the south tool bar
+   */
   private JToolBar southToolBar;
+
+  /**
+   * the label for showing the status of the table, that is, the number of rows, number of selected rows etc.
+   */
   private JLabel lblStatusMessage;
+
+  /**
+   * the action performed when the table is double clicked
+   */
   private Action doubleClickAction;
+
+  /**
+   * the toolbar containing the refresh button
+   */
   private JToolBar searchRefreshToolBar;
 
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param popupControls a ControlSet on which the table popup menu is based
+   */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls) {
     this(tableModel, popupControls, false, true);
   }
 
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param popupControls a ControlSet on which the table popup menu is based
+   * @param specialRendering true if each row should be colored according to the underlying entity
+   */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
                           final boolean specialRendering) {
     this(tableModel, popupControls, specialRendering, true);
   }
 
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param popupControls a ControlSet on which the table popup menu is based
+   * @param specialRendering true if each row should be colored according to the underlying entity
+   * @param allowQueryConfiguration true if the underlying query should be configurable
+   */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
                           final boolean specialRendering, final boolean allowQueryConfiguration) {
-    this(tableModel, popupControls, specialRendering, allowQueryConfiguration,  null);
-  }
-
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
-                          final boolean specialRendering, final boolean allowQueryConfiguration,
-                          final JButton detailPanelButton) {
     this.tableModel = tableModel;
     this.entityTable = initializeJTable(tableModel, specialRendering);
     this.tableScrollPane = new JScrollPane(entityTable);
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
-    initializeUI(detailPanelButton, allowQueryConfiguration, popupControls);
+    initializeUI(allowQueryConfiguration, popupControls);
     bindEvents();
     updateStatusMessage();
   }
 
   /**
-   * @return Value for property 'JTable'.
+   * @return the JTable instance used by this EntityTablePanel
    */
   public JTable getJTable() {
     return entityTable;
@@ -338,6 +414,11 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  /**
+   * Initializes the south panel
+   * @param allowQueryConfiguration true if the underlying query is configurable
+   * @return the south panel
+   */
   protected JPanel initializeSouthPanel(final boolean allowQueryConfiguration) {
     southToolBar = new JToolBar(JToolBar.HORIZONTAL);
     southToolBar.setFocusable(false);
@@ -361,6 +442,9 @@ public class EntityTablePanel extends JPanel {
     return ret;
   }
 
+  /**
+   * Override to provide specific event bindings, remember to call <code>super.bindEvents()</code>
+   */
   protected void bindEvents() {
     tableModel.evtRefreshStarted.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -410,8 +494,12 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
-  protected void initializeUI(final JButton detailPanelButton, final boolean allowQueryConfiguration,
-                              final ControlSet tablePopupControls) {
+  /**
+   * Initializes the UI
+   * @param allowQueryConfiguration true if the underlying query should be configurable
+   * @param tablePopupControls the ControlSet on which to base the table's popup menu
+   */
+  protected void initializeUI(final boolean allowQueryConfiguration, final ControlSet tablePopupControls) {
     final JPanel base = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
@@ -466,8 +554,6 @@ public class EntityTablePanel extends JPanel {
 
     final JPanel southPanel = initializeSouthPanel(allowQueryConfiguration);
     if (southPanel != null) {
-      if (detailPanelButton != null)
-        addSouthPanelButtons(detailPanelButton);
       final JPanel southBase = new JPanel(new BorderLayout(5,5));
       southBase.setBorder(BorderFactory.createEtchedBorder());
       final JToolBar refreshButton = getRefreshToolbar();
@@ -481,6 +567,10 @@ public class EntityTablePanel extends JPanel {
     entityTable.repaint();
   }
 
+  /**
+   * Initializes the summary panel
+   * @return the summary panel
+   */
   protected JPanel initializeSummaryPanel() {
     final List<JPanel> panels = new ArrayList<JPanel>();
     final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
@@ -496,12 +586,17 @@ public class EntityTablePanel extends JPanel {
     return ret;
   }
 
+  /**
+   * Initializes a PropertySummaryPanel for the given property
+   * @param property the property for which to create a summary panel
+   * @return a PropertySummaryPanel for the given property
+   */
   protected PropertySummaryPanel initializeSummaryPanel(final Property property) {
     return new PropertySummaryPanel(property, getTableModel());
   }
 
   /**
-   * @return Value for property 'refreshControl'.
+   * @return a Control for refreshing the underlying data
    */
   protected Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
@@ -511,7 +606,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'refreshControl'.
+   * @return a Control for clearing the underlying table model, that is, removing all rows
    */
   protected Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
@@ -519,15 +614,31 @@ public class EntityTablePanel extends JPanel {
             null, null, clearCaption.charAt(0), null, null);
   }
 
+  /**
+   * @return an initialized search panel
+   */
   protected JPanel initializeSearchPanel() {
     return getTableModel().getSearchModel().stSimpleSearch.isActive() ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
   }
 
+  /**
+   * Initializes a simple search panel, with a single search field, which performes a search based on the default
+   * search properties or if none are defined all string based properties
+   * @return a simple search panel
+   * @see org.jminor.framework.model.EntityRepository#setEntitySearchProperties(String, String[])
+   */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = new ArrayList<Property>();
-    for (final Property property : EntityRepository.get().getDatabaseProperties(getTableModel().getEntityID())) {
-      if (property.propertyType == Type.STRING)
-        searchableProperties.add(property);
+    final String[] defaultSearchProperties = EntityRepository.get().getEntitySearchPropertyIDs(getTableModel().getEntityID());
+    if (defaultSearchProperties != null) {
+      for (final String propertyID : defaultSearchProperties)
+        searchableProperties.add(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID));
+    }
+    else {
+      for (final Property property : EntityRepository.get().getDatabaseProperties(getTableModel().getEntityID())) {
+        if (property.propertyType == Type.STRING)
+          searchableProperties.add(property);
+      }
     }
     if (searchableProperties.size() == 0)
       throw new RuntimeException("Unable to create a simple search panel for entity: "
@@ -561,6 +672,9 @@ public class EntityTablePanel extends JPanel {
     return searchPanel;
   }
 
+  /**
+   * @return an initialized EntityTableSearchPanel
+   */
   protected JPanel initializeAdvancedSearchPanel() {
     final EntityTableSearchPanel ret = new EntityTableSearchPanel(getTableModel().getSearchModel(),
             getTableModel().getTableColumnProperties());
@@ -570,12 +684,15 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'doubleClickAction'.
+   * @return the Action performed when the table receives a double click
    */
   protected Action getDoubleClickAction() {
     return this.doubleClickAction;
   }
 
+  /**
+   * @return the refresh toolbar
+   */
   protected JToolBar getRefreshToolbar() {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");

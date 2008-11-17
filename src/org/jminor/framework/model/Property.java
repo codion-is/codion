@@ -68,32 +68,75 @@ public class Property implements Serializable {
    */
   public int selectIndex = -1;
 
+  /**
+   * Instantiates a new property of the type Type.INT
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   */
   public Property(final String propertyID) {
     this(propertyID, Type.INT);
   }
 
+  /**
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyType the datatype of this property
+   */
   public Property(final String propertyID, final Type propertyType) {
     this(propertyID, propertyType, null);
   }
 
+  /**
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyType the datatype of this property
+   * @param caption the caption of this property
+   */
   public Property(final String propertyID, final Type propertyType, final String caption) {
     this(propertyID, propertyType, caption, caption == null);
   }
 
+  /**
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyType the datatype of this property
+   * @param caption the caption of this property
+   * @param hidden indicates that this property should not be visible to the user
+   */
   public Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden) {
     this(propertyID, propertyType, caption, hidden, false);
   }
 
+  /**
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyType the datatype of this property
+   * @param caption the caption of this property
+   * @param hidden indicates that this property should not be visible to the user
+   * @param selectOnly if true then this property is not included during insert/update operations
+   */
   public Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
                   final boolean selectOnly) {
     this(propertyID, propertyType, caption, hidden, selectOnly, null);
   }
 
+  /**
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyType the datatype of this property
+   * @param caption the caption of this property
+   * @param hidden indicates whether this property should be visible to the user
+   * @param selectOnly if true then this property is not included during insert/update operations
+   * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+   */
   public Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
                   final boolean selectOnly, final Integer preferredColumnWidth) {
     this(propertyID, propertyType, caption, hidden, selectOnly, preferredColumnWidth, !selectOnly);
   }
 
+  /**
+   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyType the datatype of this property
+   * @param caption the caption of this property
+   * @param hidden specifies whether this property should not be visible to the user
+   * @param selectOnly specifies whether this property should be included during insert/update operations
+   * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+   * @param isUpdatable specifies whether this property is updatable
+   */
   private Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
                    final boolean selectOnly, final Integer preferredColumnWidth, final boolean isUpdatable) {
     if (propertyID == null)
@@ -226,6 +269,9 @@ public class Property implements Serializable {
    */
   public static class PrimaryKeyProperty extends Property {
 
+    /**
+     * This property's index in the primary key
+     */
     public final int primaryKeyIndex;
 
     public PrimaryKeyProperty(final String propertyID) {
@@ -258,30 +304,69 @@ public class Property implements Serializable {
   }
 
   /**
-   * A property that represents a reference to another entity.
+   * A meta property that represents a reference to another entity, typically but not necessarily based on a foreign key.
+   * These do not map directly to a underlying table column, but wrap the actual column properties involved in the relation.
    */
   public static class EntityProperty extends Property {
 
+    /**
+     * the ID of the referenced entity
+     */
     public final String referenceEntityID;
-
+    /**
+     * the actual reference properties
+     */
     public final List<Property> referenceProperties;
+    /**
+     * if true the referenced entity is automatically loaded with the parent entity,
+     * otherwise a shallow entity instance with only the primary key is loaded
+     */
     public final boolean isWeakReference;
+    /**
+     * this is a hint specifying whether this reference entity is suitible for simple lookup operations,
+     * such as in combo boxes. Entities based on large data sets, which are not suitible for loading into
+     * lists or combo boxes should have this attribute set to false
+     */
     public boolean lookup = true;
 
+    /**
+     * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
+     * be a underlying table column, it must only be unique for this entity
+     * @param caption the property caption
+     * @param referenceEntityID the ID of the referenced entity type
+     * @param referenceProperties the actual column properties involved in the reference
+     */
     public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
                           final Property... referenceProperties) {
       this(propertyID, caption, referenceEntityID, -1, referenceProperties);
     }
 
+    /**
+     * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
+     * be a underlying table column, it must only be unique for this entity
+     * @param caption the property caption
+     * @param referenceEntityID the ID of the referenced entity type
+     * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+     * @param referenceProperties the actual column properties involved in the reference
+     */
     public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
-                          final int preferredWidth, final Property... referenceProperties) {
-      this(propertyID, caption, referenceEntityID, preferredWidth, false, referenceProperties);
+                          final int preferredColumnWidth, final Property... referenceProperties) {
+      this(propertyID, caption, referenceEntityID, preferredColumnWidth, false, referenceProperties);
     }
 
+    /**
+     * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
+     * be a underlying table column, it must only be unique for this entity
+     * @param caption the property caption
+     * @param referenceEntityID the ID of the referenced entity type
+     * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+     * @param isWeakReference if true then the actual values of this reference property are not automatically loaded
+     * @param referenceProperties the actual column properties involved in the reference
+     */
     public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
-                          final int preferredWidth, final boolean isWeakReference,
+                          final int preferredColumnWidth, final boolean isWeakReference,
                           final Property... referenceProperties) {
-      super(propertyID, Type.ENTITY, caption, caption == null, false, preferredWidth);
+      super(propertyID, Type.ENTITY, caption, caption == null, false, preferredColumnWidth);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
           throw new IllegalArgumentException(referenceEntityID + ", reference property does not have a unique name: " + propertyID);
@@ -302,10 +387,18 @@ public class Property implements Serializable {
       return this.referenceProperties.size() > 1;
     }
 
+    /**
+     * @return true if this reference entity is suited for simple lookups, as in, if the underlying dataset
+     * is sufficiently small for loading into lists or combo boxes
+     */
     public boolean isLookup() {
       return lookup;
     }
 
+    /**
+     * @param lookup specifies whether the underlying dataset is sufficiently small for usage in lists or combo boxes
+     * @return this EntityProperty instance
+     */
     public EntityProperty setLookup(final boolean lookup) {
       this.lookup = lookup;
       return this;
@@ -325,27 +418,51 @@ public class Property implements Serializable {
   }
 
   /**
-   * A property that gets its value from a entity property, when that property is updated
+   * A property representing a column that should get its value automatically from a column in a referenced table
    */
   public static class DenormalizedProperty extends Property {
 
+    /**
+     * The ID of the reference entity which owns the property, from which this property
+     * gets its value
+     */
     public final String ownerEntityID;
+    /**
+     * the property from which this property gets its value
+     */
     public final Property valueSourceProperty;
 
+    /**
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param ownerEntityID the ID of the referenced entity which owns the value source property
+     * @param valueSourceProperty the property from which this property should get its value
+     */
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
                                 final Property valueSourceProperty) {
       this(propertyID, ownerEntityID, valueSourceProperty, null);
     }
 
+    /**
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param ownerEntityID the ID of the referenced entity which owns the value source property
+     * @param valueSourceProperty the property from which this property should get its value
+     * @param caption the caption if this property
+     */
     public DenormalizedProperty(final String propertyID, final String ownerEntityID,
                                 final Property valueSourceProperty, final String caption) {
       this(propertyID, ownerEntityID, valueSourceProperty, caption, -1);
     }
 
-    public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final Property valueSourceProperty, final String caption, final int preferredWidth) {
-      super(propertyID, valueSourceProperty.propertyType, caption,
-              caption == null, false, preferredWidth, true);
+    /**
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param ownerEntityID the ID of the referenced entity which owns the value source property
+     * @param valueSourceProperty the property from which this property should get its value
+     * @param caption the caption if this property
+     * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+     */
+    public DenormalizedProperty(final String propertyID, final String ownerEntityID, final Property valueSourceProperty,
+                                final String caption, final int preferredColumnWidth) {
+      super(propertyID, valueSourceProperty.propertyType, caption, caption == null, false, preferredColumnWidth, true);
       this.ownerEntityID = ownerEntityID;
       this.valueSourceProperty = valueSourceProperty;
     }
@@ -360,17 +477,35 @@ public class Property implements Serializable {
    */
   public static class TransientProperty extends Property {
 
+    /**
+     * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
+     * the property ID should not be column name, only be unique for this entity
+     * @param type the datatype of this property
+     */
     public TransientProperty(final String propertyID, final Type type) {
       this(propertyID, type, null);
     }
 
+    /**
+     * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
+     * the property ID should not be column name, only be unique for this entity
+     * @param type the datatype of this property
+     * @param caption the caption of this property
+     */
     public TransientProperty(final String propertyID, final Type type, final String caption) {
       this(propertyID, type, caption, -1);
     }
 
+    /**
+     * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
+     * the property ID should not be column name, only be unique for this entity
+     * @param type the datatype of this property
+     * @param caption the caption of this property
+     * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+     */
     public TransientProperty(final String propertyID, final Type type, final String caption,
-                         final int preferredWidth) {
-      super(propertyID, type, caption, caption == null, false, preferredWidth, false);
+                             final int preferredColumnWidth) {
+      super(propertyID, type, caption, caption == null, false, preferredColumnWidth, false);
     }
   }
 
@@ -379,34 +514,70 @@ public class Property implements Serializable {
    * display only, and does not map to a database column
    */
   public static class DenormalizedViewProperty extends TransientProperty {
-
+    /**
+     * the reference property (entity) from which this property should retrieve its value
+     */
     public final String referencePropertyID;
+    /**
+     * the property from which this property should get its value
+     */
     public final Property denormalizedProperty;
 
+    /**
+     * @param propertyID the ID of the property, this should not be a column name since this property does not
+     * map to a table column
+     * @param referencePropertyID the ID of the reference property from which entity value this property gets its value
+     * @param property the property from which this property gets its value
+     */
     public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property) {
       this(propertyID, referencePropertyID, property, null);
     }
 
+    /**
+     * @param propertyID the ID of the property, this should not be a column name since this property does not
+     * map to a table column
+     * @param referencePropertyID the ID of the reference property from which entity value this property gets its value
+     * @param property the property from which this property gets its value
+     * @param caption the caption of this property
+     */
     public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property,
                                     final String caption) {
       this(propertyID, referencePropertyID, property, caption, -1);
     }
 
+    /**
+     * @param propertyID the ID of the property, this should not be a column name since this property does not
+     * map to a table column
+     * @param referencePropertyID the ID of the reference property from which entity value this property gets its value
+     * @param property the property from which this property gets its value
+     * @param caption the caption of this property
+     * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+     */
     public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property,
-                                    final String caption, final int preferredWidth) {
-      super(propertyID, property.propertyType, caption, preferredWidth);
+                                    final String caption, final int preferredColumnWidth) {
+      super(propertyID, property.propertyType, caption, preferredColumnWidth);
       this.referencePropertyID = referencePropertyID;
       this.denormalizedProperty = property;
     }
   }
 
   /**
-   * A sub query property
+   * A property based on a subquery, returning a single value
    */
   public static class SubQueryProperty extends Property {
-
+    /**
+     * the sql query string
+     */
     private final String subquery;
 
+    /**
+     * @param propertyID the property ID, since SubQueryProperties do not map to underlying table columns,
+     * the property ID should not be column name, only be unique for this entity
+     * @param type the datatype of this property
+     * @param hidden indicates whether this property should be visible to the user
+     * @param caption the caption of this property
+     * @param subquery the sql query
+     */
     public SubQueryProperty(final String propertyID, final Type type, final boolean hidden,
                             final String caption, final String subquery) {
       super(propertyID, type, caption, hidden || caption == null, true, -1, false);
@@ -426,31 +597,74 @@ public class Property implements Serializable {
    * are used for representing boolean values in different systems
    */
   public static class BooleanProperty extends Property {
-
+    /**
+     * the datatype of the underlying column
+     */
     public final Type columnType;
 
+    /**
+     * the Object value representing true
+     */
     private final Object trueValue;
+    /**
+     * the Object value representing false
+     */
     private final Object falseValue;
+    /**
+     * the Object value representing null
+     */
     private final Object nullValue;
 
+    /**
+     * for quick comparison of 'true' values
+     */
     private final int trueValueHash;
+
+    /**
+     * for quick comparison of 'false' values
+     */
     private final int falseValueHash;
 
+    /**
+     * Instantiates a BooleaProperty based on the INT datatype
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param caption the caption of this property
+     */
     public BooleanProperty(final String propertyID, final String caption) {
       this(propertyID, Type.INT, caption);
     }
 
+    /**
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param columnType the datatype of the underlying column
+     * @param caption the caption of this property
+     */
     public BooleanProperty(final String propertyID, final Type columnType, final String caption) {
       this(propertyID, columnType, caption, FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_TRUE),
               FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_FALSE));
     }
 
+    /**
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param columnType the datatype of the underlying column
+     * @param caption the caption of this property
+     * @param trueValue the Object value representing 'true'
+     * @param falseValue the Object value representing 'false'
+     */
     public BooleanProperty(final String propertyID, final Type columnType, final String caption,
                            final Object trueValue, final Object falseValue) {
       this(propertyID, columnType, caption, trueValue, falseValue,
               FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_NULL));
     }
 
+    /**
+     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param columnType the datatype of the underlying column
+     * @param caption the caption of this property
+     * @param trueValue the Object value representing 'true'
+     * @param falseValue the Object value representing 'false'
+     * @param nullValue the Object value representing 'null'
+     */
     public BooleanProperty(final String propertyID, final Type columnType, final String caption,
                            final Object trueValue, final Object falseValue, final Object nullValue) {
       super(propertyID, Type.BOOLEAN, caption, caption == null);
@@ -462,6 +676,10 @@ public class Property implements Serializable {
       this.falseValueHash = falseValue.hashCode();
     }
 
+    /**
+     * @param object the Object value to translate into a Type.Boolean value
+     * @return the Type.Boolean value of <code>object</code>
+     */
     public Type.Boolean toBoolean(final Object object) {
       final int hashCode = object == null ? 0 : object.hashCode();
       if (hashCode == trueValueHash)
@@ -472,6 +690,10 @@ public class Property implements Serializable {
       return null;
     }
 
+    /**
+     * @param value the Type.Boolean value to translate into a sql string value
+     * @return the sql string value of <code>value</code>
+     */
     public String toSQLString(final Type.Boolean value) {
       final Object ret = value == Type.Boolean.FALSE ? falseValue : (value == Type.Boolean.TRUE ? trueValue : nullValue);
       if (columnType == Type.STRING)

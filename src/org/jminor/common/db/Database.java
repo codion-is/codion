@@ -110,42 +110,76 @@ public class Database {
    */
   public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
 
+  /**
+   * Represents the supported database types
+   */
   public static enum DbType {
     ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED
   }
 
+  /**
+   * The date format string used for Derby
+   */
   private static DateFormat DERBY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+  /**
+   * The active database type
+   */
   private static final DbType DB_TYPE = getType();
 
+  /**
+   * @return true if the active database is PostgreSQL
+   */
   public static boolean isPostgreSQL() {
     return DB_TYPE == DbType.POSTGRESQL;
   }
 
+  /**
+   * @return true if the active database is MySQL
+   */
   public static boolean isMySQL() {
     return DB_TYPE == DbType.MYSQL;
   }
 
+  /**
+   * @return true if the active database is Oracle
+   */
   public static boolean isOracle() {
     return DB_TYPE == DbType.ORACLE;
   }
 
+  /**
+   * @return true if the active database is SQLServer
+   */
   public static boolean isSQLServer() {
     return DB_TYPE == DbType.SQLSERVER;
   }
 
+  /**
+   * @return true if the active database is Derby
+   */
   public static boolean isDerby() {
     return DB_TYPE == DbType.DERBY;
   }
 
+  /**
+   * @return true if the active database is embedded Derby
+   */
   public static boolean isDerbyEmbedded() {
     return DB_TYPE == DbType.DERBY_EMBEDDED;
   }
 
+  /**
+   * Loads the driver for the active database
+   * @throws ClassNotFoundException in case the driver class was not found in the class path
+   */
   public static void loadDriver() throws ClassNotFoundException {
     Class.forName(getDriverName());
   }
 
+  /**
+   * @return the database url of the active database, based on system properties
+   */
   public static String getURL() {
     final String host = System.getProperty(DATABASE_HOST_PROPERTY);
     if (host == null || host.length() == 0)

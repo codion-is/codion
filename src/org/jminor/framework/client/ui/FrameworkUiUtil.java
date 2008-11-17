@@ -334,11 +334,9 @@ public class FrameworkUiUtil {
                                                     final EntityPanel.EntityPanelInfo appInfo,
                                                     final boolean newButtonFocusable, final State enabledState) {
     try {
-      EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
-      if (boxModel == null) {
-        boxModel = entityModel.createPropertyComboBoxModel(property);
+      final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
+      if (!boxModel.isDataInitialized())
         boxModel.refresh();
-      }
       final EntityComboBox ret = new EntityComboBox(boxModel, appInfo, newButtonFocusable);
       UiUtil.linkToEnabledState(enabledState, ret);
       new ComboBoxPropertyLink(entityModel, property, ret);

@@ -24,7 +24,7 @@ import java.util.Map;
  * Date: 24.7.2008
  * Time: 21:29:55
  *
- * This class encapsulates both filtering and searching facilities 
+ * This class encapsulates both filtering and searching facilities
  */
 public class EntityTableSearchModel {
 

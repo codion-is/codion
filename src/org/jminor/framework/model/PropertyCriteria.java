@@ -18,12 +18,32 @@ import java.util.List;
  */
 public class PropertyCriteria implements ICriteria {
 
+  /**
+   * The property used in this criteria
+   */
   private final Property property;
+
+  /**
+   * The values used in this criteria
+   */
   private final List<Object> values = new ArrayList<Object>();
+
+  /**
+   * The search type used in this criteria
+   */
   private final SearchType searchType;
 
+  /**
+   * True if this criteria should be case sensitive, only applies for criterias based on string properties
+   */
   private boolean caseSensitive = true;
 
+  /**
+   * Instantiates a new PropertyCriteria instance
+   * @param property the property
+   * @param searchType the search type
+   * @param values the values
+   */
   public PropertyCriteria(final Property property, final SearchType searchType, final Object... values) {
     this.property = property;
     this.searchType = searchType;
@@ -31,7 +51,7 @@ public class PropertyCriteria implements ICriteria {
   }
 
   /**
-   * @param values Value to set for property 'values'.
+   * @param values the values to use in this criteria
    */
   @SuppressWarnings({"unchecked"})
   public void setValues(final Object... values) {
@@ -53,14 +73,14 @@ public class PropertyCriteria implements ICriteria {
   }
 
   /**
-   * @return Value for property 'values'.
+   * @return the values used by this criteria
    */
   public List<Object> getValues() {
     return this.values;
   }
 
   /**
-   * @return Value for property 'searchType'.
+   * @return the search type used by this criteria
    */
   public SearchType getSearchType() {
     return this.searchType;
@@ -72,7 +92,7 @@ public class PropertyCriteria implements ICriteria {
   }
 
   /**
-   * @return Value for property 'conditionString'.
+   * @return the SQL condition string this criteria represents, i.e. propertyName = 'value'
    */
   public String getConditionString() {
     if (property instanceof Property.EntityProperty)
@@ -126,11 +146,19 @@ public class PropertyCriteria implements ICriteria {
     throw new IllegalArgumentException("Unknown search type" + searchType);
   }
 
+  /**
+   * Sets whether this criteria should be case sensitive, only applies to criterias base on string properties
+   * @param value if true then this criteria is case sensitive, false otherwise
+   * @return this PropertyCriteria instance
+   */
   public PropertyCriteria setCaseSensitive(final boolean value) {
     this.caseSensitive = value;
     return this;
   }
 
+  /**
+   * @return true if this criteria is case sensitive (only applies to criterias based on string properties)
+   */
   public boolean isCaseSensitive() {
     return caseSensitive;
   }

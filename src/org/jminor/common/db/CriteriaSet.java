@@ -12,9 +12,13 @@ import java.util.List;
  */
 public class CriteriaSet implements ICriteria {
 
+  /**
+   * Represents two possible conjunctions, AND and OR
+   */
   public enum Conjunction {
     AND, OR;
 
+    /** {@inheritDoc} */
     public String toString() {
       switch (this) {
         case AND:
@@ -27,26 +31,46 @@ public class CriteriaSet implements ICriteria {
     }
   }
 
+  /**
+   * The conjunction used by this CriteriaSet
+   */
   final Conjunction conjunction;
+
+  /**
+   * The criterias in this set
+   */
   final List<ICriteria> criterias = new ArrayList<ICriteria>();
 
+  /**
+   * Initializes a new CriteriaSet instance
+   * @param conjunction the Conjunction to use
+   */
   public CriteriaSet(final Conjunction conjunction) {
     this.conjunction = conjunction;
   }
 
+  /**
+   * Initializes a new CriteriaSet instance
+   * @param conjunction the conjunction to use
+   * @param criterias the ICriteria objects to be included in this set
+   */
   public CriteriaSet(final Conjunction conjunction, final ICriteria... criterias) {
     this.conjunction = conjunction;
     for (final ICriteria criteria : criterias)
       addCriteria(criteria);
   }
 
+  /**
+   * Adds a new ICriteria object to this set
+   * @param criteria the ICriteria to add
+   */
   public void addCriteria(final ICriteria criteria) {
     if (criteria != null)
       this.criterias.add(criteria);
   }
 
   /**
-   * @return Value for property 'criteriaCount'.
+   * @return the number of criterias in this set
    */
   public int getCriteriaCount() {
     return criterias.size();

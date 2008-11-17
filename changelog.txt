@@ -233,3 +233,4 @@
   InsertEvent, UpdateEvent and DeleteEvent added to accomodate the above change
   EntityModel.isEntityModified renamed to isActiveEntityModified and changed so that is returnes the isActive result of the state returned by getActiveEntityModifiedState
   UiUtil.selectFile() added
+  Some javadoc additions and changes

@@ -10,9 +10,10 @@ import java.sql.SQLException;
  */
 public class DbException extends Exception  {
 
+  /**
+   * The query string being run when this exception occurred
+   */
   private String sql;
-  private String table;
-  private boolean isDeleteException = false;
   private Object userObject;
 
   public DbException(final String message) {
@@ -24,15 +25,8 @@ public class DbException extends Exception  {
     this.sql = sql;
   }
 
-  public DbException(final String message, final String table, final boolean isDelete) {
-    super(message);
-    this.table = table;
-    this.isDeleteException = isDelete;
-  }
-
   public DbException(final String message, final String sql, final Object userObject) {
     super(message);
-    this.isDeleteException = true;
     this.sql = sql;
     this.userObject = userObject;
   }
@@ -45,19 +39,6 @@ public class DbException extends Exception  {
   public DbException(final Throwable cause, final String sql) {
     super(cause);
     this.sql = sql;
-  }
-
-  public DbException(final Throwable cause, final String table, final boolean isDelete) {
-    super(cause);
-    this.table = table;
-    this.isDeleteException = isDelete;
-  }
-
-  public DbException(final Throwable cause, final String sql, final Object userObject) {
-    super(cause);
-    this.isDeleteException = true;
-    this.sql = sql;
-    this.userObject = userObject;
   }
 
   /**
@@ -75,22 +56,9 @@ public class DbException extends Exception  {
   }
 
   /**
-   * @return Value for property 'table'.
-   */
-  public String getTable() {
-    return table;
-  }
-
-  /**
-   * @return Value for property 'deleteException'.
-   */
-  public boolean isDeleteException() {
-    return isDeleteException;
-  }
-
-  /**
    * @return Value for property 'insertNullValueException'.
    */
+  //todo oracle specific
   public boolean isInsertNullValueException() {
     return getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE;
   }
@@ -98,6 +66,7 @@ public class DbException extends Exception  {
   /**
    * @return the name of the column which triggered the "cannot insert NULL into" exception
    */
+  //todo oracle specific
   public String getNullErrorColumnName() {
     if (getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE) {
       final String errorMsg = getCause().getMessage();
@@ -109,7 +78,7 @@ public class DbException extends Exception  {
   }
 
   /**
-   * @return the ORACLE error code in case the cause was a SQLException, -1 is returned otherwise
+   * @return the error code in case the cause was a SQLException, -1 is returned otherwise
    */
   public int getORAErrorCode() {
     final Throwable cause = getCause();

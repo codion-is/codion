@@ -528,79 +528,6 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the property identified by <code>propertyID</code>,
-   * null if none has been initialized
-   * @see #initializeEntityComboBoxModels()
-   */
-  public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
-    final Property property = EntityRepository.get().getProperty(getEntityID(), propertyID);
-    if (!(property instanceof Property.EntityProperty))
-      throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.EntityProperty");
-
-    return getEntityComboBoxModel((Property.EntityProperty) property);
-  }
-
-  /**
-   * @param property the property for which to retrieve the <code>EntityComboBoxModel</code>
-   * @return the EntityComboBoxModel for the <code>property</code>, null if none has been initialized
-   * @see #initializeEntityComboBoxModels()
-   */
-  public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
-    return (EntityComboBoxModel) getComboBoxModel(property);
-  }
-
-  /**
-   * Creates a default EntityComboBoxModel for the given property and associates it with the property
-   * @param property the property for which to create a EntityComboBoxModel
-   * @return a EntityComboBoxModel for the given property
-   */
-  public final EntityComboBoxModel createPropertyComboBoxModel(final Property.EntityProperty property) {
-    final EntityComboBoxModel ret = createEntityComboBoxModel(property, null, true);
-    setComboBoxModel(property, ret);
-
-    return ret;
-  }
-
-  /**
-   * Creates a default EntityComboBoxModel for the given property, override to provide
-   * specific EntityComboBoxModels (filtered for example) for properties.
-   * This method is called when creating a EntitComboBoxModel for entity properties, both
-   * for the edit fields used when editing a single record and the edit field used
-   * when updating multiple records
-   * @param property the property for which to create a EntityComboBoxModel
-   * @param nullValueItem the item used to represent a null value
-   * @param sortContents if true the contents are sorted
-   * @return a EntityComboBoxModel for the given property
-   */
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property,
-                                                       final String nullValueItem, final boolean sortContents) {
-    return new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID, false, nullValueItem, sortContents);
-  }
-
-  /**
-   * Fetches the ComboBoxModel associated with this property, these must be initialized beforehand,
-   * by overriding initializeEntityComboBoxModels()
-   * @param propertyID the property identifier
-   * @return the ComboBoxModel associated with this property
-   * @see #initializeEntityComboBoxModels()
-   * @see #initializeEntityComboBoxModels(org.jminor.framework.client.model.combobox.EntityComboBoxModel[])()
-   */
-  public ComboBoxModel getComboBoxModel(final String propertyID) {
-    return getComboBoxModel(EntityRepository.get().getProperty(getEntityID(), propertyID));
-  }
-
-  /**
-   * Fetches the ComboBoxModel associated with this property,
-   * returns null if none is associated with the given property
-   * @param property the property
-   * @return the ComboBoxModel associated with this property, null if none is available
-   */
-  public ComboBoxModel getComboBoxModel(final Property property) {
-    return propertyComboBoxModels.get(property);
-  }
-
-  /**
    * Clears the model by setting the active entity to null
    * @see #evtModelCleared
    */
@@ -639,40 +566,6 @@ public class EntityModel implements IRefreshable {
    */
   public boolean isActiveEntityModified() {
     return getActiveEntityModifiedState().isActive();
-  }
-
-  /**
-   * Default behaviour is returning a copy of the active entity
-   * This method should return an empty List instead of null.
-   * @return the entities to use when insert is triggered
-   * @see #insert()
-   */
-  public List<Entity> getEntitiesForInsert() {
-    return Arrays.asList(getActiveEntityCopy());
-  }
-
-  /**
-   * This method should return an empty List instead of null.
-   * Default behaviour is returning a copy of the active entity
-   * @return the entities to use when update is triggered
-   * @see #update()
-   */
-  public List<Entity> getEntitiesForUpdate() {
-    return Arrays.asList(getActiveEntityCopy());
-  }
-
-  /**
-   * Returns the entities to use when delete is triggered.
-   * Default behaviour is returning the selected entities
-   * from the table model or if no table model is available
-   * the active entity.
-   * This method should return an empty List instead of null.
-   * @return the entities to use when delete is triggered
-   * @see #delete()
-   */
-  public List<Entity> getEntitiesForDelete() {
-    return getTableModel() != null ? getTableModel().getSelectedEntities() :
-            isActiveEntityNull() ? new ArrayList<Entity>() :  Arrays.asList(getActiveEntityCopy());
   }
 
   /**
@@ -748,8 +641,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Sets the active entity
-   * @param entity the entity to set as active
+   * Sets the active entity, that is, the entity to be edited
+   * @param entity the entity to set as active, if null then the default entity value is set as active
    * @see #evtActiveEntityChanging
    * @see #evtActiveEntityChanged
    */
@@ -912,7 +805,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Updates the given Entities
+   * Updates the given Entities and selects the updated entities in the table model if one is available
+   * If the entities are unmodified this method returns silently.
    * @param entities the Entities to update
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
@@ -934,7 +828,7 @@ public class EntityModel implements IRefreshable {
     evtBeforeUpdate.fire();
     validateData(entities, UPDATE);
 
-    final List<Entity> updatedEntities = doUpdate(entities);
+    final List<Entity> updatedEntities = doUpdate(EntityUtil.getModifiedEntities(entities));
     if (tableModel != null) {//replace and select the updated entities
       final List<Entity> updated = new ArrayList<Entity>();
       for (final Entity entity : updatedEntities)
@@ -976,6 +870,40 @@ public class EntityModel implements IRefreshable {
 
     evtEntitiesDeleted.fire(new DeleteEvent(this, entities));
     refreshDetailModelsAfterDelete(entities);
+  }
+
+  /**
+   * Default behaviour is returning a copy of the active entity
+   * This method should return an empty List instead of null.
+   * @return the entities to use when insert is triggered
+   * @see #insert()
+   */
+  public List<Entity> getEntitiesForInsert() {
+    return Arrays.asList(getActiveEntityCopy());
+  }
+
+  /**
+   * This method should return an empty List instead of null.
+   * Default behaviour is returning a copy of the active entity
+   * @return the entities to use when update is triggered
+   * @see #update()
+   */
+  public List<Entity> getEntitiesForUpdate() {
+    return Arrays.asList(getActiveEntityCopy());
+  }
+
+  /**
+   * Returns the entities to use when delete is triggered.
+   * Default behaviour is returning the selected entities
+   * from the table model or if no table model is available
+   * the active entity.
+   * This method should return an empty List instead of null.
+   * @return the entities to use when delete is triggered
+   * @see #delete()
+   */
+  public List<Entity> getEntitiesForDelete() {
+    return getTableModel() != null ? getTableModel().getSelectedEntities() :
+            isActiveEntityNull() ? new ArrayList<Entity>() :  Arrays.asList(getActiveEntityCopy());
   }
 
   /**
@@ -1038,74 +966,33 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param property the property for which to retrieve a ComboBoxModel
-   * @return the ComboBoxModel associated with <code>property</code>
-   */
-  public ComboBoxModel getColumnComboBoxModel(final Property property) {
-    return getColumnComboBoxModel(property, null);
-  }
-
-  /**
-   * @param property the property for which to retrieve a ComboBoxModel
-   * @param refreshEvent the event on which to refresh that ComboBoxModel
-   * @return the ComboBoxModel associated with <code>property</code>
-   */
-  public ComboBoxModel getColumnComboBoxModel(final Property property, final Event refreshEvent) {
-    return getPropertyComboBoxModel(property, refreshEvent, null);
-  }
-
-  /**
-   * @param property the property for which to create the ComboBoxModel
+   * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
    * if none is specified EntityModel.evtEntitiesChanged is used
-   * @param nullValue the null value at the top of the list
-   * @return a ComboBoxModel representing <code>property</code>
+   * @param nullValue the value to use for representing the null item at the top of the list,
+   * if this value is null then no such item is included
+   * @return a ComboBoxModel representing <code>property</code>, if no combo box model
+   * has been initialized for the given property, a new one is created and associated with
+   * the property, to be returned the next time this method is called
    */
   public ComboBoxModel getPropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                 final Object nullValue) {
-    if (propertyComboBoxModels.containsKey(property))
-      return propertyComboBoxModels.get(property);
-
-    final PropertyComboBoxModel ret =
-            createPropertyComboBoxModel(getEntityID(), property, getDbConnectionProvider(),
-                    refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue);
-
-    propertyComboBoxModels.put(property, ret);
+    PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    if (ret == null)
+      setComboBoxModel(property, ret =
+            createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
 
     return ret;
   }
 
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final Class<Entity> entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider) {
-    return createPropertyComboBoxModel(entityID, property, dbProvider, null);
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final Class<Entity> entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent) {
-    return createPropertyComboBoxModel(entityID.getName(), property, dbProvider, refreshEvent);
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider) {
-    return createPropertyComboBoxModel(entityID, property, dbProvider, null);
-  }
-
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent) {
-    return createPropertyComboBoxModel(entityID, property, dbProvider, refreshEvent, null);
-  }
-
   /**
-   * @param entityID the class of the entity for which to create a PropertyComboBoxModel
    * @param property the property for which to create the PropertyComboBoxModel
-   * @param dbProvider the dbProvider instance used for retrieving the values for this PropertyComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires
-   * @param nullValue the null value at the top of the list
+   * @param nullValue the value to appear at the top of the list, representing null
    * @return a PropertyComboBoxModel containing the distinct values found for the given property
    */
-  public static PropertyComboBoxModel createPropertyComboBoxModel(final String entityID, final Property property,
-                                                                  final IEntityDbProvider dbProvider, final Event refreshEvent,
-                                                                  final Object nullValue) {
+  public PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
+                                                           final Object nullValue) {
     try {
       if (property == null)
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
@@ -1113,7 +1000,7 @@ public class EntityModel implements IRefreshable {
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
                 + property.propertyID + ",\nuse an EntityComboBoxModel instead!");
       final PropertyComboBoxModel comboBoxModel =
-              new PropertyComboBoxModel(dbProvider, entityID, property, nullValue);
+              new PropertyComboBoxModel(getDbConnectionProvider(), getEntityID(), property, nullValue);
 
       comboBoxModel.refresh();
 
@@ -1135,6 +1022,52 @@ public class EntityModel implements IRefreshable {
     catch (UserException e) {
       throw e.getRuntimeException();
     }
+  }
+
+  /**
+   * @param propertyID the ID of the property for which to retrieve the <code>EntityComboBoxModel</code>
+   * @return the EntityComboBoxModel for the property identified by <code>propertyID</code>,
+   * if no combo box model is associated with the property a new one is initialized, and associated
+   * with the given property
+   * @see #initializeEntityComboBoxModels()
+   */
+  public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
+    final Property property = EntityRepository.get().getProperty(getEntityID(), propertyID);
+    if (!(property instanceof Property.EntityProperty))
+      throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.EntityProperty");
+
+    return getEntityComboBoxModel((Property.EntityProperty) property);
+  }
+
+  /**
+   * @param property the property for which to retrieve the <code>EntityComboBoxModel</code>
+   * @return the EntityComboBoxModel for the <code>property</code>,
+   * if no combo box model is associated with the property a new one is initialized, and associated
+   * with the given property
+   * @see #initializeEntityComboBoxModels()
+   */
+  public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
+    EntityComboBoxModel ret = (EntityComboBoxModel) propertyComboBoxModels.get(property);
+    if (ret == null)
+      setComboBoxModel(property, ret = createEntityComboBoxModel(property, null, true));
+
+    return ret;
+  }
+
+  /**
+   * Creates a default EntityComboBoxModel for the given property, override to provide
+   * specific EntityComboBoxModels (filtered for example) for properties.
+   * This method is called when creating a EntitComboBoxModel for entity properties, both
+   * for the edit fields used when editing a single record and the edit field used
+   * when updating multiple records
+   * @param property the property for which to create a EntityComboBoxModel
+   * @param nullValueItem the item used to represent a null value
+   * @param sortContents if true the contents are sorted
+   * @return a EntityComboBoxModel for the given property
+   */
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property,
+                                                       final String nullValueItem, final boolean sortContents) {
+    return new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID, false, nullValueItem, sortContents);
   }
 
   /**
