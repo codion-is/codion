@@ -40,7 +40,7 @@
     <copy file="${elibdir}/${lib.jdbc}" todir="${lib}" />
     <copy file="${elibdir}/${lib.log4j}" todir="${lib}" />
     <copy file="${elibdir}/${lib.jasperreports.base}" todir="${lib}" />
-    <copy file="${elibdir}/${lib.junit}" todir="${lib" />
+    <copy file="${elibdir}/${lib.junit}" todir="${lib}" />
   </target>
 
   <!--<target name="cvs_checkout">-->

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -51,7 +51,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   public String toString() {
-    final StringBuffer ret = new StringBuffer(getProperty().propertyID);
+    final StringBuffer ret = new StringBuffer(getProperty().propertyID).append(getSearchType());
     if (isSearchEnabled()) {
       ret.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       ret.append(getLowerBound() != null ? toString(getLowerBound()) : "null");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A model class with basic functionality for creating, editing and deleting of objects from a database
+ * A model class with basic functionality for creating, editing and deleting objects from a database
  */
 public class EntityModel implements IRefreshable {
 
@@ -524,7 +524,7 @@ public class EntityModel implements IRefreshable {
       if (detailModel.getClass().equals(entityModelClass))
         return detailModel;
 
-    return null;
+    throw new RuntimeException("No detail model of type " + entityModelClass + " found in model: " + this);
   }
 
   /**
@@ -959,10 +959,8 @@ public class EntityModel implements IRefreshable {
     if (stSelectionFiltersDetail.isActive() && tableModel != null)
       tableModel.filterByReference(masterValues, masterEntityID);
 
-    if (masterValues != null && masterValues.size() > 0) {
-      for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), masterEntityID))
-        setValue(property, masterValues.get(0));
-    }
+    for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), masterEntityID))
+      setValue(property, masterValues != null && masterValues.size() > 0 ? masterValues.get(0) : null);
   }
 
   /**

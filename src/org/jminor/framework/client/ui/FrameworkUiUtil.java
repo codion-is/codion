@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -308,6 +308,10 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new CheckBoxPropertyLink(entityModel, property, ret.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    final boolean transferFocusOnEnter =
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
+    if (transferFocusOnEnter)
+      UiUtil.transferFocusOnEnter(ret);
 
     return ret;
   }
@@ -465,6 +469,10 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new ComboBoxPropertyLink(entityModel, property, ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    final boolean transferFocusOnEnter =
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
+    if (transferFocusOnEnter)
+      UiUtil.transferFocusOnEnter(ret);
 
     return ret;
   }
@@ -547,7 +555,7 @@ public class FrameworkUiUtil {
                                            final boolean immediateUpdate, final AbstractDateMaskFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
     final boolean transferFocusOnEnter =
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_TEXT_FIELD_FOCUS_ON_ENTER);
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
     final JTextField ret;
     switch (property.getPropertyType()) {
       case STRING:

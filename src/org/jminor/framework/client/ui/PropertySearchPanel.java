@@ -159,6 +159,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
           field.refreshText();
         }
       });
+      field.refreshText();
       field.setAllowMultipleSelection(true);
 
       return field;

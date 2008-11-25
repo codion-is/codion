@@ -56,6 +56,8 @@ public abstract class EntityBindingFactory extends JPanel {
                                 final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
+    if (labelComponent instanceof JLabel)
+      ((JLabel)labelComponent).setLabelFor(inputComponent);
     ret.add(labelComponent);
     ret.add(inputComponent);
 

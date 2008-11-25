@@ -183,11 +183,18 @@ public abstract class EntityTestUnit extends TestCase {
    * @throws Exception in case of an exception
    */
   protected Entity initialize(final Entity entity) throws Exception {
-    final List<Entity> entities = db.selectMany(Arrays.asList(entity.getPrimaryKey()));
-    if (entities.size() > 0)
-      return entities.get(0);
+    try {
+      final List<Entity> entities = db.selectMany(Arrays.asList(entity.getPrimaryKey()));
+      if (entities.size() > 0)
+        return entities.get(0);
 
-    return db.selectSingle(db.insert(Arrays.asList(entity)).get(0));
+      return db.selectSingle(db.insert(Arrays.asList(entity)).get(0));
+    }
+    catch (DbException e) {
+      System.out.println(e.getSql());
+      e.printStackTrace();
+      throw e;
+    }
   }
 
   /**

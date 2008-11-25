@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework;
 
@@ -107,11 +107,13 @@ public class FrameworkSettings implements Serializable {
   public static final String DEFAULT_USERNAME_PREFIX = "default_username_prefix";
 
   /**
-   * Specifies whether focus should be transfered from text fields on enter
+   * Specifies whether focus should be transfered from components on enter,
+   * this does not work for editable combo boxes, combo boxes with the
+   * maximum match functionality enabled or text areas
    * Value type: Boolean
    * Default value: true
    */
-  public static final String TRANSFER_TEXT_FIELD_FOCUS_ON_ENTER = "transfer_text_field_focus_on_enter";
+  public static final String TRANSFER_FOCUS_ON_ENTER = "transfer_focus_on_enter";
 
   /**
    * Specifies whether strict editing should be enabled, this involves selecting a record for update
@@ -183,7 +185,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(TOOLBAR_BUTTONS, false);
     setProperty(RESET_COMBOBOXMODELS_ON_CLEAR, false);
     setProperty(DEFAULT_USERNAME_PREFIX, "");
-    setProperty(TRANSFER_TEXT_FIELD_FOCUS_ON_ENTER, true);
+    setProperty(TRANSFER_FOCUS_ON_ENTER, true);
     setProperty(USE_STRICT_EDIT_MODE, false);
     setProperty(TOOLTIP_DELAY, 500);
     setProperty(SQL_BOOLEAN_VALUE_FALSE, 0);

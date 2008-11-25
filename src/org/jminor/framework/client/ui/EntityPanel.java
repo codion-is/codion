@@ -84,17 +84,6 @@ import java.util.Vector;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
- *
- * The default layout is as follows:
- * __________________________________
- * |     property           |action |
- * |      panel             | panel | } edit panel
- * |________________________|_______|
- * |                  |             |
- * |   table panel    |   detail    |
- * |(EntityTablePanel)|   panel     |
- * |                  |             |
- * |__________________|_____________|
  */
 public abstract class EntityPanel extends EntityBindingFactory implements IExceptionHandler {
 
@@ -417,7 +406,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         }
         entityTablePanel.setMinimumSize(new Dimension(0,0));
       }
-      this.horizontalSplitPane = this.detailEntityPanels.size() > 0 ? initializeLeftRightSplitPane() : null;
+      this.horizontalSplitPane = this.detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
       this.detailTabPane = this.detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
 
       bindTableModelEvents();
@@ -1232,6 +1221,28 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes this EntityPanel's UI
+   *
+   * The default layout is as follows:
+   * __________________________________
+   * |     property           |action |
+   * |      panel             | panel | } edit panel
+   * |________________________|_______|
+   * |                  |             |
+   * |   table panel    |   detail    |
+   * |(EntityTablePanel)|   panel     |
+   * |                  |             |
+   * |__________________|_____________|
+   *
+   * or in case of compact layout:
+   * __________________________________
+   * | property |action |             |
+   * |  panel   | panel |             |
+   * |__________|_______|   detail    |
+   * |                  |   panel     |
+   * |   table panel    |             |
+   * |(EntityTablePanel)|             |
+   * |                  |             |
+   * |__________________|_____________|
    */
   protected void initializeUI() {
     setLayout(new BorderLayout(5,5));
@@ -1261,7 +1272,16 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * |      panel             | panel | } edit panel
    * |________________________|_______|
    *
-   * @return a panel used for editing entities
+   * or, if the <code>horizontalButtons</code> constructor parameter was true:
+   * __________________________
+   * |       property         |
+   * |        panel           |
+   * |________________________| } edit panel
+   * |     action panel       |
+   * |________________________|
+   *
+   * @return a panel used for editing entities, if <code>initializePropertyPanel()</code>
+   * returns null then by default this method returns null as well
    */
   protected JPanel initializeEditPanel() {
     final JPanel propertyPanel = initializePropertyPanel();
@@ -1290,7 +1310,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * Initializes the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
    */
-  protected JSplitPane initializeLeftRightSplitPane() {
+  protected JSplitPane initializeHorizontalSplitPane() {
     final JSplitPane leftRightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
     leftRightSplitPane.setBorder(BorderFactory.createEmptyBorder());
     leftRightSplitPane.setOneTouchExpandable(true);
@@ -1792,15 +1812,9 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     final JButton ret = new JButton(Images.loadImage("Modify16.gif"));
     ret.setToolTipText(updateSet.getDescription());
     UiUtil.linkToEnabledState(updateSet.getEnabledState(), ret);
-    ret.addMouseListener(new MouseAdapter() {
-      public void mouseReleased(final MouseEvent e) {
-        menu.show(ret, e.getX(), e.getY()-menu.getPreferredSize().height);
-      }
-    });
     ret.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        menu.show(ret, (int) ret.getLocation().getX()+ret.getWidth()/2,
-                (int) ret.getLocation().getY()+ret.getHeight()/2-menu.getPreferredSize().height);
+        menu.show(ret, ret.getWidth()/2, ret.getHeight()/2-menu.getPreferredSize().height);
       }
     });
     ret.setPreferredSize(getSouthButtonSize());

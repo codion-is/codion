@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui;
 
@@ -542,11 +542,11 @@ public class UiUtil {
     return textField;
   }
 
-  public static void transferFocusOnEnter(final JTextField txtField) {
-    txtField.addKeyListener(new KeyAdapter() {
+  public static void transferFocusOnEnter(final JComponent component) {
+    component.addKeyListener(new KeyAdapter() {
       public void keyPressed(final KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER)
-          txtField.transferFocus();
+          component.transferFocus();
       }
     });
   }

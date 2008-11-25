@@ -234,3 +234,5 @@
   EntityModel.isEntityModified renamed to isActiveEntityModified and changed so that is returnes the isActive result of the state returned by getActiveEntityModifiedState
   UiUtil.selectFile() added
   Some javadoc additions and changes
+  PropertySearchModel.toString() fixed, now adds the current search type to the result
+  EntityModel.masterSelectionChanged changed, now when no entity is selected the master reference property value is set to null in linked detail models
