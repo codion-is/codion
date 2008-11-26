@@ -51,8 +51,9 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   public String toString() {
-    final StringBuffer ret = new StringBuffer(getProperty().propertyID).append(getSearchType());
+    final StringBuffer ret = new StringBuffer(getProperty().propertyID);
     if (isSearchEnabled()) {
+      ret.append(getSearchType());
       ret.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       ret.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
     }
