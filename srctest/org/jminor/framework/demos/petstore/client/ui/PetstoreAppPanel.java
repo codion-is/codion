@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.petstore.client.ui;
 
-import org.apache.log4j.Level;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
@@ -20,6 +19,8 @@ import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 
+import org.apache.log4j.Level;
+
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanel.EntityPanelInfo> getRootEntityPanelInfo() {
+  protected List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo() {
     return Arrays.asList(new EntityPanel.EntityPanelInfo(CategoryModel.class, CategoryPanel.class));
   }
 

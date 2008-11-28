@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -94,7 +94,7 @@ public interface IEntityDb{
    * @param outParamType the type of the output param, if any, java.sql.Types.*
    * @throws org.jminor.common.db.DbException in case of a database error
    * @throws Exception in case of exception
-   * @return the return paramter if any, otherwise null
+   * @return the return parameter if any, otherwise null
    */
   public Object executeCallable(final String statement, final int outParamType) throws Exception;
 
@@ -130,7 +130,7 @@ public interface IEntityDb{
    * @param entityID the class of the Entity
    * @param propertyID the ID of the property
    * @param distinct if true then distinct values are returned
-   * @param order if true then the result is ordered according to the entities ordering colomns
+   * @param order if true then the result is ordered according to the entity's ordering columns
    * @return the values in the given column (Property) in the given table (Entity)
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of exception

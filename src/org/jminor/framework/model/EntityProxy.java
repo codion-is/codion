@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -54,10 +54,6 @@ public class EntityProxy {
 
   public String toString(final Entity entity) {
     return entity.getEntityID() + ": " + entity.getPrimaryKey().toString();
-  }
-
-  public String getValueAsUserString(final Entity entity, final Property property) {
-    return entity.isValueNull(property.propertyID) ? "" : getValueAsString(entity, property);
   }
 
   public String getValueAsString(final Entity entity, final Property property) {

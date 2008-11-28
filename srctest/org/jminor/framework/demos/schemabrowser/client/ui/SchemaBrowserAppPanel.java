@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.schemabrowser.client.ui;
 
-import org.apache.log4j.Level;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
@@ -13,6 +12,8 @@ import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
 import org.jminor.framework.demos.schemabrowser.beans.ui.SchemaPanel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 
+import org.apache.log4j.Level;
+
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanel.EntityPanelInfo> getRootEntityPanelInfo() {
+  protected List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo() {
     return Arrays.asList(new EntityPanel.EntityPanelInfo(SchemaModel.class, SchemaPanel.class));
   }
 

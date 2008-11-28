@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -361,26 +361,32 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'rootEntityPanelInfo'.
+   * @return a List containing EntityPanelInfo objects specifying the main EntityPanels,
+   * that is, the panels shown when the application frame is initialized
    */
-  protected abstract List<EntityPanel.EntityPanelInfo> getRootEntityPanelInfo();
+  protected abstract List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo();
 
   /**
-   * @return Value for property 'supportEntityPanelInfo'.
+   * @return a List containing EntityPanelInfo objects specifying the entity panels
+   * that should be accessible via the Support Tables menu bar item.
+   * The corresponding EntityModel class objects should be returned by the
+   * EntityApplicationModel.getMainEntityModelClasses() method
+   * N.B. these EntityPanelInfo objects should be constructed with a <code>caption</code> parameter.
+   * @see org.jminor.framework.client.model.EntityApplicationModel#getMainEntityModelClasses()
    */
   protected List<EntityPanel.EntityPanelInfo> getSupportEntityPanelInfo() {
     return new ArrayList<EntityPanel.EntityPanelInfo>(0);
   }
 
   /**
-   * @return Value for property 'additionalMenuControlSet'.
+   * @return a List of ControlSet objects which are to be added to the main menu bar
    */
   protected List<ControlSet> getAdditionalMenuControlSet() {
     return new ArrayList<ControlSet>();
   }
 
   /**
-   * @return Value for property 'supportModelControlSet'.
+   * @return the ControlSet on which the Support Tables menu item is based on
    */
   protected ControlSet getSupportModelControlSet() {
     final List<EntityPanel.EntityPanelInfo> supportAppInfos = getSupportEntityPanelInfo();
@@ -411,15 +417,19 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'northToolBar'.
+   * @return a JToolBar instance to show in the NORTH position
    */
   protected JToolBar getNorthToolBar() {
     return null;
   }
 
+  /**
+   * Initializes this EntityApplicationPanel
+   * @throws UserException in case of an exception
+   */
   protected void initializeUI() throws UserException {
     setLayout(new BorderLayout());
-    final List<EntityPanel.EntityPanelInfo> entityPanels = getRootEntityPanelInfo();
+    final List<EntityPanel.EntityPanelInfo> entityPanels = getMainEntityPanelInfo();
     if (entityPanels.size() > 1) {
       applicationTabPane = new JTabbedPane((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TAB_PLACEMENT));
       applicationTabPane.setFocusable(false);

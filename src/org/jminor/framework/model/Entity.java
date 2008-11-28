@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -118,7 +118,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public Event getPropertyChangeEvent() {
     if (evtPropertyChanged == null)
-      evtPropertyChanged  = new Event("Entity.evtPropertyChanged");
+      evtPropertyChanged = new Event("Entity.evtPropertyChanged");
 
     return evtPropertyChanged;
   }
@@ -155,7 +155,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param propertyID the ID of the property
    * @param value the new value
    */
-  public final void setValue(final String propertyID, final Object value) {
+  public void setValue(final String propertyID, final Object value) {
     setValue(propertyID, value, true);
   }
 
@@ -165,7 +165,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param value the new value
    * @param validate set to true if basic type validation should be performed on the value
    */
-  public final void setValue(final String propertyID, final Object value, final boolean validate) {
+  public void setValue(final String propertyID, final Object value, final boolean validate) {
     setValue(getProperty(propertyID), value, validate);
   }
 
@@ -200,6 +200,10 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     doSetValue(property, value, property instanceof Property.PrimaryKeyProperty, true, false);
   }
 
+  /**
+   * @param property the property for which to retrieve the value
+   * @return the value of the <code>property</code>
+   */
   public Object getValue(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
@@ -207,58 +211,111 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     return EntityProxy.getEntityProxy(primaryKey.entityID).getValue(this, property);
   }
 
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>
+   */
   public Object getValue(final String propertyID) {
     return getValue(getProperty(propertyID));
   }
 
-  public final Entity getEntityValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is an Entity
+   */
+  public Entity getEntityValue(final String propertyID) {
     return (Entity) getValue(propertyID);
   }
 
-  public final Timestamp getDateValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the date property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is a Timestamp
+   */
+  public Timestamp getDateValue(final String propertyID) {
     return (Timestamp) getValue(propertyID);
   }
 
-  public final String getStringValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is a String
+   */
+  public String getStringValue(final String propertyID) {
     return (String) getValue(propertyID);
   }
 
-  public final Integer getIntValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is an Integer
+   */
+  public Integer getIntValue(final String propertyID) {
     return (Integer) getValue(propertyID);
   }
 
-  public final Type.Boolean getBooleanValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is a Boolean
+   */
+  public Type.Boolean getBooleanValue(final String propertyID) {
     return (Type.Boolean) getValue(propertyID);
   }
 
-  public final Character getCharValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is a Character
+   */
+  public Character getCharValue(final String propertyID) {
     return (Character) getValue(propertyID);
   }
 
-  public final Double getDoubleValue(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is a Double
+   */
+  public Double getDoubleValue(final String propertyID) {
     return (Double) getValue(propertyID);
   }
 
-  public final String getValueAsString(final String propertyID) {
+  /**
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return a String representation of the value of the property identified by <code>propertyID</code>
+   * @see org.jminor.framework.model.EntityProxy#getValueAsString(Entity, Property)
+   */
+  public String getValueAsString(final String propertyID) {
     return getValueAsString(getProperty(propertyID));
   }
 
-  public final String getValueAsString(final Property property) {
+  /**
+   * @param property the property for which to retrieve the value
+   * @return a String representation of the value of <code>property</code>
+   * @see org.jminor.framework.model.EntityProxy#getValueAsString(Entity, Property)
+   */
+  public String getValueAsString(final Property property) {
     return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsString(this, property);
   }
 
-  public final String getValueAsUserString(final String propertyID) {
-    return getValueAsUserString(getProperty(propertyID));
+  /**
+   * Returns the value to use when the property is shown in a table
+   * @param propertyID the ID of the property for which to retrieve the value
+   * @return the table representation of the value of the property identified by <code>propertyID</code>
+   * @see org.jminor.framework.model.EntityProxy#getTableValue(Entity, Property)
+   */
+  public Object getTableValue(final String propertyID) {
+    return getTableValue(getProperty(propertyID));
   }
 
-  public final String getValueAsUserString(final Property property) {
-    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsUserString(this, property);
-  }
-
-  public Object getTableValue(final String propertyId) {
-    return getTableValue(getProperty(propertyId));
-  }
-
+  /**
+   * Returns the value to use when the property is shown in a table
+   * @param property the property for which to retrieve the value
+   * @return the table representation of the value of <code>property</code>
+   * @see org.jminor.framework.model.EntityProxy#getTableValue(Entity, Property)
+   */
   public Object getTableValue(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
@@ -266,7 +323,13 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     return EntityProxy.getEntityProxy(primaryKey.entityID).getTableValue(this, property);
   }
 
-  public final String getDateStringValue(final String propertyID, final DateFormat dateFormat) {
+  /**
+   * Returns a formatted date value
+   * @param propertyID the ID of the property for which to retrieve a formatted value
+   * @param dateFormat the DateFormat to use when formatting the value
+   * @return a formatted date value
+   */
+  public String getDateStringValue(final String propertyID, final DateFormat dateFormat) {
     return dateFormat.format(getDateValue(propertyID));
   }
 
@@ -373,8 +436,9 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * @return a string representation of this entity
+   * @see EntityProxy#toString(Entity)
    */
-  public final String toString() {
+  public String toString() {
     if (toString == null)
       toString = EntityProxy.getEntityProxy(getEntityID()).toString(this);
 
@@ -417,7 +481,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * Original property values, if any are not deep-copied
    * @param sourceEntity the entity to copy
    */
-  public final void setAs(final Entity sourceEntity) {
+  public void setAs(final Entity sourceEntity) {
     primaryKey.setValue(sourceEntity.getPrimaryKey());
     propertyValues.clear();
     if (originalPropertyValues != null)
@@ -435,6 +499,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       for (final Property property : repository.getProperties(getEntityID(), true))
         firePropertyChangeEvent(property, getRawValue(property.propertyID), null, true);
 
+    toString = sourceEntity.toString;
     if (stModified != null)
       stModified.setActive(isModified());
   }
@@ -483,7 +548,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param propertyID the property identifier
    * @return true if the value of the given property is null
    */
-  public final boolean isValueNull(final String propertyID) {
+  public boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
     final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
 

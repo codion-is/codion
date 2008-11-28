@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.empdept.client.ui;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanel.EntityPanelInfo> getRootEntityPanelInfo() {
+  protected List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo() {
     return Arrays.asList(new EntityPanel.EntityPanelInfo(DepartmentModel.class, DepartmentPanel.class));
   }
 

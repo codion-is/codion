@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.schemabrowser.client;
 
@@ -24,7 +24,7 @@ public class SchemaBrowserAppModel extends EntityApplicationModel {
   }
 
   /** {@inheritDoc} */
-  protected List<Class<? extends EntityModel>> getRootEntityModelClasses() throws UserException {
+  protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
     return EntityModel.asList(SchemaModel.class);
   }
 

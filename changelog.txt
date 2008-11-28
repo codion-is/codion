@@ -237,3 +237,8 @@
   PropertySearchModel.toString() fixed, now adds the current search type to the result
   EntityModel.masterSelectionChanged changed, now when no entity is selected the master reference property value is set to null in linked detail models
   PropertySearchModel.toString() fixed again, now adds the current search type to the result only when the search is enabled
+  Entity.setAs() fixed, now copies the toString cache as well
+  EntityApplicationPanel.getRootEntityPanelInfo renamed to getMainEntityPanelInfo
+  EntityApplicationModel.getRootEntityModelClasses renamed to getMainEntityModelClasses
+  Entity.getValueAsUserString() removed
+  EntityProxy.getValueAsUserString() removed

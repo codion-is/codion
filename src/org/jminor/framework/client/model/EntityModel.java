@@ -1407,6 +1407,10 @@ public class EntityModel implements IRefreshable {
     }
   }
 
+  /**
+   * Override to add specific event bindings that depend on the table model,
+   * remember to call super.bindTableModelEvents()
+   */
   protected void bindTableModelEvents() {
     if (tableModel == null)
       return;

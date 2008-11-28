@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -1311,13 +1311,13 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * @return the horizontal split pane
    */
   protected JSplitPane initializeHorizontalSplitPane() {
-    final JSplitPane leftRightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-    leftRightSplitPane.setBorder(BorderFactory.createEmptyBorder());
-    leftRightSplitPane.setOneTouchExpandable(true);
-    leftRightSplitPane.setResizeWeight(getDetailSplitPaneResizeWeight());
-    leftRightSplitPane.setDividerSize(18);
+    final JSplitPane horizontalSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
+    horizontalSplitPane.setBorder(BorderFactory.createEmptyBorder());
+    horizontalSplitPane.setOneTouchExpandable(true);
+    horizontalSplitPane.setResizeWeight(getDetailSplitPaneResizeWeight());
+    horizontalSplitPane.setDividerSize(18);
 
-    return leftRightSplitPane;
+    return horizontalSplitPane;
   }
 
   /**
