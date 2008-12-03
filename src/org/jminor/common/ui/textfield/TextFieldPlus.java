@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.textfield;
 
@@ -8,10 +8,10 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
-import java.awt.Insets;
 
 /**
  * A normal text field that allows setting max number of chars and uppercase.
+ * Also includes basic numerical range checking facilities.
  */
 public class TextFieldPlus extends JTextField {
 
@@ -30,7 +30,6 @@ public class TextFieldPlus extends JTextField {
    */
   public TextFieldPlus(final int columns) {
     super(columns);
-    setMargin(new Insets(0, 2, 0, 0));
   }
 
   /**
@@ -41,10 +40,10 @@ public class TextFieldPlus extends JTextField {
   }
 
   /**
-   * @param l Value to set for property 'maxLength'.
+   * @param maxLength Value to set for property 'maxLength'.
    */
-  public void setMaxLength(int l) {
-    maxLength = l;
+  public void setMaxLength(final int maxLength) {
+    this.maxLength = maxLength;
   }
 
   /**
@@ -71,36 +70,26 @@ public class TextFieldPlus extends JTextField {
   }
 
   /**
-   * @return Value for property 'minDouble'.
+   * @return the minimum value this field should accept
    */
-  public double getMinDouble() {
+  public double getMinimumValue() {
     return min;
   }
 
   /**
-   * @return Value for property 'maxDouble'.
+   * @return the maximum value this field should accept
    */
-  public double getMaxDouble() {
+  public double getMaximumValue() {
     return max;
-  }
-
-  /**
-   * @return Value for property 'min'.
-   */
-  public int getMin() {
-    return (int) min;
-  }
-
-  /**
-   * @return Value for property 'max'.
-   */
-  public int getMax() {
-    return (int) max;
   }
 
   /** {@inheritDoc} */
   public void setText(final String string) {
     super.setText(string == null ? "" : string);
+  }
+
+  protected boolean isWithinRange(final double value) {
+    return ((value <= max) && (value >= min));
   }
 
   /** {@inheritDoc} */

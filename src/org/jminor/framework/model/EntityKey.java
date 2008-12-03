@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -76,6 +76,9 @@ public class EntityKey implements Externalizable {
     return entityID;
   }
 
+  /**
+   * @return a List containing the properties comprising this key
+   */
   public List<Property.PrimaryKeyProperty> getProperties() {
     return properties;
   }
@@ -169,7 +172,7 @@ public class EntityKey implements Externalizable {
   }
 
   /**
-   * @return a identical deep copy of this entity key
+   * @return an identical deep copy of this entity key
    */
   public EntityKey copy() {
     final EntityKey ret = new EntityKey(entityID);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.textfield;
 
@@ -83,7 +83,7 @@ public class DoubleField extends IntField {
         StringBuffer sb = new StringBuffer(text);
         sb.insert(offset, string);
         double lVal = Util.getDouble(sb.toString());
-        valueOk = ((lVal <= getMax()) && (lVal >= getMin()));
+        valueOk = isWithinRange(lVal);
       }
 
       if (valueOk)
