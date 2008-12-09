@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.model.combobox;
 
@@ -17,7 +17,7 @@ public class TestFilteredComboBoxModel extends TestCase {
   private static final String KALLI = "kalli";
   private static final String SIGGI = "siggi";
   private static final String TOMAS = "tomas";
-  private static final String BJORN = "björn";
+  private static final String BJORN = "bjÃ¶rn";
 
   public TestFilteredComboBoxModel(String name) {
     super(name);
@@ -25,11 +25,11 @@ public class TestFilteredComboBoxModel extends TestCase {
 
   public void testSort() {
     testModel.setSortContents(true);
-    assertTrue(ANNA + " should be at index 0", testModel.getElementAt(0).equals(ANNA));
-    assertTrue(BJORN + " should be at index 1", testModel.getElementAt(1).equals(BJORN));
-    assertTrue(KALLI + " should be at index 2", testModel.getElementAt(2).equals(KALLI));
-    assertTrue(SIGGI + " should be at index 3", testModel.getElementAt(3).equals(SIGGI));
-    assertTrue(TOMAS + " should be at index 4", testModel.getElementAt(4).equals(TOMAS));
+    assertTrue(ANNA + " should be at index 0, got " + testModel.getElementAt(0), testModel.getElementAt(0).equals(ANNA));
+    assertTrue(BJORN + " should be at index 1, got " + testModel.getElementAt(1), testModel.getElementAt(1).equals(BJORN));
+    assertTrue(KALLI + " should be at index 2, got " + testModel.getElementAt(2), testModel.getElementAt(2).equals(KALLI));
+    assertTrue(SIGGI + " should be at index 3, got " + testModel.getElementAt(3), testModel.getElementAt(3).equals(SIGGI));
+    assertTrue(TOMAS + " should be at index 4, got " + testModel.getElementAt(4), testModel.getElementAt(4).equals(TOMAS));
   }
 
   public void testFiltering() {

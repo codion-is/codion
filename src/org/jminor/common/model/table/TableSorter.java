@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.model.table;
 
@@ -75,7 +75,7 @@ import java.util.Map;
  * This is a long overdue rewrite of a class of the same name that
  * first appeared in the swing table demos in 1997.
  *
- * Slightly modified by Björn Darri, formatting and events, disregard the above copyright notice
+ * Slightly modified by BjÃ¶rn Darri, formatting and events, disregard the above copyright notice
  *
  * @author Philip Milne
  * @author Brendon McLean

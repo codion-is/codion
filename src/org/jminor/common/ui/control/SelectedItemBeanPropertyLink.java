@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
@@ -20,7 +20,7 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
                                       final Class propertyClass, final Event propertyChangeEvent,
                                       final String text) {
     this(box, owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE, null);
-  }                                      
+  }
 
   public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
                                       final Class propertyClass, final Event propertyChangeEvent,

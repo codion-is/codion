@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.remote;
 
@@ -8,7 +8,7 @@ import org.jminor.common.db.User;
 import java.io.Serializable;
 
 /**
-* User: Björn Darri
+* User: BjÃ¶rn Darri
 * Date: 11.12.2007
 * Time: 13:19:13
 */

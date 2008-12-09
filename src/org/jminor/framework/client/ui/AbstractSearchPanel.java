@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 26.12.2007
  * Time: 15:17:20
  */

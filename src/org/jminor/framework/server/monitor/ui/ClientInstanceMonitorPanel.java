@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 4.12.2007
  * Time: 22:49:42
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import javax.swing.JButton;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 13.1.2008
  * Time: 13:05:09
  */

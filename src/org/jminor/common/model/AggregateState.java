@@ -1,18 +1,15 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.model;
 
-import javax.swing.Action;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 /**
  * A state which behaves according to a set of states, either ANDing or ORing those together
  * when determining its own state
  */
-public class AggregateState extends State implements Action {
+public class AggregateState extends State {
 
   public final static int AND = 1;
   public final static int OR = 2;
@@ -92,31 +89,4 @@ public class AggregateState extends State implements Action {
   public void addActivateEvent(final Event activateEvent) {
     throw new RuntimeException("The state of aggregate states can't be set");
   }
-
-  /** {@inheritDoc} */
-  public Object getValue(final String key) {
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public void putValue(String key, Object value) {}
-
-  /** {@inheritDoc} */
-  public void actionPerformed(ActionEvent ev) {}
-
-  /** {@inheritDoc} */
-  public void setEnabled(final boolean b) {
-    setActive(b);
-  }
-
-  /** {@inheritDoc} */
-  public boolean isEnabled() {
-    return isActive();
-  }
-
-  /** {@inheritDoc} */
-  public void addPropertyChangeListener(PropertyChangeListener listener) {}
-
-  /** {@inheritDoc} */
-  public void removePropertyChangeListener(PropertyChangeListener listener) {}
 }

@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
-import junit.framework.TestCase;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
+
+import junit.framework.TestCase;
 
 import java.util.Date;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.petstore.beans.ui;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 24.12.2007
  * Time: 14:05:58
  */

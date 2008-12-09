@@ -82,7 +82,7 @@ public class TestEmpDeptModel extends EntityTestUnit {
     ret.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     ret.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     ret.setValue(EmpDept.EMPLOYEE_JOB, "SrSlacker");
-    ret.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
+    ret.setValue(EmpDept.EMPLOYEE_NAME, "BjÃ¶rn");
     ret.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     return ret;

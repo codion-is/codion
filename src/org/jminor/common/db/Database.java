@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * A class encapsulating database specific code, such as retrieval of auto increment values,
  * string to date conversions and driver class loading.
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 2.2.2008
  * Time: 12:53:14
  */

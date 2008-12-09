@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -27,7 +27,7 @@ import java.util.TimerTask;
 
 /**
  * A simple connection pool implementation, pools connections on username basis
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 7.12.2007
  * Time: 00:04:08
  */
