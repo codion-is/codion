@@ -1101,7 +1101,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * @param control the control to associate with <code>controlCode</code>
    */
   public final void setControl(final String controlCode, final Control control) {
-    controlMap.put(controlCode, control);
+    if (control == null)
+      controlMap.remove(controlCode);
+    else
+      controlMap.put(controlCode, control);
   }
 
   /**
