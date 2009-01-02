@@ -702,4 +702,18 @@ public class Property implements Serializable {
         return ret == null ? "null" : ret.toString();
     }
   }
+
+  public static class BlobProperty extends Property {
+
+    private final String blobColumnName;
+
+    public BlobProperty(final String propertyID, final String blobColumnName, final String caption) {
+      super(propertyID, Type.STRING, caption, false, true, -1, true);
+      this.blobColumnName = blobColumnName;
+    }
+
+    public String getBlobColumnName() {
+      return blobColumnName;
+    }
+  }
 }

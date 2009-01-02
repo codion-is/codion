@@ -34,7 +34,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -257,6 +256,10 @@ public class EntitySearchField extends TextFieldPlus {
     list.setSelectionMode(allowMultipleSelection ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
     final JButton btnClose  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
+    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+    btnClose.setMnemonic(cancelMnemonic.charAt(0));
+    btnCancel.setMnemonic(okMnemonic.charAt(0));
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
     dialog.getRootPane().getActionMap().put("cancel", cancelAction);
@@ -268,12 +271,10 @@ public class EntitySearchField extends TextFieldPlus {
           okAction.actionPerformed(null);
       }
     });
-    btnClose.setMnemonic('L');
-    btnCancel.setMnemonic('H');
     dialog.setLayout(new BorderLayout());
     final JScrollPane scroller = new JScrollPane(list);
     dialog.add(scroller, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
+    final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
     buttonPanel.add(btnClose);
     buttonPanel.add(btnCancel);
     dialog.getRootPane().setDefaultButton(btnClose);

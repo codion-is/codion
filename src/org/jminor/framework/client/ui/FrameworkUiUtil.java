@@ -46,38 +46,25 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Level;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 public class FrameworkUiUtil {
 
@@ -585,6 +572,7 @@ public class FrameworkUiUtil {
     if (transferFocusOnEnter)
       UiUtil.transferFocusOnEnter(ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    addLookupDialog(ret, property, entityModel);
 
     return ret;
   }
@@ -646,5 +634,75 @@ public class FrameworkUiUtil {
     final String propertyDescription = EntityRepository.get().getPropertyDescription(entityID, property);
     if (propertyDescription != null)
       component.setToolTipText(propertyDescription);
+  }
+
+  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
+    txtField.addKeyListener(new KeyAdapter() {
+      public void keyReleased(final KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
+          try {
+            final List<?> values = model.getDbConnectionProvider().getEntityDb().selectPropertyValues(model.getEntityID(), property.propertyID, true, true);
+            final DefaultListModel listModel = new DefaultListModel();
+            for (final Object value : values)
+              listModel.addElement(value);
+
+            final JList list = new JList(new Vector<Object>(values));
+            final Window owner = UiUtil.getParentWindow(txtField);
+            final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+              public void actionPerformed(ActionEvent e) {
+                final Object selectedValue = list.getSelectedValue();
+                if (selectedValue != null)
+                  model.uiSetValue(property.propertyID, selectedValue);
+                dialog.dispose();
+              }
+            };
+            final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
+              public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+              }
+            };
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            final JButton btnClose  = new JButton(okAction);
+            final JButton btnCancel = new JButton(cancelAction);
+            final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+            final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+            btnClose.setMnemonic(cancelMnemonic.charAt(0));
+            btnCancel.setMnemonic(okMnemonic.charAt(0));
+            dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+            dialog.getRootPane().getActionMap().put("cancel", cancelAction);
+            list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+            list.addMouseListener(new MouseAdapter() {
+              public void mouseClicked(final MouseEvent e) {
+                if (e.getClickCount() == 2)
+                  okAction.actionPerformed(null);
+              }
+            });
+            dialog.setLayout(new BorderLayout());
+            final JScrollPane scroller = new JScrollPane(list);
+            dialog.add(scroller, BorderLayout.CENTER);
+            final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
+            buttonPanel.add(btnClose);
+            buttonPanel.add(btnCancel);
+            dialog.getRootPane().setDefaultButton(btnClose);
+            dialog.add(buttonPanel, BorderLayout.SOUTH);
+            dialog.pack();
+            dialog.setLocationRelativeTo(owner);
+            dialog.setModal(true);
+            dialog.setResizable(true);
+            dialog.setVisible(true);
+          }
+          catch (UserException ue) {
+            throw ue.getRuntimeException();
+          }
+          catch (Exception e1) {
+            throw new RuntimeException(e1);
+          }
+        }
+      }
+    });
   }
 }

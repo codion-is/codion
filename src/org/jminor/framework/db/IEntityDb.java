@@ -270,4 +270,8 @@ public interface IEntityDb{
    * @throws Exception in case of an exception
    */
   public List<List> selectRows(final String statement, final int recordCount) throws Exception;
+
+  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws Exception;
+
+  public byte[] readBlob(final Entity entity, final String propertyID) throws Exception;
 }

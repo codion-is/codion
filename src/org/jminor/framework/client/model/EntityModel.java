@@ -29,6 +29,8 @@ import org.jminor.framework.model.PropertyListener;
 import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.event.TableModelListener;
+import javax.swing.event.TableModelEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -1429,6 +1431,16 @@ public class EntityModel implements IRefreshable {
     tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         setActive(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
+      }
+    });
+
+    tableModel.addTableModelListener(new TableModelListener() {
+      public void tableChanged(TableModelEvent e) {
+        //if the selected record is being updated via the table model refresh the one in the model
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == tableModel.getSelectedIndex()) {
+          setActive(null);
+          setActive(tableModel.getSelectedEntity());
+        }
       }
     });
   }

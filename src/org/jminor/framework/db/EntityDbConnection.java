@@ -459,6 +459,48 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
   }
 
+  /** {@inheritDoc} */
+  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws Exception {
+    if (isTransactionOpen())
+      throw new DbException("Cannot save blob within an open transaction");
+
+    boolean success = false;
+    try {
+      startTransaction();
+      final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
+
+      final String whereCondition = EntityUtil.getWhereCondition(entity);
+
+      execute("update " + entity.getEntityID() + " set " + property.propertyID
+              + " = '" + entity.getStringValue(propertyID) + "' " + whereCondition);
+
+      writeBlobField(blobData, EntityRepository.get().getTableName(entity.getEntityID()),
+              property.getBlobColumnName(), whereCondition);
+      success = true;
+
+      return entity;
+    }
+    catch (SQLException e) {
+      throw new DbException(e, "");
+    }
+    finally {
+      endTransaction(!success);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public byte[] readBlob(final Entity entity, final String propertyID) throws Exception {
+    try {
+      final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
+
+      return readBlobField(EntityRepository.get().getTableName(entity.getEntityID()), property.getBlobColumnName(),
+              EntityUtil.getWhereCondition(entity));
+    }
+    catch (SQLException e) {
+      throw new DbException(e, "");
+    }
+  }
+
   void initialize(final EntityRepository repository, final FrameworkSettings settings) {
     if (!EntityRepository.get().contains(repository.getEntityIDs()))
       EntityRepository.get().add(repository.initializeAll());

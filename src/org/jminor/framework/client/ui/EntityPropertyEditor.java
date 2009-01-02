@@ -29,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -93,7 +94,7 @@ public class EntityPropertyEditor extends JPanel {
         try {
           final String dateText = ((UiUtil.DateInputPanel)field).inputField.getText();
           if (!dateText.contains("_"))
-            return ((UiUtil.DateInputPanel)field).maskFormat.parse(dateText);
+            return new Timestamp(((UiUtil.DateInputPanel)field).maskFormat.parse(dateText).getTime());
           else
             return null;
         }

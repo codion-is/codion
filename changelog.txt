@@ -242,3 +242,7 @@
   EntityApplicationModel.getRootEntityModelClasses renamed to getMainEntityModelClasses
   Entity.getValueAsUserString() removed
   EntityProxy.getValueAsUserString() removed
+  EntityModel, if the selected record is being updated via the table model refresh the one in the model
+  DbConnection, EntityDbConnection, Property and remote interfaces updated for rudimentary BLOB handling
+  EntityPropertyEditor now uses Timestamp for date properties
+  FrameworkUiUtil, lookup dialog added to all text fields by default

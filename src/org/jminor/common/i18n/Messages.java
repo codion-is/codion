@@ -17,6 +17,7 @@ public class Messages {
   private static final ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
 
   public static final String CANCEL = "cancel";
+  public static final String CANCEL_MNEMONIC = "cancel_mnemonic";
   public static final String CLOSE = "close";
   public static final String DETAILS = "details";
   public static final String PRINT = "print";
@@ -30,6 +31,7 @@ public class Messages {
   public static final String YES = "yes";
   public static final String NO = "no";
   public static final String OK = "ok";
+  public static final String OK_MNEMONIC = "ok_mnemonic";
   public static final String COPY = "copy";
   public static final String COPY_TO_CLIPBOARD = "copy_to_clipboard";
   public static final String SEND = "send";

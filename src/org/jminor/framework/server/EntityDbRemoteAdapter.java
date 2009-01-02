@@ -547,6 +547,32 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     }
   }
 
+  /** {@inheritDoc} */
+  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws DbException, UserException, RemoteException{
+    try {
+      return loggingEntityDbProxy.writeBlob(entity, propertyID, blobData);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public byte[] readBlob(final Entity entity, final String propertyID) throws Exception {
+    try {
+      return loggingEntityDbProxy.readBlob(entity, propertyID);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
   private IEntityDb initializeProxy() {
     return (IEntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
             EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
