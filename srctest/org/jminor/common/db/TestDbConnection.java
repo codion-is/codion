@@ -2,6 +2,8 @@ package org.jminor.common.db;
 
 import junit.framework.TestCase;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +17,35 @@ public class TestDbConnection extends TestCase {
 
   public TestDbConnection() {
     super("TestDbConnection");
+  }
+
+  public void testBlob() throws Exception {
+    DbConnection dbConnection = null;
+    try {
+      dbConnection = new DbConnection(new User("ops$darri", ""));
+      dbConnection.execute("delete blob_test");
+      dbConnection.execute("insert into blob_test(id) values (1)");
+
+      File file = new File("/home/stofa/darri/data/downloads/NavigableImagePanel.zip");
+
+      dbConnection.writeBlobField(DbUtil.getBytesFromFile(file), "blob_test", "data", "where id = 1");
+
+      final byte[] data = dbConnection.readBlobField("blob_test", "data", "where id = 1");
+
+      File file2 = new File("/home/stofa/darri/data/downloads/NavigableImagePanel2.zip");
+      file2.createNewFile();
+
+      FileOutputStream stream = new FileOutputStream(file2);
+      stream.write(data);
+      stream.flush();
+      stream.close();
+
+      dbConnection.rollback();
+    }
+    finally {
+      if (dbConnection != null)
+        dbConnection.disconnect();
+    }
   }
 
   public void testQueryObjects() throws Exception {

@@ -7,12 +7,16 @@ import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -242,7 +246,8 @@ public class DbConnection {
 
   /**
    * Performs the given query and returns the result as a List of Strings
-   * @param sql the query, it must select a single string column
+   * @param sql the query, it must select at least a single string column, any other
+   * subsequent columns are disregarded
    * @return a List of Strings representing the query result
    * @throws SQLException thrown if anything goes wrong during the execution
    */
@@ -257,7 +262,8 @@ public class DbConnection {
 
   /**
    * Performs the given query and returns the result as an integer
-   * @param sql the query must select a single number column
+   * @param sql the query must select at least a single number column, any other
+   * subsequent columns are disregarded
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution
    * @throws DbException thrown if no record is found
@@ -272,7 +278,8 @@ public class DbConnection {
 
   /**
    * Performs the given query and returns the result as a List of Integers
-   * @param sql the query, it must select a single number column
+   * @param sql the query, it must select at least a single number column, any other
+   * subsequent columns are disregarded
    * @return a List of Integers representing the query result
    * @throws SQLException thrown if anything goes wrong during the execution
    */
@@ -282,7 +289,6 @@ public class DbConnection {
   }
 
   /**
-   *
    * @param sql the query
    * @param recordCount the maximum number of records to return, -1 for all
    * @return the result of this query, in a List of rows represented as Lists
@@ -291,6 +297,65 @@ public class DbConnection {
   @SuppressWarnings({"unchecked"})
   public final List<List> queryObjects(final String sql, final int recordCount) throws SQLException {
     return (List<List>) query(sql, new MixedResultPacker(), recordCount);
+  }
+
+  public final byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
+    //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
+    final String sql = "select " + columnName + " from " + tableName + " " + whereClause;
+
+    final List result = query(sql, new IResultPacker() {
+      public List pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+        final List<Blob> ret = new ArrayList<Blob>();
+        if (resultSet.next())
+          ret.add(resultSet.getBlob(1));
+
+        return ret;
+      }
+    }, 1);
+
+    final Blob blob = (Blob) result.get(0);
+
+    return blob.getBytes(1, (int) blob.length());
+  }
+
+  public final void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
+                                   final String whereClause) throws SQLException {
+    requestsPerSecondCounter++;
+    final long time = System.currentTimeMillis();
+    ByteArrayInputStream inputStream = null;
+    PreparedStatement statement = null;
+    try {
+      statement = connection.prepareStatement("update " + tableName + " set "
+              + columnName + " = ?" + " " + whereClause);
+
+      log.debug(statement);
+
+      inputStream = new ByteArrayInputStream(blobData);
+
+      statement.setBinaryStream(1, inputStream, blobData.length);
+
+      statement.execute();
+    }
+    catch (SQLException e) {
+      final String sql = statement != null ? statement.toString() : "no statement for blob error";
+      System.out.println(sql);
+      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      throw e;
+    }
+    finally {
+      try {
+        if (inputStream != null)
+          inputStream.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+      try {
+        if (statement != null)
+          statement.close();
+      }
+      catch (SQLException e) {/**/}
+    }
   }
 
   /**

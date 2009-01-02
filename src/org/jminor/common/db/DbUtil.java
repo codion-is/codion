@@ -5,6 +5,10 @@ package org.jminor.common.db;
 
 import org.jminor.common.i18n.Messages;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,6 +40,42 @@ public class DbUtil {
     oracleSqlErrorCodes.put(1045, Messages.get(Messages.USER_UNABLE_TO_CONNECT_ERROR));
     oracleSqlErrorCodes.put(1401, Messages.get(Messages.VALUE_TOO_LARGE_FOR_COLUMN_ERROR));
     oracleSqlErrorCodes.put(4063, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
+  }
+
+  public static byte[] getBytesFromFile(final File file) throws IOException {
+    InputStream inputStream = null;
+    try {
+      inputStream = new FileInputStream(file);
+
+      // Get the size of the file
+      final long length = file.length();
+
+      // Create the byte array to hold the data
+      final byte[] bytes = new byte[(int)length];
+
+      // Read in the bytes
+      int offset = 0;
+      int numRead;
+      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length-offset)) >= 0) {
+        offset += numRead;
+      }
+
+      // Ensure all the bytes have been read in
+      if (offset < bytes.length) {
+        throw new IOException("Could not completely read file "+file.getName());
+      }
+
+      return bytes;
+    }
+    finally {
+      try {
+        if (inputStream != null)
+          inputStream.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   public static final IResultPacker<Integer> INT_PACKER = new IResultPacker<Integer>() {
