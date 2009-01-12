@@ -29,7 +29,7 @@ public class Event implements ActionListener, Serializable {
   }
 
   /**
-   * @return Value for property 'firing'.
+   * @return true while this Event is notifying it's listeners
    */
   public boolean isFiring() {
     return firing;

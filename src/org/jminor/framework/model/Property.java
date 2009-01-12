@@ -306,6 +306,7 @@ public class Property implements Serializable {
   /**
    * A meta property that represents a reference to another entity, typically but not necessarily based on a foreign key.
    * These do not map directly to a underlying table column, but wrap the actual column properties involved in the relation.
+   * e.g.: new Property.EntityProperty("reference_property", new Property("reference_id")),
    */
   public static class EntityProperty extends Property {
 

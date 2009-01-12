@@ -31,11 +31,11 @@ public class ProductPanel extends EntityPanel {
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,1,5,5));
     final EntityComboBox box = createEntityComboBox(Petstore.PRODUCT_CATEGORY_REF);
     setDefaultFocusComponent(box);
-    ret.add(getControlPanel(Petstore.PRODUCT_CATEGORY_REF, box));
-    ret.add(getControlPanel(Petstore.PRODUCT_NAME, createTextField(Petstore.PRODUCT_NAME)));
+    ret.add(createControlPanel(Petstore.PRODUCT_CATEGORY_REF, box));
+    ret.add(createControlPanel(Petstore.PRODUCT_NAME, createTextField(Petstore.PRODUCT_NAME)));
     final JTextField txt = createTextField(Petstore.PRODUCT_DESCRIPTION);
     txt.setColumns(16);
-    ret.add(getControlPanel(Petstore.PRODUCT_DESCRIPTION, txt));
+    ret.add(createControlPanel(Petstore.PRODUCT_DESCRIPTION, txt));
 
     return ret;
   }

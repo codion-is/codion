@@ -2,8 +2,6 @@ package org.jminor.common.db;
 
 import junit.framework.TestCase;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +17,7 @@ public class TestDbConnection extends TestCase {
     super("TestDbConnection");
   }
 
-  public void testBlob() throws Exception {
+  /*public void testBlob() throws Exception {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(new User("ops$darri", ""));
@@ -46,7 +44,7 @@ public class TestDbConnection extends TestCase {
       if (dbConnection != null)
         dbConnection.disconnect();
     }
-  }
+  }*/
 
   public void testQueryObjects() throws Exception {
     DbConnection dbConnection = null;

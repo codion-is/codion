@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A static utility class
@@ -24,6 +22,10 @@ public class EntityUtil {
 
   private EntityUtil() {}
 
+  /**
+   * @param entities the entities
+   * @return a List of entities that have been modified
+   */
   public static List<Entity> getModifiedEntities(final List<Entity> entities) {
     final List<Entity> ret = new ArrayList<Entity>();
     for (final Entity entity : entities) {
@@ -34,11 +36,18 @@ public class EntityUtil {
     return ret;
   }
 
+  /**
+   * Constructs a query condition string from the given EntityKey, using the column names
+   * provided or if none are provided, the column names from the key
+   * @param key the EntityKey instance
+   * @param columnNames the column names to use in the criteria
+   * @return a query condition string based on the given key and column names
+   */
   public static String getQueryConditionString(final EntityKey key, final List<String> columnNames) {
     final StringBuffer ret = new StringBuffer("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.properties) {
-      ret.append(EntityUtil.getQueryString(property, columnNames != null ? columnNames.get(i) : null,
+      ret.append(EntityUtil.getQueryString(columnNames == null ? property.propertyID : columnNames.get(i),
               EntityUtil.getSQLStringValue(property, key.keyValues.get(property.propertyID))));
       if (i++ < key.propertyCount -1)
         ret.append(" and ");
@@ -195,14 +204,6 @@ public class EntityUtil {
     return ret;
   }
 
-  public static List<EntityKey> toList(final Set<EntityKey> keys) {
-    final ArrayList<EntityKey> ret = new ArrayList<EntityKey>(keys.size());
-    for (final EntityKey key : keys)
-      ret.add(key);
-
-    return ret;
-  }
-
   public static String getValueString(final Property property, final Object value) {
     final boolean valueIsNull = Entity.isValueNull(property.propertyType, value);
     final StringBuffer ret = new StringBuffer("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
@@ -235,6 +236,10 @@ public class EntityUtil {
     return ret.toString();
   }
 
+  /**
+   * @param entities the entities
+   * @return a List containing the primary keys of the given entities
+   */
   public static List<EntityKey> getPrimaryKeys(final Collection<Entity> entities) {
     final List<EntityKey> ret = new ArrayList<EntityKey>(entities.size());
     for (final Entity entity : entities)
@@ -278,7 +283,7 @@ public class EntityUtil {
     sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = getUpdateProperties(entity);
     if (properties.size() == 0)
-      throw new RuntimeException("No modified updateable properties found in entity :" + entity);
+      throw new RuntimeException("No modified updateable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.propertyID).append(" = ").append(getSQLStringValue(property, entity.getValue(property.propertyID)));
@@ -299,14 +304,15 @@ public class EntityUtil {
 
   /**
    * @param entity the Entity instance
-   * @return a where clause specifying this entity instance
+   * @return a where clause specifying this entity instance,
+   * e.g. " where (idCol = 42)", " where (idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Entity entity) {
     final StringBuffer ret = new StringBuffer(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : entity.getPrimaryKey().getProperties()) {
-      ret.append(getQueryString(property, null, getSQLStringValue(property, entity.getOriginalValue(property.propertyID))));
-      if (i++ < entity.getPrimaryKey().getPropertyCount()-1)
+      ret.append(getQueryString(property.propertyID, getSQLStringValue(property, entity.getOriginalValue(property.propertyID))));
+      if (i++ < entity.getPrimaryKey().getPropertyCount() - 1)
         ret.append(" and ");
     }
 
@@ -314,20 +320,30 @@ public class EntityUtil {
   }
 
   /**
-   * @param property the property
    * @param columnName the columnName
    * @param sqlStringValue the sql string value
-   * @return a query comparison string
+   * @return a query comparison string, e.g. "columnName = sqlStringValue"
    */
-  public static String getQueryString(final Property property, final String columnName, final String sqlStringValue) {
-    return new StringBuffer(columnName == null ? property.propertyID : columnName).append(" = ").append(
-            sqlStringValue).toString();
+  public static String getQueryString(final String columnName, final String sqlStringValue) {
+    return new StringBuffer(columnName).append(" = ").append(sqlStringValue).toString();
   }
 
+  /**
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the property value
+   * @return an array containing the values of the property with the given ID from the given entities,
+   * null values are included
+   */
   public static Object[] getPropertyValue(final String propertyID, final List<Entity> entities) {
     return getPropertyValue(propertyID, entities, true);
   }
 
+  /**
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the property value
+   * @param includeNullValues if true then null values are included
+   * @return an array containing the values of the property with the given ID from the given entities
+   */
   public static Object[] getPropertyValue(final String propertyID, final List<Entity> entities,
                                           final boolean includeNullValues) {
     final List<Object> ret = new ArrayList<Object>(entities.size());
@@ -341,6 +357,14 @@ public class EntityUtil {
     return ret.toArray();
   }
 
+  /**
+   * Sets the value of the property with ID <code>propertyID</code> to <code>value</code>
+   * in the given entities
+   * @param propertyID the ID of the property for which to set the value
+   * @param value the value
+   * @param entities the entities for which to set the value
+   * @return the old values in the same order as the entities were recieved
+   */
   public static Object[] setPropertyValue(final String propertyID, final Object value,
                                           final List<Entity> entities) {
     final Object[] oldValues = getPropertyValue(propertyID, entities);
@@ -369,21 +393,14 @@ public class EntityUtil {
     System.out.println("********************************************");
   }
 
-  public static HashMap<Class, List<Entity>> hashByType(final List<Entity> entities) {
-    final HashMap<Class, List<Entity>> ret = new LinkedHashMap<Class, List<Entity>>();
-    for (final Entity entity : entities) {
-      List<Entity> entityList = ret.get(entity.getClass());
-      if (entityList == null)
-        ret.put(entity.getClass(), entityList = new ArrayList<Entity>());
-
-      entityList.add(entity);
-    }
-
-    return ret;
-  }
-
-  public static HashMap<Object, List<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
-    final HashMap<Object, List<Entity>> ret = new HashMap<Object, List<Entity>>(entities.size());
+  /**
+   * Returns a Map containing the given entities hashed by the value of the property with ID <code>propertyID</code>
+   * @param entities the entities to map by property value
+   * @param propertyID the ID of the property which value should be used for mapping
+   * @return a Map of entities hashed by property value
+   */
+  public static Map<Object, List<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
+    final Map<Object, List<Entity>> ret = new HashMap<Object, List<Entity>>(entities.size());
     for (final Entity entity : entities) {
       final Object key = entity.getValue(propertyID);
       if (ret.containsKey(key))
@@ -393,19 +410,6 @@ public class EntityUtil {
         list.add(entity);
         ret.put(key, list);
       }
-    }
-
-    return ret;
-  }
-
-  public static HashMap<Property, List<Object>> hashPropertiesByName(final Property[] properties, final Object[] values) {
-    final HashMap<Property, List<Object>> ret = new HashMap<Property, List<Object>>();
-    for (int i = 0; i < values.length; i++) {
-      List<Object> propList = ret.get(properties[i]);
-      if (propList == null)
-        ret.put(properties[i], propList = new ArrayList<Object>());
-
-      propList.add(values[i]);
     }
 
     return ret;

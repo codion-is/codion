@@ -31,7 +31,7 @@ public class TagPanel extends EntityPanel {
     final JTextField txt = createTextField(Petstore.TAG_TAG);
     setDefaultFocusComponent(txt);
     txt.setColumns(16);
-    ret.add(getControlPanel(Petstore.TAG_TAG, txt));
+    ret.add(createControlPanel(Petstore.TAG_TAG, txt));
 
     return ret;
   }

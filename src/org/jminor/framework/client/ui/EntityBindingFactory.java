@@ -33,26 +33,26 @@ public abstract class EntityBindingFactory extends JPanel {
    */
   public abstract EntityModel getModel();
 
-  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent) {
-    return getControlPanel(propertyID, inputComponent, true);
+  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent) {
+    return createControlPanel(propertyID, inputComponent, true);
   }
 
-  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
+  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop) {
-    return getControlPanel(propertyID, inputComponent, labelOnTop, 0, 0);
+    return createControlPanel(propertyID, inputComponent, labelOnTop, 0, 0);
   }
 
-  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
+  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap) {
-    return getControlPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
+    return createControlPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
   }
 
-  public JPanel getControlPanel(final String propertyID, final JComponent inputComponent,
+  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap, final int labelAlignment) {
-    return getControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
+    return createControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
-  public JPanel getControlPanel(final JComponent labelComponent, final JComponent inputComponent,
+  public JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
                                 final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));

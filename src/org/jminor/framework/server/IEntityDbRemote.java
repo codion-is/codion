@@ -70,7 +70,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @return Value for property 'checkDependencies'.
    * @throws java.rmi.RemoteException
    */
-  public boolean getCheckDependencies() throws RemoteException;
+  public boolean isCheckDependencies() throws RemoteException;
 
   /**
    * Executes the given statement

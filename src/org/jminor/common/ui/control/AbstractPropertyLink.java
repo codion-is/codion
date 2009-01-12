@@ -82,12 +82,12 @@ public abstract class AbstractPropertyLink extends Control {
   }
 
   /**
-   * @param value Value to set for property.
+   * @param value the value to set for property.
    */
   public abstract void setPropertyValue(final Object value);
 
   /**
-   * @return Value the property value.
+   * @return the value of the linked property
    */
   public abstract Object getPropertyValue();
 

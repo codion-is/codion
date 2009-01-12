@@ -100,7 +100,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   /**
    * @return the primary key of this entity
    */
-  public final EntityKey getPrimaryKey() {
+  public EntityKey getPrimaryKey() {
     return primaryKey;
   }
 
@@ -359,7 +359,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return true if this entity contains a value for the property
    * N.B. does not include the primary key properties
    */
-  public final boolean hasValue(final String propertyID) {
+  public boolean hasValue(final String propertyID) {
     return propertyValues.containsKey(propertyID);
   }
 
@@ -510,7 +510,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   public void setFirePropertyChangeEvents(final boolean value) {
     if (value) {
       if (evtPropertyChanged == null)
-        evtPropertyChanged  = new Event("Entity.evtPropertyChanged");
+        evtPropertyChanged = new Event("Entity.evtPropertyChanged");
     }
     else
       evtPropertyChanged = null;
@@ -700,7 +700,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     }
     else if (!EntityUtil.equal(type, oldValue, newValue)) {
       (originalPropertyValues == null ?
-              (originalPropertyValues  = new HashMap<String, Object>()) : originalPropertyValues).put(propertyID, oldValue);
+              (originalPropertyValues = new HashMap<String, Object>()) : originalPropertyValues).put(propertyID, oldValue);
     }
 
     if (stModified != null)

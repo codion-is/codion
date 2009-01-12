@@ -78,7 +78,7 @@ public interface IEntityDb{
    * @return Value for property 'checkDependencies'.
    * @throws Exception in case of exception
    */
-  public boolean getCheckDependencies() throws Exception;
+  public boolean isCheckDependencies() throws Exception;
 
   /**
    * Executes the given statement

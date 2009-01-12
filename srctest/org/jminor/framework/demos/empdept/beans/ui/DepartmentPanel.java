@@ -37,9 +37,9 @@ public class DepartmentPanel extends EntityPanel {
     txtName.setColumns(10);
 
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,1,5,5,true,false));
-    ret.add(getControlPanel(EmpDept.DEPARTMENT_ID, txtDeptno));
-    ret.add(getControlPanel(EmpDept.DEPARTMENT_NAME, txtName));
-    ret.add(getControlPanel(EmpDept.DEPARTMENT_LOCATION, UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION))));
+    ret.add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDeptno));
+    ret.add(createControlPanel(EmpDept.DEPARTMENT_NAME, txtName));
+    ret.add(createControlPanel(EmpDept.DEPARTMENT_LOCATION, UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION))));
 
     return ret;
   }

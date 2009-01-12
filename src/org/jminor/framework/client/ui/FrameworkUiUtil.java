@@ -572,7 +572,8 @@ public class FrameworkUiUtil {
     if (transferFocusOnEnter)
       UiUtil.transferFocusOnEnter(ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
-    addLookupDialog(ret, property, entityModel);
+    if (property.isDatabaseProperty())
+      addLookupDialog(ret, property, entityModel);
 
     return ret;
   }
@@ -664,11 +665,11 @@ public class FrameworkUiUtil {
               }
             };
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            final JButton btnClose  = new JButton(okAction);
+            final JButton btnOk  = new JButton(okAction);
             final JButton btnCancel = new JButton(cancelAction);
             final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
             final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-            btnClose.setMnemonic(cancelMnemonic.charAt(0));
+            btnOk.setMnemonic(cancelMnemonic.charAt(0));
             btnCancel.setMnemonic(okMnemonic.charAt(0));
             dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
                     KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
@@ -685,10 +686,12 @@ public class FrameworkUiUtil {
             final JScrollPane scroller = new JScrollPane(list);
             dialog.add(scroller, BorderLayout.CENTER);
             final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
-            buttonPanel.add(btnClose);
+            buttonPanel.add(btnOk);
             buttonPanel.add(btnCancel);
-            dialog.getRootPane().setDefaultButton(btnClose);
-            dialog.add(buttonPanel, BorderLayout.SOUTH);
+            final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            buttonBasePanel.add(buttonPanel);
+            dialog.getRootPane().setDefaultButton(btnOk);
+            dialog.add(buttonBasePanel, BorderLayout.SOUTH);
             dialog.pack();
             dialog.setLocationRelativeTo(owner);
             dialog.setModal(true);

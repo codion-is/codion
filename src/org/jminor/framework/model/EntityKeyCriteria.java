@@ -55,8 +55,7 @@ public class EntityKeyCriteria implements ICriteria {
 
   public String getConditionString() {
     final StringBuffer ret = new StringBuffer();
-    final boolean multiColumnPk = keys.get(0).getPropertyCount() > 1;
-    if (multiColumnPk) {
+    if (keys.get(0).getPropertyCount() > 1) {//multi column key
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
         ret.append(EntityUtil.getQueryConditionString(keys.get(i), getColumnNames()));

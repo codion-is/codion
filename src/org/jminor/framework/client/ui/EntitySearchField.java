@@ -36,6 +36,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -50,8 +51,19 @@ public class EntitySearchField extends TextFieldPlus {
 
   public final Event evtSelectedEntityChanged = new Event("EntitySearchField.selectedEntityChanged");
 
+  /**
+   * The ID of the entity this search field is based on
+   */
   private final String entityID;
+
+  /**
+   * The properties to use when searching
+   */
   private final List<Property> searchProperties;
+
+  /**
+   * The selected entitites
+   */
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 
   private final Action searchAction;
@@ -254,11 +266,11 @@ public class EntitySearchField extends TextFieldPlus {
       }
     };
     list.setSelectionMode(allowMultipleSelection ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-    final JButton btnClose  = new JButton(okAction);
+    final JButton btnOk  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    btnClose.setMnemonic(cancelMnemonic.charAt(0));
+    btnOk.setMnemonic(cancelMnemonic.charAt(0));
     btnCancel.setMnemonic(okMnemonic.charAt(0));
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
@@ -275,10 +287,12 @@ public class EntitySearchField extends TextFieldPlus {
     final JScrollPane scroller = new JScrollPane(list);
     dialog.add(scroller, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
-    buttonPanel.add(btnClose);
+    buttonPanel.add(btnOk);
     buttonPanel.add(btnCancel);
-    dialog.getRootPane().setDefaultButton(btnClose);
-    dialog.add(buttonPanel, BorderLayout.SOUTH);
+    final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonBasePanel.add(buttonPanel);
+    dialog.getRootPane().setDefaultButton(btnOk);
+    dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
     dialog.setModal(true);

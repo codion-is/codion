@@ -41,15 +41,15 @@ public class EmployeePanel extends EntityPanel {
     boxMgr.setPopupWidth(200);
 
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,3,5,5,true,false));
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_NAME, txtName));
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_JOB, txtJob));
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_DEPARTMENT_REF, createEntityComboBox(EmpDept.EMPLOYEE_DEPARTMENT_REF)));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_NAME, txtName));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_JOB, txtJob));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_DEPARTMENT_REF, createEntityComboBox(EmpDept.EMPLOYEE_DEPARTMENT_REF)));
 
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_MGR_REF, boxMgr));
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_SALARY, createTextField(EmpDept.EMPLOYEE_SALARY)));
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_COMMISSION, createTextField(EmpDept.EMPLOYEE_COMMISSION)));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_MGR_REF, boxMgr));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_SALARY, createTextField(EmpDept.EMPLOYEE_SALARY)));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_COMMISSION, createTextField(EmpDept.EMPLOYEE_COMMISSION)));
 
-    ret.add(getControlPanel(EmpDept.EMPLOYEE_HIREDATE, createDateFieldPanel(EmpDept.EMPLOYEE_HIREDATE, new ShortDotDateFormat())));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_HIREDATE, createDateFieldPanel(EmpDept.EMPLOYEE_HIREDATE, new ShortDotDateFormat())));
     ret.add(new JLabel());
     ret.add(new JLabel());
 

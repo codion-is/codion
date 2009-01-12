@@ -126,7 +126,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public boolean getCheckDependencies() {
+  public boolean isCheckDependencies() {
     return checkDependenciesOnDelete;
   }
 
@@ -208,7 +208,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (entities == null || entities.size() == 0)
       return;
 
-    if (getCheckDependencies()) {
+    if (isCheckDependencies()) {
       final Map<String, List<Entity>> dependencies = getDependentEntities(entities);
       if (EntityUtil.activeDependencies(dependencies))
         throw new DbException("Entity has dependencies", "", entities.get(0));
@@ -647,7 +647,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         ret.add(key);
     }
 
-    return EntityUtil.toList(ret);
+    return new ArrayList<EntityKey>(ret);
   }
 
   private EntityResultPacker getResultPacker(final String entityID) {

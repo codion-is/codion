@@ -351,9 +351,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public boolean getCheckDependencies() throws RemoteException {
+  public boolean isCheckDependencies() throws RemoteException {
     try {
-      return loggingEntityDbProxy.getCheckDependencies();
+      return loggingEntityDbProxy.isCheckDependencies();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);

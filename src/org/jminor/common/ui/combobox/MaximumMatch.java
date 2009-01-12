@@ -5,6 +5,7 @@ package org.jminor.common.ui.combobox;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.UIManager;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -102,7 +103,7 @@ public class MaximumMatch extends PlainDocument {
       }
       else {
         // User hit backspace with the cursor positioned on the start => beep
-        comboBox.getToolkit().beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+        UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
       highlightCompletedText(offs);
     }
@@ -131,7 +132,7 @@ public class MaximumMatch extends PlainDocument {
       // imitate no insert (later on offs will be incremented by str.length(): selection won't move forward)
       offs = offs-str.length();
       // provide feedback to the user that his input has been received but can not be accepted
-      comboBox.getToolkit().beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+      UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }
 
     if (match)

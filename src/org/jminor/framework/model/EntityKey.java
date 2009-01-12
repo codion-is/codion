@@ -28,7 +28,7 @@ public class EntityKey implements Externalizable {
   Map<String, Object> keyValues;
 
   /**
-   * The number of properties in this this key
+   * The number of properties comprising this this key
    */
   int propertyCount;
 
@@ -43,7 +43,7 @@ public class EntityKey implements Externalizable {
   private int hashCode = -Integer.MAX_VALUE;
 
   /**
-   * True if the hash code value has been invalidated and needs to be recalculated
+   * True if the value of a key property has changed, thereby invalidating the cached hash code value
    */
   private boolean hashCodeDirty = true;
 
@@ -205,7 +205,7 @@ public class EntityKey implements Externalizable {
   }
 
   /**
-   * @return a "pseudo" hash code
+   * @return a hash code based on the values of this key, unique among entities of the same type
    */
   public int hashCode() {
     if (hashCodeDirty) {

@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 /**
  * Acts as a proxy for retrieving values from Entity objects, allowing for plugged
- * in entity specific functionality, such as providing toString() implementations
+ * in entity specific functionality, such as providing toString() and compareTo() implementations
  */
 public class EntityProxy {
 

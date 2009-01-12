@@ -35,60 +35,43 @@ public class State implements Serializable {
   private boolean active = false;
   private final String name;
 
-  /** Constructs a new State. */
+  /**
+   * Constructs a new anonymous State instance initialized as inactive
+   */
   public State() {
     this(null);
   }
 
+  /**
+   * Constructs a new State instance
+   * @param name the name of the state
+   */
   public State(final String name) {
     this.name = name;
   }
 
+  /**
+   * Constructs a new State instance
+   * @param name the name of the state
+   * @param initialState the initial state
+   */
   public State(final String name, final boolean initialState) {
     this(name);
     setActive(initialState);
   }
 
+  /**
+   * Constructs a new State instance
+   * @param initialState the initial state
+   */
   public State(final boolean initialState) {
     this();
     setActive(initialState);
   }
 
-  public State(final String name, final Event activateEvent, final Event deactivateEvent) {
-    this(name);
-    addActivateEvent(activateEvent);
-    addDeactivateEvent(deactivateEvent);
-  }
-
-  public State(final Event activateEvent, final Event deactivateEvent) {
-    this();
-    addActivateEvent(activateEvent);
-    addDeactivateEvent(deactivateEvent);
-  }
-
   /** {@inheritDoc} */
   public String toString() {
     return (name != null ? (name + " ") : "") + (active ? "active" : "inactive");
-  }
-
-  public synchronized void addActivateEvent(final Event activateEvent) {
-    if (activateEvent != null) {
-      activateEvent.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent ev) {
-          setActive(true);
-        }
-      });
-    }
-  }
-
-  public synchronized void addDeactivateEvent(final Event deactivateEvent) {
-    if (deactivateEvent != null) {
-      deactivateEvent.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent ev) {
-          setActive(false);
-        }
-      });
-    }
   }
 
   public void addListeningAction(final Action action) {
@@ -116,7 +99,7 @@ public class State implements Serializable {
   }
 
   /**
-   * @return Value for property 'active'.
+   * @return true if this state is active, false otherwise
    */
   public boolean isActive() {
     return active;
@@ -154,10 +137,6 @@ public class State implements Serializable {
     }
 
     public void setActive(final boolean isActive) {
-      throw new RuntimeException("Cannot set the state of a reversed state");
-    }
-
-    public void addActivateEvent(final Event activateEvent) {
       throw new RuntimeException("Cannot set the state of a reversed state");
     }
 
