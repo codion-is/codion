@@ -78,7 +78,7 @@ public class UiUtil {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
-        fileChooser = new JFileChooser();
+        fileChooser = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
       }
       finally {
         setWaitCursor(false, dialogParent);
@@ -87,11 +87,11 @@ public class UiUtil {
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
-    final File selectedFile = new File(startDir == null ? System.getProperty("user.home") : startDir);
-    fileChooser.setCurrentDirectory(selectedFile);
+    if (startDir != null && startDir.length() > 0)
+      fileChooser.setCurrentDirectory(new File(startDir));
     if (dialogTitle != null)
       fileChooser.setDialogTitle(dialogTitle);
-    int ret = fileChooser.showOpenDialog(dialogParent);
+    final int ret = fileChooser.showOpenDialog(dialogParent);
     if (ret == JFileChooser.APPROVE_OPTION)
       return fileChooser.getSelectedFile();
     else
@@ -102,17 +102,17 @@ public class UiUtil {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
-        fileChooser = new JFileChooser();
+        fileChooser = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
       }
       finally {
         setWaitCursor(false, dialogParent);
       }
     }
-    File selectedFile = new File(startDir == null ? System.getProperty("user.home") : startDir);
-    fileChooser.setCurrentDirectory(selectedFile);
-    int option = fileChooser.showOpenDialog(dialogParent);
+    if (startDir != null && startDir.length() > 0)
+      fileChooser.setCurrentDirectory(new File(startDir));
+    final int option = fileChooser.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
-      selectedFile = fileChooser.getSelectedFile();
+      final File selectedFile = fileChooser.getSelectedFile();
       if (selectedFile.exists()) {
         return selectedFile;
       }

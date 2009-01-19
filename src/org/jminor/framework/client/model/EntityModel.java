@@ -65,7 +65,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired when an Entity has been inserted
    */
-  public final Event evtEntitiesInserted = new Event("EntityModel.evtEntitiesInserted");
+  public final Event evtAfterInsert = new Event("EntityModel.evtAfterInsert");
 
   /**
    * Fired before an update is performed
@@ -75,7 +75,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired when an Entity has been updated
    */
-  public final Event evtEntitiesUpdated = new Event("EntityModel.evtEntitiesUpdated");
+  public final Event evtAfterUpdate = new Event("EntityModel.evtAfterUpdate");
 
   /**
    * Fired before a delete is performed
@@ -85,7 +85,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired when an Entity has been deleted
    */
-  public final Event evtEntitiesDeleted = new Event("EntityModel.evtEntitiesDeleted");
+  public final Event evtAfterDelete = new Event("EntityModel.evtAfterDelete");
 
   /**
    * Fired when an entity is deleted, inserted or updated
@@ -772,7 +772,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
    * @see #evtBeforeInsert
-   * @see #evtEntitiesInserted
+   * @see #evtAfterInsert
    */
   public final void insert(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
@@ -791,7 +791,7 @@ public class EntityModel implements IRefreshable {
       tableModel.addEntitiesByPrimaryKeys(primaryKeys, true);
     }
 
-    evtEntitiesInserted.fire(new InsertEvent(this, primaryKeys));
+    evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
     refreshDetailModelsAfterInsertOrUpdate();
   }
 
@@ -814,7 +814,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
    * @see #evtBeforeUpdate
-   * @see #evtEntitiesUpdated
+   * @see #evtAfterUpdate
    */
   //todo known issue, when updating primary key properties the table model state is not exactly fresh afterwards, example: petstore-ItemTags, proposed solution: force refresh in case primary keys were involved in the update
   public final void update(final List<Entity> entities) throws UserException, DbException, UserCancelException {
@@ -840,7 +840,7 @@ public class EntityModel implements IRefreshable {
       tableModel.setSelectedEntities(updated);
     }
 
-    evtEntitiesUpdated.fire(new UpdateEvent(this, updatedEntities));
+    evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities));
     refreshDetailModelsAfterInsertOrUpdate();
   }
 
@@ -851,7 +851,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserCancelException in case the user cancels the operation
    * @see #getEntitiesForDelete()
    * @see #evtBeforeDelete
-   * @see #evtEntitiesDeleted
+   * @see #evtAfterDelete
    */
   public final void delete() throws DbException, UserException, UserCancelException {
     if (isReadOnly())
@@ -870,7 +870,7 @@ public class EntityModel implements IRefreshable {
     if (tableModel != null)
       tableModel.removeEntities(entities);
 
-    evtEntitiesDeleted.fire(new DeleteEvent(this, entities));
+    evtAfterDelete.fire(new DeleteEvent(this, entities));
     refreshDetailModelsAfterDelete(entities);
   }
 
@@ -1359,9 +1359,9 @@ public class EntityModel implements IRefreshable {
    * Override to add specific event bindings, remember to call super.bindEvents()
    */
   protected void bindEvents() {
-    evtEntitiesDeleted.addListener(evtEntitiesChanged);
-    evtEntitiesInserted.addListener(evtEntitiesChanged);
-    evtEntitiesUpdated.addListener(evtEntitiesChanged);
+    evtAfterDelete.addListener(evtEntitiesChanged);
+    evtAfterInsert.addListener(evtEntitiesChanged);
+    evtAfterUpdate.addListener(evtEntitiesChanged);
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {

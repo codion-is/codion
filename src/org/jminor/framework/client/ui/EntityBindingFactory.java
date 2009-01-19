@@ -331,38 +331,36 @@ public abstract class EntityBindingFactory extends JPanel {
             EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), lookupModel);
   }
 
-  protected final EntitySearchField createEntitySearchField(final String propertyID, final String entityID,
-                                                            final String searchPropertyID) {
-    return createEntitySearchField(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID), entityID,
-            searchPropertyID);
+  protected final EntitySearchField createEntitySearchField(final String propertyID, final String... searchPropertyIDs) {
+    final Property.EntityProperty property = EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID);
+    return createEntitySearchField(property, searchPropertyIDs);
   }
 
-  protected final EntitySearchField createEntitySearchField(final Property.EntityProperty property, final String entityID,
-                                                            final String searchPropertyID) {
-    return FrameworkUiUtil.createEntitySearchField(property, getModel(), entityID, searchPropertyID);
+  protected final EntitySearchField createEntitySearchField(final Property.EntityProperty property, final String... searchPropertyIDs) {
+    return FrameworkUiUtil.createEntitySearchField(property, getModel(), searchPropertyIDs);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String entityID,
-                                                      final String searchPropertyID, final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(propertyID, entityID, searchPropertyID, null, lookupModel);
+  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String searchPropertyID,
+                                                      final EntityTableModel lookupModel) {
+    return createEntitySearchFieldPanel(propertyID, searchPropertyID, null, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String entityID,
-                                                      final String searchPropertyID, final ICriteria additionalSearchCriteria,
+  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String searchPropertyID,
+                                                      final ICriteria additionalSearchCriteria,
                                                       final EntityTableModel lookupModel) {
     return createEntitySearchFieldPanel(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID),
-            entityID, searchPropertyID, additionalSearchCriteria, lookupModel);
+            searchPropertyID, additionalSearchCriteria, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final String entityID,
+  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property,
                                                       final String searchPropertyID, final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(property, entityID, searchPropertyID, null, lookupModel);
+    return createEntitySearchFieldPanel(property, searchPropertyID, null, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final String entityID,
+  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property,
                                                       final String searchPropertyID, final ICriteria additionalSearchCriteria,
                                                       final EntityTableModel lookupModel) {
-    return FrameworkUiUtil.createEntitySearchFieldPanel(property, getModel(), entityID, searchPropertyID,
+    return FrameworkUiUtil.createEntitySearchFieldPanel(property, getModel(), searchPropertyID,
             additionalSearchCriteria, lookupModel);
   }
 

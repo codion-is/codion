@@ -101,7 +101,7 @@ public class EntityComboBox extends SteppedComboBox {
           entityPanel.initialize();
           entityPanel.getModel().getTableModel().setSelectedEntity(getModel().getSelectedEntity());
           final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
-          entityPanel.getModel().evtEntitiesInserted.addListener(new ActionListener() {
+          entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
               lastInsertedPrimaryKeys.clear();
               lastInsertedPrimaryKeys.addAll(((InsertEvent) e).getInsertedKeys());

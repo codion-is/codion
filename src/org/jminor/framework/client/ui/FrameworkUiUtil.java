@@ -376,30 +376,29 @@ public class FrameworkUiUtil {
     return txt;
   }
 
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
-                                                          final String searchEntityID) {
-    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(searchEntityID);
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel                                                          ) {
+    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(property.referenceEntityID);
     if (searchPropertyIDs == null)
-      throw new RuntimeException("No default search properties specified for entity: " + searchEntityID
+      throw new RuntimeException("No default search properties specified for entity: " + property.referenceEntityID
               + ", unable to create EntitySearchField, you must specify the searchPropertyIDs");
 
-    return createEntitySearchField(property, entityModel, searchEntityID, searchPropertyIDs);
+    return createEntitySearchField(property, entityModel, searchPropertyIDs);
   }
 
   public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
-                                                          final String searchEntityID, final String... searchPropertyIDs) {
-    return createEntitySearchField(property, entityModel, searchEntityID, null, searchPropertyIDs);
-  }
-
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
-                                                          final String searchEntityID, final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
-    final List<Property> searchProperties = EntityRepository.get().getProperties(searchEntityID, searchPropertyIDs);
+    return createEntitySearchField(property, entityModel, null, searchPropertyIDs);
+  }
+
+  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
+                                                          final ICriteria additionalSearchCriteria,
+                                                          final String... searchPropertyIDs) {
+    final List<Property> searchProperties = EntityRepository.get().getProperties(property.referenceEntityID, searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)
         throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = new EntitySearchField(entityModel.getDbConnectionProvider(), searchEntityID,
+    final EntitySearchField searchField = new EntitySearchField(entityModel.getDbConnectionProvider(), property.referenceEntityID,
             additionalSearchCriteria, searchPropertyIDs);
     searchField.setBorder(BorderFactory.createEtchedBorder());
     new SearchFieldPropertyLink(entityModel, property.propertyID, searchField);
@@ -409,20 +408,20 @@ public class FrameworkUiUtil {
   }
 
   public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final String searchEntityID, final String searchPropertyID,
+                                                    final String searchPropertyID,
                                                     final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(property, entityModel, searchEntityID, searchPropertyID, null, lookupModel);
+    return createEntitySearchFieldPanel(property, entityModel, searchPropertyID, null, lookupModel);
   }
 
   public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final String searchEntityID, final String searchPropertyID,
+                                                    final String searchPropertyID,
                                                     final ICriteria additionalSearchCriteria,
                                                     final EntityTableModel lookupModel) {
-    final Property searchProperty = EntityRepository.get().getProperty(searchEntityID, searchPropertyID);
+    final Property searchProperty = EntityRepository.get().getProperty(property.referenceEntityID, searchPropertyID);
     if (searchProperty.getPropertyType() != Type.STRING)
       throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
-    final EntitySearchField searchField = createEntitySearchField(property, entityModel, searchEntityID,
+    final EntitySearchField searchField = createEntitySearchField(property, entityModel,
             additionalSearchCriteria, searchPropertyID);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {

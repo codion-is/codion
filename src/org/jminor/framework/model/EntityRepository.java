@@ -600,6 +600,8 @@ public class EntityRepository implements Serializable {
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
                          final Property... initialPropertyDefinitions) {
+    if (this.readOnly.containsKey(entityID))
+      throw new IllegalArgumentException("Entity with ID '" + entityID + "' has already been initialized!");
     this.readOnly.put(entityID, isReadOnly);
     this.entityTableNames.put(entityID, dbTableName == null ? entityID : dbTableName.toLowerCase());
     this.entitySelectTableNames.put(entityID,
