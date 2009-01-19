@@ -54,9 +54,9 @@ public class TestDbConnection extends TestCase {
       assertTrue(result.size() == 1);
       final List row = result.get(0);
       assertEquals(row.size(), 3);
-      assertTrue(row.get(0).getClass().equals(BigDecimal.class));
-      assertTrue(row.get(1).getClass().equals(String.class));
-      assertTrue(row.get(2).getClass().equals(String.class));
+      assertEquals(Database.isMySQL() ? Integer.class : BigDecimal.class, row.get(0).getClass());
+      assertEquals(String.class, row.get(1).getClass());
+      assertEquals(String.class, row.get(2).getClass());
     }
     finally {
       if (dbConnection != null)

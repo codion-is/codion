@@ -137,8 +137,8 @@ public class Property implements Serializable {
    * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
    * @param isUpdatable specifies whether this property is updatable
    */
-  private Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
-                   final boolean selectOnly, final Integer preferredColumnWidth, final boolean isUpdatable) {
+  public Property(final String propertyID, final Type propertyType, final String caption, final boolean hidden,
+                  final boolean selectOnly, final Integer preferredColumnWidth, final boolean isUpdatable) {
     if (propertyID == null)
       throw new IllegalArgumentException("Property ID must be specified");
     this.propertyID = propertyID;
