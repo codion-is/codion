@@ -333,6 +333,10 @@ public class FrameworkUiUtil {
       new ComboBoxPropertyLink(entityModel, property, ret);
       MaximumMatch.enable(ret);
       setPropertyToolTip(entityModel.getEntityID(), property, ret);
+      final boolean transferFocusOnEnter =
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
+      if (transferFocusOnEnter)
+        UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
       return ret;
     }
@@ -458,7 +462,7 @@ public class FrameworkUiUtil {
     final boolean transferFocusOnEnter =
             (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
     if (transferFocusOnEnter)
-      UiUtil.transferFocusOnEnter(ret);
+      UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
     return ret;
   }

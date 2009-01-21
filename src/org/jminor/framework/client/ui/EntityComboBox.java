@@ -99,7 +99,7 @@ public class EntityComboBox extends SteppedComboBox {
         try {
           final EntityPanel entityPanel = applicationInfo.getInstance(getModel().getDbProvider());
           entityPanel.initialize();
-          entityPanel.getModel().getTableModel().setSelectedEntity(getModel().getSelectedEntity());
+//          entityPanel.getModel().getTableModel().setSelectedEntity(getModel().getSelectedEntity());
           final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
           entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
@@ -113,7 +113,6 @@ public class EntityComboBox extends SteppedComboBox {
           dialog.setLayout(new BorderLayout());
           dialog.add(entityPanel, BorderLayout.CENTER);
           final JButton btnClose = initializeOkButton(entityPanel, dialog, lastInsertedPrimaryKeys);
-          btnClose.setMnemonic('O');
           final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
           buttonPanel.add(btnClose);
           dialog.add(buttonPanel, BorderLayout.SOUTH);
@@ -132,7 +131,7 @@ public class EntityComboBox extends SteppedComboBox {
 
   private JButton initializeOkButton(final EntityPanel entityPanel, final JDialog pane,
                                      final List<EntityKey> lastInsertedPrimaryKeys) {
-    return new JButton(new AbstractAction(Messages.get(Messages.OK)) {
+    final JButton ret = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         try {
           getModel().refresh();
@@ -156,6 +155,9 @@ public class EntityComboBox extends SteppedComboBox {
         }
       }
     });
+    ret.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+
+    return ret;
   }
 
   private void addRefreshPopupMenu() {

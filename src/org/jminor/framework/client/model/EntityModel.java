@@ -1269,8 +1269,13 @@ public class EntityModel implements IRefreshable {
       final ComboBoxModel boxModel = propertyComboBoxModels.get(property);
       if (boxModel instanceof EntityComboBoxModel)
         return ((EntityComboBoxModel)boxModel).getSelectedEntity();
-      else
-        return boxModel.getSelectedItem();
+      else {
+        final Object selected = boxModel.getSelectedItem();
+        if (selected instanceof String && ((String)selected).length() == 0)
+          return null;
+
+        return selected;
+      }
     }
 
     return property.getDefaultValue();
