@@ -5,6 +5,7 @@ import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.TextFieldPlus;
@@ -33,10 +34,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
-import java.awt.FlowLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -72,6 +73,8 @@ public class EntitySearchField extends TextFieldPlus {
   private IEntityDbProvider dbProvider;
   private ICriteria additionalSearchCriteria;
 
+  private State stTextRepresentsSelected = new State();
+
   private boolean allowMultipleSelection;
   private boolean caseSensitive;
   private boolean wildcardPrefix;
@@ -105,10 +108,15 @@ public class EntitySearchField extends TextFieldPlus {
     this.searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
         try {
-          if (getText().length() == 0)
+          if (getText().length() == 0) {
             setSelectedEntities(null);
-          else
-            performSearch();
+          }
+          else {
+            if (stTextRepresentsSelected.isActive())
+              transferFocus();
+            else
+              performSearch();
+          }
         }
         catch (UserException ex) {
           UiUtil.handleException(ex, EntitySearchField.this);
@@ -118,17 +126,17 @@ public class EntitySearchField extends TextFieldPlus {
     addActionListener(searchAction);
     getDocument().addDocumentListener(new DocumentListener() {
       public void changedUpdate(final DocumentEvent e) {
-        updateBackground();
+        updateSearchState();
       }
       public void insertUpdate(final DocumentEvent e) {
-        updateBackground();
+        updateSearchState();
       }
       public void removeUpdate(final DocumentEvent e) {
-        updateBackground();
+        updateSearchState();
       }
     });
     addSettingsPopupMenu();
-    updateBackground();
+    updateSearchState();
   }
 
   public void setDbProvider(final IEntityDbProvider dbProvider) {
@@ -207,7 +215,7 @@ public class EntitySearchField extends TextFieldPlus {
     for (final Property searchProperty : searchProperties) {
       for (final String searchText : searchTexts) {
         final String modifiedSearchText = (isWildcardPrefix() ? FrameworkConstants.WILDCARD : "") + searchText
-              + (isWildcardPostfix() ? FrameworkConstants.WILDCARD : "");
+                + (isWildcardPostfix() ? FrameworkConstants.WILDCARD : "");
         baseCriteria.addCriteria(new PropertyCriteria(searchProperty, SearchType.LIKE, modifiedSearchText).setCaseSensitive(isCaseSensitive()));
       }
     }
@@ -300,12 +308,10 @@ public class EntitySearchField extends TextFieldPlus {
     dialog.setVisible(true);
   }
 
-  private void updateBackground() {
+  private void updateSearchState() {
     final String selectedAsString = toString(getSelectedEntities());
-    if (getSelectedEntities().size() == 0 || (selectedAsString != null && !selectedAsString.equals(getText())))
-      setBackground(Color.LIGHT_GRAY);
-    else
-      setBackground(Color.WHITE);
+    stTextRepresentsSelected.setActive(getSelectedEntities().size() > 0 && selectedAsString.equals(getText()));
+    setBackground(stTextRepresentsSelected.isActive() ? Color.WHITE : Color.LIGHT_GRAY);
   }
 
   private String toString(final List<Entity> entityList) {
