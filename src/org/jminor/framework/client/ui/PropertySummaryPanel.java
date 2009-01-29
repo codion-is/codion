@@ -67,7 +67,7 @@ public class PropertySummaryPanel extends JPanel {
     }
   }
 
-  public final Event evtStateChanged = new Event("PropertySummaryPanel.evtStateChanged");
+  public final Event evtSummaryTypeChanged = new Event("PropertySummaryPanel.evtSummaryTypeChanged");
 
   private final Property property;
   private final EntityTableModel tableModel;
@@ -95,7 +95,7 @@ public class PropertySummaryPanel extends JPanel {
   public void setSummaryType(final SummaryType summaryType) {
     if (this.summaryType != summaryType) {
       this.summaryType = summaryType;
-      evtStateChanged.fire();
+      evtSummaryTypeChanged.fire();
     }
   }
 
@@ -111,7 +111,7 @@ public class PropertySummaryPanel extends JPanel {
       tableModel.evtRefreshDone.addListener(updater);
       tableModel.evtSelectionChangedAdjusting.addListener(updater);
       tableModel.evtSelectionChanged.addListener(updater);
-      evtStateChanged.addListener(updater);
+      evtSummaryTypeChanged.addListener(updater);
 
       final JPopupMenu menu = createPopupMenu(summaryTypes);
       lblSummary.addMouseListener(new MouseAdapter() {
@@ -163,7 +163,7 @@ public class PropertySummaryPanel extends JPanel {
           setSummaryType(summaryType);
         }
       });
-      evtStateChanged.addListener(new ActionListener() {
+      evtSummaryTypeChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           item.setSelected(PropertySummaryPanel.this.summaryType == summaryType);
         }

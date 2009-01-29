@@ -407,6 +407,9 @@ public class FrameworkUiUtil {
     searchField.setBorder(BorderFactory.createEtchedBorder());
     new SearchFieldPropertyLink(entityModel, property.propertyID, searchField);
     setPropertyToolTip(entityModel.getEntityID(), property, searchField);
+    final boolean transferFocusOnEnter =
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
+    searchField.setTransferFocusOnEnter(transferFocusOnEnter);
 
     return searchField;
   }

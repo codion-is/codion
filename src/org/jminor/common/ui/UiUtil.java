@@ -39,9 +39,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -437,19 +434,8 @@ public class UiUtil {
     if (popupMenu == null)
       return table;
 
-    table.add(popupMenu);
-    final MouseListener listener = new MouseAdapter() {
-      public void mouseClicked(final MouseEvent e) {
-        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {//for linux :|
-          if (e.getComponent() == table.getTableHeader())
-            popupMenu.show(table.getTableHeader(), e.getX(), e.getY());
-          else
-            popupMenu.show(table, e.getX(), e.getY());
-        }
-      }
-    };
-    table.addMouseListener(listener);
-    table.getTableHeader().addMouseListener(listener);
+    table.setComponentPopupMenu(popupMenu);
+    table.getTableHeader().setComponentPopupMenu(popupMenu);
     table.addKeyListener(new KeyAdapter() {
       public void keyReleased(KeyEvent e) {//shift-space shows popup menu
         if (e.isShiftDown()) {

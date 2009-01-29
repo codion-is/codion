@@ -26,8 +26,6 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +37,6 @@ public class EntityComboBox extends SteppedComboBox {
   private final JButton btnNewRecord;
   private final EntityPanel.EntityPanelInfo applicationInfo;
   private final Action closeAction;
-
-  private JPopupMenu popupMenu;
 
   public EntityComboBox(final EntityComboBoxModel model,
                         final EntityPanel.EntityPanelInfo newRecordPanelInfo) {
@@ -61,7 +57,7 @@ public class EntityComboBox extends SteppedComboBox {
     this.applicationInfo = newRecordPanelInfo;
     this.closeAction = closeAction;
     this.btnNewRecord = newRecordPanelInfo != null ? initializeNewRecordButton(newRecordButtonTakesFocus) : null;
-    addRefreshPopupMenu();
+    setComponentPopupMenu(initializePopupMenu());
   }
 
   public Dimension getPreferredSize() {
@@ -158,22 +154,6 @@ public class EntityComboBox extends SteppedComboBox {
     ret.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
 
     return ret;
-  }
-
-  private void addRefreshPopupMenu() {
-    getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
-      public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {//for linux :|
-          if (popupMenu == null)
-            popupMenu = initializePopupMenu();
-          popupMenu.show(getEditor().getEditorComponent(), e.getX(), e.getY());
-        }
-        else {
-          if (popupMenu != null && popupMenu.isShowing())
-            popupMenu.setVisible(false);
-        }
-      }
-    });
   }
 
   private JPopupMenu initializePopupMenu() {

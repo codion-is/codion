@@ -131,13 +131,11 @@ public class MonitorPanel extends JPanel {
     final JTree ret = new JTree(model.getTreeModel());
     ret.setRootVisible(false);
     ret.addMouseListener(new MouseAdapter() {
+      public void mousePressed(final MouseEvent e) {
+        popup(e, ret);
+      }
       public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {//for linux :|
-          final Component selectedPanel = detailBasePanel.getComponents().length > 0 ?
-                  detailBasePanel.getComponent(0) : null;
-          if (selectedPanel instanceof IPopupProvider)
-            ((IPopupProvider) selectedPanel).getPopupMenu().show(ret, e.getX(), e.getY());
-        }
+        popup(e, ret);
       }
     });
     ret.addTreeSelectionListener(new TreeSelectionListener() {
@@ -180,6 +178,15 @@ public class MonitorPanel extends JPanel {
     });
 
     return ret;
+  }
+
+  private void popup(final MouseEvent e, final JTree ret) {
+    if (e.isPopupTrigger()) {
+      final Component selectedPanel = detailBasePanel.getComponents().length > 0 ?
+              detailBasePanel.getComponent(0) : null;
+      if (selectedPanel instanceof IPopupProvider)
+        ((IPopupProvider) selectedPanel).getPopupMenu().show(ret, e.getX(), e.getY());
+    }
   }
 
   private ControlSet initMainMenuControlSets() {

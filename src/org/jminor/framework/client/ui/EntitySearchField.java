@@ -68,7 +68,6 @@ public class EntitySearchField extends TextFieldPlus {
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 
   private final Action searchAction;
-  private JPopupMenu popupMenu;
 
   private IEntityDbProvider dbProvider;
   private ICriteria additionalSearchCriteria;
@@ -80,6 +79,7 @@ public class EntitySearchField extends TextFieldPlus {
   private boolean wildcardPrefix;
   private boolean wildcardPostfix;
   private String multiValueSeperator = ",";
+  private boolean transferFocusOnEnter = false;
 
   public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final String... searchPropertyIDs) {
     this(dbProvider, entityID, null, searchPropertyIDs);
@@ -112,7 +112,7 @@ public class EntitySearchField extends TextFieldPlus {
             setSelectedEntities(null);
           }
           else {
-            if (stTextRepresentsSelected.isActive())
+            if (stTextRepresentsSelected.isActive() && transferFocusOnEnter)
               transferFocus();
             else
               performSearch();
@@ -135,12 +135,20 @@ public class EntitySearchField extends TextFieldPlus {
         updateSearchState();
       }
     });
-    addSettingsPopupMenu();
+    setComponentPopupMenu(initializePopupMenu());
     updateSearchState();
   }
 
   public void setDbProvider(final IEntityDbProvider dbProvider) {
     this.dbProvider = dbProvider;
+  }
+
+  public boolean isTransferFocusOnEnter() {
+    return transferFocusOnEnter;
+  }
+
+  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+    this.transferFocusOnEnter = transferFocusOnEnter;
   }
 
   public boolean isAllowMultipleSelection() {
@@ -323,22 +331,6 @@ public class EntitySearchField extends TextFieldPlus {
     }
 
     return ret.toString();
-  }
-
-  private void addSettingsPopupMenu() {
-    addMouseListener(new MouseAdapter() {
-      public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {//for linux :|
-          if (popupMenu == null)
-            popupMenu = initializePopupMenu();
-          popupMenu.show(EntitySearchField.this, e.getX(), e.getY());
-        }
-        else {
-          if (popupMenu != null && popupMenu.isShowing())
-            popupMenu.setVisible(false);
-        }
-      }
-    });
   }
 
   private JPopupMenu initializePopupMenu() {

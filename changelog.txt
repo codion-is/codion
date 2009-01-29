@@ -250,3 +250,6 @@
   Transfer focus on enter now works for all editable comboboxes
   EntityModel.getDefaultValue(Property property) now returns null if the the combobox associated with the property has an empty string selected
   EntityComboBoxModel.setSelectedItem now translates an empty string to null
+  EntitySearchField added transferFocusOnEnter property
+  EntitySearchField, EntityComboBox and UiUtil.setTablePopup now show popup menus via JComponent.setComponentPopupMenu
+  PropertySummaryPanel.evtStateChanged renamed to evtSummaryTypeChanged
