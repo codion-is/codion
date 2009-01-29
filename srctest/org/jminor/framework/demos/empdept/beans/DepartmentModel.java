@@ -14,7 +14,7 @@ import java.util.List;
 public class DepartmentModel extends EntityModel {
 
   public DepartmentModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Department", dbProvider, EmpDept.T_DEPARTMENT);
+    super(EmpDept.getString(EmpDept.T_DEPARTMENT), dbProvider, EmpDept.T_DEPARTMENT);
   }
 
   /** {@inheritDoc} */

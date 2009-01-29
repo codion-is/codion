@@ -15,7 +15,7 @@ import java.util.List;
 public class ManagerComboBoxModel extends EntityComboBoxModel {
 
   public ManagerComboBoxModel(final IEntityDbProvider dbProvider) {
-    super(dbProvider, EmpDept.T_EMPLOYEE, false, "None", true);
+    super(dbProvider, EmpDept.T_EMPLOYEE, false, EmpDept.getString(EmpDept.NONE), true);
   }
 
   /** {@inheritDoc} */

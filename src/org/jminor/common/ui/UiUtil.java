@@ -561,8 +561,8 @@ public class UiUtil {
         }
       });
     }
-    final Action ok = new AbstractAction(
-            okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK)) {
+    final String okCaption = okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK);
+    final Action ok = new AbstractAction(okCaption) {
       public void actionPerformed(ActionEvent e) {
         if (okAction != null)
           okAction.actionPerformed(e);
@@ -575,6 +575,7 @@ public class UiUtil {
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
+      okButton.setMnemonic(okCaption.charAt(0));
       buttonPanel.add(okButton);
       dialog.getRootPane().setDefaultButton(okButton);
       dialog.add(buttonPanel, BorderLayout.SOUTH);

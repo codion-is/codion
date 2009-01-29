@@ -8,9 +8,8 @@ import java.util.ResourceBundle;
 
 public class FrameworkMessages {
 
-  public static final String BUNDLE_NAME = "org.jminor.framework.i18n.FrameworkMessages";
-
-  private static final ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
+  private static final ResourceBundle bundle =
+          ResourceBundle.getBundle("org.jminor.framework.i18n.FrameworkMessages", Locale.getDefault());
 
   public static final String OptionPane_inputDialogTitle = "OptionPane.inputDialogTitle";
   public static final String OptionPane_messageDialogTitle = "OptionPane.messageDialogTitle";
@@ -22,17 +21,23 @@ public class FrameworkMessages {
   public static final String TO = "to";
   public static final String OF = "of";
   public static final String FILE = "file";
+  public static final String FILE_MNEMONIC = "file_mnemonic";
   public static final String EXIT = "exit";
+  public static final String EXIT_MNEMONIC = "exit_mnemonic";
   public static final String EXIT_TIP = "exit_tip";
   public static final String SETTINGS = "settings";
   public static final String TOOLS = "tools";
+  public static final String TOOLS_MNEMONIC = "tools_mnemonic";
   public static final String VIEW = "view";
+  public static final String VIEW_MNEMONIC = "view_mnemonic";
   public static final String REFRESH_ALL = "refresh_all";
   public static final String ALWAYS_ON_TOP = "always_on_top";
   public static final String HELP = "help";
+  public static final String HELP_MNEMONIC = "help_mnemonic";
   public static final String ABOUT = "about";
   public static final String VERSION = "version";
   public static final String SUPPORT_TABLES = "support_tables";
+  public static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
   public static final String CLEAR = "clear";
   public static final String CLEAR_MNEMONIC = "clear_mnemonic";
   public static final String CLEAR_ALL_TIP = "clear_all_tip";
@@ -132,13 +137,5 @@ public class FrameworkMessages {
 
   public static String get(final String key) {
     return bundle.getString(key);
-  }
-
-  /**
-   * @param locale Value to set for property 'currentLocale'.
-   */
-  public static void setCurrentLocale(final Locale locale) {
-    if (!Locale.getDefault().equals(locale))
-      Locale.setDefault(locale);
   }
 }

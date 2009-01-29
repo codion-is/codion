@@ -18,6 +18,7 @@ import org.apache.log4j.Level;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
@@ -27,6 +28,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   protected void initializeSettings() {
+    Locale.setDefault(new Locale("en"));
     FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);
     FrameworkSettings.get().setProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT, true);
     FrameworkSettings.get().setProperty(FrameworkSettings.USE_STRICT_EDIT_MODE, true);

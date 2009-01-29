@@ -227,19 +227,24 @@ public class ExceptionDialog extends JDialog {
             Messages.get(Messages.SHOW_DETAILS));
     ctrPrint = ControlFactory.methodControl(this, "printErrorReport",
             Messages.get(Messages.PRINT), null,
-            Messages.get(Messages.PRINT_ERROR_REPORT), 'p');
+            Messages.get(Messages.PRINT_ERROR_REPORT),
+            Messages.get(Messages.PRINT_ERROR_REPORT_MNEMONIC).charAt(0));
     ctrClose = ControlFactory.methodControl(this, "close",
             Messages.get(Messages.CLOSE), null,
-            Messages.get(Messages.CLOSE_DIALOG), 'c');
+            Messages.get(Messages.CLOSE_DIALOG),
+            Messages.get(Messages.CLOSE_MNEMONIC).charAt(0));
     ctrSave = ControlFactory.methodControl(this, "saveErrorReport",
             Messages.get(Messages.SAVE), null,
-            Messages.get(Messages.SAVE_ERROR_LOG), 's');
+            Messages.get(Messages.SAVE_ERROR_LOG),
+            Messages.get(Messages.SAVE_MNEMONIC).charAt(0));
     ctrCopy = ControlFactory.methodControl(this,"copyErrorReport",
             Messages.get(Messages.COPY), null,
-            Messages.get(Messages.COPY_TO_CLIPBOARD),'c');
+            Messages.get(Messages.COPY_TO_CLIPBOARD),
+            Messages.get(Messages.COPY_MNEMONIC).charAt(0));
     ctrEmail = ControlFactory.methodControl(this,"emailErrorReport",
             Messages.get(Messages.SEND), null,
-            Messages.get(Messages.SEND_EMAIL),'e');
+            Messages.get(Messages.SEND_EMAIL),
+            Messages.get(Messages.SEND_MNEMONIC).charAt(0));
   }
 
   private void initUI() {

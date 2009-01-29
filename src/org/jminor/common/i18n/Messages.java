@@ -9,23 +9,25 @@ import java.util.ResourceBundle;
 
 public class Messages {
 
-  public static final String BUNDLE_NAME = "org.jminor.common.i18n.Messages";
-
   public static final String OptionPane_inputDialogTitle = "OptionPane.inputDialogTitle";
   public static final String OptionPane_messageDialogTitle = "OptionPane.messageDialogTitle";
 
-  private static final ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
+  private static final ResourceBundle bundle =
+          ResourceBundle.getBundle("org.jminor.common.i18n.Messages", Locale.getDefault());
 
   public static final String CANCEL = "cancel";
   public static final String CANCEL_MNEMONIC = "cancel_mnemonic";
   public static final String CLOSE = "close";
+  public static final String CLOSE_MNEMONIC = "close_mnemonic";
   public static final String DETAILS = "details";
   public static final String PRINT = "print";
   public static final String SAVE = "save";
+  public static final String SAVE_MNEMONIC = "save_mnemonic";
   public static final String EXCEPTION = "exception";
   public static final String MESSAGE = "message";
   public static final String SHOW_DETAILS = "show_details";
   public static final String PRINT_ERROR_REPORT = "print_error_report";
+  public static final String PRINT_ERROR_REPORT_MNEMONIC = "print_error_report_mnemonic";
   public static final String CLOSE_DIALOG = "close_dialog";
   public static final String SAVE_ERROR_LOG = "save_error_log";
   public static final String YES = "yes";
@@ -33,8 +35,10 @@ public class Messages {
   public static final String OK = "ok";
   public static final String OK_MNEMONIC = "ok_mnemonic";
   public static final String COPY = "copy";
+  public static final String COPY_MNEMONIC = "copy_mnemonic";
   public static final String COPY_TO_CLIPBOARD = "copy_to_clipboard";
   public static final String SEND = "send";
+  public static final String SEND_MNEMONIC = "send_mnemonic";
   public static final String SEND_EMAIL = "send_email";
   public static final String INPUT_EMAIL_ADDRESS = "input_email_address";
   public static final String MESSAGE_HAS_BEEN_SENT = "message_has_been_sent";
@@ -69,13 +73,5 @@ public class Messages {
 
   public static String get(final String key) {
     return bundle.getString(key);
-  }
-
-  /**
-   * @param locale Value to set for property 'currentLocale'.
-   */
-  public static void setCurrentLocale(final Locale locale) {
-    if (!Locale.getDefault().equals(locale))
-      Locale.setDefault(locale);
   }
 }

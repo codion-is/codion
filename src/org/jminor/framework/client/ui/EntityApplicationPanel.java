@@ -150,8 +150,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    */
   public ControlSet getFileControlSet() {
     final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
+    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
     file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
-            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP)));
+            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
+            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
 
     return file;
   }
@@ -198,7 +200,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @throws org.jminor.common.model.UserException in case of an exception
    */
   public ControlSet getToolsControlSet() throws UserException {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS));
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
+            FrameworkMessages.get(FrameworkMessages.TOOLS_MNEMONIC).charAt(0));
     ret.add(getSettingsControlSet());
 
     return ret;
@@ -208,7 +211,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @return Value for property 'viewControlSet'.
    */
   public ControlSet getViewControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW));
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
+            FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
     final Control ctrRefreshAll = ControlFactory.methodControl(model, "refreshAll",
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
     ret.add(ctrRefreshAll);
@@ -229,7 +233,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @return Value for property 'helpControlSet'.
    */
   public ControlSet getHelpControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP), 'H');
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
+            FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
     final Control ctrHelp = ControlFactory.methodControl(this, "showHelp",
             FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
     ret.add(ctrHelp);
@@ -394,7 +399,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       return null;
 
     Collections.sort(supportAppInfos);
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES), 'T');
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
+            FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     for (final EntityPanel.EntityPanelInfo appInfo : supportAppInfos) {
       final Control ctr = new Control(appInfo.getCaption()) {
         public void actionPerformed(ActionEvent e) {

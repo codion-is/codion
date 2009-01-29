@@ -39,24 +39,23 @@ import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -446,13 +445,21 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   /**
-   * Sets the component that should recieve the focus when the ui is initialised after
+   * Sets the component that should receive the focus when the ui is initialised after
    * a new record has been inserted or the panel is activated
    * @param defaultFocusComponent the component
    * @return the component
    */
   public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
     return this.defaultFocusComponent = defaultFocusComponent;
+  }
+
+  /**
+   * @return the component which sould receive focus after a record has been inserted
+   * or the panel is activated
+   */
+  public JComponent getDefaultFocusComponent() {
+    return this.defaultFocusComponent;
   }
 
   /**
@@ -930,8 +937,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     if (requestDefaultFocus) {
       if (getEditPanelState() != EMBEDDED && entityTablePanel != null)
         entityTablePanel.requestFocusInWindow();
-      else if (defaultFocusComponent != null)
-        defaultFocusComponent.requestFocusInWindow();
+      else if (getDefaultFocusComponent() != null)
+        getDefaultFocusComponent().requestFocusInWindow();
       else if (getComponentCount() > 0)
         getComponents()[0].requestFocusInWindow();
     }
@@ -2179,7 +2186,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
     return null;
   }
 
-  private static Container createDependenciesPanel(final Map<String, List<Entity>> dependencies,
+  private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
                                                    final IEntityDbProvider dbProvider) throws UserException {
     try {
       final JPanel ret = new JPanel(new BorderLayout());
@@ -2202,25 +2209,16 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
                                              final IEntityDbProvider model,
                                              final JComponent dialogParent) throws UserException {
-    JDialog dialog;
+    JPanel dependenciesPanel;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
-
-      final JOptionPane optionPane = new JOptionPane(createDependenciesPanel(dependencies, model),
-              JOptionPane.PLAIN_MESSAGE, JOptionPane.NO_OPTION, null,
-              new String[] {Messages.get(Messages.CLOSE)});
-      dialog = optionPane.createDialog(dialogParent,
-              FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND));
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      UiUtil.resizeWindow(dialog, 0.4, new Dimension(800, 400));
-      dialog.setLocationRelativeTo(dialogParent);
-      dialog.setResizable(true);
+      dependenciesPanel = createDependenciesPanel(dependencies, model);
     }
     finally {
       UiUtil.setWaitCursor(false, dialogParent);
     }
-
-    dialog.setVisible(true);
+    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
+            true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {

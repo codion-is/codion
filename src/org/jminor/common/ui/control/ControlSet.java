@@ -16,7 +16,6 @@ import java.util.List;
 public class ControlSet extends Control {
 
   private final ArrayList<Action> actions = new ArrayList<Action>();
-  private final char mnemonic;
 
   private String description;
 
@@ -40,7 +39,7 @@ public class ControlSet extends Control {
   public ControlSet(final String name, final char mnemonic, final ImageIcon icon,
                     final State enabledState) {
     super(name, enabledState, icon);
-    this.mnemonic = mnemonic;
+    setMnemonic(mnemonic);
   }
 
   public ControlSet(final Control... controls) {
@@ -63,7 +62,7 @@ public class ControlSet extends Control {
   public ControlSet(final String name, final char mnemonic, final State enabledState,
                     final ImageIcon icon, final Control... controls) {
     super(name, enabledState, icon);
-    this.mnemonic = mnemonic;
+    setMnemonic(mnemonic);
     for (final Control control : controls)
       add(control);
   }
@@ -87,11 +86,8 @@ public class ControlSet extends Control {
     return description;
   }
 
-  /**
-   * @return Value for property 'mnemonic'.
-   */
-  public int getMnemonic() {
-    return mnemonic;
+  public void setMnemonic(final char mnemonic) {
+    putValue(MNEMONIC_KEY, mnemonic);
   }
 
   public void add(final Action action) {

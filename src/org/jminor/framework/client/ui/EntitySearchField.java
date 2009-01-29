@@ -286,8 +286,8 @@ public class EntitySearchField extends TextFieldPlus {
     final JButton btnCancel = new JButton(cancelAction);
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    btnOk.setMnemonic(cancelMnemonic.charAt(0));
-    btnCancel.setMnemonic(okMnemonic.charAt(0));
+    btnOk.setMnemonic(okMnemonic.charAt(0));
+    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
     dialog.getRootPane().getActionMap().put("cancel", cancelAction);

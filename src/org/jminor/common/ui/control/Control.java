@@ -102,8 +102,8 @@ public class Control extends AbstractAction {
   /**
    * @return Value for property 'mnemonic'.
    */
-  public int getMnemonic() {
-    return (Integer) this.getValue(MNEMONIC_KEY);
+  public char getMnemonic() {
+    return (Character) this.getValue(MNEMONIC_KEY);
   }
 
   /**

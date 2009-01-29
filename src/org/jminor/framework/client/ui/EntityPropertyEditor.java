@@ -182,19 +182,22 @@ public class EntityPropertyEditor extends JPanel {
 
   private JPanel getButtonPanel() {
     final JPanel ret = new JPanel(new GridLayout(1,2,5,5));
-    ret.add(okButton = getButton(Messages.get(Messages.OK), JOptionPane.OK_OPTION));
-    ret.add(getButton(Messages.get(Messages.CANCEL), JOptionPane.CANCEL_OPTION));
+    ret.add(okButton = getButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION));
+    ret.add(getButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));
 
     return ret;
   }
 
-  private JButton getButton(final String caption, final int option) {
-    return new JButton(new AbstractAction(caption){
+  private JButton getButton(final String caption, final String mnemonic, final int option) {
+    final JButton ret = new JButton(new AbstractAction(caption){
       public void actionPerformed(final ActionEvent e) {
         buttonValue = option;
         evtButtonClicked.fire();
       }
     });
+    ret.setMnemonic(mnemonic.charAt(0));
+
+    return ret;
   }
 
   public static abstract class InputManager {

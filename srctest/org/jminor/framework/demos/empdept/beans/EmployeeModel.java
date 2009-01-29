@@ -27,7 +27,7 @@ import java.util.List;
 public class EmployeeModel extends EntityModel {
 
   public EmployeeModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Employee", dbProvider, EmpDept.T_EMPLOYEE);
+    super(EmpDept.getString(EmpDept.T_EMPLOYEE), dbProvider, EmpDept.T_EMPLOYEE);
     getTableModel().setFilterQueryByMaster(true);
     getTableModel().setShowAllWhenNotFiltered(true);
   }
@@ -70,8 +70,9 @@ public class EmployeeModel extends EntityModel {
         getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {
           public boolean include(final Object item) {
             return item instanceof String //the item representing null
-                    || EntityUtil.equal(Type.ENTITY,
-                    ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue());
+                    || (EntityUtil.equal(Type.ENTITY,
+                    ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue())
+                    && !EntityUtil.equal(Type.ENTITY, item, getActiveEntityCopy()));
           }
         });
       }

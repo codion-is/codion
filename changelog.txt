@@ -253,3 +253,11 @@
   EntitySearchField added transferFocusOnEnter property
   EntitySearchField, EntityComboBox and UiUtil.setTablePopup now show popup menus via JComponent.setComponentPopupMenu
   PropertySummaryPanel.evtStateChanged renamed to evtSummaryTypeChanged
+  EntityApplicationPanel added mnemonics to main menu
+  ControlSet removed mnemonic field, now it simply uses the inherited functionality of Action
+  EntityPanel.showDependenciesDialog simplified
+  EntityPropertyEditor mnemonics added to buttons
+  UiUtil.showInDialog added mnemonic to OK button
+  ExceptionDialog mnemonics added to buttons
+  EntityPanel.getDefaultFocusComponent() added, for overriding
+  EmpDept application i18n'ized
