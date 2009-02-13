@@ -65,11 +65,11 @@ public class TestEmpDeptModel extends EntityTestUnit {
   }
 
   protected void modifyEntity(final Entity testEntity) {
-    if (testEntity.getEntityID().equals(EmpDept.T_DEPARTMENT)) {
+    if (testEntity.is(EmpDept.T_DEPARTMENT)) {
       testEntity.setValue(EmpDept.DEPARTMENT_LOCATION, "N/A");
       testEntity.setValue(EmpDept.DEPARTMENT_NAME, "Huh");
     }
-    else if (testEntity.getEntityID().equals(EmpDept.T_EMPLOYEE)) {
+    else if (testEntity.is(EmpDept.T_EMPLOYEE)) {
       testEntity.setValue(EmpDept.EMPLOYEE_NAME, "N/A");
       testEntity.setValue(EmpDept.EMPLOYEE_SALARY, 10000d);
     }

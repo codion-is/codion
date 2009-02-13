@@ -85,9 +85,9 @@ public class EmpDept {
     /*Set a EntityProxy implementation which provides toString values for the entities*/
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
-        if (entity.getEntityID().equals(T_DEPARTMENT))
+        if (entity.is(T_DEPARTMENT))
           return entity.getStringValue(DEPARTMENT_NAME);
-        else if (entity.getEntityID().equals(T_EMPLOYEE))
+        else if (entity.is(T_EMPLOYEE))
           return entity.getStringValue(EMPLOYEE_NAME)
                   + ", " + entity.getStringValue(EMPLOYEE_JOB)
                   + ", " + entity.getEntityValue(EMPLOYEE_DEPARTMENT_REF);

@@ -834,7 +834,7 @@ public class EntityModel implements IRefreshable {
     if (tableModel != null) {//replace and select the updated entities
       final List<Entity> updated = new ArrayList<Entity>();
       for (final Entity entity : updatedEntities)
-        if (entity.getEntityID().equals(getEntityID()))
+        if (entity.is(getEntityID()))
           updated.add(entity);
       tableModel.replaceEntities(updated);
       tableModel.setSelectedEntities(updated);

@@ -88,13 +88,13 @@ public class SchemaBrowser {
 
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
-        if (entity.getEntityID().equals(T_COLUMN))
+        if (entity.is(T_COLUMN))
           return entity.getValueAsString(COLUMN_TABLE_REF) + "." + entity.getStringValue(COLUMN_NAME);
-        else if (entity.getEntityID().equals(T_CONSTRAINT))
+        else if (entity.is(T_CONSTRAINT))
           return entity.getValueAsString(CONSTRAINT_TABLE_REF) + "." + entity.getStringValue(CONSTRAINT_NAME);
-        else if (entity.getEntityID().equals(T_SCHEMA))
+        else if (entity.is(T_SCHEMA))
           return entity.getStringValue(SCHEMA_NAME);
-        else if (entity.getEntityID().equals(T_TABLE))
+        else if (entity.is(T_TABLE))
           return entity.getValueAsString(TABLE_SCHEMA_REF) + "." + entity.getStringValue(TABLE_NAME);
 
         return super.toString(entity);

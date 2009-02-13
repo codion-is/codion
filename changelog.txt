@@ -267,3 +267,4 @@
   FrameworkSettings.INITIAL_SEARCH_PANEL_STATE added and used in EntityPanel
   Entity.getDenormalizedViewValueAsString() added
   Util.getDelimitedString() refactored out of writeDelimitedFile
+  Entity.is(final String entityID) added

@@ -105,6 +105,14 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   /**
+   * @param entityID the entityID
+   * @return true if this entity is of the given type
+   */
+  public boolean is(final String entityID) {
+    return primaryKey.entityID.equals(entityID);
+  }
+
+  /**
    * Retrieves the property identified by propertyID from the entity repository
    * @param propertyID the ID of the property to retrieve
    * @return the property identified by propertyID

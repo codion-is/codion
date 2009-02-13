@@ -147,21 +147,21 @@ public class Petstore {
 
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
-        if (entity.getEntityID().equals(T_ADDRESS))
+        if (entity.is(T_ADDRESS))
           return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)
                   + ", " + entity.getStringValue(ADDRESS_CITY) + " " + entity.getStringValue(ADDRESS_ZIP) + ", "
                   + entity.getStringValue(ADDRESS_STATE);
-        else if (entity.getEntityID().equals(T_CATEGORY))
+        else if (entity.is(T_CATEGORY))
           return entity.getStringValue(CATEGORY_NAME);
-        else if (entity.getEntityID().equals(T_ITEM))
+        else if (entity.is(T_ITEM))
           return entity.getValueAsString(ITEM_PRODUCT_REF) + " - " + entity.getStringValue(ITEM_NAME);
-        else if (entity.getEntityID().equals(T_PRODUCT))
+        else if (entity.is(T_PRODUCT))
           return entity.getValueAsString(PRODUCT_CATEGORY_REF) + " - " + entity.getStringValue(PRODUCT_NAME);
-        else if (entity.getEntityID().equals(T_SELLER_CONTACT_INFO))
+        else if (entity.is(T_SELLER_CONTACT_INFO))
           return entity.getStringValue(SELLER_CONTACT_INFO_LAST_NAME) + ", " + entity.getStringValue(SELLER_CONTACT_INFO_FIRST_NAME);
-        else if (entity.getEntityID().equals(T_TAG))
+        else if (entity.is(T_TAG))
           return entity.getStringValue(TAG_TAG);
-        else if (entity.getEntityID().equals(T_TAG_ITEM))
+        else if (entity.is(T_TAG_ITEM))
           return entity.getEntityValue(TAG_ITEM_ITEM_REF) + " - " + entity.getEntityValue(TAG_ITEM_TAG_REF);
 
         return super.toString(entity);
