@@ -297,6 +297,9 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @see org.jminor.framework.model.EntityProxy#getValueAsString(Entity, Property)
    */
   public String getValueAsString(final Property property) {
+    if (property instanceof Property.DenormalizedViewProperty)
+      return getDenormalizedViewValueAsString((Property.DenormalizedViewProperty) property);
+
     return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsString(this, property);
   }
 
@@ -726,5 +729,11 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedProperty) : null;
+  }
+
+  private String getDenormalizedViewValueAsString(final Property.DenormalizedViewProperty denormalizedViewProperty) {
+    final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
+
+    return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.denormalizedProperty) : null;
   }
 }

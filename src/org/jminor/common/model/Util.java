@@ -344,8 +344,8 @@ public class Util {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
 
-  public static void writeDelimitedFile(final String[][] headers, final String[][] data,
-                                        final String delimiter, final File file) throws UserException {
+  public static String getDelimitedString(final String[][] headers, final String[][] data,
+                                          final String delimiter) throws UserException {
     final StringBuffer contents = new StringBuffer();
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
@@ -364,7 +364,13 @@ public class Util {
       }
       contents.append(System.getProperty("line.separator"));
     }
-    writeFile(contents.toString(), file);
+
+    return contents.toString();
+  }
+
+  public static void writeDelimitedFile(final String[][] headers, final String[][] data,
+                                        final String delimiter, final File file) throws UserException {
+    writeFile(getDelimitedString(headers, data, delimiter), file);
   }
 
   public static void writeFile(final String contents, final File file) throws UserException {

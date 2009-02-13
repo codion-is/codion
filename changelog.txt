@@ -261,3 +261,9 @@
   ExceptionDialog mnemonics added to buttons
   EntityPanel.getDefaultFocusComponent() added, for overriding
   EmpDept application i18n'ized
+  EntityTablePanel.copyTableAsDelimitedString() added along with control method
+  EntityPanel.selectTableColumns() moved to EntityTablePanel
+  EntityModel.getAllEntities(final boolean includeFiltered) added
+  FrameworkSettings.INITIAL_SEARCH_PANEL_STATE added and used in EntityPanel
+  Entity.getDenormalizedViewValueAsString() added
+  Util.getDelimitedString() refactored out of writeDelimitedFile

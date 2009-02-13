@@ -42,8 +42,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -51,7 +49,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
@@ -404,6 +401,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
           });
         }
         entityTablePanel.setMinimumSize(new Dimension(0,0));
+        entityTablePanel.setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
       }
       this.horizontalSplitPane = this.detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
       this.detailTabPane = this.detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
@@ -892,30 +890,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * Shows a dialog for selecting which columns to show/hide if a table panel is available
    */
   public void selectTableColumns() {
-    if (getTablePanel() == null)
-      return;
-
-    final JPanel togglePanel = new JPanel(new GridLayout(getTablePanel().getJTable().getColumnCount(), 1));
-    final Enumeration<TableColumn> columns = getTablePanel().getJTable().getColumnModel().getColumns();
-    final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), column.getPreferredWidth() > 0);
-      buttonList.add(chkColumn);
-      togglePanel.add(chkColumn);
-    }
-    final JScrollPane scroller = new JScrollPane(togglePanel);
-    scroller.setPreferredSize(new Dimension(200, 400));
-    final int result = JOptionPane.showOptionDialog(this, scroller,
-            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (result == JOptionPane.OK_OPTION) {
-      final TableColumnModel columnModel = getTablePanel().getJTable().getColumnModel();
-      for (final JCheckBox chkButton : buttonList) {
-        final TableColumn column = columnModel.getColumn(buttonList.indexOf(chkButton));
-        getTablePanel().setPropertyColumnVisible((Property) column.getIdentifier(), chkButton.isSelected());
-      }
-    }
+    if (getTablePanel() != null)
+      getTablePanel().selectTableColumns();
   }
 
   //#############################################################################################

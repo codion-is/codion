@@ -130,6 +130,7 @@ public class FrameworkMessages {
   public static final String CHANGE_HISTORY = "change_history";
   public static final String SELECT_COLUMNS = "select_columns";
   public static final String COPY_CELL = "copy_cell";
+  public static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
   public static final String CASE_SENSITIVE = "case_sensitive";
   public static final String POSTFIX_WILDCARD = "postfix_wildcard";

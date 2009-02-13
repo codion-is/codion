@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.ControlProvider;
@@ -29,7 +31,9 @@ import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -50,6 +54,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,8 +62,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 public class EntityTablePanel extends JPanel {
 
@@ -254,8 +261,8 @@ public class EntityTablePanel extends JPanel {
           }
           getTableModel().refresh();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });
@@ -367,6 +374,33 @@ public class EntityTablePanel extends JPanel {
         southToolBar.add(button);
       else
         southToolBar.addSeparator();
+    }
+  }
+
+  /**
+   * Shows a dialog for selecting which columns to show/hide
+   */
+  public void selectTableColumns() {
+    final JPanel togglePanel = new JPanel(new GridLayout(getJTable().getColumnCount(), 1));
+    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), column.getPreferredWidth() > 0);
+      buttonList.add(chkColumn);
+      togglePanel.add(chkColumn);
+    }
+    final JScrollPane scroller = new JScrollPane(togglePanel);
+    scroller.setPreferredSize(new Dimension(200, 400));
+    final int result = JOptionPane.showOptionDialog(this, scroller,
+            FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, null, null);
+    if (result == JOptionPane.OK_OPTION) {
+      final TableColumnModel columnModel = getJTable().getColumnModel();
+      for (final JCheckBox chkButton : buttonList) {
+        final TableColumn column = columnModel.getColumn(buttonList.indexOf(chkButton));
+        setPropertyColumnVisible((Property) column.getIdentifier(), chkButton.isSelected());
+      }
     }
   }
 
@@ -530,7 +564,7 @@ public class EntityTablePanel extends JPanel {
       }
     }
     popupControls.addSeparator();
-    popupControls.add(getCopyCellControl());
+    popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
     UiUtil.setTablePopup(entityTable, ControlProvider.createPopupMenu(popupControls));
 
     base.add(tableScrollPane, BorderLayout.CENTER);
@@ -657,8 +691,8 @@ public class EntityTablePanel extends JPanel {
 
           getTableModel().refresh();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     };
@@ -783,6 +817,47 @@ public class EntityTablePanel extends JPanel {
         Util.setClipboard(value == null ? "" : value.toString());
       }
     };
+  }
+
+  private Control getCopyTableWithHeaderControl() {
+    return new Control(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)) {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          copyTableAsDelimitedString();
+        }
+        catch (UserCancelException ex) {/**/}
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
+        }
+      }
+    };
+  }
+
+  private void copyTableAsDelimitedString() throws UserException, UserCancelException {
+    final List<String> headerValues = new ArrayList<String>();
+    final List<Property> properties = new ArrayList<Property>(getTableModel().getTableColumnProperties());
+    final ListIterator<Property> iterator = properties.listIterator();
+    //remove hidden columns
+    while (iterator.hasNext())
+      if (!isPropertyColumnVisible(iterator.next()))
+        iterator.remove();
+    for (final Property property : properties)
+      headerValues.add(property.getCaption());
+
+    final String[][] header = new String[][] {headerValues.toArray(new String[headerValues.size()])};
+
+    final List<Entity> entities = getTableModel().getSelectionModel().isSelectionEmpty()
+            ? getTableModel().getAllEntities(false) : getTableModel().getSelectedEntities();
+
+    final String[][] data = new String[entities.size()][];
+    for (int i = 0; i < data.length; i++) {
+      final ArrayList<String> line = new ArrayList<String>(15);
+      for (final Property property : properties)
+        line.add(entities.get(i).getValueAsString(property));
+
+      data[i] = line.toArray(new String[line.size()]);
+    }
+    Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
   }
 
   private TableColumnModel initializeTableColumnModel(final boolean specialRendering) {

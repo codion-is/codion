@@ -167,6 +167,13 @@ public class FrameworkSettings implements Serializable {
    */
   public static final String PERSIST_ENTITY_PANELS = "persist_entity_panels";
 
+  /**
+   * Specifies the initial search panel state, whether it should be visible or not by default
+   * Value type: Boolean
+   * Default value: false
+   */
+  public static final String INITIAL_SEARCH_PANEL_STATE = "inital_search_panel_state";
+
   private Map<String, Object> settings = new HashMap<String, Object>();
 
   private final static FrameworkSettings instance = new FrameworkSettings();
@@ -193,6 +200,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(SQL_BOOLEAN_VALUE_NULL, null);
     setProperty(FILTER_QUERY_BY_MASTER, false);
     setProperty(PERSIST_ENTITY_PANELS, false);
+    setProperty(INITIAL_SEARCH_PANEL_STATE, false);
   }
 
   public static FrameworkSettings get() {

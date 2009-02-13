@@ -889,8 +889,17 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return all filtered and non-filtered entities in this table model
    */
   public List<Entity> getAllEntities() {
+    return getAllEntities(true);
+  }
+
+  /**
+   * @param includeFiltered if true then filtered entities are included
+   * @return all entities in this table model
+   */
+  public List<Entity> getAllEntities(final boolean includeFiltered) {
     final List<Entity> ret = new ArrayList<Entity>(visibleEntities);
-    ret.addAll(filteredEntities);
+    if (includeFiltered)
+      ret.addAll(filteredEntities);
 
     return ret;
   }
