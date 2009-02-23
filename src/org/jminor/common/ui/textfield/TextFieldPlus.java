@@ -94,10 +94,10 @@ public class TextFieldPlus extends JTextField {
 
   /** {@inheritDoc} */
   protected Document createDefaultModel() {
-    return new defaultDocument();
+    return new DefaultDocument();
   }
 
-  private class defaultDocument extends PlainDocument {
+  private class DefaultDocument extends PlainDocument {
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
       if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;

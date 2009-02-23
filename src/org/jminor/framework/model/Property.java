@@ -215,6 +215,9 @@ public class Property implements Serializable {
    * @return the caption used when the value of this property is presented
    */
   public String getCaption() {
+    if (caption == null && hasParentProperty())
+      return parentProperty.getCaption();
+
     return caption;
   }
 

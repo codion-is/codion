@@ -146,7 +146,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     }
     else {
       final EntitySearchField field = new EntitySearchField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
-              getSearchPropertyIDs(((Property.EntityProperty) property).referenceEntityID)) {
+              getSearchProperties(((Property.EntityProperty) property).referenceEntityID)) {
         public List<Entity> getSelectedEntities() {
           return model.getUpperBound() == null ? new ArrayList<Entity>(0) : (List<Entity>) model.getUpperBound();
         }
@@ -166,20 +166,19 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     }
   }
 
-  private String[] getSearchPropertyIDs(final String entityID) {
+  private List<Property> getSearchProperties(final String entityID) {
     final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(entityID);
 
-    return searchPropertyIDs == null ? getStringPropertyIDs(entityID) : searchPropertyIDs;
+    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.get().getProperties(entityID, searchPropertyIDs);
   }
 
-  private String[] getStringPropertyIDs(final String entityID) {
+  private List<Property> getStringProperties(final String entityID) {
     final Collection<Property> properties = EntityRepository.get().getProperties(entityID, true);
-    final List<String> ret = new ArrayList<String>();
-    for (final Property property : properties) {
+    final List<Property> ret = new ArrayList<Property>();
+    for (final Property property : properties)
       if (property.getPropertyType().equals(Type.STRING))
-        ret.add(property.propertyID);
-    }
+        ret.add(property);
 
-    return ret.toArray(new String[ret.size()]);
+    return ret;
   }
 }

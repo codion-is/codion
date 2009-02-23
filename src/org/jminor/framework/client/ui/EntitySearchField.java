@@ -14,7 +14,6 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityCriteria;
-import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyCriteria;
 
@@ -34,10 +33,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -81,26 +80,26 @@ public class EntitySearchField extends TextFieldPlus {
   private String multiValueSeperator = ",";
   private boolean transferFocusOnEnter = false;
 
-  public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final String... searchPropertyIDs) {
-    this(dbProvider, entityID, null, searchPropertyIDs);
+  public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final List<Property> searchProperties) {
+    this(dbProvider, entityID, null, searchProperties);
   }
 
   public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
-                           final String... searchPropertyIDs) {
-    this(dbProvider, entityID, additionalSearchCriteria, false, searchPropertyIDs);
+                           final List<Property> searchProperties) {
+    this(dbProvider, entityID, additionalSearchCriteria, false, searchProperties);
   }
 
   public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
-                           final boolean caseSensitive, final String... searchPropertyIDs) {
-    this(dbProvider, entityID, additionalSearchCriteria, caseSensitive, true, true, searchPropertyIDs);
+                           final boolean caseSensitive, final List<Property> searchProperties) {
+    this(dbProvider, entityID, additionalSearchCriteria, caseSensitive, true, true, searchProperties);
   }
 
   public EntitySearchField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
-                           final String... searchPropertyIDs) {
+                           final List<Property> searchProperties) {
     setDbProvider(dbProvider);
     this.entityID = entityID;
-    this.searchProperties = EntityRepository.get().getProperties(entityID, searchPropertyIDs);
+    this.searchProperties = searchProperties;
     this.additionalSearchCriteria = additionalSearchCriteria;
     this.caseSensitive = caseSensitive;
     this.wildcardPrefix = wildcardPrefix;

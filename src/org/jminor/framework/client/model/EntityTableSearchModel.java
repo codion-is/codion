@@ -9,12 +9,12 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +45,7 @@ public class EntityTableSearchModel {
 
   private final String entityID;
   private final IEntityDbProvider dbProvider;
+  private final List<Property> visibleProperties;
   private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
   private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
@@ -52,9 +53,11 @@ public class EntityTableSearchModel {
   private String searchStateOnRefresh;
 
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
-                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider) {
+                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
+                                final Collection<Property> visibleProperties) {
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.visibleProperties = new ArrayList<Property>(visibleProperties);//todo is this ok?
     this.propertyFilterModels = initPropertyFilterModels(tableColumnProperties);
     this.propertySearchModels = initPropertySearchModels(searchableProperties);
     this.searchStateOnRefresh = getSearchModelState();
@@ -180,7 +183,7 @@ public class EntityTableSearchModel {
    */
   public boolean isSearchEnabled(final int columnIdx) {
     final PropertySearchModel model =
-            getPropertySearchModel(EntityRepository.get().getPropertyAtViewIndex(getEntityID(), columnIdx).propertyID);
+            getPropertySearchModel(visibleProperties.get(columnIdx).propertyID);
 
     return model != null && model.isSearchEnabled();
   }
@@ -204,13 +207,15 @@ public class EntityTableSearchModel {
    */
   public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
     final String searchState = getSearchModelState();
-    for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), referencedEntityID)) {
-      final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
-      if (searchModel != null) {
-        searchModel.initialize();
-        searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
-        searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
-        searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
+    for (final Property property : visibleProperties) {
+      if (property instanceof Property.EntityProperty && ((Property.EntityProperty)property).referenceEntityID.equals(referencedEntityID)) {
+        final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
+        if (searchModel != null) {
+          searchModel.initialize();
+          searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
+          searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
+          searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
+        }
       }
     }
     return !searchState.equals(getSearchModelState());
