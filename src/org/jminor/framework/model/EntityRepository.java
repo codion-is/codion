@@ -321,6 +321,23 @@ public class EntityRepository implements Serializable {
 
   /**
    * @param entityID the entity ID
+   * @return a list containing the visible (non-hidden) properties
+   * in the entity identified by <code>entityID</code>
+   * @throws RuntimeException if no visible properties are defined for the given entity
+   */
+  public List<Property> getVisiblePropertyList(final String entityID) {
+    if (!visibleProperties.containsKey(entityID))
+      throw new RuntimeException("No visible properties defined for entity: " + entityID);
+
+    final List<Property> ret = new ArrayList<Property>();
+    for (final Property property : visibleProperties.get(entityID).values())
+      ret.add(property);
+
+    return ret;
+  }
+
+  /**
+   * @param entityID the entity ID
    * @param propertyID the property ID
    * @return the property identified by <code>propertyID</code> in the entity identified by <code>entityID</code>
    * @throws RuntimeException in case no such property exists

@@ -203,7 +203,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
     this.tableColumnProperties = initializeColumnProperties();
-    this.tableSearchModel = initSearchModel();
+    this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);
     this.queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE)
             && EntityRepository.get().hasCreateDateColumn(entityID);
@@ -999,8 +999,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return ret;
   }
 
-  protected EntityTableSearchModel initSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(), getDbConnectionProvider());
+  protected EntityTableSearchModel initializeSearchModel() {
+    return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(),
+            getDbConnectionProvider(), EntityRepository.get().getVisiblePropertyList(getEntityID()));
   }
 
   /**
@@ -1035,9 +1036,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return a list of Properties that should be used as basis for this table models column model
    */
   protected List<Property> initializeColumnProperties() {
-    final Collection<Property> properties = EntityRepository.get().getVisibleProperties(getEntityID());
-
-    return Arrays.asList(properties.toArray(new Property[properties.size()]));
+    return EntityRepository.get().getVisiblePropertyList(getEntityID());
   }
 
   protected void bindEvents() {

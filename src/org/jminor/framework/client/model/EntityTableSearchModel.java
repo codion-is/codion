@@ -14,7 +14,6 @@ import org.jminor.framework.model.Property;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,7 @@ public class EntityTableSearchModel {
    * When active the search should be simplified
    */
   public final State stSimpleSearch = new State("EntityTableSearchModel.stSimpleSearch");
+
   /**
    * Activated each time the search state differs from the state at last reset
    * @see #resetSearchState()
@@ -54,10 +54,10 @@ public class EntityTableSearchModel {
 
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
                                 final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
-                                final Collection<Property> visibleProperties) {
+                                final List<Property> visibleProperties) {
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.visibleProperties = new ArrayList<Property>(visibleProperties);//todo is this ok?
+    this.visibleProperties = visibleProperties;
     this.propertyFilterModels = initPropertyFilterModels(tableColumnProperties);
     this.propertySearchModels = initPropertySearchModels(searchableProperties);
     this.searchStateOnRefresh = getSearchModelState();

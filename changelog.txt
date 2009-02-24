@@ -269,3 +269,5 @@
   Util.getDelimitedString() refactored out of writeDelimitedFile
   Entity.is(final String entityID) added
   Property.getCaption() returns the caption of the parent property in case the caption is null
+  EntityTableModel.initSearchModel() renamed to initializeSearchModel
+  EntityRepository.getVisiblePropertyList() added

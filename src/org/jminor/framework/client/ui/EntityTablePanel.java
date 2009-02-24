@@ -608,7 +608,7 @@ public class EntityTablePanel extends JPanel {
   protected JPanel initializeSummaryPanel() {
     final List<JPanel> panels = new ArrayList<JPanel>();
     final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-    for (final Property property : EntityRepository.get().getVisibleProperties(getTableModel().getEntityID())) {
+    for (final Property property : EntityRepository.get().getVisiblePropertyList(getTableModel().getEntityID())) {
       final PropertySummaryPanel panel = initializeSummaryPanel(property);
       propertySummaryPanels.put(property.propertyID, panel);
       panels.add(panel);

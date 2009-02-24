@@ -403,7 +403,7 @@ public class FrameworkUiUtil {
         throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
 
     final EntitySearchField searchField = new EntitySearchField(entityModel.getDbConnectionProvider(), property.referenceEntityID,
-            additionalSearchCriteria, searchPropertyIDs);
+            additionalSearchCriteria, EntityRepository.get().getProperties(property.referenceEntityID, searchPropertyIDs));
     searchField.setBorder(BorderFactory.createEtchedBorder());
     new SearchFieldPropertyLink(entityModel, property.propertyID, searchField);
     setPropertyToolTip(entityModel.getEntityID(), property, searchField);
