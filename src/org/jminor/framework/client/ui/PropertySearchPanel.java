@@ -173,7 +173,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   }
 
   private List<Property> getStringProperties(final String entityID) {
-    final Collection<Property> properties = EntityRepository.get().getProperties(entityID, true);
+    final Collection<Property> properties = EntityRepository.get().getDatabaseProperties(entityID);
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : properties)
       if (property.getPropertyType().equals(Type.STRING))

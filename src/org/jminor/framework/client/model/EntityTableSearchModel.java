@@ -102,10 +102,9 @@ public class EntityTableSearchModel {
    * @return the PropertyFilterModel for the property with id <code>propertyID</code>
    */
   public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
-    for (final AbstractSearchModel filter : propertyFilterModels) {
+    for (final AbstractSearchModel filter : propertyFilterModels)
       if (filter.getPropertyName().equals(propertyID))
         return (PropertyFilterModel) filter;
-    }
 
     return null;
   }
@@ -198,8 +197,8 @@ public class EntityTableSearchModel {
 
   /**
    * Finds the PropertySearchModel associated with the EntityProperty representing
-   * the entity identified by <code>referencedEntityID</code> and sets <code>referenceEntities</code>
-   * as the search criteria value, enables the PropertySearchModel and initiates a refresh
+   * the entity identified by <code>referencedEntityID</code>, sets <code>referenceEntities</code>
+   * as the search criteria value and enables the PropertySearchModel
    * @param referencedEntityID the ID of the entity
    * @param referenceEntities the entities to use as search criteria value
    * @return true if the search state changed as a result of this method call, false otherwise
