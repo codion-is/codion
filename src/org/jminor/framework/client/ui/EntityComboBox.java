@@ -95,7 +95,6 @@ public class EntityComboBox extends SteppedComboBox {
         try {
           final EntityPanel entityPanel = applicationInfo.getInstance(getModel().getDbProvider());
           entityPanel.initialize();
-//          entityPanel.getModel().getTableModel().setSelectedEntity(getModel().getSelectedEntity());
           final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
           entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
@@ -104,7 +103,9 @@ public class EntityComboBox extends SteppedComboBox {
             }
           });
           final Window parentWindow = UiUtil.getParentWindow(EntityComboBox.this);
-          final JDialog dialog = new JDialog(parentWindow, applicationInfo.getCaption());
+          final String caption = applicationInfo.getCaption() == null || applicationInfo.getCaption().equals("") ?
+                  entityPanel.getModel().getCaption() : applicationInfo.getCaption();
+          final JDialog dialog = new JDialog(parentWindow, caption);
           dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
           dialog.setLayout(new BorderLayout());
           dialog.add(entityPanel, BorderLayout.CENTER);

@@ -271,3 +271,5 @@
   Property.getCaption() returns the caption of the parent property in case the caption is null
   EntityTableModel.initSearchModel() renamed to initializeSearchModel
   EntityRepository.getVisiblePropertyList() added
+  EntityModel.resetComboBoxModelOnClear(final Property property) removed, replaced by useLastValueAsDefault()
+  FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR replaced with PERSIST_ENTITY_REFERENCE_VALUES, with default value 'true'

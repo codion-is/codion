@@ -12,7 +12,7 @@ public abstract class AbstractDateMaskFormat extends SimpleDateFormat {
   }
 
   /**
-   * @return Value for property 'dateMask'.
+   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
   public abstract String getDateMask();
 }

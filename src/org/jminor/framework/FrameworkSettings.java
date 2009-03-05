@@ -93,11 +93,11 @@ public class FrameworkSettings implements Serializable {
   public static final String TOOLBAR_BUTTONS = "toolbar_buttons";
 
   /**
-   * Specifies whether comboboxes should be reset to the topmost value when the UI is cleared
+   * Specifies whether entity field values should persist when the UI is cleared or be reset to null
    * Value type: Boolean
-   * Default value: false
+   * Default value: true
    */
-  public static final String RESET_COMBOBOXMODELS_ON_CLEAR = "reset_comboboxmodels_on_clear";
+  public static final String PERSIST_ENTITY_REFERENCE_VALUES = "persist_entity_reference_values";
 
   /**
    * Specifies a string prepended to the username field in the login dialog
@@ -190,7 +190,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(PROPERTY_DEBUG_OUTPUT, false);
     setProperty(TAB_PLACEMENT, JTabbedPane.TOP);
     setProperty(TOOLBAR_BUTTONS, false);
-    setProperty(RESET_COMBOBOXMODELS_ON_CLEAR, false);
+    setProperty(PERSIST_ENTITY_REFERENCE_VALUES, true);
     setProperty(DEFAULT_USERNAME_PREFIX, "");
     setProperty(TRANSFER_FOCUS_ON_ENTER, true);
     setProperty(USE_STRICT_EDIT_MODE, false);

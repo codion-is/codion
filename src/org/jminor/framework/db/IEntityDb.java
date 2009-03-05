@@ -20,7 +20,7 @@ import java.util.Map;
  * Date: 7.1.2005
  * Time: 11:35:59
  */
-public interface IEntityDb{
+public interface IEntityDb {
 
   /**
    * @return the user being used by this connection

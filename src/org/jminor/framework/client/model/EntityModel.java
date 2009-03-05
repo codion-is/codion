@@ -29,8 +29,8 @@ import org.jminor.framework.model.PropertyListener;
 import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.event.TableModelListener;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -271,7 +271,8 @@ public class EntityModel implements IRefreshable {
     this.entityID = entityID;
     this.propertyComboBoxModels = initializeEntityComboBoxModels();
     this.tableModel = includeTableModel ? initializeTableModel() : null;
-    this.activeEntity = getDefaultEntity();
+    this.activeEntity = new Entity(entityID);
+    this.activeEntity.setAs(getDefaultEntity());
     this.detailModels = initializeDetailModels();
     this.activeEntity.setFirePropertyChangeEvents(true);
     initializeAssociatedModels();
@@ -1257,41 +1258,29 @@ public class EntityModel implements IRefreshable {
    * default entity for this model. This does not apply to denormalized properties
    * (Property.DenormalizedProperty) nor properties that are a part of reference properties
    * (Property.EntityProperty)
-   * For properties associated with a ComboBoxModel the selected value of that model
-   * is returned unless <code>resetComboBoxModelOnClear</code> returns true for that
-   * given property.
+   * If the default value of a property should be the last value used <code>useLastValueAsDefault()</code>
+   * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
    * @return the default value for the property
-   * @see #resetComboBoxModelOnClear(org.jminor.framework.model.Property)
+   * @see #useLastValueAsDefault(org.jminor.framework.model.Property)
    */
   protected Object getDefaultValue(final Property property) {
-    if (!resetComboBoxModelOnClear(property) && propertyComboBoxModels.containsKey(property)) {
-      final ComboBoxModel boxModel = propertyComboBoxModels.get(property);
-      if (boxModel instanceof EntityComboBoxModel)
-        return ((EntityComboBoxModel)boxModel).getSelectedEntity();
-      else {
-        final Object selected = boxModel.getSelectedItem();
-        if (selected instanceof String && ((String)selected).length() == 0)
-          return null;
-
-        return selected;
-      }
-    }
-
-    return property.getDefaultValue();
+    return useLastValueAsDefault(property) ? getValue(property) : property.getDefaultValue();
   }
 
   /**
-   * Override to enable the reset of entity combo box models when the model is cleared,
-   * that is selecting the item located at index 0
-   * By default this method returns the value of the property <code>FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR</code>.
+   * Returns true if the last available value for this property should be used when initializing
+   * a default entity for this EntityModel.
+   * Override for selective reset of field values when the model is cleared.
+   * For Property.EntityProperty values this method by default returns the value of the
+   * property <code>FrameworkSettings.PERSIST_ENTITY_REFERENCE_VALUES</code>.
    * @param property the property
-   * @return true if the ComboBoxModel should be reset when the model is cleared
-   * @see FrameworkSettings#RESET_COMBOBOXMODELS_ON_CLEAR
+   * @return true if the given entity field value should be reset when the model is cleared
+   * @see FrameworkSettings#PERSIST_ENTITY_REFERENCE_VALUES
    */
-  @SuppressWarnings({"UnusedDeclaration"})
-  protected boolean resetComboBoxModelOnClear(final Property property) {
-    return (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR);
+  protected boolean useLastValueAsDefault(final Property property) {
+    return property instanceof Property.EntityProperty
+            && (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PERSIST_ENTITY_REFERENCE_VALUES);
   }
 
   /**

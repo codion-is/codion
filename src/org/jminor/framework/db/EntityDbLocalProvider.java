@@ -58,13 +58,13 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
   private void validateDbConnection() throws UserException {
     try {
       if (entityDb == null)
-        connectServer();
+        connect();
 
       if (!entityDb.isConnectionValid()) {
         //db unreachable
         //try to reconnect once in case db has become reachable
         entityDb = null;
-        connectServer();
+        connect();
       }
     }
     catch (Exception e) {
@@ -72,7 +72,7 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
     }
   }
 
-  private void connectServer() throws ClassNotFoundException, AuthenticationException {
+  private void connect() throws ClassNotFoundException, AuthenticationException {
     log.debug("Initializing connection for " + user);
     entityDb = new EntityDbConnection(user, EntityRepository.get(), FrameworkSettings.get());
     evtConnected.fire();
