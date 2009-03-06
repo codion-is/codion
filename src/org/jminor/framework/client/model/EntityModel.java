@@ -1262,10 +1262,10 @@ public class EntityModel implements IRefreshable {
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
    * @return the default value for the property
-   * @see #useLastValueAsDefault(org.jminor.framework.model.Property)
+   * @see #persistValueOnClear(org.jminor.framework.model.Property)
    */
   protected Object getDefaultValue(final Property property) {
-    return useLastValueAsDefault(property) ? getValue(property) : property.getDefaultValue();
+    return persistValueOnClear(property) ? getValue(property) : property.getDefaultValue();
   }
 
   /**
@@ -1278,7 +1278,7 @@ public class EntityModel implements IRefreshable {
    * @return true if the given entity field value should be reset when the model is cleared
    * @see FrameworkSettings#PERSIST_ENTITY_REFERENCE_VALUES
    */
-  protected boolean useLastValueAsDefault(final Property property) {
+  protected boolean persistValueOnClear(final Property property) {
     return property instanceof Property.EntityProperty
             && (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PERSIST_ENTITY_REFERENCE_VALUES);
   }

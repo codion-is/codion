@@ -273,3 +273,4 @@
   EntityRepository.getVisiblePropertyList() added
   EntityModel.resetComboBoxModelOnClear(final Property property) removed, replaced by useLastValueAsDefault()
   FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR replaced with PERSIST_ENTITY_REFERENCE_VALUES, with default value 'true'
+  EntityModel.useLastValueAsDefault() renamed to persistValueOnClear()
