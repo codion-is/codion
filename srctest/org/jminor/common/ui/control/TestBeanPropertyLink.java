@@ -54,6 +54,7 @@ public class TestBeanPropertyLink extends TestCase {
 
   public void testDoubleBeanPropertyLink() throws Exception {
     final DoubleField txtDouble = new DoubleField();
+    txtDouble.setDecimalSymbol(DoubleField.POINT);
     new DoubleBeanPropertyLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, "");
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);

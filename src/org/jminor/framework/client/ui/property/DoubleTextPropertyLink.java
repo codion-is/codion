@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.framework.client.model.EntityModel;
@@ -64,10 +65,7 @@ public class DoubleTextPropertyLink extends TextPropertyLink {
   /** {@inheritDoc} */
   protected Object valueFromText(final String text) {
     try {
-      if (text != null && text.equals("-"))
-        return -1d;
-
-      return text.length() > 0 ? Double.parseDouble(text) : null;
+      return Util.getDouble(text);
     }
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);

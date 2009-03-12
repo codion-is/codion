@@ -53,14 +53,13 @@ public class IntField extends TextFieldPlus {
       char c = string.charAt(0);
       if (offset == 0 && c == '-')
         valueOk = value >= 0;
-      else if ((c >= '0') && (c <= '9'))
+      else if (Character.isDigit(c))
         valueOk = !((offset == 0) && (value < 0));
       // Range check
       if (valueOk) {
         StringBuffer sb = new StringBuffer(text);
         sb.insert(offset, string);
-        long lVal = Util.getLong(sb.toString());
-        valueOk = isWithinRange(lVal);
+        valueOk = isWithinRange(Util.getLong(sb.toString()));
       }
 
       if (valueOk)

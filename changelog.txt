@@ -274,3 +274,5 @@
   EntityModel.resetComboBoxModelOnClear(final Property property) removed, replaced by useLastValueAsDefault()
   FrameworkSettings.RESET_COMBOBOXMODELS_ON_CLEAR replaced with PERSIST_ENTITY_REFERENCE_VALUES, with default value 'true'
   EntityModel.useLastValueAsDefault() renamed to persistValueOnClear()
+  DoubleField.setDecimalSymbol() added
+  DoubleTextPropertyLink and IntTextPropertyLink changed so that valueFromText now uses Util.getDouble()/getInt()

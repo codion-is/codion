@@ -150,18 +150,10 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
 
   /** {@inheritDoc} */
   protected void updateUI() {
-    textComponent.setText(getPropertyValueAsString());
+    textComponent.setText(getValueAsString(getPropertyValue()));
   }
 
-  protected String getPropertyValueAsString() {
-    final Object value = getPropertyValue();
-    if (value == null)
-      return null;
-
-    return format == null ? value.toString() : format.format(value);
-  }
-
-  protected final String getValueAsString(final Object value) {
+  protected String getValueAsString(final Object value) {
     if (Entity.isValueNull(getProperty().getPropertyType(), value))
       return null;
     else

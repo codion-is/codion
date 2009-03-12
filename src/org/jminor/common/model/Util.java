@@ -161,7 +161,7 @@ public class Util {
 
     double value;
     if ((text.length() > 0) && (!text.equals("-")))
-      value = new Double(text);
+      value = new Double(text.replace(',', '.'));
     else if (text.equals("-"))
       value = -1;
     else
