@@ -103,6 +103,7 @@ public class FrameworkMessages {
   public static final String RETRY_TITLE = "retry_title";
   public static final String CONDITION = "condition";
   public static final String SEARCH = "search";
+  public static final String SEARCH_MNEMONIC = "search_mnemonic";
 
   public static final String UNABLE_TO_OPEN_FILE = "unable_to_open_file";
   public static final String RECORD_NOT_FOUND = "record_not_found";

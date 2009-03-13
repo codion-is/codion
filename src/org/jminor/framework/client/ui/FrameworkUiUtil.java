@@ -33,6 +33,7 @@ import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
 import org.jminor.framework.client.ui.property.SearchFieldPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
@@ -52,14 +53,14 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -212,26 +213,30 @@ public class FrameworkUiUtil {
       }
     };
 
-    final JButton btnClose  = new JButton(okAction);
+    final JButton btnOk  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     final JButton btnSearch = new JButton(searchAction);
+    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+    final String searchMnemonic = FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC);
+    btnOk.setMnemonic(okMnemonic.charAt(0));
+    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+    btnSearch.setMnemonic(searchMnemonic.charAt(0));
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
     dialog.getRootPane().getActionMap().put("cancel", cancelAction);
     entityPanel.getJTable().getInputMap(
             JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    btnClose.setMnemonic('L');
-    btnCancel.setMnemonic('H');
     dialog.setLayout(new BorderLayout());
     if (preferredSize != null)
       entityPanel.setPreferredSize(preferredSize);
     dialog.add(entityPanel, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
     buttonPanel.add(btnSearch);
-    buttonPanel.add(btnClose);
+    buttonPanel.add(btnOk);
     buttonPanel.add(btnCancel);
-    dialog.getRootPane().setDefaultButton(btnClose);
+    dialog.getRootPane().setDefaultButton(btnOk);
     dialog.add(buttonPanel, BorderLayout.SOUTH);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
@@ -334,7 +339,7 @@ public class FrameworkUiUtil {
       MaximumMatch.enable(ret);
       setPropertyToolTip(entityModel.getEntityID(), property, ret);
       final boolean transferFocusOnEnter =
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
+              (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
       if (transferFocusOnEnter)
         UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
@@ -643,73 +648,93 @@ public class FrameworkUiUtil {
       component.setToolTipText(propertyDescription);
   }
 
+  public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
+                                           final Property property, final IEntityDbProvider dbProvider) {
+    try {
+      final List<?> values = dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true, true);
+      final DefaultListModel listModel = new DefaultListModel();
+      for (final Object value : values)
+        listModel.addElement(value);
+
+      final JList list = new JList(new Vector<Object>(values));
+      final Window owner = UiUtil.getParentWindow(dialogOwner);
+      final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+        public void actionPerformed(ActionEvent e) {
+          dialog.dispose();
+        }
+      };
+      final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
+        public void actionPerformed(ActionEvent e) {
+          list.clearSelection();
+          dialog.dispose();
+        }
+      };
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      final JButton btnOk  = new JButton(okAction);
+      final JButton btnCancel = new JButton(cancelAction);
+      final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+      final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+      btnOk.setMnemonic(okMnemonic.charAt(0));
+      btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+      dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+              KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+      dialog.getRootPane().getActionMap().put("cancel", cancelAction);
+      list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+              KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+      list.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(final MouseEvent e) {
+          if (e.getClickCount() == 2)
+            okAction.actionPerformed(null);
+        }
+      });
+      dialog.setLayout(new BorderLayout());
+      final JScrollPane scroller = new JScrollPane(list);
+      dialog.add(scroller, BorderLayout.CENTER);
+      final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
+      buttonPanel.add(btnOk);
+      buttonPanel.add(btnCancel);
+      final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      buttonBasePanel.add(buttonPanel);
+      dialog.getRootPane().setDefaultButton(btnOk);
+      dialog.add(buttonBasePanel, BorderLayout.SOUTH);
+      dialog.pack();
+      dialog.setLocationRelativeTo(owner);
+      dialog.setModal(true);
+      dialog.setResizable(true);
+      dialog.setVisible(true);
+
+      return list.getSelectedValue();
+    }
+    catch (UserException ue) {
+      throw ue.getRuntimeException();
+    }
+    catch (Exception e1) {
+      throw new RuntimeException(e1);
+    }
+  }
+
+  public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
+                                     final IEntityDbProvider dbProvider) {
+    txtField.addKeyListener(new KeyAdapter() {
+      public void keyReleased(final KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
+          final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
+          if (value != null)
+            txtField.setText(value.toString());
+        }
+      }
+    });
+  }
+
   public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
     txtField.addKeyListener(new KeyAdapter() {
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
-          try {
-            final List<?> values = model.getDbConnectionProvider().getEntityDb().selectPropertyValues(model.getEntityID(), property.propertyID, true, true);
-            final DefaultListModel listModel = new DefaultListModel();
-            for (final Object value : values)
-              listModel.addElement(value);
-
-            final JList list = new JList(new Vector<Object>(values));
-            final Window owner = UiUtil.getParentWindow(txtField);
-            final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-              public void actionPerformed(ActionEvent e) {
-                final Object selectedValue = list.getSelectedValue();
-                if (selectedValue != null)
-                  model.uiSetValue(property.propertyID, selectedValue);
-                dialog.dispose();
-              }
-            };
-            final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-              public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-              }
-            };
-            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            final JButton btnOk  = new JButton(okAction);
-            final JButton btnCancel = new JButton(cancelAction);
-            final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-            final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-            btnOk.setMnemonic(cancelMnemonic.charAt(0));
-            btnCancel.setMnemonic(okMnemonic.charAt(0));
-            dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-            dialog.getRootPane().getActionMap().put("cancel", cancelAction);
-            list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-            list.addMouseListener(new MouseAdapter() {
-              public void mouseClicked(final MouseEvent e) {
-                if (e.getClickCount() == 2)
-                  okAction.actionPerformed(null);
-              }
-            });
-            dialog.setLayout(new BorderLayout());
-            final JScrollPane scroller = new JScrollPane(list);
-            dialog.add(scroller, BorderLayout.CENTER);
-            final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
-            buttonPanel.add(btnOk);
-            buttonPanel.add(btnCancel);
-            final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            buttonBasePanel.add(buttonPanel);
-            dialog.getRootPane().setDefaultButton(btnOk);
-            dialog.add(buttonBasePanel, BorderLayout.SOUTH);
-            dialog.pack();
-            dialog.setLocationRelativeTo(owner);
-            dialog.setModal(true);
-            dialog.setResizable(true);
-            dialog.setVisible(true);
-          }
-          catch (UserException ue) {
-            throw ue.getRuntimeException();
-          }
-          catch (Exception e1) {
-            throw new RuntimeException(e1);
-          }
+          final Object value = lookupPropertyValue(txtField, model.getEntityID(), property, model.getDbConnectionProvider());
+          if (value != null)
+            model.uiSetValue(property, value);
         }
       }
     });

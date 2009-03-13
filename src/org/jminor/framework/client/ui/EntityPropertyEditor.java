@@ -63,6 +63,9 @@ public class EntityPropertyEditor extends JPanel {
     this.property = property;
     this.currentValue = currentValue;
     this.field = getInputField(!multipleEntityUpdate && !Entity.isValueNull(property.getPropertyType(), currentValue), entityModel);
+    if (this.field instanceof JTextField)
+      FrameworkUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,
+              entityModel.getDbConnectionProvider());
     initUI(property.getCaption());
   }
 
