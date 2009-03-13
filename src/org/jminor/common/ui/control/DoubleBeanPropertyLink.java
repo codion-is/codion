@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.DoubleField;
 
 public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
@@ -23,9 +24,8 @@ public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
 
   /** {@inheritDoc} */
   protected Object textToValue() {
-    final String text = getText();
     try {
-      return text.length() > 0 ? Double.parseDouble(text) : null;
+      return Util.getDouble(getText());
     }
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);

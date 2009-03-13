@@ -281,7 +281,7 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return the class of the Entity this model represents
+   * @return the type of the Entity this model represents
    */
   public String getEntityID() {
     return entityID;

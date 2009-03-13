@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.IntField;
 
 public class IntBeanPropertyLink extends TextBeanPropertyLink {
@@ -23,9 +24,8 @@ public class IntBeanPropertyLink extends TextBeanPropertyLink {
 
   /** {@inheritDoc} */
   protected Object textToValue() {
-    final String text = getText();
     try {
-      return text.length() > 0 ? Integer.parseInt(text) : null;
+      return Util.getInt(getText());
     }
     catch (NumberFormatException nf) {
       throw new RuntimeException(nf);

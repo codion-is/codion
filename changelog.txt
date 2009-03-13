@@ -277,3 +277,4 @@
   DoubleField.setDecimalSymbol() added
   DoubleTextPropertyLink and IntTextPropertyLink changed so that valueFromText now uses Util.getDouble()/getInt()
   EntityPropertyEditor text fields now include lookup functionality (CTR-space)
+  IntBeanPropertyLink/DoubleBeanPropertyLink fixed, now use Util.getInt/Double
