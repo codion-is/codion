@@ -15,6 +15,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
 import javax.swing.AbstractAction;
@@ -31,7 +32,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class EntityPropertyEditor extends JPanel {
 
@@ -39,30 +42,29 @@ public class EntityPropertyEditor extends JPanel {
 
   private final JComponent field;
   private final Property property;
-  private final Object currentValue;
   private transient final InputManager inputManager;
 
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
 
-  public EntityPropertyEditor(final Object currentValue, final Property property, final boolean multipleEntityUpdate) throws UserException {
-    this(currentValue, property, null, multipleEntityUpdate);
+  public EntityPropertyEditor(final Property property, final List<Entity> entities) throws UserException {
+    this(property, null, entities);
   }
 
-  public EntityPropertyEditor(final Object currentValue, final Property property, final EntityModel entityModel,
-                              final boolean multipleEntityUpdate) throws UserException {
-    this(currentValue, property, entityModel, null, multipleEntityUpdate);
+  public EntityPropertyEditor(final Property property, final EntityModel entityModel,
+                              final List<Entity> entities) throws UserException {
+    this(property, entityModel, null, entities);
   }
 
-  public EntityPropertyEditor(final Object currentValue, final Property property, final EntityModel entityModel,
-                              final InputManager inputManager, final boolean multipleEntityUpdate) throws UserException {
+  public EntityPropertyEditor(final Property property, final EntityModel entityModel,
+                              final InputManager inputManager, final List<Entity> entities) throws UserException {
     if (property instanceof Property.EntityProperty && entityModel == null)
       throw new IllegalArgumentException("No EntityModel instance provided for entity property editor");
 
     this.inputManager = inputManager;
     this.property = property;
-    this.currentValue = currentValue;
-    this.field = getInputField(!multipleEntityUpdate && !Entity.isValueNull(property.getPropertyType(), currentValue), entityModel);
+    final Collection<Object> values = EntityUtil.getPropertyValues(entities, property.propertyID);
+    this.field = getInputField(entityModel, values.size() == 1 ? values.iterator().next() : null);
     if (this.field instanceof JTextField)
       FrameworkUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,
               entityModel.getDbConnectionProvider());
@@ -72,8 +74,8 @@ public class EntityPropertyEditor extends JPanel {
   /**
    * @return Value for property 'buttonValue'.
    */
-  public int getButtonValue() {
-    return buttonValue;
+  public boolean isEditAccepted() {
+    return buttonValue == JOptionPane.OK_OPTION;
   }
 
   /**
@@ -84,7 +86,7 @@ public class EntityPropertyEditor extends JPanel {
   }
 
   /**
-   * @return Value for property 'value'.
+   * @return the value specified by the input component of this EntityPropertyEditor
    * @throws org.jminor.common.model.UserException in case of exception
    */
   public Object getValue() throws UserException {
@@ -133,44 +135,39 @@ public class EntityPropertyEditor extends JPanel {
     }
   }
 
-  protected JComponent getInputField(final boolean setCurrentValue, final EntityModel entityModel) throws UserException {
+  protected JComponent getInputField(final EntityModel entityModel, final Object currentValue) throws UserException {
     if (inputManager != null)
       return inputManager.getInputComponent();
 
     switch (property.getPropertyType()) {
       case LONG_DATE:
-        return FrameworkUiUtil.createDateChooserPanel(setCurrentValue ? (Date) currentValue : null,
-                new LongMediumDateFormat());
-      case SHORT_DATE: {
-        return FrameworkUiUtil.createDateChooserPanel(setCurrentValue ? (Date) currentValue : null,
-                new ShortDashDateFormat());
-      }
+        return FrameworkUiUtil.createDateChooserPanel((Date) currentValue, new LongMediumDateFormat());
+      case SHORT_DATE:
+        return FrameworkUiUtil.createDateChooserPanel((Date) currentValue, new ShortDashDateFormat());
       case DOUBLE:
         final DoubleField dfield = new DoubleField();
-        if (setCurrentValue)
+        if (currentValue != null)
           dfield.setDouble((Double) currentValue);
         return dfield;
       case INT:
         final IntField ifield = new IntField();
-        if (setCurrentValue)
+        if (currentValue != null)
           ifield.setInt((Integer) currentValue);
         return ifield;
       case BOOLEAN:
         final JComboBox ret = new JComboBox(new BooleanComboBoxModel());
-        if (setCurrentValue)
+        if (currentValue != null)
           ret.setSelectedItem(currentValue);
         return ret;
-      case ENTITY: {
+      case ENTITY:
         final EntityComboBoxModel model =
                 entityModel.createEntityComboBoxModel(((Property.EntityProperty)property), "-", true);
         model.refresh();
-        if (setCurrentValue)
+        if (currentValue != null)
           model.setSelectedItem(currentValue);
         return new JComboBox(model);
-      }
-      default: {
-        return new JTextField(setCurrentValue ? (currentValue != null ? currentValue.toString() : "") : "");
-      }
+      default:
+        return new JTextField(currentValue != null ? currentValue.toString() : "");
     }
   }
 
@@ -206,7 +203,7 @@ public class EntityPropertyEditor extends JPanel {
   public static abstract class InputManager {
     private final JComponent inputComponent;
 
-    public InputManager(JComponent inputComponent) {
+    public InputManager(final JComponent inputComponent) {
       this.inputComponent = inputComponent;
     }
 

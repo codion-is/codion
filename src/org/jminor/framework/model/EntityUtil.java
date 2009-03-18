@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A static utility class
@@ -411,6 +413,20 @@ public class EntityUtil {
         ret.put(key, list);
       }
     }
+
+    return ret;
+  }
+
+  /**
+   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities
+   * @param entities the entities from which to retrieve the values
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @return a Collection containing the distinct property values
+   */
+  public static Collection<Object> getPropertyValues(final List<Entity> entities, final String propertyID) {
+    final Set<Object> ret = new HashSet<Object>();
+    for (final Entity entity : entities)
+      ret.add(entity.getValue(propertyID));
 
     return ret;
   }
