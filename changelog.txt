@@ -146,7 +146,7 @@
   EntityModel.createEntityComboBoxModel made public, added nullValueItem and sortContents parameters
   EntityPanel.updateSelectedEntities changed to accomodate the above
   EntityRepository.propertyDescriptions map added, along with set/getPropertyDescription
-  FrameworkUiUtil now adds EntityRepository.getPropertyDescription() as a tooltip on generated property compoments
+  FrameworkUiUtil now adds EntityRepository.getPropertyDescription() as a tooltip on generated property components
   ControlSet added some null checks during additions to prevent adding null controls/actions
   EntityTablePanel.isPropertyColumnVisible() and setPropertyColumnVisible() added
   EntityPanel.selectTableColumns() added

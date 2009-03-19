@@ -48,16 +48,16 @@ public class EntityPropertyEditor extends JPanel {
   private int buttonValue = -Integer.MAX_VALUE;
 
   public EntityPropertyEditor(final Property property, final List<Entity> entities) throws UserException {
-    this(property, null, entities);
+    this(property, entities, null);
   }
 
-  public EntityPropertyEditor(final Property property, final EntityModel entityModel,
-                              final List<Entity> entities) throws UserException {
-    this(property, entityModel, null, entities);
+  public EntityPropertyEditor(final Property property, final List<Entity> entities,
+                              final EntityModel entityModel) throws UserException {
+    this(property, entities, entityModel, null);
   }
 
-  public EntityPropertyEditor(final Property property, final EntityModel entityModel,
-                              final InputManager inputManager, final List<Entity> entities) throws UserException {
+  public EntityPropertyEditor(final Property property, final List<Entity> entities,
+                              final EntityModel entityModel, final InputManager inputManager) throws UserException {
     if (property instanceof Property.EntityProperty && entityModel == null)
       throw new IllegalArgumentException("No EntityModel instance provided for entity property editor");
 
