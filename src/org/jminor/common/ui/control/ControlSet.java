@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ControlSet extends Control {
 
-  private final ArrayList<Action> actions = new ArrayList<Action>();
+  private final List<Action> actions = new ArrayList<Action>();
 
   private String description;
 

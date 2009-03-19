@@ -231,7 +231,7 @@ public class EntityKey implements Externalizable {
       return true;
 
     for (final Property property : properties)
-      if (Entity.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
+      if (EntityUtil.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
         return true;
 
     return false;
@@ -286,7 +286,7 @@ public class EntityKey implements Externalizable {
       for (final Property.PrimaryKeyProperty property : properties) {
         final String propertyID = property.propertyID;
         final Object newValue = key.getValue(propertyID);
-        keyValues.put(propertyID, newValue instanceof Entity ? ((Entity)newValue).getCopy() : newValue);
+        keyValues.put(propertyID, EntityUtil.copyPropertyValue(newValue));
       }
 
       hashCode = key.hashCode;

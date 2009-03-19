@@ -142,8 +142,8 @@ public class EntityUtil {
   }
 
   public static boolean equal(final Type type, final Object one, final Object two) {
-    final boolean oneNull = Entity.isValueNull(type, one);
-    final boolean twoNull = Entity.isValueNull(type, two);
+    final boolean oneNull = isValueNull(type, one);
+    final boolean twoNull = isValueNull(type, two);
 
     return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
   }
@@ -155,7 +155,7 @@ public class EntityUtil {
    * @return a SQL string version of value
    */
   public static String getSQLStringValue(final Property property, final Object value) {
-    if (Entity.isValueNull(property.propertyType, value))
+    if (isValueNull(property.propertyType, value))
       return "null";
 
     switch (property.propertyType) {
@@ -207,12 +207,47 @@ public class EntityUtil {
   }
 
   public static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = Entity.isValueNull(property.propertyType, value);
+    final boolean valueIsNull = isValueNull(property.propertyType, value);
     final StringBuffer ret = new StringBuffer("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)
       ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
 
     return ret.toString();
+  }
+
+  /**
+   * Returns true if <code>value</code> represents a null value for the given property type
+   * @param propertyType the property type
+   * @param value the value to check
+   * @return true if <code>value</code> represents null
+   */
+  public static boolean isValueNull(final Type propertyType, final Object value) {
+    if (value == null)
+      return true;
+
+    switch (propertyType) {
+      case CHAR :
+        if (value instanceof String)
+          return ((String)value).length() == 0;
+      case BOOLEAN :
+        return value == Type.Boolean.NULL;
+      case STRING :
+        return value.equals("");
+      case ENTITY :
+        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
+      default :
+        return false;
+    }
+  }
+
+  /**
+   * Returns a copy of the given value.
+   * If the value is an entity it is deep copied.
+   * @param value the value to copy
+   * @return a copy of <code>value</code>
+   */
+  public static Object copyPropertyValue(final Object value) {
+    return value instanceof Entity ? ((Entity)value).getCopy() : value;
   }
 
   public static String getPropertyChangeDebugString(final String entityID, final Property property,

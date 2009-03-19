@@ -106,7 +106,7 @@ public class PropertyCriteria implements ICriteria {
 
     if (values.size() == 0)
       throw new RuntimeException("No values specified for PropertyCriteria: " + property);
-    if (values.size() == 1 && Entity.isValueNull(property.getPropertyType(), values.get(0)))
+    if (values.size() == 1 && EntityUtil.isValueNull(property.getPropertyType(), values.get(0)))
       return columnName + (searchType == SearchType.LIKE ? " is null" : " is not null");
 
     String sqlValue = EntityUtil.getSQLStringValue(property, values.get(0));

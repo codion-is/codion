@@ -479,8 +479,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Entity ret = getCopy();
     if (originalPropertyValues != null) {
       for (final Map.Entry<String, Object> entry : originalPropertyValues.entrySet())
-        propertyValues.put(entry.getKey(),
-                entry.getValue() instanceof Entity ? ((Entity)entry.getValue()).getCopy() : entry.getValue());
+        propertyValues.put(entry.getKey(), EntityUtil.copyPropertyValue(entry.getValue()));
     }
 
     return ret;
@@ -498,8 +497,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (originalPropertyValues != null)
       originalPropertyValues.clear();
     for (final Map.Entry<String, Object> entry : sourceEntity.propertyValues.entrySet()) {
-      final Object value = sourceEntity.propertyValues.get(entry.getKey());
-      propertyValues.put(entry.getKey(), value instanceof Entity ? ((Entity)value).getCopy() : value);
+      propertyValues.put(entry.getKey(), EntityUtil.copyPropertyValue(sourceEntity.propertyValues.get(entry.getKey())));
     }
     if (sourceEntity.originalPropertyValues != null && !sourceEntity.originalPropertyValues.isEmpty()) {
       if (originalPropertyValues == null)
@@ -542,7 +540,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? primaryKey.getValue(referenceKeyProperty.propertyID)
               : propertyValues.get(referenceKeyProperty.propertyID);
-      if (!isValueNull(referenceKeyProperty.propertyType, value)) {
+      if (!EntityUtil.isValueNull(referenceKeyProperty.propertyType, value)) {
         if (key == null)
           (referencedKeysCache == null ? referencedKeysCache = new HashMap<Property.EntityProperty, EntityKey>()
                   : referencedKeysCache).put(property, key = new EntityKey(property.referenceEntityID));
@@ -563,7 +561,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Property property = getProperty(propertyID);
     final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
 
-    return isValueNull(property.propertyType, value);
+    return EntityUtil.isValueNull(property.propertyType, value);
   }
 
   /** {@inheritDoc} */
@@ -580,31 +578,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     propertyValues = (Map<String, Object>) in.readObject();
     originalPropertyValues = (Map<String, Object>) in.readObject();
     hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
-  }
-
-  /**
-   * Returns true if <code>value</code> represents a null value for the given property type
-   * @param propertyType the property type
-   * @param value the value to check
-   * @return true if <code>value</code> represents null
-   */
-  public static boolean isValueNull(final Type propertyType, final Object value) {
-    if (value == null)
-      return true;
-
-    switch (propertyType) {
-      case CHAR :
-        if (value instanceof String)
-          return ((String)value).length() == 0;
-      case BOOLEAN :
-        return value == Type.Boolean.NULL;
-      case STRING :
-        return value.equals("");
-      case ENTITY :
-        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
-      default :
-        return false;
-    }
   }
 
   /**

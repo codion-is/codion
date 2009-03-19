@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
 import javax.swing.JFormattedTextField;
@@ -154,7 +154,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   protected String getValueAsString(final Object value) {
-    if (Entity.isValueNull(getProperty().getPropertyType(), value))
+    if (EntityUtil.isValueNull(getProperty().getPropertyType(), value))
       return null;
     else
       return format == null ? value.toString() : format.format(value);

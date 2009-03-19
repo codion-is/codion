@@ -280,3 +280,5 @@
   IntBeanPropertyLink/DoubleBeanPropertyLink fixed, now use Util.getInt/Double
   EntityUtil.getPropertyValues() added
   EntityPropertyEditor simplified and improved
+  EntityUtil.copyPropertyValue() added to lessen cyclical dependencies within the framework.model package
+  Entity.isValueNull() method moved to EntityUtil to lessen cyclical dependencies within the framework.model package

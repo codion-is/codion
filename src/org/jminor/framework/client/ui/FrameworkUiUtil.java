@@ -41,6 +41,7 @@ import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
 import org.jminor.framework.model.Type;
+import org.jminor.framework.model.EntityUtil;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -125,8 +126,7 @@ public class FrameworkUiUtil {
         }
       }
 
-      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
-              Messages.get(Messages.EXCEPTION),
+      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), Messages.get(Messages.EXCEPTION),
               FrameworkMessages.get(FrameworkMessages.VALUE_MISSING) + ": " + columnName, dbException);
     }
     else {
@@ -497,7 +497,7 @@ public class FrameworkUiUtil {
         try {
           final Date currentValue = (Date) entityModel.getValue(property);
           entityModel.uiSetValue(property, UiUtil.getDateFromUser(
-                  Entity.isValueNull(property.getPropertyType(), currentValue) ? null : currentValue,
+                  EntityUtil.isValueNull(property.getPropertyType(), currentValue) ? null : currentValue,
                   FrameworkMessages.get(FrameworkMessages.SELECT_DATE), field));
         }
         catch (UserCancelException e1) {/**/}
