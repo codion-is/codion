@@ -38,22 +38,22 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
-                                final boolean labelOnTop) {
+                                   final boolean labelOnTop) {
     return createControlPanel(propertyID, inputComponent, labelOnTop, 0, 0);
   }
 
   public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
-                                final boolean labelOnTop, final int hgap, final int vgap) {
+                                   final boolean labelOnTop, final int hgap, final int vgap) {
     return createControlPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
   }
 
   public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
-                                final boolean labelOnTop, final int hgap, final int vgap, final int labelAlignment) {
+                                   final boolean labelOnTop, final int hgap, final int vgap, final int labelAlignment) {
     return createControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
   public JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
-                                final boolean labelOnTop, final int hgap, final int vgap) {
+                                   final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
     if (labelComponent instanceof JLabel)
@@ -373,16 +373,16 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final EntityComboBox createEntityComboBox(final String propertyID,
-                                                      final EntityPanel.EntityPanelInfo appInfo,
+                                                      final EntityPanelProvider newRecordPanelProvider,
                                                       final boolean newButtonFocusable) {
     return createEntityComboBox(EntityRepository.get().getEntityProperty(getModel().getEntityID(),
-            propertyID), appInfo, newButtonFocusable, null);
+            propertyID), newRecordPanelProvider, newButtonFocusable, null);
   }
 
   protected final EntityComboBox createEntityComboBox(final Property.EntityProperty property,
-                                                      final EntityPanel.EntityPanelInfo appInfo,
+                                                      final EntityPanelProvider newRecordPanelProvider,
                                                       final boolean newButtonFocusable, final State enabledState) {
-    return FrameworkUiUtil.createEntityComboBox(property, getModel(), appInfo, newButtonFocusable, enabledState);
+    return FrameworkUiUtil.createEntityComboBox(property, getModel(), newRecordPanelProvider, newButtonFocusable, enabledState);
   }
 
   protected final JTextField createEntityField(final Property.EntityProperty property) {

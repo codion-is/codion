@@ -7,6 +7,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
@@ -30,8 +31,8 @@ public class ItemPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getDetailPanelInfo() {
-    return Arrays.asList(new EntityPanelInfo(TagItemModel.class, TagItemPanel.class));
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
   /** {@inheritDoc} */
@@ -48,12 +49,12 @@ public class ItemPanel extends EntityPanel {
     ret.add(createControlPanel(Petstore.ITEM_DESCRIPTION, txt));
     ret.add(createControlPanel(Petstore.ITEM_PRICE, createTextField(Petstore.ITEM_PRICE)));
     box = createEntityComboBox(Petstore.ITEM_C0NTACT_INFO_REF,
-            new EntityPanelInfo(ContactInfoModel.class, ContactInfoPanel.class), false);
+            new EntityPanelProvider(ContactInfoModel.class, ContactInfoPanel.class), false);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     ret.add(createControlPanel(Petstore.ITEM_C0NTACT_INFO_REF, box.createPanel()));
     box = createEntityComboBox(Petstore.ITEM_ADDRESS_REF,
-            new EntityPanelInfo(AddressModel.class, AddressPanel.class), false);
+            new EntityPanelProvider(AddressModel.class, AddressPanel.class), false);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     ret.add(createControlPanel(Petstore.ITEM_ADDRESS_REF, box.createPanel()));

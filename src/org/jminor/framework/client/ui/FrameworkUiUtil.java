@@ -37,11 +37,11 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
+import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.PropertyChangeEvent;
 import org.jminor.framework.model.PropertyListener;
 import org.jminor.framework.model.Type;
-import org.jminor.framework.model.EntityUtil;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -321,19 +321,19 @@ public class FrameworkUiUtil {
   }
 
   public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final EntityPanel.EntityPanelInfo appInfo,
+                                                    final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable) {
-    return createEntityComboBox(property, entityModel, appInfo, newButtonFocusable, null);
+    return createEntityComboBox(property, entityModel, newRecordPanelProvider, newButtonFocusable, null);
   }
 
   public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final EntityPanel.EntityPanelInfo appInfo,
+                                                    final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable, final State enabledState) {
     try {
       final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
       if (!boxModel.isDataInitialized())
         boxModel.refresh();
-      final EntityComboBox ret = new EntityComboBox(boxModel, appInfo, newButtonFocusable);
+      final EntityComboBox ret = new EntityComboBox(boxModel, newRecordPanelProvider, newButtonFocusable);
       UiUtil.linkToEnabledState(enabledState, ret);
       new ComboBoxPropertyLink(entityModel, property, ret);
       MaximumMatch.enable(ret);

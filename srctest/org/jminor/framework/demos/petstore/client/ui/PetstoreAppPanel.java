@@ -8,7 +8,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
-import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
@@ -28,15 +28,15 @@ import java.util.List;
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo() {
-    return Arrays.asList(new EntityPanel.EntityPanelInfo(CategoryModel.class, CategoryPanel.class));
+  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(CategoryModel.class, CategoryPanel.class));
   }
 
-  protected List<EntityPanel.EntityPanelInfo> getSupportEntityPanelInfo() {
+  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
     return Arrays.asList(
-            new EntityPanel.EntityPanelInfo("Addresses", AddressModel.class, AddressPanel.class),
-            new EntityPanel.EntityPanelInfo("Seller info", ContactInfoModel.class, ContactInfoPanel.class),
-            new EntityPanel.EntityPanelInfo("Tags", TagModel.class, TagPanel.class));
+            new EntityPanelProvider("Addresses", AddressModel.class, AddressPanel.class),
+            new EntityPanelProvider("Seller info", ContactInfoModel.class, ContactInfoPanel.class),
+            new EntityPanelProvider("Tags", TagModel.class, TagPanel.class));
   }
 
   protected void initializeSettings() {

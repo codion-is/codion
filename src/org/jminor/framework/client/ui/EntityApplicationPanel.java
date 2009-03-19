@@ -70,7 +70,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   private final Event evtAlwaysOnTopChanged = new Event("EntityApplicationPanel.evtAlwaysOnTopChanged");
 
   private static boolean persistEntityPanels;
-  private static Map<EntityPanel.EntityPanelInfo, EntityPanel> persistentEntityPanels = new HashMap<EntityPanel.EntityPanelInfo, EntityPanel>();
+  private static Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
@@ -366,21 +366,21 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return a List containing EntityPanelInfo objects specifying the main EntityPanels,
+   * @return a List containing EntityPanelProvider objects specifying the main EntityPanels,
    * that is, the panels shown when the application frame is initialized
    */
-  protected abstract List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo();
+  protected abstract List<EntityPanelProvider> getMainEntityPanelProviders();
 
   /**
-   * @return a List containing EntityPanelInfo objects specifying the entity panels
+   * @return a List containing EntityPanelProvider objects specifying the entity panels
    * that should be accessible via the Support Tables menu bar item.
    * The corresponding EntityModel class objects should be returned by the
    * EntityApplicationModel.getMainEntityModelClasses() method
-   * N.B. these EntityPanelInfo objects should be constructed with a <code>caption</code> parameter.
+   * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
    * @see org.jminor.framework.client.model.EntityApplicationModel#getMainEntityModelClasses()
    */
-  protected List<EntityPanel.EntityPanelInfo> getSupportEntityPanelInfo() {
-    return new ArrayList<EntityPanel.EntityPanelInfo>(0);
+  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
+    return new ArrayList<EntityPanelProvider>(0);
   }
 
   /**
@@ -394,17 +394,17 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @return the ControlSet on which the Support Tables menu item is based on
    */
   protected ControlSet getSupportModelControlSet() {
-    final List<EntityPanel.EntityPanelInfo> supportAppInfos = getSupportEntityPanelInfo();
-    if (supportAppInfos == null || supportAppInfos.size() == 0)
+    final List<EntityPanelProvider> supportDetailPanelProviders = getSupportEntityPanelProviders();
+    if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0)
       return null;
 
-    Collections.sort(supportAppInfos);
+    Collections.sort(supportDetailPanelProviders);
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
-    for (final EntityPanel.EntityPanelInfo appInfo : supportAppInfos) {
-      final Control ctr = new Control(appInfo.getCaption()) {
+    for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
+      final Control ctr = new Control(panelProvider.getCaption()) {
         public void actionPerformed(ActionEvent e) {
-          showEntityPanel(appInfo);
+          showEntityPanel(panelProvider);
         }
       };
       ret.add(ctr);
@@ -413,9 +413,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return ret;
   }
 
-  protected void showEntityPanel(final EntityPanel.EntityPanelInfo appInfo) {
+  protected void showEntityPanel(final EntityPanelProvider panelProvider) {
     try {
-      showEntityPanelDialog(appInfo, model.getDbConnectionProvider(), this);
+      showEntityPanelDialog(panelProvider, model.getDbConnectionProvider(), this);
     }
     catch (UserException ux) {
       throw ux.getRuntimeException();
@@ -435,7 +435,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    */
   protected void initializeUI() throws UserException {
     setLayout(new BorderLayout());
-    final List<EntityPanel.EntityPanelInfo> entityPanels = getMainEntityPanelInfo();
+    final List<EntityPanelProvider> entityPanels = getMainEntityPanelProviders();
     if (entityPanels.size() > 1) {
       applicationTabPane = new JTabbedPane((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TAB_PLACEMENT));
       applicationTabPane.setFocusable(false);
@@ -447,13 +447,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       });
     }
 
-    for (final EntityPanel.EntityPanelInfo info : entityPanels) {
-      final EntityModel entityModel = model.getMainApplicationModel(info.getEntityModelClass());
-      final EntityPanel entityPanel = info.getInstance(entityModel);
+    for (final EntityPanelProvider provider : entityPanels) {
+      final EntityModel entityModel = model.getMainApplicationModel(provider.getEntityModelClass());
+      final EntityPanel entityPanel = provider.createInstance(entityModel);
       mainApplicationPanels.add(entityPanel);
       if (entityPanels.size() > 1) {
-        final String caption = (info.getCaption() == null || info.getCaption().length() == 0)
-                ? entityModel.getCaption() : info.getCaption();
+        final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
+                ? entityModel.getCaption() : provider.getCaption();
         applicationTabPane.addTab(caption, entityPanel);
       }
     }
@@ -761,29 +761,29 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     applicationPanel.initialize();
   }
 
-  private static void showEntityPanelDialog(final EntityPanel.EntityPanelInfo appInfo, final IEntityDbProvider dbProvider,
+  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final IEntityDbProvider dbProvider,
                                             final JPanel owner) throws UserException {
-    showEntityPanelDialog(appInfo, dbProvider, owner, false);
+    showEntityPanelDialog(panelProvider, dbProvider, owner, false);
   }
 
-  private static void showEntityPanelDialog(final EntityPanel.EntityPanelInfo appInfo, final IEntityDbProvider dbProvider,
+  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final IEntityDbProvider dbProvider,
                                             final JPanel owner, final boolean modalDialog) throws UserException {
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, owner);
       EntityPanel entityPanel;
-      if (persistEntityPanels && persistentEntityPanels.containsKey(appInfo)) {
-        entityPanel = persistentEntityPanels.get(appInfo);
+      if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
+        entityPanel = persistentEntityPanels.get(panelProvider);
         if (entityPanel.isShowing())
           return;
       }
       else {
-        entityPanel = appInfo.getInstance(dbProvider);
+        entityPanel = panelProvider.createInstance(dbProvider);
         entityPanel.initialize();
         if (persistEntityPanels)
-          persistentEntityPanels.put(appInfo, entityPanel);
+          persistentEntityPanels.put(panelProvider, entityPanel);
       }
-      dialog = new JDialog(UiUtil.getParentWindow(owner), appInfo.getCaption());
+      dialog = new JDialog(UiUtil.getParentWindow(owner), panelProvider.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);

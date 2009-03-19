@@ -7,6 +7,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 
@@ -22,8 +23,8 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getDetailPanelInfo() {
-    return Arrays.asList(new EntityPanelInfo(EmployeeModel.class, EmployeePanel.class));
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
   }
 
   /** {@inheritDoc} */

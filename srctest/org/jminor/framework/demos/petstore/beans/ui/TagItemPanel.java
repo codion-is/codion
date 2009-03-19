@@ -7,6 +7,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagModel;
 import org.jminor.framework.demos.petstore.model.Petstore;
 
@@ -29,7 +30,7 @@ public class TagItemPanel extends EntityPanel {
     box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
     ret.add(createControlPanel(Petstore.TAG_ITEM_ITEM_REF, box));
     box = createEntityComboBox(Petstore.TAG_ITEM_TAG_REF,
-            new EntityPanelInfo("Tags", TagModel.class, TagPanel.class), false);
+            new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false);
     ret.add(createControlPanel(Petstore.TAG_ITEM_TAG_REF, box.createPanel()));
 
     return ret;

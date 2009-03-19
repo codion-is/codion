@@ -7,7 +7,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
-import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
 import org.jminor.framework.demos.schemabrowser.beans.ui.SchemaPanel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
@@ -22,8 +22,8 @@ import java.util.List;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo() {
-    return Arrays.asList(new EntityPanel.EntityPanelInfo(SchemaModel.class, SchemaPanel.class));
+  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(SchemaModel.class, SchemaPanel.class));
   }
 
   protected void initializeSettings() {

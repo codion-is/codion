@@ -65,7 +65,6 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,10 +176,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   private JSplitPane horizontalSplitPane;
 
   /**
-   * A map containing the detail panels, if any.
+   * A map containing the detail panels providers, if any.
    * Initialized during <code>initialize()</code>
    */
-  private Map<EntityPanelInfo, EntityPanel> detailEntityPanels;
+  private Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders;
 
   /**
    * A tab pane for the detail panels, if any
@@ -377,20 +376,20 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       setupControls();
       initializeControlPanels();
 
-      final List<EntityPanelInfo> detailPanelInfos = getDetailPanelInfo();
-      this.detailEntityPanels = new LinkedHashMap<EntityPanelInfo, EntityPanel>(detailPanelInfos.size());
-      for (final EntityPanelInfo detailPanelInfo : detailPanelInfos) {
-        final EntityModel detailModel = model.getDetailModel(detailPanelInfo.getEntityModelClass());
+      final List<EntityPanelProvider> detailPanelProviders = getDetailPanelProviders();
+      this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>(detailPanelProviders.size());
+      for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
+        final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityModelClass());
         if (detailModel == null)
-          throw new RuntimeException("Detail model of type " + detailPanelInfo.getEntityModelClass()
+          throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
                   + " not found in model of type " + model.getClass());
-        this.detailEntityPanels.put(detailPanelInfo, detailPanelInfo.getInstance(detailModel));
+        this.detailEntityPanelProviders.put(detailPanelProvider, detailPanelProvider.createInstance(detailModel));
       }
       this.editPanel = initializeEditPanel();
       this.entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
       if (entityTablePanel != null) {
         entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
-        if (editPanel != null || detailEntityPanels.size() > 0) {
+        if (editPanel != null || detailEntityPanelProviders.size() > 0) {
           entityTablePanel.setDoubleClickAction(new AbstractAction() {
             public void actionPerformed(final ActionEvent e) {
               if (editPanel != null && getEditPanelState() == HIDDEN)
@@ -403,8 +402,8 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         entityTablePanel.setMinimumSize(new Dimension(0,0));
         entityTablePanel.setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
       }
-      this.horizontalSplitPane = this.detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
-      this.detailTabPane = this.detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
+      this.horizontalSplitPane = this.detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
+      this.detailTabPane = this.detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
 
       bindTableModelEvents();
       bindTablePanelEvents();
@@ -492,7 +491,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * @return the detail panel of the given type
    */
   public EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
-    for (final EntityPanel detailPanel : detailEntityPanels.values()) {
+    for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
       if (detailPanel.getClass().equals(detailPanelClass))
         return detailPanel;
     }
@@ -556,7 +555,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
       getSelectedDetailPanel().initialize();
 
     if (detailPanelState == DIALOG)//if we are leaving the DIALOG state, hide all child detail dialogs
-      for (final EntityPanel detailPanel : detailEntityPanels.values())
+      for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
         if (detailPanel.getDetailPanelState() == DIALOG)
           detailPanel.setDetailPanelState(HIDDEN);
 
@@ -617,7 +616,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
     if (model.getTableModel() != null)
       entityTablePanel.setFilterPanelsVisible(value);
-    for (final EntityPanel detailEntityPanel : detailEntityPanels.values())
+    for (final EntityPanel detailEntityPanel : detailEntityPanelProviders.values())
       detailEntityPanel.setFilterPanelsVisible(value);
   }
 
@@ -1352,7 +1351,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
         return new Insets(1,0,0,0);
       }
     });
-    for (final EntityPanel detailPanel : detailEntityPanels.values())
+    for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
       ret.addTab(detailPanel.model.getCaption(), detailPanel);
 
     ret.addChangeListener(new ChangeListener() {
@@ -1380,10 +1379,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   protected abstract JPanel initializePropertyPanel();
 
   /**
-   * @return a list of EntityPanelInfo objects, specifying which detail panels this panel should contain
+   * @return a list of EntityPanelProvider objects, specifying the detail panels this panel should contain
    */
-  protected List<EntityPanelInfo> getDetailPanelInfo() {
-    return new ArrayList<EntityPanelInfo>(0);
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return new ArrayList<EntityPanelProvider>(0);
   }
 
   /**
@@ -1488,7 +1487,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   protected ControlSet getTablePopupControlSet() {
     boolean seperatorRequired = false;
     final ControlSet ret = new ControlSet("");
-    if (detailEntityPanels.size() > 0) {
+    if (detailEntityPanelProviders.size() > 0) {
       ret.add(getDetailPanelControls(EMBEDDED));
       seperatorRequired = true;
     }
@@ -1543,11 +1542,11 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * @return a ControlSet for controlling the state of the detail panels
    */
   protected ControlSet getDetailPanelControls(final int status) {
-    if (detailEntityPanels.size() == 0)
+    if (detailEntityPanelProviders.size() == 0)
       return null;
 
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
-    for (final EntityPanel detailPanel : detailEntityPanels.values()) {
+    for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
       final EntityModel model = detailPanel.getModel();
       if (model == null)
         throw new RuntimeException("EntityPanel does not have a EntityModel associated with it");
@@ -1879,7 +1878,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private JButton getToggleDetaiPanelButton() {
-    if (detailEntityPanels.size() == 0)
+    if (detailEntityPanelProviders.size() == 0)
       return null;
 
     final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
@@ -2162,7 +2161,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
-                                                   final IEntityDbProvider dbProvider) throws UserException {
+                                                final IEntityDbProvider dbProvider) throws UserException {
     try {
       final JPanel ret = new JPanel(new BorderLayout());
       final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
@@ -2206,121 +2205,6 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
     public void mouseReleased(MouseEvent e) {
       target.requestFocusInWindow();//activates this EntityPanel
-    }
-  }
-
-  public static class EntityPanelInfo  implements Comparable {
-
-    private final String caption;
-    private final Class<? extends EntityPanel> entityPanelClass;
-    private final Class<? extends EntityModel> entityModelClass;
-
-    public EntityPanelInfo(final Class<? extends EntityModel> entityModelClass,
-                           final Class<? extends EntityPanel> entityPanelClass) {
-      this(null, entityModelClass, entityPanelClass);
-    }
-
-    public EntityPanelInfo(final String caption,
-                           final Class<? extends EntityModel> entityModelClass,
-                           final Class<? extends EntityPanel> entityPanelClass) {
-      this.caption = caption == null ? "" : caption;
-      this.entityModelClass = entityModelClass;
-      this.entityPanelClass = entityPanelClass;
-    }
-
-    /**
-     * @return Value for property 'caption'.
-     */
-    public String getCaption() {
-      return caption;
-    }
-
-    /**
-     * @return Value for property 'entityModelClass'.
-     */
-    public Class<? extends EntityModel> getEntityModelClass() {
-      return entityModelClass;
-    }
-
-    /**
-     * @return Value for property 'entityPanelClass'.
-     */
-    public Class<? extends EntityPanel> getEntityPanelClass() {
-      return entityPanelClass;
-    }
-
-    public EntityPanel getInstance(final EntityModel model) throws UserException {
-      if (model == null)
-        throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
-      try {
-        return getEntityPanelClass().getConstructor().newInstance().setModel(model);
-      }
-      catch (RuntimeException e) {
-        throw e;
-      }
-      catch (InvocationTargetException ite) {
-        if (ite.getCause() instanceof UserException)
-          throw (UserException) ite.getCause();
-
-        throw new UserException(ite.getCause());
-      }
-      catch (Exception e) {
-        throw new UserException(e);
-      }
-    }
-
-    public EntityPanel getInstance(final IEntityDbProvider provider) throws UserException {
-      try {
-        return getInstance(getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
-      }
-      catch (UserException e) {
-        throw e;
-      }
-      catch (RuntimeException e) {
-        throw e;
-      }
-      catch (InvocationTargetException ite) {
-        if (ite.getCause() instanceof UserException)
-          throw (UserException) ite.getCause();
-
-        throw new UserException(ite.getCause());
-      }
-      catch (Exception e) {
-        throw new UserException(e);
-      }
-    }
-
-    /** {@inheritDoc} */
-    public boolean equals(Object obj) {
-      if(this == obj)
-        return true;
-      if((obj == null) || (obj.getClass() != this.getClass()))
-        return false;
-
-      final EntityPanelInfo panelInfo = (EntityPanelInfo) obj;
-
-      return getCaption().equals(panelInfo.getCaption())
-              && getEntityModelClass().equals(panelInfo.getEntityModelClass())
-              && getEntityPanelClass().equals(panelInfo.getEntityPanelClass());
-    }
-
-    /** {@inheritDoc} */
-    public int hashCode() {
-      int hash = 7;
-      hash = 31 * hash + getCaption().hashCode();
-      hash = 31 * hash + getEntityModelClass().hashCode();
-      hash = 31 * hash + getEntityPanelClass().hashCode();
-
-      return hash;
-    }
-
-    /** {@inheritDoc} */
-    public int compareTo(Object o) {
-      final String thisCompare = getCaption() == null ? entityPanelClass.getSimpleName() : getCaption();
-      final String thatCompare = ((EntityPanelInfo)o).getCaption() == null
-              ? ((EntityPanelInfo)o).entityPanelClass.getSimpleName() : ((EntityPanelInfo)o).getCaption();
-
-      return thisCompare.compareTo(thatCompare);
     }
   }
 }

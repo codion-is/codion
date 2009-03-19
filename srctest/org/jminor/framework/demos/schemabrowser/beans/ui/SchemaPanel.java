@@ -5,6 +5,7 @@ package org.jminor.framework.demos.schemabrowser.beans.ui;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.DbObjectModel;
 
 import javax.swing.JPanel;
@@ -27,8 +28,8 @@ public class SchemaPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getDetailPanelInfo() {
-    return Arrays.asList(new EntityPanelInfo(DbObjectModel.class, DbObjectPanel.class));
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(DbObjectModel.class, DbObjectPanel.class));
   }
 
   /** {@inheritDoc} */

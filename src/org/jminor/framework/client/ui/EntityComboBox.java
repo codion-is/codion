@@ -35,28 +35,28 @@ import java.util.List;
 public class EntityComboBox extends SteppedComboBox {
 
   private final JButton btnNewRecord;
-  private final EntityPanel.EntityPanelInfo applicationInfo;
+  private final EntityPanelProvider newRecordPanelProvider;
   private final Action closeAction;
 
   public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanel.EntityPanelInfo newRecordPanelInfo) {
-    this(model, newRecordPanelInfo, true);
+                        final EntityPanelProvider newRecordPanelProvider) {
+    this(model, newRecordPanelProvider, true);
   }
 
   public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanel.EntityPanelInfo newRecordPanelInfo,
+                        final EntityPanelProvider newRecordPanelProvider,
                         final boolean newRecordButtonTakesFocus) {
-    this(model, newRecordPanelInfo, newRecordButtonTakesFocus, null);
+    this(model, newRecordPanelProvider, newRecordButtonTakesFocus, null);
   }
 
   public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanel.EntityPanelInfo newRecordPanelInfo,
+                        final EntityPanelProvider newRecordPanelProvider,
                         final boolean newRecordButtonTakesFocus,
                         final Action closeAction) {
     super(model);
-    this.applicationInfo = newRecordPanelInfo;
+    this.newRecordPanelProvider = newRecordPanelProvider;
     this.closeAction = closeAction;
-    this.btnNewRecord = newRecordPanelInfo != null ? initializeNewRecordButton(newRecordButtonTakesFocus) : null;
+    this.btnNewRecord = newRecordPanelProvider != null ? initializeNewRecordButton(newRecordButtonTakesFocus) : null;
     setComponentPopupMenu(initializePopupMenu());
   }
 
@@ -70,7 +70,7 @@ public class EntityComboBox extends SteppedComboBox {
   public JPanel createPanel() {
     final JPanel ret = new JPanel(new BorderLayout());
     ret.add(this, BorderLayout.CENTER);
-    if (applicationInfo != null)
+    if (newRecordPanelProvider != null)
       ret.add(btnNewRecord, BorderLayout.EAST);
 
     return ret;
@@ -93,7 +93,7 @@ public class EntityComboBox extends SteppedComboBox {
     return new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         try {
-          final EntityPanel entityPanel = applicationInfo.getInstance(getModel().getDbProvider());
+          final EntityPanel entityPanel = newRecordPanelProvider.createInstance(getModel().getDbProvider());
           entityPanel.initialize();
           final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
           entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
@@ -103,8 +103,8 @@ public class EntityComboBox extends SteppedComboBox {
             }
           });
           final Window parentWindow = UiUtil.getParentWindow(EntityComboBox.this);
-          final String caption = applicationInfo.getCaption() == null || applicationInfo.getCaption().equals("") ?
-                  entityPanel.getModel().getCaption() : applicationInfo.getCaption();
+          final String caption = newRecordPanelProvider.getCaption() == null || newRecordPanelProvider.getCaption().equals("") ?
+                  entityPanel.getModel().getCaption() : newRecordPanelProvider.getCaption();
           final JDialog dialog = new JDialog(parentWindow, caption);
           dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
           dialog.setLayout(new BorderLayout());

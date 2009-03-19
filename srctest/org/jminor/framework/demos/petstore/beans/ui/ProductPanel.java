@@ -6,6 +6,7 @@ package org.jminor.framework.demos.petstore.beans.ui;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
 import org.jminor.framework.demos.petstore.model.Petstore;
 
@@ -22,8 +23,8 @@ import java.util.List;
 public class ProductPanel extends EntityPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getDetailPanelInfo() {
-    return Arrays.asList(new EntityPanelInfo(ItemModel.class, ItemPanel.class));
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
   }
 
   /** {@inheritDoc} */

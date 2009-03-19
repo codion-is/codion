@@ -8,7 +8,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
-import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
@@ -23,8 +23,8 @@ import java.util.Locale;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
-  protected List<EntityPanel.EntityPanelInfo> getMainEntityPanelInfo() {
-    return Arrays.asList(new EntityPanel.EntityPanelInfo(DepartmentModel.class, DepartmentPanel.class));
+  protected List<EntityPanelProvider> getMainEntityPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider(DepartmentModel.class, DepartmentPanel.class));
   }
 
   protected void initializeSettings() {

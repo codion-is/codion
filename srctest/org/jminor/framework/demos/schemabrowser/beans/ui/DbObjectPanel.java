@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.ColumnModel;
 import org.jminor.framework.demos.schemabrowser.beans.ConstraintModel;
 
@@ -28,10 +29,10 @@ public class DbObjectPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
-  protected List<EntityPanelInfo> getDetailPanelInfo() {
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(
-            new EntityPanelInfo(ColumnModel.class, ColumnPanel.class),
-            new EntityPanelInfo(ConstraintModel.class, ConstraintPanel.class));
+            new EntityPanelProvider(ColumnModel.class, ColumnPanel.class),
+            new EntityPanelProvider(ConstraintModel.class, ConstraintPanel.class));
   }
 
   /** {@inheritDoc} */

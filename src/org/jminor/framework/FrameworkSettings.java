@@ -163,7 +163,7 @@ public class FrameworkSettings implements Serializable {
    * should be persisted, or kept in memory, when the dialog is closed.
    * Value type: Boolean
    * Default value: false
-   * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanel(org.jminor.framework.client.ui.EntityPanel.EntityPanelInfo)
+   * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanel(org.jminor.framework.client.ui.EntityPanelProvider)
    */
   public static final String PERSIST_ENTITY_PANELS = "persist_entity_panels";
 

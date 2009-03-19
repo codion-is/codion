@@ -282,3 +282,6 @@
   EntityPropertyEditor simplified and improved
   EntityUtil.copyPropertyValue() added to lessen cyclical dependencies within the framework.model package
   Entity.isValueNull() method moved to EntityUtil to lessen cyclical dependencies within the framework.model package
+  EntityPanel.EntityPanelInfo moved up to it's own class and renamed to EntityPanelProvider... and related changes
+  EntityApplicationPanel.getMain/SupportEntityPanelInfo renamed to getMain/SupportEntityPanelProviders
+  EntityPanel.getDetailPanelInfo renamed to getDetailPanelProviders

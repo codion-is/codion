@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
-import org.jminor.common.db.ICriteria;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.ModelTestDomain;
 
