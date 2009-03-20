@@ -15,7 +15,7 @@ import java.util.List;
 
 public class EmpDeptAppModel extends EntityApplicationModel {
 
-  public EmpDeptAppModel (final User user) throws UserException {
+  public EmpDeptAppModel(final User user) throws UserException {
     super(user, EmpDeptAppModel.class.getSimpleName());
   }
 

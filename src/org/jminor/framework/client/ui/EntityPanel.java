@@ -960,7 +960,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    */
   public Control getDeleteSelectedControl() {
     return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
-            new AggregateState(AggregateState.AND,
+            new AggregateState(AggregateState.Type.AND,
                     model.getDeleteAllowedState(),
                     model.getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
@@ -983,7 +983,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getUpdateSelectedControl() {
     return ControlFactory.methodControl(this, "updateSelectedEntities",
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
-            new AggregateState(AggregateState.AND,
+            new AggregateState(AggregateState.Type.AND,
                     model.getUpdateAllowedState(),
                     model.getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP), 0,
@@ -995,7 +995,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    * underlying entity, for performing an update on the selected entities
    */
   public ControlSet getUpdateSelectedControlSet() {
-    final State enabled = new AggregateState(AggregateState.AND,
+    final State enabled = new AggregateState(AggregateState.Type.AND,
             model.getUpdateAllowedState(),
             model.getTableModel().stSelectionEmpty.getReversedState());
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
@@ -1019,7 +1019,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
-            new AggregateState(AggregateState.AND,
+            new AggregateState(AggregateState.Type.AND,
                     model.stActive,
                     model.getDeleteAllowedState(),
                     model.stEntityActive),//changed from stSelectionEmpty.getReversedState()
@@ -1043,7 +1043,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return ControlFactory.methodControl(this, "handleUpdate", FrameworkMessages.get(FrameworkMessages.UPDATE),
-            new AggregateState(AggregateState.AND,
+            new AggregateState(AggregateState.Type.AND,
                     model.stActive,
                     model.getUpdateAllowedState(),
                     model.stEntityActive,
@@ -1058,7 +1058,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
   public Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "handleSave", FrameworkMessages.get(FrameworkMessages.INSERT),
-            new AggregateState(AggregateState.AND, model.stActive, model.getInsertAllowedState()),
+            new AggregateState(AggregateState.Type.AND, model.stActive, model.getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -1068,10 +1068,10 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
    */
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = new AggregateState(AggregateState.OR, model.getInsertAllowedState(),
-            new AggregateState(AggregateState.AND, model.getUpdateAllowedState(), model.getActiveEntityModifiedState()));
+    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, model.getInsertAllowedState(),
+            new AggregateState(AggregateState.Type.AND, model.getUpdateAllowedState(), model.getActiveEntityModifiedState()));
     return ControlFactory.methodControl(this, "handleSave", insertCaption,
-            new AggregateState(AggregateState.AND, model.stActive, stInsertUpdate),
+            new AggregateState(AggregateState.Type.AND, model.stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }

@@ -9,8 +9,8 @@ public class TestAggregateState extends TestCase {
   }
 
   public void test() {
-    final AggregateState orState = new AggregateState(AggregateState.OR);
-    final AggregateState andState = new AggregateState(AggregateState.AND);
+    final AggregateState orState = new AggregateState(AggregateState.Type.OR);
+    final AggregateState andState = new AggregateState(AggregateState.Type.AND);
     final State stateOne = new State();
     final State stateTwo = new State();
     final State stateThree = new State();

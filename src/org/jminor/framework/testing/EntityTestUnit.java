@@ -220,11 +220,11 @@ public abstract class EntityTestUnit extends TestCase {
    * This method should return a Map containing initialized (via this.initialize) instances of entities
    * specified by the entityIDs found in the <code>entityIDs</code> Collection, mapped to their
    * respective enitityIDs
-   * @param entityIDs the entityIDs for which to initialize entities
+   * @param referenceEntityIDs the IDs of the entities that should be initialized
    * @return a Map of initialized entities
    * @throws Exception in case of an exception
    */
-  protected abstract Map<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception;
+  protected abstract Map<String, Entity> initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception;
 
   private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {
     final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);

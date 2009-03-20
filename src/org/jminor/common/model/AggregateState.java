@@ -11,17 +11,16 @@ import java.util.ArrayList;
  */
 public class AggregateState extends State {
 
-  public final static int AND = 1;
-  public final static int OR = 2;
+  public enum Type {AND, OR}
 
   private final ArrayList<State> states = new ArrayList<State>();
-  private final int type;
+  private final Type type;
 
-  public AggregateState(final int type) {
+  public AggregateState(final Type type) {
     this.type = type;
   }
 
-  public AggregateState(final int type, final State... states) {
+  public AggregateState(final Type type, final State... states) {
     this(type);
     for (final State state : states)
       addState(state);
@@ -30,7 +29,7 @@ public class AggregateState extends State {
   /** {@inheritDoc} */
   public String toString() {
     final StringBuffer ret = new StringBuffer("Aggregate ");
-    ret.append(type == AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
+    ret.append(type == Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
     for (final State state: states)
       ret.append(", ").append(state);
 
@@ -40,7 +39,7 @@ public class AggregateState extends State {
   /**
    * @return Value for property 'type'.
    */
-  public int getType() {
+  public Type getType() {
     return type;
   }
 
@@ -62,7 +61,7 @@ public class AggregateState extends State {
 
   /** {@inheritDoc} */
   public boolean isActive() {
-    if (getType() == AND) { //AND, one inactive is enough
+    if (getType() == Type.AND) { //AND, one inactive is enough
       for (final State state : states) {
         if (!state.isActive())
           return false;
@@ -82,11 +81,6 @@ public class AggregateState extends State {
 
   /** {@inheritDoc} */
   public void setActive(final boolean isActive) {
-    throw new RuntimeException("The state of aggregate states can't be set");
-  }
-
-  /** {@inheritDoc} */
-  public void addActivateEvent(final Event activateEvent) {
     throw new RuntimeException("The state of aggregate states can't be set");
   }
 }
