@@ -17,15 +17,15 @@ import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityProxy;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
-import org.jminor.framework.model.PropertyCriteria;
 import org.jminor.framework.model.Type;
 
 import net.sf.jasperreports.engine.JRDataSource;

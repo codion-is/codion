@@ -1,10 +1,12 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.model.Property;
+import org.jminor.framework.model.Type;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

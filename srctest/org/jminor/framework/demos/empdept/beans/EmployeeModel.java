@@ -4,6 +4,8 @@
 package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.IFilterCriteria;
+import org.jminor.common.model.PropertyChangeEvent;
+import org.jminor.common.model.PropertyListener;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -13,8 +15,6 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
-import org.jminor.framework.model.PropertyChangeEvent;
-import org.jminor.framework.model.PropertyListener;
 import org.jminor.framework.model.Type;
 
 import javax.swing.ComboBoxModel;

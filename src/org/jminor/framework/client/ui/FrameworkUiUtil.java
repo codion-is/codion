@@ -7,6 +7,8 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.PropertyChangeEvent;
+import org.jminor.common.model.PropertyListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
@@ -39,8 +41,6 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
-import org.jminor.framework.model.PropertyChangeEvent;
-import org.jminor.framework.model.PropertyListener;
 import org.jminor.framework.model.Type;
 
 import net.sf.jasperreports.engine.JRException;

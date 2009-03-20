@@ -286,3 +286,5 @@
   EntityApplicationPanel.getMain/SupportEntityPanelInfo renamed to getMain/SupportEntityPanelProviders
   EntityPanel.getDetailPanelInfo renamed to getDetailPanelProviders
   AggregateState.AND/OR changed to enum
+  EntityCriteria, PropertyCriteria and EntityKeyCriteria moved from framework.model to framework.db.criteria
+  PropertyChangeEvent and PropertyListener moved from framework.model to common.model

@@ -19,8 +19,8 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.IEntityDb;
+import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
 

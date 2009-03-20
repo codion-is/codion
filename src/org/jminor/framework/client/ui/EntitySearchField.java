@@ -11,11 +11,11 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityCriteria;
 import org.jminor.framework.model.Property;
-import org.jminor.framework.model.PropertyCriteria;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

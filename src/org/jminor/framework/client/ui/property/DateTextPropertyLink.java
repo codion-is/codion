@@ -4,12 +4,12 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.PropertyChangeEvent;
+import org.jminor.common.model.PropertyListener;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.Property;
-import org.jminor.framework.model.PropertyChangeEvent;
-import org.jminor.framework.model.PropertyListener;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;

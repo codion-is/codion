@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
 
@@ -31,7 +31,7 @@ public class PropertyChangeEvent extends ActionEvent {
    */
   private final boolean initialization;
 
-  public PropertyChangeEvent(final Property property, final Object newValue, final Object oldValue,
+  public PropertyChangeEvent(final Object property, final Object newValue, final Object oldValue,
                              final boolean isModelChange, final boolean initialization) {
     super(property, 0, "propertyChange");
     this.newValue = newValue;
@@ -41,10 +41,10 @@ public class PropertyChangeEvent extends ActionEvent {
   }
 
   /**
-   * @return the property who's value just changed
+   * @return the property which value just changed
    */
-  public Property getProperty() {
-    return (Property) getSource();
+  public Object getProperty() {
+    return getSource();
   }
 
   /**

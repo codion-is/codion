@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.PropertyChangeEvent;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
