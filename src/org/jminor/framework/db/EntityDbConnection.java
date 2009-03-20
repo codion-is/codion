@@ -20,7 +20,6 @@ import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityDependencies;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
@@ -387,17 +386,16 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     try {
       addCacheQueriesRequest();
-      final Set<EntityDependencies.Dependency> dependencies =
-              EntityRepository.get().getEntityDependencies(entities.get(0).getEntityID()).getDependencies();
-      for (final EntityDependencies.Dependency dependency : dependencies) {
-        final String dependentEntityID = dependency.getEntityID();
+      final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
+      for (final Dependency dependency : dependencies) {
+        final String dependentEntityID = dependency.entityID;
         if (dependentEntityID != null) {
           final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
           for (final Entity entity : entities)
             primaryKeys.add(entity.getPrimaryKey());
 
           final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependentEntityID,
-                  new EntityKeyCriteria(dependency.getDependingProperties(),
+                  new EntityKeyCriteria(dependency.dependingProperties,
                           primaryKeys.toArray(new EntityKey[primaryKeys.size()]))));
           if (dependentEntities.size() > 0)
             ret.put(dependentEntityID, dependentEntities);
@@ -701,5 +699,27 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         return ret;
       }
     };
+  }
+
+  private Set<Dependency> resolveEntityDependencies(final String entityID) {
+    final String[] entityIDs = EntityRepository.get().getInitializedEntities();
+    final Set<Dependency> dependencies = new HashSet<Dependency>();
+    for (final String entityCheckClass : entityIDs) {
+      for (final Property.EntityProperty entityProperty : EntityRepository.get().getEntityProperties(entityCheckClass))
+        if (entityProperty.referenceEntityID.equals(entityID))
+          dependencies.add(new Dependency(entityCheckClass, entityProperty.referenceProperties));
+    }
+
+    return dependencies;
+  }
+
+  private static class Dependency {
+    final String entityID;
+    final List<Property> dependingProperties;
+
+    public Dependency(final String entityID, final List<Property> dependingProperties) {
+      this.entityID = entityID;
+      this.dependingProperties = dependingProperties;
+    }
   }
 }

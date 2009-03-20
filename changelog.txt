@@ -288,3 +288,4 @@
   AggregateState.AND/OR changed to enum
   EntityCriteria, PropertyCriteria and EntityKeyCriteria moved from framework.model to framework.db.criteria
   PropertyChangeEvent and PropertyListener moved from framework.model to common.model
+  EntityDependencies deleted (and from EntityRepository), EntityDbConnection.Dependencies and .resolveEntityDependencies() added

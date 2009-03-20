@@ -61,7 +61,6 @@ public class EntityRepository implements Serializable {
   private final Map<String, Map<String, String>> propertyDescriptions = new HashMap<String, Map<String, String>>();
   private final Map<String, String[]> entitySearchPropertyIDs = new HashMap<String, String[]>();
 
-  private transient Map<String, EntityDependencies> entityDependencies;
   private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
   private transient Map<String, Map<Integer, Property>> visiblePropertyIndexes;
   private transient Map<String, LinkedHashMap<String, Property>> databaseProperties;
@@ -100,7 +99,6 @@ public class EntityRepository implements Serializable {
     instance.entityTableNames.putAll(repository.entityTableNames);
     instance.entitySelectTableNames.putAll(repository.entitySelectTableNames);
     instance.entityIdSources.putAll(repository.entityIdSources);
-    instance.entityDependencies.putAll(repository.entityDependencies);
     instance.createDateColumns.putAll(repository.createDateColumns);
   }
 
@@ -673,18 +671,6 @@ public class EntityRepository implements Serializable {
   }
 
   /**
-   * @param entityID the entityID for which to retrieve the dependencies
-   * @return the dependencies of the given entityID, that is, the entities
-   * which depend on this entity via reference properties (foreign keys)
-   */
-  public EntityDependencies getEntityDependencies(final String entityID) {
-    if (!entityDependencies.containsKey(entityID))
-      entityDependencies.put(entityID, resolveEntityDependencies(entityID));
-
-    return entityDependencies.get(entityID);
-  }
-
-  /**
    * @param entityID the entityID
    * @return true if the table on which the entity identified by <code>entityID</code> is based
    * contains a create date column
@@ -712,6 +698,10 @@ public class EntityRepository implements Serializable {
    */
   public String getCreateDateColumn(final String entityID) {
     return createDateColumns.get(entityID);
+  }
+
+  public String[] getInitializedEntities() {
+    return properties.keySet().toArray(new String[properties.keySet().size()]);
   }
 
   private void initialize(final String entityID) {
@@ -751,22 +741,6 @@ public class EntityRepository implements Serializable {
       initialPropertyDefinitions.get(selectColumnNames[idx]).setSelectIndex(idx+1);
 
     this.entitySelectStrings.put(entityID, getSelectColumnsString(entityID));
-  }
-
-  private EntityDependencies resolveEntityDependencies(final String entityID) {
-    final String[] entityIDs = get().getInitializedEntities();
-    final EntityDependencies dependencies = new EntityDependencies(entityID);
-    for (final String entityCheckClass : entityIDs) {
-      for (final Property.EntityProperty entityProperty : get().getEntityProperties(entityCheckClass))
-        if (entityProperty.referenceEntityID.equals(entityID))
-          dependencies.addDependency(entityCheckClass, entityProperty.referenceProperties);
-    }
-
-    return dependencies;
-  }
-
-  private String[] getInitializedEntities() {
-    return properties.keySet().toArray(new String[properties.keySet().size()]);
   }
 
   private void addProperty(final Map<String, Property> visibleProperties,
@@ -851,7 +825,5 @@ public class EntityRepository implements Serializable {
       this.primaryKeyColumnNames = new HashMap<String, String[]>();
     if (this.entitySelectStrings == null)
       this.entitySelectStrings = new HashMap<String, String>();
-    if (this.entityDependencies == null)
-      this.entityDependencies = new HashMap<String, EntityDependencies>();
   }
 }
