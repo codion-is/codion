@@ -34,10 +34,6 @@
     <mkdir dir="${htmlreports}" />
   </target>
 
-  <target name="checkout">
-    <cvs passfile="${cvspassfile}" dest="${basedir}" cvsroot="${cvsroot}" package="${ant.project.name}" />
-  </target>
-
   <target name="build" depends="init">
     <tstamp>
       <format property="DSTAMP" pattern="dd-MM-yy HH:mm" />
