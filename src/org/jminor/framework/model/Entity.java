@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a database table
+ * Represents a row in a database table
  */
 public final class Entity implements Externalizable, Comparable<Entity> {
 
