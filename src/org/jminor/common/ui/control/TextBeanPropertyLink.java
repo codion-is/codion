@@ -48,18 +48,18 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
     }
     else if (linkType == LinkType.READ_ONLY)
       textComponent.setEditable(false);
-    refreshUI();
+    updateUI();
     textComponent.getDocument().addDocumentListener(this);
   }
 
   /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
-    refreshProperty();
+    updateModel();
   }
 
   /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
-    refreshProperty();
+    updateModel();
   }
 
   /** {@inheritDoc} */
@@ -73,7 +73,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   }
 
   /** {@inheritDoc} */
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     textComponent.setText(getPropertyValueAsString(propertyValue));
   }
 
@@ -82,7 +82,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
    * invalid (null) until all placeholder characters have been replaced
    * @return the value, if a formatter is present, the formatted value is returned
    */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     final String text = getText();
     if (placeholder != null && text != null && text.contains(placeholder))
       return null;

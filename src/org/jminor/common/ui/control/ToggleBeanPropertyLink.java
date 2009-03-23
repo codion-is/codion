@@ -27,7 +27,7 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   public void setButton(final AbstractButton toggleButton) {
     this.button = toggleButton;
     this.button.setAction(this);
-    refreshUI();
+    updateUI();
   }
 
   /** {@inheritDoc} */
@@ -41,12 +41,12 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     return button.isSelected();
   }
 
   /** {@inheritDoc} */
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     final Boolean value = (Boolean) propertyValue;
     button.setSelected(value != null && value);
   }

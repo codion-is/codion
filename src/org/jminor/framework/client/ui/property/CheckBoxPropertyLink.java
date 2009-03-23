@@ -25,21 +25,21 @@ public class CheckBoxPropertyLink extends AbstractEntityPropertyLink {
                               final LinkType linkType, final State enabledState) {
     super(entityModel, property, linkType, enabledState);
     this.buttonModel = buttonModel;
-    refreshUI();
+    updateUI();
     this.buttonModel.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
-        refreshProperty();
+        updateModel();
       }
     });
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     return buttonModel.isSelected() ? Type.Boolean.TRUE : Type.Boolean.FALSE;
   }
 
   /** {@inheritDoc} */
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     buttonModel.setSelected(propertyValue == Type.Boolean.TRUE);
   }
 }

@@ -35,11 +35,11 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
                               final LinkType linkType, final State enabledState) {
     super(entityModel, property, linkType, enabledState);
     this.boxModel = comboBox.getModel();
-    refreshUI();
+    updateUI();
     comboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED)
-          refreshProperty();
+          updateModel();
       }
     });
     //this allows editable combo boxes to post their edits after each keystroke
@@ -59,7 +59,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     Object ret;
     if (boxModel instanceof EntityComboBoxModel)
       ret = ((EntityComboBoxModel) boxModel).getSelectedEntity();
@@ -75,7 +75,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     boxModel.setSelectedItem(propertyValue);
   }
 }

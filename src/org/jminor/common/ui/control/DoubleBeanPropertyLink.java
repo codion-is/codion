@@ -19,11 +19,11 @@ public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
                                 final Event propertyChangeEvent, final String text, final LinkType linkType,
                                 final State enabledState) {
     super(doubleField, owner, propertyName, Double.class, propertyChangeEvent, text, linkType, null, enabledState);
-    refreshUI();
+    updateUI();
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     try {
       return Util.getDouble(getText());
     }

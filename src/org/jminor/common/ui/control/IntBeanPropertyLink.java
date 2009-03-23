@@ -19,11 +19,11 @@ public class IntBeanPropertyLink extends TextBeanPropertyLink {
                              final Event propertyChangeEvent, final String text, final LinkType linkType,
                              final State enabledState) {
     super(intField, owner, propertyName, Integer.class, propertyChangeEvent, text, linkType, null, enabledState);
-    refreshUI();
+    updateUI();
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     try {
       return Util.getInt(getText());
     }

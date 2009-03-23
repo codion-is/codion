@@ -18,7 +18,7 @@ public abstract class AbstractPropertyLink extends Control {
   private final LinkType linkType;
 
   private boolean isUpdatingUI = false;
-  private boolean isUpdatingProperty = false;
+  private boolean isUpdatingModel = false;
 
   public AbstractPropertyLink(final Object propertyOwner, final String name, final Event propertyChangeEvent,
                               final LinkType linkType, final State enabledState) {
@@ -32,7 +32,7 @@ public abstract class AbstractPropertyLink extends Control {
     if (linkType != LinkType.WRITE_ONLY && propertyChangeEvent != null) {
       propertyChangeEvent.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          refreshUI();
+          updateUI();
         }
       });
     }
@@ -40,7 +40,7 @@ public abstract class AbstractPropertyLink extends Control {
 
   /** {@inheritDoc} */
   public void actionPerformed(final ActionEvent e) {
-    refreshProperty();
+    updateModel();
   }
 
   /**
@@ -57,23 +57,23 @@ public abstract class AbstractPropertyLink extends Control {
     return linkType;
   }
 
-  public final void refreshProperty() {
-    if (linkType != LinkType.READ_ONLY && !isUpdatingProperty && !isUpdatingUI) {
+  public final void updateModel() {
+    if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
-        isUpdatingProperty = true;
-        setModelPropertyValue(getUiPropertyValue());
+        isUpdatingModel = true;
+        setModelPropertyValue(getUIPropertyValue());
       }
       finally {
-        isUpdatingProperty = false;
+        isUpdatingModel = false;
       }
     }
   }
 
-  public final void refreshUI() {
-    if (linkType != LinkType.WRITE_ONLY && !isUpdatingProperty) {
+  public final void updateUI() {
+    if (linkType != LinkType.WRITE_ONLY && !isUpdatingModel) {
       try {
         isUpdatingUI = true;
-        setUiPropertyValue(getModelPropertyValue());
+        setUIPropertyValue(getModelPropertyValue());
       }
       finally {
         isUpdatingUI = false;
@@ -95,11 +95,11 @@ public abstract class AbstractPropertyLink extends Control {
   /**
    * @return the property value according to the UI
    */
-  protected abstract Object getUiPropertyValue();
+  protected abstract Object getUIPropertyValue();
 
   /**
    * Update the UI according to the property value in the model
    * @param propertyValue the value to represent in the UI
    */
-  protected abstract void setUiPropertyValue(final Object propertyValue);
+  protected abstract void setUIPropertyValue(final Object propertyValue);
 }

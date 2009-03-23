@@ -30,21 +30,21 @@ public class IntBeanSpinnerPropertyLink extends BeanPropertyLink {
     spinnerModel = new SpinnerNumberModel();
     spinnerModel.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
-        refreshProperty();
+        updateModel();
       }
     });
-    refreshUI();
+    updateUI();
   }
 
   public SpinnerNumberModel getSpinnerModel() {
     return spinnerModel;
   }
 
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     return spinnerModel.getValue();
   }
 
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     spinnerModel.setValue(propertyValue);
   }
 }

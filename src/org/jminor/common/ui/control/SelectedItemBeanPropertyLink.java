@@ -27,18 +27,18 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
                                       final String text, final LinkType linkType, final State enabledState) {
     super(owner, propertyName, propertyClass, propertyChangeEvent, text, linkType, enabledState);
     this.comboBoxModel = box.getModel();
-    refreshUI();
+    updateUI();
     box.addItemListener(this);
   }
 
   /** {@inheritDoc} */
   public void itemStateChanged(final ItemEvent e) {
     if (e.getStateChange() == ItemEvent.SELECTED)
-      refreshProperty();
+      updateModel();
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     if (comboBoxModel instanceof ItemComboBoxModel)
       return ((ItemComboBoxModel.IItem) comboBoxModel.getSelectedItem()).getItem();
     else
@@ -46,7 +46,7 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
   }
 
   /** {@inheritDoc} */
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     comboBoxModel.setSelectedItem(propertyValue);
   }
 }

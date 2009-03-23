@@ -68,7 +68,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
     if (linkType == LinkType.READ_ONLY)
       this.textComponent.setEnabled(false);
 
-    refreshUI();
+    updateUI();
     this.textComponent.getDocument().addDocumentListener(this);
   }
 
@@ -97,19 +97,19 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   /** {@inheritDoc} */
   public void insertUpdate(final DocumentEvent e) {
     if (isImmediateUpdate())
-      refreshProperty();
+      updateModel();
   }
 
   /** {@inheritDoc} */
   public void removeUpdate(final DocumentEvent e) {
     if (isImmediateUpdate())
-      refreshProperty();
+      updateModel();
   }
 
   /** {@inheritDoc} */
   public void changedUpdate(final DocumentEvent e) {
     if (isImmediateUpdate())
-      refreshProperty();
+      updateModel();
   }
 
   /**
@@ -139,12 +139,12 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /** {@inheritDoc} */
-  protected Object getUiPropertyValue() {
+  protected Object getUIPropertyValue() {
     return valueFromText(getText());
   }
 
   /** {@inheritDoc} */
-  protected void setUiPropertyValue(final Object propertyValue) {
+  protected void setUIPropertyValue(final Object propertyValue) {
     textComponent.setText(getValueAsString(propertyValue));
   }
 
