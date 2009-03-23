@@ -23,7 +23,7 @@ public class IntBeanPropertyLink extends TextBeanPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected Object textToValue() {
+  protected Object getUiPropertyValue() {
     try {
       return Util.getInt(getText());
     }

@@ -19,23 +19,23 @@ public class SearchFieldPropertyLink extends AbstractEntityPropertyLink {
                                  final EntitySearchField entitySearchField) {
     super(model, EntityRepository.get().getProperty(model.getEntityID(), propertyID), LinkType.READ_WRITE, null);
     this.searchField = entitySearchField;
-    updateUI();
+    refreshUI();
     entitySearchField.evtSelectedEntityChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        updateProperty();
+        refreshProperty();
       }
     });
   }
 
-  protected void updateProperty() {
+  protected Object getUiPropertyValue() {
     final List<Entity> selectedEntities = searchField.getSelectedEntities();
-    setPropertyValue(selectedEntities.size() == 0 ? null : selectedEntities.get(0));
+    return selectedEntities.size() == 0 ? null : selectedEntities.get(0);
   }
 
-  protected void updateUI() {
+  protected void setUiPropertyValue(final Object propertyValue) {
     final List<Entity> value = new ArrayList<Entity>();
-    if (getPropertyValue() != null)
-      value.add((Entity) getPropertyValue());
+    if (getModelPropertyValue() != null)
+      value.add((Entity) propertyValue);
     searchField.setSelectedEntities(value);
   }
 }

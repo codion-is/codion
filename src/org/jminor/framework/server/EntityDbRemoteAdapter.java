@@ -440,7 +440,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public Entity selectForUpdate(final EntityKey key) throws DbException, RemoteException {
+  public List<Entity> selectForUpdate(final List<EntityKey> key) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectForUpdate(key);
     }

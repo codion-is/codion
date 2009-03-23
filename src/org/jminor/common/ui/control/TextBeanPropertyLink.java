@@ -65,22 +65,16 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   /** {@inheritDoc} */
   public void changedUpdate(final DocumentEvent e) {}
 
-  /** {@inheritDoc} */
-  protected void updateProperty() {
-    setPropertyValue(textToValue());
-  }
-
-  /** {@inheritDoc} */
-  protected void updateUI() {
-    textComponent.setText(getPropertyValueAsString());
-  }
-
-  protected String getPropertyValueAsString() {
-    final Object value = getPropertyValue();
-    if (value == null)
+  protected String getPropertyValueAsString(final Object propertyValue) {
+    if (propertyValue == null)
       return null;
 
-    return format == null ? value.toString() : format.format(value);
+    return format == null ? propertyValue.toString() : format.format(propertyValue);
+  }
+
+  /** {@inheritDoc} */
+  protected void setUiPropertyValue(final Object propertyValue) {
+    textComponent.setText(getPropertyValueAsString(propertyValue));
   }
 
   /**
@@ -88,7 +82,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
    * invalid (null) until all placeholder characters have been replaced
    * @return the value, if a formatter is present, the formatted value is returned
    */
-  protected Object textToValue() {
+  protected Object getUiPropertyValue() {
     final String text = getText();
     if (placeholder != null && text != null && text.contains(placeholder))
       return null;

@@ -40,11 +40,11 @@ public class IntBeanSpinnerPropertyLink extends BeanPropertyLink {
     return spinnerModel;
   }
 
-  protected void updateUI() {
-    spinnerModel.setValue(getPropertyValue());
+  protected Object getUiPropertyValue() {
+    return spinnerModel.getValue();
   }
 
-  protected void updateProperty() {
-    setPropertyValue(spinnerModel.getValue());
+  protected void setUiPropertyValue(final Object propertyValue) {
+    spinnerModel.setValue(propertyValue);
   }
 }

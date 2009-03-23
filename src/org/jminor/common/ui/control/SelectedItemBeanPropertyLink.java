@@ -38,15 +38,15 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
   }
 
   /** {@inheritDoc} */
-  protected void updateProperty() {
+  protected Object getUiPropertyValue() {
     if (comboBoxModel instanceof ItemComboBoxModel)
-      setPropertyValue(((ItemComboBoxModel.IItem) comboBoxModel.getSelectedItem()).getItem());
+      return ((ItemComboBoxModel.IItem) comboBoxModel.getSelectedItem()).getItem();
     else
-      setPropertyValue(comboBoxModel.getSelectedItem());
+      return comboBoxModel.getSelectedItem();
   }
 
   /** {@inheritDoc} */
-  protected void updateUI() {
-    comboBoxModel.setSelectedItem(getPropertyValue());
+  protected void setUiPropertyValue(final Object propertyValue) {
+    comboBoxModel.setSelectedItem(propertyValue);
   }
 }

@@ -61,7 +61,7 @@ public abstract class AbstractPropertyLink extends Control {
     if (linkType != LinkType.READ_ONLY && !isUpdatingProperty && !isUpdatingUI) {
       try {
         isUpdatingProperty = true;
-        updateProperty();
+        setModelPropertyValue(getUiPropertyValue());
       }
       finally {
         isUpdatingProperty = false;
@@ -73,7 +73,7 @@ public abstract class AbstractPropertyLink extends Control {
     if (linkType != LinkType.WRITE_ONLY && !isUpdatingProperty) {
       try {
         isUpdatingUI = true;
-        updateUI();
+        setUiPropertyValue(getModelPropertyValue());
       }
       finally {
         isUpdatingUI = false;
@@ -82,22 +82,24 @@ public abstract class AbstractPropertyLink extends Control {
   }
 
   /**
-   * @param value the value to set for property.
+   * @return the model value of the linked property
    */
-  public abstract void setPropertyValue(final Object value);
+  public abstract Object getModelPropertyValue();
 
   /**
-   * @return the value of the linked property
+   * Sets the property value in the model
+   * @param value the value to set for property
    */
-  public abstract Object getPropertyValue();
+  public abstract void setModelPropertyValue(final Object value);
 
   /**
-   * Update the UI according to the model state
+   * @return the property value according to the UI
    */
-  protected abstract void updateUI();
+  protected abstract Object getUiPropertyValue();
 
   /**
-   * Update the property according to the UI state
+   * Update the UI according to the property value in the model
+   * @param propertyValue the value to represent in the UI
    */
-  protected abstract void updateProperty();
+  protected abstract void setUiPropertyValue(final Object propertyValue);
 }

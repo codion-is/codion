@@ -85,11 +85,11 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class,  isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "",
                 LinkType.READ_WRITE, format, null) {
-          public void setPropertyValue(final Object obj) {
+          public void setModelPropertyValue(final Object obj) {
             if (obj != null)
-              super.setPropertyValue(new Timestamp(((Date) obj).getTime()));
+              super.setModelPropertyValue(new Timestamp(((Date) obj).getTime()));
             else
-              super.setPropertyValue(obj);
+              super.setModelPropertyValue(obj);
           }
         };
         break;
@@ -147,6 +147,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     else {
       final EntitySearchField field = new EntitySearchField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
               getSearchProperties(((Property.EntityProperty) property).referenceEntityID)) {
+        @SuppressWarnings({"unchecked"})
         public List<Entity> getSelectedEntities() {
           return model.getUpperBound() == null ? new ArrayList<Entity>(0) : (List<Entity>) model.getUpperBound();
         }

@@ -23,7 +23,7 @@ public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected Object textToValue() {
+  protected Object getUiPropertyValue() {
     try {
       return Util.getDouble(getText());
     }

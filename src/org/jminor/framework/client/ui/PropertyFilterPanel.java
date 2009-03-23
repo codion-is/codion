@@ -292,22 +292,22 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         return new IntBeanPropertyLink((IntField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
-          public void setPropertyValue(final Object obj) {
+          public void setModelPropertyValue(final Object obj) {
             if (obj instanceof String && obj.equals(""))
-              super.setPropertyValue(null);
+              super.setModelPropertyValue(null);
             else
-              super.setPropertyValue(obj);
+              super.setModelPropertyValue(obj);
           }
         };
       case DOUBLE :
         return new DoubleBeanPropertyLink((DoubleField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null){
-          public void setPropertyValue(final Object obj) {
+          public void setModelPropertyValue(final Object obj) {
             if (obj instanceof String && obj.equals(""))
-              super.setPropertyValue(null);
+              super.setModelPropertyValue(null);
             else
-              super.setPropertyValue(obj);
+              super.setModelPropertyValue(obj);
           }
         };
       case SHORT_DATE :

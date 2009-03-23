@@ -20,7 +20,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   }
 
   /** {@inheritDoc} */
-  public Object getPropertyValue() {
+  public Object getModelPropertyValue() {
     if (getEntityModel().isValueNull(property.propertyID))
       return null;
 
@@ -28,7 +28,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   }
 
   /** {@inheritDoc} */
-  public void setPropertyValue(final Object value) {
+  public void setModelPropertyValue(final Object value) {
     getEntityModel().uiSetValue(property, value);
   }
 

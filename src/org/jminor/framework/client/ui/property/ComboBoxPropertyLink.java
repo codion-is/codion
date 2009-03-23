@@ -35,7 +35,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
                               final LinkType linkType, final State enabledState) {
     super(entityModel, property, linkType, enabledState);
     this.boxModel = comboBox.getModel();
-    updateUI();
+    refreshUI();
     comboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED)
@@ -59,22 +59,23 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected void updateProperty() {
+  protected Object getUiPropertyValue() {
+    Object ret;
     if (boxModel instanceof EntityComboBoxModel)
-      setPropertyValue(((EntityComboBoxModel) boxModel).getSelectedEntity());
+      ret = ((EntityComboBoxModel) boxModel).getSelectedEntity();
     else if (boxModel instanceof ItemComboBoxModel)
-      setPropertyValue(((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem());
+      ret = ((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem();
     else {
-      Object selectedItem = boxModel.getSelectedItem();
-      if (selectedItem instanceof String && ((String) selectedItem).length() == 0)
-        selectedItem = null;
-
-      setPropertyValue(selectedItem);
+      ret = boxModel.getSelectedItem();
+      if (ret instanceof String && ((String) ret).length() == 0)
+        ret = null;
     }
+
+    return ret;
   }
 
   /** {@inheritDoc} */
-  protected void updateUI() {
-    boxModel.setSelectedItem(getPropertyValue());
+  protected void setUiPropertyValue(final Object propertyValue) {
+    boxModel.setSelectedItem(propertyValue);
   }
 }

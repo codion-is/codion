@@ -43,7 +43,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
         updateFieldColor(textField);
       }
     });
-    updateUI();
+    refreshUI();
   }
 
   /** {@inheritDoc} */

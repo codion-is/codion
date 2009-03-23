@@ -11,6 +11,8 @@ import org.jminor.framework.model.EntityKey;
 
 import junit.framework.TestCase;
 
+import java.util.Arrays;
+
 public class TestStrictEditMode extends TestCase {
 
   private final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
@@ -52,7 +54,7 @@ public class TestStrictEditMode extends TestCase {
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
     try {
-      dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
       fail("Row should be locked after modification");
     }
     catch (Exception e) {}
@@ -61,7 +63,7 @@ public class TestStrictEditMode extends TestCase {
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
     //assert row is not locked, and then unlock it
     try {
-      dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
       dbProvider.getEntityDb().endTransaction(true);
     }
     catch (Exception e) {
@@ -72,7 +74,7 @@ public class TestStrictEditMode extends TestCase {
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
     //assert row is locked
     try {
-      dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
       fail("Row should be locked after modification");
     }
     catch (Exception e) {}
@@ -81,7 +83,7 @@ public class TestStrictEditMode extends TestCase {
     model.update();
     //assert row is not locked
     try {
-      dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
       dbProvider.getEntityDb().endTransaction(true);
     }
     catch (Exception e) {
@@ -91,7 +93,7 @@ public class TestStrictEditMode extends TestCase {
     model.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
     try {
-      dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
       fail("Row should be locked after modification");
     }
     catch (Exception e) {}
@@ -99,7 +101,7 @@ public class TestStrictEditMode extends TestCase {
     model.getTableModel().setSelectedItemIdx(1);
 
     try {
-      dbProvider.getEntityDb().selectForUpdate(primaryKey);
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
       dbProvider.getEntityDb().endTransaction(true);
     }
     catch (Exception e) {

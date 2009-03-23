@@ -65,15 +65,12 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
         }
       });
     }
-    initConstants();
     if (linkType == LinkType.READ_ONLY)
-      textComponent.setEnabled(false);
+      this.textComponent.setEnabled(false);
 
-    updateUI();
+    refreshUI();
     this.textComponent.getDocument().addDocumentListener(this);
   }
-
-  public void checkValidValue() {}
 
   /**
    * @return Value for property 'format'.
@@ -122,8 +119,6 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
     return this.textComponent;
   }
 
-  protected void initConstants() {}
-
   protected Object valueFromText(final String text) {
     if (placeholder != null && text != null && text.contains(placeholder))
       return null;
@@ -144,13 +139,13 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /** {@inheritDoc} */
-  protected void updateProperty() {
-    setPropertyValue(valueFromText(getText()));
+  protected Object getUiPropertyValue() {
+    return valueFromText(getText());
   }
 
   /** {@inheritDoc} */
-  protected void updateUI() {
-    textComponent.setText(getValueAsString(getPropertyValue()));
+  protected void setUiPropertyValue(final Object propertyValue) {
+    textComponent.setText(getValueAsString(propertyValue));
   }
 
   protected String getValueAsString(final Object value) {

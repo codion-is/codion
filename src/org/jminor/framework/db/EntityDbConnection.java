@@ -252,13 +252,15 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public Entity selectForUpdate(final EntityKey primaryKey) throws Exception {
+  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws Exception {
+    if (primaryKeys == null || primaryKeys.size() == 0)
+      throw new IllegalArgumentException("Cannot select for update without keys");
     if (isTransactionOpen())
       throw new IllegalStateException("Cannot use select for update within an open transaction");
 
     String sql = null;
     try {
-      final EntityCriteria criteria = new EntityCriteria(primaryKey.getEntityID(), new EntityKeyCriteria(primaryKey));
+      final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
       final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
@@ -268,8 +270,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
       if (result.size() == 0)
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-      if (result.size() > 1) {
-        try {//this means we got the lock, but for more than one record (shouldn't really happen), better release it right away
+      if (result.size() != primaryKeys.size()) {
+        try {//this means we got the lock, but for a different number of records than was intended, better release it right away
           endTransaction(true);
         }
         catch (SQLException e) {/**/}
@@ -279,7 +281,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       if (!lastQueryResultCached())
         setReferencedEntities(result);
 
-      return result.get(0);
+      return result;
     }
     catch (SQLException sqle) {
       log.info(sql);

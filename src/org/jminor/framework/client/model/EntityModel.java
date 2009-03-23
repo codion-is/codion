@@ -36,8 +36,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A model class with basic functionality for creating, editing and deleting objects from a database
@@ -232,9 +234,9 @@ public class EntityModel implements IRefreshable {
   private boolean strictEditingEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_STRICT_EDIT_MODE);
 
   /**
-   * Is true while the active record is in a locked state (selected for update)
+   * Contains the locked entities while the strict editing lock is in effect (select for update)
    */
-  private boolean strictEditLockEnabled = false;
+  private Set<Entity> lockedEntities = new HashSet<Entity>();
 
   /**
    * True while the model is being refreshed
@@ -293,7 +295,7 @@ public class EntityModel implements IRefreshable {
    */
   public void setStrictEditMode(final boolean strictEditMode) throws UserException {
     if (!strictEditMode)
-      setActiveEntityWriteLock(false);
+      releaseWriteLock();
 
     this.strictEditingEnabled = strictEditMode;
   }
@@ -824,6 +826,8 @@ public class EntityModel implements IRefreshable {
       throw new UserException("Update of multiple entities is not allowed!");
     if (!isUpdateAllowed())
       throw new UserException("This model does not allow updating!");
+    if (strictEditingEnabled)
+      requestWriteLock(entities);
 
     log.debug(caption + " - update " + Util.getListContentsAsString(entities, false));
 
@@ -1353,8 +1357,12 @@ public class EntityModel implements IRefreshable {
     activeEntity.getModifiedState().evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
-          if (strictEditingEnabled && !isActiveEntityNull())
-            setActiveEntityWriteLock(activeEntity.getModifiedState().isActive());
+          if (strictEditingEnabled && !isActiveEntityNull()) {
+            if (activeEntity.isModified())
+              requestWriteLock(Arrays.asList(activeEntity));
+            else
+              releaseWriteLock();
+          }
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
@@ -1366,7 +1374,7 @@ public class EntityModel implements IRefreshable {
       public void actionPerformed(ActionEvent e) {
         try {
           if (strictEditingEnabled)
-            setActiveEntityWriteLock(false);
+            releaseWriteLock();
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
@@ -1502,17 +1510,38 @@ public class EntityModel implements IRefreshable {
     propertyComboBoxModels.put(property, model);
   }
 
-  private void setActiveEntityWriteLock(final boolean status) throws UserException {
-    if (strictEditLockEnabled == status)
-      return;
-    try {
-      if (status)
-        getEntityDb().selectForUpdate(activeEntity.getPrimaryKey());
-      else
-        getEntityDb().endTransaction(true);
+  private void requestWriteLock(final List<Entity> entities) throws UserException {
+    if (!strictEditingEnabled)
+      throw new UserException("Strict editing mode must be enabled before requesting write lock");
 
-      System.out.println("######################### " + (status ? "locked" : "unlocked") + ": " + activeEntity.getPrimaryKey());
-      strictEditLockEnabled = status;
+    if (lockedEntities.containsAll(entities))
+      return;
+
+    try {
+      entities.removeAll(lockedEntities);
+      final List<EntityKey> keys = EntityUtil.getPrimaryKeys(entities);
+      getEntityDb().selectForUpdate(keys);
+
+      System.out.println("######################### " + "locked" + ": " + Util.getListContentsAsString(keys, false));
+      lockedEntities.addAll(entities);
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
+  private void releaseWriteLock() throws UserException {
+    if (!strictEditingEnabled)
+      throw new UserException("Strict editing mode must be enabled before releasing write lock");
+
+    if (lockedEntities.isEmpty())
+      return;
+
+    try {
+      getEntityDb().endTransaction(true);
+
+      System.out.println("######################### " + "unlocked");
+      lockedEntities.clear();
     }
     catch (Exception e) {
       throw new UserException(e);
