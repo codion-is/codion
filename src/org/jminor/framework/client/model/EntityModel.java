@@ -35,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1125,21 +1124,6 @@ public class EntityModel implements IRefreshable {
       else
         throw new RuntimeException("Property not found for EntityComboBoxModel: " + comboBoxModel);
     }
-
-    return ret;
-  }
-
-  /**
-   * Use this method to provide a specific order of property init notifications, this comes in handy
-   * when f.ex. combo box models are used to filter each other, which can result in a modified entity
-   * after initialization
-   * @param properties the properties of the entity with the given ID
-   * @return a list of property names, in the order the property value initialization notifications should be handled
-   */
-  protected List<String> getPropertyNotificationOrder(final Collection<Property> properties) {
-    final List<String> ret = new ArrayList<String>(properties.size());
-    for (final Property property : properties)
-      ret.add(property.propertyID);
 
     return ret;
   }

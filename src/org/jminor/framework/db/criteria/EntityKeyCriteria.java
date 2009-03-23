@@ -21,14 +21,28 @@ public class EntityKeyCriteria implements ICriteria {
   private final List<EntityKey> keys;
   private final List<Property> properties;
 
+  /**
+   * Instantiates a new EntityKeyCriteria comprised of the given keys
+   * @param keys the keys
+   */
   public EntityKeyCriteria(final EntityKey... keys) {
     this(null, keys);
   }
 
+  /**
+   * Instantiates a new EntityKeyCriteria comprised of the given keys
+   * @param keys the keys
+   */
   public EntityKeyCriteria(final Collection<EntityKey> keys) {
     this(null, keys.toArray(new EntityKey[keys.size()]));
   }
 
+  /**
+   * Instantiates a new EntityKeyCriteria comprised of the given keys which uses the given properties
+   * as column names when constructing the criteria string
+   * @param properties the properties to use for column names when constructing the criteria string
+   * @param keys the keys
+   */
   public EntityKeyCriteria(final List<Property> properties, final EntityKey... keys) {
     if (keys == null || keys.length == 0)
       throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
@@ -39,14 +53,23 @@ public class EntityKeyCriteria implements ICriteria {
     this.keys = new ArrayList<EntityKey>(Arrays.asList(keys));
   }
 
+  /**
+   * @return the keys
+   */
   public List<EntityKey> getKeys() {
     return keys;
   }
 
+  /**
+   * @return the entityID
+   */
   public String getEntityID() {
     return keys.get(0).getEntityID();
   }
 
+  /**
+   * @return the properties used for column names when constructing the criteria string
+   */
   public List<Property> getProperties() {
     return properties;
   }
@@ -56,6 +79,9 @@ public class EntityKeyCriteria implements ICriteria {
     return getConditionString();
   }
 
+  /**
+   * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value"
+   */
   public String getConditionString() {
     final StringBuffer ret = new StringBuffer();
     if (keys.get(0).getPropertyCount() > 1) {//multi column key

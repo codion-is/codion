@@ -123,7 +123,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   /**
-   * @return the propertyChanged event for this entity
+   * @return an Event which is fired each time a property value changes
+   * @see PropertyChangeEvent
    */
   public Event getPropertyChangeEvent() {
     if (evtPropertyChanged == null)

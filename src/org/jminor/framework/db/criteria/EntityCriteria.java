@@ -14,30 +14,71 @@ public class EntityCriteria implements Serializable {
 
   private final String entityID;
   private final ICriteria criteria;
-  private final int recordCount;
+  private final int fetchCount;
   private final String orderByClause;
 
+  /**
+   * Instantiates a new empty EntityCriteria.
+   * Using an empty criteria means all underlying records should be selected
+   * @param entityID the ID of the entity to select
+   */
   public EntityCriteria(final String entityID) {
     this(entityID, null);
   }
 
+  /**
+   * Instantiates a new EntityCriteria
+   * @param entityID the ID of the entity to select
+   * @param criteria the ICriteria object
+   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.framework.db.criteria.PropertyCriteria
+   * @see org.jminor.framework.db.criteria.EntityKeyCriteria
+   */
   public EntityCriteria(final String entityID, final ICriteria criteria) {
     this(entityID, criteria, null);
   }
 
+  /**
+   * Instantiates a new EntityCriteria
+   * @param entityID the ID of the entity to select
+   * @param criteria the ICriteria object
+   * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
+   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.framework.db.criteria.PropertyCriteria
+   * @see org.jminor.framework.db.criteria.EntityKeyCriteria
+   */
   public EntityCriteria(final String entityID, final ICriteria criteria, final String orderByClause) {
     this(entityID, criteria, orderByClause, -1);
   }
 
-  public EntityCriteria(final String entityID, final ICriteria criteria, final int recordCount) {
-    this(entityID, criteria, null, recordCount);
+  /**
+   * Instantiates a new EntityCriteria
+   * @param entityID the ID of the entity to select
+   * @param criteria the ICriteria object
+   * @param fetchCount the maximum number of records to fetch from the result
+   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.framework.db.criteria.PropertyCriteria
+   * @see org.jminor.framework.db.criteria.EntityKeyCriteria
+   */
+  public EntityCriteria(final String entityID, final ICriteria criteria, final int fetchCount) {
+    this(entityID, criteria, null, fetchCount);
   }
 
+  /**
+   * Instantiates a new EntityCriteria
+   * @param entityID the ID of the entity to select
+   * @param criteria the ICriteria object
+   * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
+   * @param fetchCount the maximum number of records to fetch from the result
+   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.framework.db.criteria.PropertyCriteria
+   * @see org.jminor.framework.db.criteria.EntityKeyCriteria
+   */
   public EntityCriteria(final String entityID, final ICriteria criteria, final String orderByClause,
-                        final int recordCount) {
+                        final int fetchCount) {
     this.entityID = entityID;
     this.criteria = criteria;
-    this.recordCount = recordCount;
+    this.fetchCount = fetchCount;
     this.orderByClause = orderByClause;
   }
 
@@ -48,15 +89,18 @@ public class EntityCriteria implements Serializable {
     return entityID;
   }
 
+  /**
+   * @return the ICriteria object
+   */
   public ICriteria getCriteria() {
     return criteria;
   }
 
   /**
-   * @return the number of records to be returned
+   * @return the maximum number of records to fetch from the result
    */
-  public int getRecordCount() {
-    return recordCount;
+  public int getFetchCount() {
+    return fetchCount;
   }
 
   /**

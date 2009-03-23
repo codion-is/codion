@@ -346,7 +346,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       }
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, criteria.getOrderByClause());
 
-      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getRecordCount());
+      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
       if (!lastQueryResultCached())
         setReferencedEntities(result);

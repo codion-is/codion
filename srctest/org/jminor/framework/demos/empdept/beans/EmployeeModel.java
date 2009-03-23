@@ -20,9 +20,7 @@ import org.jminor.framework.model.Type;
 import javax.swing.ComboBoxModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class EmployeeModel extends EntityModel {
 
@@ -37,17 +35,6 @@ public class EmployeeModel extends EntityModel {
     final HashMap<Property, ComboBoxModel> ret = new HashMap<Property, ComboBoxModel>();
     ret.put(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_MGR_REF),
             new ManagerComboBoxModel(getDbConnectionProvider()));
-
-    return ret;
-  }
-
-  /** {@inheritDoc} */
-  protected List<String> getPropertyNotificationOrder(final Collection<Property> properties) {
-    final List<String> ret = super.getPropertyNotificationOrder(properties);
-    ret.remove(EmpDept.EMPLOYEE_DEPARTMENT_REF);
-    ret.remove(EmpDept.EMPLOYEE_MGR_REF);
-    ret.add(0, EmpDept.EMPLOYEE_MGR_REF);
-    ret.add(0, EmpDept.EMPLOYEE_DEPARTMENT_REF);//notify first, since it filters the manager comboboxmodel
 
     return ret;
   }

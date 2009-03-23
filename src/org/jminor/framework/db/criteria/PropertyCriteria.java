@@ -68,16 +68,6 @@ public class PropertyCriteria implements ICriteria {
       this.values.addAll(getValues(values));
   }
 
-  @SuppressWarnings({"unchecked"})
-  private Collection getValues(final Object... values) {
-    if (values.length == 1 && values[0] instanceof Collection)
-      return getValues(((Collection) values[0]).toArray());
-    else if (values.length > 0 && values[0] instanceof Entity)
-      return EntityUtil.getPrimaryKeys((Collection) Arrays.asList(values));
-    else
-      return Arrays.asList(values);
-  }
-
   /**
    * @return the values used by this criteria
    */
@@ -228,5 +218,15 @@ public class PropertyCriteria implements ICriteria {
     ret.append(")");
 
     return ret.toString();
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private Collection getValues(final Object... values) {
+    if (values.length == 1 && values[0] instanceof Collection)
+      return getValues(((Collection) values[0]).toArray());
+    else if (values.length > 0 && values[0] instanceof Entity)
+      return EntityUtil.getPrimaryKeys((Collection) Arrays.asList(values));
+    else
+      return Arrays.asList(values);
   }
 }
