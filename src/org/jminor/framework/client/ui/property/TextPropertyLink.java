@@ -79,14 +79,6 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
     return format;
   }
 
-  public static boolean isDigitString(final String str) {
-    for (int i = 0; i < str.length(); i++)
-      if (!Character.isDigit(str.charAt(i)))
-        return false;
-
-    return true;
-  }
-
   /**
    * @return Value for property 'immediateUpdate'.
    */

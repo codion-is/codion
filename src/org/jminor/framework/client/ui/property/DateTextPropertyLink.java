@@ -30,7 +30,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
                               final DateFormat dateFormat, final String formatMaskString) {
     super(entityModel, property, textField, true, linkType, dateFormat, enableState);
     if (dateFormat == null)
-      throw new IllegalArgumentException("DateTextProperty must hava a date format");
+      throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
 
     this.fieldMaskString = formatMaskString.replaceAll("#","_");
     entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {

@@ -293,3 +293,4 @@
   AbstractPropertyLink and subclass hierarchy improved and simplified with the above in mind
   IEntityDb.selectForUpdate() now works for multiple entities
   AbstractPropertyLink.refreshUI/Model renamed to updateUI/Model
+  TextPropertyLink.isDigitString() unused, removed
