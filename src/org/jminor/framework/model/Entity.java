@@ -40,7 +40,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   private Map<String, Object> propertyValues = new HashMap<String, Object>();
 
   /**
-   * Holds the original value of a properties which values have changed
+   * Holds the original value of properties which values have changed
    */
   private Map<String, Object> originalPropertyValues;
 
@@ -87,7 +87,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param key the primary key
    */
   public Entity(final EntityKey key) {
-    this.primaryKey = key;
+    primaryKey = key;
     hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
   }
 
@@ -127,14 +127,14 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public Event getPropertyChangeEvent() {
     if (evtPropertyChanged == null)
-      evtPropertyChanged = new Event("Entity.evtPropertyChanged");
+      evtPropertyChanged = new Event(getEntityID() + ".evtPropertyChanged");
 
     return evtPropertyChanged;
   }
 
   /**
    * @return a State object indicating whether this entity has been
-   * modified since the it was instantiated
+   * modified since it was instantiated
    */
   public State getModifiedState() {
     if (stModified == null)
@@ -377,7 +377,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * @param propertyID the property identifier
-   * @return the value of the property, circumventing the EntityProxy
+   * @return the value of the property, bypassing the EntityProxy
    */
   public Object getRawValue(final String propertyID) {
     if (primaryKey.containsProperty(propertyID))
