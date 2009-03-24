@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
@@ -13,9 +12,8 @@ import org.jminor.framework.model.Property;
 public class IntTextPropertyLink extends TextPropertyLink {
 
   public IntTextPropertyLink(final EntityModel entityModel, final Property property, final IntField textField,
-                             final boolean immediateUpdate, final LinkType linkType,
-                             final State enableState) {
-    super(entityModel, property, textField, immediateUpdate, linkType, null, enableState);
+                             final boolean immediateUpdate, final LinkType linkType) {
+    super(entityModel, property, textField, immediateUpdate, linkType, null);
   }
 
   /** {@inheritDoc} */

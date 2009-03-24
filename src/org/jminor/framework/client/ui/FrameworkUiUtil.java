@@ -564,17 +564,17 @@ public class FrameworkUiUtil {
         break;
       case INT:
         new IntTextPropertyLink(entityModel, property,
-                (IntField) (ret = new IntField(0)), immediateUpdate, linkType, null);
+                (IntField) (ret = new IntField(0)), immediateUpdate, linkType);
         break;
       case DOUBLE:
         new DoubleTextPropertyLink(entityModel, property,
-                (DoubleField) (ret = new DoubleField(0)), immediateUpdate, linkType, null);
+                (DoubleField) (ret = new DoubleField(0)), immediateUpdate, linkType);
         break;
       case SHORT_DATE:
       case LONG_DATE:
         new DateTextPropertyLink(entityModel, property,
                 (JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
-                linkType, null, dateFormat, formatMaskString);
+                linkType, dateFormat, formatMaskString);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);

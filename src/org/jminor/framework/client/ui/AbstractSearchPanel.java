@@ -186,7 +186,7 @@ public abstract class AbstractSearchPanel extends JPanel {
   private JComboBox initSearchTypeComboBox() {
     final JComboBox ret = new SteppedComboBox(initSearchTypeModel());
     ControlProvider.bindItemSelector(ret, model, "searchType", SearchType.class,
-            model.evtSearchTypeChanged, null);
+            model.evtSearchTypeChanged);
 
     return ret;
   }

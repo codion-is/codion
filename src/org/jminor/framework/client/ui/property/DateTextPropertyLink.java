@@ -6,7 +6,6 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.PropertyChangeEvent;
 import org.jminor.common.model.PropertyListener;
-import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.Property;
@@ -26,9 +25,8 @@ public class DateTextPropertyLink extends TextPropertyLink {
   private final Event updateValidColor = new Event("DateTextPropertyLink.updateValidColor");
 
   public DateTextPropertyLink(final EntityModel entityModel, final Property property, final JFormattedTextField textField,
-                              final LinkType linkType, final State enableState,
-                              final DateFormat dateFormat, final String formatMaskString) {
-    super(entityModel, property, textField, true, linkType, dateFormat, enableState);
+                              final LinkType linkType, final DateFormat dateFormat, final String formatMaskString) {
+    super(entityModel, property, textField, true, linkType, dateFormat);
     if (dateFormat == null)
       throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
 

@@ -4,33 +4,53 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * An abstract property linking class
+ * An abstract base class for linking a UI component to a property value
  */
 public abstract class AbstractPropertyLink extends Control {
 
+  /**
+   * The Object that owns the linked property
+   */
   private final Object propertyOwner;
+
+  /**
+   * The link type
+   */
   private final LinkType linkType;
 
+  /**
+   * True while the UI is being updated
+   */
   private boolean isUpdatingUI = false;
+
+  /**
+   * True while the model is being updated
+   */
   private boolean isUpdatingModel = false;
 
-  public AbstractPropertyLink(final Object propertyOwner, final String name, final Event propertyChangeEvent,
-                              final LinkType linkType, final State enabledState) {
-    super(name, enabledState);
+  /**
+   * Instantiates a new AbstractPropertyLink
+   * @param propertyOwner the owner of the property value
+   * @param name the name of the property
+   * @param modelPropertyValueChangeEvent an Event on which the UI should be updated
+   * @param linkType the link Type
+   */
+  public AbstractPropertyLink(final Object propertyOwner, final String name, final Event modelPropertyValueChangeEvent,
+                              final LinkType linkType) {
+    super(name);
     if (propertyOwner == null)
       throw new IllegalArgumentException("Property owner cannot be null");
 
     this.propertyOwner = propertyOwner;
     this.linkType = linkType;
 
-    if (linkType != LinkType.WRITE_ONLY && propertyChangeEvent != null) {
-      propertyChangeEvent.addListener(new ActionListener() {
+    if (linkType != LinkType.WRITE_ONLY && modelPropertyValueChangeEvent != null) {
+      modelPropertyValueChangeEvent.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateUI();
         }

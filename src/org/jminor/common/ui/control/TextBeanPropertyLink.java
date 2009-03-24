@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
@@ -12,8 +11,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.Format;
 import java.text.ParseException;
 
@@ -25,28 +22,20 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
 
   public TextBeanPropertyLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                               final Class<?> valueClass, final Event propertyChangeEvent, final String text) {
-    this(textComponent, owner, propertyName, valueClass, propertyChangeEvent, text, LinkType.READ_WRITE, null, null);
+    this(textComponent, owner, propertyName, valueClass, propertyChangeEvent, text, LinkType.READ_WRITE, null);
   }
 
   public TextBeanPropertyLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                               final Class<?> valueClass, final Event propertyChangeEvent, final String text,
-                              final LinkType linkType, final Format format, final State enabledState) {
-    super(owner, propertyName, valueClass, propertyChangeEvent, text, linkType, enabledState);
+                              final LinkType linkType, final Format format) {
+    super(owner, propertyName, valueClass, propertyChangeEvent, text, linkType);
     this.textComponent = textComponent;
     this.format = format;
     this.placeholder = textComponent instanceof JFormattedTextField ?
             Character.toString(
                     (((MaskFormatter) ((JFormattedTextField)textComponent).getFormatter()).getPlaceholderCharacter()))
             : null;
-    if (enabledState != null) {
-      textComponent.setEnabled(enabledState.isActive());
-      enabledState.evtStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          textComponent.setEnabled(enabledState.isActive());
-        }
-      });
-    }
-    else if (linkType == LinkType.READ_ONLY)
+    if (linkType == LinkType.READ_ONLY)
       textComponent.setEditable(false);
     updateUI();
     textComponent.getDocument().addDocumentListener(this);

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.Property;
@@ -18,12 +17,12 @@ public class CheckBoxPropertyLink extends AbstractEntityPropertyLink {
   private final ButtonModel buttonModel;
 
   public CheckBoxPropertyLink(final EntityModel entityModel, final Property property, final ButtonModel buttonModel) {
-    this(entityModel, property, buttonModel, LinkType.READ_WRITE, null);
+    this(entityModel, property, buttonModel, LinkType.READ_WRITE);
   }
 
   public CheckBoxPropertyLink(final EntityModel entityModel, final Property property, final ButtonModel buttonModel,
-                              final LinkType linkType, final State enabledState) {
-    super(entityModel, property, linkType, enabledState);
+                              final LinkType linkType) {
+    super(entityModel, property, linkType);
     this.buttonModel = buttonModel;
     updateUI();
     this.buttonModel.addItemListener(new ItemListener() {

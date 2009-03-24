@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.State;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.EntityUtil;
@@ -37,21 +36,13 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
-                          final boolean immediateUpdate,
-                          final LinkType linkType) {
+                          final boolean immediateUpdate, final LinkType linkType) {
     this(owner, property, textComponent, immediateUpdate, linkType, null);
   }
 
-  public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
-                          final boolean immediateUpdate,
-                          final LinkType linkType, final Format format) {
-    this(owner, property, textComponent, immediateUpdate, linkType, format, null);
-  }
-
   protected TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
-                             final boolean immediateUpdate, final LinkType linkType,
-                             final Format format, final State enableState) {
-    super(entityModel, property, linkType, enableState);
+                             final boolean immediateUpdate, final LinkType linkType, final Format format) {
+    super(entityModel, property, linkType);
     this.textComponent = textComponent;
     this.format = format;
     this.immediateUpdate = immediateUpdate;

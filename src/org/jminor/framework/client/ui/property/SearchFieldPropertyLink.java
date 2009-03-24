@@ -15,9 +15,8 @@ public class SearchFieldPropertyLink extends AbstractEntityPropertyLink {
 
   private final EntitySearchField searchField;
 
-  public SearchFieldPropertyLink(final EntityModel model, final String propertyID,
-                                 final EntitySearchField entitySearchField) {
-    super(model, EntityRepository.get().getProperty(model.getEntityID(), propertyID), LinkType.READ_WRITE, null);
+  public SearchFieldPropertyLink(final EntityModel model, final String propertyID, final EntitySearchField entitySearchField) {
+    super(model, EntityRepository.get().getProperty(model.getEntityID(), propertyID), LinkType.READ_WRITE);
     this.searchField = entitySearchField;
     updateUI();
     entitySearchField.evtSelectedEntityChanged.addListener(new ActionListener() {

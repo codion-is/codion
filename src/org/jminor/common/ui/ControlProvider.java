@@ -34,15 +34,14 @@ import java.awt.GridLayout;
 public class ControlProvider {
 
   public static void bindItemSelector(final JComboBox combo, final Object owner, final String property,
-                                      final Class propertyClass, final Event changedEvent, final State enableState) {
-    new SelectedItemBeanPropertyLink(combo, owner, property, propertyClass, changedEvent, null,
-            LinkType.READ_WRITE, enableState);
+                                      final Class propertyClass, final Event changedEvent) {
+    new SelectedItemBeanPropertyLink(combo, owner, property, propertyClass, changedEvent, null, LinkType.READ_WRITE);
   }
 
   public static void bindToggleButtonAndProperty(final JToggleButton toggleButton, final Object owner, final String property,
-                                                 final String label, final Event changedEvent, final State enableState) {
+                                                 final String label, final Event changedEvent) {
     final ToggleBeanPropertyLink propertyLink = new ToggleBeanPropertyLink(owner, property, changedEvent,
-            label, LinkType.READ_WRITE, enableState);
+            label, LinkType.READ_WRITE);
     propertyLink.setButton(toggleButton);
     toggleButton.setText(label);
   }

@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.IntField;
 
@@ -12,13 +11,12 @@ public class IntBeanPropertyLink extends TextBeanPropertyLink {
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,
                              final Event propertyChangeEvent, final String text) {
-    this(intField, owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+    this(intField, owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
   }
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,
-                             final Event propertyChangeEvent, final String text, final LinkType linkType,
-                             final State enabledState) {
-    super(intField, owner, propertyName, Integer.class, propertyChangeEvent, text, linkType, null, enabledState);
+                             final Event propertyChangeEvent, final String text, final LinkType linkType) {
+    super(intField, owner, propertyName, Integer.class, propertyChangeEvent, text, linkType, null);
     updateUI();
   }
 

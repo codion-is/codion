@@ -283,7 +283,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
     ControlProvider.bindToggleButtonAndProperty(checkBox, model,
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-            null, isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
+            null, isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
   }
 
   private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
@@ -316,7 +316,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
                 LinkType.READ_WRITE, model.getPropertyType() == Type.SHORT_DATE
-                ? new ShortDotDateFormat() : new LongDateFormat(), null);
+                ? new ShortDotDateFormat() : new LongDateFormat());
       default :
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,

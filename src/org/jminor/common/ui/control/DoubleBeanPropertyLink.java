@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.DoubleField;
 
@@ -12,13 +11,12 @@ public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
 
   public DoubleBeanPropertyLink(final DoubleField doubleField, final Object owner, final String propertyName,
                                 final Event propertyChangeEvent, final String text) {
-    this(doubleField, owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+    this(doubleField, owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
   }
 
   public DoubleBeanPropertyLink(final DoubleField doubleField, final Object owner, final String propertyName,
-                                final Event propertyChangeEvent, final String text, final LinkType linkType,
-                                final State enabledState) {
-    super(doubleField, owner, propertyName, Double.class, propertyChangeEvent, text, linkType, null, enabledState);
+                                final Event propertyChangeEvent, final String text, final LinkType linkType) {
+    super(doubleField, owner, propertyName, Double.class, propertyChangeEvent, text, linkType, null);
     updateUI();
   }
 

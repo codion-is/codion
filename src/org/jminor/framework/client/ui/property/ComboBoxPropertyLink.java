@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.State;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
@@ -28,12 +27,12 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   }
 
   public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox) {
-    this(entityModel, property, comboBox, LinkType.READ_WRITE, null);
+    this(entityModel, property, comboBox, LinkType.READ_WRITE);
   }
 
   public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox,
-                              final LinkType linkType, final State enabledState) {
-    super(entityModel, property, linkType, enabledState);
+                              final LinkType linkType) {
+    super(entityModel, property, linkType);
     this.boxModel = comboBox.getModel();
     updateUI();
     comboBox.addItemListener(new ItemListener() {

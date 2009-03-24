@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 
 import javax.swing.AbstractButton;
 import java.lang.reflect.Method;
@@ -15,13 +14,12 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName,
                                 final Event propertyChangeEvent, final String text) {
-    this(owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+    this(owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
   }
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName,
-                                final Event propertyChangeEvent, final String text, final LinkType linkType,
-                                final State enabledState) {
-    super(owner, propertyName, boolean.class, propertyChangeEvent, text, linkType, enabledState);
+                                final Event propertyChangeEvent, final String text, final LinkType linkType) {
+    super(owner, propertyName, boolean.class, propertyChangeEvent, text, linkType);
   }
 
   public void setButton(final AbstractButton toggleButton) {

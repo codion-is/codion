@@ -84,7 +84,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class,  isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "",
-                LinkType.READ_WRITE, format, null) {
+                LinkType.READ_WRITE, format) {
           public void setModelPropertyValue(final Object obj) {
             if (obj != null)
               super.setModelPropertyValue(new Timestamp(((Date) obj).getTime()));
@@ -111,7 +111,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Object.class,
                 isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, null);
+                LinkType.READ_WRITE);
         break;
       case ENTITY:
         field = initEntityField(model.getProperty());

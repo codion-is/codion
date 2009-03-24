@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 
 import java.lang.reflect.Method;
 
@@ -17,13 +16,12 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
 
   public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
                           final Event propertyChangeEvent, final String text) {
-    this(owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+    this(owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE);
   }
 
   public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent, final String text, final LinkType linkType,
-                          final State enabledState) {
-    super(owner, text, propertyChangeEvent, linkType, enabledState);
+                          final Event propertyChangeEvent, final String text, final LinkType linkType) {
+    super(owner, text, propertyChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.propertyClass = propertyClass;

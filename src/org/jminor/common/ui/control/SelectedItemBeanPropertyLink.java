@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -19,13 +18,13 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
   public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
                                       final Class propertyClass, final Event propertyChangeEvent,
                                       final String text) {
-    this(box, owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+    this(box, owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE);
   }
 
   public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
                                       final Class propertyClass, final Event propertyChangeEvent,
-                                      final String text, final LinkType linkType, final State enabledState) {
-    super(owner, propertyName, propertyClass, propertyChangeEvent, text, linkType, enabledState);
+                                      final String text, final LinkType linkType) {
+    super(owner, propertyName, propertyClass, propertyChangeEvent, text, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();
     box.addItemListener(this);
