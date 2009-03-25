@@ -36,7 +36,7 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   }
 
   /**
-   * @return Value for property 'propertyName'.
+   * @return the name of the linked property
    */
   public String getPropertyName() {
     return propertyName;
@@ -69,7 +69,7 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   }
 
   /**
-   * @return Value for property 'setMethod'.
+   * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   protected Method getSetMethod() throws NoSuchMethodException {
@@ -77,7 +77,7 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   }
 
   /**
-   * @return Value for property 'getMethod'.
+   * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   protected Method getGetMethod() throws NoSuchMethodException {

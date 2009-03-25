@@ -211,35 +211,37 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return Value for property 'tableColumnProperties'.
+   * @return the underlying table column properties
    */
   public List<Property> getTableColumnProperties() {
     return tableColumnProperties;
   }
 
   /**
-   * @return Value for property 'filterQueryByMaster'.
+   * @return true if the underlying query is filtered instead of simply hiding filtered table items
    */
   public boolean isFilterQueryByMaster() {
     return filterQueryByMaster;
   }
 
   /**
-   * @param filterQueryByMaster Value to set for property 'filterQueryByMaster'.
+   * @param filterQueryByMaster if set to true then master selection changes affect the underlying query,
+   * otherwise filtering is performed by simply hiding filtered items in the table without re-running the query
    */
   public void setFilterQueryByMaster(final boolean filterQueryByMaster) {
     this.filterQueryByMaster = filterQueryByMaster;
   }
 
   /**
-   * @return Value for property 'showAllWhenNotFiltered'.
+   * @return whether to show all underlying entities when no filter is applied.
    */
   public boolean isShowAllWhenNotFiltered() {
     return showAllWhenNotFiltered;
   }
 
   /**
-   * @param showAllWhenNotFiltered Value to set for property 'showAllWhenNotFiltered'.
+   * @param showAllWhenNotFiltered if set to true then all underlying entities are shown
+   * when no filters are applied, this can be problematic in the case of huge datasets.
    */
   public void setShowAllWhenNotFiltered(final boolean showAllWhenNotFiltered) {
     this.showAllWhenNotFiltered = showAllWhenNotFiltered;
@@ -287,7 +289,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return Value for property 'dbConnectionProvider'.
+   * @return the IEntityDbConnection provider
    */
   public IEntityDbProvider getDbConnectionProvider() {
     return dbConnectionProvider;
@@ -377,7 +379,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return Value for property 'refreshing'.
+   * @return true if the model data is being refreshed
    */
   public boolean isRefreshing() {
     return isRefreshing;
@@ -912,14 +914,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return Value for property 'queryRangeEnabled'.
+   * @return true if query range is enabled
    */
   public boolean isQueryRangeEnabled() {
     return queryRangeEnabled;
   }
 
   /**
-   * Sets the query queryRange from value
+   * Sets the query query range lower bound
    * @param from the new query range from value
    */
   public void setQueryRangeFrom(final int from) {
@@ -934,7 +936,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @param to Value to set for property 'queryRangeTo'.
+   * @param to the query range upper bound
    */
   public void setQueryRangeTo(final int to) {
     queryRangeCriteria.setValues(getQueryRangeFrom(), to);

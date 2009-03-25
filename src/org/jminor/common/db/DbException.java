@@ -49,14 +49,14 @@ public class DbException extends Exception  {
   }
 
   /**
-   * @return Value for property 'entity'.
+   * @return the user object associated with this exception
    */
   public Object getUserObject() {
     return this.userObject;
   }
 
   /**
-   * @return Value for property 'insertNullValueException'.
+   * @return true if this exception represents a 'insertNullValueException'.
    */
   //todo oracle specific
   public boolean isInsertNullValueException() {

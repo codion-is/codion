@@ -139,28 +139,21 @@ public class ExceptionDialog extends JDialog {
   }
 
   /**
-   * @return Value for property 'showDetails'.
+   * @param show true if the exception details should be visible
    */
-  public boolean getShowDetails() {
-    return stShowDetails.isActive();
-  }
-
-  /**
-   * @param show Value to set for property 'showDetails'.
-   */
-  public void setShowDetails(boolean show) {
+  public void setShowDetails(final boolean show) {
     stShowDetails.setActive(show);
   }
 
   /**
-   * @param errorReportEmailTo Value to set for property 'errorReportEmailTo'.
+   * @param errorReportEmailTo the email address to use when sending the error report
    */
   public static void setErrorReportEmailTo(final String errorReportEmailTo) {
     errorReportEmailAddressTo = errorReportEmailTo;
   }
 
   /**
-   * @param errorReportSubjectPrefix Value to set for property 'errorReportEmailSubjectPrefix'.
+   * @param errorReportSubjectPrefix a string to prefix to the subject of the error report when emailed
    */
   public static void setErrorReportEmailSubjectPrefix(final String errorReportSubjectPrefix) {
     errorReportEmailSubjectPrefix = errorReportSubjectPrefix;

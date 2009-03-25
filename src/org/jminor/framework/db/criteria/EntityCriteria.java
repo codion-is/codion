@@ -83,7 +83,7 @@ public class EntityCriteria implements Serializable {
   }
 
   /**
-   * @return Value for property 'entityID'.
+   * @return the entity ID
    */
   public String getEntityID() {
     return entityID;
@@ -117,7 +117,7 @@ public class EntityCriteria implements Serializable {
   }
 
   /**
-   * @return Value for property 'whereClause'.
+   * @return the where clause
    */
   public String getWhereClause() {
     return getWhereClause(true);

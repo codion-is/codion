@@ -216,7 +216,7 @@ public class FrameworkSettings implements Serializable {
   }
 
   /**
-   * @return Value for property 'defaultUsername'.
+   * @return the default username
    */
   public static String getDefaultUsername() {
     final String preferredUserName = Util.getUserPreference(Util.PREF_DEFAULT_USERNAME,

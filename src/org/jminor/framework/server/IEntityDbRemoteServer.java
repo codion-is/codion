@@ -23,16 +23,20 @@ public interface IEntityDbRemoteServer extends Remote {
           throws RemoteException;
 
   /**
-   * @return Value for property 'serverName'.
+   * @return the server name
    * @throws RemoteException in case of a communication error
    */
   public String getServerName() throws RemoteException;
 
   /**
-   * @return Value for property 'serverPort'.
+   * @return the server port
    * @throws java.rmi.RemoteException in case of a RemoteException
    */
   public int getServerPort() throws RemoteException;
 
+  /**
+   * @return the server load as number of service requests per second
+   * @throws RemoteException in case of an exception
+   */
   public Integer getServerLoad() throws RemoteException;
 }

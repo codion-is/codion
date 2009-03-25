@@ -70,7 +70,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   }
 
   /**
-   * @param sort Value to set for property 'sortContents'.
+   * @param sort true if the contents of this FilteredComboBoxModel should be sorted
    */
   public void setSortContents(final boolean sort) {
     if (this.sortContents != sort) {
@@ -114,7 +114,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   }
 
   /**
-   * @param criteria Value to set for property 'filterCriteria'.
+   * @param criteria the IFilterCriteria to use
    */
   public void setFilterCriteria(final IFilterCriteria criteria) {
     this.filterCriteria = criteria;

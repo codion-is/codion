@@ -189,7 +189,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
   /**
    * Only returns a valid value when logging is enabled
-   * @return Value for property 'activeCount'.
+   * @return the number of connections that are active at this moment
    */
   public static int getActiveCount() {
     return active.size();

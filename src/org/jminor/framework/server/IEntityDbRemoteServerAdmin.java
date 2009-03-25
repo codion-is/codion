@@ -27,49 +27,51 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void shutdown() throws RemoteException;
 
   /**
-   * @return Value for property 'startDate'.
+   * @return the server startup date
    * @throws RemoteException in case of a communication error
    */
   public Date getStartDate() throws RemoteException;
 
   /**
-   * @return Value for property 'dbConnectionProperties'.
+   * @return the database URL
    * @throws RemoteException in case of a communication error
    */
   public String getDatabaseURL() throws RemoteException;
 
   /**
-   * @return Value for property 'serverName'.
+   * @return the server name
    * @throws RemoteException in case of a communication error
    */
   public String getServerName() throws RemoteException;
 
   /**
-   * @return Value for property 'serverPort'.
+   * @return the server port
    * @throws RemoteException in case of a communication error
    */
   public int getServerPort() throws RemoteException;
 
   /**
-   * @return Value for property 'serverDbPort'.
+   * @return the port on which db connections are created
    * @throws RemoteException in case of a communication error
    */
   public int getServerDbPort() throws RemoteException;
 
   /**
-   * @return Value for property 'connectionCount'.
+   * @return the number of active connections
    * @throws RemoteException in case of a communication error
    */
   public int getConnectionCount() throws RemoteException;
 
   /**
-   * @return Value for property 'checkTimerInterval'.
+   * @return the number of seconds that should pass between maintenance cycles,
+   * that is, when inactive clients are purged
    * @throws RemoteException in case of a communication error
    */
   public int getCheckMaintenanceInterval() throws RemoteException;
 
   /**
-   * @param interval Value to set for property 'checkTimerInterval'.
+   * @param interval the number of seconds that should pass between maintenance cycles,
+   * that is, when inactive clients are purged
    * @throws RemoteException in case of a communication error
    */
   public void setCheckMaintenanceInterval(final int interval) throws RemoteException;
@@ -82,7 +84,7 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public DbLog getConnectionLog(final String connectionKey) throws RemoteException;
 
   /**
-   * @return Value for property 'activeConnections'.
+   * @return the number of active connections
    * @throws RemoteException in case of a communication error
    */
   public int getActiveConnectionCount() throws RemoteException;
@@ -104,7 +106,7 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void setLoggingOn(final String connectionKey, final boolean status) throws RemoteException;
 
   /**
-   * @return Value for property 'memoryUsage'.
+   * @return a string containing memory usage information
    * @throws RemoteException in case of a communication error
    */
   public String getMemoryUsage() throws RemoteException;
@@ -124,13 +126,13 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void disconnect(final String connectionKey) throws RemoteException;
 
   /**
-   * @return Value for property 'loggingLevel'.
+   * @return the server logging level
    * @throws RemoteException in case of a communication error
    */
   public Level getLoggingLevel() throws RemoteException;
 
   /**
-   * @param level Value to set for property 'loggingLevel'.
+   * @param level the logging level
    * @throws RemoteException in case of a communication error
    */
   public void setLoggingLevel(final Level level) throws RemoteException;

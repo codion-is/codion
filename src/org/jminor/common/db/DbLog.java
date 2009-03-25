@@ -45,77 +45,77 @@ public class DbLog implements Serializable {
   }
 
   /**
-   * @return Value for property 'connectionKey'.
+   * @return the connection key identifying this log
    */
   public String getConnectionKey() {
     return connectionKey;
   }
 
   /**
-   * @return Value for property 'creationDate'.
+   * @return the log creation date
    */
   public long getConnectionCreationDate() {
     return connectionCreationDate;
   }
 
   /**
-   * @return Value for property 'lastExitedMethod'.
+   * @return the name of the last exited method
    */
   public String getLastExitedMethod() {
     return lastExitedMethod;
   }
 
   /**
-   * @return Value for property 'lastAccessedMethod'.
+   * @return the name of the last accessed method
    */
   public String getLastAccessedMethod() {
     return lastAccessedMethod;
   }
 
   /**
-   * @return Value for property 'lastAccessMessage'.
+   * @return the message from the last access
    */
   public String getLastAccessMessage() {
     return lastAccessMessage;
   }
 
   /**
-   * @return Value for property 'lastAccessDate'.
+   * @return the last access date
    */
   public long getLastAccessDate() {
     return lastAccessDate;
   }
 
   /**
-   * @return Value for property 'lastExitDate'.
+   * @return the last exit date
    */
   public long getLastExitDate() {
     return lastExitDate;
   }
 
   /**
-   * @return Value for property 'timeSinceLastAccess'.
+   * @return the time since last access
    */
   public long getTimeSinceLastAccess() {
     return System.currentTimeMillis() - getLastAccessDate();
   }
 
   /**
-   * @return Value for property 'lastDelta'.
+   * @return the duration of the last method call
    */
   public long getLastDelta() {
     return getLastExitDate() - getLastAccessDate();
   }
 
   /**
-   * @return Value for property 'lastAccessDateFormatted'.
+   * @return a formatted last access date
    */
   public String getLastAccessDateFormatted() {
     return ExactDateFormat.get().format(getLastAccessDate());
   }
 
   /**
-   * @return Value for property 'lastExitDateFormatted'.
+   * @return a formatted last exit date
    */
   public String getLastExitDateFormatted() {
     return ExactDateFormat.get().format(getLastExitDate());

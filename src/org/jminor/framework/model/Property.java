@@ -385,7 +385,7 @@ public class Property implements Serializable {
     }
 
     /**
-     * @return Value for property 'multiColumnReference'.
+     * @return true if this reference is based on more than on column
      */
     public boolean isMultiColumnReference() {
       return this.referenceProperties.size() > 1;
@@ -589,7 +589,7 @@ public class Property implements Serializable {
     }
 
     /**
-     * @return Value for property 'subQuery'.
+     * @return the subquery string
      */
     public String getSubQuery() {
       return subquery;

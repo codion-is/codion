@@ -61,7 +61,7 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   }
 
   /**
-   * @return Value for property 'selectionModel'.
+   * @return the list selection model
    */
   public ListSelectionModel getSelectionModel() {
     return selectionModel;

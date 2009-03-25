@@ -37,7 +37,7 @@ public class AggregateState extends State {
   }
 
   /**
-   * @return Value for property 'type'.
+   * @return the type of this aggregate state
    */
   public Type getType() {
     return type;

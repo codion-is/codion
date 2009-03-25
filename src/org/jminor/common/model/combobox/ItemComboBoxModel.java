@@ -58,7 +58,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
 
   public interface IItem<T> {
     /**
-     * @return Value for property 'item'.
+     * @return the actual item
      */
     public T getItem();
 
@@ -77,7 +77,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     }
 
     /**
-     * @return Value for property 'caption'.
+     * @return the caption
      */
     public String getCaption() {
       return caption;

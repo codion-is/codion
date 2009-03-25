@@ -64,14 +64,14 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /**
-   * @return Value for property 'format'.
+   * @return the format, if any
    */
   public Format getFormat() {
     return format;
   }
 
   /**
-   * @return Value for property 'immediateUpdate'.
+   * @return true if the underlying property should be updated on each keystroke
    */
   public boolean isImmediateUpdate() {
     return immediateUpdate;
@@ -96,7 +96,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /**
-   * @return Value for property 'textComponent'.
+   * @return the linked text component
    */
   protected final JTextComponent getTextComponent() {
     return this.textComponent;

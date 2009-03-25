@@ -26,21 +26,21 @@ public class EntityPanelProvider implements Comparable {
   }
 
   /**
-   * @return Value for property 'caption'.
+   * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
    */
   public String getCaption() {
     return caption;
   }
 
   /**
-   * @return Value for property 'entityModelClass'.
+   * @return the EntityModel Class to use when instantiating an EntityPanel
    */
   public Class<? extends EntityModel> getEntityModelClass() {
     return entityModelClass;
   }
 
   /**
-   * @return Value for property 'entityPanelClass'.
+   * @return the EntityPanel Class to instantiate
    */
   public Class<? extends EntityPanel> getEntityPanelClass() {
     return entityPanelClass;

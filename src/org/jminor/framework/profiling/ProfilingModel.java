@@ -126,7 +126,7 @@ public abstract class ProfilingModel {
   }
 
   /**
-   * @return Value for property 'clientCount'.
+   * @return the number of active clients
    */
   public int getClientCount() {
     return activeClients.size();
@@ -142,7 +142,7 @@ public abstract class ProfilingModel {
   }
 
   /**
-   * @param clientCount Value to set for property 'clientCount'.
+   * @param clientCount the required number of active clients
    * @throws org.jminor.common.model.UserException in case of an exception
    * @throws java.rmi.RemoteException in case of a remote exception
    */
@@ -172,14 +172,14 @@ public abstract class ProfilingModel {
   }
 
   /**
-   * @return Value for property 'pause'.
+   * @return true if the profiling is paused
    */
   public boolean isPause() {
     return this.pause;
   }
 
   /**
-   * @param value Value to set for property 'pause'.
+   * @param value true if profiling should be paused
    */
   public void setPause(final boolean value) {
     this.pause = value;
@@ -192,14 +192,14 @@ public abstract class ProfilingModel {
   }
 
   /**
-   * @return Value for property 'maximumThinkTime'.
+   * @return the maximum number of milliseconds that should pass between work requests
    */
   public int getMaximumThinkTime() {
     return this.maximumThinkTime;
   }
 
   /**
-   * @param maximumThinkTime Value to set for property 'maximumThinkTime'.
+   * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
    */
   public void setMaximumThinkTime(int maximumThinkTime) {
     this.maximumThinkTime = maximumThinkTime;
@@ -207,14 +207,14 @@ public abstract class ProfilingModel {
   }
 
   /**
-   * @return Value for property 'minimumThinkTime'.
+   * @return the minimum number of milliseconds that should pass between work requests
    */
   public int getMinimumThinkTime() {
     return this.minimumThinkTime;
   }
 
   /**
-   * @param minimumThinkTime Value to set for property 'minimumThinkTime'.
+   * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
    */
   public void setMinimumThinkTime(int minimumThinkTime) {
     this.minimumThinkTime = minimumThinkTime;

@@ -188,7 +188,7 @@ public class ControlProvider {
     }
 
     /**
-     * @return Value for property 'menu'.
+     * @return the JMenu
      */
     public JMenu getMenu() {
       return menu;

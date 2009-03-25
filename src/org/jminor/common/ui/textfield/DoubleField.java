@@ -48,14 +48,14 @@ public class DoubleField extends IntField {
   }
 
   /**
-   * @return Value for property 'double'.
+   * @return the value
    */
   public Double getDouble() {
     return Util.getDouble(getText());
   }
 
   /**
-   * @param value Value to set for property 'double'.
+   * @param value the value to set
    */
   public void setDouble(final Double value) {
     setText(value == null ? "" : value.toString());

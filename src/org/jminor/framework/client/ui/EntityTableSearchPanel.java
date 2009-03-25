@@ -37,7 +37,7 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @param value Value to set for property 'automaticWildcard'.
+   * @param value true if wildcards should automatically be added to strings
    */
   public void setAutomaticWildcard(final boolean value) {
     for (final JPanel searchPanel : searchPanels) {
@@ -54,7 +54,7 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @param value Value to set for property 'advanced'.
+   * @param value true if advanced search should be enabled
    */
   public void setAdvanced(final boolean value) {
     for (final JPanel searchPanel : searchPanels)
@@ -65,7 +65,7 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'advanced'.
+   * @return true if advanced search is enabled
    */
   public boolean isAdvanced() {
     for (final JPanel searchPanel : searchPanels)

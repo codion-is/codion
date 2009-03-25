@@ -41,7 +41,7 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /**
-   * @return Value for property 'testUser'.
+   * @return the db user to use when running the test
    * @throws org.jminor.common.model.UserCancelException in case the user cancels the login
    */
   protected User getTestUser() throws UserCancelException {

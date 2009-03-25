@@ -34,7 +34,7 @@ public class UserException extends Exception {
   }
 
   /**
-   * @return Value for property 'messages'.
+   * @return the messages associated with this exception
    */
   public String[] getMessages() {
     if (this.messages == null || this.messages.length == 0)

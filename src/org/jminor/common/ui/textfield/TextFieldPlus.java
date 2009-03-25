@@ -33,28 +33,28 @@ public class TextFieldPlus extends JTextField {
   }
 
   /**
-   * @return Value for property 'value'.
+   * @return the value in this text field
    */
   public Object getValue() {
     return this.getText();
   }
 
   /**
-   * @param maxLength Value to set for property 'maxLength'.
+   * @param maxLength the maximum number of characters this text field should allow
    */
   public void setMaxLength(final int maxLength) {
     this.maxLength = maxLength;
   }
 
   /**
-   * @return Value for property 'maxLength'.
+   * @return the maximum number of characters this text field allows
    */
   public int getMaxLength() {
     return maxLength;
   }
 
   /**
-   * @param upperCase Value to set for property 'upperCase'.
+   * @param upperCase true if this text field should automatically convert text to uppercase
    */
   public void setUpperCase(final boolean upperCase) {
     this.upperCase = upperCase;

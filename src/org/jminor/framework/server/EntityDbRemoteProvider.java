@@ -101,7 +101,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   }
 
   /**
-   * @return Value for property 'remoteEntityDbServer'.
+   * @return the IEntityDbRemoveServer instance, with an established connection
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */

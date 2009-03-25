@@ -23,7 +23,7 @@ public class User implements Serializable {
   }
 
   /**
-   * @return Value for property 'username'.
+   * @return the username
    */
   public String getUsername() {
     return username;
@@ -34,7 +34,7 @@ public class User implements Serializable {
   }
 
   /**
-   * @return Value for property 'password'.
+   * @return the password
    */
   public String getPassword() {
     return password;

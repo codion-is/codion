@@ -37,14 +37,14 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final Entity value) {
     setUpperBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final Entity value) {
     setLowerBound((Object) value);
@@ -62,7 +62,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   /**
-   * @return Value for property 'entityComboBoxModel'.
+   * @return the EntityComboBoxModel used by this PropertySearchModel, if any
    */
   public EntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;

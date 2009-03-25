@@ -83,14 +83,14 @@ public class PropertySummaryPanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'summaryType'.
+   * @return the summary type
    */
   public SummaryType getSummaryType() {
     return summaryType;
   }
 
   /**
-   * @param summaryType Value to set for property 'summaryType'.
+   * @param summaryType the type of summary to show
    */
   public void setSummaryType(final SummaryType summaryType) {
     if (this.summaryType != summaryType) {

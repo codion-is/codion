@@ -24,14 +24,14 @@ public class PropertyFilterModel extends AbstractSearchModel {
   }
 
   /**
-   * @return Value for property 'columnIndex'.
+   * @return the index of the column this filter model filters on
    */
   public int getColumnIndex() {
     return columnIndex;
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final Comparable value) {
     super.setUpperBound(value);
@@ -43,14 +43,14 @@ public class PropertyFilterModel extends AbstractSearchModel {
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final Comparable value) {
     super.setLowerBound(value);
   }
 
   /**
-   * @return Value for property 'lowerBound'.
+   * @return the lower bound
    */
   public Comparable getLowerBound() {
     return (Comparable) super.getLowerBound();

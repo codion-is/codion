@@ -87,7 +87,7 @@ public class DbConnection {
   }
 
   /**
-   * @return Value for property 'connectionValid'.
+   * @return true if the connection is valid
    */
   public boolean isConnectionValid() {
     try {
@@ -124,7 +124,7 @@ public class DbConnection {
   }
 
   /**
-   * @return Value for property 'connected'.
+   * @return true if the connection is connected
    */
   public boolean isConnected() {
     return connected;
@@ -151,7 +151,7 @@ public class DbConnection {
   }
 
   /**
-   * @return Value for property 'transactionOpen'.
+   * @return true if a transaction is open
    */
   public final boolean isTransactionOpen() {
     return transactionOpen;
@@ -165,18 +165,18 @@ public class DbConnection {
   }
 
   /**
-   * @param val Value to set for property 'allowCaching'.
+   * @param value true if query caching should be allowed
    */
-  public void setAllowCaching(final boolean val) {
-    allowCaching = val;
-    if (!val) {
+  public void setAllowCaching(final boolean value) {
+    allowCaching = value;
+    if (!value) {
       queryCache.clear();
       cacheQueriesRequests = 0;
     }
   }
 
   /**
-   * @return Value for property 'allowCaching'.
+   * @return true if this connection allowes query caching
    */
   public boolean getAllowCaching() {
     return allowCaching;
@@ -195,7 +195,7 @@ public class DbConnection {
   }
 
   /**
-   * @return Value for property 'cacheQueriesRequests'.
+   * @return the number of cache query requests
    */
   public int getCacheQueriesRequests() {
     return cacheQueriesRequests;
@@ -442,7 +442,7 @@ public class DbConnection {
   }
 
   /**
-   * @return Value for property 'connection'.
+   * @return the underlying Connection object
    */
   protected Connection getConnection() {
     return connection;

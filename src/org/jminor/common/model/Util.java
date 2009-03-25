@@ -114,7 +114,7 @@ public class Util {
   }
 
   /**
-   * @return Value for property 'loggingLevel'.
+   * @return the current logging level
    */
   public static Level getLoggingLevel() {
     if (loggers.size() == 0)

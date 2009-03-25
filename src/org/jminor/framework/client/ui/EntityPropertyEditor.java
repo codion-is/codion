@@ -72,14 +72,14 @@ public class EntityPropertyEditor extends JPanel {
   }
 
   /**
-   * @return Value for property 'buttonValue'.
+   * @return true if the edit has been accepted
    */
   public boolean isEditAccepted() {
     return buttonValue == JOptionPane.OK_OPTION;
   }
 
   /**
-   * @return Value for property 'okButton'.
+   * @return the OK button
    */
   public JButton getOkButton() {
     return okButton;
@@ -110,7 +110,7 @@ public class EntityPropertyEditor extends JPanel {
       case DOUBLE:
         return ((DoubleField)field).getDouble();
       case INT:
-        return ((IntField)field).getInteger();
+        return ((IntField)field).getInt();
       case BOOLEAN:
         return ((JComboBox) field).getSelectedItem();
       case CHAR: {

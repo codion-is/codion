@@ -138,14 +138,14 @@ public class TableSorter extends AbstractTableModel {
   }
 
   /**
-   * @return Value for property 'tableModel'.
+   * @return the table model
    */
   public TableModel getTableModel() {
     return tableModel;
   }
 
   /**
-   * @param tableModel Value to set for property 'tableModel'.
+   * @param tableModel the TableModel instance this TableSorter sort
    */
   public void setTableModel(TableModel tableModel) {
     if (this.tableModel != null) {
@@ -162,14 +162,14 @@ public class TableSorter extends AbstractTableModel {
   }
 
   /**
-   * @return Value for property 'tableHeader'.
+   * @return the table header
    */
   public JTableHeader getTableHeader() {
     return tableHeader;
   }
 
   /**
-   * @param tableHeader Value to set for property 'tableHeader'.
+   * @param tableHeader the JTableHeader this TableSorter instance should use
    */
   public void setTableHeader(JTableHeader tableHeader) {
     if (this.tableHeader != null) {
@@ -187,9 +187,6 @@ public class TableSorter extends AbstractTableModel {
     }
   }
 
-  /**
-   * @return Value for property 'sorting'.
-   */
   public boolean isSorting() {
     return sortingColumns.size() != 0;
   }

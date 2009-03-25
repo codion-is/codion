@@ -69,13 +69,13 @@ public interface IEntityDb {
   public void endTransaction(final boolean rollback) throws Exception;
 
   /**
-   * @param checkReferences Value to set for property 'checkDependencies'.
+   * @param checkDependencies true if dependencies should be checked before a delete is performed
    * @throws Exception in case of exception
    */
-  public void setCheckDependencies(final boolean checkReferences) throws Exception;
+  public void setCheckDependencies(final boolean checkDependencies) throws Exception;
 
   /**
-   * @return Value for property 'checkDependencies'.
+   * @return true if dependencies should be checked before a delete is performed
    * @throws Exception in case of exception
    */
   public boolean isCheckDependencies() throws Exception;

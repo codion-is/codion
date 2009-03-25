@@ -64,14 +64,14 @@ public abstract class AbstractPropertyLink extends Control {
   }
 
   /**
-   * @return Value for property 'propertyOwner'.
+   * @return the owner of the linked property, the model
    */
   public Object getPropertyOwner() {
     return propertyOwner;
   }
 
   /**
-   * @return Value for property 'linkType'.
+   * @return the type of this property link
    */
   public LinkType getLinkType() {
     return linkType;
@@ -118,7 +118,7 @@ public abstract class AbstractPropertyLink extends Control {
   protected abstract Object getUIPropertyValue();
 
   /**
-   * Update the UI according to the property value in the model
+   * Sets the property value in the UI
    * @param propertyValue the value to represent in the UI
    */
   protected abstract void setUIPropertyValue(final Object propertyValue);

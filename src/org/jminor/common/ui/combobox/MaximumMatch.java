@@ -146,7 +146,7 @@ public class MaximumMatch extends PlainDocument {
   }
 
   /**
-   * @param text Value to set for property 'text'.
+   * @param text the text to set
    */
   private void setText(final String text) {
     try {
@@ -165,7 +165,7 @@ public class MaximumMatch extends PlainDocument {
   }
 
   /**
-   * @param item Value to set for property 'selectedItem'.
+   * @param item the item to select
    */
   private void setSelectedItem(final Object item) {
     selecting = true;

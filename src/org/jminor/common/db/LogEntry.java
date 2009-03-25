@@ -62,14 +62,14 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   /**
-   * @return Value for property 'entryKey'.
+   * @return the log entry key
    */
   public String getEntryKey() {
     return method + (message != null && message.length() > 0 ? ": " + message : "");
   }
 
   /**
-   * @param exitTime Value to set for property 'exitTime'.
+   * @param exitTime the exit time
    * @return the difference between the given exit time and the entry time
    */
   public long setExitTime(final long exitTime) {
@@ -81,21 +81,21 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   /**
-   * @return Value for property 'delta'.
+   * @return the duration of the method call this entry represents
    */
   public long getDelta() {
     return delta;
   }
 
   /**
-   * @return Value for property 'entryTimeFormatted'.
+   * @return a formatted entry time
    */
   public String getEntryTimeFormatted() {
     return ExactDateFormat.get().format(entryTime);
   }
 
   /**
-   * @return Value for property 'exitTimeFormatted'.
+   * @return a formatted exit time
    */
   public String getExitTimeFormatted() {
     return ExactDateFormat.get().format(new Date(exitTime));

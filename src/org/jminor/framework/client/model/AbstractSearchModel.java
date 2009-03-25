@@ -86,7 +86,7 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @param caseSensitive Value to set for property 'caseSensitive'.
+   * @param caseSensitive true if this search model should be case sensitive when working with strings
    */
   public void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
@@ -100,56 +100,56 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final String value) {
     setUpperBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final Double value) {
     setUpperBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final Integer value) {
     setUpperBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final boolean value) {
     setUpperBound(Boolean.valueOf(value));
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final char value) {
     setUpperBound(Character.valueOf(value));
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final Boolean value) {
     setUpperBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'upperBound'.
+   * @param value the upper bound
    */
   public void setUpperBound(final Timestamp value) {
     setUpperBound((Object) value);
   }
 
   /**
-   * @param upper Value to set for property 'upperBound'.
+   * @param upper the upper bound
    * @throws IllegalStateException in case this model has been locked
    */
   public void setUpperBound(final Object upper) {
@@ -162,7 +162,7 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @return Value for property 'upperBound'.
+   * @return the upper bound
    */
   public Object getUpperBound() {
     if (getPropertyType() == Type.STRING && automaticWildcard)
@@ -172,56 +172,56 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final String value) {
     setLowerBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final Double value) {
     setLowerBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final Integer value) {
     setLowerBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final boolean value) {
     setLowerBound(Boolean.valueOf(value));
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final char value) {
     setLowerBound(Character.valueOf(value));
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final Boolean value) {
     setLowerBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    */
   public void setLowerBound(final Timestamp value) {
     setLowerBound((Object) value);
   }
 
   /**
-   * @param value Value to set for property 'lowerBound'.
+   * @param value the lower bound
    * @throws IllegalStateException in case this model has been locked
    */
   public void setLowerBound(final Object value) {
@@ -234,7 +234,7 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @return Value for property 'lowerBound'.
+   * @return the lower bound
    */
   public Object getLowerBound() {
     if (getPropertyType() == Type.STRING && automaticWildcard)
@@ -244,14 +244,14 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @return Value for property 'searchType'.
+   * @return the search type
    */
   public SearchType getSearchType() {
     return searchType;
   }
 
   /**
-   * @param type Value to set for property 'searchType'.
+   * @param type the search type
    * @throws IllegalStateException in case this model has been locked
    */
   public void setSearchType(final SearchType type) {
@@ -264,14 +264,14 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @return Value for property 'searchEnabled'.
+   * @return true if this search model is enabled
    */
   public boolean isSearchEnabled() {
     return stSearchEnabled.isActive();
   }
 
   /**
-   * @param value Value to set for property 'searchEnabled'.
+   * @param value true if this search model should be enabled
    * @throws IllegalStateException in case this model has been locked
    */
   public void setSearchEnabled(final boolean value) {
@@ -281,7 +281,7 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @param value Value to set for property 'automaticWildcardOn'.
+   * @param value true if wildcards should automatically be added to strings
    */
   public void setAutomaticWildcard(final boolean value) {
     automaticWildcard = value;

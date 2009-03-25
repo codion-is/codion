@@ -168,7 +168,7 @@ public class AutoCompletion extends PlainDocument {
   }
 
   /**
-   * @param text Value to set for property 'text'.
+   * @param text the text to set
    */
   private void setText(String text) {
     try {
@@ -187,7 +187,7 @@ public class AutoCompletion extends PlainDocument {
   }
 
   /**
-   * @param item Value to set for property 'selectedItem'.
+   * @param item the item to select
    */
   private void setSelectedItem(Object item) {
     selecting = true;

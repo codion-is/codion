@@ -63,21 +63,21 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   /**
-   * @return Value for property 'lastPosition'.
+   * @return the last screen position
    */
   public Point getLastPosition() {
     return lastPosition;
   }
 
   /**
-   * @return Value for property 'dialogActive'.
+   * @return true if the dialog is active
    */
   public boolean isDialogActive() {
     return stIsDialogActive.isActive();
   }
 
   /**
-   * @return Value for property 'dialogShowing'.
+   * @return true if the dialog is being shown
    */
   public boolean isDialogShowing() {
     return stIsDialogShowing.isActive();
@@ -128,7 +128,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   /**
-   * @return Value for property 'dialog'.
+   * @return the dialog used to show this filter panel
    */
   public JDialog getDialog() {
     return searchDlg;

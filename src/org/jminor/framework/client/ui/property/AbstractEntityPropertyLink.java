@@ -31,21 +31,21 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   }
 
   /**
-   * @return Value for property 'valueNull'.
+   * @return true if the underlying model value of this property is null
    */
   protected boolean isValueNull() {
     return getEntityModel().isValueNull(property.propertyID);
   }
 
   /**
-   * @return Value for property 'property'.
+   * @return the linked property
    */
   protected Property getProperty() {
     return property;
   }
 
   /**
-   * @return Value for property 'entityModel'.
+   * @return the property owner, in this case a EntityModel
    */
   private EntityModel getEntityModel() {
     return (EntityModel) super.getPropertyOwner();

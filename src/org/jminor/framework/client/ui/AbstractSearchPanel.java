@@ -96,35 +96,35 @@ public abstract class AbstractSearchPanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'model'.
+   * @return the search model this panel uses
    */
   public AbstractSearchModel getModel() {
     return this.model;
   }
 
   /**
-   * @param value Value to set for property 'advancedSearchOn'.
+   * @param value true if advanced search should be enabled
    */
   public void setAdvancedSearchOn(final boolean value) {
     stAdvancedSearch.setActive(value);
   }
 
   /**
-   * @return Value for property 'advancedSearchOn'.
+   * @return true if the advanced search is enabled
    */
   public boolean isAdvancedSearchOn() {
     return stAdvancedSearch.isActive();
   }
 
   /**
-   * @return Value for property 'upperField'.
+   * @return the JComponent used to specify the upper bound
    */
   public JComponent getUpperField() {
     return upperField;
   }
 
   /**
-   * @return Value for property 'lowerField'.
+   * @return the JComponent used to specify the lower bound
    */
   public JComponent getLowerField() {
     return lowerField;

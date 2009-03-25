@@ -41,7 +41,7 @@ public class SteppedComboBox extends JComboBox {
   }
 
   /**
-   * @param width Value to set for property 'popupWidth'.
+   * @param width the width of the popup
    */
   public void setPopupWidth(int width) {
     popupWidth = width;

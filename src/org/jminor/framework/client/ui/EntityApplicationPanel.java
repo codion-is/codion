@@ -91,7 +91,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @param model Value to set for property 'model'.
+   * @param model the application model this application panel should use
    * @throws org.jminor.common.model.UserCancelException if the user cancels
    * during the login procedure
    */
@@ -100,7 +100,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'model'.
+   * @return the application model this application panel uses
    */
   public EntityApplicationModel getModel() {
     return this.model;
@@ -117,7 +117,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'alwaysOnTop'.
+   * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
    */
   public boolean isAlwaysOnTop() {
     final JFrame parent = UiUtil.getParentFrame(this);
@@ -145,19 +145,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     FrameworkUiUtil.setLoggingLevel(this);
   }
 
-  /**
-   * @return Value for property 'fileControlSet'.
-   */
-  public ControlSet getFileControlSet() {
-    final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
-    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-    file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
-            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
-            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
-
-    return file;
-  }
-
   public void viewApplicationTree() {
     UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeApplicationTree(), false,
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
@@ -183,7 +170,20 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'settingsControlSet'.
+   * @return the ControlSet specifying the items in the 'File' menu
+   */
+  public ControlSet getFileControlSet() {
+    final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
+    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
+    file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
+            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
+            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
+
+    return file;
+  }
+
+  /**
+   * @return the ControlSet specifying the items in the 'Settings' menu
    */
   public ControlSet getSettingsControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
@@ -196,10 +196,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'toolsControlSet'.
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * @return the ControlSet specifying the items in the 'Tools' menu
    */
-  public ControlSet getToolsControlSet() throws UserException {
+  public ControlSet getToolsControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
             FrameworkMessages.get(FrameworkMessages.TOOLS_MNEMONIC).charAt(0));
     ret.add(getSettingsControlSet());
@@ -208,7 +207,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'viewControlSet'.
+   * @return the ControlSet specifying the items in the 'View' menu
    */
   public ControlSet getViewControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
@@ -230,7 +229,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @return Value for property 'helpControlSet'.
+   * @return the ControlSet specifying the items in the 'Help' menu
    */
   public ControlSet getHelpControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),

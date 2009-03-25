@@ -28,7 +28,21 @@ public class IntField extends TextFieldPlus {
 
   /** {@inheritDoc} */
   public Object getValue() {
-    return this.getInteger();
+    return this.getInt();
+  }
+
+  /**
+   * @return the value
+   */
+  public Integer getInt() {
+    return Util.getInt(getText());
+  }
+
+  /**
+   * @param value the value to set
+   */
+  public void setInt(final Integer value) {
+    setText(value == null ? "" : value.toString());
   }
 
   /** {@inheritDoc} */
@@ -65,26 +79,5 @@ public class IntField extends TextFieldPlus {
       if (valueOk)
         super.insertString(offset, string, a);
     }
-  }
-
-  /**
-   * @return Value for property 'int'.
-   */
-  public Integer getInt() {
-    return Util.getInt(getText());
-  }
-
-  /**
-   * @param value Value to set for property 'int'.
-   */
-  public void setInt(final Integer value) {
-    setText(value == null ? "" : value.toString());
-  }
-
-  /**
-   * @return Value for property 'integer'.
-   */
-  public Integer getInteger() {
-    return getInt();
   }
 }

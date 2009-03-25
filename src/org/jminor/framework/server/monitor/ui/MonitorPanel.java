@@ -77,17 +77,17 @@ public class MonitorPanel extends JPanel {
   }
 
   /**
-   * @return Value for property 'alwaysOnTop'.
+   * @return true if the parent frame is always on top
    */
   public boolean getAlwaysOnTop() {
     return monitorFrame != null && monitorFrame.isAlwaysOnTop();
   }
 
   /**
-   * @param val Value to set for property 'alwaysOnTop'.
+   * @param value true if the parent frame should be always on top
    */
-  public void setAlwaysOnTop(final boolean val) {
-    monitorFrame.setAlwaysOnTop(val);
+  public void setAlwaysOnTop(final boolean value) {
+    monitorFrame.setAlwaysOnTop(value);
     evtAlwaysOnTopChanged.fire();
   }
 

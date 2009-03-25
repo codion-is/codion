@@ -58,70 +58,70 @@ public class Control extends AbstractAction {
   public void actionPerformed(final ActionEvent e) {}
 
   /**
-   * @return Value for property 'description'.
+   * @return the description
    */
   public String getDescription() {
     return (String) this.getValue(Action.SHORT_DESCRIPTION);
   }
 
   /**
-   * @param desc Value to set for property 'description'.
+   * @param desc the description string
    */
   public void setDescription(final String desc) {
     this.putValue(Action.SHORT_DESCRIPTION, desc);
   }
 
   /**
-   * @return Value for property 'name'.
+   * @return the name
    */
   public String getName() {
     return (String) this.getValue(Action.NAME);
   }
 
   /**
-   * @param name Value to set for property 'name'.
+   * @param name the name of this Control instance
    */
   public void setName(final String name) {
     this.putValue(NAME, name);
   }
 
   /**
-   * @return Value for property 'enabledState'.
+   * @return the state which controls whether this Control instance is enabled
    */
   public State getEnabledState() {
     return enabledState;
   }
 
   /**
-   * @param key Value to set for property 'mnemonic'.
+   * @param key the mnemonic to associate with this Control instance
    */
   public void setMnemonic(final int key) {
     this.putValue(MNEMONIC_KEY, key);
   }
 
   /**
-   * @return Value for property 'mnemonic'.
+   * @return the mnemonic
    */
   public char getMnemonic() {
     return (Character) this.getValue(MNEMONIC_KEY);
   }
 
   /**
-   * @param ks Value to set for property 'keyStroke'.
+   * @param ks the KeyStroke to associate with this Control
    */
   public void setKeyStroke(final KeyStroke ks) {
     this.putValue(ACCELERATOR_KEY, ks);
   }
 
   /**
-   * @param icon Value to set for property 'icon'.
+   * @param icon the icon to associate with this Control
    */
   public void setIcon(final Icon icon) {
     this.putValue(SMALL_ICON, icon);
   }
 
   /**
-   * @return Value for property 'icon'.
+   * @return the icon
    */
   public Icon getIcon() {
     return (Icon) getValue(SMALL_ICON);
