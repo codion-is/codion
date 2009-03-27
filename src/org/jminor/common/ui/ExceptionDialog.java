@@ -139,6 +139,13 @@ public class ExceptionDialog extends JDialog {
   }
 
   /**
+   * @return true if show details is active
+   */
+  public boolean getShowDetails() {
+    return stShowDetails.isActive();
+  }
+
+  /**
    * @param show true if the exception details should be visible
    */
   public void setShowDetails(final boolean show) {
