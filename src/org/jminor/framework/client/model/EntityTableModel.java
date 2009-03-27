@@ -49,6 +49,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+/**
+ * A TableModel implementation for showing entities
+ */
 public class EntityTableModel extends AbstractTableModel implements IRefreshable, JRDataSource {
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
@@ -451,6 +454,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
    * @see org.jminor.framework.model.EntityProxy
+   * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getEntityAtViewIndex(row);

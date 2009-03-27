@@ -36,6 +36,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * A class for editing a property value for one or more entities at a time
+ */
 public class EntityPropertyEditor extends JPanel {
 
   public final Event evtButtonClicked = new Event("EntityPropertyEditor.evtButtonClicked");
@@ -47,15 +50,38 @@ public class EntityPropertyEditor extends JPanel {
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
 
+  /**
+   * Instantiates a new EntityPropertyEditor
+   * @param property the property to edit
+   * @param entities the entities
+   * @throws UserException in case of an exception
+   */
   public EntityPropertyEditor(final Property property, final List<Entity> entities) throws UserException {
     this(property, entities, null);
   }
 
+  /**
+   * Instantiates a new EntityPropertyEditor
+   * @param property the property to edit
+   * @param entities the entities
+   * @param entityModel an EntityModel instance used in case of an Property.EntityProperty being edited,
+   * it provides both the IEntityDbProvider as well as the EntityComboBoxModel used in that case
+   * @throws UserException in case of an exception
+   */
   public EntityPropertyEditor(final Property property, final List<Entity> entities,
                               final EntityModel entityModel) throws UserException {
     this(property, entities, entityModel, null);
   }
 
+  /**
+   * Instantiates a new EntityPropertyEditor
+   * @param property the property to edit
+   * @param entities the entities
+   * @param entityModel an EntityModel instance used in case of an Property.EntityProperty being edited,
+   * it provides both the IEntityDbProvider as well as the EntityComboBoxModel used in that case
+   * @param inputManager the InputManager to use
+   * @throws UserException in case of an exception
+   */
   public EntityPropertyEditor(final Property property, final List<Entity> entities,
                               final EntityModel entityModel, final InputManager inputManager) throws UserException {
     if (property instanceof Property.EntityProperty && entityModel == null)

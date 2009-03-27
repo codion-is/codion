@@ -26,7 +26,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   private static final Logger log = Util.getLogger(EntityComboBoxModel.class);
 
   /**
-   * fired when after a refresh has been performed
+   * fired when a refresh has been performed
    */
   public final Event evtRefreshDone = new Event("EntityComboBoxModel.evtRefreshDone");
 
@@ -133,36 +133,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
-   */
-  protected List<?> getContents() {
-    try {
-      if (staticData && dataInitialized && !forceRefresh) {
-        log.trace(this + " refresh not required");
-        return super.getContents();
-      }
-      final List<Entity> entities = getEntitiesFromDb();
-      final ListIterator<Entity> iterator = entities.listIterator();
-      while (iterator.hasNext())
-        if (!include(iterator.next()))
-          iterator.remove();
-
-      return entities;
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
-    catch (DbException e) {
-      throw new RuntimeException(e);
-    }
-    finally {
-      dataInitialized = true;
-      evtRefreshDone.fire();
-      log.trace(this + " done refreshing" + (forceRefresh ? " (forced)" : ""));
-    }
-  }
-
-  /**
    * Clears the contents from this model
    */
   public void clear() {
@@ -245,6 +215,36 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   @SuppressWarnings({"UnusedDeclaration"})
   protected boolean include(final Entity entity) {
     return true;
+  }
+
+  /**
+   * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
+   */
+  protected List<?> getContents() {
+    try {
+      if (staticData && dataInitialized && !forceRefresh) {
+        log.trace(this + " refresh not required");
+        return super.getContents();
+      }
+      final List<Entity> entities = getEntitiesFromDb();
+      final ListIterator<Entity> iterator = entities.listIterator();
+      while (iterator.hasNext())
+        if (!include(iterator.next()))
+          iterator.remove();
+
+      return entities;
+    }
+    catch (UserException e) {
+      throw e.getRuntimeException();
+    }
+    catch (DbException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      dataInitialized = true;
+      evtRefreshDone.fire();
+      log.trace(this + " done refreshing" + (forceRefresh ? " (forced)" : ""));
+    }
   }
 
   /**

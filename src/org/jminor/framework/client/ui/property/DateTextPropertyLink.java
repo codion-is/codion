@@ -19,11 +19,23 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Date;
 
+/**
+ * A class for linking a formatted text field to a EntityModel date property value
+ */
 public class DateTextPropertyLink extends TextPropertyLink {
 
   private final String fieldMaskString;
   private final Event updateValidColor = new Event("DateTextPropertyLink.updateValidColor");
 
+  /**
+   * Instantiates a new DateTextPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link
+   * @param textField the text field to link
+   * @param linkType the link type
+   * @param dateFormat the date format to use
+   * @param formatMaskString the date format mask string used by the formatted text field
+   */
   public DateTextPropertyLink(final EntityModel entityModel, final Property property, final JFormattedTextField textField,
                               final LinkType linkType, final DateFormat dateFormat, final String formatMaskString) {
     super(entityModel, property, textField, true, linkType, dateFormat);
@@ -45,14 +57,14 @@ public class DateTextPropertyLink extends TextPropertyLink {
   }
 
   /** {@inheritDoc} */
-  protected Object getFormattedValue(final String text) {
+  protected Object getParsedValue(final String text) {
     updateValidColor.fire();
-    final Date formatted = (Date) super.getFormattedValue(text);
+    final Date formatted = (Date) super.getParsedValue(text);
     return formatted == null ? null : new Timestamp(formatted.getTime());
   }
 
   private void updateFieldColor(final JFormattedTextField textField) {
-    final boolean validInput = !isValueNull() || fieldContainsMaskOnly();
+    final boolean validInput = !isModelPropertyValueNull() || fieldContainsMaskOnly();
     textField.setBackground(validInput ? (new JTextField()).getBackground() : Color.LIGHT_GRAY);
   }
 

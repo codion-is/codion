@@ -64,10 +64,23 @@ public class EntityCriteriaPanel extends JPanel {
 
     tableModel.getSearchModel().refreshSearchComboBoxModels();
 
-    //south panel
     final JPanel southPanel = initializeSouthPanel(tableModel);
     if (southPanel != null)
       add(southPanel, BorderLayout.SOUTH);
+  }
+
+  /**
+   * @return Value for property 'queryRangeFrom'.
+   */
+  public int getQueryRangeFrom() {
+    return queryRangeMin.getInt();
+  }
+
+  /**
+   * @return Value for property 'queryRangeTo'.
+   */
+  public int getQueryRangeTo() {
+    return queryRangeMax.getInt();
   }
 
   private JPanel initializeSouthPanel(final EntityTableModel tableModel) {
@@ -159,19 +172,5 @@ public class EntityCriteriaPanel extends JPanel {
       }
     });
     return searchCriterias;
-  }
-
-  /**
-   * @return Value for property 'queryRangeFrom'.
-   */
-  public int getQueryRangeFrom() {
-    return queryRangeMin.getInt();
-  }
-
-  /**
-   * @return Value for property 'queryRangeTo'.
-   */
-  public int getQueryRangeTo() {
-    return queryRangeMax.getInt();
   }
 }

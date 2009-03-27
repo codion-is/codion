@@ -177,10 +177,22 @@ public abstract class AbstractSearchPanel extends JPanel {
     return ret;
   }
 
+  /**
+   * @param searchType the search type
+   * @return true if the given search type is allowed given the underlying property
+   */
   protected abstract boolean searchTypeAllowed(final SearchType searchType);
 
+  /**
+   * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
+   * @return an input field for either the upper or lower bound
+   */
   protected abstract JComponent getInputField(final boolean isUpperBound);
 
+  /**
+   * @param type the Type
+   * @return true if a lower bound field is required given the data type
+   */
   protected abstract boolean isLowerFieldRequired(final Type type);
 
   private JComboBox initSearchTypeComboBox() {

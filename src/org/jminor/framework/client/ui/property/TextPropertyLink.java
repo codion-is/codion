@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.text.Format;
 import java.text.ParseException;
 
+/**
+ * A class for linking a text component to a EntityModel text property value
+ */
 public class TextPropertyLink extends AbstractEntityPropertyLink implements DocumentListener, Serializable {
 
   private final JTextComponent textComponent;
@@ -30,16 +33,43 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   private final String placeholder;
   private final Format format;
 
-  public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
+  /**
+   * Instantiates a new TextPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link
+   * @param textComponent the text component to link
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
+   */
+  public TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
                           final boolean immediateUpdate) {
-    this(owner, property, textComponent, immediateUpdate, LinkType.READ_WRITE);
+    this(entityModel, property, textComponent, immediateUpdate, LinkType.READ_WRITE);
   }
 
-  public TextPropertyLink(final EntityModel owner, final Property property, final JTextComponent textComponent,
+  /**
+   * Instantiates a new TextPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link
+   * @param textComponent the text component to link
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
+   * @param linkType the link type
+   */
+  public TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
                           final boolean immediateUpdate, final LinkType linkType) {
-    this(owner, property, textComponent, immediateUpdate, linkType, null);
+    this(entityModel, property, textComponent, immediateUpdate, linkType, null);
   }
 
+  /**
+   * Instantiates a new TextPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link
+   * @param textComponent the text component to link
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
+   * @param linkType the link type
+   * @param format the format object to use when presenting the value in the text field
+   */
   protected TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
                              final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(entityModel, property, linkType);
@@ -102,17 +132,27 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
     return this.textComponent;
   }
 
+  /**
+   * Returns a valid property value based on the given text
+   * @param text the text to use to create a valid value
+   * @return a valid value
+   */
   protected Object valueFromText(final String text) {
     if (placeholder != null && text != null && text.contains(placeholder))
       return null;
 
     if (format != null)
-      return getFormattedValue(text);
+      return getParsedValue(text);
 
     return text;
   }
 
-  protected Object getFormattedValue(final String text) {
+  /**
+   * Parses the given text according to the format used by this TextPropertyLink
+   * @param text the text to parse
+   * @return an Object parsed from the given text
+   */
+  protected Object getParsedValue(final String text) {
     try {
       return text != null ? format.parseObject(text) : null;
     }

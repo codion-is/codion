@@ -28,7 +28,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.client.ui.property.CheckBoxPropertyLink;
+import org.jminor.framework.client.ui.property.BooleanPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
 import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
@@ -298,7 +298,7 @@ public class FrameworkUiUtil {
     if (!includeCaption)
       ret.setToolTipText(property.getCaption());
     UiUtil.linkToEnabledState(enabledState, ret);
-    new CheckBoxPropertyLink(entityModel, property, ret.getModel());
+    new BooleanPropertyLink(entityModel, property, ret.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
     final boolean transferFocusOnEnter =
             (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);

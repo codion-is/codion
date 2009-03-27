@@ -297,3 +297,6 @@
   AbstractPropertyLink enabledState removed from constructor, didn't have any effect whatsoever
   PropertyLink class hierarchy changed according to the above, that is, removed a lot of 'null' parameters
   JavaDoc changes and additions
+  TextPropertyLink.getFormattedValue() renamed to getParsedValue()
+  More JavaDoc additions and changes as well as some minor code improvements, variable names and such
+  CheckBoxPropertyLink renamed to BooleanPropertyLink

@@ -295,10 +295,9 @@ public class EntityRepository implements Serializable {
       if (!includeNonUpdatable && !property.isUpdatable())
         propertyHashSet.remove(property);
     }
-    if (includePrimaryKeyProperties) {
+    if (includePrimaryKeyProperties)
       for (final Property.PrimaryKeyProperty primaryKeyProperty : getPrimaryKeyProperties(entityID))
         propertyHashSet.add(primaryKeyProperty);
-    }
 
     return new ArrayList<Property>(propertyHashSet);
   }
@@ -378,10 +377,7 @@ public class EntityRepository implements Serializable {
    * @return a collection containing the properties found in the entity identified by <code>entityID</code>
    */
   public Collection<Property> getProperties(final String entityID, final boolean includeHidden) {
-    if (includeHidden)
-      return getProperties(entityID).values();
-    else
-      return getVisibleProperties(entityID);
+    return includeHidden ? getProperties(entityID).values() : getVisibleProperties(entityID);
   }
 
   /**
@@ -451,10 +447,9 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException in case no such property exists
    */
   public Property.EntityProperty getEntityProperty(final String entityID, final String propertyID) {
-    for (final Property.EntityProperty entityProperty : getEntityProperties(entityID)) {
+    for (final Property.EntityProperty entityProperty : getEntityProperties(entityID))
       if (entityProperty.propertyID.equals(propertyID))
         return entityProperty;
-    }
 
     throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);
   }

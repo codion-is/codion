@@ -9,6 +9,9 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.Property;
 
+/**
+ * A class for linking a DoubleField to a EntityModel double property value
+ */
 public class DoubleTextPropertyLink extends TextPropertyLink {
 
   public DoubleTextPropertyLink(final EntityModel entityModel, final Property property, final DoubleField textField,

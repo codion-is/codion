@@ -8,10 +8,22 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.Property;
 
+/**
+ * An abstract class for linking a UI component to a EntityModel property value
+ */
 public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
 
+  /**
+   * The linked property
+   */
   private final Property property;
 
+  /**
+   * Instantiate a new AbstractEntityPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link
+   * @param linkType the link type
+   */
   public AbstractEntityPropertyLink(final EntityModel entityModel, final Property property, final LinkType linkType) {
     super(entityModel, property.propertyID, entityModel.getPropertyChangeEvent(property), linkType);
     this.property = property;
@@ -19,10 +31,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
 
   /** {@inheritDoc} */
   public Object getModelPropertyValue() {
-    if (getEntityModel().isValueNull(property.propertyID))
-      return null;
-
-    return getEntityModel().getValue(property);
+    return isModelPropertyValueNull() ? null : getEntityModel().getValue(property.propertyID);
   }
 
   /** {@inheritDoc} */
@@ -33,7 +42,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   /**
    * @return true if the underlying model value of this property is null
    */
-  protected boolean isValueNull() {
+  protected boolean isModelPropertyValueNull() {
     return getEntityModel().isValueNull(property.propertyID);
   }
 

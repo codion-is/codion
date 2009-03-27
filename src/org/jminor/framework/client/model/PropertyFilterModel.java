@@ -24,7 +24,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
   }
 
   /**
-   * @return the index of the column this filter model filters on
+   * @return the index of the column this filter model filters
    */
   public int getColumnIndex() {
     return columnIndex;
@@ -71,9 +71,9 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
     switch (getSearchType()) {
       case LIKE:
-        return includeExact(toCompare);
+        return includeLike(toCompare);
       case NOT_LIKE:
-        return includeNotExact(toCompare);
+        return includeNotLike(toCompare);
       case MAX:
         return includeMax(toCompare);
       case MIN:
@@ -97,7 +97,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       evtUpperBoundChanged.fire();
   }
 
-  protected boolean includeExact(final Comparable comparable) {
+  protected boolean includeLike(final Comparable comparable) {
     if (getUpperBound() == null)
       return true;
 
@@ -110,7 +110,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
-  protected boolean includeNotExact(final Comparable comparable) {
+  protected boolean includeNotLike(final Comparable comparable) {
     if (getUpperBound() == null)
       return true;
 

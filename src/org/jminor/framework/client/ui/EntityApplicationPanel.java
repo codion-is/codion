@@ -401,12 +401,11 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
-      final Control ctr = new Control(panelProvider.getCaption()) {
+      ret.add(new Control(panelProvider.getCaption()) {
         public void actionPerformed(ActionEvent e) {
           showEntityPanel(panelProvider);
         }
-      };
-      ret.add(ctr);
+      });
     }
 
     return ret;
@@ -467,31 +466,31 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> panelClass,
-                                                        final Class<? extends EntityApplicationModel> modelClass,
+                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
+                                                        final Class<? extends EntityApplicationModel> applicationModelClass,
                                                         final String iconName, final boolean maximize, final Dimension size) {
-    return startApplication(frameCaption, panelClass, modelClass, iconName, maximize, size, null);
+    return startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, size, null);
   }
 
   public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> panelClass,
-                                                        final Class<? extends EntityApplicationModel> modelClass,
+                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
+                                                        final Class<? extends EntityApplicationModel> applicationModelClass,
                                                         final String iconName, final boolean maximize,
                                                         final Dimension size, final User defaultUser) {
-    return startApplication(frameCaption, panelClass, modelClass, iconName, maximize, size, defaultUser, true);
+    return startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, size, defaultUser, true);
   }
 
   public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> panelClass,
+                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
                                                         final Class<? extends EntityApplicationModel> applicationModelClass,
                                                         final String iconName, final boolean maximize,
                                                         final Dimension size, final User defaultUser,
                                                         final boolean northToolBar) {
-    return startApplication(frameCaption, panelClass, applicationModelClass, iconName, maximize, size, defaultUser, northToolBar, true);
+    return startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, size, defaultUser, northToolBar, true);
   }
 
   public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> panelClass,
+                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
                                                         final Class<? extends EntityApplicationModel> applicationModelClass,
                                                         final String iconName, final boolean maximize,
                                                         final Dimension size, final User defaultUser,
@@ -502,9 +501,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     boolean retry = true;
     while (retry) {
       try {
-        final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(panelClass, iconName) :
+        final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(applicationPanelClass, iconName) :
                 Images.loadImage("jminor_logo32.gif");
-        applicationPanel = constructApplicationPanel(panelClass);
+        applicationPanel = constructApplicationPanel(applicationPanelClass);
 
         initializationDialog = showInitializationDialog(null, applicationPanel, applicationIcon, frameCaption);
         final User user = getUser(frameCaption, defaultUser, applicationPanel, applicationIcon);
@@ -606,6 +605,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @param size if the JFrame is not maximed then it's preferredSize is set to this value
    * @return an initialized, but non-visible JFrame
    * @throws org.jminor.common.model.UserException in case of a user exception
+   * @see #getNorthToolBar()
    */
   private JFrame prepareFrame(final ImageIcon applicationIcon, final String title, final boolean maximize, final boolean northToolBar,
                               final boolean showMenuBar, final Dimension size) throws UserException {

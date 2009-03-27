@@ -15,7 +15,6 @@ import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -30,32 +29,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * EntityComboBox provides a button for creating a new entity
+ * An EntityComboBox provides a button for creating a new entity
+ * Use <code>createPanel()</code> to create a panel which includes the EntityComboBox and the button
  */
 public class EntityComboBox extends SteppedComboBox {
 
   private final JButton btnNewRecord;
   private final EntityPanelProvider newRecordPanelProvider;
-  private final Action closeAction;
 
-  public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanelProvider newRecordPanelProvider) {
+  /**
+   * Instantiates a new EntityComboBox
+   * @param model the EntityComboBoxModel
+   * @param newRecordPanelProvider a EntityPanelProvider which provides a panel for creating
+   * new records for the underlying entity/table
+   */
+  public EntityComboBox(final EntityComboBoxModel model, final EntityPanelProvider newRecordPanelProvider) {
     this(model, newRecordPanelProvider, true);
   }
 
-  public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanelProvider newRecordPanelProvider,
+  /**
+   * Instantiates a new EntityComboBox
+   * @param model the EntityComboBoxModel
+   * @param newRecordPanelProvider a EntityPanelProvider which provides a panel for creating
+   * new records for the underlying entity/table
+   * @param newRecordButtonTakesFocus if true then the new record button is included in the focus traversal
+   */
+  public EntityComboBox(final EntityComboBoxModel model, final EntityPanelProvider newRecordPanelProvider,
                         final boolean newRecordButtonTakesFocus) {
-    this(model, newRecordPanelProvider, newRecordButtonTakesFocus, null);
-  }
-
-  public EntityComboBox(final EntityComboBoxModel model,
-                        final EntityPanelProvider newRecordPanelProvider,
-                        final boolean newRecordButtonTakesFocus,
-                        final Action closeAction) {
     super(model);
     this.newRecordPanelProvider = newRecordPanelProvider;
-    this.closeAction = closeAction;
     this.btnNewRecord = newRecordPanelProvider != null ? initializeNewRecordButton(newRecordButtonTakesFocus) : null;
     setComponentPopupMenu(initializePopupMenu());
   }
@@ -141,8 +143,6 @@ public class EntityComboBox extends SteppedComboBox {
               getModel().setSelectedItem(selEntity);
           }
           pane.dispose();
-          if (closeAction != null)
-            closeAction.actionPerformed(new ActionEvent(entityPanel, 0, ""));
           //to prevent a memory leak, otherwise the KeyboardFocusManager keeps a live
           //reference to the dialog, preventing it from being garbage collected
 //          KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener("focusOwner", focusListener);

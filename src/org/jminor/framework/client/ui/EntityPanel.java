@@ -230,7 +230,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes a new EntityPanel instance.
-   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    */
   public EntityPanel(final boolean refreshOnInit) {
     this(refreshOnInit, true);
@@ -238,7 +238,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes a new EntityPanel instance.
-   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
    * is colored according to the underlying entity
    */
@@ -248,7 +248,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes a new EntityPanel instance.
-   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
    * is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
@@ -260,7 +260,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes a new EntityPanel instance.
-   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
    * is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
@@ -274,7 +274,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes a new EntityPanel instance.
-   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
    * is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
@@ -290,7 +290,7 @@ public abstract class EntityPanel extends EntityBindingFactory implements IExcep
 
   /**
    * Initializes a new EntityPanel instance.
-   * @param refreshOnInit if true then the underlying data model is refreshed during initialization
+   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
    * is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,

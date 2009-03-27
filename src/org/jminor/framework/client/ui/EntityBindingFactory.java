@@ -195,7 +195,7 @@ public abstract class EntityBindingFactory extends JPanel {
   }
 
   protected final JCheckBox createCheckBox(final String propertyID) {
-    return createCheckBox(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID));
+    return createCheckBox(propertyID, null);
   }
 
   protected final JCheckBox createCheckBox(final String propertyID, final State enabledState) {

@@ -9,6 +9,9 @@ import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.model.Property;
 
+/**
+ * A class for linking a IntField to a EntityModel int property value
+ */
 public class IntTextPropertyLink extends TextPropertyLink {
 
   public IntTextPropertyLink(final EntityModel entityModel, final Property property, final IntField textField,

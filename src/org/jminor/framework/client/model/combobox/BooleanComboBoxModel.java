@@ -8,6 +8,10 @@ import org.jminor.framework.model.Type;
 
 import javax.swing.DefaultComboBoxModel;
 
+/**
+ * A ComboBoxModel for boolean values, true, false and null
+ * @see org.jminor.framework.model.Type.Boolean
+ */
 public class BooleanComboBoxModel extends DefaultComboBoxModel {
 
   public final Event evtSelectedItemChanged = new Event("BooleanComboBoxModel.evtSelectedItemChanged");
@@ -21,10 +25,7 @@ public class BooleanComboBoxModel extends DefaultComboBoxModel {
 
   /** {@inheritDoc} */
   public void setSelectedItem(final Object item) {
-    if (item == null)
-      super.setSelectedItem(Type.Boolean.NULL);
-    else
-      super.setSelectedItem(item);
+    super.setSelectedItem(item == null ? Type.Boolean.NULL : item);
 
     evtSelectedItemChanged.fire();
   }

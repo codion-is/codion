@@ -18,18 +18,43 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+/**
+ * A class for linking a ComboBox to a EntityModel property value
+ */
 public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
 
+  /**
+   * The linked ComboBoxModel
+   */
   private final ComboBoxModel boxModel;
 
+  /**
+   * Instantiate a new ComboBoxPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param propertyID the ID of the property to link to
+   * @param comboBox the combo box to link
+   */
   public ComboBoxPropertyLink(final EntityModel entityModel, final String propertyID, final JComboBox comboBox) {
     this(entityModel, EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID), comboBox);
   }
 
+  /**
+   * Instantiate a new ComboBoxPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link to
+   * @param comboBox the combo box to link
+   */
   public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox) {
     this(entityModel, property, comboBox, LinkType.READ_WRITE);
   }
 
+  /**
+   * Instantiate a new ComboBoxPropertyLink
+   * @param entityModel the EntityModel instance
+   * @param property the property to link to
+   * @param comboBox the combo box to link
+   * @param linkType the link type
+   */
   public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox,
                               final LinkType linkType) {
     super(entityModel, property, linkType);

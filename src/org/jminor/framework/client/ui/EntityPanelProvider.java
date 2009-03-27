@@ -6,17 +6,31 @@ import org.jminor.framework.db.IEntityDbProvider;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * A class providing EntityPanel instances
+ */
 public class EntityPanelProvider implements Comparable {
 
   private final String caption;
   private final Class<? extends EntityPanel> entityPanelClass;
   private final Class<? extends EntityModel> entityModelClass;
 
+  /**
+   * Instantiates a new EntityPanelProvider
+   * @param entityModelClass the Class of the EntityModel
+   * @param entityPanelClass the Class of the EntityPanel
+   */
   public EntityPanelProvider(final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
     this(null, entityModelClass, entityPanelClass);
   }
 
+  /**
+   * Instantiates a new EntityPanelProvider
+   * @param caption the caption to use when this EntityPanelProvider is shown in f.x. menus
+   * @param entityModelClass the Class of the EntityModel
+   * @param entityPanelClass the Class of the EntityPanel
+   */
   public EntityPanelProvider(final String caption,
                              final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {

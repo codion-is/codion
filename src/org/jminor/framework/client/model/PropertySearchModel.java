@@ -95,15 +95,15 @@ public class PropertySearchModel extends AbstractSearchModel {
     return ret;
   }
 
-  private String toString(final Object obj) {
+  private String toString(final Object object) {
     final StringBuffer ret = new StringBuffer(getSearchType().toString());
-    if (obj instanceof Collection)
-      for (final Object object : ((Collection) obj))
-        ret.append(toString(object));
-    else if (obj instanceof Entity)
-      ret.append(((Entity)obj).getPrimaryKey().toString());
+    if (object instanceof Collection)
+      for (final Object obj : ((Collection) object))
+        ret.append(toString(obj));
+    else if (object instanceof Entity)
+      ret.append(((Entity)object).getPrimaryKey().toString());
     else
-      ret.append(obj);
+      ret.append(object);
 
     return ret.toString();
   }

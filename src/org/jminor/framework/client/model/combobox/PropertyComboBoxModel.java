@@ -10,10 +10,24 @@ import org.jminor.framework.model.Property;
 
 import java.util.List;
 
+/**
+ * A combo box model based on a single property
+ */
 public class PropertyComboBoxModel extends FilteredComboBoxModel {
 
+  /**
+   * The IEntityDbProvider instance to use when populating this combo box model
+   */
   private final IEntityDbProvider dbProvider;
+
+  /**
+   * The ID of the entity
+   */
   private final String entityID;
+
+  /**
+   * The property which values should be shown in this combo box model
+   */
   private final Property property;
 
   /**

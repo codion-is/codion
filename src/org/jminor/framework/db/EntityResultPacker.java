@@ -36,7 +36,7 @@ public class EntityResultPacker implements IResultPacker<Entity> {
    * The resulting entities do not contain values for reference properties (Property.EntityProperty).
    * This method does not close the ResultSet object.
    * @param resultSet the ResultSet object
-   * @param recordCount the number of records to retrieve from the result set
+   * @param recordCount the maximum number of records to retrieve from the result set
    * @return a List of Entity objects representing the contents of <code>resultSet</code>
    * @throws SQLException in case of an exception
    */

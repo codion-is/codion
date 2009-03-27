@@ -19,6 +19,9 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * The default TableCellRenderer implementation used by EntityTablePanel
+ */
 public class EntityTableCellRenderer implements TableCellRenderer {
 
   private final EntityTableModel tableModel;
