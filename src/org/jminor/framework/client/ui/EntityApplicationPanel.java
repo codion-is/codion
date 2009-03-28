@@ -138,7 +138,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   public void setLookAndFeel() throws IllegalAccessException, UnsupportedLookAndFeelException,
           InstantiationException, ClassNotFoundException {
-    org.jminor.common.ui.UiUtil.setLookAndFeel(UiUtil.getParentWindow(this));
+    UiUtil.setLookAndFeel(UiUtil.getParentWindow(this));
   }
 
   public void setLoggingLevel() {

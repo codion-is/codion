@@ -194,7 +194,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Holds the ComboBoxModels used by this EntityModel, those that implement IRefreshable
    * are refreshed when refreshComboBoxModels() is called
-   * @see org.jminor.common.model.IRefreshable
+   * @see IRefreshable
    */
   private final Map<Property, ComboBoxModel> propertyComboBoxModels;
 
@@ -248,7 +248,7 @@ public class EntityModel implements IRefreshable {
    * @param caption a caption describing this EntityModel
    * @param dbProvider a IEntityDbProvider
    * @param entityID the ID of the Entity this EntityModel represents
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * @throws UserException in case of an exception
    */
   public EntityModel(final String caption, final IEntityDbProvider dbProvider,
                      final String entityID) throws UserException {
@@ -261,7 +261,7 @@ public class EntityModel implements IRefreshable {
    * @param dbProvider a IEntityDbProvider
    * @param entityID the ID of the Entity this EntityModel represents
    * @param includeTableModel true if this EntityModel should include a table model
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * @throws UserException in case of an exception
    */
   public EntityModel(final String caption, final IEntityDbProvider dbProvider,
                      final String entityID, final boolean includeTableModel) throws UserException {
@@ -946,7 +946,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Refreshes the IRefreshable ComboBoxModels associated with this EntityModel
    * @throws UserException in case of an exception
-   * @see org.jminor.common.model.IRefreshable
+   * @see IRefreshable
    */
   public void refreshComboBoxModels() throws UserException {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
@@ -1084,7 +1084,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return a List of EntityModels serving as detail models
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * @throws UserException in case of an exception
    */
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
     return new ArrayList<EntityModel>(0);
@@ -1093,7 +1093,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Override this method to initialize any associated EntityModel before bindEvents() is called.
    * Associated models are EntityModels that are used by this model but are not detail models.
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * @throws UserException in case of an exception
    */
   protected void initializeAssociatedModels() throws UserException {}
 
@@ -1246,7 +1246,7 @@ public class EntityModel implements IRefreshable {
    * default entity for this model. This does not apply to denormalized properties
    * (Property.DenormalizedProperty) nor properties that are a part of reference properties
    * (Property.EntityProperty)
-   * If the default value of a property should be the last value used <code>useLastValueAsDefault()</code>
+   * If the default value of a property should be the last value used <code>persistValueOnClear</code>
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
    * @return the default value for the property
