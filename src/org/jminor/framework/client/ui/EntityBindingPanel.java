@@ -74,6 +74,14 @@ public abstract class EntityBindingPanel extends JPanel {
             getModel(), rows, columns);
   }
 
+  protected final TextInputPanel createTextInputPanel(final String propertyID) {
+    return createTextInputPanel(propertyID, LinkType.READ_WRITE);
+  }
+
+  protected final TextInputPanel createTextInputPanel(final String propertyID, final LinkType linkType) {
+    return createTextInputPanel(propertyID, linkType, true);
+  }
+
   protected final TextInputPanel createTextInputPanel(final String propertyID, final LinkType linkType,
                                                       final boolean immediateUpdate) {
     return createTextInputPanel(propertyID, linkType, immediateUpdate, true);
