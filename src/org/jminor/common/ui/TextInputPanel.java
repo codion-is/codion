@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
 
 public class TextInputPanel extends JPanel {
 
-  private final JTextComponent txtComponent;
+  private final JTextComponent textComponent;
   private final String dialogTitle;
   private final Dimension txtAreaSize;
 
@@ -31,17 +31,21 @@ public class TextInputPanel extends JPanel {
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
                         final Dimension txtAreaSize, final boolean buttonFocusable) {
     this.dialogTitle = dialogTitle;
-    this.txtComponent = textComponent;
+    this.textComponent = textComponent;
     this.txtAreaSize = txtAreaSize;
     initializeUI(textComponent, createButton(textComponent, buttonFocusable, UiUtil.DIMENSION18x18));
   }
 
   public void setText(final String text) {
-    txtComponent.setText(text);
+    textComponent.setText(text);
   }
 
   public String getText() {
-    return txtComponent.getText();
+    return textComponent.getText();
+  }
+
+  public JTextComponent getTextComponent() {
+    return textComponent;
   }
 
   protected void initializeUI(final JTextComponent textComponent, final JButton button) {
@@ -65,7 +69,7 @@ public class TextInputPanel extends JPanel {
           }
         };
         okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-        UiUtil.showInDialog(UiUtil.getParentWindow(txtComponent), scroller, true, dialogTitle, true, true, okAction);
+        UiUtil.showInDialog(UiUtil.getParentWindow(textComponent), scroller, true, dialogTitle, true, true, okAction);
       }
     };
 

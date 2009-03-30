@@ -91,12 +91,14 @@
     <copy todir="${deploy.path.dev}">
       <fileset dir="${dist}/current" excludes="${launch.file.test},${launch.file.prod}"/>
     </copy>
+    <antcall target="chmod_dev" />
   </target>
 
   <target name="deploy_test" depends="dist, signjars" >
     <copy todir="${deploy.path.test}">
       <fileset dir="${dist}/current" excludes="${launch.file.dev},${launch.file.prod}"/>
     </copy>
+    <antcall target="chmod_test" />
   </target>
 
 
@@ -104,6 +106,7 @@
     <copy todir="${deploy.path.prod}">
       <fileset dir="${dist}/current" excludes="${launch.file.dev},${launch.file.test}"/>
     </copy>
+    <antcall target="chmod_prod" />
   </target>
 
   <target name="chmod_dev">

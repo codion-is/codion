@@ -307,3 +307,4 @@
   EntityBindingFactory.createDateInputField renamed to createDateInputPanel
   EntityBindingFactory renamed to EntityBindingPanel
   UiUtil.showInDialog button caption and mnemonic is now consistent
+  TextInputPanel.getTextComponent() added
