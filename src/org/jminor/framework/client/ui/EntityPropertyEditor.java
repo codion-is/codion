@@ -8,7 +8,8 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.LongMediumDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.DateInputPanel;
+import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.EntityModel;
@@ -123,15 +124,15 @@ public class EntityPropertyEditor extends JPanel {
       case LONG_DATE:
       case SHORT_DATE:
         try {
-          final String dateText = ((UiUtil.DateInputPanel)field).inputField.getText();
+          final String dateText = ((DateInputPanel)field).inputField.getText();
           if (!dateText.contains("_"))
-            return new Timestamp(((UiUtil.DateInputPanel)field).maskFormat.parse(dateText).getTime());
+            return new Timestamp(((DateInputPanel)field).maskFormat.parse(dateText).getTime());
           else
             return null;
         }
         catch (ParseException e) {
           throw new UserException("Wrong date format "
-                  + ((UiUtil.DateInputPanel)field).maskFormat.toPattern() + " expected");
+                  + ((DateInputPanel)field).maskFormat.toPattern() + " expected");
         }
       case DOUBLE:
         return ((DoubleField)field).getDouble();
@@ -140,7 +141,7 @@ public class EntityPropertyEditor extends JPanel {
       case BOOLEAN:
         return ((JComboBox) field).getSelectedItem();
       case CHAR: {
-        final String txt = ((JTextField)field).getText();
+        final String txt = ((TextInputPanel)field).getText();
         if (txt.length() > 0)
           return txt.charAt(0);
 
@@ -156,7 +157,7 @@ public class EntityPropertyEditor extends JPanel {
         if (field instanceof JComboBox)
           return ((JComboBox)field).getSelectedItem();
 
-        return ((JTextField)field).getText();
+        return ((TextInputPanel)field).getText();
       }
     }
   }
@@ -193,7 +194,7 @@ public class EntityPropertyEditor extends JPanel {
           model.setSelectedItem(currentValue);
         return new JComboBox(model);
       default:
-        return new JTextField(currentValue != null ? currentValue.toString() : "");
+        return createTextInputPanel(currentValue);
     }
   }
 
@@ -202,19 +203,19 @@ public class EntityPropertyEditor extends JPanel {
     setBorder(BorderFactory.createTitledBorder(propertyID));
     add(this.field, BorderLayout.CENTER);
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    btnBase.add(getButtonPanel());
+    btnBase.add(createButtonPanel());
     add(btnBase, BorderLayout.SOUTH);
   }
 
-  private JPanel getButtonPanel() {
+  private JPanel createButtonPanel() {
     final JPanel ret = new JPanel(new GridLayout(1,2,5,5));
-    ret.add(okButton = getButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION));
-    ret.add(getButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));
+    ret.add(okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION));
+    ret.add(createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));
 
     return ret;
   }
 
-  private JButton getButton(final String caption, final String mnemonic, final int option) {
+  private JButton createButton(final String caption, final String mnemonic, final int option) {
     final JButton ret = new JButton(new AbstractAction(caption){
       public void actionPerformed(final ActionEvent e) {
         buttonValue = option;
@@ -224,6 +225,12 @@ public class EntityPropertyEditor extends JPanel {
     ret.setMnemonic(mnemonic.charAt(0));
 
     return ret;
+  }
+
+  private TextInputPanel createTextInputPanel(final Object currentValue) {
+    final JTextField txtField = new JTextField(currentValue != null ? currentValue.toString() : "");
+    txtField.setColumns(16);
+    return new TextInputPanel(txtField, property.getCaption());
   }
 
   public static abstract class InputManager {

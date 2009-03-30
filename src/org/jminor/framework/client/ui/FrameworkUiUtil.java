@@ -15,6 +15,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -39,7 +40,6 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -69,8 +69,6 @@ import java.util.List;
 import java.util.Vector;
 
 public class FrameworkUiUtil {
-
-  public static final Dimension DIMENSION18x18 = new Dimension(18,18);
 
   private FrameworkUiUtil() {}
 
@@ -250,20 +248,11 @@ public class FrameworkUiUtil {
       return selected;
   }
 
-  public static UiUtil.DateInputPanel createDateChooserPanel(final Date initialValue, final AbstractDateMaskFormat maskFormat) {
+  public static DateInputPanel createDateChooserPanel(final Date initialValue, final AbstractDateMaskFormat maskFormat) {
     final JFormattedTextField txtField = UiUtil.createFormattedField(maskFormat.getDateMask());
     txtField.setText(maskFormat.format(initialValue == null ? new Date() : initialValue));
 
-    return new UiUtil.DateInputPanel(txtField, maskFormat, new AbstractAction("...") {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), txtField);
-          final String dString = maskFormat.format(d);
-          txtField.setText(dString);
-        }
-        catch (UserCancelException e1) {/**/}
-      }
-    }, null);
+    return new DateInputPanel(txtField, maskFormat, true, null);
   }
 
   public static JTextField createDateChooserField(final Date initialValue, final JComponent parent) {
@@ -364,7 +353,7 @@ public class FrameworkUiUtil {
         catch (UserCancelException e1) {/**/}
       }
     });
-    btn.setPreferredSize(FrameworkUiUtil.DIMENSION18x18);
+    btn.setPreferredSize(UiUtil.DIMENSION18x18);
 
     ret.add(txt, BorderLayout.CENTER);
     ret.add(btn, BorderLayout.EAST);
@@ -420,14 +409,12 @@ public class FrameworkUiUtil {
   }
 
   public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final String searchPropertyID,
-                                                    final EntityTableModel lookupModel) {
+                                                    final String searchPropertyID, final EntityTableModel lookupModel) {
     return createEntitySearchFieldPanel(property, entityModel, searchPropertyID, null, lookupModel);
   }
 
   public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final String searchPropertyID,
-                                                    final ICriteria additionalSearchCriteria,
+                                                    final String searchPropertyID, final ICriteria additionalSearchCriteria,
                                                     final EntityTableModel lookupModel) {
     final Property searchProperty = EntityRepository.get().getProperty(property.referenceEntityID, searchPropertyID);
     if (searchProperty.getPropertyType() != Type.STRING)
@@ -445,7 +432,7 @@ public class FrameworkUiUtil {
         catch (UserCancelException e1) {/**/}
       }
     });
-    btn.setPreferredSize(FrameworkUiUtil.DIMENSION18x18);
+    btn.setPreferredSize(UiUtil.DIMENSION18x18);
 
     final JPanel ret = new JPanel(new BorderLayout(5,0));
     ret.add(searchField, BorderLayout.CENTER);
@@ -475,34 +462,23 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static UiUtil.DateInputPanel createDateFieldPanel(final Property property, final EntityModel entityModel,
-                                                           final AbstractDateMaskFormat dateMaskFormat,
-                                                           final LinkType linkType,
-                                                           final boolean includeButton) {
-    return createDateFieldPanel(property, entityModel, dateMaskFormat, linkType, includeButton, null);
+  public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
+                                                    final AbstractDateMaskFormat dateMaskFormat,
+                                                    final LinkType linkType, final boolean includeButton) {
+    return createDateInputPanel(property, entityModel, dateMaskFormat, linkType, includeButton, null);
   }
 
-  public static UiUtil.DateInputPanel createDateFieldPanel(final Property property, final EntityModel entityModel,
-                                                           final AbstractDateMaskFormat dateMaskFormat,
-                                                           final LinkType linkType,
-                                                           final boolean includeButton, final State enabledState) {
+  public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
+                                                    final AbstractDateMaskFormat dateMaskFormat,
+                                                    final LinkType linkType, final boolean includeButton,
+                                                    final State enabledState) {
     if (property.getPropertyType() != Type.SHORT_DATE && property.getPropertyType() != Type.LONG_DATE)
       throw new IllegalArgumentException("Property " + property + " is not a date property");
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, entityModel, linkType,
             dateMaskFormat.getDateMask(), true, dateMaskFormat, enabledState);
 
-    return new UiUtil.DateInputPanel(field, dateMaskFormat, includeButton ? new AbstractAction("...") {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          final Date currentValue = (Date) entityModel.getValue(property);
-          entityModel.uiSetValue(property, UiUtil.getDateFromUser(
-                  EntityUtil.isValueNull(property.getPropertyType(), currentValue) ? null : currentValue,
-                  FrameworkMessages.get(FrameworkMessages.SELECT_DATE), field));
-        }
-        catch (UserCancelException e1) {/**/}
-      }
-    } : null, enabledState);
+    return new DateInputPanel(field, dateMaskFormat, includeButton, enabledState);
   }
 
   public static JTextArea createTextArea(final Property property, final EntityModel entityModel) {

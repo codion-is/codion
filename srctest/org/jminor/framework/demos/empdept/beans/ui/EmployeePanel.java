@@ -49,7 +49,7 @@ public class EmployeePanel extends EntityPanel {
     ret.add(createControlPanel(EmpDept.EMPLOYEE_SALARY, createTextField(EmpDept.EMPLOYEE_SALARY)));
     ret.add(createControlPanel(EmpDept.EMPLOYEE_COMMISSION, createTextField(EmpDept.EMPLOYEE_COMMISSION)));
 
-    ret.add(createControlPanel(EmpDept.EMPLOYEE_HIREDATE, createDateFieldPanel(EmpDept.EMPLOYEE_HIREDATE, new ShortDotDateFormat())));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_HIREDATE, createDateInputPanel(EmpDept.EMPLOYEE_HIREDATE, new ShortDotDateFormat())));
     ret.add(new JLabel());
     ret.add(new JLabel());
 

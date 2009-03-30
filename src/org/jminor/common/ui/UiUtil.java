@@ -10,7 +10,6 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
-import org.jminor.common.model.formats.AbstractDateMaskFormat;
 
 import com.toedter.calendar.JCalendar;
 
@@ -57,6 +56,7 @@ public class UiUtil {
 
   public final static Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   public final static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+  public final static Dimension DIMENSION18x18 = new Dimension(18,18);
   public static int waitCursorRequests = 0;
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
@@ -537,18 +537,18 @@ public class UiUtil {
     });
   }
 
-  public static JDialog showInDialog(final Window owner, final JComponent panel, final boolean modal, final String title,
+  public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
                                      final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction) {
-    return showInDialog(owner, panel, modal, title, includeButtonPanel,disposeOnOk, okAction, null);
+    return showInDialog(owner, componentToShow, modal, title, includeButtonPanel,disposeOnOk, okAction, null);
   }
 
-  public static JDialog showInDialog(final Window owner, final JComponent panel, final boolean modal, final String title,
+  public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
                                      final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
                                      final Dimension size) {
-    return showInDialog(owner, panel, modal, title, includeButtonPanel,disposeOnOk, okAction, size, null, null);
+    return showInDialog(owner, componentToShow, modal, title, includeButtonPanel,disposeOnOk, okAction, size, null, null);
   }
 
-  public static JDialog showInDialog(final Window owner, final JComponent panel, final boolean modal, final String title,
+  public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
                                      final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
                                      final Dimension size, final Point location, final Action closeAction) {
     final JDialog dialog = new JDialog(owner, title);
@@ -575,12 +575,14 @@ public class UiUtil {
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
-      okButton.setMnemonic(okCaption.charAt(0));
+      final Character mnemonic = okAction == null || okAction.getValue(Action.MNEMONIC_KEY) == null ?
+              okCaption.charAt(0) : ((Character) okAction.getValue(Action.MNEMONIC_KEY));
+      okButton.setMnemonic(mnemonic);
       buttonPanel.add(okButton);
       dialog.getRootPane().setDefaultButton(okButton);
       dialog.add(buttonPanel, BorderLayout.SOUTH);
     }
-    dialog.add(panel, BorderLayout.CENTER);
+    dialog.add(componentToShow, BorderLayout.CENTER);
     if (size == null)
       dialog.pack();
     else
@@ -596,7 +598,7 @@ public class UiUtil {
     return dialog;
   }
 
-  public static JDialog showInDialog(final Container owner, final JComponent component, final boolean modal, final String title,
+  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal, final String title,
                                      final Dimension size, final JButton defaultButton, final Event closeEvent) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(new BorderLayout());
@@ -613,7 +615,7 @@ public class UiUtil {
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
 
-    dialog.add(component, BorderLayout.CENTER);
+    dialog.add(componentToShow, BorderLayout.CENTER);
     if (size == null)
       dialog.pack();
     else
@@ -625,26 +627,5 @@ public class UiUtil {
     dialog.setVisible(true);
 
     return dialog;
-  }
-
-  public static class DateInputPanel extends JPanel {
-
-    public final JFormattedTextField inputField;
-    public final AbstractDateMaskFormat maskFormat;
-
-    public DateInputPanel(final JFormattedTextField inputField, final AbstractDateMaskFormat maskFormat,
-                          final Action buttonAction, final State enabledState) {
-      super(new BorderLayout());
-      this.inputField = inputField;
-      this.maskFormat = maskFormat;
-      add(inputField, BorderLayout.CENTER);
-      if (buttonAction != null) {
-        final JButton btnChooser = new JButton(buttonAction);
-        btnChooser.setPreferredSize(new Dimension(18,18));
-        if (enabledState != null)
-          linkToEnabledState(enabledState, btnChooser);
-        add(btnChooser, BorderLayout.EAST);
-      }
-    }
   }
 }

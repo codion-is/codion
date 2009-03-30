@@ -80,7 +80,7 @@ import java.util.Vector;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
  */
-public abstract class EntityPanel extends EntityBindingFactory implements IExceptionHandler {
+public abstract class EntityPanel extends EntityBindingPanel implements IExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
 

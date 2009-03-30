@@ -300,3 +300,10 @@
   TextPropertyLink.getFormattedValue() renamed to getParsedValue()
   More JavaDoc additions and changes as well as some minor code improvements, variable names and such
   CheckBoxPropertyLink renamed to BooleanPropertyLink
+  UiUtil.DateInputPanel improved and moved to its own class
+  TextInputPanel created
+  EntityPropertyEditor now uses TextInputPanel for text input
+  FrameworkUiUtil.createDateInputField renamed to createDateInputPanel
+  EntityBindingFactory.createDateInputField renamed to createDateInputPanel
+  EntityBindingFactory renamed to EntityBindingPanel
+  UiUtil.showInDialog button caption and mnemonic is now consistent

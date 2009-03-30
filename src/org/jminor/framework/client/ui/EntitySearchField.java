@@ -343,15 +343,16 @@ public class EntitySearchField extends TextFieldPlus {
         panel.add(boxCaseSensitive);
         panel.add(boxPrefixWildcard);
         panel.add(boxPostfixWildcard);
+        final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
+          public void actionPerformed(final ActionEvent e) {
+            setCaseSensitive(boxCaseSensitive.isSelected());
+            setWildcardPrefix(boxPrefixWildcard.isSelected());
+            setWildcardPostfix(boxPostfixWildcard.isSelected());
+          }
+        };
+        action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
         UiUtil.showInDialog(UiUtil.getParentWindow(EntitySearchField.this), panel, true,
-                FrameworkMessages.get(FrameworkMessages.SETTINGS), true, true,
-                new AbstractAction(Messages.get(Messages.OK)) {
-                  public void actionPerformed(final ActionEvent e) {
-                    setCaseSensitive(boxCaseSensitive.isSelected());
-                    setWildcardPrefix(boxPrefixWildcard.isSelected());
-                    setWildcardPostfix(boxPostfixWildcard.isSelected());
-                  }
-                });
+                FrameworkMessages.get(FrameworkMessages.SETTINGS), true, true, action);
       }
     });
 
