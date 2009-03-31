@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor;
 
@@ -22,7 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 18:20:24
  */

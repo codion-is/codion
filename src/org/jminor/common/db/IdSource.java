@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
 /**
  * A enum representing the possible ways of auto incrementing a ID value
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 12.1.2008
  * Time: 20:42:34
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor;
 
@@ -10,7 +10,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.rmi.RemoteException;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 11.12.2007
  * Time: 11:42:18
  */

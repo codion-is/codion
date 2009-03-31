@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 import java.text.NumberFormat;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 22:49:27
  */

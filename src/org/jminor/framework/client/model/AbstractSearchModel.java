@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -14,7 +14,7 @@ import org.jminor.framework.model.Type;
 import java.sql.Timestamp;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 26.12.2007
  * Time: 14:48:22
  *

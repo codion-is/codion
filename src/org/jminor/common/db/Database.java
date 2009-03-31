@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.db;
 
 import org.jminor.common.model.formats.LongDateFormat;
@@ -12,7 +15,7 @@ import java.util.Date;
 /**
  * A class encapsulating database specific code, such as retrieval of auto increment values,
  * string to date conversions and driver class loading.
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 2.2.2008
  * Time: 12:53:14
  */

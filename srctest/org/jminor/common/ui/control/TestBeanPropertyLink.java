@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
@@ -15,7 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 13.1.2008
  * Time: 12:15:13
  */

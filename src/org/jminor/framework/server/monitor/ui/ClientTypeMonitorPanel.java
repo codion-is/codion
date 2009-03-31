@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
@@ -23,7 +23,7 @@ import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 11.12.2007
  * Time: 12:58:29
  */

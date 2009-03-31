@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.CriteriaSet;
@@ -19,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 24.7.2008
  * Time: 21:29:55
  *

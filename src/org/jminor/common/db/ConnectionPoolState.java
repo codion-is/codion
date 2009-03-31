@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
 import java.io.Serializable;
 
 /**
-* User: BjÃ¶rn Darri
+* User: Björn Darri
 * Date: 8.12.2007
 * Time: 16:17:01
 */

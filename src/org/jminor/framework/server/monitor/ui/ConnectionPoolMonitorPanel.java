@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
@@ -15,7 +15,7 @@ import javax.swing.JPopupMenu;
 import java.rmi.RemoteException;
 
 /**
- * User: BjÃ¶rn Darri
+ * User: Björn Darri
  * Date: 10.12.2007
  * Time: 15:54:36
  */

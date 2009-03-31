@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
