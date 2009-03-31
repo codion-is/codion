@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
 
 import junit.framework.TestCase;
@@ -121,32 +120,6 @@ public class TestEntity extends TestCase {
       exception = true;
     }
     assertTrue("Set value for a denormalized property should cause an error", exception);
-
-    //assert dml
-    final String shortDateStringSql = Database.getSQLDateString(shortDateValue, false);
-    final String longDateStringSql = Database.getSQLDateString(longDateValue, true);
-    assertEquals(EntityUtil.getInsertSQL(testEntity),
-            "insert into " + ModelTestDomain.T_TEST_DETAIL
-                    + "(int, double, string, short_date, long_date, boolean, entity_id, id)"
-                    + " values(2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2, 1)");
-    assertEquals(EntityUtil.getDeleteSQL(testEntity),
-            "delete from " + ModelTestDomain.T_TEST_DETAIL + " where (id = 1)");
-    exception = false;
-    try {
-      EntityUtil.getUpdateSQL(testEntity);
-    }
-    catch (Exception e) {
-      exception = true;
-    }
-    assertTrue("Should get an exception when trying to get update sql of a non-modified entity", exception);
-
-    testEntity.setValue(ModelTestDomain.TEST_DETAIL_INT, 42);
-    testEntity.setValue(ModelTestDomain.TEST_DETAIL_STRING, "newString");
-    assertEquals(EntityUtil.getUpdateSQL(testEntity), "update " + ModelTestDomain.T_TEST_DETAIL
-            + " set int = 42, string = 'newString' where (id = 1)");
-    testEntity.setValue(ModelTestDomain.TEST_DETAIL_STRING, "string");
-    assertEquals(EntityUtil.getUpdateSQL(testEntity), "update " + ModelTestDomain.T_TEST_DETAIL
-            + " set int = 42 where (id = 1)");
 
     //test setAs()
     test = new Entity(ModelTestDomain.T_TEST_DETAIL);

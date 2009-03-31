@@ -308,3 +308,5 @@
   EntityBindingFactory renamed to EntityBindingPanel
   UiUtil.showInDialog button caption and mnemonic is now consistent
   TextInputPanel.getTextComponent() added
+  EntityDbUtil created, moved some db related stuff from EntityUtil to this class as well as to EntityDbConnection
+  TestEntityDbConnection created to accommodate the above (moved dml test case from TestEntity)

@@ -28,7 +28,7 @@ public class EntityKey implements Externalizable {
   Map<String, Object> keyValues;
 
   /**
-   * The number of properties comprising this this key
+   * The number of properties comprising this key
    */
   int propertyCount;
 

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.ICriteria;
+import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class EntityKeyCriteria implements ICriteria {
     if (keys.get(0).getPropertyCount() > 1) {//multi column key
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
-        ret.append(EntityUtil.getQueryConditionString(keys.get(i), getColumnNames()));
+        ret.append(getQueryConditionString(keys.get(i), getColumnNames()));
         if (i < keys.size() - 1)
           ret.append(" or ");
       }
@@ -95,7 +95,7 @@ public class EntityKeyCriteria implements ICriteria {
     else {
       //a = b
       if (keys.size() == 1)
-        ret.append(EntityUtil.getQueryConditionString(keys.get(0), getColumnNames()));
+        ret.append(getQueryConditionString(keys.get(0), getColumnNames()));
       else //a in (c, v, d, s)
         appendInCondition(properties != null ? properties.get(0).propertyID
                 : keys.get(0).getKeyColumnNames()[0], ret, keys);
@@ -115,11 +115,31 @@ public class EntityKeyCriteria implements ICriteria {
     return ret;
   }
 
-  private void appendInCondition(final String whereColumn, final StringBuffer ret, final List<EntityKey> keys) {
+  /**
+   * Constructs a query condition string from the given EntityKey, using the column names
+   * provided or if none are provided, the column names from the key
+   * @param key the EntityKey instance
+   * @param columnNames the column names to use in the criteria
+   * @return a query condition string based on the given key and column names
+   */
+  private static String getQueryConditionString(final EntityKey key, final List<String> columnNames) {
+    final StringBuffer ret = new StringBuffer("(");
+    int i = 0;
+    for (final Property.PrimaryKeyProperty property : key.getProperties()) {
+      ret.append(EntityDbUtil.getQueryString(columnNames == null ? property.propertyID : columnNames.get(i),
+              EntityDbUtil.getSQLStringValue(property, key.getValue(property.propertyID))));
+      if (i++ < key.getPropertyCount() -1)
+        ret.append(" and ");
+    }
+
+    return ret.append(")").toString();
+  }
+
+  private static void appendInCondition(final String whereColumn, final StringBuffer ret, final List<EntityKey> keys) {
     ret.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {
-      ret.append(EntityUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
+      ret.append(EntityDbUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
       if (cnt == 1000 && i < keys.size()-1) {//Oracle limit
         ret.append(") or ").append(whereColumn).append(" in (");
         cnt = 1;

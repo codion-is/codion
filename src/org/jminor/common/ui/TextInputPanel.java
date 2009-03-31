@@ -3,11 +3,11 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.Action;
 import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

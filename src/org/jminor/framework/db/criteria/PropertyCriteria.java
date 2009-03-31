@@ -7,6 +7,7 @@ import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
@@ -105,8 +106,8 @@ public class PropertyCriteria implements ICriteria {
     if (values.size() == 1 && EntityUtil.isValueNull(property.getPropertyType(), values.get(0)))
       return columnName + (searchType == SearchType.LIKE ? " is null" : " is not null");
 
-    String sqlValue = EntityUtil.getSQLStringValue(property, values.get(0));
-    String sqlValue2 = values.size() == 2 ? EntityUtil.getSQLStringValue(property, values.get(1)) : null;
+    String sqlValue = EntityDbUtil.getSQLStringValue(property, values.get(0));
+    String sqlValue2 = values.size() == 2 ? EntityDbUtil.getSQLStringValue(property, values.get(1)) : null;
 
     if (property.getPropertyType() == Type.STRING && !caseSensitive) {
       columnName = "upper(" + columnName + ")";
@@ -204,7 +205,7 @@ public class PropertyCriteria implements ICriteria {
     final StringBuffer ret = new StringBuffer(whereColumn + (notIn ? " not" : "") + " in (");
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
-      String sqlValue = EntityUtil.getSQLStringValue(property, values.get(i));
+      String sqlValue = EntityDbUtil.getSQLStringValue(property, values.get(i));
       if (!caseSensitive)
         sqlValue = "upper(" + sqlValue + ")";
       ret.append(sqlValue);
