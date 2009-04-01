@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 
 public class CompactDotDateFormat extends AbstractDateMaskFormat {
 
-  public static final String MASK_STRING = "##.##.####";
+  public static final String MASK_STRING = "##.##.##";
   public static final String PATTERN = "dd.MM.yy";
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {

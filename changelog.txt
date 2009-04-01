@@ -313,3 +313,6 @@
   Fixed and added copyright messages
   EntityUtil.isPrimaryKeyModified() added
   EntityModel.update() fixed so that if primary keys were involved in the update the table model is refreshed afterwards
+  CompactDotDateFormat mask fixed
+  EntityModel.evtLinkedDetailModelChanged now only updates the selected detail model with the active entity if it is non-null
+  TestEntityDbConnection fixed, it did not initialize the required domain model

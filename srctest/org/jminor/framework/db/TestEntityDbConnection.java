@@ -20,6 +20,11 @@ import java.util.Date;
  */
 public class TestEntityDbConnection extends TestCase {
 
+  public TestEntityDbConnection(String name) {
+    super(name);
+    new ModelTestDomain();
+  }
+
   public void testDML() throws Exception {
     final int idValue = 1;
     final int intValue = 2;

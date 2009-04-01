@@ -21,6 +21,7 @@ public class ExactDateFormat extends AbstractDateMaskFormat {
     super(PATTERN);
   }
 
+  /** {@inheritDoc} */
   public String getDateMask() {
     return MASK_STRING;
   }

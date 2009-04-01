@@ -1352,7 +1352,8 @@ public class EntityModel implements IRefreshable {
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          updateDetailModelsByActiveEntity();
+          if (!isActiveEntityNull())//todo is this ok?
+            updateDetailModelsByActiveEntity();
         }
         catch (UserException e1) {
           throw e1.getRuntimeException();
