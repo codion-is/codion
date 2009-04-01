@@ -311,3 +311,5 @@
   EntityDbUtil created, moved some db related stuff from EntityUtil to this class as well as to EntityDbConnection
   TestEntityDbConnection created to accommodate the above (moved dml test case from TestEntity)
   Fixed and added copyright messages
+  EntityUtil.isPrimaryKeyModified() added
+  EntityModel.update() fixed so that if primary keys were involved in the update the table model is refreshed afterwards

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -818,7 +818,6 @@ public class EntityModel implements IRefreshable {
    * @see #evtBeforeUpdate
    * @see #evtAfterUpdate
    */
-  //todo known issue, when updating primary key properties the table model state is not exactly fresh afterwards, example: petstore-ItemTags, proposed solution: force refresh in case primary keys were involved in the update
   public final void update(final List<Entity> entities) throws UserException, DbException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, updating is not allowed!");
@@ -834,14 +833,20 @@ public class EntityModel implements IRefreshable {
     evtBeforeUpdate.fire();
     validateData(entities, UPDATE);
 
-    final List<Entity> updatedEntities = doUpdate(EntityUtil.getModifiedEntities(entities));
-    if (tableModel != null) {//replace and select the updated entities
-      final List<Entity> updated = new ArrayList<Entity>();
-      for (final Entity entity : updatedEntities)
-        if (entity.is(getEntityID()))
-          updated.add(entity);
-      tableModel.replaceEntities(updated);
-      tableModel.setSelectedEntities(updated);
+    final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
+    final List<Entity> updatedEntities = doUpdate(modifiedEntities);
+    if (tableModel != null) {
+      if (EntityUtil.isPrimaryKeyModified(modifiedEntities)) {
+        tableModel.refresh();//best we can do under the circumstances
+      }
+      else {//replace and select the updated entities
+        final List<Entity> updated = new ArrayList<Entity>();
+        for (final Entity entity : updatedEntities)
+          if (entity.is(getEntityID()))
+            updated.add(entity);
+        tableModel.replaceEntities(updated);
+        tableModel.setSelectedEntities(updated);
+      }
     }
 
     evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities));

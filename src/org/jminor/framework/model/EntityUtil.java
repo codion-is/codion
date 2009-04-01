@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -311,5 +311,23 @@ public class EntityUtil {
       ret.add(entity.getValue(propertyID));
 
     return ret;
+  }
+
+  /**
+   * @param entities the entities to check, assumes they are all of the same type
+   * @return true if any of the given entities has a modified primary key property
+   */
+  public static boolean isPrimaryKeyModified(final List<Entity> entities) {
+    if (entities == null || entities.size() == 0)
+      return false;
+
+    for (final Property.PrimaryKeyProperty property :
+            EntityRepository.get().getPrimaryKeyProperties(entities.get(0).getEntityID())) {
+      for (final Entity entity : entities)
+        if (entity.isModified(property.propertyID))
+          return true;
+    }
+
+    return false;
   }
 }
