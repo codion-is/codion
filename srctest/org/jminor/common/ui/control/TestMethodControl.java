@@ -1,17 +1,16 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
-import org.jminor.common.ui.ControlProvider;
 
 import junit.framework.TestCase;
 
 import javax.swing.JButton;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 13.1.2008
  * Time: 13:05:09
  */

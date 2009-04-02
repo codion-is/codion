@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.FullDateFormat;
-import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
@@ -35,7 +35,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 4.12.2007
  * Time: 18:14:35
  */

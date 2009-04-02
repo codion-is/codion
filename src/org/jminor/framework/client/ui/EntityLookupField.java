@@ -10,6 +10,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
+import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.FrameworkConstants;
@@ -121,7 +122,7 @@ public class EntityLookupField extends TextFieldPlus {
           }
         }
         catch (UserException ex) {
-          UiUtil.handleException(ex, EntityLookupField.this);
+          ExceptionDialog.handleException(ex, EntityLookupField.this);
         }
       }
     };

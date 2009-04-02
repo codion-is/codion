@@ -1,15 +1,12 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.db.AuthenticationException;
-import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 
 import com.toedter.calendar.JCalendar;
 
@@ -410,24 +407,6 @@ public class UiUtil {
       tree.expandPath(parent);
     else
       tree.collapsePath(parent);
-  }
-
-  public static User getUser(final JComponent parent, final User defaultUser) throws UserCancelException {
-    return LoginPanel.showLoginPanel(parent, defaultUser);
-  }
-
-  public static void handleException(final Throwable throwable, final Container dialogParent) {
-    if (throwable instanceof UserCancelException)
-      return;
-
-    if (throwable instanceof UserException && throwable.getCause() instanceof AuthenticationException)
-      handleException(throwable.getCause(), dialogParent);
-    else {
-      if (!(throwable instanceof AuthenticationException))
-        throwable.printStackTrace();
-      ExceptionDialog.showExceptionDialog(getParentWindow(dialogParent),
-              Messages.get(Messages.EXCEPTION), throwable.getMessage(), throwable);
-    }
   }
 
   public static JTable setTablePopup(final JTable table, final JPopupMenu popupMenu) {

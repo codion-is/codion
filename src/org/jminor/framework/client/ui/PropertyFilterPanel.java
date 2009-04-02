@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -11,8 +11,8 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.model.formats.ShortDotDateFormat;
-import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.LinkType;

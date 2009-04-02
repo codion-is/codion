@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
 import org.jminor.common.model.formats.FullDateFormat;
-import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 4.12.2007
  * Time: 22:49:42
  */

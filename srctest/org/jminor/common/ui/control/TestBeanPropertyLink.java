@@ -1,10 +1,9 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 
@@ -15,7 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 13.1.2008
  * Time: 12:15:13
  */

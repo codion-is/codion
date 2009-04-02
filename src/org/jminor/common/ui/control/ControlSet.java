@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
@@ -76,6 +76,10 @@ public class ControlSet extends Control {
     return ret;
   }
 
+  public List<Action> getActions() {
+    return actions;
+  }
+
   /** {@inheritDoc} */
   public void setDescription(final String description) {
     this.description = description;
@@ -136,23 +140,5 @@ public class ControlSet extends Control {
 
   public void addSeparatorAt(final int idx) {
     actions.add(idx, null);
-  }
-
-  public void iterate(final IControlIterator controlIterator) {
-    if (controlIterator == null)
-      throw new IllegalArgumentException("Iterator can't be null");
-
-    for (final Action action : actions) {
-      if (action == null)
-        controlIterator.doSeparator();
-      else if (action instanceof ToggleBeanPropertyLink)
-        controlIterator.doToggleControl((ToggleBeanPropertyLink) action);
-      else if (action instanceof ControlSet)
-        controlIterator.doControlSet((ControlSet) action);
-      else if (action instanceof Control)
-        controlIterator.doControl((Control) action);
-      else
-        controlIterator.doAction(action);
-    }
   }
 }

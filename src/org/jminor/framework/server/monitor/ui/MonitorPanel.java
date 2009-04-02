@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
@@ -7,11 +7,12 @@ import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.IPopupProvider;
+import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.FrameworkConstants;
@@ -43,7 +44,7 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 4.12.2007
  * Time: 18:11:06
  */
@@ -240,7 +241,7 @@ public class MonitorPanel extends JPanel {
       catch (Exception e) {
         e.printStackTrace();
       }
-      final User user = UiUtil.getUser(null, new User("scott", "tiger"));
+      final User user = LoginPanel.getUser(null, new User("scott", "tiger"));
       authenticate(user);
       new MonitorPanel().showFrame();
     }

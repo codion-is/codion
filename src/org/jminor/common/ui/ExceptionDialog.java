@@ -1,8 +1,9 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.State;
@@ -11,6 +12,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.printing.JPrinter;
@@ -27,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -218,6 +221,20 @@ public class ExceptionDialog extends JDialog {
     }
     catch (IOException e) {
       e.printStackTrace();
+    }
+  }
+
+  public static void handleException(final Throwable throwable, final Container dialogParent) {
+    if (throwable instanceof UserCancelException)
+      return;
+
+    if (throwable instanceof UserException && throwable.getCause() instanceof AuthenticationException)
+      handleException(throwable.getCause(), dialogParent);
+    else {
+      if (!(throwable instanceof AuthenticationException))
+        throwable.printStackTrace();
+      showExceptionDialog(UiUtil.getParentWindow(dialogParent),
+              Messages.get(Messages.EXCEPTION), throwable.getMessage(), throwable);
     }
   }
 

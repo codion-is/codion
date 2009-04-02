@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.ControlProvider;
+import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.IPopupProvider;
-import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ClientTypeMonitor;
 
@@ -23,7 +23,7 @@ import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 11.12.2007
  * Time: 12:58:29
  */
@@ -81,7 +81,7 @@ public class ClientTypeMonitorPanel extends JPanel implements IPopupProvider {
   }
 
   private void handleException(final Exception e1) {
-    UiUtil.handleException(e1, this);
+    ExceptionDialog.handleException(e1, this);
   }
 
   private ControlSet getPopupCommands() {

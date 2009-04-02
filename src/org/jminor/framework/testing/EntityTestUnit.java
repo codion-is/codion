@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.testing;
 
@@ -8,7 +8,7 @@ import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
@@ -48,7 +48,7 @@ public abstract class EntityTestUnit extends TestCase {
    * @throws org.jminor.common.model.UserCancelException in case the user cancels the login
    */
   protected User getTestUser() throws UserCancelException {
-    return UiUtil.getUser(null, new User(FrameworkSettings.getDefaultUsername(), null));
+    return LoginPanel.getUser(null, new User(FrameworkSettings.getDefaultUsername(), null));
   }
 
   protected Entity getReferenceEntity(final String entityID) {

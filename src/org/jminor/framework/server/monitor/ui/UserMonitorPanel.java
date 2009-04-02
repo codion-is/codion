@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.ControlProvider;
 import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.UserMonitor;
 
@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 11.12.2007
  * Time: 12:23:17
  */
