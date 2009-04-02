@@ -3,11 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.model.Util;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,80 +32,6 @@ public class EntityUtil {
     return ret;
   }
 
-  /**
-   * Performes a basic data validation of <code>value</code>, checking if the
-   * <code>value</code> data type is consistent with the data type of this
-   * property, returns the value
-   * @param value the value to validate
-   * @param property the property
-   * @return the value
-   * @throws IllegalArgumentException when the value is not of the same type as the propertyValue
-   */
-  public static Object validateValue(final Property property, final Object value) throws IllegalArgumentException {
-    final Type propertyType = property.propertyType;
-    if (value == null)
-      return value;
-
-    final String propertyID = property.propertyID;
-    switch (propertyType) {
-      case INT : {
-        if (!(value instanceof Integer))
-          throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case DOUBLE : {
-        if (!(value instanceof Double))
-          throw new IllegalArgumentException("Double value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case BOOLEAN : {
-        if (!(value instanceof Type.Boolean))
-          throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case LONG_DATE :
-      case SHORT_DATE : {
-        if (!(value instanceof Date))
-          throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case ENTITY : {
-        if (!(value instanceof Entity) && !(value instanceof EntityKey))
-          throw new IllegalArgumentException("Entity or EntityKey value expected for property: " + propertyID + "(" + value.getClass() + ")");
-        return value;
-      }
-      case CHAR : {
-        if (!(value instanceof Character))
-          throw new IllegalArgumentException("Character value expected for property: " + propertyID + "(" + value.getClass() + ")");
-        return value;
-      }
-      case STRING : {
-        if (!(value instanceof String))
-          throw new IllegalArgumentException("String value expected for propertyValue: " + propertyID + "(" + value.getClass() + ")");
-        return value;
-      }
-    }
-
-    throw new IllegalArgumentException("Unknown type " + propertyType);
-  }
-
-  public static Class getValueClass(final Type type, final Object value) {
-    if (type == Type.INT)
-      return Integer.class;
-    if (type == Type.DOUBLE)
-      return Double.class;
-    if (type == Type.BOOLEAN)
-      return Type.Boolean.class;
-    if (type == Type.SHORT_DATE || type == Type.LONG_DATE)
-      return Date.class;
-    if (type == Type.CHAR)
-      return Character.class;
-    if (type == Type.ENTITY)
-      return Entity.class;
-
-    return value == null ? Object.class : value.getClass();
-  }
-
   public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
     for (final List<Entity> ents : entities.values()) {
       if (ents.size() > 0)
@@ -118,86 +41,12 @@ public class EntityUtil {
     return false;
   }
 
-  public static boolean equal(final Type type, final Object one, final Object two) {
-    final boolean oneNull = isValueNull(type, one);
-    final boolean twoNull = isValueNull(type, two);
-
-    return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
-  }
-
   public static HashMap<EntityKey, Entity> hashByPrimaryKey(final List<Entity> entities) {
     final HashMap<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
     for (final Entity entity : entities)
       ret.put(entity.getPrimaryKey(), entity);
 
     return ret;
-  }
-
-  public static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = isValueNull(property.propertyType, value);
-    final StringBuffer ret = new StringBuffer("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
-    if (value instanceof Entity)
-      ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
-
-    return ret.toString();
-  }
-
-  /**
-   * Returns true if <code>value</code> represents a null value for the given property type
-   * @param propertyType the property type
-   * @param value the value to check
-   * @return true if <code>value</code> represents null
-   */
-  public static boolean isValueNull(final Type propertyType, final Object value) {
-    if (value == null)
-      return true;
-
-    switch (propertyType) {
-      case CHAR :
-        if (value instanceof String)
-          return ((String)value).length() == 0;
-      case BOOLEAN :
-        return value == Type.Boolean.NULL;
-      case STRING :
-        return value.equals("");
-      case ENTITY :
-        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
-      default :
-        return false;
-    }
-  }
-
-  /**
-   * Returns a copy of the given value.
-   * If the value is an entity it is deep copied.
-   * @param value the value to copy
-   * @return a copy of <code>value</code>
-   */
-  public static Object copyPropertyValue(final Object value) {
-    return value instanceof Entity ? ((Entity)value).getCopy() : value;
-  }
-
-  public static String getPropertyChangeDebugString(final String entityID, final Property property,
-                                                    final Object oldValue, final Object newValue,
-                                                    final boolean isInitialization) {
-    final StringBuffer ret = new StringBuffer();
-    if (isInitialization)
-      ret.append("INIT ");
-    else
-      ret.append("SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
-    ret.append(entityID).append(" -> ").append(property).append("; ");
-    if (!isInitialization) {
-      if (oldValue != null)
-        ret.append(oldValue.getClass().getSimpleName()).append(" ");
-      ret.append(getValueString(property, oldValue));
-    }
-    if (!isInitialization)
-      ret.append(" : ");
-    if (newValue != null)
-      ret.append(newValue.getClass().getSimpleName()).append(" ");
-    ret.append(getValueString(property, newValue));
-
-    return ret.toString();
   }
 
   /**
@@ -265,16 +114,6 @@ public class EntityUtil {
       entities.get(i).setValue(propertyID, values[i]);
 
     return oldValues;
-  }
-
-  public static void printPropertyValues(final Entity entity) {
-    final Collection<Property> properties = EntityRepository.get().getProperties(entity.getEntityID(), true);
-    System.out.println("*********************[" + entity + "]***********************");
-    for (final Property property : properties) {
-      final Object value = entity.getValue(property.propertyID);
-      System.out.println(property + " = " + getValueString(property, value));
-    }
-    System.out.println("********************************************");
   }
 
   /**

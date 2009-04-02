@@ -16,6 +16,7 @@ import java.io.ObjectOutput;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   /**
    * An event fired when a property changes, is null until initialized with
    * a call to setFirePropertyChangeEvents
+   * @see #setFirePropertyChangeEvents
    */
   private transient Event evtPropertyChanged;
 
@@ -57,7 +59,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
 
   /**
    * Used to cache the return value of the frequently called toString(),
-   * invalidated each time a property changes
+   * invalidated each time a property value changes
    */
   private transient String toString;
 
@@ -189,7 +191,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public void setValue(final Property property, final Object value, final boolean validate) {
     if (validate)
-      EntityUtil.validateValue(property, value);
+      validateValue(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
     final boolean initialization = primarKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)
@@ -481,7 +483,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Entity ret = getCopy();
     if (originalPropertyValues != null) {
       for (final Map.Entry<String, Object> entry : originalPropertyValues.entrySet())
-        propertyValues.put(entry.getKey(), EntityUtil.copyPropertyValue(entry.getValue()));
+        propertyValues.put(entry.getKey(), copyPropertyValue(entry.getValue()));
     }
 
     return ret;
@@ -499,7 +501,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (originalPropertyValues != null)
       originalPropertyValues.clear();
     for (final Map.Entry<String, Object> entry : sourceEntity.propertyValues.entrySet()) {
-      propertyValues.put(entry.getKey(), EntityUtil.copyPropertyValue(sourceEntity.propertyValues.get(entry.getKey())));
+      propertyValues.put(entry.getKey(), copyPropertyValue(sourceEntity.propertyValues.get(entry.getKey())));
     }
     if (sourceEntity.originalPropertyValues != null && !sourceEntity.originalPropertyValues.isEmpty()) {
       if (originalPropertyValues == null)
@@ -542,7 +544,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? primaryKey.getValue(referenceKeyProperty.propertyID)
               : propertyValues.get(referenceKeyProperty.propertyID);
-      if (!EntityUtil.isValueNull(referenceKeyProperty.propertyType, value)) {
+      if (!isValueNull(referenceKeyProperty.propertyType, value)) {
         if (key == null)
           (referencedKeysCache == null ? referencedKeysCache = new HashMap<Property.EntityProperty, EntityKey>()
                   : referencedKeysCache).put(property, key = new EntityKey(property.referenceEntityID));
@@ -563,7 +565,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Property property = getProperty(propertyID);
     final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
 
-    return EntityUtil.isValueNull(property.propertyType, value);
+    return isValueNull(property.propertyType, value);
   }
 
   /** {@inheritDoc} */
@@ -580,6 +582,83 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     propertyValues = (Map<String, Object>) in.readObject();
     originalPropertyValues = (Map<String, Object>) in.readObject();
     hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
+  }
+
+  /**
+   * True if the given objects are equal. Both objects being null results in true.
+   * @param type the type
+   * @param one the first object
+   * @param two the second object
+   * @return true if the given objects are equal
+   */
+  public static boolean equal(final Type type, final Object one, final Object two) {
+    final boolean oneNull = isValueNull(type, one);
+    final boolean twoNull = isValueNull(type, two);
+
+    return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
+  }
+
+  /**
+   * Returns true if <code>value</code> represents a null value for the given property type
+   * @param propertyType the property type
+   * @param value the value to check
+   * @return true if <code>value</code> represents null
+   */
+  public static boolean isValueNull(final Type propertyType, final Object value) {
+    if (value == null)
+      return true;
+
+    switch (propertyType) {
+      case CHAR :
+        if (value instanceof String)
+          return ((String)value).length() == 0;
+      case BOOLEAN :
+        return value == Type.Boolean.NULL;
+      case STRING :
+        return value.equals("");
+      case ENTITY :
+        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
+      default :
+        return false;
+    }
+  }
+
+  /**
+   * Returns a copy of the given value.
+   * If the value is an entity it is deep copied.
+   * @param value the value to copy
+   * @return a copy of <code>value</code>
+   */
+  public static Object copyPropertyValue(final Object value) {
+    return value instanceof Entity ? ((Entity)value).getCopy() : value;
+  }
+
+  /**
+   * Prints the property values of the given entity to the standard output
+   * @param entity the entity
+   */
+  public static void printPropertyValues(final Entity entity) {
+    final Collection<Property> properties = EntityRepository.get().getProperties(entity.getEntityID(), true);
+    System.out.println("*********************[" + entity + "]***********************");
+    for (final Property property : properties) {
+      final Object value = entity.getValue(property.propertyID);
+      System.out.println(property + " = " + getValueString(property, value));
+    }
+    System.out.println("********************************************");
+  }
+
+  /**
+   * @param property the property
+   * @param value the value
+   * @return a string representing the given property value for debug output
+   */
+  public static String getValueString(final Property property, final Object value) {
+    final boolean valueIsNull = isValueNull(property.propertyType, value);
+    final StringBuffer ret = new StringBuffer("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
+    if (value instanceof Entity)
+      ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
+
+    return ret.toString();
   }
 
   /**
@@ -617,7 +696,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (!initialization)
       updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
 
-    if (evtPropertyChanged != null && !EntityUtil.equal(property.propertyType, newValue, oldValue))
+    if (evtPropertyChanged != null && !equal(property.propertyType, newValue, oldValue))
       firePropertyChangeEvent(property, newValue, oldValue, initialization);
   }
 
@@ -678,13 +757,13 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   private void updateModifiedState(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
     if (originalPropertyValues != null && originalPropertyValues.containsKey(propertyID)) {
-      if (EntityUtil.equal(type, originalPropertyValues.get(propertyID), newValue)) {
+      if (equal(type, originalPropertyValues.get(propertyID), newValue)) {
         originalPropertyValues.remove(propertyID);//we're back to the original value
         if (propertyDebug)
           System.out.println(propertyID + " reverted back to original value " + newValue);
       }
     }
-    else if (!EntityUtil.equal(type, oldValue, newValue)) {
+    else if (!equal(type, oldValue, newValue)) {
       (originalPropertyValues == null ?
               (originalPropertyValues = new HashMap<String, Object>()) : originalPropertyValues).put(propertyID, oldValue);
     }
@@ -703,7 +782,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   private void firePropertyChangeEvent(final Property property, final Object newValue, final Object oldValue,
                                        final boolean initialization) {
     if (propertyDebug)
-      System.out.println(EntityUtil.getPropertyChangeDebugString(getEntityID(), property, oldValue, newValue, initialization));
+      System.out.println(getPropertyChangeDebugString(getEntityID(), property, oldValue, newValue, initialization));
 
     evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, initialization));
   }
@@ -718,5 +797,85 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
 
     return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.denormalizedProperty) : null;
+  }
+
+  /**
+   * Performes a basic data validation of <code>value</code>, checking if the
+   * <code>value</code> data type is consistent with the data type of this
+   * property, returns the value
+   * @param value the value to validate
+   * @param property the property
+   * @return the value
+   * @throws IllegalArgumentException when the value is not of the same type as the propertyValue
+   */
+  private static Object validateValue(final Property property, final Object value) throws IllegalArgumentException {
+    final Type propertyType = property.propertyType;
+    if (value == null)
+      return value;
+
+    final String propertyID = property.propertyID;
+    switch (propertyType) {
+      case INT : {
+        if (!(value instanceof Integer))
+          throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case DOUBLE : {
+        if (!(value instanceof Double))
+          throw new IllegalArgumentException("Double value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case BOOLEAN : {
+        if (!(value instanceof Type.Boolean))
+          throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case LONG_DATE :
+      case SHORT_DATE : {
+        if (!(value instanceof Date))
+          throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
+      }
+      case ENTITY : {
+        if (!(value instanceof Entity) && !(value instanceof EntityKey))
+          throw new IllegalArgumentException("Entity or EntityKey value expected for property: " + propertyID + "(" + value.getClass() + ")");
+        return value;
+      }
+      case CHAR : {
+        if (!(value instanceof Character))
+          throw new IllegalArgumentException("Character value expected for property: " + propertyID + "(" + value.getClass() + ")");
+        return value;
+      }
+      case STRING : {
+        if (!(value instanceof String))
+          throw new IllegalArgumentException("String value expected for propertyValue: " + propertyID + "(" + value.getClass() + ")");
+        return value;
+      }
+    }
+
+    throw new IllegalArgumentException("Unknown type " + propertyType);
+  }
+
+  private static String getPropertyChangeDebugString(final String entityID, final Property property,
+                                                    final Object oldValue, final Object newValue,
+                                                    final boolean isInitialization) {
+    final StringBuffer ret = new StringBuffer();
+    if (isInitialization)
+      ret.append("INIT ");
+    else
+      ret.append("SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
+    ret.append(entityID).append(" -> ").append(property).append("; ");
+    if (!isInitialization) {
+      if (oldValue != null)
+        ret.append(oldValue.getClass().getSimpleName()).append(" ");
+      ret.append(getValueString(property, oldValue));
+    }
+    if (!isInitialization)
+      ret.append(" : ");
+    if (newValue != null)
+      ret.append(newValue.getClass().getSimpleName()).append(" ");
+    ret.append(getValueString(property, newValue));
+
+    return ret.toString();
   }
 }

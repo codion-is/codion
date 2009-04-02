@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.empdept.beans;
 
@@ -13,7 +13,6 @@ import org.jminor.framework.demos.empdept.beans.combo.ManagerComboBoxModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -57,9 +56,9 @@ public class EmployeeModel extends EntityModel {
         getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {
           public boolean include(final Object item) {
             return item instanceof String //the item representing null
-                    || (EntityUtil.equal(Type.ENTITY,
+                    || (Entity.equal(Type.ENTITY,
                     ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue())
-                    && !EntityUtil.equal(Type.ENTITY, item, getActiveEntityCopy()));
+                    && !Entity.equal(Type.ENTITY, item, getActiveEntityCopy()));
           }
         });
       }

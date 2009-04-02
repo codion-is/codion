@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db.criteria;
 
@@ -103,7 +103,7 @@ public class PropertyCriteria implements ICriteria {
 
     if (values.size() == 0)
       throw new RuntimeException("No values specified for PropertyCriteria: " + property);
-    if (values.size() == 1 && EntityUtil.isValueNull(property.getPropertyType(), values.get(0)))
+    if (values.size() == 1 && Entity.isValueNull(property.getPropertyType(), values.get(0)))
       return columnName + (searchType == SearchType.LIKE ? " is null" : " is not null");
 
     String sqlValue = EntityDbUtil.getSQLStringValue(property, values.get(0));

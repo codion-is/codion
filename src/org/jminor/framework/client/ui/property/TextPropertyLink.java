@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.model.EntityUtil;
+import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 
 import javax.swing.JFormattedTextField;
@@ -172,7 +172,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   protected String getValueAsString(final Object value) {
-    if (EntityUtil.isValueNull(getProperty().getPropertyType(), value))
+    if (Entity.isValueNull(getProperty().getPropertyType(), value))
       return null;
     else
       return format == null ? value.toString() : format.format(value);

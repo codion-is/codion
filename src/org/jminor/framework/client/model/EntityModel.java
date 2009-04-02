@@ -654,7 +654,7 @@ public class EntityModel implements IRefreshable {
     if (entity != null && activeEntity.propertyValuesEqual(entity))
       return;
     if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT) && entity != null)
-      EntityUtil.printPropertyValues(entity);
+      Entity.printPropertyValues(entity);
 
     evtActiveEntityChanging.fire();
 
@@ -1577,11 +1577,11 @@ public class EntityModel implements IRefreshable {
     ret.append(getEntityID()).append(" -> ").append(property).append("; ");
     if (oldValue != null)
       ret.append(oldValue.getClass().getSimpleName()).append(" ");
-    ret.append(EntityUtil.getValueString(property, oldValue));
+    ret.append(Entity.getValueString(property, oldValue));
     ret.append(" : ");
     if (newValue != null)
       ret.append(newValue.getClass().getSimpleName()).append(" ");
-    ret.append(EntityUtil.getValueString(property, newValue));
+    ret.append(Entity.getValueString(property, newValue));
 
     return ret.toString();
   }

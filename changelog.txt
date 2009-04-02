@@ -324,3 +324,4 @@
   ControlSet.iterate() made static and moved to ControlProvider
   UiUtil.handleException() moved to ExceptionDialog to remove a cyclical dependency
   UiUtil.getUser() moved to LoginPanel to remove a cyclical dependency
+  EntityUtil.getValueString/printPropertyValues/copyPropertyValue/isValueNull/equal/validateValue/getPropertyChangeDebugString moved to Entity to remove a cyclical dependency

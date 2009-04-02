@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -10,7 +10,6 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -20,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 30.3.2009
  * Time: 20:22:52
  */
@@ -35,7 +34,7 @@ public class EntityDbUtil {
    * @return a SQL string version of value
    */
   public static String getSQLStringValue(final Property property, final Object value) {
-    if (EntityUtil.isValueNull(property.propertyType, value))
+    if (Entity.isValueNull(property.propertyType, value))
       return "null";
 
     switch (property.propertyType) {

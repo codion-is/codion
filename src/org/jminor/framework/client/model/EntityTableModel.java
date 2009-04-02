@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -43,6 +43,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -431,7 +432,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /** {@inheritDoc} */
   public Class getColumnClass(final int columnIndex) {
-    return EntityUtil.getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
+    return getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
             getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).propertyID));
   }
 
@@ -1140,5 +1141,22 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   private synchronized int viewIndexOf(final Entity entity) {
     return tableSorter.viewIndex(modelIndexOf(entity));
+  }
+
+  private static Class getValueClass(final Type type, final Object value) {
+    if (type == Type.INT)
+      return Integer.class;
+    if (type == Type.DOUBLE)
+      return Double.class;
+    if (type == Type.BOOLEAN)
+      return Type.Boolean.class;
+    if (type == Type.SHORT_DATE || type == Type.LONG_DATE)
+      return Date.class;
+    if (type == Type.CHAR)
+      return Character.class;
+    if (type == Type.ENTITY)
+      return Entity.class;
+
+    return value == null ? Object.class : value.getClass();
   }
 }

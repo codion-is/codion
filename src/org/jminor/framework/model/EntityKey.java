@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -231,7 +231,7 @@ public class EntityKey implements Externalizable {
       return true;
 
     for (final Property property : properties)
-      if (EntityUtil.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
+      if (Entity.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
         return true;
 
     return false;
@@ -286,7 +286,7 @@ public class EntityKey implements Externalizable {
       for (final Property.PrimaryKeyProperty property : properties) {
         final String propertyID = property.propertyID;
         final Object newValue = key.getValue(propertyID);
-        keyValues.put(propertyID, EntityUtil.copyPropertyValue(newValue));
+        keyValues.put(propertyID, Entity.copyPropertyValue(newValue));
       }
 
       hashCode = key.hashCode;
