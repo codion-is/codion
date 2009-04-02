@@ -316,3 +316,4 @@
   CompactDotDateFormat mask fixed
   EntityModel.evtLinkedDetailModelChanged now only updates the selected detail model with the active entity if it is non-null
   TestEntityDbConnection fixed, it did not initialize the required domain model
+  Entity.setReferenceKeyValues() subtle bug fixed, when a EntityProperty was part of the primary key it didn't update the modified state when changed since it asked the primary key if it had a value using the EntityProperty propertyID (_ref) so it was always an initialization

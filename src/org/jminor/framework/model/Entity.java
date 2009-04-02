@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -644,8 +644,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
       final Property referenceProperty = property.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
-        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)
-            : !propertyValues.containsKey(property.propertyID);
+        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.keyValues.containsKey(referenceProperty.propertyID)
+            : !propertyValues.containsKey(referenceProperty.propertyID);
         doSetValue(referenceProperty, entity != null ? entity.getRawValue(primaryKeyProperty.propertyID) : null,
                 isPrimaryKeyProperty, initialization, true);
       }
