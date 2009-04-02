@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -52,8 +52,8 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     try {
       model.initialize();
       this.dbProvider = dbProvider;
-      if (upperField instanceof EntitySearchField)
-        ((EntitySearchField) upperField).setDbProvider(dbProvider);
+      if (upperField instanceof EntityLookupField)
+        ((EntityLookupField) upperField).setDbProvider(dbProvider);
       bindEvents();
     }
     catch (UserException e) {
@@ -123,7 +123,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "");
       }
     }
-    if (field instanceof JTextField && !(field instanceof EntitySearchField)) {//enter button toggles the filter on/off
+    if (field instanceof JTextField && !(field instanceof EntityLookupField)) {//enter button toggles the filter on/off
       ((JTextField) field).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           getModel().setSearchEnabled(!getModel().isSearchEnabled());
@@ -145,7 +145,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       return field;
     }
     else {
-      final EntitySearchField field = new EntitySearchField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
+      final EntityLookupField field = new EntityLookupField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
               getSearchProperties(((Property.EntityProperty) property).referenceEntityID)) {
         @SuppressWarnings({"unchecked"})
         public List<Entity> getSelectedEntities() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -347,36 +347,36 @@ public abstract class EntityBindingPanel extends JPanel {
             EntityRepository.get().getProperty(getModel().getEntityID(), propertyID), lookupModel);
   }
 
-  protected final EntitySearchField createEntitySearchField(final String propertyID, final String... searchPropertyIDs) {
+  protected final EntityLookupField createEntityLookupField(final String propertyID, final String... searchPropertyIDs) {
     final Property.EntityProperty property = EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID);
-    return createEntitySearchField(property, searchPropertyIDs);
+    return createEntityLookupField(property, searchPropertyIDs);
   }
 
-  protected final EntitySearchField createEntitySearchField(final Property.EntityProperty property, final String... searchPropertyIDs) {
-    return FrameworkUiUtil.createEntitySearchField(property, getModel(), searchPropertyIDs);
+  protected final EntityLookupField createEntityLookupField(final Property.EntityProperty property, final String... searchPropertyIDs) {
+    return FrameworkUiUtil.createEntityLookupField(property, getModel(), searchPropertyIDs);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String searchPropertyID,
+  protected final JPanel createEntityLookupFieldPanel(final String propertyID, final String searchPropertyID,
                                                       final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(propertyID, searchPropertyID, null, lookupModel);
+    return createEntityLookupFieldPanel(propertyID, searchPropertyID, null, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final String propertyID, final String searchPropertyID,
+  protected final JPanel createEntityLookupFieldPanel(final String propertyID, final String searchPropertyID,
                                                       final ICriteria additionalSearchCriteria,
                                                       final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID),
+    return createEntityLookupFieldPanel(EntityRepository.get().getEntityProperty(getModel().getEntityID(), propertyID),
             searchPropertyID, additionalSearchCriteria, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property,
+  protected final JPanel createEntityLookupFieldPanel(final Property.EntityProperty property,
                                                       final String searchPropertyID, final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(property, searchPropertyID, null, lookupModel);
+    return createEntityLookupFieldPanel(property, searchPropertyID, null, lookupModel);
   }
 
-  protected final JPanel createEntitySearchFieldPanel(final Property.EntityProperty property,
+  protected final JPanel createEntityLookupFieldPanel(final Property.EntityProperty property,
                                                       final String searchPropertyID, final ICriteria additionalSearchCriteria,
                                                       final EntityTableModel lookupModel) {
-    return FrameworkUiUtil.createEntitySearchFieldPanel(property, getModel(), searchPropertyID,
+    return FrameworkUiUtil.createEntityLookupFieldPanel(property, getModel(), searchPropertyID,
             additionalSearchCriteria, lookupModel);
   }
 

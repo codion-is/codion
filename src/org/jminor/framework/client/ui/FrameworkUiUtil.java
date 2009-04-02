@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -34,7 +34,7 @@ import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
 import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
-import org.jminor.framework.client.ui.property.SearchFieldPropertyLink;
+import org.jminor.framework.client.ui.property.LookupFieldPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -374,58 +374,58 @@ public class FrameworkUiUtil {
     return txt;
   }
 
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel                                                          ) {
+  public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel                                                          ) {
     final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(property.referenceEntityID);
     if (searchPropertyIDs == null)
       throw new RuntimeException("No default search properties specified for entity: " + property.referenceEntityID
-              + ", unable to create EntitySearchField, you must specify the searchPropertyIDs");
+              + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
 
-    return createEntitySearchField(property, entityModel, searchPropertyIDs);
+    return createEntityLookupField(property, entityModel, searchPropertyIDs);
   }
 
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
+  public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel,
                                                           final String... searchPropertyIDs) {
-    return createEntitySearchField(property, entityModel, null, searchPropertyIDs);
+    return createEntityLookupField(property, entityModel, null, searchPropertyIDs);
   }
 
-  public static EntitySearchField createEntitySearchField(final Property.EntityProperty property, final EntityModel entityModel,
+  public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel,
                                                           final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     final List<Property> searchProperties = EntityRepository.get().getProperties(property.referenceEntityID, searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)
-        throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
+        throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
-    final EntitySearchField searchField = new EntitySearchField(entityModel.getDbConnectionProvider(), property.referenceEntityID,
+    final EntityLookupField lookupField = new EntityLookupField(entityModel.getDbConnectionProvider(), property.referenceEntityID,
             additionalSearchCriteria, searchProperties);
-    searchField.setBorder(BorderFactory.createEtchedBorder());
-    new SearchFieldPropertyLink(entityModel, property.propertyID, searchField);
-    setPropertyToolTip(entityModel.getEntityID(), property, searchField);
+    lookupField.setBorder(BorderFactory.createEtchedBorder());
+    new LookupFieldPropertyLink(entityModel, property.propertyID, lookupField);
+    setPropertyToolTip(entityModel.getEntityID(), property, lookupField);
     final boolean transferFocusOnEnter =
             (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
-    searchField.setTransferFocusOnEnter(transferFocusOnEnter);
+    lookupField.setTransferFocusOnEnter(transferFocusOnEnter);
 
-    return searchField;
+    return lookupField;
   }
 
-  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
+  public static JPanel createEntityLookupFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final String searchPropertyID, final EntityTableModel lookupModel) {
-    return createEntitySearchFieldPanel(property, entityModel, searchPropertyID, null, lookupModel);
+    return createEntityLookupFieldPanel(property, entityModel, searchPropertyID, null, lookupModel);
   }
 
-  public static JPanel createEntitySearchFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
+  public static JPanel createEntityLookupFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
                                                     final String searchPropertyID, final ICriteria additionalSearchCriteria,
                                                     final EntityTableModel lookupModel) {
     final Property searchProperty = EntityRepository.get().getProperty(property.referenceEntityID, searchPropertyID);
     if (searchProperty.getPropertyType() != Type.STRING)
-      throw new IllegalArgumentException("Can only create EntitySearchField with a search property of STRING type");
+      throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
-    final EntitySearchField searchField = createEntitySearchField(property, entityModel,
+    final EntityLookupField lookupField = createEntityLookupField(property, entityModel,
             additionalSearchCriteria, searchPropertyID);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(searchField),
+          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(lookupField),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
@@ -435,7 +435,7 @@ public class FrameworkUiUtil {
     btn.setPreferredSize(UiUtil.DIMENSION18x18);
 
     final JPanel ret = new JPanel(new BorderLayout(5,0));
-    ret.add(searchField, BorderLayout.CENTER);
+    ret.add(lookupField, BorderLayout.CENTER);
     ret.add(btn, BorderLayout.EAST);
 
     return ret;
