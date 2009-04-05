@@ -44,7 +44,7 @@ public class LookupFieldPropertyLink extends AbstractEntityPropertyLink {
     super(entityModel, property, LinkType.READ_WRITE);
     this.lookupField = entityLookupField;
     updateUI();
-    entityLookupField.evtSelectedEntityChanged.addListener(new ActionListener() {
+    entityLookupField.evtSelectedEntitiesChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateModel();
       }

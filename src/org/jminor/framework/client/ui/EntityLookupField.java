@@ -53,7 +53,7 @@ import java.util.Vector;
 
 public class EntityLookupField extends TextFieldPlus {
 
-  public final Event evtSelectedEntityChanged = new Event("EntityLookupField.selectedEntityChanged");
+  public final Event evtSelectedEntitiesChanged = new Event("EntityLookupField.selectedEntitiesChanged");
 
   /**
    * The ID of the entity this lookup field is based on
@@ -70,10 +70,10 @@ public class EntityLookupField extends TextFieldPlus {
    */
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 
-  private final Action searchAction;
+  private final Action lookupAction;
 
   private IEntityDbProvider dbProvider;
-  private ICriteria additionalSearchCriteria;
+  private ICriteria additionalLookupCriteria;
 
   private State stTextRepresentsSelected = new State();
 
@@ -88,27 +88,27 @@ public class EntityLookupField extends TextFieldPlus {
     this(dbProvider, entityID, null, lookupProperties);
   }
 
-  public EntityLookupField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
+  public EntityLookupField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalLookupCriteria,
                            final List<Property> lookupProperties) {
-    this(dbProvider, entityID, additionalSearchCriteria, false, lookupProperties);
+    this(dbProvider, entityID, additionalLookupCriteria, false, lookupProperties);
   }
 
-  public EntityLookupField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
+  public EntityLookupField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalLookupCriteria,
                            final boolean caseSensitive, final List<Property> lookupProperties) {
-    this(dbProvider, entityID, additionalSearchCriteria, caseSensitive, true, true, lookupProperties);
+    this(dbProvider, entityID, additionalLookupCriteria, caseSensitive, true, true, lookupProperties);
   }
 
-  public EntityLookupField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalSearchCriteria,
+  public EntityLookupField(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalLookupCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
                            final List<Property> lookupProperties) {
     setDbProvider(dbProvider);
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
-    this.additionalSearchCriteria = additionalSearchCriteria;
+    this.additionalLookupCriteria = additionalLookupCriteria;
     this.caseSensitive = caseSensitive;
     this.wildcardPrefix = wildcardPrefix;
     this.wildcardPostfix = wildcardPostfix;
-    this.searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+    this.lookupAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
         try {
           if (getText().length() == 0) {
@@ -118,7 +118,7 @@ public class EntityLookupField extends TextFieldPlus {
             if (stTextRepresentsSelected.isActive() && transferFocusOnEnter)
               transferFocus();
             else
-              performSearch();
+              performLookup();
           }
         }
         catch (UserException ex) {
@@ -126,20 +126,20 @@ public class EntityLookupField extends TextFieldPlus {
         }
       }
     };
-    addActionListener(searchAction);
+    addActionListener(lookupAction);
     getDocument().addDocumentListener(new DocumentListener() {
       public void changedUpdate(final DocumentEvent e) {
-        updateSearchState();
+        updateLookupState();
       }
       public void insertUpdate(final DocumentEvent e) {
-        updateSearchState();
+        updateLookupState();
       }
       public void removeUpdate(final DocumentEvent e) {
-        updateSearchState();
+        updateLookupState();
       }
     });
     setComponentPopupMenu(initializePopupMenu());
-    updateSearchState();
+    updateLookupState();
   }
 
   public void setDbProvider(final IEntityDbProvider dbProvider) {
@@ -167,7 +167,7 @@ public class EntityLookupField extends TextFieldPlus {
     if (entities != null)
       this.selectedEntities.addAll(entities);
     refreshText();
-    evtSelectedEntityChanged.fire();
+    evtSelectedEntitiesChanged.fire();
   }
 
   public List<Entity> getSelectedEntities() {
@@ -207,13 +207,13 @@ public class EntityLookupField extends TextFieldPlus {
     refreshText();
   }
 
-  public void setAdditionalSearchCriteria(final ICriteria additionalSearchCriteria) {
-    this.additionalSearchCriteria = additionalSearchCriteria;
+  public void setAdditionalLookupCriteria(final ICriteria additionalLookupCriteria) {
+    this.additionalLookupCriteria = additionalLookupCriteria;
     setSelectedEntities(null);
   }
 
-  public Action getSearchAction() {
-    return searchAction;
+  public Action getLookupAction() {
+    return lookupAction;
   }
 
   public void refreshText() {
@@ -222,35 +222,30 @@ public class EntityLookupField extends TextFieldPlus {
 
   public EntityCriteria getEntityCriteria() {
     final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
-    final String[] searchTexts = isAllowMultipleSelection() ? getText().split(getMultiValueSeperator()) : new String[] {getText()};
-    for (final Property searchProperty : lookupProperties) {
-      for (final String searchText : searchTexts) {
-        final String modifiedSearchText = (isWildcardPrefix() ? FrameworkConstants.WILDCARD : "") + searchText
+    final String[] lookupTexts = isAllowMultipleSelection() ? getText().split(getMultiValueSeperator()) : new String[] {getText()};
+    for (final Property lookupProperty : lookupProperties) {
+      for (final String lookupText : lookupTexts) {
+        final String modifiedLookupText = (isWildcardPrefix() ? FrameworkConstants.WILDCARD : "") + lookupText
                 + (isWildcardPostfix() ? FrameworkConstants.WILDCARD : "");
-        baseCriteria.addCriteria(new PropertyCriteria(searchProperty, SearchType.LIKE, modifiedSearchText).setCaseSensitive(isCaseSensitive()));
+        baseCriteria.addCriteria(new PropertyCriteria(lookupProperty, SearchType.LIKE, modifiedLookupText).setCaseSensitive(isCaseSensitive()));
       }
     }
 
-    return new EntityCriteria(entityID, additionalSearchCriteria == null ? baseCriteria :
-            new CriteriaSet(CriteriaSet.Conjunction.AND, additionalSearchCriteria, baseCriteria));
+    return new EntityCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
+            new CriteriaSet(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
-  private void performSearch() throws UserException {
-    final List<Entity> searchResult = getSearchResult();
-    if (searchResult.size() == 0) {
+  private void performLookup() throws UserException {
+    final List<Entity> lookupResult = doLookup();
+    if (lookupResult.size() == 0)
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-    }
-    else if (searchResult.size() == 1) {
-      final List<Entity> value = new ArrayList<Entity>(1);
-      value.add(searchResult.get(0));
-      setSelectedEntities(value);
-    }
-    else {
-      selectEntities(searchResult);
-    }
+    else if (lookupResult.size() == 1)
+      setSelectedEntities(lookupResult);
+    else
+      selectEntities(lookupResult);
   }
 
-  private List<Entity> getSearchResult() throws UserException {
+  private List<Entity> doLookup() throws UserException {
     try {
       return dbProvider.getEntityDb().selectMany(getEntityCriteria());
     }
@@ -284,7 +279,7 @@ public class EntityLookupField extends TextFieldPlus {
         dialog.dispose();
       }
     };
-    list.setSelectionMode(allowMultipleSelection ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+    list.setSelectionMode(isAllowMultipleSelection() ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
     final JButton btnOk  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
@@ -319,7 +314,7 @@ public class EntityLookupField extends TextFieldPlus {
     dialog.setVisible(true);
   }
 
-  private void updateSearchState() {
+  private void updateLookupState() {
     final String selectedAsString = toString(getSelectedEntities());
     stTextRepresentsSelected.setActive(getSelectedEntities().size() > 0 && selectedAsString.equals(getText()));
     setBackground(stTextRepresentsSelected.isActive() ? Color.WHITE : Color.LIGHT_GRAY);
