@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.empdept.model;
 
@@ -68,8 +68,8 @@ public class TestEmpDeptModel extends EntityTestUnit {
     }
     else if (entityID.equals(EmpDept.T_EMPLOYEE)) {
       final Entity ret = new Entity(EmpDept.T_EMPLOYEE);
-      final Entity department = getReferencedEntities().get(EmpDept.T_DEPARTMENT);
-      final Entity manager = getReferencedEntities().get(EmpDept.T_EMPLOYEE);
+      final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
+      final Entity manager = getReferenceEntity(EmpDept.T_EMPLOYEE);
       ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
       ret.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       ret.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());

@@ -8,6 +8,7 @@ import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.UserException;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbProviderFactory;
@@ -29,18 +30,27 @@ import java.util.Set;
 
 public abstract class EntityTestUnit extends TestCase {
 
-  private final IEntityDb db;
+  private final IEntityDb dbConnection;
   private final HashMap<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   public EntityTestUnit() {
     try {
       loadDomainModel();
-      db = EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName()).getEntityDb();
+      dbConnection = initializeDbConnection();
     }
     catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * @return the IEntityDb connection this test case should use
+   * @throws UserException in case of an exception
+   * @throws UserCancelException in case the login in was cancelled
+   */
+  protected IEntityDb initializeDbConnection() throws UserException, UserCancelException {
+    return EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName()).getEntityDb();
   }
 
   /**
@@ -59,12 +69,8 @@ public abstract class EntityTestUnit extends TestCase {
     return ret;
   }
 
-  protected HashMap<String, Entity> getReferencedEntities() {
-    return referencedEntities;
-  }
-
   protected IEntityDb getDbConnection() {
-    return db;
+    return dbConnection;
   }
 
   protected Map<String, Entity> initializeReferenceEntities(final String entityID) throws Exception {
@@ -187,11 +193,11 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected Entity initialize(final Entity entity) throws Exception {
     try {
-      final List<Entity> entities = db.selectMany(Arrays.asList(entity.getPrimaryKey()));
+      final List<Entity> entities = getDbConnection().selectMany(Arrays.asList(entity.getPrimaryKey()));
       if (entities.size() > 0)
         return entities.get(0);
 
-      return db.selectSingle(db.insert(Arrays.asList(entity)).get(0));
+      return getDbConnection().selectSingle(getDbConnection().insert(Arrays.asList(entity)).get(0));
     }
     catch (DbException e) {
       System.out.println(e.getSql());

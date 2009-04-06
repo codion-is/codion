@@ -326,3 +326,5 @@
   UiUtil.getUser() moved to LoginPanel to remove a cyclical dependency
   EntityUtil.getValueString/printPropertyValues/copyPropertyValue/isValueNull/equal/validateValue/getPropertyChangeDebugString moved to Entity to remove a cyclical dependency
   EntityLookupField renamed some variables and methods from search... to lookup...
+  EntityTestUnit.getReferencedEntities() removed
+  EntityTestUnit.initializeDbConnection() added
