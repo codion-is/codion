@@ -328,3 +328,4 @@
   EntityLookupField renamed some variables and methods from search... to lookup...
   EntityTestUnit.getReferencedEntities() removed
   EntityTestUnit.initializeDbConnection() added
+  Split demo sources from test source tree to srcdemos
