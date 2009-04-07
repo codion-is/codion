@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.model;
 
@@ -309,7 +309,8 @@ public class Property implements Serializable {
   /**
    * A meta property that represents a reference to another entity, typically but not necessarily based on a foreign key.
    * These do not map directly to a underlying table column, but wrap the actual column properties involved in the relation.
-   * e.g.: new Property.EntityProperty("reference_property", new Property("reference_id")),
+   * e.g.: new Property.EntityProperty("reference_property", new Property("reference_id")), where "reference_id" is the
+   * actual name of the column involved in the reference, but "reference_property" is simply a descriptive property ID
    */
   public static class EntityProperty extends Property {
 
