@@ -329,3 +329,7 @@
   EntityTestUnit.getReferencedEntities() removed
   EntityTestUnit.initializeDbConnection() added
   Split demo sources from test source tree to srcdemos
+  ManagerComboBoxModel removed from EmpDept demo
+  EntityModel.createEntityComboBoxModel(Property.EntityProperty property) added, uses "-" as the default nullValueItem and sorts the contents
+  EmployeeModel override createEntityComboBoxModel() instead of initializeEntityComboBoxModels()
+  EntityPropertyEditor now calls the new EntityModel.createEntityComboBoxModel() version

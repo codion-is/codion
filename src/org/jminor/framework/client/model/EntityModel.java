@@ -1058,9 +1058,23 @@ public class EntityModel implements IRefreshable {
   public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
     EntityComboBoxModel ret = (EntityComboBoxModel) propertyComboBoxModels.get(property);
     if (ret == null)
-      setComboBoxModel(property, ret = createEntityComboBoxModel(property, null, true));
+      setComboBoxModel(property, ret = createEntityComboBoxModel(property));
 
     return ret;
+  }
+
+  /**
+   * Creates a default EntityComboBoxModel for the given property, override to provide
+   * specific EntityComboBoxModels (filtered for example) for properties.
+   * This method is called when creating a EntitComboBoxModel for entity properties, both
+   * for the edit fields used when editing a single record and the edit field used
+   * when updating multiple records.
+   * This default implementation returns a sorted EntityComboBoxModel with "-" as the nullValueItem
+   * @param property the property for which to create a EntityComboBoxModel
+   * @return a EntityComboBoxModel for the given property
+   */
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
+    return createEntityComboBoxModel(property, "-", true);
   }
 
   /**

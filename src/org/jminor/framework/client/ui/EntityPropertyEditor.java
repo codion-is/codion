@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -186,9 +186,9 @@ public class EntityPropertyEditor extends JPanel {
         if (currentValue != null)
           ret.setSelectedItem(currentValue);
         return ret;
-      case ENTITY:
+      case ENTITY://todo use isLookup
         final EntityComboBoxModel model =
-                entityModel.createEntityComboBoxModel(((Property.EntityProperty)property), "-", true);
+                entityModel.createEntityComboBoxModel(((Property.EntityProperty)property));
         model.refresh();
         if (currentValue != null)
           model.setSelectedItem(currentValue);
