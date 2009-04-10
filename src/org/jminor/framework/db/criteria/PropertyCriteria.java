@@ -6,7 +6,7 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
@@ -39,6 +39,11 @@ public class PropertyCriteria implements ICriteria {
    * The search type used in this criteria
    */
   private final SearchType searchType;
+
+  /**
+   * The wildcard being used
+   */
+  private final String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
 
   /**
    * True if this criteria should be case sensitive, only applies for criterias based on string properties
@@ -198,7 +203,7 @@ public class PropertyCriteria implements ICriteria {
   }
 
   private boolean containsWildcard(final String val) {
-    return val != null && val.length() > 0 && val.indexOf(FrameworkConstants.WILDCARD) > -1;
+    return val != null && val.length() > 0 && val.indexOf(wildcard) > -1;
   }
 
   private String getInList(final String whereColumn, final boolean notIn) {

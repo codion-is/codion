@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
@@ -83,8 +83,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (port == null || port.length() == 0)
       throw new IllegalArgumentException("Db port must be specified");
 
-    serverName = FrameworkConstants.JMINOR_SERVER_NAME_PREFIX + " " + Util.getVersion()
-            + " @ " + sid.toUpperCase()
+    serverName = FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)
+            + " " + Util.getVersion() + " @ " + sid.toUpperCase()
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
     dbConnectionProperties.put(Database.DATABASE_SID_PROPERTY, sid);
     startConnectionCheckTimer();

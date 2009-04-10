@@ -54,7 +54,7 @@
     <!--  libraries-->
     <jar href="lib/jcalendar.jar"/>
     <jar href="lib/log4j-1.2.15.jar"/>
-    <jar href="lib/jasperreports-1.2.7.jar"/>
+    <jar href="lib/jasperreports-3.0.0.jar"/>
 
     <property name="jminor.client.connection.type" value="remote"/>
     <property name="jminor.server.hostname" value="black-beauty"/>

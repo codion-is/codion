@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -7,14 +7,14 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
 import java.sql.Timestamp;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 26.12.2007
  * Time: 14:48:22
  *
@@ -42,6 +42,7 @@ public abstract class AbstractSearchModel {
   private boolean caseSensitive = true;
   private Object upperBound = null;
   private Object lowerBound = null;
+  private String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
 
   public AbstractSearchModel(final Property property) {
     this.property = property;
@@ -166,7 +167,7 @@ public abstract class AbstractSearchModel {
    */
   public Object getUpperBound() {
     if (getPropertyType() == Type.STRING && automaticWildcard)
-      return FrameworkConstants.WILDCARD + upperBound + FrameworkConstants.WILDCARD;
+      return getWildcard() + upperBound + getWildcard();
     else
       return upperBound;
   }
@@ -238,7 +239,7 @@ public abstract class AbstractSearchModel {
    */
   public Object getLowerBound() {
     if (getPropertyType() == Type.STRING && automaticWildcard)
-      return FrameworkConstants.WILDCARD + lowerBound + FrameworkConstants.WILDCARD;
+      return getWildcard() + lowerBound + getWildcard();
     else
       return lowerBound;
   }
@@ -261,6 +262,21 @@ public abstract class AbstractSearchModel {
       searchType = type;
       evtSearchTypeChanged.fire();
     }
+  }
+
+  /**
+   * @return the wildcard
+   */
+  public String getWildcard() {
+    return wildcard;
+  }
+
+  /**
+   * Sets the wildcard to use
+   * @param wildcard the wildcard
+   */
+  public void setWildcard(final String wildcard) {
+    this.wildcard = wildcard;
   }
 
   /**

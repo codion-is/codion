@@ -14,7 +14,6 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
-import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
@@ -684,7 +683,8 @@ public class EntityTablePanel extends JPanel {
         try {
           getTableModel().getSearchModel().clearPropertySearchModels();
           if (txtField.getText().length() > 0) {
-            final String searchText = FrameworkConstants.WILDCARD + txtField.getText() + FrameworkConstants.WILDCARD;
+            final String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
+            final String searchText = wildcard + txtField.getText() + wildcard;
             for (final Property searchProperty : searchableProperties)
               getTableModel().getSearchModel().setStringSearchValue(searchProperty.propertyID, searchText);
           }

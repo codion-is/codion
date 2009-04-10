@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework;
 
@@ -174,6 +174,34 @@ public class FrameworkSettings implements Serializable {
    */
   public static final String INITIAL_SEARCH_PANEL_STATE = "inital_search_panel_state";
 
+  /**
+   * Specifies the prefix used when exporting/looking up the JMinor server
+   * Value type: String
+   * Default value: JMinor EntityDb Server
+   */
+  public static final String SERVER_NAME_PREFIX = "server_name_prefix";
+
+  /**
+   * Specifies the wildcard character used by the framework
+   * Value type: String
+   * Default value: %
+   */
+  public static final String WILDCARD_CHARACTER = "wildcard_character";
+
+  /**
+   * Specifies the class providing remote db connections
+   * Value type: String (the name of a class implementing org.jminor.framework.db.IEntityDbProvider)
+   * Default value: org.jminor.framework.server.EntityDbRemoteProvider
+   */
+  public static final String REMOTE_CONNECTION_PROVIDER = "remote_connection_provider";
+
+  /**
+   * Specifies the class providing local db connections
+   * Value type: String (the name of a class implementing org.jminor.framework.db.IEntityDbProvider)
+   * Default value: org.jminor.framework.db.EntityDbLocalProvider
+   */
+  public static final String LOCAL_CONNECTION_PROVIDER = "local_connection_provider";
+
   private Map<String, Object> settings = new HashMap<String, Object>();
 
   private final static FrameworkSettings instance = new FrameworkSettings();
@@ -201,6 +229,10 @@ public class FrameworkSettings implements Serializable {
     setProperty(FILTER_QUERY_BY_MASTER, false);
     setProperty(PERSIST_ENTITY_PANELS, false);
     setProperty(INITIAL_SEARCH_PANEL_STATE, false);
+    setProperty(SERVER_NAME_PREFIX, "JMinor EntityDb Server");
+    setProperty(WILDCARD_CHARACTER, "%");
+    setProperty(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.EntityDbRemoteProvider");
+    setProperty(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.EntityDbLocalProvider");
   }
 
   public static FrameworkSettings get() {

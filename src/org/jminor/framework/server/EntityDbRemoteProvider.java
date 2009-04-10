@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
@@ -161,7 +161,8 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
       final String version = Util.getVersion();
       final String[] boundNames = registry.list();
       for (final String name : boundNames) {
-        if (name.startsWith(FrameworkConstants.JMINOR_SERVER_NAME_PREFIX) && name.contains(version)) {
+        if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
+                && name.contains(version)) {
           try {
             final IEntityDbRemoteServer server = checkServer((IEntityDbRemoteServer) registry.lookup(name));
             if (server != null)

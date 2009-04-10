@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework;
 
@@ -87,24 +87,4 @@ public class FrameworkConstants {
    * Specifies the initial client batch size
    */
   public static final String PROFILING_BATCH_SIZE_PROPERTY = "jminor.profiling.batchsize";
-
-  /**
-   * The JMinor server name prefix
-   */
-  public static final String JMINOR_SERVER_NAME_PREFIX = "JMinor EntityDb Server";
-
-  /**
-   * The class providing remote db connections
-   */
-  public static final String REMOTE_CONNECTION_PROVIDER = "org.jminor.framework.server.EntityDbRemoteProvider";
-
-  /**
-   * The class providing local db connections
-   */
-  public static final String LOCAL_CONNECTION_PROVIDER = "org.jminor.framework.db.EntityDbLocalProvider";
-
-  /**
-   * The String used as wildcard in String filters
-   */
-  public static final String WILDCARD = "%";
 }

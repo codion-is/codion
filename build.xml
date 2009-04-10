@@ -126,6 +126,7 @@
                 org/jminor/framework/client/**,
                 org/jminor/framework/profiling/**,
                 org/jminor/framework/model/**,
+                org/jminor/framework/db/criteria/**,
                 org/jminor/framework/db/IEntityDb*,
                 org/jminor/framework/db/EntityDbProviderFactory*,
                 org/jminor/framework/i18n/**,

@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
 import org.jminor.common.db.User;
 import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.FrameworkSettings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
@@ -13,6 +14,11 @@ import java.util.Random;
  * A factory class for handing out IEntityDbProviders according to system properties
  */
 public class EntityDbProviderFactory {
+
+  private static String remoteConnectionProviderClassName =
+          (String) FrameworkSettings.get().getProperty(FrameworkSettings.REMOTE_CONNECTION_PROVIDER);
+  private static String localConnectionProviderClassName =
+          (String) FrameworkSettings.get().getProperty(FrameworkSettings.LOCAL_CONNECTION_PROVIDER);
 
   /**
    * Returns a IEntityDbProvider according to system properties
@@ -32,8 +38,8 @@ public class EntityDbProviderFactory {
    * @param clientTypeID the client type id
    * @return a IEntityDbProvider
    * @see FrameworkConstants#CLIENT_CONNECTION_TYPE
-   * @see FrameworkConstants#REMOTE_CONNECTION_PROVIDER
-   * @see FrameworkConstants#LOCAL_CONNECTION_PROVIDER
+   * @see FrameworkSettings#REMOTE_CONNECTION_PROVIDER
+   * @see FrameworkSettings#LOCAL_CONNECTION_PROVIDER
    * @see EntityDbLocalProvider
    * @see org.jminor.framework.server.EntityDbRemoteProvider
    */
@@ -42,9 +48,11 @@ public class EntityDbProviderFactory {
     try {
       if (System.getProperty(FrameworkConstants.CLIENT_CONNECTION_TYPE,
               FrameworkConstants.CONNECTION_TYPE_LOCAL).equals(FrameworkConstants.CONNECTION_TYPE_REMOTE))
-        return (IEntityDbProvider) Class.forName(FrameworkConstants.REMOTE_CONNECTION_PROVIDER).getConstructor(User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
+        return (IEntityDbProvider) Class.forName(remoteConnectionProviderClassName).getConstructor(
+                User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
       else
-        return (IEntityDbProvider) Class.forName(FrameworkConstants.LOCAL_CONNECTION_PROVIDER).getConstructor(User.class).newInstance(user);
+        return (IEntityDbProvider) Class.forName(localConnectionProviderClassName).getConstructor(
+                User.class).newInstance(user);
     }
     catch (InvocationTargetException ite) {
       if (ite.getTargetException() instanceof RuntimeException)

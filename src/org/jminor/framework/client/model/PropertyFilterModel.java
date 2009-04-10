@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
@@ -125,7 +124,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
   protected boolean includeExactWildcard(final String value) {
     String upperBound = (String) getUpperBound();
-    if (upperBound.equals(FrameworkConstants.WILDCARD))
+    if (upperBound.equals(getWildcard()))
       return true;
     if (value == null)
       return false;
@@ -136,7 +135,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       realValue = realValue.toUpperCase();
     }
 
-    if (upperBound.indexOf(FrameworkConstants.WILDCARD) < 0)
+    if (upperBound.indexOf(getWildcard()) < 0)
       return realValue.compareTo(upperBound) == 0;
 
     return Pattern.matches(prepareForRegex(upperBound), realValue);
@@ -144,7 +143,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
   protected String prepareForRegex(final String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replaceAll(FrameworkConstants.WILDCARD, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
+    return string.replaceAll(getWildcard(), ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
   protected boolean includeMax(final Comparable comparable) {

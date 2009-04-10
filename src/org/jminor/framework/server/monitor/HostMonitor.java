@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.FrameworkSettings;
 
 import org.apache.log4j.Logger;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 4.12.2007
  * Time: 17:46:40
  */
@@ -75,9 +75,8 @@ public class HostMonitor extends DefaultMutableTreeNode {
     final ArrayList<String> ret = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames) {
-      if (name.startsWith(FrameworkConstants.JMINOR_SERVER_NAME_PREFIX)) {
+      if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)))
         ret.add(name);
-      }
     }
 
     return ret.toArray(new String[ret.size()]);

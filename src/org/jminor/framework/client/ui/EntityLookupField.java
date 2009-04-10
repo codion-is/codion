@@ -13,7 +13,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.TextFieldPlus;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
@@ -81,6 +81,7 @@ public class EntityLookupField extends TextFieldPlus {
   private boolean caseSensitive;
   private boolean wildcardPrefix;
   private boolean wildcardPostfix;
+  private String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
   private String multiValueSeperator = ",";
   private boolean transferFocusOnEnter = false;
 
@@ -198,6 +199,21 @@ public class EntityLookupField extends TextFieldPlus {
     this.wildcardPrefix = wildcardPrefix;
   }
 
+  /**
+   * @return the wildcard
+   */
+  public String getWildcard() {
+    return wildcard;
+  }
+
+  /**
+   * Sets the wildcard to use
+   * @param wildcard the wildcard
+   */
+  public void setWildcard(final String wildcard) {
+    this.wildcard = wildcard;
+  }
+
   public String getMultiValueSeperator() {
     return multiValueSeperator;
   }
@@ -225,8 +241,8 @@ public class EntityLookupField extends TextFieldPlus {
     final String[] lookupTexts = isAllowMultipleSelection() ? getText().split(getMultiValueSeperator()) : new String[] {getText()};
     for (final Property lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
-        final String modifiedLookupText = (isWildcardPrefix() ? FrameworkConstants.WILDCARD : "") + lookupText
-                + (isWildcardPostfix() ? FrameworkConstants.WILDCARD : "");
+        final String modifiedLookupText = (isWildcardPrefix() ? getWildcard() : "") + lookupText
+                + (isWildcardPostfix() ? getWildcard() : "");
         baseCriteria.addCriteria(new PropertyCriteria(lookupProperty, SearchType.LIKE, modifiedLookupText).setCaseSensitive(isCaseSensitive()));
       }
     }

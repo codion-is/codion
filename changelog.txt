@@ -333,3 +333,10 @@
   EntityModel.createEntityComboBoxModel(Property.EntityProperty property) added, uses "-" as the default nullValueItem and sorts the contents
   EmployeeModel override createEntityComboBoxModel() instead of initializeEntityComboBoxModels()
   EntityPropertyEditor now calls the new EntityModel.createEntityComboBoxModel() version
+  FrameworkConstants.WILDCARD removed
+  FrameworkSettings.WILDCARD_CHARACTER property added
+  AbstractSearchModel, EntityLookupField, PropertyCriteria added wildcard property
+  FrameworkConstants.JMINOR_SERVER_NAME_PREFIX removed
+  FrameworkSettings.SERVER_NAME_PREFIX added
+  FrameworkConstants.REMOTE_CONNECTION_PROVIDER and LOCAL_CONNECTION_PROVIDER removed
+  FrameworkSettings.REMOTE_CONNECTION_PROVIDER and LOCAL_CONNECTION_PROVIDER properties added
