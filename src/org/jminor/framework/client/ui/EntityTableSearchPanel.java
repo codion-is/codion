@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -75,8 +75,8 @@ public class EntityTableSearchPanel extends JPanel {
     return false;
   }
 
-  public void bindSizeToColumns(final JTable table) {
-    UiUtil.bindColumnSizesAndPanelSizes(table, searchPanels);
+  public void bindToColumnSizes(final JTable table) {
+    UiUtil.bindColumnAndPanelSizes(table.getColumnModel(), searchPanels);
   }
 
   /** {@inheritDoc} */

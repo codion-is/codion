@@ -614,7 +614,7 @@ public class EntityTablePanel extends JPanel {
       ret.add(panel);
     }
 
-    UiUtil.bindColumnSizesAndPanelSizes(getJTable(), panels);
+    UiUtil.bindColumnAndPanelSizes(getJTable().getColumnModel(), panels);
 
     return ret;
   }
@@ -710,11 +710,11 @@ public class EntityTablePanel extends JPanel {
    * @return an initialized EntityTableSearchPanel
    */
   protected JPanel initializeAdvancedSearchPanel() {
-    final EntityTableSearchPanel ret = new EntityTableSearchPanel(getTableModel().getSearchModel(),
-            getTableModel().getTableColumnProperties());
-    ret.bindSizeToColumns(getJTable());
+    final EntityTableSearchPanel searchPanel =
+            new EntityTableSearchPanel(getTableModel().getSearchModel(), getTableModel().getTableColumnProperties());
+    searchPanel.bindToColumnSizes(getJTable());
 
-    return ret;
+    return searchPanel;
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui;
 
@@ -45,7 +45,7 @@ public class DateInputPanel extends JPanel {
         }
       };
       final JButton btnChooser = new JButton(buttonAction);
-      btnChooser.setPreferredSize(UiUtil.DIMENSION18x18);
+      btnChooser.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null)
         UiUtil.linkToEnabledState(enabledState, btnChooser);
       add(btnChooser, BorderLayout.EAST);

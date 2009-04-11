@@ -340,3 +340,6 @@
   FrameworkSettings.SERVER_NAME_PREFIX added
   FrameworkConstants.REMOTE_CONNECTION_PROVIDER and LOCAL_CONNECTION_PROVIDER removed
   FrameworkSettings.REMOTE_CONNECTION_PROVIDER and LOCAL_CONNECTION_PROVIDER properties added
+  UiUtil.bindColumnSizesAndPanelSizes() renamed to bindColumnAndPanelSizes and simplified considerably
+  UiUtil.DIMENSION_TEXT_FIELD_SQUARE added
+  UiUtil.DIMENSION18x18 deprecated

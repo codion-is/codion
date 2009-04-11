@@ -31,8 +31,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -53,13 +51,27 @@ public class UiUtil {
 
   public final static Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   public final static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+  /**
+   * @deprecated use DIMENSION_TEXT_FIELD_SQUARE instead
+   */
   public final static Dimension DIMENSION18x18 = new Dimension(18,18);
-  public static int waitCursorRequests = 0;
+
+  /**
+   * A square dimension which sides are the same as the preferred height of a JTextField.
+   * This comes in handy when f.ex. adding "..." lookup buttons next to text fields.
+   */
+  public final static Dimension DIMENSION_TEXT_FIELD_SQUARE =
+          new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
+
+  private static int waitCursorRequests = 0;
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
    */
-  public static JFileChooser fileChooser;
-  public static JTextField textField;
+  private static JFileChooser fileChooser;
+  /**
+   * A text field used by getPreferredTextFieldSize and getPreferredTextFieldHeight
+   */
+  private static JTextField textField;
 
   private UiUtil() {}
 
@@ -213,40 +225,23 @@ public class UiUtil {
     }
   }
 
-  public static void bindColumnSizesAndPanelSizes(final JTable table, final List<JPanel> pnlColumns) {
-    table.addComponentListener(new ComponentAdapter() {
-      public void componentShown(ComponentEvent e) {
-        syncColumnPanelSizes(table, pnlColumns);
-      }
+  public static void bindColumnAndPanelSizes(final TableColumnModel columnModel, final List<JPanel> panelList) {
+    if (columnModel.getColumnCount() != panelList.size())
+      throw new IllegalArgumentException("An equal number of columns and panels is required when binding sizes");
 
-      public void componentResized(ComponentEvent e) {
-        syncColumnPanelSizes(table, pnlColumns);
-      }
-    });
-
-    final TableColumnModel cm = table.getColumnModel();
-    for (int i = 0; i < cm.getColumnCount(); i++) {
-      cm.getColumn(i).addPropertyChangeListener(new PropertyChangeListener() {
+    for (int columnIndex = 0; columnIndex < columnModel.getColumnCount(); columnIndex++) {
+      final JPanel panel = panelList.get(columnIndex);
+      final TableColumn column = columnModel.getColumn(columnIndex);
+      panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
+      column.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          if (e.getPropertyName().equals("width"))
-            syncColumnPanelSizes(table, pnlColumns);
+          if (e.getPropertyName().equals("width")) {
+            panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
+            panel.revalidate();
+          }
         }
       });
     }
-  }
-
-  private static void syncColumnPanelSizes(final JTable table, final List<JPanel> pnlColumns) {
-    final TableColumnModel cm = table.getColumnModel();
-    for (int i = 0; i < cm.getColumnCount(); i++)
-      syncColumnSize(cm.getColumn(i), pnlColumns.get(i));
-  }
-
-  private static void syncColumnSize(final TableColumn tableColumn, final JPanel pnlColumn) {
-    final int tableColumnWidth = tableColumn.getWidth();
-    final int searchPanePreferredlHeight = pnlColumn.getPreferredSize().height;
-    final Dimension newDim = new Dimension(tableColumnWidth, searchPanePreferredlHeight);
-    pnlColumn.setPreferredSize(newDim);
-    pnlColumn.getParent().addNotify();
   }
 
   public static Action linkToEnabledState(final State enabledState, final Action action) {
@@ -334,28 +329,6 @@ public class UiUtil {
     return (JDialog) container;
   }
 
-  /*UIManager.setLookAndFeel("org.jvnet.substance.SubstanceLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceAutumnLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceBusinessLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceCremeLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceFieldOfWheatLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceGreenMagicLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceMagmaLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceMangoLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceMistSilverLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceModerateLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceNebulaBrickWallLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceNebulaLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceOfficeBlue2007LookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceOfficeSilver2007LookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel");
-    UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceSaharaLookAndFeel); */
-
   public static void setLookAndFeel(final Window owner) throws IllegalAccessException, UnsupportedLookAndFeelException,
           InstantiationException, ClassNotFoundException {
     final JComboBox box = new JComboBox(new String[] {
@@ -409,23 +382,21 @@ public class UiUtil {
       tree.collapsePath(parent);
   }
 
-  public static JTable setTablePopup(final JTable table, final JPopupMenu popupMenu) {
-    if (popupMenu == null)
-      return table;
-
+  /**
+   * Sets the popup menu as the table popup menu and adds a key listener which
+   * shows the popup menu on SHIFT-space
+   * @param table the table
+   * @param popupMenu the popup menu
+   */
+  public static void setTablePopup(final JTable table, final JPopupMenu popupMenu) {
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     table.addKeyListener(new KeyAdapter() {
       public void keyReleased(KeyEvent e) {//shift-space shows popup menu
-        if (e.isShiftDown()) {
-          if (e.getKeyChar() == ' ') {
-            popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
-          }
-        }
+        if (e.isShiftDown() && e.getKeyChar() == ' ')
+          popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
       }
     });
-
-    return table;
   }
 
   public static void setWaitCursor(final boolean on, final JComponent component) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui;
 
@@ -36,7 +36,7 @@ public class TextInputPanel extends JPanel {
     this.dialogTitle = dialogTitle;
     this.textComponent = textComponent;
     this.txtAreaSize = txtAreaSize;
-    initializeUI(textComponent, createButton(textComponent, buttonFocusable, UiUtil.DIMENSION18x18));
+    initializeUI(textComponent, createButton(textComponent, buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE));
   }
 
   public void setText(final String text) {

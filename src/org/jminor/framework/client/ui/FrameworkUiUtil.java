@@ -353,7 +353,7 @@ public class FrameworkUiUtil {
         catch (UserCancelException e1) {/**/}
       }
     });
-    btn.setPreferredSize(UiUtil.DIMENSION18x18);
+    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
 
     ret.add(txt, BorderLayout.CENTER);
     ret.add(btn, BorderLayout.EAST);
@@ -432,7 +432,7 @@ public class FrameworkUiUtil {
         catch (UserCancelException e1) {/**/}
       }
     });
-    btn.setPreferredSize(UiUtil.DIMENSION18x18);
+    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
 
     final JPanel ret = new JPanel(new BorderLayout(5,0));
     ret.add(lookupField, BorderLayout.CENTER);
