@@ -11,6 +11,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.IExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -63,6 +64,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -222,6 +224,17 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private boolean initialized = false;
 
   /**
+   * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
+   */
+  private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
+    public void propertyChange(final PropertyChangeEvent event) {
+      final Component focusOwner = (Component) event.getNewValue();
+      if (focusOwner != null && isParentPanel(focusOwner))
+        model.stActive.setActive(true);
+    }
+  };
+
+  /**
    * Initializes a new EntityPanel instance.
    */
   public EntityPanel() {
@@ -362,16 +375,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       initializeResizing();
       if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_KEYBOARD_NAVIGATION))
         initializeNavigation();
-      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION)) {//todo mind that darn memory leak!! only use for persistent panels?
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
-                "focusOwner", new java.beans.PropertyChangeListener() {
-          public void propertyChange(final PropertyChangeEvent evt) {
-            final Component focusOwner = (Component) evt.getNewValue();
-            if (focusOwner != null && isParentPanel(focusOwner))
-              model.stActive.setActive(true);
-          }
-        });
-      }
+      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION))
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
+                new WeakPropertyChangeListener(focusPropertyListener));
       initializeAssociatedPanels();
       setupControls();
       initializeControlPanels();
@@ -611,7 +617,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       detailEntityPanel.setFilterPanelsVisible(value);
   }
 
-  public void resizePanel(final int direction) {
+  public void resizePanel(final int direction, final int pixelAmount) {
     switch(direction) {
       case UP :
         setEditPanelState(HIDDEN);
@@ -620,14 +626,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         setEditPanelState(EMBEDDED);
         break;
       case RIGHT :
-        int newPos = horizontalSplitPane.getDividerLocation() + DIVIDER_JUMP;
+        int newPos = horizontalSplitPane.getDividerLocation() + pixelAmount;
         if (newPos <= horizontalSplitPane.getMaximumDividerLocation())
           horizontalSplitPane.setDividerLocation(newPos);
         else
           horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
         break;
       case LEFT :
-        newPos = horizontalSplitPane.getDividerLocation() - DIVIDER_JUMP;
+        newPos = horizontalSplitPane.getDividerLocation() - pixelAmount;
         if (newPos >= 0)
           horizontalSplitPane.setDividerLocation(newPos);
         else
@@ -2022,24 +2028,24 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       public void actionPerformed(ActionEvent e) {
         final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, EntityPanel.this);
         if (parent != null)
-          parent.resizePanel(RIGHT);
+          parent.resizePanel(RIGHT, DIVIDER_JUMP);
       }
     });
     actionMap.put(DIV_LEFT, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, EntityPanel.this);
         if (parent != null)
-          parent.resizePanel(LEFT);
+          parent.resizePanel(LEFT, DIVIDER_JUMP);
       }
     });
     actionMap.put(DIV_DOWN, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
-        resizePanel(DOWN);
+        resizePanel(DOWN, DIVIDER_JUMP);
       }
     });
     actionMap.put(DIV_UP, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
-        resizePanel(UP);
+        resizePanel(UP, DIVIDER_JUMP);
       }
     });
   }

@@ -349,3 +349,10 @@
   UiUtil.transferFocusOnEnter() now transfers focus backwards is shift is down
   EntityTableModel.getAllEntitiesFromDb() renamed to performQuery
   EntityTableModel.getSearchCriteria() renamed to getQueryCriteria
+  State.StateGroup now uses WeakReference to prevent memory leaks
+  Event.scheduleForRemoval/scheduleForAddition replaced by synchronizing calls
+  Event.debug removed along with the relevant code
+  org.jminor.common.model.WeakPropertyChangeListener added
+  EntityPanel.initialize() now uses WeakPropertyChangeListener for focusActivation -> no memory leak
+  EntityPanel.focusPropertyListener field added for the above
+  EntityPanel.resizePanel(), added pixelAmount parameter

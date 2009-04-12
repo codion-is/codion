@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.model;
 
@@ -7,8 +7,10 @@ import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A class encapsulting a simple boolean state, providing change events
@@ -146,27 +148,40 @@ public class State implements Serializable {
   }
 
   /**
-   * A StateGroup deactivates all other states when a state in the group is activated
+   * A StateGroup deactivates all other states when a state in the group is activated.
+   * StateGroup works with WeakReference so adding states does not prevent
+   * them from being garbage collected.
    */
   public static class StateGroup {
-    final List<State> members;
+    final List<WeakReference<State>> members;
 
     /** Constructs a new StateGroup. */
     public StateGroup() {
-      this.members = new ArrayList<State>();
+      this.members = new ArrayList<WeakReference<State>>();
     }
 
+    /**
+     * Adds a state to this state group via a WeakReference,
+     * so it does not prevent it from being garbage collected.
+     * @param state the State to add
+     */
     public void addState(final State state) {
-      if (!members.contains(state)) {
-        members.add(state);
-        state.evtSetActive.addListener(new ActionListener() {
-          public void actionPerformed(final ActionEvent e) {
-            for (final State currstate : members)
-              if (currstate != state)
-                currstate.setActive(false);
+      for (final WeakReference<State> reference : members)
+        if (reference.get() == state)
+          return;//no duplicate states
+
+      state.evtSetActive.addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
+            final State referredState = iterator.next().get();
+            if (referredState == null) //remove this dead weak reference
+              iterator.remove();
+            else if (referredState != state)
+              referredState.setActive(false);
           }
-        });
-      }
+        }
+      });
+      members.add(new WeakReference<State>(state));
     }
   }
 }
