@@ -266,7 +266,7 @@ public class EntityModel implements IRefreshable {
   public EntityModel(final String caption, final IEntityDbProvider dbProvider,
                      final String entityID, final boolean includeTableModel) throws UserException {
     if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_MODELS_ENABLED))
-      activeStateGroup.addState(stActive);//todo potential memory leak
+      activeStateGroup.addState(stActive);
     this.caption = caption;
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;

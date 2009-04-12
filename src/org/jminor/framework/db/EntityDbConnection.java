@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -197,7 +197,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
     for (final Entity entity : entities)
-      primaryKeys.add(entity.getPrimaryKey());//todo what if the primary key changed, force a refresh in the UI?
+      primaryKeys.add(entity.getPrimaryKey());
 
     return selectMany(primaryKeys);
   }
