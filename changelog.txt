@@ -343,3 +343,9 @@
   UiUtil.bindColumnSizesAndPanelSizes() renamed to bindColumnAndPanelSizes and simplified considerably
   UiUtil.DIMENSION_TEXT_FIELD_SQUARE added
   UiUtil.DIMENSION18x18 deprecated
+  EntityTablePanel.initializeTableMouseListener() added, for overriding
+  EntityPanel.initializeTableDoubleClickAction() added, for overriding
+  EntityPanel.confirmUpdate() now uses the edit panel for dialog parent if one is available
+  UiUtil.transferFocusOnEnter() now transfers focus backwards is shift is down
+  EntityTableModel.getAllEntitiesFromDb() renamed to performQuery
+  EntityTableModel.getSearchCriteria() renamed to getQueryCriteria

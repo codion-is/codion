@@ -289,9 +289,7 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new BooleanPropertyLink(entityModel, property, ret.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
-    final boolean transferFocusOnEnter =
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
-    if (transferFocusOnEnter)
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
 
     return ret;
@@ -327,9 +325,7 @@ public class FrameworkUiUtil {
       new ComboBoxPropertyLink(entityModel, property, ret);
       MaximumMatch.enable(ret);
       setPropertyToolTip(entityModel.getEntityID(), property, ret);
-      final boolean transferFocusOnEnter =
-              (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
-      if (transferFocusOnEnter)
+      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
         UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
       return ret;
@@ -454,9 +450,7 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new ComboBoxPropertyLink(entityModel, property, ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
-    final boolean transferFocusOnEnter =
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
-    if (transferFocusOnEnter)
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
     return ret;
@@ -528,8 +522,6 @@ public class FrameworkUiUtil {
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final AbstractDateMaskFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
-    final boolean transferFocusOnEnter =
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
     final JTextField ret;
     switch (property.getPropertyType()) {
       case STRING:
@@ -556,7 +548,7 @@ public class FrameworkUiUtil {
         throw new IllegalArgumentException("Not a text based property: " + property);
     }
     UiUtil.linkToEnabledState(enabledState, ret);
-    if (transferFocusOnEnter)
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
     if (property.isDatabaseProperty())

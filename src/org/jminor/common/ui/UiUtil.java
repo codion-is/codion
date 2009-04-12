@@ -478,11 +478,20 @@ public class UiUtil {
     return textField;
   }
 
+  /**
+   * Attaches a key listener to the component which transfers focus
+   * on enter, and backwards if shift is down
+   * @param component the component
+   */
   public static void transferFocusOnEnter(final JComponent component) {
     component.addKeyListener(new KeyAdapter() {
       public void keyPressed(final KeyEvent evt) {
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER)
-          component.transferFocus();
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+          if (evt.isShiftDown())
+            component.transferFocusBackward();
+          else
+            component.transferFocus();
+        }
       }
     });
   }

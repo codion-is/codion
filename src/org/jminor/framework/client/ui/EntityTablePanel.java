@@ -60,6 +60,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -213,7 +214,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param doubleClickAction the action to perform when a double click is performed on the table
    */
-  public void setDoubleClickAction(final Action doubleClickAction) {
+  public void setTableDoubleClickAction(final Action doubleClickAction) {
     this.doubleClickAction = doubleClickAction;
   }
 
@@ -768,21 +769,30 @@ public class EntityTablePanel extends JPanel {
     return new EntityTableCellRenderer(this.tableModel, specialRendering);
   }
 
+  /**
+   * Initialize the MouseListener for the table component.
+   * The default implementation simply invokes the action returned
+   * by <code>getDoubleClickAction()</code> on a double click with
+   * the JTable as the ActionEvent source.
+   * @return the MouseListener for the table
+   * @see #getDoubleClickAction()
+   */
+  protected MouseListener initializeTableMouseListener() {
+    return new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          final Action doubleClickAction = getDoubleClickAction();
+          if (doubleClickAction != null)
+            doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
+        }
+      }
+    };
+  }
+
   private JTable initializeJTable(final EntityTableModel tableModel, final boolean specialRendering) {
     final JTable ret = new JTable(tableModel.getTableSorter(), initializeTableColumnModel(specialRendering),
             tableModel.getSelectionModel());
-    ret.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          final Entity selected = getTableModel().getSelectedEntity();
-          if (selected != null) {
-            final Action doubleClickAction = getDoubleClickAction();
-            if (doubleClickAction != null)
-              doubleClickAction.actionPerformed(new ActionEvent(selected, -1, "doubleClick"));
-          }
-        }
-      }
-    });
+    ret.addMouseListener(initializeTableMouseListener());
 
     final JTableHeader header = ret.getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();

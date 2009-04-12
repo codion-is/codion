@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -165,10 +165,10 @@ public class TestEntityTableModel extends TestCase {
 
     public synchronized void refresh() throws UserException {
       removeAll();
-      addEntities(getAllEntitiesFromDb(null), false);
+      addEntities(performQuery(null), false);
     }
 
-    protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) {
+    protected List<Entity> performQuery(final ICriteria criteria) {
       return Arrays.asList(testEntities);
     }
 

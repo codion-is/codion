@@ -389,16 +389,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       this.entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
       if (entityTablePanel != null) {
         entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
-        if (editPanel != null || detailEntityPanelProviders.size() > 0) {
-          entityTablePanel.setDoubleClickAction(new AbstractAction() {
-            public void actionPerformed(final ActionEvent e) {
-              if (editPanel != null && getEditPanelState() == HIDDEN)
-                setEditPanelState(DIALOG);
-              else if (getDetailPanelState() == HIDDEN)
-                setDetailPanelState(DIALOG);
-            }
-          });
-        }
+        entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
         entityTablePanel.setMinimumSize(new Dimension(0,0));
         entityTablePanel.setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
       }
@@ -706,17 +697,19 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public final boolean handleInsert() {
     try {
-      validateData();
-      try {
-        UiUtil.setWaitCursor(true, EntityPanel.this);
-        model.insert();
+      if (confirmInsert()) {
+        validateData();
+        try {
+          UiUtil.setWaitCursor(true, EntityPanel.this);
+          model.insert();
+        }
+        finally {
+          UiUtil.setWaitCursor(false, EntityPanel.this);
+        }
+        prepareUI(true, true);
+        postInsert();
+        return true;
       }
-      finally {
-        UiUtil.setWaitCursor(false, EntityPanel.this);
-      }
-      prepareUI(true, true);
-      postInsert();
-      return true;
     }
     catch (Exception ex) {
       handleException(ex);
@@ -909,7 +902,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (clearUI)
       model.clear();
     if (requestDefaultFocus) {
-      if (getEditPanelState() != EMBEDDED && entityTablePanel != null)
+      if (getEditPanel() == null && entityTablePanel != null)
         entityTablePanel.requestFocusInWindow();
       else if (getDefaultFocusComponent() != null)
         getDefaultFocusComponent().requestFocusInWindow();
@@ -1156,7 +1149,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final EntityModel model = new EntityModel(entityID, dbProvider, entityID) {
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(dbProvider, entityID) {
-          protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) throws DbException, UserException {
+          protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
             return entities;
           }
           public boolean isQueryRangeEnabled() {
@@ -1537,6 +1530,25 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
+   * Initialize the Action to perform when a double click is performed on the table, if a table is present.
+   * The default implementation shows the edit panel in a dialog if one is available and hidden, if that is
+   * not the case and the detail panels are hidden those are shown in a dialog.
+   * @return the Action to perform when the a double click is performed on the table
+   */
+  protected Action initializeTableDoubleClickAction() {
+    return new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        if (editPanel != null || detailEntityPanelProviders.size() > 0) {
+          if (editPanel != null && getEditPanelState() == HIDDEN)
+            setEditPanelState(DIALOG);
+          else if (getDetailPanelState() == HIDDEN)
+            setDetailPanelState(DIALOG);
+        }
+      }
+    };
+  }
+
+  /**
    * Initializes a ControlSet containing a control for setting the state to <code>status</code> on each detail panel.
    * @param status the status
    * @return a ControlSet for controlling the state of the detail panels
@@ -1653,6 +1665,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
+   * Called before a insert is performed, the default implementation simply returns true
+   * @return true if a insert should be performed, false if it should be vetoed
+   */
+  protected boolean confirmInsert() {
+    return true;
+  }
+
+  /**
    * Called before a delete is performed, if true is returned the delete action is performed otherwise it is cancelled
    * @return true if the delete action should be performed
    */
@@ -1670,14 +1690,16 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected boolean confirmUpdate() {
     final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
-    final int res = JOptionPane.showConfirmDialog(EntityPanel.this,
+    final JPanel dialogParent = getEditPanel() == null ? this : getEditPanel();
+    final int res = JOptionPane.showConfirmDialog(dialogParent,
             msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
 
   /**
-   * @param type the confirmation message type
+   * @param type the confirmation message type, one of the following:
+   * EntityPanel.CONFIRM_TYPE_INSERT, EntityPanel.CONFIRM_TYPE_DELETE or EntityPanel.CONFIRM_TYPE_UPDATE
    * @return a string array containing two elements, the element at index 0 is used
    * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
    * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]

@@ -546,7 +546,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         refreshRecordCount();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       removeAll();
-      addEntities(getAllEntitiesFromDb(getSearchCriteria()), false);
+      addEntities(performQuery(getQueryCriteria()), false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
     catch (DbException e) {
@@ -960,12 +960,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
+   * Queries for the data used to populate this EntityTableModel when it is refreshed
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
    * @throws UserException in case of an exception
    * @throws DbException in case of a database exception
    */
-  protected List<Entity> getAllEntitiesFromDb(final ICriteria criteria) throws DbException, UserException {
+  protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
     if (filterQueryByMaster && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
@@ -1015,7 +1016,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return a ICriteria object used to filter the result when this
    * table models data is queried
    */
-  protected ICriteria getSearchCriteria() {
+  protected ICriteria getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
   }
 
