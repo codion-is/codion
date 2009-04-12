@@ -16,8 +16,10 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
+import org.jminor.framework.model.Type;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -33,6 +35,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -186,13 +189,8 @@ public class EntityPropertyEditor extends JPanel {
         if (currentValue != null)
           ret.setSelectedItem(currentValue);
         return ret;
-      case ENTITY://todo use isLookup
-        final EntityComboBoxModel model =
-                entityModel.createEntityComboBoxModel(((Property.EntityProperty)property));
-        model.refresh();
-        if (currentValue != null)
-          model.setSelectedItem(currentValue);
-        return new JComboBox(model);
+      case ENTITY:
+        return createEntityField(entityModel, currentValue);
       default:
         return createTextInputPanel(currentValue);
     }
@@ -205,6 +203,42 @@ public class EntityPropertyEditor extends JPanel {
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnBase.add(createButtonPanel());
     add(btnBase, BorderLayout.SOUTH);
+  }
+
+  private JComponent createEntityField(final EntityModel entityModel, final Object currentValue) throws UserException {
+    final Property.EntityProperty entityProperty = (Property.EntityProperty) property;
+    if (entityProperty.isLookup()) {
+      final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(entityProperty);
+      model.refresh();
+      if (currentValue != null)
+        model.setSelectedItem(currentValue);
+
+      return new JComboBox(model);
+    }
+    else {
+      final String[] searchPropertyIds = EntityRepository.get().getEntitySearchPropertyIDs(entityProperty.referenceEntityID);
+      List<Property> searchProperties;
+      if (searchPropertyIds != null) {
+        searchProperties = EntityRepository.get().getProperties(entityProperty.referenceEntityID, searchPropertyIds);
+      }
+      else {//use all string properties
+        final Collection<Property> properties =
+                EntityRepository.get().getDatabaseProperties(entityProperty.referenceEntityID);
+        searchProperties = new ArrayList<Property>();
+        for (final Property property : properties)
+          if (property.getPropertyType() == Type.STRING)
+            searchProperties.add(property);
+      }
+      if (searchProperties.size() == 0)
+        throw new RuntimeException("No searchable properties found for entity: " + entityProperty.referenceEntityID);
+
+      final EntityLookupField field = new EntityLookupField(entityModel.getDbConnectionProvider(),
+              ((Property.EntityProperty) property).referenceEntityID, searchProperties);
+      if (currentValue != null)
+        field.setSelectedEntity((Entity) currentValue);
+
+      return field;
+    }
   }
 
   private JPanel createButtonPanel() {

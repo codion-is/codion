@@ -54,8 +54,8 @@ public class EmployeeModel extends EntityModel {
         try {
           getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).refresh();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });

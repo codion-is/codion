@@ -62,8 +62,8 @@ public class ServerMonitorPanel extends JPanel implements IPopupProvider {
         try {
           updateView();
         }
-        catch (RemoteException e1) {
-          throw new RuntimeException(e1);
+        catch (RemoteException ex) {
+          throw new RuntimeException(ex);
         }
       }
     });

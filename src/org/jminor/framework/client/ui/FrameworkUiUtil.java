@@ -205,8 +205,8 @@ public class FrameworkUiUtil {
                     FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
           }
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     };
@@ -265,7 +265,7 @@ public class FrameworkUiUtil {
           final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
           txtField.setText(ShortDashDateFormat.get().format(d));
         }
-        catch (UserCancelException e1) {/**/}
+        catch (UserCancelException ex) {/**/}
       }
     });
 
@@ -346,7 +346,7 @@ public class FrameworkUiUtil {
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
-        catch (UserCancelException e1) {/**/}
+        catch (UserCancelException ex) {/**/}
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
@@ -397,9 +397,7 @@ public class FrameworkUiUtil {
     lookupField.setBorder(BorderFactory.createEtchedBorder());
     new LookupFieldPropertyLink(entityModel, property.propertyID, lookupField);
     setPropertyToolTip(entityModel.getEntityID(), property, lookupField);
-    final boolean transferFocusOnEnter =
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER);
-    lookupField.setTransferFocusOnEnter(transferFocusOnEnter);
+    lookupField.setTransferFocusOnEnter((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER));
 
     return lookupField;
   }
@@ -425,7 +423,7 @@ public class FrameworkUiUtil {
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
         }
-        catch (UserCancelException e1) {/**/}
+        catch (UserCancelException ex) {/**/}
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
@@ -678,8 +676,8 @@ public class FrameworkUiUtil {
     catch (UserException ue) {
       throw ue.getRuntimeException();
     }
-    catch (Exception e1) {
-      throw new RuntimeException(e1);
+    catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
   }
 

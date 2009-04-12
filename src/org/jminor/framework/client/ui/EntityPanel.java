@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
+import org.jminor.common.db.IdSource;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.State;
@@ -1974,11 +1975,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private List<Property> getUpdateProperties() {
-    final List<Property> ret = EntityRepository.get().getDatabaseProperties(getModel().getEntityID(), false, false, false);
+    final List<Property> ret = EntityRepository.get().getDatabaseProperties(getModel().getEntityID(), true, false, false);
     final ListIterator<Property> iter = ret.listIterator();
     while(iter.hasNext()) {
       final Property property = iter.next();
-      if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty)
+      if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty ||
+              (property instanceof Property.PrimaryKeyProperty &&
+                      EntityRepository.get().getIdSource(getModel().getEntityID()) != IdSource.ID_NONE))
         iter.remove();
     }
     Collections.sort(ret, new Comparator<Property>() {

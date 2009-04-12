@@ -356,3 +356,9 @@
   EntityPanel.initialize() now uses WeakPropertyChangeListener for focusActivation -> no memory leak
   EntityPanel.focusPropertyListener field added for the above
   EntityPanel.resizePanel(), added pixelAmount parameter
+  EntityLookupField.setSelectedEntity() added
+  EntityPanel.getUpdateProperties() now returns primary key properties as long as they are not auto-incremented
+  EntityPropertyEditor now uses isLookup to determine if a combobox or a EntityLookupField should be used
+  PropertySummaryPanel constructor now takes a maximumFractionDigits parameter
+  PropertySummaryPanel now shows a decimal number avarage for integer properties
+  Renamed a few e1 Exceptions to ex

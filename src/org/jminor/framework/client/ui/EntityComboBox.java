@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -143,12 +143,9 @@ public class EntityComboBox extends SteppedComboBox {
               getModel().setSelectedItem(selEntity);
           }
           pane.dispose();
-          //to prevent a memory leak, otherwise the KeyboardFocusManager keeps a live
-          //reference to the dialog, preventing it from being garbage collected
-//          KeyboardFocusManager.getCurrentKeyboardFocusManager().removePropertyChangeListener("focusOwner", focusListener);
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });
@@ -164,8 +161,8 @@ public class EntityComboBox extends SteppedComboBox {
         try {
           getModel().forceRefresh();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });

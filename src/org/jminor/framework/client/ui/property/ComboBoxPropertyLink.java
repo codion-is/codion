@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui.property;
 
@@ -9,6 +9,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
+import org.jminor.framework.model.Type;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -66,8 +67,8 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
           updateModel();
       }
     });
-    //this allows editable combo boxes to post their edits after each keystroke
-    if (comboBox.isEditable()) {//todo works only for string properties
+    //this allows editable string based combo boxes to post their edits after each keystroke
+    if (comboBox.isEditable() && property.getPropertyType() == Type.STRING) {
       ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
         public void changedUpdate(DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());

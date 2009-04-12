@@ -36,12 +36,12 @@ public class DateInputPanel extends JPanel {
             try {
               currentValue = maskFormat.parse(inputField.getText());
             }
-            catch (ParseException e1) {/**/}
+            catch (ParseException ex) {/**/}
             final Date newValue = UiUtil.getDateFromUser(
                     currentValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), inputField);
             inputField.setText(maskFormat.format(newValue));
           }
-          catch (UserCancelException e1) {/**/}
+          catch (UserCancelException ex) {/**/}
         }
       };
       final JButton btnChooser = new JButton(buttonAction);

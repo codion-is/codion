@@ -50,8 +50,8 @@ public class ClientInstanceMonitorPanel extends JPanel implements IPopupProvider
         try {
           updateView();
         }
-        catch (RemoteException e1) {
-          throw new RuntimeException(e1);
+        catch (RemoteException ex) {
+          throw new RuntimeException(ex);
         }
       }
     });

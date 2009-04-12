@@ -104,7 +104,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * the search panel
    */
-  private final JPanel searchPanel;//todo should this implement a ITableSearchPanel perhaps?
+  private final JPanel searchPanel;
 
   /**
    * a map mapping the summary panels to their respective properties
@@ -630,7 +630,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return a Control for refreshing the underlying data
+   * @return a Control for refreshing the underlying table data
    */
   protected Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);

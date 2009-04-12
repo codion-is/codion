@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.model.table;
 
@@ -458,7 +458,7 @@ public class TableSorter extends AbstractTableModel {
       try {
         column = columnModel.getColumn(viewColumn).getModelIndex();
       }
-      catch (ArrayIndexOutOfBoundsException e1) {
+      catch (ArrayIndexOutOfBoundsException ex) {
         return;
       }
       if (column != -1) {

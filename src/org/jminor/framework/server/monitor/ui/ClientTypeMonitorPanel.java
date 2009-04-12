@@ -71,8 +71,8 @@ public class ClientTypeMonitorPanel extends JPanel implements IPopupProvider {
         try {
           model.getServer().setCheckMaintenanceInterval((Integer) cmbMaintainanceCheck.getSelectedItem());
         }
-        catch (RemoteException e1) {
-          handleException(e1);
+        catch (RemoteException ex) {
+          handleException(ex);
         }
       }
     });
@@ -80,8 +80,8 @@ public class ClientTypeMonitorPanel extends JPanel implements IPopupProvider {
     return cmbMaintainanceCheck;
   }
 
-  private void handleException(final Exception e1) {
-    ExceptionDialog.handleException(e1, this);
+  private void handleException(final Exception exeption) {
+    ExceptionDialog.handleException(exeption, this);
   }
 
   private ControlSet getPopupCommands() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -76,9 +76,26 @@ public class PropertySummaryPanel extends JPanel {
 
   private SummaryType summaryType = SummaryType.NONE;
 
+  /**
+   * Initializes a new PropertySummaryPanel with a default <code>maximumFractionDigits</code> as 4
+   * @param property the property on which to base this summary panel
+   * @param tableModel the tableModel
+   */
   public PropertySummaryPanel(final Property property, final EntityTableModel tableModel) {
+    this(property, tableModel, 4);
+  }
+
+  /**
+   * Initializes a new PropertySummaryPanel.
+   * @param property the property on which to base this summary panel
+   * @param tableModel the tableModel
+   * @param maximumFractionDigits the maximum number of fraction digits to show
+   */
+  public PropertySummaryPanel(final Property property, final EntityTableModel tableModel,
+                              final int maximumFractionDigits) {
     this.property = property;
     this.tableModel = tableModel;
+    this.format.setMaximumFractionDigits(maximumFractionDigits);
     initialize();
   }
 
@@ -119,7 +136,6 @@ public class PropertySummaryPanel extends JPanel {
           menu.show(lblSummary, e.getX(), e.getY()-menu.getPreferredSize().height);
         }
       });
-      format.setMaximumFractionDigits(4);
       lblSummary.setBorder(BorderFactory.createEtchedBorder());
     }
   }
@@ -262,7 +278,7 @@ public class PropertySummaryPanel extends JPanel {
   private String avarage(final Collection<Object> values) {
     String txt = "";
     if (property.getPropertyType() == Type.INT) {
-      int sum = 0;
+      double sum = 0;
       int count = 0;
       for (final Object obj : values) {
         sum += (Integer)obj;

@@ -46,6 +46,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -161,6 +162,10 @@ public class EntityLookupField extends TextFieldPlus {
 
   public void setAllowMultipleSelection(final boolean allowMultipleSelection) {
     this.allowMultipleSelection = allowMultipleSelection;
+  }
+
+  public void setSelectedEntity(final Entity entity) {
+    setSelectedEntities(Arrays.asList(entity));
   }
 
   public void setSelectedEntities(final List<Entity> entities) {

@@ -368,8 +368,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
         try {
           removeConnection(client);
         }
-        catch (RemoteException e1) {
-          e1.printStackTrace();
+        catch (RemoteException ex) {
+          ex.printStackTrace();
         }
       }
     });

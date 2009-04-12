@@ -171,9 +171,9 @@ public class MonitorPanel extends JPanel {
           revalidate();
           repaint();
         }
-        catch (RemoteException e1) {
-          e1.printStackTrace();
-          throw new RuntimeException(e1);
+        catch (RemoteException ex) {
+          ex.printStackTrace();
+          throw new RuntimeException(ex);
         }
       }
     });

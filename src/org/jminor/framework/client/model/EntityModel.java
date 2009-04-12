@@ -1126,11 +1126,9 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Returns a Map, mapping the provided EntityComboBoxModels to their respective
-   * properties according to the entityID.
-   * This implementation is rather simplistic, since it simply maps the EntityComboBoxModel to
-   * the first (random) Property.EntityProperty with the same entityID, if the underlying Entity
-   * references the same Entity via more than one property, this method should be avoided.
+   * Returns a Map, mapping the provided EntityComboBoxModels to their respective properties according to the entityID.
+   * This implementation maps the EntityComboBoxModel to the Property.EntityProperty with the same entityID.
+   * If the underlying Entity references the same Entity via more than one property, this method throws a RuntimeException.
    * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
    * @return a Map of EntityComboBoxModels mapped to their respective properties
    */
@@ -1142,8 +1140,10 @@ public class EntityModel implements IRefreshable {
     for (final EntityComboBoxModel comboBoxModel : comboBoxModels) {
       final List<Property.EntityProperty > properties =
               EntityRepository.get().getEntityProperties(getEntityID(), comboBoxModel.getEntityID());
-      if (properties.size() > 0)
-        ret.put(properties.get(0), comboBoxModel);//todo perhaps throw an exception?
+      if (properties.size() > 1)
+        throw new RuntimeException("Multiple possible properties found for EntityComboBoxModel: " + comboBoxModel);
+      else if (properties.size() == 1)
+        ret.put(properties.get(0), comboBoxModel);
       else
         throw new RuntimeException("Property not found for EntityComboBoxModel: " + comboBoxModel);
     }
@@ -1366,11 +1366,11 @@ public class EntityModel implements IRefreshable {
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          if (!isActiveEntityNull())//todo is this ok?
+          if (!isActiveEntityNull())
             updateDetailModelsByActiveEntity();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });
@@ -1384,8 +1384,8 @@ public class EntityModel implements IRefreshable {
               releaseWriteLock();
           }
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });
@@ -1396,8 +1396,8 @@ public class EntityModel implements IRefreshable {
           if (strictEditingEnabled)
             releaseWriteLock();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });
@@ -1407,8 +1407,8 @@ public class EntityModel implements IRefreshable {
           try {
             updateDetailModelsByActiveEntity();
           }
-          catch (UserException e1) {
-            throw e1.getRuntimeException();
+          catch (UserException ex) {
+            throw ex.getRuntimeException();
           }
         }
       });
@@ -1428,8 +1428,8 @@ public class EntityModel implements IRefreshable {
         try {
           updateDetailModelsByActiveEntity();
         }
-        catch (UserException e1) {
-          throw e1.getRuntimeException();
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
         }
       }
     });
