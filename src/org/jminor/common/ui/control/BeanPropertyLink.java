@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
@@ -15,13 +15,13 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   private final Method setMethod;
 
   public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent, final String text) {
-    this(owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE);
+                          final Event propertyChangeEvent, final String name) {
+    this(owner, propertyName, propertyClass, propertyChangeEvent, name, LinkType.READ_WRITE);
   }
 
   public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent, final String text, final LinkType linkType) {
-    super(owner, text, propertyChangeEvent, linkType);
+                          final Event propertyChangeEvent, final String name, final LinkType linkType) {
+    super(owner, name, propertyChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.propertyClass = propertyClass;

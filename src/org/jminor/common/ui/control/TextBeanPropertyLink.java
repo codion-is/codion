@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.ui.control;
 
@@ -21,14 +21,14 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   private final Format format;
 
   public TextBeanPropertyLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                              final Class<?> valueClass, final Event propertyChangeEvent, final String text) {
-    this(textComponent, owner, propertyName, valueClass, propertyChangeEvent, text, LinkType.READ_WRITE, null);
+                              final Class<?> valueClass, final Event propertyChangeEvent, final String name) {
+    this(textComponent, owner, propertyName, valueClass, propertyChangeEvent, name, LinkType.READ_WRITE, null);
   }
 
   public TextBeanPropertyLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                              final Class<?> valueClass, final Event propertyChangeEvent, final String text,
+                              final Class<?> valueClass, final Event propertyChangeEvent, final String name,
                               final LinkType linkType, final Format format) {
-    super(owner, propertyName, valueClass, propertyChangeEvent, text, linkType);
+    super(owner, propertyName, valueClass, propertyChangeEvent, name, linkType);
     this.textComponent = textComponent;
     this.format = format;
     this.placeholder = textComponent instanceof JFormattedTextField ?

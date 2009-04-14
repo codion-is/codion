@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.DbException;
+import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
 import org.jminor.common.model.PropertyChangeEvent;
@@ -1091,6 +1092,18 @@ public class EntityModel implements IRefreshable {
   public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property,
                                                        final String nullValueItem, final boolean sortContents) {
     return new EntityComboBoxModel(getDbConnectionProvider(), property.referenceEntityID, false, nullValueItem, sortContents);
+  }
+
+  /**
+   * Creates a EntityLookupModel for the given entityID
+   * @param entityID the ID of the entity
+   * @param additionalSearchCriteria an additional search criteria applied when performing the lookup
+   * @param lookupProperties the properties involved in the lookup
+   * @return a EntityLookupModel
+   */
+  public EntityLookupModel createEntityLookupModel(final String entityID, final ICriteria additionalSearchCriteria,
+                                                   final List<Property> lookupProperties) {
+    return new EntityLookupModel(getDbConnectionProvider(), entityID, additionalSearchCriteria, lookupProperties);
   }
 
   /**

@@ -367,3 +367,8 @@
   EntityTableSearchModel.getSearchModelState() privatized
   EntityTableSearchModel.dbProvider field removed
   UiUtil.DIMENSION18x18 removed
+  EntityLookupModel added
+  EntityLookupField refactored according to the above
+  LookupFieldPropertyLink renamed to LookupModelPropertyLink
+  EntityModel.createEntityLookupModel() added
+  TestEntityLookupModel added

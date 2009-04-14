@@ -232,10 +232,10 @@ public class EntityPropertyEditor extends JPanel {
       if (searchProperties.size() == 0)
         throw new RuntimeException("No searchable properties found for entity: " + entityProperty.referenceEntityID);
 
-      final EntityLookupField field = new EntityLookupField(entityModel.getDbConnectionProvider(),
-              ((Property.EntityProperty) property).referenceEntityID, searchProperties);
+      final EntityLookupField field = new EntityLookupField(entityModel.createEntityLookupModel(
+              ((Property.EntityProperty) property).referenceEntityID, null, searchProperties));
       if (currentValue != null)
-        field.setSelectedEntity((Entity) currentValue);
+        field.getModel().setSelectedEntity((Entity) currentValue);
 
       return field;
     }

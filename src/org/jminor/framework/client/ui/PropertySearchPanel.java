@@ -17,6 +17,7 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -53,7 +54,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       model.initialize();
       this.dbProvider = dbProvider;//todo ugly
       if (upperField instanceof EntityLookupField)
-        ((EntityLookupField) upperField).setDbProvider(dbProvider);
+        ((EntityLookupField) upperField).getModel().setDbProvider(dbProvider);
       bindEvents();
     }
     catch (UserException e) {
@@ -146,7 +147,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     }
     else {
       //todo dbProvider is null, right?
-      final EntityLookupField field = new EntityLookupField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
+      final EntityLookupField field = new EntityLookupField(new EntityLookupModel(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
               getSearchProperties(((Property.EntityProperty) property).referenceEntityID)) {
         @SuppressWarnings({"unchecked"})
         public List<Entity> getSelectedEntities() {
@@ -155,14 +156,14 @@ public class PropertySearchPanel extends AbstractSearchPanel {
         public void setSelectedEntities(final List<Entity> entities) {
           model.setUpperBound(entities);
         }
-      };
+      });
       model.evtUpperBoundChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-          field.refreshText();
+          field.getModel().refreshSearchText();
         }
       });
-      field.refreshText();
-      field.setAllowMultipleSelection(true);
+      field.getModel().refreshSearchText();
+      field.getModel().setAllowMultipleSelection(true);
 
       return field;
     }

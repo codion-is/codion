@@ -34,7 +34,7 @@ import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
 import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
-import org.jminor.framework.client.ui.property.LookupFieldPropertyLink;
+import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -392,12 +392,12 @@ public class FrameworkUiUtil {
       if (searchProperty.getPropertyType() != Type.STRING)
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
-    final EntityLookupField lookupField = new EntityLookupField(entityModel.getDbConnectionProvider(), property.referenceEntityID,
-            additionalSearchCriteria, searchProperties);
+    final EntityLookupField lookupField = new EntityLookupField(entityModel.createEntityLookupModel(property.referenceEntityID,
+            additionalSearchCriteria, searchProperties),
+            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
-    new LookupFieldPropertyLink(entityModel, property.propertyID, lookupField);
+    new LookupModelPropertyLink(entityModel, property.propertyID, lookupField.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, lookupField);
-    lookupField.setTransferFocusOnEnter((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER));
 
     return lookupField;
   }
