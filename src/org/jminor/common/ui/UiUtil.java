@@ -51,10 +51,6 @@ public class UiUtil {
 
   public final static Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   public final static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
-  /**
-   * @deprecated use DIMENSION_TEXT_FIELD_SQUARE instead
-   */
-  public final static Dimension DIMENSION18x18 = new Dimension(18,18);
 
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.

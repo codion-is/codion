@@ -8,6 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.SearchType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -17,6 +18,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
+import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
@@ -686,8 +688,13 @@ public class EntityTablePanel extends JPanel {
           if (txtField.getText().length() > 0) {
             final String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
             final String searchText = wildcard + txtField.getText() + wildcard;
-            for (final Property searchProperty : searchableProperties)
-              getTableModel().getSearchModel().setStringSearchValue(searchProperty.propertyID, searchText);
+            for (final Property searchProperty : searchableProperties) {
+              final PropertySearchModel searchModel = getTableModel().getSearchModel().getPropertySearchModel(searchProperty.propertyID);
+              searchModel.setCaseSensitive(false);
+              searchModel.setUpperBound(searchText);
+              searchModel.setSearchType(SearchType.LIKE);
+              searchModel.setSearchEnabled(true);
+            }
           }
 
           getTableModel().refresh();
@@ -711,8 +718,8 @@ public class EntityTablePanel extends JPanel {
    * @return an initialized EntityTableSearchPanel
    */
   protected JPanel initializeAdvancedSearchPanel() {
-    final EntityTableSearchPanel searchPanel =
-            new EntityTableSearchPanel(getTableModel().getSearchModel(), getTableModel().getTableColumnProperties());
+    final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel(),
+            getTableModel().getTableColumnProperties(), getTableModel().getDbConnectionProvider());
     searchPanel.bindToColumnSizes(getJTable());
 
     return searchPanel;

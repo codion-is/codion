@@ -10,6 +10,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Property;
 
@@ -29,10 +30,11 @@ public class EntityTableSearchPanel extends JPanel {
 
   private final List<JPanel> searchPanels;
 
-  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final List<Property> tableColumnProperties) {
+  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final List<Property> tableColumnProperties,
+                                final IEntityDbProvider dbProvider) {
     this.searchModel = searchModel;
     this.tableColumnProperties = tableColumnProperties;
-    this.searchPanels = initializeSearchPanels();
+    this.searchPanels = initializeSearchPanels(dbProvider);
     initializeUI();
   }
 
@@ -113,12 +115,12 @@ public class EntityTableSearchPanel extends JPanel {
       add(searchPanel);
   }
 
-  private List<JPanel> initializeSearchPanels() {
+  private List<JPanel> initializeSearchPanels(final IEntityDbProvider dbProvider) {
     final ArrayList<JPanel> ret = new ArrayList<JPanel>(tableColumnProperties.size());
     for (final Property property : tableColumnProperties) {
       final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.propertyID);
       if (propertySearchModel != null)
-        ret.add(new PropertySearchPanel(propertySearchModel, true, false, searchModel.getDbProvider()));
+        ret.add(new PropertySearchPanel(propertySearchModel, true, false, dbProvider));
       else {
         final JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));

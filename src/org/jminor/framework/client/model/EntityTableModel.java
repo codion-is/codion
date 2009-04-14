@@ -1056,7 +1056,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
     evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        tableSearchModel.resetSearchState();
+        tableSearchModel.setSearchModelState();
       }
     });
 

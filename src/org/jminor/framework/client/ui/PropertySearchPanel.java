@@ -51,7 +51,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     super(model, includeActivateBtn, includeToggleAdvBtn);
     try {
       model.initialize();
-      this.dbProvider = dbProvider;
+      this.dbProvider = dbProvider;//todo ugly
       if (upperField instanceof EntityLookupField)
         ((EntityLookupField) upperField).setDbProvider(dbProvider);
       bindEvents();
@@ -145,6 +145,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       return field;
     }
     else {
+      //todo dbProvider is null, right?
       final EntityLookupField field = new EntityLookupField(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
               getSearchProperties(((Property.EntityProperty) property).referenceEntityID)) {
         @SuppressWarnings({"unchecked"})

@@ -362,3 +362,8 @@
   PropertySummaryPanel constructor now takes a maximumFractionDigits parameter
   PropertySummaryPanel now shows a decimal number avarage for integer properties
   Renamed a few e1 Exceptions to ex
+  EntityTableSearchModel.setStringSearchValue() removed
+  EntityTableSearchModel.setSearchState() renamed to setSearchModelState
+  EntityTableSearchModel.getSearchModelState() privatized
+  EntityTableSearchModel.dbProvider field removed
+  UiUtil.DIMENSION18x18 removed

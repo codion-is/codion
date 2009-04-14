@@ -10,6 +10,7 @@ import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Property;
 
@@ -52,7 +53,7 @@ public class EntityCriteriaPanel extends JPanel {
     editPanel.setPreferredSize(new Dimension(200,150));
     editPanel.setBorder(BorderFactory.createCompoundBorder());
 
-    final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel);
+    final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel, tableModel.getDbConnectionProvider());
     final JScrollPane scroller = new JScrollPane(propertyList);
 
     final JPanel propertyBase = new JPanel(new BorderLayout());
@@ -113,7 +114,8 @@ public class EntityCriteriaPanel extends JPanel {
     return ret;
   }
 
-  private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel) {
+  private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel,
+                                       final IEntityDbProvider dbProvider) {
     final List<PropertySearchModel> searchCriterias = getSortedCriterias(entityModel);
     final Vector<AbstractSearchModel> models = new Vector<AbstractSearchModel>(searchCriterias);
     final JList propertyList = new JList(models);
@@ -147,7 +149,7 @@ public class EntityCriteriaPanel extends JPanel {
         if (selected != null) {
           PropertySearchPanel panel = panels.get(selected);
           if (panel == null)
-            panels.put(selected, panel = new PropertySearchPanel(selected,true,true,entityModel.getDbProvider()));
+            panels.put(selected, panel = new PropertySearchPanel(selected, true, true, dbProvider));
 
           editorPanel.add(panel, BorderLayout.NORTH);
           revalidate();

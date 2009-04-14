@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 24.7.2008
  * Time: 21:29:55
  *
@@ -42,12 +41,11 @@ public class EntityTableSearchModel {
 
   /**
    * Activated each time the search state differs from the state at last reset
-   * @see #resetSearchState()
+   * @see #setSearchModelState()
    */
   public final State stSearchStateChanged = new State("EntityTableSearchModel.stSearchStateChanged");
 
   private final String entityID;
-  private final IEntityDbProvider dbProvider;
   private final List<Property> visibleProperties;
   private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
@@ -59,10 +57,9 @@ public class EntityTableSearchModel {
                                 final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
                                 final List<Property> visibleProperties) {
     this.entityID = entityID;
-    this.dbProvider = dbProvider;
     this.visibleProperties = visibleProperties;
     this.propertyFilterModels = initPropertyFilterModels(tableColumnProperties);
-    this.propertySearchModels = initPropertySearchModels(searchableProperties);
+    this.propertySearchModels = initPropertySearchModels(searchableProperties, dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
   }
 
@@ -71,21 +68,10 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return a String representing the state of the search models
+   * Sets the current search model state
+   * @see #stSearchStateChanged
    */
-  public String getSearchModelState() {
-    final StringBuffer ret = new StringBuffer();
-    for (final AbstractSearchModel model : getPropertySearchModels())
-      ret.append(model.toString());
-
-    return ret.toString();
-  }
-
-  public IEntityDbProvider getDbProvider() {
-    return dbProvider;
-  }
-
-  public void resetSearchState() {
+  public void setSearchModelState() {
     searchStateOnRefresh = getSearchModelState();
     stSearchStateChanged.setActive(false);
   }
@@ -184,8 +170,7 @@ public class EntityTableSearchModel {
    * @return true if the PropertySearchModel behind column with index <code>columnIdx</code> is enabled
    */
   public boolean isSearchEnabled(final int columnIdx) {
-    final PropertySearchModel model =
-            getPropertySearchModel(visibleProperties.get(columnIdx).propertyID);
+    final PropertySearchModel model = getPropertySearchModel(visibleProperties.get(columnIdx).propertyID);
 
     return model != null && model.isSearchEnabled();
   }
@@ -234,8 +219,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return a ICriteria object used to filter the result when this
-   * table models data is queried
+   * @return the current criteria
    */
   public ICriteria getSearchCriteria() {
     final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
@@ -254,29 +238,29 @@ public class EntityTableSearchModel {
     return searchConjunction;
   }
 
+  /**
+   * @param searchConjunction the conjuction to be used when more than one search criteria is specified
+   * @see org.jminor.common.db.CriteriaSet.Conjunction
+   */
   public void setSearchConjunction(final CriteriaSet.Conjunction searchConjunction) {
     this.searchConjunction = searchConjunction;
   }
 
+  /**
+   * Enables/disables the search for the given property
+   * @param propertyID the ID of the property for which to enable/disable the search
+   * @param value if true the search is enabled, otherwise it is disabled
+   */
   public void setSearchEnabled(final String propertyID, final boolean value) {
     getPropertySearchModel(propertyID).setSearchEnabled(value);
   }
 
-  public void setStringSearchValue(final String propertyID, final String searchText) {
-    final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
-    if (searchModel != null) {
-      searchModel.setCaseSensitive(false);
-      searchModel.setUpperBound(searchText);
-      searchModel.setSearchType(SearchType.LIKE);
-      searchModel.setSearchEnabled(true);
-    }
-  }
-
   /**
    * @param properties the properties for which to initialize PropertySearchModels
+   * @param dbProvider the IEntityDbProvider to use for entity based fields, such as combo boxes
    * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
    */
-  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties) {
+  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final IEntityDbProvider dbProvider) {
     final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
     for (final Property property : properties) {
       if (property instanceof Property.EntityProperty && ((Property.EntityProperty) property).isLookup())
@@ -309,5 +293,16 @@ public class EntityTableSearchModel {
     }
 
     return filters;
+  }
+
+  /**
+   * @return a String representing the current state of the search models
+   */
+  private String getSearchModelState() {
+    final StringBuffer ret = new StringBuffer();
+    for (final AbstractSearchModel model : getPropertySearchModels())
+      ret.append(model.toString());
+
+    return ret.toString();
   }
 }
