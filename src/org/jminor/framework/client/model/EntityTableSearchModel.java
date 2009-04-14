@@ -11,11 +11,14 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
+import org.jminor.framework.model.Type;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,11 +266,22 @@ public class EntityTableSearchModel {
   private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final IEntityDbProvider dbProvider) {
     final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
     for (final Property property : properties) {
-      if (property instanceof Property.EntityProperty && ((Property.EntityProperty) property).isLookup())
-        propertySearchComboBoxModels.put(property, new EntityComboBoxModel(dbProvider,
+      PropertySearchModel searchModel;
+      if (property instanceof Property.EntityProperty) {
+        if (((Property.EntityProperty) property).isLookup()) {
+          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(dbProvider,
                 ((Property.EntityProperty) property).referenceEntityID, false, "", true));
-
-      final PropertySearchModel searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
+          searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
+        }
+        else {
+          searchModel = new PropertySearchModel(property, new EntityLookupModel(dbProvider,
+                  ((Property.EntityProperty) property).referenceEntityID,
+                  getSearchProperties(((Property.EntityProperty) property).referenceEntityID)));
+        }
+      }
+      else {
+        searchModel = new PropertySearchModel(property);
+      }
       searchModel.evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
@@ -304,5 +318,21 @@ public class EntityTableSearchModel {
       ret.append(model.toString());
 
     return ret.toString();
+  }
+
+  private List<Property> getSearchProperties(final String entityID) {
+    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(entityID);
+
+    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.get().getProperties(entityID, searchPropertyIDs);
+  }
+
+  private List<Property> getStringProperties(final String entityID) {
+    final Collection<Property> properties = EntityRepository.get().getDatabaseProperties(entityID);
+    final List<Property> ret = new ArrayList<Property>();
+    for (final Property property : properties)
+      if (property.propertyType == Type.STRING)
+        ret.add(property);
+
+    return ret;
   }
 }

@@ -719,7 +719,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeAdvancedSearchPanel() {
     final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel(),
-            getTableModel().getTableColumnProperties(), getTableModel().getDbConnectionProvider());
+            getTableModel().getTableColumnProperties());
     searchPanel.bindToColumnSizes(getJTable());
 
     return searchPanel;

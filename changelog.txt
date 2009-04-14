@@ -372,3 +372,8 @@
   LookupFieldPropertyLink renamed to LookupModelPropertyLink
   EntityModel.createEntityLookupModel() added
   TestEntityLookupModel added
+  PropertySearchModel.entityLookupModel field added, along with overloaded constructors, a getter and bindLookupModelEvents()
+  PropertySearchPanel.dbProvider field removed (whohooo) due to the above, along with all the crap involved
+  EntityCriteriaPanel, removed all traces of IEntityDbProvider
+  EntityTableSearchModel now handles creating the EntityLookupModel
+  EntityTableSearchPanel, removed all traces of IEntityDbProvider

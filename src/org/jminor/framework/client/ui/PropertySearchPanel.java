@@ -17,12 +17,8 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -34,27 +30,19 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class PropertySearchPanel extends AbstractSearchPanel {
 
-  private final IEntityDbProvider dbProvider;
-
   public PropertySearchPanel(final PropertySearchModel model) {
-    this(model, false, false, null);
+    this(model, false, false);
   }
 
   public PropertySearchPanel(final PropertySearchModel model, final boolean includeActivateBtn,
-                             final boolean includeToggleAdvBtn, final IEntityDbProvider dbProvider) {
+                             final boolean includeToggleAdvBtn) {
     super(model, includeActivateBtn, includeToggleAdvBtn);
     try {
       model.initialize();
-      this.dbProvider = dbProvider;//todo ugly
-      if (upperField instanceof EntityLookupField)
-        ((EntityLookupField) upperField).getModel().setDbProvider(dbProvider);
       bindEvents();
     }
     catch (UserException e) {
@@ -115,7 +103,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 LinkType.READ_WRITE);
         break;
       case ENTITY:
-        field = initEntityField(model.getProperty());
+        field = initEntityField();
         break;
       default: {
         field = new JTextField();
@@ -136,7 +124,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     return field;
   }
 
-  private JComponent initEntityField(final Property property) {
+  private JComponent initEntityField() {
     final EntityComboBoxModel boxModel = ((PropertySearchModel) model).getEntityComboBoxModel();
     if (boxModel != null) {
       final EntityComboBox field = new EntityComboBox(boxModel, null);
@@ -146,42 +134,11 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       return field;
     }
     else {
-      //todo dbProvider is null, right?
-      final EntityLookupField field = new EntityLookupField(new EntityLookupModel(dbProvider, ((Property.EntityProperty) property).referenceEntityID,
-              getSearchProperties(((Property.EntityProperty) property).referenceEntityID)) {
-        @SuppressWarnings({"unchecked"})
-        public List<Entity> getSelectedEntities() {
-          return model.getUpperBound() == null ? new ArrayList<Entity>(0) : (List<Entity>) model.getUpperBound();
-        }
-        public void setSelectedEntities(final List<Entity> entities) {
-          model.setUpperBound(entities);
-        }
-      });
-      model.evtUpperBoundChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          field.getModel().refreshSearchText();
-        }
-      });
+      final EntityLookupField field = new EntityLookupField(((PropertySearchModel) model).getEntityLookupModel());
       field.getModel().refreshSearchText();
       field.getModel().setAllowMultipleSelection(true);
 
       return field;
     }
-  }
-
-  private List<Property> getSearchProperties(final String entityID) {
-    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(entityID);
-
-    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.get().getProperties(entityID, searchPropertyIDs);
-  }
-
-  private List<Property> getStringProperties(final String entityID) {
-    final Collection<Property> properties = EntityRepository.get().getDatabaseProperties(entityID);
-    final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : properties)
-      if (property.getPropertyType().equals(Type.STRING))
-        ret.add(property);
-
-    return ret;
   }
 }

@@ -11,13 +11,40 @@ import org.jminor.framework.model.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PropertySearchModel extends AbstractSearchModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
+  private final EntityLookupModel entityLookupModel;
 
   private boolean updatingModel = false;
+
+  /**
+   * Constructs a PropertySearchModel instance
+   * @param property the property
+   * @throws IllegalArgumentException if an illegal constant is used
+   */
+  public PropertySearchModel(final Property property) {
+    super(property);
+    this.entityLookupModel = null;
+    this.entityComboBoxModel = null;
+  }
+
+  /**
+   * Constructs a PropertySearchModel instance
+   * @param property the property
+   * @param entityLookupModel a EntityLookupModel
+   * @throws IllegalArgumentException if an illegal constant is used
+   */
+  public PropertySearchModel(final Property property, final EntityLookupModel entityLookupModel) {
+    super(property);
+    this.entityLookupModel = entityLookupModel;
+    this.entityComboBoxModel = null;
+    bindLookupModelEvents();
+  }
 
   /**
    * Constructs a PropertySearchModel instance
@@ -28,6 +55,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   public PropertySearchModel(final Property property, final EntityComboBoxModel entityComboBoxModel) {
     super(property);
     this.entityComboBoxModel = entityComboBoxModel;
+    this.entityLookupModel = null;
     bindComboBoxEvents();
   }
 
@@ -66,6 +94,13 @@ public class PropertySearchModel extends AbstractSearchModel {
    */
   public EntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;
+  }
+
+  /**
+   * @return the EntityLookupModel used by this PropertySearchModel, if any
+   */
+  public EntityLookupModel getEntityLookupModel() {
+    return entityLookupModel;
   }
 
   /**
@@ -108,40 +143,57 @@ public class PropertySearchModel extends AbstractSearchModel {
     return ret.toString();
   }
 
+  private void bindLookupModelEvents() {
+    entityLookupModel.evtSelectedEntitiesChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          updatingModel = true;
+          setUpperBound(new ArrayList<Entity>(entityLookupModel.getSelectedEntities()));
+        }
+        finally {
+          updatingModel = false;
+        }
+      }
+    });
+    evtUpperBoundChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (!updatingModel)//noinspection unchecked
+          entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
+      }
+    });
+  }
+
   private void bindComboBoxEvents() {
-    if (entityComboBoxModel != null) {
-      entityComboBoxModel.evtSelectionChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if (!updatingModel)
-            setUpperBound(entityComboBoxModel.getSelectedEntity());
+    entityComboBoxModel.evtSelectionChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          updatingModel = true;
+          setUpperBound(entityComboBoxModel.getSelectedEntity());
         }
-      });
-      evtUpperBoundChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          try {
-            updatingModel = true;
-            final Object upper = getUpperBound();
-            if ((upper instanceof Collection && ((Collection) upper).size() > 0))
-              entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
-            else
-              entityComboBoxModel.setSelectedItem(upper);
-          }
-          finally {
-            updatingModel = false;
-          }
+        finally {
+          updatingModel = false;
         }
-      });
-    }
-    if (entityComboBoxModel != null) {
-      entityComboBoxModel.evtRefreshDone.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
+      }
+    });
+    evtUpperBoundChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (!updatingModel) {
           final Object upper = getUpperBound();
           if ((upper instanceof Collection && ((Collection) upper).size() > 0))
             entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
           else
             entityComboBoxModel.setSelectedItem(upper);
         }
-      });
-    }
+      }
+    });
+    entityComboBoxModel.evtRefreshDone.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final Object upper = getUpperBound();
+        if ((upper instanceof Collection && ((Collection) upper).size() > 0))
+          entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
+        else
+          entityComboBoxModel.setSelectedItem(upper);
+      }
+    });
   }
 }
