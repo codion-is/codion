@@ -5,7 +5,6 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
-import org.jminor.common.ui.UiUtil;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -22,6 +21,8 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Provides UI controls
@@ -172,8 +173,14 @@ public class ControlProvider {
       if (description != null)
         menu.setToolTipText(description);
       final State enabledState = controlSet.getEnabledState();
-      if (enabledState != null)
-        UiUtil.linkToEnabledState(enabledState, menu);
+      if (enabledState != null) {
+        menu.setEnabled(enabledState.isActive());
+        enabledState.evtStateChanged.addListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            menu.setEnabled(enabledState.isActive());
+          }
+        });
+      }
       final Icon icon = controlSet.getIcon();
       if (icon != null)
         menu.setIcon(icon);

@@ -377,3 +377,4 @@
   EntityCriteriaPanel, removed all traces of IEntityDbProvider
   EntityTableSearchModel now handles creating the EntityLookupModel
   EntityTableSearchPanel, removed all traces of IEntityDbProvider
+  ControlProvider, inlined UiUtil.linkToEnabledState to remove a cyclical dependency
