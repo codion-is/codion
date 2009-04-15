@@ -96,7 +96,6 @@
     <antcall target="chmod_test" />
   </target>
 
-
   <target name="deploy_prod" depends="dist, signjars" >
     <copy todir="${deploy.path.prod}">
       <fileset dir="${dist}/current" excludes="${launch.file.dev},${launch.file.test}"/>
