@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="jminor" default="report" basedir=".">
+<project name="jminor" default="deploy_all" basedir=".">
 
   <description>JMinor RAD Framework build file</description>
 
@@ -347,6 +347,12 @@
     <chmod dir="${wiki.media.project}" perm="ugo+r" type="file" includes="**/*"/>
     <chmod dir="${wiki.media.project}" perm="ugo+rx" type="dir" includes="**/*"/>
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
+  </target>
+
+  <target name="deploy_project">
+    <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
+      <fileset dir="${basedir}" excludes="dist/**,classes/**"/>
+    </zip>
   </target>
 
 </project>

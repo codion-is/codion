@@ -43,11 +43,6 @@
     <copy file="${elibdir}/${lib.junit}" todir="${lib}" />
   </target>
 
-  <!--<target name="cvs_checkout">-->
-    <!--<cvs passfile="${cvspassfile}" dest="${basedir}/../../.."-->
-        <!--cvsroot="${cvsroot}" package="fiskistofa/Kerfi/${ant.project.name}" />-->
-  <!--</target>-->
-
   <target name="build" depends="init">
     <javac destdir="${build.base}" debug="true" >
       <src path="${src}" />
@@ -125,6 +120,24 @@
     <chmod dir="${deploy.path.prod}" perm="ugo+r" type="file" includes="**/*"/>
     <chmod dir="${deploy.path.prod}" perm="ugo+rx" type="dir" includes="**/*"/>
     <chmod file="${deploy.path.prod}" perm="ugo+rx" type="dir"/>
+  </target>
+
+  <target name="backup_dev">
+    <zip destfile="${backup.path}/${ant.project.name}_${DSTAMP}-dev.bak.zip" >
+      <fileset dir="${deploy.path.dev}" />
+    </zip>
+  </target>
+
+  <target name="backup_test">
+    <zip destfile="${backup.path}/${ant.project.name}_${DSTAMP}-test.bak.zip" >
+      <fileset dir="${deploy.path.test}" />
+    </zip>
+  </target>
+
+  <target name="backup_prod">
+    <zip destfile="${backup.path}/${ant.project.name}_${DSTAMP}-prod.bak.zip" >
+      <fileset dir="${deploy.path.prod}" />
+    </zip>
   </target>
 
   <target name="doc" depends="init">

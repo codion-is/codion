@@ -381,3 +381,6 @@
   IEntityDb.executeCallable renamed to executeStatement
   EntityDbConnection reorganized
   RemoteClient renamed to ClientInfo and moved to common.model, common.remote removed
+  Added backup ant targets to project template build.xml file and backup.path property to build.properties
+  Added deploy_project ant task to build.xml
+  Changed default ant task to deploy_all
