@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
@@ -282,9 +282,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public Object executeCallable(final String statement, final int outParamType) throws DbException, RemoteException {
+  public Object executeStatement(final String statement, final int outParamType) throws DbException, RemoteException {
     try {
-      return loggingEntityDbProxy.executeCallable(statement, outParamType);
+      return loggingEntityDbProxy.executeStatement(statement, outParamType);
     }
     catch (DbException dbe) {
       throw dbe;

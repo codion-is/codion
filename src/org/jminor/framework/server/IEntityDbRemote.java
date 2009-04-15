@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
@@ -88,7 +88,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws RemoteException in case of a remote exception
    * @return the return paramter if any, otherwise null
    */
-  public Object executeCallable(final String statement, final int outParamType) throws DbException, RemoteException;
+  public Object executeStatement(final String statement, final int outParamType) throws DbException, RemoteException;
 
   /**
    * Inserts the given entities, returning a list containing the

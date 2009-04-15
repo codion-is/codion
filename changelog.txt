@@ -378,3 +378,5 @@
   EntityTableSearchModel now handles creating the EntityLookupModel
   EntityTableSearchPanel, removed all traces of IEntityDbProvider
   ControlProvider, inlined UiUtil.linkToEnabledState to remove a cyclical dependency
+  IEntityDb.executeCallable renamed to executeStatement
+  EntityDbConnection reorganized

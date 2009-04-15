@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -96,7 +96,7 @@ public interface IEntityDb {
    * @throws Exception in case of exception
    * @return the return parameter if any, otherwise null
    */
-  public Object executeCallable(final String statement, final int outParamType) throws Exception;
+  public Object executeStatement(final String statement, final int outParamType) throws Exception;
 
   /**
    * Inserts the given entities, returning a list containing the

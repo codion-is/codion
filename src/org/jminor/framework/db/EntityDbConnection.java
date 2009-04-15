@@ -129,12 +129,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return checkDependenciesOnDelete;
   }
 
-  /**
-   * Inserts the given entities, returning an array containing the primary keys of the inserted records
-   * @param entities the entities to insert
-   * @return the primary keys of the inserted entities
-   * @throws DbException
-   */
+  /** {@inheritDoc} */
   public List<EntityKey> insert(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0)
       return new ArrayList<EntityKey>();
@@ -224,22 +219,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<?> selectPropertyValues(final String entityID, final String columnName,
-                                      final boolean distinct, final boolean order) throws DbException {
-    String sql = null;
-    try {
-      sql = DbUtil.generateSelectSql(EntityRepository.get().getSelectTableName(entityID),
-              (distinct ? "distinct " : "") + columnName,
-              "where " + columnName + " is not null", order ? columnName : null);
-
-      return query(sql, getPacker(EntityRepository.get().getProperty(entityID, columnName).propertyType), -1);
-    }
-    catch (SQLException e) {
-      throw new DbException(e, sql);
-    }
-  }
-
-  /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
     return selectSingle(new EntityCriteria(entityID,
             new PropertyCriteria(EntityRepository.get().getProperty(entityID, propertyID), SearchType.LIKE, value)));
@@ -248,46 +227,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public Entity selectSingle(final EntityKey primaryKey) throws DbException {
     return selectSingle(new EntityCriteria(primaryKey.getEntityID(), new EntityKeyCriteria(primaryKey)));
-  }
-
-  /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
-  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws Exception {
-    if (primaryKeys == null || primaryKeys.size() == 0)
-      throw new IllegalArgumentException("Cannot select for update without keys");
-    if (isTransactionOpen())
-      throw new IllegalStateException("Cannot use select for update within an open transaction");
-
-    String sql = null;
-    try {
-      final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
-      final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
-      String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
-      final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
-      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update" + ((Database.isOracle() || Database.isPostgreSQL()) ? " nowait" : "");
-
-      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
-      if (result.size() == 0)
-        throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-      if (result.size() != primaryKeys.size()) {
-        try {//this means we got the lock, but for a different number of records than was intended, better release it right away
-          endTransaction(true);
-        }
-        catch (SQLException e) {/**/}
-        throw new DbException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
-      }
-
-      if (!lastQueryResultCached())
-        setReferencedEntities(result);
-
-      return result;
-    }
-    catch (SQLException sqle) {
-      log.info(sql);
-      log.error(this, sqle);
-      throw new DbException(sqle, sql);
-    }
   }
 
   /** {@inheritDoc} */
@@ -304,19 +243,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public List<Entity> selectMany(final List<EntityKey> primaryKeys) throws DbException {
     return selectMany(null, primaryKeys);
-  }
-
-  /** {@inheritDoc} */
-  public int selectRowCount(final EntityCriteria criteria) throws Exception {
-    String sql = "";
-    try {
-      return queryInteger(sql = DbUtil.generateSelectSql(
-              EntityRepository.get().getSelectTableName(criteria.getEntityID()), "count(*)",
-              criteria.getWhereClause(), null));
-    }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, sql);
-    }
   }
 
   /** {@inheritDoc} */
@@ -381,6 +307,85 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
+  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws Exception {
+    if (primaryKeys == null || primaryKeys.size() == 0)
+      throw new IllegalArgumentException("Cannot select for update without keys");
+    if (isTransactionOpen())
+      throw new IllegalStateException("Cannot use select for update within an open transaction");
+
+    String sql = null;
+    try {
+      final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
+      final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
+      String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
+      final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
+      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
+      sql += " for update" + ((Database.isOracle() || Database.isPostgreSQL()) ? " nowait" : "");
+
+      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
+      if (result.size() == 0)
+        throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
+      if (result.size() != primaryKeys.size()) {
+        try {//this means we got the lock, but for a different number of records than was intended, better release it right away
+          endTransaction(true);
+        }
+        catch (SQLException e) {/**/}
+        throw new DbException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
+      }
+
+      if (!lastQueryResultCached())
+        setReferencedEntities(result);
+
+      return result;
+    }
+    catch (SQLException sqle) {
+      log.info(sql);
+      log.error(this, sqle);
+      throw new DbException(sqle, sql);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public List<?> selectPropertyValues(final String entityID, final String columnName,
+                                      final boolean distinct, final boolean order) throws DbException {
+    String sql = null;
+    try {
+      sql = DbUtil.generateSelectSql(EntityRepository.get().getSelectTableName(entityID),
+              (distinct ? "distinct " : "") + columnName,
+              "where " + columnName + " is not null", order ? columnName : null);
+
+      return query(sql, getPacker(EntityRepository.get().getProperty(entityID, columnName).propertyType), -1);
+    }
+    catch (SQLException e) {
+      throw new DbException(e, sql);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public List<List> selectRows(final String statement, final int recordCount) throws Exception {
+    try {
+      return queryObjects(statement, recordCount);
+    }
+    catch (SQLException e) {
+      throw new DbException(e, statement);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public int selectRowCount(final EntityCriteria criteria) throws Exception {
+    String sql = "";
+    try {
+      return queryInteger(sql = DbUtil.generateSelectSql(
+              EntityRepository.get().getSelectTableName(criteria.getEntityID()), "count(*)",
+              criteria.getWhereClause(), null));
+    }
+    catch (SQLException sqle) {
+      throw new DbException(sqle, sql);
+    }
+  }
+
+  /** {@inheritDoc} */
   public Map<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException {
     final Map<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
     if (entities == null || entities.size() == 0)
@@ -415,29 +420,24 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   public void executeStatement(final String statement) throws Exception {
     try {
       execute(statement);
+      if (!isTransactionOpen())
+        commit();
     }
     catch (SQLException e) {
+      try {
+        if (!isTransactionOpen())
+          rollback();
+      }
+      catch (SQLException ex) {
+        log.info(statement);
+        log.error(this, ex);
+      }
       throw new DbException(e, statement);
     }
   }
 
   /** {@inheritDoc} */
-  public List<List> selectRows(final String statement, final int recordCount) throws Exception {
-    try {
-      return queryObjects(statement, recordCount);
-    }
-    catch (SQLException e) {
-      throw new DbException(e, statement);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception {
-    return JasperFillManager.fillReport(report, reportParams, getConnection());
-  }
-
-  /** {@inheritDoc} */
-  public Object executeCallable(final String statement, final int outParamType) throws DbException {
+  public Object executeStatement(final String statement, final int outParamType) throws DbException {
     try {
       final Object ret = executeCallableStatement(statement, outParamType);
       if (!isTransactionOpen())
@@ -454,9 +454,13 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-
       throw new DbException(e, statement);
     }
+  }
+
+  /** {@inheritDoc} */
+  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception {
+    return JasperFillManager.fillReport(report, reportParams, getConnection());
   }
 
   /** {@inheritDoc} */
@@ -506,7 +510,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       EntityRepository.get().add(repository.initializeAll());
 
     useQueryRange = (Boolean) settings.getProperty(FrameworkSettings.USE_QUERY_RANGE);
-  }/**
+  }
+
+  /**
    * @param entity the Entity instance
    * @return a query for inserting this entity instance
    */
@@ -583,8 +589,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   @SuppressWarnings({"unchecked"})
-  private List<Entity> selectMany(final List<Property> properties,
-                                  final List<EntityKey> primaryKeys) throws DbException {
+  private List<Entity> selectMany(final List<Property> properties, final List<EntityKey> primaryKeys) throws DbException {
     if (primaryKeys == null || primaryKeys.size() == 0)
       return new ArrayList<Entity>(0);
 
