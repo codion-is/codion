@@ -380,3 +380,4 @@
   ControlProvider, inlined UiUtil.linkToEnabledState to remove a cyclical dependency
   IEntityDb.executeCallable renamed to executeStatement
   EntityDbConnection reorganized
+  RemoteClient renamed to ClientInfo and moved to common.model, common.remote removed

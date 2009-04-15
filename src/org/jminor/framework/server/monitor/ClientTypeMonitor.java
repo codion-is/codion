@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.model.ClientInfo;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 11.12.2007
  * Time: 11:42:18
  */
@@ -27,7 +27,7 @@ public class ClientTypeMonitor extends DefaultMutableTreeNode {
 
   public void refresh() throws RemoteException {
     removeAllChildren();
-    for (final RemoteClient client : server.getClients(null))
+    for (final ClientInfo client : server.getClients(null))
       if (clientTypeID.equals(client.getClientTypeID()))
         add(new ClientInstanceMonitor(client, server));
   }

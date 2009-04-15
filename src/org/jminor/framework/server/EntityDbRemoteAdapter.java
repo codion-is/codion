@@ -10,10 +10,10 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
 import org.jminor.common.db.User;
+import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbConnection;
@@ -57,7 +57,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
   public final Event evtLoggingOut = new Event("EntityDbRemoteAdapter.evtLoggingOut");
 
-  private RemoteClient client;
+  private ClientInfo client;
   private final long creationDate = System.currentTimeMillis();
 
   private static final int logSize =
@@ -110,7 +110,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     }, new Date(), 15000);
   }
 
-  public EntityDbRemoteAdapter(final RemoteClient client, final EntityRepository repository,
+  public EntityDbRemoteAdapter(final ClientInfo client, final EntityRepository repository,
                                final FrameworkSettings settings, final int dbRemotePort,
                                final boolean loggingEnabled) throws RemoteException {
     super(dbRemotePort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -155,7 +155,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
             lastAccessedMethod, lastAccessMessage, lastExitedMethod);
   }
 
-  public RemoteClient getClient() {
+  public ClientInfo getClient() {
     return client;
   }
 

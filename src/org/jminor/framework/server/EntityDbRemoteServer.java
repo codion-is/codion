@@ -7,8 +7,8 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
+import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Util;
-import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.EntityRepository;
@@ -58,8 +58,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private Timer connectionMaintenanceTimer;
   private transient int checkMaintenanceInterval = 30; //seconds
 
-  private final Map<RemoteClient, EntityDbRemoteAdapter> connections =
-          Collections.synchronizedMap(new HashMap<RemoteClient, EntityDbRemoteAdapter>());
+  private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
+          Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
   private final Properties dbConnectionProperties = new Properties();
   private final String serverName;
   private int connectionTimeout = 120000;
@@ -142,8 +142,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public Collection<RemoteClient> getClients(final User user) throws RemoteException {
-    final Collection<RemoteClient> ret = new ArrayList<RemoteClient>();
+  public Collection<ClientInfo> getClients(final User user) throws RemoteException {
+    final Collection<ClientInfo> ret = new ArrayList<ClientInfo>();
     synchronized (connections) {
       for (final EntityDbRemoteAdapter adapter : connections.values())
         if (user == null || adapter.getUser().equals(user))
@@ -155,7 +155,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   public Collection<String> getClientTypes() throws RemoteException {
     final Set<String> ret = new HashSet<String>();
-    for (final RemoteClient client : getClients(null))
+    for (final ClientInfo client : getClients(null))
       ret.add(client.getClientTypeID());
 
     return ret;
@@ -168,7 +168,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (connectionKey == null)
       return null;
 
-    final RemoteClient client = new RemoteClient(connectionKey, clientTypeID, user);
+    final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
     if (connections.containsKey(client))
       return connections.get(client);
 
@@ -180,7 +180,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (connectionKey == null)
       return;
 
-    removeConnection(new RemoteClient(connectionKey));
+    removeConnection(new ClientInfo(connectionKey));
   }
 
   /** {@inheritDoc} */
@@ -220,8 +220,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   /** {@inheritDoc} */
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
     synchronized (connections) {
-      final List<RemoteClient> clients = new ArrayList<RemoteClient>(connections.keySet());
-      for (final RemoteClient client : clients) {
+      final List<ClientInfo> clients = new ArrayList<ClientInfo>(connections.keySet());
+      for (final ClientInfo client : clients) {
         final EntityDbRemoteAdapter adapter = connections.get(client);
         if (inactiveOnly) {
           if (!adapter.isWorking() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
@@ -291,7 +291,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   /** {@inheritDoc} */
   public DbLog getConnectionLog(final String connectionKey) {
     synchronized (connections) {
-      final RemoteClient client = new RemoteClient(connectionKey);
+      final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter adapter : connections.values())
         if (adapter.getClient().equals(client))
           return adapter.getEntityDbLog();
@@ -303,7 +303,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   /** {@inheritDoc} */
   public boolean isLoggingOn(final String connectionKey) throws RemoteException {
     synchronized (connections) {
-      final RemoteClient client = new RemoteClient(connectionKey);
+      final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter connection : connections.values()) {
         if (connection.getClient().equals(client)) {
           return connection.isLoggingEnabled();
@@ -317,7 +317,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   /** {@inheritDoc} */
   public void setLoggingOn(final String connectionKey, final boolean status) {
     synchronized (connections) {
-      final RemoteClient client = new RemoteClient(connectionKey);
+      final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter connection : connections.values()) {
         if (connection.getClient().equals(client)) {
           connection.setLoggingEnabled(status);
@@ -352,14 +352,14 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     }
   }
 
-  private void removeConnection(final RemoteClient client) throws RemoteException {
+  private void removeConnection(final ClientInfo client) throws RemoteException {
     if (connections.containsKey(client)) {
       log.debug(client + " is being closed");
       connections.remove(client).logout();
     }
   }
 
-  private EntityDbRemoteAdapter doConnect(final RemoteClient client, final EntityRepository repository,
+  private EntityDbRemoteAdapter doConnect(final ClientInfo client, final EntityRepository repository,
                                           final FrameworkSettings settings) throws RemoteException {
     final EntityDbRemoteAdapter ret =
             new EntityDbRemoteAdapter(client, repository, settings, SERVER_DB_PORT, loggingEnabled);

@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
-import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.model.ClientInfo;
 
 import org.apache.log4j.Level;
 
@@ -148,7 +148,7 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
    * @return the connection keys associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  public Collection<RemoteClient> getClients(final User user) throws RemoteException;
+  public Collection<ClientInfo> getClients(final User user) throws RemoteException;
 
   public Collection<String> getClientTypes() throws RemoteException;
 
