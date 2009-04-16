@@ -36,9 +36,10 @@ public class Event implements ActionListener, Serializable {
 
   /**
    * Notifies all listeners
+   * @param event the ActionEvent to use when notifying
    */
-  public synchronized final void fire(final ActionEvent event) {
-    for (final ActionListener listener : listeners)
+  public final void fire(final ActionEvent event) {
+    for (final ActionListener listener : new ArrayList<ActionListener>(listeners))
       listener.actionPerformed(event);
   }
 
@@ -51,7 +52,7 @@ public class Event implements ActionListener, Serializable {
    * Adds <code>listener</code> to this Event
    * @param listener the listener to add
    */
-  public synchronized void addListener(final ActionListener listener) {
+  public void addListener(final ActionListener listener) {
     if (!listeners.contains(listener))
       listeners.add(listener);
   }
@@ -60,7 +61,7 @@ public class Event implements ActionListener, Serializable {
    * Removes <code>listener</code> from this Event
    * @param listener the listener to remove
    */
-  public synchronized void removeListener(final ActionListener listener) {
+  public void removeListener(final ActionListener listener) {
     listeners.remove(listener);
   }
 

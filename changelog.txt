@@ -390,3 +390,8 @@
   EntityDbConnectionPool, remove EntityRepository parameter from checkOutConnection()
   EntityDbRemoteAdapter, EntityRepository parameter removed from constructor
   PropertySearchPanel now instantiates a JComboBox instead of EntityComboBox to reduce cyclic dependencies
+  EntityComboBoxModel/EntityListModel.getEntitiesFromDb() renamed to performQuery
+  EntityListModel.entityCriteria field + setter/getter added, used in performQuery()
+  EntityLookupField constructor overloaded with an Action parameter, which is performed on enter if the text field represents the selected entities
+  PropertySearchPanel uses the aforementioned EntityLookupField constructor action parameter to enable/disable the search on enter
+  Event.fire() now copies the listeners list, synchronizing the fire/add/remove methods wasn't enough apparently, so it was removed

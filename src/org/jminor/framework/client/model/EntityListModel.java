@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -10,6 +10,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.model.Entity;
 
 import org.apache.log4j.Logger;
@@ -35,6 +36,11 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   private final String entityID;
   private final List<Entity> data = new ArrayList<Entity>();
   private final boolean staticData;
+
+  /**
+   * the EntityCriteria used to filter the data
+   */
+  private EntityCriteria entityCriteria;
 
   private boolean dataInitialized = false;
 
@@ -78,7 +84,7 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
 
       log.trace(this + " refreshing");
       data.clear();
-      final List<Entity> entities = getEntitiesFromDb();
+      final List<Entity> entities = performQuery();
 
       for (final Entity entity : entities) {
         if (include(entity))
@@ -100,6 +106,10 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
     data.clear();
   }
 
+  public String getEntityID() {
+    return entityID;
+  }
+
   public Entity getEntityAt(final int index) {
     return (Entity) getElementAt(index);
   }
@@ -114,16 +124,19 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
     return data.size();
   }
 
-  protected List<Entity> getEntitiesFromDb() throws UserException, DbException {
-    try {
-      return dbProvider.getEntityDb().selectAll(entityID, true);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
+  /**
+   * Sets the criteria to use when querying data
+   * @param entityCriteria the criteria
+   */
+  public void setEntityCriteria(final EntityCriteria entityCriteria) {
+    this.entityCriteria = entityCriteria;
+  }
+
+  /**
+   * @return the EntityCriteria used by this EntityComboBoxModel
+   */
+  protected EntityCriteria getEntityCriteria() {
+    return entityCriteria;
   }
 
   /**
@@ -135,5 +148,26 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   @SuppressWarnings({"UnusedDeclaration"})
   protected boolean include(final Entity entity) {
     return true;
+  }
+
+  /**
+   * Retrieves the entities to present in this EntityComboBoxModel
+   * @return the entities to present in this EntityComboBoxModel
+   * @throws UserException in case of an exception
+   * @throws DbException in case of a database exception
+   */
+  protected List<Entity> performQuery() throws UserException, DbException {
+    try {
+      if (getEntityCriteria() != null)
+        return dbProvider.getEntityDb().selectMany(getEntityCriteria());
+      else
+        return dbProvider.getEntityDb().selectAll(getEntityID(), true);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
   }
 }

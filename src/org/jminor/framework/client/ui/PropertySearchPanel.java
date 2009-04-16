@@ -22,13 +22,14 @@ import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -112,13 +113,8 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "");
       }
     }
-    if (field instanceof JTextField && !(field instanceof EntityLookupField)) {//enter button toggles the filter on/off
-      ((JTextField) field).addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          getModel().setSearchEnabled(!getModel().isSearchEnabled());
-        }
-      });
-    }
+    if (field instanceof JTextField && !(field instanceof EntityLookupField)) //enter button toggles the filter on/off
+      ((JTextField) field).addActionListener(getEnableAction());
     field.setToolTipText(isUpperBound ? "a" : "b");
 
     return field;
@@ -134,11 +130,20 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       return field;
     }
     else {
-      final EntityLookupField field = new EntityLookupField(((PropertySearchModel) model).getEntityLookupModel());
+      final EntityLookupField field =
+              new EntityLookupField(((PropertySearchModel) model).getEntityLookupModel(), getEnableAction());
       field.getModel().refreshSearchText();
       field.getModel().setAllowMultipleSelection(true);
 
       return field;
     }
+  }
+
+  private Action getEnableAction() {
+    return new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        getModel().setSearchEnabled(!getModel().isSearchEnabled());
+      }
+    };
   }
 }

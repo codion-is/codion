@@ -42,16 +42,37 @@ import java.util.Vector;
 public class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
+  private final Action action;
 
-  private boolean transferFocusOnEnter;
-
+  /**
+   * Initializes a new EntityLookupField
+   * @param model the model
+   */
   public EntityLookupField(final EntityLookupModel model) {
     this(model, false);
   }
 
+  /**
+   * Initializes a new EntityLookupField
+   * @param model the model
+   * @param transferFocusOnEnter if true then the field transfers focus on enter if the field text
+   * represents the selected entities
+   */
   public EntityLookupField(final EntityLookupModel model, final boolean transferFocusOnEnter) {
+    this(model, null);
+    if (transferFocusOnEnter)
+      UiUtil.transferFocusOnEnter(this);
+  }
+
+  /**
+   * Initializes a new EntityLookupField
+   * @param model the model
+   * @param action the action that is performed if enter is pressed while the field text represents
+   * the selected entities
+   */
+  public EntityLookupField(final EntityLookupModel model, final Action action) {
     this.model = model;
-    this.transferFocusOnEnter = transferFocusOnEnter;
+    this.action = action;
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
@@ -60,8 +81,8 @@ public class EntityLookupField extends JTextField {
             model.setSelectedEntities(null);
           }
           else {
-            if (model.textRepresentsSelected() && isTransferFocusOnEnter())
-              transferFocus();
+            if (model.textRepresentsSelected() && EntityLookupField.this.action != null)
+              EntityLookupField.this.action.actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
             else
               selectEntities(model.performQuery());
           }
@@ -83,14 +104,6 @@ public class EntityLookupField extends JTextField {
     return model;
   }
 
-  public boolean isTransferFocusOnEnter() {
-    return transferFocusOnEnter;
-  }
-
-  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
-    this.transferFocusOnEnter = transferFocusOnEnter;
-  }
-
   private void selectEntities(final List<Entity> entities) {
     if (entities.size() == 0)
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
@@ -109,10 +122,10 @@ public class EntityLookupField extends JTextField {
       final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
         public void actionPerformed(ActionEvent e) {
           final Object[] selectedValues = list.getSelectedValues();
-          final List<Entity> entities = new ArrayList<Entity>(selectedValues.length);
-          for (final Object obj : selectedValues)
-            entities.add((Entity) obj);
-          model.setSelectedEntities(entities);
+          final List<Entity> entityList = new ArrayList<Entity>(selectedValues.length);
+          for (final Object object : selectedValues)
+            entityList.add((Entity) object);
+          model.setSelectedEntities(entityList);
           dialog.dispose();
         }
       };
@@ -169,7 +182,7 @@ public class EntityLookupField extends JTextField {
         panel.add(boxPrefixWildcard);
         panel.add(boxPostfixWildcard);
         final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-          public void actionPerformed(final ActionEvent e) {
+          public void actionPerformed(final ActionEvent ae) {
             model.setCaseSensitive(boxCaseSensitive.isSelected());
             model.setWildcardPrefix(boxPrefixWildcard.isSelected());
             model.setWildcardPostfix(boxPostfixWildcard.isSelected());

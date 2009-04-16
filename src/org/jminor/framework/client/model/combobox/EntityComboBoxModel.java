@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model.combobox;
 
@@ -226,7 +226,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
         log.trace(this + " refresh not required");
         return super.getContents();
       }
-      final List<Entity> entities = getEntitiesFromDb();
+      final List<Entity> entities = performQuery();
       final ListIterator<Entity> iterator = entities.listIterator();
       while (iterator.hasNext())
         if (!include(iterator.next()))
@@ -253,7 +253,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @throws UserException in case of an exception
    * @throws DbException in case of a database exception
    */
-  protected List<Entity> getEntitiesFromDb() throws UserException, DbException {
+  protected List<Entity> performQuery() throws UserException, DbException {
     try {
       if (getEntityCriteria() != null)
         return dbProvider.getEntityDb().selectMany(getEntityCriteria());
