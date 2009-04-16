@@ -389,3 +389,4 @@
   EntityDbConnection, EntityRepository parameter removed from constructor
   EntityDbConnectionPool, remove EntityRepository parameter from checkOutConnection()
   EntityDbRemoteAdapter, EntityRepository parameter removed from constructor
+  PropertySearchPanel now instantiates a JComboBox instead of EntityComboBox to reduce cyclic dependencies

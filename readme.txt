@@ -13,7 +13,7 @@ JMinor is a minimalistic rich client CRUD application framework based solely on 
 
 * A minimal but complete JDBC abstraction layer.
 
-* A straight forward and simple way of wiring together a client on top the domain model.
+* A straight forward and simple way of wiring together a rich Swing client on top the domain model.
 
 * Integrated JasperReports support.
 
