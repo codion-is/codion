@@ -62,10 +62,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private long poolTime = -1;
 
-  public EntityDbConnection(final User user, final EntityRepository repository, final FrameworkSettings settings)
+  public EntityDbConnection(final User user, final FrameworkSettings settings)
           throws AuthenticationException, ClassNotFoundException {
     super(user);
-    initialize(repository, settings);
+    initialize(settings);
   }
 
   public void setPoolTime(final long poolTime) {
@@ -505,10 +505,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
   }
 
-  void initialize(final EntityRepository repository, final FrameworkSettings settings) {
-    if (!EntityRepository.get().contains(repository.getEntityIDs()))
-      EntityRepository.get().add(repository.initializeAll());
-
+  void initialize(final FrameworkSettings settings) {
     useQueryRange = (Boolean) settings.getProperty(FrameworkSettings.USE_QUERY_RANGE);
   }
 

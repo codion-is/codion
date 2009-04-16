@@ -349,9 +349,9 @@
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
   </target>
 
-  <target name="deploy_project">
+  <target name="deploy_project" depends="doc, dist">
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
-      <fileset dir="${basedir}" excludes="dist/**,classes/**"/>
+      <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**"/>
     </zip>
   </target>
 

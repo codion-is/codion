@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -10,7 +10,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.model.EntityRepository;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +26,7 @@ import java.util.TimerTask;
 
 /**
  * A simple connection pool implementation, pools connections on username basis
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 7.12.2007
  * Time: 00:04:08
  */
@@ -75,7 +74,7 @@ public class EntityDbConnectionPool {
     }, new Date(), 2550);
   }
 
-  public EntityDbConnection checkOutConnection(final EntityRepository repository, final FrameworkSettings settings)
+  public EntityDbConnection checkOutConnection(final FrameworkSettings settings)
           throws ClassNotFoundException, AuthenticationException {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
@@ -92,7 +91,7 @@ public class EntityDbConnectionPool {
           connectionsCreated++;
           if (log.isDebugEnabled())
             log.debug("$$$$ creating a new connection for " + user);
-          checkInConnection(new EntityDbConnection(user, repository, settings));
+          checkInConnection(new EntityDbConnection(user, settings));
         }
       }
       int retryCount = 0;
@@ -114,7 +113,7 @@ public class EntityDbConnectionPool {
         }
       }
     }
-    ret.initialize(repository, settings);
+    ret.initialize(settings);
 
     return ret;
   }

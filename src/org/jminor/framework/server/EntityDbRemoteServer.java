@@ -168,11 +168,14 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (connectionKey == null)
       return null;
 
+    if (!EntityRepository.get().contains(repository.getEntityIDs()))
+      EntityRepository.get().add(repository.initializeAll());
+
     final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
     if (connections.containsKey(client))
       return connections.get(client);
 
-    return doConnect(client, repository, settings);
+    return doConnect(client, settings);
   }
 
   /** {@inheritDoc} */
@@ -359,10 +362,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     }
   }
 
-  private EntityDbRemoteAdapter doConnect(final ClientInfo client, final EntityRepository repository,
-                                          final FrameworkSettings settings) throws RemoteException {
-    final EntityDbRemoteAdapter ret =
-            new EntityDbRemoteAdapter(client, repository, settings, SERVER_DB_PORT, loggingEnabled);
+  private EntityDbRemoteAdapter doConnect(final ClientInfo client, final FrameworkSettings settings) throws RemoteException {
+    final EntityDbRemoteAdapter ret = new EntityDbRemoteAdapter(client, settings, SERVER_DB_PORT, loggingEnabled);
     ret.evtLoggingOut.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {

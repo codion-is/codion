@@ -384,3 +384,8 @@
   Added backup ant targets to project template build.xml file and backup.path property to build.properties
   Added deploy_project ant task to build.xml
   Changed default ant task to deploy_all
+  readme.txt added
+  EntityDbRemoteServer, EntityRepository.get().add(repository.initializeAll()) is now done in the connect() method instead of deep down inside EntityDbConnection
+  EntityDbConnection, EntityRepository parameter removed from constructor
+  EntityDbConnectionPool, remove EntityRepository parameter from checkOutConnection()
+  EntityDbRemoteAdapter, EntityRepository parameter removed from constructor

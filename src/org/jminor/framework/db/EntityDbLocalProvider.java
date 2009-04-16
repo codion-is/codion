@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -10,7 +10,6 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.model.EntityRepository;
 
 import org.apache.log4j.Logger;
 
@@ -74,7 +73,7 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
 
   private void connect() throws ClassNotFoundException, AuthenticationException {
     log.debug("Initializing connection for " + user);
-    entityDb = new EntityDbConnection(user, EntityRepository.get(), FrameworkSettings.get());
+    entityDb = new EntityDbConnection(user, FrameworkSettings.get());
     evtConnected.fire();
   }
 }
