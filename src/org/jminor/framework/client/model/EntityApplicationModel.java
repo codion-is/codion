@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -9,11 +9,8 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public abstract class EntityApplicationModel {
@@ -23,22 +20,16 @@ public abstract class EntityApplicationModel {
 
   private final IEntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels;
-  private final DefaultTreeModel applicationTreeModel;
-
-  private static EntityApplicationModel entityApplicationModel;
 
   public EntityApplicationModel(final User user, final String appID) throws UserException {
     this(EntityDbProviderFactory.createEntityDbProvider(user, createClientKey(appID, user)));
   }
 
   public EntityApplicationModel(final IEntityDbProvider dbProvider) throws UserException {
-    this.dbProvider = dbProvider;
     loadDomainModel();
-    mainApplicationModels = initMainApplicationModels();
-
-    applicationTreeModel = createApplicationTree(mainApplicationModels);
+    this.dbProvider = dbProvider;
+    this.mainApplicationModels = initializeMainApplicationModels();
     bindEvents();
-    entityApplicationModel = this;
   }
 
   /**
@@ -52,13 +43,6 @@ public abstract class EntityApplicationModel {
     catch (Exception e) {
       throw new UserException(e);
     }
-  }
-
-  /**
-   * @return the application tree model
-   */
-  public DefaultTreeModel getApplicationTreeModel() {
-    return applicationTreeModel;
   }
 
   /**
@@ -131,13 +115,6 @@ public abstract class EntityApplicationModel {
     }
   }
 
-  /**
-   * @return the application model in use
-   */
-  public static EntityApplicationModel getApplicationModel() {
-    return entityApplicationModel;
-  }
-
   public static String createClientKey(final String reference, final User user) {
     return (reference != null ? (reference + " - ") : "")
             + "[" + user.getUsername() + "] " + Long.toHexString(System.currentTimeMillis());
@@ -161,16 +138,13 @@ public abstract class EntityApplicationModel {
    * @return a List containing the classes of the main EntityModels
    * @throws org.jminor.common.model.UserException in case of an exception
    */
-  protected abstract List<Class<? extends EntityModel>> getMainEntityModelClasses()throws UserException;
+  protected abstract List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException;
 
-  protected List<EntityModel> initMainApplicationModels() throws UserException {
-    return initMainApplicationModels(getMainEntityModelClasses());
-  }
-
-  protected List<EntityModel> initMainApplicationModels(final List<Class<? extends EntityModel>> mainModelClasses) throws UserException {
+  protected List<EntityModel> initializeMainApplicationModels() throws UserException {
     try {
+      final List<Class<? extends EntityModel>> mainModelClasses = getMainEntityModelClasses();
       final List<EntityModel> ret = new ArrayList<EntityModel>(mainModelClasses.size());
-      for (Class<? extends EntityModel> mainModelClass : mainModelClasses)
+      for (final Class<? extends EntityModel> mainModelClass : mainModelClasses)
         ret.add(mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbConnectionProvider()));
 
       return ret;
@@ -193,20 +167,4 @@ public abstract class EntityApplicationModel {
   }
 
   protected void bindEvents() {}
-
-  private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityModel> entityModels) {
-    final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
-    addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityModels);
-
-    return applicationTreeModel;
-  }
-
-  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends EntityModel> models) {
-    for (final EntityModel model : models) {
-      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(model);
-      root.add(node);
-      if (model.getDetailModels().size() > 0)
-        addModelsToTree(node, model.getDetailModels());
-    }
-  }
 }

@@ -235,6 +235,11 @@ public class EntityModel implements IRefreshable {
   private boolean strictEditingEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_STRICT_EDIT_MODE);
 
   /**
+   * The master model, if any, so that detail models can refer to their masters
+   */
+  private EntityModel masterModel;
+
+  /**
    * Contains the locked entities while the strict editing lock is in effect (select for update)
    */
   private Set<Entity> lockedEntities = new HashSet<Entity>();
@@ -276,6 +281,8 @@ public class EntityModel implements IRefreshable {
     this.activeEntity = new Entity(entityID);
     this.activeEntity.setAs(getDefaultEntity());
     this.detailModels = initializeDetailModels();
+    for (final EntityModel detailModel : this.detailModels)
+      detailModel.setMasterModel(this);
     this.activeEntity.setFirePropertyChangeEvents(true);
     initializeAssociatedModels();
     bindEvents();
@@ -451,6 +458,13 @@ public class EntityModel implements IRefreshable {
    */
   public State getDeleteAllowedState() {
     return stAllowDelete;
+  }
+
+  /**
+   * @return the master model, if any
+   */
+  public EntityModel getMasterModel() {
+    return this.masterModel;
   }
 
   /**
@@ -1528,6 +1542,10 @@ public class EntityModel implements IRefreshable {
     activeEntity.setValue(property.propertyID, value, validate);
 
     return value;
+  }
+
+  private void setMasterModel(final EntityModel model) {
+    this.masterModel = model;
   }
 
   /**

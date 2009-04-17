@@ -32,6 +32,8 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -45,7 +47,9 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +75,18 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   private static boolean persistEntityPanels;
   private static Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
+
+  public static final int DIVIDER_JUMP = 30;
+
+  private static final String NAV_UP = "navigateUp";
+  private static final String NAV_DOWN = "navigateDown";
+  private static final String NAV_RIGHT = "navigateRight";
+  private static final String NAV_LEFT = "navigateLeft";
+
+  private static final String DIV_LEFT = "divLeft";
+  private static final String DIV_RIGHT = "divRight";
+  private static final String DIV_UP = "divUp";
+  private static final String DIV_DOWN = "divDown";
 
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
@@ -113,6 +129,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     setupControls();
     initializeUI();
     initializeActiveEntityPanel();
+    initializeResizingAndNavigation();
     bindEvents();
   }
 
@@ -148,321 +165,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   public void viewApplicationTree() {
     UiUtil.showInDialog(UiUtil.getParentWindow(this), initializeApplicationTree(), false,
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
-  }
-
-  public static void exit(final EntityApplicationPanel panel) throws UserCancelException {
-    panel.exit();
-  }
-
-  public void exit() throws UserCancelException {
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.CONFIRM_EXIT)) {
-      if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
-              FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
-        throw new UserCancelException();
-    }
-    try {
-      model.getDbConnectionProvider().getEntityDb().logout();
-    }
-    catch (Exception e) {
-      log.debug("Unable to properly log out, no connection");
-    }
-    System.exit(0);
-  }
-
-  /**
-   * @return the ControlSet specifying the items in the 'File' menu
-   */
-  public ControlSet getFileControlSet() {
-    final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
-    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-    file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
-            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
-            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
-
-    return file;
-  }
-
-  /**
-   * @return the ControlSet specifying the items in the 'Settings' menu
-   */
-  public ControlSet getSettingsControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
-    ret.add(ctrSelectDetail);
-    ret.add(ctrCascadeRefresh);
-    ret.addSeparator();
-    ret.add(ctrSetLoggingLevel);
-
-    return ret;
-  }
-
-  /**
-   * @return the ControlSet specifying the items in the 'Tools' menu
-   */
-  public ControlSet getToolsControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
-            FrameworkMessages.get(FrameworkMessages.TOOLS_MNEMONIC).charAt(0));
-    ret.add(getSettingsControlSet());
-
-    return ret;
-  }
-
-  /**
-   * @return the ControlSet specifying the items in the 'View' menu
-   */
-  public ControlSet getViewControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
-            FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    final Control ctrRefreshAll = ControlFactory.methodControl(model, "refreshAll",
-            FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
-    ret.add(ctrRefreshAll);
-    ret.addSeparator();
-    ret.add(ControlFactory.methodControl(this, "viewApplicationTree", FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE),
-            null, null));
-    ret.addSeparator();
-    final ToggleBeanPropertyLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
-            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
-    ret.add(ctrAlwaysOnTop);
-    ret.addSeparator();
-    ret.add(initLookAndFeelControl());
-
-    return ret;
-  }
-
-  /**
-   * @return the ControlSet specifying the items in the 'Help' menu
-   */
-  public ControlSet getHelpControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
-            FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
-    final Control ctrHelp = ControlFactory.methodControl(this, "showHelp",
-            FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
-    ret.add(ctrHelp);
-    ret.addSeparator();
-    final Control ctrAbout = ControlFactory.methodControl(this, "showAbout",
-            FrameworkMessages.get(FrameworkMessages.ABOUT) + "...", null, null);
-    ret.add(ctrAbout);
-
-    return ret;
-  }
-
-  public void showHelp() throws UserException {
-    final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
-    final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            FrameworkMessages.get(FrameworkMessages.HELP));
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    UiUtil.resizeWindow(dialog, 0.1, new Dimension(600, 750));
-    dialog.setLocationRelativeTo(this);
-    dialog.setResizable(true);
-    dialog.setModal(false);
-    dialog.setVisible(true);
-  }
-
-  public void showAbout() throws UserException {
-    final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
-    final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            FrameworkMessages.get(FrameworkMessages.ABOUT));
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.pack();
-    dialog.setLocationRelativeTo(this);
-    dialog.setModal(true);
-    dialog.setVisible(true);
-  }
-
-  /**
-   * @return the panel shown when Help -> Help is selected
-   * @throws org.jminor.common.model.UserException in case there is an error reading the help file
-   */
-  protected JPanel getHelpPanel() throws UserException {
-    try {
-      final JPanel ret = new JPanel(new BorderLayout());
-      final String contents = Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
-      final JTextArea text = new JTextArea(contents);
-      final JScrollPane scrollPane = new JScrollPane(text);
-      text.setEditable(false);
-      text.setFocusable(false);
-      text.setLineWrap(true);
-      text.setWrapStyleWord(true);
-      ret.add(scrollPane, BorderLayout.CENTER);
-
-      return ret;
-    }
-    catch (IOException e) {
-      throw new UserException(e);
-    }
-  }
-
-  /**
-   * @return the panel shown when Help -> About is selected
-   */
-  protected JPanel getAboutPanel() {
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
-    final String versionString = Util.getVersionAndBuildNumber();
-    ret.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
-    final JTextField txtVersion = new JTextField(versionString);
-    txtVersion.setEditable(false);
-    ret.add(txtVersion, BorderLayout.CENTER);
-
-    return ret;
-  }
-
-  protected Control initLookAndFeelControl() {
-    final Control ret =
-            ControlFactory.methodControl(this, "setLookAndFeel", FrameworkMessages.get(FrameworkMessages.SET_LOOK_AND_FEEL));
-    ret.setMnemonic('L');
-
-    return ret;
-  }
-
-  protected void setupControls() {
-    final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
-    ctrSelectDetail = ControlFactory.toggleControl(model, "selectionFiltersDetail",
-            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), model.evtSelectionFiltersDetailChanged);
-    ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
-    ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
-
-    final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
-    ctrCascadeRefresh = ControlFactory.toggleControl(model, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), model.evtCascadeRefreshChanged);
-    ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
-    ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
-
-    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
-    ctrSetLoggingLevel = ControlFactory.methodControl(this, "setLoggingLevel",
-            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
-    ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
-    ctrSetLoggingLevel.setIcon(setLoggingIcon);
-  }
-
-  protected EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
-    for (final EntityPanel entityPanel : mainApplicationPanels) {
-      if (entityPanel.getClass().equals(entityPanelClass))
-        return entityPanel;
-    }
-
-    return null;
-  }
-
-  protected void selectEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
-    if (applicationTabPane != null)
-      applicationTabPane.setSelectedComponent(getEntityPanel(entityPanelClass));
-  }
-
-  /**
-   * A convenience method for overriding, so that system wide settings paramters can be set
-   * before the application is initialized
-   * @see FrameworkSettings
-   */
-  protected void initializeSettings() {}
-
-  protected void bindEvents() {
-    evtSelectedEntityPanelChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        initializeActiveEntityPanel();
-      }
-    });
-  }
-
-  /**
-   * @return a List containing EntityPanelProvider objects specifying the main EntityPanels,
-   * that is, the panels shown when the application frame is initialized
-   */
-  protected abstract List<EntityPanelProvider> getMainEntityPanelProviders();
-
-  /**
-   * @return a List containing EntityPanelProvider objects specifying the entity panels
-   * that should be accessible via the Support Tables menu bar item.
-   * The corresponding EntityModel class objects should be returned by the
-   * EntityApplicationModel.getMainEntityModelClasses() method
-   * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
-   * @see org.jminor.framework.client.model.EntityApplicationModel#getMainEntityModelClasses()
-   */
-  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
-    return new ArrayList<EntityPanelProvider>(0);
-  }
-
-  /**
-   * @return a List of ControlSet objects which are to be added to the main menu bar
-   */
-  protected List<ControlSet> getAdditionalMenuControlSet() {
-    return new ArrayList<ControlSet>();
-  }
-
-  /**
-   * @return the ControlSet on which the Support Tables menu item is based on
-   */
-  protected ControlSet getSupportModelControlSet() {
-    final List<EntityPanelProvider> supportDetailPanelProviders = getSupportEntityPanelProviders();
-    if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0)
-      return null;
-
-    Collections.sort(supportDetailPanelProviders);
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
-            FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
-    for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
-      ret.add(new Control(panelProvider.getCaption()) {
-        public void actionPerformed(ActionEvent e) {
-          showEntityPanel(panelProvider);
-        }
-      });
-    }
-
-    return ret;
-  }
-
-  protected void showEntityPanel(final EntityPanelProvider panelProvider) {
-    try {
-      showEntityPanelDialog(panelProvider, model.getDbConnectionProvider(), this);
-    }
-    catch (UserException ux) {
-      throw ux.getRuntimeException();
-    }
-  }
-
-  /**
-   * @return a JToolBar instance to show in the NORTH position
-   */
-  protected JToolBar getNorthToolBar() {
-    return null;
-  }
-
-  /**
-   * Initializes this EntityApplicationPanel
-   * @throws UserException in case of an exception
-   */
-  protected void initializeUI() throws UserException {
-    setLayout(new BorderLayout());
-    final List<EntityPanelProvider> entityPanels = getMainEntityPanelProviders();
-    if (entityPanels.size() > 1) {
-      applicationTabPane = new JTabbedPane((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TAB_PLACEMENT));
-      applicationTabPane.setFocusable(false);
-      applicationTabPane.setUI(new BorderlessTabbedPaneUI());
-      applicationTabPane.addChangeListener(new ChangeListener() {
-        public void stateChanged(ChangeEvent e) {
-          evtSelectedEntityPanelChanged.fire();
-        }
-      });
-    }
-
-    for (final EntityPanelProvider provider : entityPanels) {
-      final EntityModel entityModel = model.getMainApplicationModel(provider.getEntityModelClass());
-      final EntityPanel entityPanel = provider.createInstance(entityModel);
-      mainApplicationPanels.add(entityPanel);
-      if (entityPanels.size() > 1) {
-        final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
-                ? entityModel.getCaption() : provider.getCaption();
-        applicationTabPane.addTab(caption, entityPanel);
-      }
-    }
-    if (mainApplicationPanels.size() == 1)
-      add(mainApplicationPanels.get(0), BorderLayout.CENTER);
-    else
-      add(applicationTabPane, BorderLayout.CENTER);
-
-    final JPanel southPanel = initializeSouthPanel();
-    if (southPanel != null)
-      add(southPanel, BorderLayout.SOUTH);
   }
 
   public static EntityApplicationPanel startApplication(final String frameCaption,
@@ -554,6 +256,325 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return username;
   }
 
+  public static void exit(final EntityApplicationPanel panel) throws UserCancelException {
+    panel.exit();
+  }
+
+  public void exit() throws UserCancelException {
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.CONFIRM_EXIT)) {
+      if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
+              FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+        throw new UserCancelException();
+    }
+    try {
+      model.getDbConnectionProvider().getEntityDb().logout();
+    }
+    catch (Exception e) {
+      log.debug("Unable to properly log out, no connection");
+    }
+    System.exit(0);
+  }
+
+  public void showHelp() throws UserException {
+    final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
+    final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
+            FrameworkMessages.get(FrameworkMessages.HELP));
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    UiUtil.resizeWindow(dialog, 0.1, new Dimension(600, 750));
+    dialog.setLocationRelativeTo(this);
+    dialog.setResizable(true);
+    dialog.setModal(false);
+    dialog.setVisible(true);
+  }
+
+  public void showAbout() throws UserException {
+    final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
+    final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
+            FrameworkMessages.get(FrameworkMessages.ABOUT));
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    dialog.pack();
+    dialog.setLocationRelativeTo(this);
+    dialog.setModal(true);
+    dialog.setVisible(true);
+  }
+
+  protected List<ControlSet> getMainMenuControlSet() {
+    final List<ControlSet> menuControlSets = new ArrayList<ControlSet>();
+    menuControlSets.add(getFileControlSet());
+    menuControlSets.add(getViewControlSet());
+    menuControlSets.add(getToolsControlSet());
+    final ControlSet supportModelControlSet = getSupportModelControlSet();
+    if (supportModelControlSet != null)
+      menuControlSets.add(supportModelControlSet);
+    final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
+    if (additionalMenus != null && additionalMenus.size() > 0)
+      menuControlSets.addAll(additionalMenus);
+
+    menuControlSets.add(getHelpControlSet());
+
+    return menuControlSets;
+  }
+
+  /**
+   * @return the ControlSet specifying the items in the 'File' menu
+   */
+  protected ControlSet getFileControlSet() {
+    final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
+    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
+    file.add(ControlFactory.methodControl(this, "exit", FrameworkMessages.get(FrameworkMessages.EXIT),
+            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
+            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
+
+    return file;
+  }
+
+  /**
+   * @return the ControlSet specifying the items in the 'Settings' menu
+   */
+  protected ControlSet getSettingsControlSet() {
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
+    ret.add(ctrSelectDetail);
+    ret.add(ctrCascadeRefresh);
+    ret.addSeparator();
+    ret.add(ctrSetLoggingLevel);
+
+    return ret;
+  }
+
+  /**
+   * @return the ControlSet specifying the items in the 'Tools' menu
+   */
+  protected ControlSet getToolsControlSet() {
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
+            FrameworkMessages.get(FrameworkMessages.TOOLS_MNEMONIC).charAt(0));
+    ret.add(getSettingsControlSet());
+
+    return ret;
+  }
+
+  /**
+   * @return the ControlSet specifying the items in the 'View' menu
+   */
+  protected ControlSet getViewControlSet() {
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
+            FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
+    final Control ctrRefreshAll = ControlFactory.methodControl(model, "refreshAll",
+            FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
+    ret.add(ctrRefreshAll);
+    ret.addSeparator();
+    ret.add(ControlFactory.methodControl(this, "viewApplicationTree",
+            FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
+    ret.addSeparator();
+    final ToggleBeanPropertyLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
+            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
+    ret.add(ctrAlwaysOnTop);
+    ret.addSeparator();
+    ret.add(initLookAndFeelControl());
+
+    return ret;
+  }
+
+  /**
+   * @return the ControlSet specifying the items in the 'Help' menu
+   */
+  protected ControlSet getHelpControlSet() {
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
+            FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
+    final Control ctrHelp = ControlFactory.methodControl(this, "showHelp",
+            FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
+    ret.add(ctrHelp);
+    ret.addSeparator();
+    final Control ctrAbout = ControlFactory.methodControl(this, "showAbout",
+            FrameworkMessages.get(FrameworkMessages.ABOUT) + "...", null, null);
+    ret.add(ctrAbout);
+
+    return ret;
+  }
+
+  /**
+   * @return the panel shown when Help -> Help is selected
+   * @throws org.jminor.common.model.UserException in case there is an error reading the help file
+   */
+  protected JPanel getHelpPanel() throws UserException {
+    try {
+      final JPanel ret = new JPanel(new BorderLayout());
+      final String contents = Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
+      final JTextArea text = new JTextArea(contents);
+      final JScrollPane scrollPane = new JScrollPane(text);
+      text.setEditable(false);
+      text.setFocusable(false);
+      text.setLineWrap(true);
+      text.setWrapStyleWord(true);
+      ret.add(scrollPane, BorderLayout.CENTER);
+
+      return ret;
+    }
+    catch (IOException e) {
+      throw new UserException(e);
+    }
+  }
+
+  /**
+   * @return the panel shown when Help -> About is selected
+   */
+  protected JPanel getAboutPanel() {
+    final JPanel ret = new JPanel(new BorderLayout(5,5));
+    final String versionString = Util.getVersionAndBuildNumber();
+    ret.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
+    final JTextField txtVersion = new JTextField(versionString);
+    txtVersion.setEditable(false);
+    ret.add(txtVersion, BorderLayout.CENTER);
+
+    return ret;
+  }
+
+  protected Control initLookAndFeelControl() {
+    final Control ret =
+            ControlFactory.methodControl(this, "setLookAndFeel", FrameworkMessages.get(FrameworkMessages.SET_LOOK_AND_FEEL));
+    ret.setMnemonic('L');
+
+    return ret;
+  }
+
+  protected void setupControls() {
+    final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
+    ctrSelectDetail = ControlFactory.toggleControl(model, "selectionFiltersDetail",
+            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), model.evtSelectionFiltersDetailChanged);
+    ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
+    ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
+
+    final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
+    ctrCascadeRefresh = ControlFactory.toggleControl(model, "cascadeRefresh",
+            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), model.evtCascadeRefreshChanged);
+    ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
+    ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
+
+    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
+    ctrSetLoggingLevel = ControlFactory.methodControl(this, "setLoggingLevel",
+            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
+    ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
+    ctrSetLoggingLevel.setIcon(setLoggingIcon);
+  }
+
+  protected EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
+    for (final EntityPanel entityPanel : mainApplicationPanels) {
+      if (entityPanel.getClass().equals(entityPanelClass))
+        return entityPanel;
+    }
+
+    return null;
+  }
+
+  /**
+   * A convenience method for overriding, so that system wide settings paramters can be set
+   * before the application is initialized
+   * @see FrameworkSettings
+   */
+  protected void initializeSettings() {}
+
+  protected void bindEvents() {
+    evtSelectedEntityPanelChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        initializeActiveEntityPanel();
+      }
+    });
+  }
+
+  /**
+   * @return a List containing EntityPanelProvider objects specifying the main EntityPanels,
+   * that is, the panels shown when the application frame is initialized
+   */
+  protected abstract List<EntityPanelProvider> getMainEntityPanelProviders();
+
+  /**
+   * @return a List containing EntityPanelProvider objects specifying the entity panels
+   * that should be accessible via the Support Tables menu bar item.
+   * The corresponding EntityModel class objects should be returned by the
+   * EntityApplicationModel.getMainEntityModelClasses() method
+   * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
+   * @see org.jminor.framework.client.model.EntityApplicationModel#getMainEntityModelClasses()
+   */
+  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
+    return new ArrayList<EntityPanelProvider>(0);
+  }
+
+  /**
+   * @return a List of ControlSet objects which are to be added to the main menu bar
+   */
+  protected List<ControlSet> getAdditionalMenuControlSet() {
+    return new ArrayList<ControlSet>();
+  }
+
+  /**
+   * @return the ControlSet on which the Support Tables menu item is based on
+   */
+  protected ControlSet getSupportModelControlSet() {
+    final List<EntityPanelProvider> supportDetailPanelProviders = getSupportEntityPanelProviders();
+    if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0)
+      return null;
+
+    Collections.sort(supportDetailPanelProviders);
+    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
+            FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
+    for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
+      ret.add(new Control(panelProvider.getCaption()) {
+        public void actionPerformed(ActionEvent e) {
+          showEntityPanel(panelProvider);
+        }
+      });
+    }
+
+    return ret;
+  }
+
+  protected void showEntityPanel(final EntityPanelProvider panelProvider) {
+    try {
+      showEntityPanelDialog(panelProvider, model.getDbConnectionProvider(), this);
+    }
+    catch (UserException ux) {
+      throw ux.getRuntimeException();
+    }
+  }
+
+  /**
+   * @return a JToolBar instance to show in the NORTH position
+   */
+  protected JToolBar getNorthToolBar() {
+    return null;
+  }
+
+  /**
+   * Initializes this EntityApplicationPanel
+   * @throws UserException in case of an exception
+   */
+  protected void initializeUI() throws UserException {
+    setLayout(new BorderLayout());
+    applicationTabPane = new JTabbedPane((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TAB_PLACEMENT));
+    applicationTabPane.setFocusable(false);
+    applicationTabPane.setUI(new BorderlessTabbedPaneUI());
+    applicationTabPane.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent e) {
+        evtSelectedEntityPanelChanged.fire();
+      }
+    });
+    final List<EntityPanelProvider> mainEntityPanelProviders = getMainEntityPanelProviders();
+    for (final EntityPanelProvider provider : mainEntityPanelProviders) {
+      final EntityModel entityModel = model.getMainApplicationModel(provider.getEntityModelClass());
+      final EntityPanel entityPanel = provider.createInstance(entityModel);
+      mainApplicationPanels.add(entityPanel);
+      final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
+              ? entityModel.getCaption() : provider.getCaption();
+      applicationTabPane.addTab(caption, entityPanel);
+    }
+    add(applicationTabPane, BorderLayout.CENTER);
+
+    final JPanel southPanel = initializeSouthPanel();
+    if (southPanel != null)
+      add(southPanel, BorderLayout.SOUTH);
+  }
+
   protected boolean loginRequired() {
     return true;
   }
@@ -569,7 +590,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
             properties != null ? properties.getProperty(Database.DATABASE_SID_PROPERTY) : null);
   }
 
-  protected JPanel getInitProgressPane(final Icon icon) {
+  protected JPanel initializeStartupProgressPane(final Icon icon) {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
     final JProgressBar prog = new JProgressBar(JProgressBar.HORIZONTAL);
     prog.setIndeterminate(true);
@@ -583,16 +604,27 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return ret;
   }
 
+  protected void initializeResizingAndNavigation() {
+    final DefaultTreeModel panelTree = createApplicationTree(mainApplicationPanels);
+    final Enumeration enumeration = ((DefaultMutableTreeNode) panelTree.getRoot()).breadthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      final EntityPanel panel = (EntityPanel) ((DefaultMutableTreeNode) enumeration.nextElement()).getUserObject();
+      if (panel != null) {
+        initializeResizing(panel);
+        if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_KEYBOARD_NAVIGATION))
+          initializeNavigation(panel);
+      }
+    }
+  }
+
   private JScrollPane initializeApplicationTree() {
-    final JTree tree = new JTree(getModel().getApplicationTreeModel());
+    final JTree tree = new JTree(createApplicationTree(mainApplicationPanels));
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
     tree.setRootVisible(false);
     UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
 
-    return new JScrollPane(tree,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
 
   /**
@@ -646,27 +678,160 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   private JMenuBar createMenuBar() throws UserException {
-    final List<ControlSet> menuControlSets = new ArrayList<ControlSet>();
-    menuControlSets.add(getFileControlSet());
-    menuControlSets.add(getViewControlSet());
-    menuControlSets.add(getToolsControlSet());
-    final ControlSet supportModelControlSet = getSupportModelControlSet();
-    if (supportModelControlSet != null)
-      menuControlSets.add(supportModelControlSet);
-    final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
-    if (additionalMenus != null && additionalMenus.size() > 0)
-      menuControlSets.addAll(additionalMenus);
-
-    menuControlSets.add(getHelpControlSet());
-
-    return ControlProvider.createMenuBar(menuControlSets.toArray(new ControlSet[menuControlSets.size()]));
+    return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
   private void initializeActiveEntityPanel() {
-    if (mainApplicationPanels.size() > 1)
-      ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
+    ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
+  }
+
+  private void initializeResizing(final EntityPanel panel) {
+    final InputMap inputMap = panel.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    final ActionMap actionMap = panel.getActionMap();
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_LEFT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_RIGHT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_UP);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
+            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_DOWN);
+
+    actionMap.put(DIV_RIGHT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        final EntityPanel activePanelParent = panel.getMasterPanel();
+        if (activePanelParent != null)
+          activePanelParent.resizePanel(EntityPanel.RIGHT, DIVIDER_JUMP);
+      }
+    });
+    actionMap.put(DIV_LEFT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        final EntityPanel activePanelParent = panel.getMasterPanel();
+        if (activePanelParent != null)
+          activePanelParent.resizePanel(EntityPanel.LEFT, DIVIDER_JUMP);
+      }
+    });
+    actionMap.put(DIV_DOWN, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        panel.resizePanel(EntityPanel.DOWN, DIVIDER_JUMP);
+      }
+    });
+    actionMap.put(DIV_UP, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        panel.resizePanel(EntityPanel.UP, DIVIDER_JUMP);
+      }
+    });
+  }
+
+  private void initializeNavigation(final EntityPanel panel) {
+    final InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    final ActionMap actionMap = panel.getActionMap();
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK, true), NAV_UP);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK, true), NAV_DOWN);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK, true), NAV_RIGHT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK, true), NAV_LEFT);
+
+    actionMap.put(NAV_UP, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(EntityPanel.UP);
+      }
+    });
+    actionMap.put(NAV_DOWN, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(EntityPanel.DOWN);
+      }
+    });
+    actionMap.put(NAV_RIGHT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(EntityPanel.RIGHT);
+      }
+    });
+    actionMap.put(NAV_LEFT, new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        navigate(EntityPanel.LEFT);
+      }
+    });
+  }
+
+  private void navigate(final int direction) {
+    final EntityPanel active = getActivePanel(mainApplicationPanels);
+    if (active != null) {
+      switch(direction) {
+        case EntityPanel.UP:
+          activatePanel(active.getMasterPanel());
+          break;
+        case EntityPanel.DOWN:
+          if (active.getDetailPanelState() == EntityPanel.HIDDEN)
+            active.setDetailPanelState(EntityPanel.EMBEDDED);
+          if (active.getDetailPanels().size() > 0)
+            activatePanel(active.getLinkedDetailPanel());
+          else
+            activatePanel(mainApplicationPanels.get(0));//go to top
+          break;
+        case EntityPanel.LEFT:
+          activatePanel(getPanelOnLeft(active));
+          break;
+        case EntityPanel.RIGHT:
+          activatePanel(getPanelOnRight(active));
+          break;
+      }
+    }
+  }
+
+  private static void activatePanel(final EntityPanel panel) {
+    if (panel != null)
+      panel.getModel().stActive.setActive(true);
+  }
+
+  private EntityPanel getActivePanel(final List<EntityPanel> panels) {
+    if (panels.size() == 0)
+      return null;
+
+    for (final EntityPanel panel : panels) {
+      final EntityPanel ret = getActivePanel(panel.getDetailPanels());
+      if (ret != null)
+        return ret;
+      if (panel.getModel().stActive.isActive())
+        return panel;
+    }
+
+    return null;
+  }
+
+  private EntityPanel getPanelOnLeft(final EntityPanel panel) {
+    final List<EntityPanel> siblings = panel.getMasterPanel() == null ?
+            mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
+    final int index = siblings.indexOf(panel);
+    if (index == 0)//leftmost panel
+      return siblings.get(siblings.size()-1);
     else
-      ((EntityPanel) getComponent(0)).initialize();
+      return siblings.get(index-1);
+  }
+
+  private EntityPanel getPanelOnRight(final EntityPanel panel) {
+    final List<EntityPanel> siblings = panel.getMasterPanel() == null ?
+            mainApplicationPanels : panel.getMasterPanel().getDetailPanels();
+    final int index = siblings.indexOf(panel);
+    if (index == siblings.size()-1)//rightmost panel
+      return siblings.get(0);
+    else
+      return siblings.get(index+1);
+  }
+
+  private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
+    final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+    addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
+
+    return applicationTreeModel;
+  }
+
+  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends EntityPanel> panels) {
+    for (final EntityPanel entityPanel : panels) {
+      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel);
+      root.add(node);
+      if (entityPanel.getDetailPanels().size() > 0)
+        addModelsToTree(node, entityPanel.getDetailPanels());
+    }
   }
 
   private static EntityApplicationPanel constructApplicationPanel(
@@ -722,7 +887,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final JDialog initDlg = new JDialog(owner, message, false);
     initDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    p.add(panel.getInitProgressPane(icon));
+    p.add(panel.initializeStartupProgressPane(icon));
     initDlg.getContentPane().add(p, BorderLayout.CENTER);
     initDlg.pack();
     UiUtil.centerWindow(initDlg);

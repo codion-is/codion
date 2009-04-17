@@ -24,7 +24,6 @@ import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.printing.JPrinter;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -40,13 +39,27 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -72,7 +85,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -100,13 +112,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public static final int EMBEDDED = 2;
   public static final int HIDDEN = 3;
 
-  public static final int DIVIDER_JUMP = 30;
-
-  public static final int UP = 0;
-  public static final int DOWN = 1;
-  public static final int RIGHT = 2;
-  public static final int LEFT = 3;
-
   //Control codes
   public static final String INSERT = "insert";
   public static final String UPDATE = "update";
@@ -120,14 +125,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public static final String CONFIGURE_QUERY = "configureQuery";
   public static final String SELECT_COLUMNS = "selectTableColumns";
 
-  private static final String NAV_UP = "navigateUp";
-  private static final String NAV_DOWN = "navigateDown";
-  private static final String NAV_RIGHT = "navigateRight";
-  private static final String NAV_LEFT = "navigateLeft";
-  private static final String DIV_LEFT = "divLeft";
-  private static final String DIV_RIGHT = "divRight";
-  private static final String DIV_UP = "divUp";
-  private static final String DIV_DOWN = "divDown";
+  public static final int UP = 0;
+  public static final int DOWN = 1;
+  public static final int RIGHT = 2;
+  public static final int LEFT = 3;
 
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
 
@@ -157,6 +158,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final String buttonPlacement;
 
   /**
+   * A map containing the detail panels providers, if any.
+   * Initialized during <code>initialize()</code>
+   */
+  private final Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders;
+
+  /**
    * The EntityModel instance used by this EntityPanel
    */
   private EntityModel model;
@@ -179,10 +186,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private JSplitPane horizontalSplitPane;
 
   /**
-   * A map containing the detail panels providers, if any.
-   * Initialized during <code>initialize()</code>
+   * The master panel, if any, so that detail panels can refer to their masters
    */
-  private Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders;
+  private EntityPanel masterPanel;
 
   /**
    * A tab pane for the detail panels, if any
@@ -324,6 +330,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.compactPanel = compactPanel;
+    this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();
   }
 
   /**
@@ -344,6 +351,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /** {@inheritDoc} */
   public EntityModel getModel() {
     return this.model;
+  }
+
+  /**
+   * @return the master panel, if any
+   */
+  public EntityPanel getMasterPanel() {
+    return this.masterPanel;
   }
 
   /**
@@ -373,9 +387,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
           setFilterPanelsVisible(true);
         }
       });
-      initializeResizing();
-      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_KEYBOARD_NAVIGATION))
-        initializeNavigation();
       if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION))
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
                 new WeakPropertyChangeListener(focusPropertyListener));
@@ -383,15 +394,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       setupControls();
       initializeControlPanels();
 
-      final List<EntityPanelProvider> detailPanelProviders = getDetailPanelProviders();
-      this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>(detailPanelProviders.size());
-      for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
-        final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityModelClass());
-        if (detailModel == null)
-          throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
-                  + " not found in model of type " + model.getClass());
-        this.detailEntityPanelProviders.put(detailPanelProvider, detailPanelProvider.createInstance(detailModel));
-      }
+      initializeDetailPanels();
       this.editPanel = initializeEditPanel();
       this.entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
       if (entityTablePanel != null) {
@@ -469,6 +472,20 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public JPanel getEditPanel() {
     return this.editPanel;
+  }
+
+  /**
+   * @return a List containing the detail EntityPanels, if any
+   */
+  public List<EntityPanel> getDetailPanels() {
+    return new ArrayList<EntityPanel>(detailEntityPanelProviders.values());
+  }
+
+  /**
+   * @return the currently visible/linked detail EntityPanel, if any
+   */
+  public EntityPanel getLinkedDetailPanel() {
+    return detailTabPane != null ? (EntityPanel) detailTabPane.getSelectedComponent() : null;
   }
 
   /**
@@ -1398,6 +1415,24 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void initializeControlPanels() {}
 
   /**
+   * Instantiates the detail panels and associates them with their respective
+   * EntityPanelProviders in the <code>detailEntityPanelProviders</code> map
+   * @throws UserException in case of an exception during the instantiation
+   */
+  protected void initializeDetailPanels() throws UserException {
+    final List<EntityPanelProvider> detailPanelProviders = getDetailPanelProviders();
+    for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
+      final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityModelClass());
+      if (detailModel == null)
+        throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
+                + " not found in model of type " + model.getClass());
+      final EntityPanel detailPanel = detailPanelProvider.createInstance(detailModel);
+      detailPanel.setMasterPanel(this);
+      this.detailEntityPanelProviders.put(detailPanelProvider, detailPanel);
+    }
+  }
+
+  /**
    * Initializes the table panel
    * @param specialRendering true if the a table row should be colored according to the underlying entity
    * @return the table panel
@@ -2015,180 +2050,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     });
   }
 
-  private void initializeResizing() {
-    final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = getActionMap();
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_LEFT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_RIGHT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_UP);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_DOWN);
-
-    actionMap.put(DIV_RIGHT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, EntityPanel.this);
-        if (parent != null)
-          parent.resizePanel(RIGHT, DIVIDER_JUMP);
-      }
-    });
-    actionMap.put(DIV_LEFT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, EntityPanel.this);
-        if (parent != null)
-          parent.resizePanel(LEFT, DIVIDER_JUMP);
-      }
-    });
-    actionMap.put(DIV_DOWN, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        resizePanel(DOWN, DIVIDER_JUMP);
-      }
-    });
-    actionMap.put(DIV_UP, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        resizePanel(UP, DIVIDER_JUMP);
-      }
-    });
-  }
-
-  private void initializeNavigation() {
-    final InputMap inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-    final ActionMap actionMap = getActionMap();
-    final DefaultTreeModel applicationTreeModel = EntityApplicationModel.getApplicationModel().getApplicationTreeModel();
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK, true), NAV_UP);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK, true), NAV_DOWN);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK, true), NAV_RIGHT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK, true), NAV_LEFT);
-
-    actionMap.put(NAV_UP, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(UP, applicationTreeModel);
-      }
-    });
-    actionMap.put(NAV_DOWN, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(DOWN, applicationTreeModel);
-      }
-    });
-    actionMap.put(NAV_RIGHT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(RIGHT, applicationTreeModel);
-      }
-    });
-    actionMap.put(NAV_LEFT, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        navigate(LEFT, applicationTreeModel);
-      }
-    });
-  }
-
-  private void navigate(final int direction, final DefaultTreeModel applicationTreeModel) {
-    final EntityModel active = getActiveModel();
-    if (active == null) //fallback on default if no active panel found
-      activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().iterator().next());
-    else {
-      switch(direction) {
-        case UP:
-          activateModel(getParent(active));
-          break;
-        case DOWN:
-          if (active.getDetailModels().size() > 0 && active.getLinkedDetailModels().size() > 0)
-            activateModel(active.getLinkedDetailModel());
-          else
-            activateModel(EntityApplicationModel.getApplicationModel().getMainApplicationModels().iterator().next());
-          break;
-        case LEFT:
-          if (!activateModel(getLeftSibling(active, applicationTreeModel))) //wrap around
-            activateModel(getRightmostSibling(active, applicationTreeModel));
-          break;
-        case RIGHT:
-          if (!activateModel(getRightSibling(active, applicationTreeModel))) //wrap around
-            activateModel(getLeftmostSibling(active, applicationTreeModel));
-          break;
-      }
-    }
-  }
-
-  private static boolean activateModel(final EntityModel model) {
-    if (model != null)
-      model.stActive.setActive(true);
-
-    return model != null;
-  }
-
-  private EntityModel getActiveModel() {
-    final Enumeration enu = ((DefaultMutableTreeNode) EntityApplicationModel.getApplicationModel().getApplicationTreeModel().getRoot()).breadthFirstEnumeration();
-    while (enu.hasMoreElements()) {
-      final EntityModel model = (EntityModel) ((DefaultMutableTreeNode) enu.nextElement()).getUserObject();
-      if (model != null && model.stActive.isActive())
-        return model;
-    }
-
-    return null;
-  }
-
-  private EntityModel getParent(final EntityModel entityModel) {
-    final TreePath path = findObject((DefaultMutableTreeNode) EntityApplicationModel.getApplicationModel().getApplicationTreeModel().getRoot(), entityModel);
-    if (path != null) {
-      final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-      if (node.getParent() != null) {
-        final EntityModel parent = (EntityModel) ((DefaultMutableTreeNode) node.getParent()).getUserObject();
-        if (parent != null)
-          return parent;
-      }
-    }
-
-    return null;
-  }
-
-  private static EntityModel getRightSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
-    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
-    final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-    if (node.getNextSibling() != null)
-      return (EntityModel) node.getNextSibling().getUserObject();
-
-    return null;
-  }
-
-  private static EntityModel getRightmostSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
-    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
-    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-            ((DefaultMutableTreeNode) path.getLastPathComponent()).getParent();
-
-    return (EntityModel) ((DefaultMutableTreeNode) node.getLastChild()).getUserObject();
-  }
-
-  private static EntityModel getLeftSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
-    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
-    final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-    if (node.getPreviousSibling() != null)
-      return (EntityModel) node.getPreviousSibling().getUserObject();
-
-    return null;
-  }
-
-  private static EntityModel getLeftmostSibling(final EntityModel model, final DefaultTreeModel applicationTreeModel) {
-    final TreePath path = findObject((DefaultMutableTreeNode) applicationTreeModel.getRoot(), model);
-    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-            ((DefaultMutableTreeNode) path.getLastPathComponent()).getParent();
-
-    return (EntityModel) ((DefaultMutableTreeNode) node.getFirstChild()).getUserObject();
-  }
-
-  private static TreePath findObject(final DefaultMutableTreeNode root, final Object object) {
-    if (object == null)
-      return null;
-
-    final Enumeration nodes = root.preorderEnumeration();
-    while (nodes.hasMoreElements()) {
-      final DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes.nextElement();
-      if (node.getUserObject() == object)
-        return new TreePath(node.getPath());
-    }
-
-    return null;
+  private void setMasterPanel(final EntityPanel panel) {
+    this.masterPanel = panel;
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,

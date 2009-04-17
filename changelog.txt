@@ -395,3 +395,10 @@
   EntityLookupField constructor overloaded with an Action parameter, which is performed on enter if the text field represents the selected entities
   PropertySearchPanel uses the aforementioned EntityLookupField constructor action parameter to enable/disable the search on enter
   Event.fire() now copies the listeners list, synchronizing the fire/add/remove methods wasn't enough apparently, so it was removed
+  EntityModel.masterModel field added
+  EntityPanel.masterPanel field added
+  EntityApplicationModel.applicationTreeModel removed
+  EntityPanel.initializeResizing/Navigation moved to EntityApplicationPanel
+  EntityPanel.getDetailPanels() and getLinkedDetailPanel() added
+  EntityApplicationPanel shows the root tab pane regardless of the number of main application panels
+  EntityApplicationPanel, some refactoring and restructuring

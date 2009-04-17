@@ -23,6 +23,7 @@ import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * Provides UI controls
@@ -104,7 +105,7 @@ public class ControlProvider {
     iterate(new ToolBarControlIterator(owner), controlSet);
   }
 
-  public static JMenuBar createMenuBar(final ControlSet[] controlSets) {
+  public static JMenuBar createMenuBar(final List<ControlSet> controlSets) {
     final JMenuBar menubar = new JMenuBar();
     for (final ControlSet set : controlSets)
       addControlSetToMenuBar(menubar, set);
