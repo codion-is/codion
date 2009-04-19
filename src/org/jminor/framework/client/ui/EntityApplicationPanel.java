@@ -761,12 +761,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
           activatePanel(active.getMasterPanel());
           break;
         case EntityPanel.DOWN:
-          if (active.getDetailPanelState() == EntityPanel.HIDDEN)
-            active.setDetailPanelState(EntityPanel.EMBEDDED);
-          if (active.getDetailPanels().size() > 0)
+          if (active.getDetailPanels().size() > 0) {
+            if (active.getDetailPanelState() == EntityPanel.HIDDEN)
+              active.setDetailPanelState(EntityPanel.EMBEDDED);
             activatePanel(active.getLinkedDetailPanel());
+          }
           else
-            activatePanel(mainApplicationPanels.get(0));//go to top
+            activatePanel((EntityPanel) applicationTabPane.getSelectedComponent());//go to top
           break;
         case EntityPanel.LEFT:
           activatePanel(getPanelOnLeft(active));
