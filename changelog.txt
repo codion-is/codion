@@ -402,3 +402,4 @@
   EntityPanel.getDetailPanels() and getLinkedDetailPanel() added
   EntityApplicationPanel shows the root tab pane regardless of the number of main application panels
   EntityApplicationPanel, some refactoring and restructuring
+  Reorganized the resources structure

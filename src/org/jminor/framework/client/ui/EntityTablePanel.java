@@ -598,7 +598,7 @@ public class EntityTablePanel extends JPanel {
       southBase.add(southPanel, BorderLayout.CENTER);
       add(southBase, BorderLayout.SOUTH);
     }
-    setSearchPanelVisible(false);
+    setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
 
     entityTable.repaint();
   }

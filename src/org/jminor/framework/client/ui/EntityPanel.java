@@ -401,7 +401,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
         entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
         entityTablePanel.setMinimumSize(new Dimension(0,0));
-        entityTablePanel.setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
       }
       this.horizontalSplitPane = this.detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
       this.detailTabPane = this.detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
