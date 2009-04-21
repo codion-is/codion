@@ -309,7 +309,7 @@
     </junitreport>
   </target>
 
-  <target name="run_tests" depends="build">
+  <target name="run_tests" depends="build, create_test_db">
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
       <classpath>
@@ -318,10 +318,10 @@
         <pathelement path="${build.test}" />
         <path refid="libraries" />
       </classpath>
-      <jvmarg value="-Djminor.db.type=${run.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${run.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${run.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
+      <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <batchtest todir="${reports}">
         <fileset dir="${srctest}" includes="**/Test*.java" />
       </batchtest>
@@ -439,14 +439,14 @@
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>
       <jvmarg value="-Djminor.db.port=${run.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
+      <jvmarg value="-Djminor.server.pooling.initial=scott"/>
+      <jvmarg value="-Djminor.server.logging.status=1"/>
+      <jvmarg value="-Djminor.server.port=2222"/>
+      <jvmarg value="-Djminor.server.db.port=3333"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorServerKeystore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server.policy"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=jminor"/>
-      <jvmarg value="-Djminor.server.pooling.initial=scott"/>
-      <jvmarg value="-Djminor.server.logging.status=1"/>
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.server.port=2222"/>
-      <jvmarg value="-Djminor.server.db.port=3333"/>
     </java>
   </target>
 
@@ -476,7 +476,18 @@
   <target name="create_empdept_db" depends="delete_empdept_db">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
       <sysproperty key="ij.connection.empdept" value="jdbc:derby:${empdept.db.dir};create=true" />
-      <arg value="${empdept.sql.dir}/createdb_derby.sql"/>
+      <arg value="${empdept.sql.dir}/create_derby_db.sql"/>
+    </java>
+  </target>
+
+  <target name="delete_test_db">
+    <delete dir="${test.db.dir}"/>
+  </target>
+
+  <target name="create_test_db" depends="delete_test_db">
+    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
+      <sysproperty key="ij.connection.test" value="jdbc:derby:${test.db.dir};create=true" />
+      <arg value="${test.sql.dir}/create_unit_test_db.sql"/>
     </java>
   </target>
 

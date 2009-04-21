@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
@@ -57,7 +57,7 @@ public class TestDbConnection extends TestCase {
       assertTrue(result.size() == 1);
       final List row = result.get(0);
       assertEquals(row.size(), 3);
-      assertEquals(Database.isMySQL() ? Integer.class : BigDecimal.class, row.get(0).getClass());
+      assertEquals(Database.isOracle() ? BigDecimal.class : Integer.class, row.get(0).getClass());
       assertEquals(String.class, row.get(1).getClass());
       assertEquals(String.class, row.get(2).getClass());
     }

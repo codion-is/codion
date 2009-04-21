@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
@@ -27,7 +27,7 @@ public class TestStrictEditMode extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    if (Database.isMySQL())
+    if (Database.isMySQL() || Database.isDerbyEmbedded())
       return;
     FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
     FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
@@ -37,14 +37,14 @@ public class TestStrictEditMode extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    if (Database.isMySQL())
+    if (Database.isMySQL() || Database.isDerbyEmbedded())
       return;
     dbProvider.getEntityDb().logout();
     model.getEntityDb().logout();
   }
 
   public void testStrictEditMode() throws Exception {
-    if (Database.isMySQL())
+    if (Database.isMySQL() || Database.isDerbyEmbedded())
       return;//MySQL does not have the NOWAIT option, without which this test simply hangs
 
     model.refresh();

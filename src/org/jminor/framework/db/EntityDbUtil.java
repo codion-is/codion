@@ -98,9 +98,11 @@ public class EntityDbUtil {
    * @param columnName the columnName
    * @param sqlStringValue the sql string value
    * @return a query comparison string, e.g. "columnName = sqlStringValue"
+   * or "columnName is null" in case sqlStringValue is 'null'
    */
   public static String getQueryString(final String columnName, final String sqlStringValue) {
-    return new StringBuffer(columnName).append(" = ").append(sqlStringValue).toString();
+    return new StringBuffer(columnName).append(sqlStringValue.toUpperCase().equals("NULL") ?
+            " is " : " = ").append(sqlStringValue).toString();
   }
 
   /**
