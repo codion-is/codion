@@ -403,3 +403,5 @@
   EntityApplicationPanel shows the root tab pane regardless of the number of main application panels
   EntityApplicationPanel, some refactoring and restructuring
   Reorganized the resources structure
+  Added run_demo_***, run_server_*** tasks to ant build file, restructured it a bit and renamed junit_db_*** properties to run_db_*** in build.properties
+  DbConnection query logging now includes query execution time

@@ -25,7 +25,8 @@ JMinor is a minimalistic rich client CRUD application framework based solely on 
 Release contents (~13 MB):
 * "dist" contains the JMinor binary jar files
 * "docs" contains basic documentation as well as API javadocs
-* "lib" contains all third-party libraries needed for building the framework and/or running the samples
+* "lib" contains third-party libraries needed for building the framework and/or running the samples,
+        all except for the jdbc driver libraries, which depend on the rdbms being used
 * "projects" contains project files for the IntelliJ and Netbeans IDEs
 * "resources" contains miscellaneous files required for running the JMinor server, the server monitor
               and the demo applications. resources/project_template contains an ant build file template

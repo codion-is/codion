@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.server.monitor;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 4.12.2007
  * Time: 17:31:09
  */
@@ -28,6 +28,8 @@ public class MonitorModel extends DefaultMutableTreeNode {
   private final DefaultTreeModel treeModel = new DefaultTreeModel(this);
 
   public MonitorModel(final String hostNames) throws RemoteException {
+    if (hostNames == null || hostNames.length() == 0)
+      throw new RuntimeException("No server host names specified for server monitor");
     this.hostNames.addAll(Arrays.asList(hostNames.split(",")));
     refresh();
   }

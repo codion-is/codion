@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
@@ -220,7 +220,6 @@ public class DbConnection {
       }
     }
     final long time = System.currentTimeMillis();
-    log.debug(sql);
     lastResultCached = false;
     Statement statement = null;
     try {
@@ -228,6 +227,8 @@ public class DbConnection {
       final List ret = resultPacker.pack(statement.executeQuery(sql), recordCount);
       if (cacheQueriesRequests > 0 && recordCount < 0)
         queryCache.put(sql, ret);
+
+      log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
 
       return ret;
     }
@@ -390,6 +391,8 @@ public class DbConnection {
 
       statement.execute();
 
+      log.debug(sqlStatement + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
+
       return hasOutParameter ? statement.getObject(1) : null;
     }
     catch (SQLException e) {
@@ -418,6 +421,7 @@ public class DbConnection {
     Statement statement = null;
     try {
       (statement = connection.createStatement()).execute(sql);
+      log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
     }
     catch (SQLException e) {
       System.out.println(sql);
