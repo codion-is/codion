@@ -405,3 +405,7 @@
   Reorganized the resources structure
   Added run_demo_***, run_server_*** tasks to ant build file, restructured it a bit and renamed junit_db_*** properties to run_db_*** in build.properties
   DbConnection query logging now includes query execution time
+  EntityApplicationPanel, removed setLookAndFeel command from menu
+  UiUtil.setLookAndFeel() removed
+  Ant build file cleanup and restructuring, merged deploy_profiling into deploy_demos
+  Added create/delete db targets for empdept to ant build file as well as relevant scripts to resources/demos/empdept/scripts

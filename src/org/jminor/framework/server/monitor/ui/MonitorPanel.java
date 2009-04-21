@@ -32,7 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -98,10 +97,6 @@ public class MonitorPanel extends JPanel {
 
   public void exit() {
     System.exit(0);
-  }
-
-  public void setLookAndFeel() throws IllegalAccessException, UnsupportedLookAndFeelException, InstantiationException, ClassNotFoundException {
-    UiUtil.setLookAndFeel(monitorFrame);
   }
 
   public void setLoggingLevel() throws RemoteException {
@@ -199,8 +194,6 @@ public class MonitorPanel extends JPanel {
     view.add(initRefreshControl());
     view.addSeparator();
     view.add(initAlwaysOnTopControl());
-    view.addSeparator();
-    view.add(initLookAndFeelControl());
     ret.add(view);
 
     return ret;
@@ -217,14 +210,6 @@ public class MonitorPanel extends JPanel {
     final Control ret =
             ControlFactory.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
     ret.setMnemonic('A');
-
-    return ret;
-  }
-
-  private Control initLookAndFeelControl() {
-    final Control ret =
-            ControlFactory.methodControl(this, "setLookAndFeel", "Set look & feel");
-    ret.setMnemonic('L');
 
     return ret;
   }

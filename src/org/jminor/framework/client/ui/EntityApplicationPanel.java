@@ -153,11 +153,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
   }
 
-  public void setLookAndFeel() throws IllegalAccessException, UnsupportedLookAndFeelException,
-          InstantiationException, ClassNotFoundException {
-    UiUtil.setLookAndFeel(UiUtil.getParentWindow(this));
-  }
-
   public void setLoggingLevel() {
     FrameworkUiUtil.setLoggingLevel(this);
   }
@@ -370,8 +365,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final ToggleBeanPropertyLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
     ret.add(ctrAlwaysOnTop);
-    ret.addSeparator();
-    ret.add(initLookAndFeelControl());
 
     return ret;
   }
@@ -426,14 +419,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final JTextField txtVersion = new JTextField(versionString);
     txtVersion.setEditable(false);
     ret.add(txtVersion, BorderLayout.CENTER);
-
-    return ret;
-  }
-
-  protected Control initLookAndFeelControl() {
-    final Control ret =
-            ControlFactory.methodControl(this, "setLookAndFeel", FrameworkMessages.get(FrameworkMessages.SET_LOOK_AND_FEEL));
-    ret.setMnemonic('L');
 
     return ret;
   }

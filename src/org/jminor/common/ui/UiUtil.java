@@ -325,37 +325,6 @@ public class UiUtil {
     return (JDialog) container;
   }
 
-  public static void setLookAndFeel(final Window owner) throws IllegalAccessException, UnsupportedLookAndFeelException,
-          InstantiationException, ClassNotFoundException {
-    final JComboBox box = new JComboBox(new String[] {
-            "org.jvnet.substance.SubstanceLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceBusinessLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceCremeLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceFieldOfWheatLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceGreenMagicLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceMagmaLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceMangoLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceMistSilverLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceModerateLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceNebulaBrickWallLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceOfficeBlue2007LookAndFeel",
-            "org.jvnet.substance.skin.SubstanceOfficeSilver2007LookAndFeel",
-            "org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel",
-            "org.jvnet.substance.skin.SubstanceSaharaLookAndFeel"
-    });
-
-    final int ret = JOptionPane.showConfirmDialog(owner, box, "Select look and feel", JOptionPane.OK_CANCEL_OPTION);
-    if (ret == JOptionPane.OK_OPTION)
-      UIManager.setLookAndFeel((String) box.getSelectedItem());
-  }
-
   public static void centerWindow(final Window window) {
     final Dimension size = window.getSize();
     final Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();

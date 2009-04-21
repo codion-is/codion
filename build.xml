@@ -5,7 +5,11 @@
 
   <property file="build.properties"/>
 
-  <fileset id="lib" dir="${lib}" />
+  <path id="libraries">
+    <fileset dir="${lib}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
 
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
@@ -44,16 +48,12 @@
     </tstamp>
     <javac destdir="${build.base}" debug="${build.debuginfo}" >
       <src path="${src}" />
-      <classpath>
-        <fileset refid="lib" />
-      </classpath>
+      <classpath refid="libraries"/>
     </javac>
 
     <rmic base="${build.base}" includes="org/jminor/framework/server/EntityDbRemoteServer.class,
                                          org/jminor/framework/server/EntityDbRemoteAdapter.class">
-      <classpath>
-        <fileset refid="lib" />
-      </classpath>
+      <classpath refid="libraries"/>
     </rmic>
 
     <copy todir="${build.base}" >
@@ -64,7 +64,7 @@
     <javac destdir="${build.demos}" debug="{build.debug}" >
       <src path="${srcdemos}" />
       <classpath>
-        <fileset refid="lib" />
+        <path refid="libraries" />
         <path location="${build.base}" />
       </classpath>
     </javac>
@@ -76,7 +76,7 @@
     <javac destdir="${build.test}" debug="{build.debug}" >
       <src path="${srctest}" />
       <classpath>
-        <fileset refid="lib" />
+        <path refid="libraries" />
         <path location="${build.base}" />
         <path location="${build.demos}" />
       </classpath>
@@ -184,7 +184,7 @@
                     Model org.jminor.framework.model*,
                     Demos org.jminor.framework.demos*">
       <classpath>
-        <fileset refid="lib" />
+        <path refid="libraries" />
         <path location="${build.base}" />
       </classpath>
     </javadoc>
@@ -196,9 +196,7 @@
                     Db org.jminor.framework.db*,
                     Model org.jminor.framework.model*,
                     Server org.jminor.framework.server*">
-      <classpath>
-        <fileset refid="lib" />
-      </classpath>
+      <classpath refid="libraries"/>
     </javadoc>
   </target>
 
@@ -223,12 +221,11 @@
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jdbc.drivers}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
-    <copy file="${deploy.server.localhost.run_mysql_nix}" todir="${deploy.server.path}" />
-    <copy file="${deploy.server.localhost.run_mysql_win}" todir="${deploy.server.path}" />
-    <copy file="${deploy.server.localhost.run_oracle_nix}" todir="${deploy.server.path}" />
-    <copy file="${deploy.server.localhost.run_oracle_win}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
+    <copy todir="${deploy.server.path}" >
+      <fileset dir="${basedir}/resources/server/" />
+    </copy>
   </target>
 
   <target name="deploy_server_monitor" >
@@ -236,35 +233,15 @@
     <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/bin" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.substance}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jdbc.drivers}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${deploy.server.monitor.launchfile_mysql_win}" todir="${deploy.server.monitor.path}" />
-    <copy file="${deploy.server.monitor.launchfile_oracle_win}" todir="${deploy.server.monitor.path}" />
-    <copy file="${deploy.server.monitor.launchfile_mysql_nix}" todir="${deploy.server.monitor.path}" />
-    <copy file="${deploy.server.monitor.launchfile_oracle_nix}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
-  </target>
-
-  <target name="deploy_profiling" >
-    <mkdir dir="${deploy.profiling.path}" />
-    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.profiling.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.profiling.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.profiling.path}/bin" />
-    <copy file="${lib.jasperreports.base}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${lib.substance}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${lib.log4j}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${lib.jfreechart.base}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${lib.jfreechart.common}" todir="${deploy.profiling.path}/lib" />
-    <copy file="${deploy.profiling.empdept.launchfile_win}" todir="${deploy.profiling.path}" />
-    <copy file="${deploy.profiling.empdept.launchfile_nix}" todir="${deploy.profiling.path}" />
-    <copy file="${deploy.profiling.schema_browser.launchfile_win}" todir="${deploy.profiling.path}" />
-    <copy file="${deploy.profiling.petstore.launchfile_win}" todir="${deploy.profiling.path}" />
-    <copy file="${deploy.profiling.policy}" todir="${deploy.profiling.path}" />
-    <copy file="${deploy.profiling.truststore}" todir="${deploy.profiling.path}" />
+    <copy todir="${deploy.server.monitor.path}" >
+      <fileset dir="${basedir}/resources/server_monitor/" />
+    </copy>
   </target>
 
   <target name="deploy_demos" >
@@ -275,22 +252,20 @@
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}/bin" />
     <copy file="${lib.jdbc.drivers}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.substance}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib" />
-    <copy file="${deploy.demos.empdept.remote.launchfile_win}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.empdept.remote.launchfile_nix}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.empdept.local.launchfile_win}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.schema_browser.remote.launchfile_win}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.schema_browser.remote.launchfile_nix}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.schema_browser.local.launchfile_win}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.petstore.remote.launchfile_win}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.petstore.remote.launchfile_nix}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.petstore.local.launchfile_win}" todir="${deploy.demos.path}" />
+    <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib" />
+    <copy todir="${deploy.demos.path}">
+      <fileset dir="${basedir}/resources/demos/empdept/" />
+      <fileset dir="${basedir}/resources/demos/petstore/" />
+      <fileset dir="${basedir}/resources/demos/schemabrowser/" />
+    </copy>
     <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
   </target>
 
-  <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_profiling, deploy_demos">
+  <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_demos">
     <delete file="${dist}/current/jminor-${version}.zip"/>
     <zip basedir="${dist}/current" destfile="${dist}/current/jminor-${version}.zip"/>
   </target>
@@ -341,7 +316,7 @@
         <pathelement path="${build.base}" />
         <pathelement path="${build.demos}" />
         <pathelement path="${build.test}" />
-        <fileset refid="lib" />
+        <path refid="libraries" />
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>
@@ -491,6 +466,17 @@
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server_monitor.policy"/>
+    </java>
+  </target>
+
+  <target name="delete_empdept_db">
+    <delete dir="${empdept.db.dir}"/>
+  </target>
+
+  <target name="create_empdept_db" depends="delete_empdept_db">
+    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
+      <sysproperty key="ij.connection.empdept" value="jdbc:derby:${empdept.db.dir};create=true" />
+      <arg value="${empdept.sql.dir}/createdb_derby.sql"/>
     </java>
   </target>
 
