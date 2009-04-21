@@ -381,7 +381,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connection.type=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
     </java>
   </target>
@@ -414,7 +414,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connection.type=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
     </java>
   </target>
@@ -447,7 +447,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connection.type=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
     </java>
   </target>
@@ -458,6 +458,7 @@
         <pathelement path="${build.base}"/>
         <pathelement location="${lib.jdbc.drivers}"/>
         <pathelement location="${lib.log4j}"/>
+        <pathelement location="${lib.jasperreports.base}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>
