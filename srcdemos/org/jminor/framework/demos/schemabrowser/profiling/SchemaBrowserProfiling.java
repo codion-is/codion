@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.schemabrowser.profiling;
 
@@ -17,7 +17,7 @@ import org.jminor.framework.server.EntityDbRemoteProvider;
 import javax.swing.UIManager;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 30.11.2007
  * Time: 04:00:43
  */

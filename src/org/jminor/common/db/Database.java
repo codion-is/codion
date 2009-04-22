@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * A class encapsulating database specific code, such as retrieval of auto increment values,
  * string to date conversions and driver class loading.
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 2.2.2008
  * Time: 12:53:14
  */

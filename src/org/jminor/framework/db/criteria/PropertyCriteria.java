@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Bj�rn Darri Sigur�sson. All Rights Reserved.
+ * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.db.criteria;
 

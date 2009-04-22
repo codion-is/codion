@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.petstore.beans;
 
@@ -9,7 +9,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.petstore.model.Petstore;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 30.12.2007
  * Time: 22:54:36
  */

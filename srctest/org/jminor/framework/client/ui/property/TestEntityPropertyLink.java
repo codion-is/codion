@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui.property;
 
@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import java.util.Date;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 13.1.2008
  * Time: 13:23:40
  */

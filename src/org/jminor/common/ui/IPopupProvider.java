@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.ui;
 
 import javax.swing.JPopupMenu;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 10.12.2007
  * Time: 17:53:34
  */

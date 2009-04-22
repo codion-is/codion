@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.db;
 
@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 import java.util.Date;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 31.3.2009
  * Time: 21:02:43
  */
