@@ -166,26 +166,26 @@ public class PropertySearchModel extends AbstractSearchModel {
   private void bindComboBoxEvents() {
     entityComboBoxModel.evtSelectionChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        try {
-          updatingModel = true;
+        if (!updatingModel)
           setUpperBound(entityComboBoxModel.getSelectedEntity());
-        }
-        finally {
-          updatingModel = false;
-        }
       }
     });
     evtUpperBoundChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (!updatingModel) {
+        try {
+          updatingModel = true;
           final Object upper = getUpperBound();
           if ((upper instanceof Collection && ((Collection) upper).size() > 0))
             entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());
           else
             entityComboBoxModel.setSelectedItem(upper);
         }
+        finally {
+          updatingModel = false;
+        }
       }
     });
+
     entityComboBoxModel.evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Object upper = getUpperBound();
