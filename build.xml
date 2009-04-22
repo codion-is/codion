@@ -90,7 +90,7 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="dist" depends="report" description="Creates all jar files">
+  <target name="dist" depends="report" description="Creates all jar files in the dist/version directory">
     <tstamp />
     <mkdir dir="dist/${version}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}" />
@@ -176,7 +176,7 @@
     <mkdir dir="${docsapi}" />
     <mkdir dir="${docstestapi}" />
     <javadoc destdir="${docstestapi}" sourcepath="${srctest}" packagenames="org.jminor.*"
-             author="true" version="true" use="true" windowtitle="Framework Test API docs"
+             author="true" version="true" use="true" windowtitle="JMinor Test API docs"
              link="http://java.sun.com/javase/6/docs/api/"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
@@ -189,7 +189,7 @@
       </classpath>
     </javadoc>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*"
-             author="true" version="true" use="true" windowtitle="Framework API docs"
+             author="true" version="true" use="true" windowtitle="JMinor API docs"
              link="http://java.sun.com/javase/6/docs/api/"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
@@ -310,7 +310,7 @@
     </junitreport>
   </target>
 
-  <target name="run_unit_tests" depends="build, create_test_db" description="Runs the unit tests">
+  <target name="run_unit_tests" depends="build, create_demo_db" description="Runs the unit tests">
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
       <classpath>
@@ -325,11 +325,12 @@
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <batchtest todir="${reports}">
         <fileset dir="${srctest}" includes="**/Test*.java" />
+        <fileset dir="${srcdemos}" includes="**/Test*.java" />
       </batchtest>
     </junit>
   </target>
 
-  <target name="run_demo_empdept_local" depends="build"
+  <target name="run_demo_empdept_local" depends="build, create_demo_db"
           description="Runs the EmpDept demo application with a local db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
@@ -364,7 +365,7 @@
     </java>
   </target>
 
-  <target name="run_demo_petstore_local" depends="build"
+  <target name="run_demo_petstore_local" depends="build, create_demo_db"
           description="Runs the Petstore demo application with a local db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
@@ -476,25 +477,21 @@
     </java>
   </target>
 
-  <target name="delete_empdept_db" description="Deletes the EmpDept derby database">
-    <delete dir="${empdept.db.dir}"/>
+  <condition property="demodb.not.available">
+    <not >
+      <available file="${demo.db.dir}"/>
+    </not>
+	</condition>
+
+  <target name="delete_demo_db" description="Deletes the unit test derby database">
+    <delete dir="${demo.db.dir}"/>
   </target>
 
-  <target name="create_empdept_db" depends="delete_empdept_db" description="Creates the EmpDept derby database">
+  <target name="create_demo_db" if="demodb.not.available"
+          description="Creates the demo derby database in case it is not already available">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
-      <sysproperty key="ij.connection.empdept" value="jdbc:derby:${empdept.db.dir};create=true" />
-      <arg value="${empdept.sql.dir}/create_derby_db.sql"/>
-    </java>
-  </target>
-
-  <target name="delete_test_db" description="Deletes the unit test derby database">
-    <delete dir="${test.db.dir}"/>
-  </target>
-
-  <target name="create_test_db" depends="delete_test_db" description="Creates the unit test derby database">
-    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
-      <sysproperty key="ij.connection.test" value="jdbc:derby:${test.db.dir};create=true" />
-      <arg value="${test.sql.dir}/create_unit_test_db.sql"/>
+      <sysproperty key="ij.connection.test" value="jdbc:derby:${demo.db.dir};create=true" />
+      <arg value="${test.sql.dir}/create_demo_db.sql"/>
     </java>
   </target>
 
