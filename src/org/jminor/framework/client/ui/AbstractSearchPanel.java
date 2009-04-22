@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 26.12.2007
  * Time: 15:17:20
  */

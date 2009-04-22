@@ -22,7 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 18:20:24
  */

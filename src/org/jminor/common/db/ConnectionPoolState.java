@@ -6,7 +6,7 @@ package org.jminor.common.db;
 import java.io.Serializable;
 
 /**
-* User: Bj�rn Darri
+* User: Björn Darri
 * Date: 8.12.2007
 * Time: 16:17:01
 */

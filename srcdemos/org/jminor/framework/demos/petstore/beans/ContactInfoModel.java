@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 30.12.2007
  * Time: 22:54:36
  */

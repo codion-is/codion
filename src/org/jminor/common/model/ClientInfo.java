@@ -8,7 +8,7 @@ import org.jminor.common.db.User;
 import java.io.Serializable;
 
 /**
-* User: Bj�rn Darri
+* User: Björn Darri
 * Date: 11.12.2007
 * Time: 13:19:13
 */

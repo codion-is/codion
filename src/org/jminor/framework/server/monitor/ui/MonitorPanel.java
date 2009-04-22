@@ -43,7 +43,7 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 18:11:06
  */

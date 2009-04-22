@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 import java.util.Date;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 31.3.2009
  * Time: 21:02:43
  */

@@ -9,7 +9,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.petstore.model.Petstore;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 30.12.2007
  * Time: 22:54:36
  */

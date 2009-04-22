@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 import java.text.NumberFormat;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 22:49:27
  */

@@ -11,7 +11,7 @@ import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 24.12.2007
  * Time: 13:09:59
  */

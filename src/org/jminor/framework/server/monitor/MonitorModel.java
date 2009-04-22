@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 17:31:09
  */

@@ -10,7 +10,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 14.12.2007
  * Time: 23:58:50
  */

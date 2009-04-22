@@ -16,7 +16,7 @@ import org.jminor.framework.server.EntityDbRemoteProvider;
 import javax.swing.UIManager;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 30.11.2007
  * Time: 03:33:10
  */

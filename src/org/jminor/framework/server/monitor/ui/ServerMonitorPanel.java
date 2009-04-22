@@ -35,7 +35,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 4.12.2007
  * Time: 18:14:35
  */

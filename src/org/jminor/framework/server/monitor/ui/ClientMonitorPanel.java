@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import java.rmi.RemoteException;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 10.12.2007
  * Time: 17:32:53
  */

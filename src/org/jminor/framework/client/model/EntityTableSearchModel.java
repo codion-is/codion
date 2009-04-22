@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 24.7.2008
  * Time: 21:29:55
  *

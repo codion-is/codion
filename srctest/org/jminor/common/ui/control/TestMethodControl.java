@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import javax.swing.JButton;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 13.1.2008
  * Time: 13:05:09
  */

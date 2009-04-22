@@ -10,7 +10,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.rmi.RemoteException;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 11.12.2007
  * Time: 11:42:18
  */

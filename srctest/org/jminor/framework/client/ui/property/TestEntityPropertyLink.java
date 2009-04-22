@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import java.util.Date;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 13.1.2008
  * Time: 13:23:40
  */

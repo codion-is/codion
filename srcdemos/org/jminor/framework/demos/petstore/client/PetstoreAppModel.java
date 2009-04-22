@@ -14,7 +14,7 @@ import org.jminor.framework.demos.petstore.model.Petstore;
 import java.util.List;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 24.12.2007
  * Time: 14:08:33
  */

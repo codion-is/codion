@@ -14,7 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 13.1.2008
  * Time: 12:15:13
  */

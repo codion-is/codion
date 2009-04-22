@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 24.12.2007
  * Time: 23:36:04
  */

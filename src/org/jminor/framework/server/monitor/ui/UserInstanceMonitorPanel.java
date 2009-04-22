@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 11.12.2007
  * Time: 11:31:45
  */

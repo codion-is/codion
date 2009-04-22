@@ -12,7 +12,7 @@ import org.jminor.framework.db.EntityDbProviderFactory;
 import junit.framework.TestCase;
 
 /**
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 24.12.2007
  * Time: 13:20:26
  */

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * A class encapsulating a simple collection of db access log entries and basic connection access info
- * User: Bj�rn Darri
+ * User: Björn Darri
  * Date: 7.12.2007
  * Time: 12:07:44
  */
