@@ -22,7 +22,7 @@
   <fileset id="framework_demos_resources" dir="${srcdemos}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
 
-  <target name="clean">
+  <target name="clean" description="Clean all output dirs">
     <delete dir="${build.base}" includeEmptyDirs="true" />
     <delete dir="${build.demos}" includeEmptyDirs="true" />
     <delete dir="${build.test}" includeEmptyDirs="true" />
@@ -32,7 +32,7 @@
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
-  <target name="init" depends="clean">
+  <target name="init" depends="clean" description="Creates all output dirs">
     <mkdir dir="${build.base}" />
     <mkdir dir="${build.demos}" />
     <mkdir dir="${build.test}" />
@@ -42,7 +42,7 @@
     <mkdir dir="${htmlreports}" />
   </target>
 
-  <target name="build" depends="init">
+  <target name="build" depends="init" description="Compiles all source files">
     <tstamp>
       <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm" />
     </tstamp>
@@ -90,7 +90,7 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="dist" depends="report">
+  <target name="dist" depends="report" description="Creates all jar files">
     <tstamp />
     <mkdir dir="dist/${version}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}" />
@@ -170,7 +170,7 @@
     </copy>
   </target>
 
-  <target name="doc" depends="build">
+  <target name="doc" depends="build" description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true" />
     <delete dir="${docstestapi}" includeEmptyDirs="true" />
     <mkdir dir="${docsapi}" />
@@ -200,7 +200,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy" depends="dist" >
+  <target name="deploy" depends="dist" description="Deploys all jars to the path defined by the 'deploy.path' property">
     <copy file="${dist}/current/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.path}" overwrite="true"/>
@@ -214,7 +214,7 @@
     <copy file="${dist}/current/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
   </target>
 
-  <target name="deploy_server" >
+  <target name="deploy_server" description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}" />
     <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/bin" />
@@ -228,7 +228,7 @@
     </copy>
   </target>
 
-  <target name="deploy_server_monitor" >
+  <target name="deploy_server_monitor" description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}" />
     <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/bin" />
@@ -244,7 +244,7 @@
     </copy>
   </target>
 
-  <target name="deploy_demos" >
+  <target name="deploy_demos" description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
     <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/bin" />
@@ -265,12 +265,13 @@
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
   </target>
 
-  <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_demos">
+  <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_demos"
+          description="A convenience target for deploying the server, server monitor and demo applications">
     <delete file="${dist}/current/jminor-${version}.zip"/>
     <zip basedir="${dist}/current" destfile="${dist}/current/jminor-${version}.zip"/>
   </target>
 
-  <target name="deploy_to_wiki" depends="doc, report">
+  <target name="deploy_to_wiki" depends="doc, report" description="Copies the relevant files for the documentation wiki">
     <delete dir="${wiki.media.project}"/>
     <mkdir dir="${wiki.media.project}"/>
     <copy todir="${wiki.media.project}/src">
@@ -296,20 +297,20 @@
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
   </target>
 
-  <target name="deploy_project" depends="doc, dist">
+  <target name="deploy_project" depends="doc, dist" description="Creates a jminor-project.jar file in the base directory">
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
       <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**"/>
     </zip>
   </target>
 
-  <target name="report" depends="run_tests">
+  <target name="report" depends="run_unit_tests" description="Creates a unit test html report">
     <junitreport todir="${reports}">
       <fileset dir="${reports}" includes="TEST-*.xml" />
       <report format="frames" todir="${htmlreports}" />
     </junitreport>
   </target>
 
-  <target name="run_tests" depends="build, create_test_db">
+  <target name="run_unit_tests" depends="build, create_test_db" description="Runs the unit tests">
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
       <classpath>
@@ -328,7 +329,8 @@
     </junit>
   </target>
 
-  <target name="run_demo_empdept_local" depends="build">
+  <target name="run_demo_empdept_local" depends="build"
+          description="Runs the EmpDept demo application with a local db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -345,7 +347,8 @@
     </java>
   </target>
 
-  <target name="run_demo_empdept_remote" depends="build">
+  <target name="run_demo_empdept_remote" depends="build"
+          description="Runs the EmpDept demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -361,7 +364,8 @@
     </java>
   </target>
 
-  <target name="run_demo_petstore_local" depends="build">
+  <target name="run_demo_petstore_local" depends="build"
+          description="Runs the Petstore demo application with a local db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -378,7 +382,8 @@
     </java>
   </target>
 
-  <target name="run_demo_petstore_remote" depends="build">
+  <target name="run_demo_petstore_remote" depends="build"
+          description="Runs the Petstore demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -394,7 +399,8 @@
     </java>
   </target>
 
-  <target name="run_demo_schemabrowser_local" depends="build">
+  <target name="run_demo_schemabrowser_local" depends="build"
+          description="Runs the SchemaBrowser demo application with a local db connection">
     <java classname="org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -411,7 +417,8 @@
     </java>
   </target>
 
-  <target name="run_demo_schemabrowser_remote" depends="build">
+  <target name="run_demo_schemabrowser_remote" depends="build"
+          description="Runs the SchemaBrowser demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -427,7 +434,7 @@
     </java>
   </target>
 
-  <target name="run_rmi_server" depends="build">
+  <target name="run_rmi_server" depends="build" description="Runs the RMI server">
     <java classname="org.jminor.framework.server.EntityDbRemoteServer" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -450,7 +457,7 @@
     </java>
   </target>
 
-  <target name="run_rmi_server_monitor" depends="build">
+  <target name="run_rmi_server_monitor" depends="build" description="Runs the RMI server monitor">
     <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -469,22 +476,22 @@
     </java>
   </target>
 
-  <target name="delete_empdept_db">
+  <target name="delete_empdept_db" description="Deletes the EmpDept derby database">
     <delete dir="${empdept.db.dir}"/>
   </target>
 
-  <target name="create_empdept_db" depends="delete_empdept_db">
+  <target name="create_empdept_db" depends="delete_empdept_db" description="Creates the EmpDept derby database">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
       <sysproperty key="ij.connection.empdept" value="jdbc:derby:${empdept.db.dir};create=true" />
       <arg value="${empdept.sql.dir}/create_derby_db.sql"/>
     </java>
   </target>
 
-  <target name="delete_test_db">
+  <target name="delete_test_db" description="Deletes the unit test derby database">
     <delete dir="${test.db.dir}"/>
   </target>
 
-  <target name="create_test_db" depends="delete_test_db">
+  <target name="create_test_db" depends="delete_test_db" description="Creates the unit test derby database">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
       <sysproperty key="ij.connection.test" value="jdbc:derby:${test.db.dir};create=true" />
       <arg value="${test.sql.dir}/create_unit_test_db.sql"/>

@@ -30,18 +30,28 @@ import java.util.Set;
 
 public abstract class EntityTestUnit extends TestCase {
 
-  private final IEntityDb dbConnection;
+  private IEntityDb dbConnection;
   private final HashMap<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   public EntityTestUnit() {
     try {
       loadDomainModel();
-      dbConnection = initializeDbConnection();
     }
     catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
+  }
+
+  /** {@inheritDoc} */
+  protected void setUp() throws Exception {
+    dbConnection = initializeDbConnection();
+  }
+
+  /** {@inheritDoc} */
+  protected void tearDown() throws Exception {
+    if (dbConnection != null)
+      dbConnection.logout();
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2008, Bjï¿½rn Darri Sigurï¿½sson. All Rights Reserved.
  */
 package org.jminor.framework.demos.petstore.model;
 
@@ -11,7 +11,7 @@ import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
 /**
- * User: Björn Darri
+ * User: Bjï¿½rn Darri
  * Date: 24.12.2007
  * Time: 13:09:59
  */
@@ -94,7 +94,7 @@ public class Petstore {
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude"));
 
     EntityRepository.get().initialize(T_CATEGORY, IdSource.ID_NONE, CATEGORY_NAME,
-            new Property.PrimaryKeyProperty(CATEGORY_ID, Type.STRING, "Id"),
+            new Property.PrimaryKeyProperty(CATEGORY_ID, Type.INT, "Id"),
             new Property(CATEGORY_NAME, Type.STRING, "Name"),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description"),
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL", true));
@@ -102,7 +102,7 @@ public class Petstore {
     EntityRepository.get().initialize(T_ITEM, IdSource.ID_MAX_PLUS_ONE, ITEM_NAME,
             new Property.PrimaryKeyProperty(ITEM_ID),
             new Property.EntityProperty(ITEM_PRODUCT_REF, "Product", T_PRODUCT,
-                    new Property(ITEM_PRODUCT_ID, Type.STRING)),
+                    new Property(ITEM_PRODUCT_ID)),
             new Property(ITEM_NAME, Type.STRING, "Name"),
             new Property(ITEM_DESCRIPTION, Type.STRING, "Description"),
             new Property(ITEM_IMAGE_URL, Type.STRING, "Image URL", true),
@@ -114,9 +114,9 @@ public class Petstore {
                     new Property(ITEM_ADDRESS_ID)));
 
     EntityRepository.get().initialize(T_PRODUCT, IdSource.ID_NONE, PRODUCT_NAME,
-            new Property.PrimaryKeyProperty(PRODUCT_ID, Type.STRING),
+            new Property.PrimaryKeyProperty(PRODUCT_ID),
             new Property.EntityProperty(PRODUCT_CATEGORY_REF, "Category", T_CATEGORY,
-                    new Property(PRODUCT_CATEGORY_ID, Type.STRING)),
+                    new Property(PRODUCT_CATEGORY_ID)),
             new Property(PRODUCT_NAME, Type.STRING, "Name"),
             new Property(PRODUCT_DESCRIPTION, Type.STRING, "Description"),
             new Property(PRODUCT_IMAGE_URL, Type.STRING, "Image URL", true));

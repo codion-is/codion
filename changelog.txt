@@ -411,3 +411,4 @@
   Added create/delete db targets for empdept to ant build file as well as relevant scripts to resources/demos/empdept/scripts
   EntityDbUtil.getQueryString() now uses "is" for null values
   Added resources for creating a derby db for the unit tests
+  EntityTestUnit now uses setUp() and tearDown() to connect and disconnect from the database
