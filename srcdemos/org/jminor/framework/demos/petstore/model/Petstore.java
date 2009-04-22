@@ -24,6 +24,7 @@ public class Petstore {
   public static final String ADDRESS_CITY = "city";
   public static final String ADDRESS_STATE = "state";
   public static final String ADDRESS_ZIP = "zip";
+  public static final String ADDRESS_ZIP_REF = "zip_ref";
   public static final String ADDRESS_LATITUDE = "latitude";
   public static final String ADDRESS_LONGITUDE = "longitude";
 
@@ -32,10 +33,6 @@ public class Petstore {
   public static final String CATEGORY_NAME = "name";
   public static final String CATEGORY_DESCRIPTION = "description";
   public static final String CATEGORY_IMAGE_URL = "imageurl";
-
-  public static final String T_ID_GEN = "petstore.id_gen";
-  public static final String ID_GEN_KEY = "gen_key";
-  public static final String ID_GEN_VALUE = "gen_value";
 
   public static final String T_ITEM = "petstore.item";
   public static final String ITEM_ID = "itemid";
@@ -65,7 +62,7 @@ public class Petstore {
   public static final String SELLER_CONTACT_INFO_LAST_NAME = "lastname";
   public static final String SELLER_CONTACT_INFO_EMAIL = "email";
 
-  public static final String T_TAG = "petstore.tag tag";//alias used in a subquery property, see below
+  public static final String T_TAG = "petstore.tag";//alias used in a subquery property, see below
   public static final String TAG_ID = "tagid";
   public static final String TAG_TAG = "tag";
   public static final String TAG_REFCOUNT = "refcount";
@@ -76,11 +73,6 @@ public class Petstore {
   public static final String TAG_ITEM_ITEM_ID = "itemid";
   public static final String TAG_ITEM_ITEM_REF = "item_ref";
 
-  public static final String T_ZIP_LOCATION = "petstore.ziplocation";
-  public static final String ZIP_LOCATION_ZIP_CODE = "zipcode";
-  public static final String ZIP_LOCATION_CITY = "city";
-  public static final String ZIP_LOCATION_STATE = "state";
-
   static {
     EntityRepository.get().initialize(T_ADDRESS, IdSource.ID_MAX_PLUS_ONE,
             ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2,
@@ -89,11 +81,11 @@ public class Petstore {
             new Property(ADDRESS_STREET_2, Type.STRING, "Street 2"),
             new Property(ADDRESS_CITY, Type.STRING, "City"),
             new Property(ADDRESS_STATE, Type.STRING, "State"),
-            new Property(ADDRESS_ZIP, Type.STRING, "Zip"),
+            new Property(ADDRESS_ZIP, Type.INT, "Zip"),
             new Property(ADDRESS_LATITUDE, Type.DOUBLE, "Latitude"),
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude"));
 
-    EntityRepository.get().initialize(T_CATEGORY, IdSource.ID_NONE, CATEGORY_NAME,
+    EntityRepository.get().initialize(T_CATEGORY, IdSource.ID_MAX_PLUS_ONE, CATEGORY_NAME,
             new Property.PrimaryKeyProperty(CATEGORY_ID, Type.INT, "Id"),
             new Property(CATEGORY_NAME, Type.STRING, "Name"),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description"),
@@ -113,7 +105,7 @@ public class Petstore {
             new Property.EntityProperty(ITEM_ADDRESS_REF, "Address", T_ADDRESS,
                     new Property(ITEM_ADDRESS_ID)));
 
-    EntityRepository.get().initialize(T_PRODUCT, IdSource.ID_NONE, PRODUCT_NAME,
+    EntityRepository.get().initialize(T_PRODUCT, IdSource.ID_MAX_PLUS_ONE, PRODUCT_NAME,
             new Property.PrimaryKeyProperty(PRODUCT_ID),
             new Property.EntityProperty(PRODUCT_CATEGORY_REF, "Category", T_CATEGORY,
                     new Property(PRODUCT_CATEGORY_ID)),
@@ -128,7 +120,7 @@ public class Petstore {
             new Property(SELLER_CONTACT_INFO_LAST_NAME, Type.STRING, "Last name"),
             new Property(SELLER_CONTACT_INFO_EMAIL, Type.STRING, "Email"));
 
-    EntityRepository.get().initialize(T_TAG, IdSource.ID_MAX_PLUS_ONE, TAG_TAG,
+    EntityRepository.get().initialize(T_TAG, IdSource.ID_MAX_PLUS_ONE, TAG_TAG, null, "petstore.tag tag",
             new Property.PrimaryKeyProperty(TAG_ID),
             new Property(TAG_TAG, Type.STRING, "Tag"),
             new Property.SubQueryProperty(TAG_REFCOUNT, Type.INT, false, "Reference count",
@@ -140,16 +132,11 @@ public class Petstore {
             new Property.EntityProperty(TAG_ITEM_TAG_REF, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT, null, 1)));
 
-    EntityRepository.get().initialize(T_ZIP_LOCATION, IdSource.ID_NONE, ZIP_LOCATION_ZIP_CODE,
-            new Property.PrimaryKeyProperty(ZIP_LOCATION_ZIP_CODE, Type.STRING, "Zip code"),
-            new Property(ZIP_LOCATION_CITY, Type.STRING, "City"),
-            new Property(ZIP_LOCATION_STATE, Type.STRING, "State"));
-
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       public String toString(final Entity entity) {
         if (entity.is(T_ADDRESS))
           return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)
-                  + ", " + entity.getStringValue(ADDRESS_CITY) + " " + entity.getStringValue(ADDRESS_ZIP) + ", "
+                  + ", " + entity.getStringValue(ADDRESS_CITY) + " " + entity.getValueAsString(ADDRESS_ZIP) + ", "
                   + entity.getStringValue(ADDRESS_STATE);
         else if (entity.is(T_CATEGORY))
           return entity.getStringValue(CATEGORY_NAME);

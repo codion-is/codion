@@ -414,3 +414,4 @@
   EntityTestUnit now uses setUp() and tearDown() to connect and disconnect from the database
   PropertySearchModel.bindComboBoxEvents() reverted back to previous version since my "fix" introduced a bug resulting in only single item selection
   Fixed copyright message name for UTF-8, yet again
+  TestPetstore now exends EntityTestUnit

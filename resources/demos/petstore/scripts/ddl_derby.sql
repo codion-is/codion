@@ -24,7 +24,7 @@ CREATE TABLE petstore.Address (
  street2 VARCHAR(55),
  city VARCHAR(55) NOT NULL,
  state VARCHAR(25) NOT NULL,
- zip VARCHAR(5) NOT NULL,
+ zip INTEGER NOT NULL,
  latitude DECIMAL(14,10) NOT NULL,
  longitude DECIMAL(14,10) NOT NULL,
  primary key (addressid)
@@ -48,26 +48,18 @@ CREATE TABLE petstore.item (
  price DECIMAL(14,2) NOT NULL,
  address_addressid INTEGER NOT NULL,
  contactinfo_contactinfoid INTEGER NOT NULL,
- totalscore INTEGER NOT NULL,
- numberofvotes INTEGER NOT NULL,
- disabled INTEGER NOT NULL,
+ totalscore INTEGER,
+ numberofvotes INTEGER,
+ disabled INTEGER NOT NULL default 0,
  primary key (itemid),
  foreign key (address_addressid) references petstore.Address(addressid),
  foreign key (productid) references petstore.product(productid),
  foreign key (contactinfo_contactinfoid) references petstore.SellerContactInfo(contactinfoid)
 );
 
-CREATE TABLE petstore.ziplocation (
- zipcode INTEGER NOT NULL,
- city VARCHAR(30) NOT NULL,
- state VARCHAR(2) NOT NULL,
- primary key (zipcode)
-);
-
 create table petstore.tag(
     tagid INTEGER NOT NULL,
     tag VARCHAR(30) NOT NULL,
-    refcount INTEGER NOT NULL,
     primary key (tagid),
     unique(tag)
 );
