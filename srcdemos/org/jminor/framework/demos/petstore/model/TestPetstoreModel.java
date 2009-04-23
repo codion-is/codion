@@ -3,10 +3,11 @@
  */
 package org.jminor.framework.demos.petstore.model;
 
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.testing.EntityTestUnit;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
+import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.Type;
+import org.jminor.framework.testing.EntityTestUnit;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,6 +84,7 @@ public class TestPetstoreModel extends EntityTestUnit {
       item.setValue(Petstore.ITEM_NAME, "item");
       item.setValue(Petstore.ITEM_PRICE, 34.2);
       item.setValue(Petstore.ITEM_PRODUCT_REF, getReferenceEntity(Petstore.T_PRODUCT));
+      item.setValue(Petstore.ITEM_DISABLED, Type.Boolean.FALSE);
 
       return item;
     }
@@ -207,6 +209,7 @@ public class TestPetstoreModel extends EntityTestUnit {
       item.setValue(Petstore.ITEM_NAME, "refitem");
       item.setValue(Petstore.ITEM_PRICE, 34.2);
       item.setValue(Petstore.ITEM_PRODUCT_REF, ret.get(Petstore.T_PRODUCT));
+      item.setValue(Petstore.ITEM_DISABLED, Type.Boolean.TRUE);
 
       ret.put(Petstore.T_ITEM, initialize(item));
     }

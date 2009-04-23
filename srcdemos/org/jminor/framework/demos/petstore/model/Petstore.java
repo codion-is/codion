@@ -47,6 +47,7 @@ public class Petstore {
   public static final String ITEM_ADDRESS_REF = "address_ref";
   public static final String ITEM_C0NTACT_INFO_ID = "contactinfo_contactinfoid";
   public static final String ITEM_C0NTACT_INFO_REF = "contactinfo_ref";
+  public static final String ITEM_DISABLED = "disabled";
 
   public static final String T_PRODUCT = "petstore.product";
   public static final String PRODUCT_ID = "productid";
@@ -103,7 +104,8 @@ public class Petstore {
             new Property.EntityProperty(ITEM_C0NTACT_INFO_REF, "Contact info", T_SELLER_CONTACT_INFO,
                     new Property(ITEM_C0NTACT_INFO_ID)),
             new Property.EntityProperty(ITEM_ADDRESS_REF, "Address", T_ADDRESS,
-                    new Property(ITEM_ADDRESS_ID)));
+                    new Property(ITEM_ADDRESS_ID)),
+            new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled"));
 
     EntityRepository.get().initialize(T_PRODUCT, IdSource.ID_MAX_PLUS_ONE, PRODUCT_NAME,
             new Property.PrimaryKeyProperty(PRODUCT_ID),

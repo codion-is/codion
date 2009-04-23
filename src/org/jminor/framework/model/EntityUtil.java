@@ -41,8 +41,8 @@ public class EntityUtil {
     return false;
   }
 
-  public static HashMap<EntityKey, Entity> hashByPrimaryKey(final List<Entity> entities) {
-    final HashMap<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
+  public static Map<EntityKey, Entity> hashByPrimaryKey(final List<Entity> entities) {
+    final Map<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
     for (final Entity entity : entities)
       ret.put(entity.getPrimaryKey(), entity);
 
@@ -132,6 +132,27 @@ public class EntityUtil {
         final List<Entity> list = new ArrayList<Entity>();
         list.add(entity);
         ret.put(key, list);
+      }
+    }
+
+    return ret;
+  }
+
+  /**
+   * Returns a Map containing the given entities hashed by their entityIDs
+   * @param entities the entities to map by entityID
+   * @return a Map of entities hashed by entityID
+   */
+  public static Map<String, Collection<Entity>> hashByEntityID(final Collection<Entity> entities) {
+    final Map<String, Collection<Entity>> ret = new HashMap<String, Collection<Entity>>(entities.size());
+    for (final Entity entity : entities) {
+      final String entityID = entity.getEntityID();
+      if (ret.containsKey(entityID))
+        ret.get(entityID).add(entity);
+      else {
+        final List<Entity> list = new ArrayList<Entity>();
+        list.add(entity);
+        ret.put(entityID, list);
       }
     }
 

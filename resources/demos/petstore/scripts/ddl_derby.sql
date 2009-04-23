@@ -50,7 +50,7 @@ CREATE TABLE petstore.item (
  contactinfo_contactinfoid INTEGER NOT NULL,
  totalscore INTEGER,
  numberofvotes INTEGER,
- disabled INTEGER NOT NULL default 0,
+ disabled INTEGER NOT NULL,
  primary key (itemid),
  foreign key (address_addressid) references petstore.Address(addressid),
  foreign key (productid) references petstore.product(productid),

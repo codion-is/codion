@@ -13,7 +13,6 @@ import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
 import org.jminor.framework.demos.petstore.model.Petstore;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.util.Arrays;
@@ -60,7 +59,7 @@ public class ItemPanel extends EntityPanel {
     ret.add(createControlPanel(Petstore.ITEM_ADDRESS_REF, box.createPanel()));
     ret.add(createControlPanel(Petstore.ITEM_IMAGE_URL, createTextField(Petstore.ITEM_IMAGE_URL)));
     ret.add(createControlPanel(Petstore.ITEM_IMAGE_THUMB_URL, createTextField(Petstore.ITEM_IMAGE_THUMB_URL)));
-    ret.add(new JLabel());
+    ret.add(createControlPanel(Petstore.ITEM_DISABLED, createCheckBox(Petstore.ITEM_DISABLED, null, false)));
 
     return ret;
   }
