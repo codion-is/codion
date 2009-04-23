@@ -7,7 +7,7 @@
 
   <path id="libraries">
     <fileset dir="${lib}">
-      <include name="*.jar"/>
+      <include name="**/*.jar"/>
     </fileset>
   </path>
 
@@ -492,6 +492,20 @@
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
       <sysproperty key="ij.connection.test" value="jdbc:derby:${demo.db.dir};create=true" />
       <arg value="${test.sql.dir}/create_demo_db.sql"/>
+    </java>
+  </target>
+
+  <target name="run_derby_server" description="Runs the derby network server">
+    <java fork="true" jar="${lib.derby.run}" classpathref="libraries">
+      <arg value="server"/>
+      <arg value="start"/>
+    </java>
+  </target>
+
+  <target name="shutdown_derby_server"  description="Shuts down the derby network server">
+    <java fork="true" jar="${lib.derby.run}" classpathref="libraries">
+      <arg value="server"/>
+      <arg value="shutdown"/>
     </java>
   </target>
 

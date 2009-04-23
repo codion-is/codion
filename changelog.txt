@@ -415,3 +415,7 @@
   PropertySearchModel.bindComboBoxEvents() reverted back to previous version since my "fix" introduced a bug resulting in only single item selection
   Fixed copyright message name for UTF-8, yet again
   TestPetstore now exends EntityTestUnit
+  Unit tests now run with an embedded derby database
+  Added run_derby_server and shutdown_derby_server to ant build file
+  Created lib/derby for the derby jars
+  Removed mysql and oracle jdbc drivers due to licensing
