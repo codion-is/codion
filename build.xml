@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="jminor" default="deploy_all" basedir=".">
+<project name="jminor" default="dist" basedir=".">
 
   <description>JMinor RAD Framework build file</description>
 
@@ -22,7 +22,8 @@
   <fileset id="framework_demos_resources" dir="${srcdemos}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
 
-  <target name="clean" description="Clean all output dirs">
+  <target name="clean"
+          description="Clean all output and generated dirs">
     <delete dir="${build.base}" includeEmptyDirs="true" />
     <delete dir="${build.demos}" includeEmptyDirs="true" />
     <delete dir="${build.test}" includeEmptyDirs="true" />
@@ -32,17 +33,17 @@
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
-  <target name="init" depends="clean" description="Creates all output dirs">
+  <target name="init"
+          description="Creates all output dirs">
     <mkdir dir="${build.base}" />
     <mkdir dir="${build.demos}" />
     <mkdir dir="${build.test}" />
     <mkdir dir="${dist}" />
     <mkdir dir="${dist}/current" />
-    <mkdir dir="${reports}" />
-    <mkdir dir="${htmlreports}" />
   </target>
 
-  <target name="build" depends="init" description="Compiles all source files">
+  <target name="build" depends="init"
+          description="Compiles all source files">
     <tstamp>
       <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm" />
     </tstamp>
@@ -90,7 +91,8 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="dist" depends="report" description="Creates all jar files in the dist/version directory">
+  <target name="dist" depends="report"
+          description="Creates all jar files in the dist/version directory">
     <tstamp />
     <mkdir dir="dist/${version}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}" />
@@ -170,7 +172,8 @@
     </copy>
   </target>
 
-  <target name="doc" depends="build" description="Generates framework javadocs">
+  <target name="doc" depends="build"
+          description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true" />
     <delete dir="${docstestapi}" includeEmptyDirs="true" />
     <mkdir dir="${docsapi}" />
@@ -200,7 +203,8 @@
     </javadoc>
   </target>
 
-  <target name="deploy" depends="dist" description="Deploys all jars to the path defined by the 'deploy.path' property">
+  <target name="deploy" depends="dist"
+          description="Deploys all jars to the path defined by the 'deploy.path' property">
     <copy file="${dist}/current/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.path}" overwrite="true"/>
@@ -214,7 +218,8 @@
     <copy file="${dist}/current/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
   </target>
 
-  <target name="deploy_server" description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
+  <target name="deploy_server"
+          description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}" />
     <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/bin" />
@@ -228,7 +233,8 @@
     </copy>
   </target>
 
-  <target name="deploy_server_monitor" description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
+  <target name="deploy_server_monitor"
+          description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}" />
     <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/bin" />
@@ -244,7 +250,8 @@
     </copy>
   </target>
 
-  <target name="deploy_demos" description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
+  <target name="deploy_demos"
+          description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
     <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}/bin" />
     <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/bin" />
@@ -271,7 +278,8 @@
     <zip basedir="${dist}/current" destfile="${dist}/current/jminor-${version}.zip"/>
   </target>
 
-  <target name="deploy_to_wiki" depends="doc, report" description="Copies the relevant files for the documentation wiki">
+  <target name="deploy_to_wiki" depends="doc, report"
+          description="Copies the relevant files for the documentation wiki">
     <delete dir="${wiki.media.project}"/>
     <mkdir dir="${wiki.media.project}"/>
     <copy todir="${wiki.media.project}/src">
@@ -297,20 +305,25 @@
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
   </target>
 
-  <target name="deploy_project" depends="doc, dist" description="Creates a jminor-project.jar file in the base directory">
+  <target name="deploy_project" depends="doc, dist"
+          description="Creates a jminor-project.jar file in the base directory">
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
       <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**"/>
     </zip>
   </target>
 
-  <target name="report" depends="run_unit_tests" description="Creates a unit test html report">
+  <target name="report" depends="run_unit_tests"
+          description="Creates a unit test html report">
+    <mkdir dir="${htmlreports}" />
     <junitreport todir="${reports}">
       <fileset dir="${reports}" includes="TEST-*.xml" />
       <report format="frames" todir="${htmlreports}" />
     </junitreport>
   </target>
 
-  <target name="run_unit_tests" depends="build, create_demo_db" description="Runs the unit tests">
+  <target name="run_unit_tests" depends="build, create_demo_db"
+          description="Runs the unit tests">
+    <mkdir dir="${reports}" />
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
       <classpath>
@@ -435,7 +448,8 @@
     </java>
   </target>
 
-  <target name="run_rmi_server" depends="build" description="Runs the RMI server">
+  <target name="run_rmi_server" depends="build"
+          description="Runs the RMI server">
     <java classname="org.jminor.framework.server.EntityDbRemoteServer" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -458,7 +472,8 @@
     </java>
   </target>
 
-  <target name="run_rmi_server_monitor" depends="build" description="Runs the RMI server monitor">
+  <target name="run_rmi_server_monitor" depends="build"
+          description="Runs the RMI server monitor">
     <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -479,30 +494,33 @@
 
   <condition property="demodb.not.available">
     <not >
-      <available file="${demo.db.dir}"/>
+      <available file="${demo.db.dir}/${demo.db.name}"/>
     </not>
 	</condition>
 
-  <target name="delete_demo_db" description="Deletes the unit test derby database">
+  <target name="delete_demo_db"
+          description="Deletes the unit test derby database">
     <delete dir="${demo.db.dir}"/>
   </target>
 
   <target name="create_demo_db" if="demodb.not.available"
           description="Creates the demo derby database in case it is not already available">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
-      <sysproperty key="ij.connection.test" value="jdbc:derby:${demo.db.dir};create=true" />
+      <sysproperty key="ij.connection.test" value="jdbc:derby:${demo.db.dir}/${demo.db.name};create=true" />
       <arg value="${test.sql.dir}/create_demo_db.sql"/>
     </java>
   </target>
 
-  <target name="run_derby_server" description="Runs the derby network server">
+  <target name="run_derby_server" depends="create_demo_db"
+          description="Runs the derby network server">
     <java fork="true" jar="${lib.derby.run}" classpathref="libraries">
       <arg value="server"/>
       <arg value="start"/>
     </java>
   </target>
 
-  <target name="shutdown_derby_server"  description="Shuts down the derby network server">
+  <target name="shutdown_derby_server"
+          description="Shuts down the derby network server">
     <java fork="true" jar="${lib.derby.run}" classpathref="libraries">
       <arg value="server"/>
       <arg value="shutdown"/>
