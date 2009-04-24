@@ -189,6 +189,7 @@
       <classpath>
         <path refid="libraries" />
         <path location="${build.base}" />
+        <path location="${build.demos}" />
       </classpath>
     </javadoc>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*"
@@ -507,7 +508,7 @@
           description="Creates the demo derby database in case it is not already available">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
       <sysproperty key="ij.connection.test" value="jdbc:derby:${demo.db.dir}/${demo.db.name};create=true" />
-      <arg value="${test.sql.dir}/create_demo_db.sql"/>
+      <arg value="${junit.sql.dir}/create_demo_db.sql"/>
     </java>
   </target>
 

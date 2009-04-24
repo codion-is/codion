@@ -1,7 +1,6 @@
 grant {
   //CodeBase "file:./jminor-server.jar"
-  permission java.io.FilePermission "${user.home}/jminor.log", "read,write";
-  permission java.io.FilePermission "${user.home}/jminor.log-CREATED", "read,write,delete";
+  permission java.io.FilePermission "${user.home}/jminor.log*", "read,write";
 
   permission java.io.FilePermission "<<ALL FILES>>", "read";
 

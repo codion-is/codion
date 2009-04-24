@@ -1,7 +1,6 @@
 grant {
   //write to the log file
-  permission java.io.FilePermission "${user.home}/jminor.log", "write";
-  permission java.io.FilePermission "${user.home}/jminor.log-CREATED", "read,write,delete";
+  permission java.io.FilePermission "${user.home}/jminor.log*", "read,write";
   permission java.io.FilePermission "${java.home}/-", "read";
   //read everything
   permission java.io.FilePermission "<<ALL FILES>>", "read";
@@ -15,6 +14,6 @@ grant {
   permission java.awt.AWTPermission "showWindowWithoutWarningBanner";
   permission java.awt.AWTPermission "accessClipboard";
   permission java.awt.AWTPermission "setWindowAlwaysOnTop";
-  
+
   permission java.lang.RuntimePermission "setDefaultUncaughtExceptionHandler";
 };
