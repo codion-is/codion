@@ -121,12 +121,6 @@ public class EntityModel implements IRefreshable {
   public final Event evtActiveEntityChanged = new Event("EntityModel.evtActiveEntityChanged");
 
   /**
-   * Indicates whether the model is active
-   */
-  public final State stActive = new State("EntityModel.stActive",
-          (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_MODELS_ENABLED));
-
-  /**
    * Active when a non-null entity is active
    */
   public final State stEntityActive = new State("EntityModel.stEntityActive");
@@ -225,11 +219,6 @@ public class EntityModel implements IRefreshable {
   private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
 
   /**
-   * The mechanism for restricting a single active EntityModel at a time
-   */
-  private static final State.StateGroup activeStateGroup = new State.StateGroup();
-
-  /**
    * If true, then the modification of a record triggers a select for update
    */
   private boolean strictEditingEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_STRICT_EDIT_MODE);
@@ -271,8 +260,6 @@ public class EntityModel implements IRefreshable {
    */
   public EntityModel(final String caption, final IEntityDbProvider dbProvider,
                      final String entityID, final boolean includeTableModel) throws UserException {
-    if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_MODELS_ENABLED))
-      activeStateGroup.addState(stActive);
     this.caption = caption;
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;

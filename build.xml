@@ -91,8 +91,8 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="dist" depends="report"
-          description="Creates all jar files in the dist/version directory">
+  <target name="dist" depends="build"
+          description="Creates all distribution jar files in the dist/version directory">
     <tstamp />
     <mkdir dir="dist/${version}" />
     <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}" />
@@ -144,7 +144,8 @@
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/model/*,
                 org/jminor/framework/db/**,
-                org/jminor/framework/server/*.class"/>
+                org/jminor/framework/server/*.class"
+         excludes="org/jminor/framework/server/*Stub.class"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,

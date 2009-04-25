@@ -766,7 +766,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   private static void activatePanel(final EntityPanel panel) {
     if (panel != null)
-      panel.getModel().stActive.setActive(true);
+      panel.setActive(true);
   }
 
   private EntityPanel getActivePanel(final List<EntityPanel> panels) {
@@ -777,7 +777,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       final EntityPanel ret = getActivePanel(panel.getDetailPanels());
       if (ret != null)
         return ret;
-      if (panel.getModel().stActive.isActive())
+      if (panel.isActive())
         return panel;
     }
 

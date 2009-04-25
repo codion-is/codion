@@ -130,6 +130,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public static final int RIGHT = 2;
   public static final int LEFT = 3;
 
+  /**
+   * Indicates whether the panel is active and ready to receive input
+   */
+  protected final State stActive = new State("EntityPanel.stActive",
+          (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_PANELS_ENABLED));
+
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
@@ -231,13 +237,18 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private boolean initialized = false;
 
   /**
+   * The mechanism for restricting a single active EntityPanel at a time
+   */
+  private static final State.StateGroup activeStateGroup = new State.StateGroup();
+
+  /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
   private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
     public void propertyChange(final PropertyChangeEvent event) {
       final Component focusOwner = (Component) event.getNewValue();
       if (focusOwner != null && isParentPanel(focusOwner))
-        model.stActive.setActive(true);
+        setActive(true);
     }
   };
 
@@ -324,13 +335,24 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (detailPanelState == DIALOG)
       throw new IllegalArgumentException("EntityPanel constructor only accepts HIDDEN or EMBEDDED as default detail states");
 
+    if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_PANELS_ENABLED))
+      activeStateGroup.addState(stActive);
     this.refreshOnInit = refreshOnInit;
     this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.specialRendering = specialRendering;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.compactPanel = compactPanel;
-    this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();
+    this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();    
+    this.stActive.evtStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        if (isActive()) {
+          initialize();
+          showPanelTab();
+          prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
+        }
+      }
+    });
   }
 
   /**
@@ -516,6 +538,20 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /** {@inheritDoc} */
   public String toString() {
     return this.model.getCaption();
+  }
+
+  /**
+   * @return true if this EntityPanel is active and ready to receive input
+   */
+  public boolean isActive() {
+    return stActive.isActive();
+  }
+
+  /**
+   * @param active true if this EntityPanel should be activated for receiving input
+   */
+  public void setActive(final boolean active) {
+    stActive.setActive(active);
   }
 
   /**
@@ -989,7 +1025,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return ControlFactory.methodControl(model, "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
-            model.stActive, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
+            stActive, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
@@ -1036,7 +1072,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
-                    model.stActive,
+                    stActive,
                     model.getDeleteAllowedState(),
                     model.stEntityActive),//changed from stSelectionEmpty.getReversedState()
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
@@ -1049,7 +1085,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return ControlFactory.methodControl(model, "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
-            model.stActive, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
+            stActive, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -1060,7 +1096,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return ControlFactory.methodControl(this, "handleUpdate", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.Type.AND,
-                    model.stActive,
+                    stActive,
                     model.getUpdateAllowedState(),
                     model.stEntityActive,
                     model.getActiveEntityModifiedState()),
@@ -1074,7 +1110,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "handleSave", FrameworkMessages.get(FrameworkMessages.INSERT),
-            new AggregateState(AggregateState.Type.AND, model.stActive, model.getInsertAllowedState()),
+            new AggregateState(AggregateState.Type.AND, stActive, model.getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -1087,7 +1123,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, model.getInsertAllowedState(),
             new AggregateState(AggregateState.Type.AND, model.getUpdateAllowedState(), model.getActiveEntityModifiedState()));
     return ControlFactory.methodControl(this, "handleSave", insertCaption,
-            new AggregateState(AggregateState.Type.AND, model.stActive, stInsertUpdate),
+            new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
   }
@@ -2028,15 +2064,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private void bindModelEvents() {
-    model.stActive.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        if (model.stActive.isActive()) {
-          initialize();
-          showPanelTab();
-          prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
-        }
-      }
-    });
     model.evtRefreshStarted.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);

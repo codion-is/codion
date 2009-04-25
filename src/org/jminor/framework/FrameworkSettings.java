@@ -28,11 +28,12 @@ public class FrameworkSettings implements Serializable {
   public static final String USE_QUERY_RANGE = "use_query_range";
 
   /**
-   * Indicates whether all entity models should be enabled by default
+   * Indicates whether all entity panels should be enabled and
+   * receiving input by default
    * Value type: Boolean
    * Default value: false
    */
-  public static final String ALL_MODELS_ENABLED = "all_models_enabled";
+  public static final String ALL_PANELS_ENABLED = "all_panels_enabled";
 
   /**
    * Indicates whether keyboard navigation will be enabled
@@ -209,7 +210,7 @@ public class FrameworkSettings implements Serializable {
   private FrameworkSettings() {
     //default settings
     setProperty(USE_QUERY_RANGE, false);
-    setProperty(ALL_MODELS_ENABLED, false);
+    setProperty(ALL_PANELS_ENABLED, false);
     setProperty(USE_KEYBOARD_NAVIGATION, true);
     setProperty(USE_FOCUS_ACTIVATION, true);
     setProperty(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);

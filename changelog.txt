@@ -419,3 +419,6 @@
   Added run_derby_server and shutdown_derby_server to ant build file
   Created lib/derby for the derby jars
   Removed mysql and oracle jdbc drivers due to licensing
+  EntityModel.stActive and activeStateGroup moved to EntityPanel, where they belong
+  Added IntelliJ project file
+  Excluded *Stub.class files from jminor-server.jar
