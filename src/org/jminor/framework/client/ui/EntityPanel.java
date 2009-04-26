@@ -417,15 +417,15 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       initializeControlPanels();
 
       initializeDetailPanels();
-      this.editPanel = initializeEditPanel();
-      this.entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
+      editPanel = initializeEditPanel();
+      entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
       if (entityTablePanel != null) {
         entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
         entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
         entityTablePanel.setMinimumSize(new Dimension(0,0));
       }
-      this.horizontalSplitPane = this.detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
-      this.detailTabPane = this.detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
+      horizontalSplitPane = detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
+      detailTabPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
 
       bindTableModelEvents();
       bindTablePanelEvents();
@@ -444,7 +444,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       throw e.getRuntimeException();
     }
     finally {
-      this.initialized = true;
+      initialized = true;
       UiUtil.setWaitCursor(false, this);
     }
   }
@@ -478,21 +478,21 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * or the panel is activated
    */
   public JComponent getDefaultFocusComponent() {
-    return this.defaultFocusComponent;
+    return defaultFocusComponent;
   }
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
    */
   public EntityTablePanel getTablePanel() {
-    return this.entityTablePanel;
+    return entityTablePanel;
   }
 
   /**
    * @return the edit panel
    */
   public JPanel getEditPanel() {
-    return this.editPanel;
+    return editPanel;
   }
 
   /**
@@ -514,10 +514,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * If no detail panels are defined a RuntimeException is thrown.
    */
   public EntityPanel getSelectedDetailPanel() {
-    if (this.detailTabPane == null)
+    if (detailTabPane == null)
       throw new RuntimeException("No detail panels available");
 
-    return (EntityPanel) this.detailTabPane.getSelectedComponent();
+    return (EntityPanel) detailTabPane.getSelectedComponent();
   }
 
   /**
@@ -537,7 +537,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   /** {@inheritDoc} */
   public String toString() {
-    return this.model.getCaption();
+    return getModel().getCaption();
   }
 
   /**
@@ -1463,7 +1463,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                 + " not found in model of type " + model.getClass());
       final EntityPanel detailPanel = detailPanelProvider.createInstance(detailModel);
       detailPanel.setMasterPanel(this);
-      this.detailEntityPanelProviders.put(detailPanelProvider, detailPanel);
+      detailEntityPanelProviders.put(detailPanelProvider, detailPanel);
     }
   }
 
@@ -2076,8 +2076,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     });
   }
 
-  private void setMasterPanel(final EntityPanel panel) {
-    this.masterPanel = panel;
+  private void setMasterPanel(final EntityPanel masterPanel) {
+    this.masterPanel = masterPanel;
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,

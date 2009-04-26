@@ -451,7 +451,7 @@ public class EntityModel implements IRefreshable {
    * @return the master model, if any
    */
   public EntityModel getMasterModel() {
-    return this.masterModel;
+    return masterModel;
   }
 
   /**
@@ -1531,8 +1531,8 @@ public class EntityModel implements IRefreshable {
     return value;
   }
 
-  private void setMasterModel(final EntityModel model) {
-    this.masterModel = model;
+  private void setMasterModel(final EntityModel masterModel) {
+    this.masterModel = masterModel;
   }
 
   /**

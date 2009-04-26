@@ -729,7 +729,7 @@ public class EntityTablePanel extends JPanel {
    * @return the Action performed when the table receives a double click
    */
   protected Action getDoubleClickAction() {
-    return this.doubleClickAction;
+    return doubleClickAction;
   }
 
   /**
@@ -773,7 +773,7 @@ public class EntityTablePanel extends JPanel {
    * @return the TableCellRenderer
    */
   protected TableCellRenderer initializeTableCellRenderer(final boolean specialRendering) {
-    return new EntityTableCellRenderer(this.tableModel, specialRendering);
+    return new EntityTableCellRenderer(getTableModel(), specialRendering);
   }
 
   /**
