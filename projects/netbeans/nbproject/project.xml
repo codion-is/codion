@@ -60,7 +60,7 @@
                 </action>
                 <action name="run">
                     <script>${ant.script}</script>
-                    <target>run_tests</target>
+                    <target>run_demo_empdept_local</target>
                 </action>
                 <action name="test">
                     <script>${ant.script}</script>
