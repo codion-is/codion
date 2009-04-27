@@ -506,7 +506,8 @@
   </target>
 
   <target name="create_demo_db" if="demodb.not.available"
-          description="Creates the demo derby database in case it is not already available">
+          description="Creates the demo derby database in case it is not already available. The demo database includes
+          the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
       <sysproperty key="ij.connection.demo" value="jdbc:derby:${demo.db.dir}/${demo.db.name};create=true" />
       <arg value="${junit.sql.dir}/create_demo_db.sql"/>
