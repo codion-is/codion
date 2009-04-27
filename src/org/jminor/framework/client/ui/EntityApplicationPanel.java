@@ -561,7 +561,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   protected boolean loginRequired() {
-    return true;
+    return (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.AUTHENTICATION_REQUIRED);
   }
 
   protected JPanel initializeSouthPanel() {

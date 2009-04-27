@@ -22,10 +22,12 @@
       <library name="jminor-lib">
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../lib" />
+          <root url="file://$MODULE_DIR$/../../lib/derby" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/../../lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../lib/derby" recursive="false" />
       </library>
     </orderEntry>
     <orderEntryProperties />

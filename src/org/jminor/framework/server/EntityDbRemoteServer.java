@@ -117,7 +117,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public String getDatabaseURL() {
-    return Database.getURL();
+    return Database.getURL(null);
   }
 
   /** {@inheritDoc} */

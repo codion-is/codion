@@ -108,6 +108,13 @@ public class FrameworkSettings implements Serializable {
   public static final String DEFAULT_USERNAME_PREFIX = "default_username_prefix";
 
   /**
+   * Specifies whether user authentication is required
+   * Value type: Boolean
+   * Default value: true
+   */
+  public static final String AUTHENTICATION_REQUIRED = "authentication_required";
+
+  /**
    * Specifies whether focus should be transfered from components on enter,
    * this does not work for editable combo boxes, combo boxes with the
    * maximum match functionality enabled or text areas
@@ -221,6 +228,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(TOOLBAR_BUTTONS, false);
     setProperty(PERSIST_ENTITY_REFERENCE_VALUES, true);
     setProperty(DEFAULT_USERNAME_PREFIX, "");
+    setProperty(AUTHENTICATION_REQUIRED, true);
     setProperty(TRANSFER_FOCUS_ON_ENTER, true);
     setProperty(USE_STRICT_EDIT_MODE, false);
     setProperty(TOOLTIP_DELAY, 500);

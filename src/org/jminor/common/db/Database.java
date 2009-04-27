@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * A class encapsulating database specific code, such as retrieval of auto increment values,
@@ -181,9 +182,11 @@ public class Database {
   }
 
   /**
+   * @param connectionProperties the connection properties, used primarily to provide
+   * a derby database with user info for authentication purposes
    * @return the database url of the active database, based on system properties
    */
-  public static String getURL() {
+  public static String getURL(final Properties connectionProperties) {
     final String host = System.getProperty(DATABASE_HOST_PROPERTY);
     if (host == null || host.length() == 0)
       throw new RuntimeException("Required system property missing: " + DATABASE_HOST_PROPERTY);
@@ -206,9 +209,9 @@ public class Database {
       case SQLSERVER:
         return "jdbc:sqlserver://" + host + ":" + port + ";databaseName=" + sid;
       case DERBY:
-        return "jdbc:derby://" + host + ":" + port + "/" + sid;
+        return "jdbc:derby://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
       case DERBY_EMBEDDED:
-        return "jdbc:derby:" + host;
+        return "jdbc:derby:" + host + getUserInfoString(connectionProperties);
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
@@ -299,10 +302,11 @@ public class Database {
     throw new IllegalArgumentException("Unknown database type: " + dbType);
   }
 
-  public static void onDisconnect() {
+  public static void onDisconnect(final Properties connectionProperties) {
     if (isDerbyEmbedded()) {
       try {
-        DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true");
+        DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true"
+                + getUserInfoString(connectionProperties));
       }
       catch (SQLException e) {
         if (e.getSQLState().equals("08006"))//08006 is expected on Derby shutdown
@@ -330,5 +334,16 @@ public class Database {
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
+  }
+
+  private static String getUserInfoString(final Properties connectionProperties) {
+    if (connectionProperties != null) {
+      final String username = (String) connectionProperties.get("user");
+      final String password = (String) connectionProperties.get("password");
+      if (username != null && username.length() > 0 && password != null && password.length() > 0)
+        return ";" + "user=" + username + ";" + "password=" + password;
+    }
+
+    return "";
   }
 }

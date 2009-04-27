@@ -422,3 +422,6 @@
   EntityModel.stActive and activeStateGroup moved to EntityPanel, where they belong
   Added IntelliJ project file
   Excluded *Stub.class files from jminor-server.jar
+  Added user authentication (scott/tiger) to demo db
+  Database.getURL() and onDisconnect() now takes a connectionProperties parameter for derby user authentication
+  FrameworkSettings.AUTHENTICATION_REQUIRED property added and used in EntityApplicationPanel.loginRequired()

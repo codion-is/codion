@@ -36,7 +36,7 @@ public class DbConnection {
 
   public static final String OUT_PARAM_NAME = "procout";
 
-  private final Properties connectionInfo = new Properties();
+  private final Properties connectionProperties = new Properties();
   private final Map<String, List> queryCache = Collections.synchronizedMap(new HashMap<String, List>());
 
   private Connection connection;
@@ -77,8 +77,8 @@ public class DbConnection {
       throw new IllegalArgumentException("Username must be provided");
     if (user.getPassword() == null)
       throw new IllegalArgumentException("Password must be provided");
-    this.connectionInfo.put("user", user.getUsername());
-    this.connectionInfo.put("password", user.getPassword());
+    this.connectionProperties.put("user", user.getUsername());
+    this.connectionProperties.put("password", user.getPassword());
     revalidate();
   }
 
@@ -118,7 +118,7 @@ public class DbConnection {
     catch (SQLException ex) {
       log.error(this, ex);
     }
-    Database.onDisconnect();
+    Database.onDisconnect(connectionProperties);
     connection = null;
     checkConnectionStatement = null;
   }
@@ -466,13 +466,13 @@ public class DbConnection {
 
     Database.loadDriver();
     try {
-      connection = DriverManager.getConnection(Database.getURL(), connectionInfo);
+      connection = DriverManager.getConnection(Database.getURL(connectionProperties), connectionProperties);
       connection.setAutoCommit(false);
       checkConnectionStatement = connection.createStatement();
       connected = true;
     }
     catch (SQLException e) {
-      throw new AuthenticationException(connectionInfo.getProperty("user"), e);
+      throw new AuthenticationException(connectionProperties.getProperty("user"), e);
     }
   }
 
