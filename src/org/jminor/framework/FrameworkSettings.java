@@ -162,7 +162,7 @@ public class FrameworkSettings implements Serializable {
   /**
    * Specifies if the default filtering behaviour should be to filter the underlying query
    * Value type: Boolean
-   * Default value: false
+   * Default value: false todo change to true
    */
   public static final String FILTER_QUERY_BY_MASTER = "filter_query_by_master";
 

@@ -31,7 +31,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     Locale.setDefault(new Locale("en"));
     FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);
     FrameworkSettings.get().setProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT, true);
-    FrameworkSettings.get().setProperty(FrameworkSettings.USE_STRICT_EDIT_MODE, true);
     Util.setLoggingLevel(Level.DEBUG);
   }
 

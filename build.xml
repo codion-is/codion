@@ -308,9 +308,9 @@
   </target>
 
   <target name="deploy_project" depends="doc, dist"
-          description="Creates a jminor-project.jar file in the base directory">
+          description="Creates a jminor-project.zip file in the base directory">
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
-      <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**"/>
+      <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**,db/**"/>
     </zip>
   </target>
 

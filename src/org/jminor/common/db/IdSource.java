@@ -8,7 +8,7 @@ package org.jminor.common.db;
  * User: Björn Darri
  * Date: 12.1.2008
  * Time: 20:42:34
- */
+ *///todo remove ID_ prefix
 public enum IdSource {
   /**
    * the id value is set automatically from a sequence (e.g. by trigger) or is automatically incremented

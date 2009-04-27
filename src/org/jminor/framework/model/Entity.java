@@ -590,7 +590,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param one the first object
    * @param two the second object
    * @return true if the given objects are equal
-   */
+   *///todo rename isEqual
   public static boolean equal(final Type type, final Object one, final Object two) {
     final boolean oneNull = isValueNull(type, one);
     final boolean twoNull = isValueNull(type, two);
