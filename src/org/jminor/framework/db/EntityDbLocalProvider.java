@@ -43,7 +43,7 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
     user.setProperty(Database.DATABASE_SID_PROPERTY, sid);
   }
 
-  public synchronized final IEntityDb getEntityDb() throws UserException {
+  public final IEntityDb getEntityDb() throws UserException {
     validateDbConnection();
 
     return entityDb;

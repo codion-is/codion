@@ -192,7 +192,7 @@ public class PropertySummaryPanel extends JPanel {
   }
 
   private String getSummaryText() {
-    final Collection<Object> values = tableModel.getValues(property, true);
+    final Collection<Object> values = tableModel.getValues(property, !tableModel.stSelectionEmpty.isActive());
     switch (summaryType) {
       case SUM:
         return sum(values);

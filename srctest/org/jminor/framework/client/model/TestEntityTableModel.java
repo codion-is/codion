@@ -163,7 +163,7 @@ public class TestEntityTableModel extends TestCase {
       super(null, ModelTestDomain.T_TEST_DETAIL);
     }
 
-    public synchronized void refresh() throws UserException {
+    public void refresh() throws UserException {
       removeAll();
       addEntities(performQuery(null), false);
     }

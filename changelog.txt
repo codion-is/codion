@@ -431,3 +431,6 @@
   Default usernames are now saved in preferences per application
   UiUtil.selectAllOnFocusGained(JTextComponent) added
   FrameworkSettings.USE_NUMBER_FORMAT_GROUPING property added, default true
+  Refactored EntityTableModel.EntityJRDataSource out of EntityTableModel which no longer implements JRDataSource hence no more reportPrintIterator and currentReportRecord fields
+  EntityTableModel.initReportIterator() renamed to initializeReportIterator and made protected
+  Removed a few probably ill-placed synchronized keywords, they simply gave the false illusion of thread-secure stuff

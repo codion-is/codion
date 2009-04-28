@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -53,7 +52,7 @@ import java.util.Map;
 /**
  * A TableModel implementation for showing entities
  */
-public class EntityTableModel extends AbstractTableModel implements IRefreshable, JRDataSource {
+public class EntityTableModel extends AbstractTableModel implements IRefreshable {
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
 
@@ -109,19 +108,24 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public final State stSelectionEmpty = new State("EntityTableModel.stSelectionEmpty", true);
 
   /**
-   * true while the model is refreshing
+   * true while the model data is being refreshed
    */
   private boolean isRefreshing = false;
 
   /**
-   * true while the model is filtering
+   * true while the model data is being filtered
    */
   private boolean isFiltering = false;
 
   /**
-   * true while the model is sorting
+   * true while the model data is being sorted
    */
   private boolean isSorting = false;
+
+  /**
+   * true while the selection is being updated
+   */
+  private boolean isUpdatingSelection = false;
 
   /**
    * False if the table should ignore the query range when refreshing
@@ -179,7 +183,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         minSelectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (isAdjusting || updatingSelection || isSorting)
+      if (isAdjusting || isUpdatingSelection || isSorting)
         evtSelectionChangedAdjusting.fire();
       else
         evtSelectionChanged.fire();
@@ -190,13 +194,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private final EntityTableSearchModel tableSearchModel;
   private final TableSorter tableSorter;
 
-  //reporting
-  private Iterator<Entity> reportPrintIterator;
-  private Entity currentReportRecord;
-
   private boolean filterQueryByMaster = false;
   private boolean showAllWhenNotFiltered = false;
-  private boolean updatingSelection = false;
 
   /**
    * Initializes a new EntityTableModel
@@ -391,38 +390,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * @return an initialized JRDataSource
+   * @see #initializeReportIterator()
    */
   public JRDataSource getJRDataSource() {
-    reportPrintIterator = initReportPrintIterator();
-
-    return this;
-  }
-
-  /**
-   * Implementing JRDataSource.getFieldValue(JRField jrField)
-   * Gets the field value for the current position.
-   * @return an object containing the field value. The object type must be the field object type.
-   */
-  public Object getFieldValue(final JRField jrField) throws JRException {
-    return getCurrentReportRecord().getTableValue(EntityRepository.get().getProperty(getEntityID(), jrField.getName()));
-  }
-
-  /**
-   * Implementing JRDataSource.next()
-   * Tries to position the cursor on the next element in the data source.
-   * @return true if there is a next record, false otherwise
-   * @throws JRException if any error occurs while trying to move to the next element
-   */
-  public boolean next() throws JRException {
-    if (reportPrintIterator.hasNext()) {
-      currentReportRecord = reportPrintIterator.next();
-      return true;
-    }
-    else {
-      reportPrintIterator = null;
-      currentReportRecord = null;
-      return false;
-    }
+    return new EntityJRDataSource(initializeReportIterator());
   }
 
   /** {@inheritDoc} */
@@ -437,17 +408,17 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /** {@inheritDoc} */
-  public synchronized int getColumnCount() {
+  public int getColumnCount() {
     return tableColumnProperties.size();
   }
 
   /** {@inheritDoc} */
-  public synchronized int getRowCount() {
+  public int getRowCount() {
     return visibleEntities.size();
   }
 
   /** {@inheritDoc} */
-  public synchronized Object getValueAt(final int rowIndex, final int columnIndex) {
+  public Object getValueAt(final int rowIndex, final int columnIndex) {
     return visibleEntities.get(rowIndex).getTableValue(tableColumnProperties.get(columnIndex));
   }
 
@@ -470,7 +441,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public Collection<Object> getValues(final Property property, final boolean selectedOnly) {
     return Arrays.asList(EntityUtil.getPropertyValue(property.propertyID,
-            (selectedOnly && !stSelectionEmpty.isActive()) ? getSelectedEntities() : visibleEntities, false));
+            selectedOnly ? getSelectedEntities() : visibleEntities, false));
   }
 
   /**
@@ -534,7 +505,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @see #evtRefreshStarted
    * @see #evtRefreshDone
    */
-  public synchronized void refresh() throws UserException {
+  public void refresh() throws UserException {
     if (isRefreshing)
       return;
 
@@ -583,7 +554,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  public synchronized void replaceEntities(final List<Entity> entities) {
+  public void replaceEntities(final List<Entity> entities) {
     replaceEntities(entities.toArray(new Entity[entities.size()]));
   }
 
@@ -591,7 +562,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  public synchronized void replaceEntities(final Entity... entities) {
+  public void replaceEntities(final Entity... entities) {
     for (int i = 0; i < visibleEntities.size(); i++) {
       final Entity entity = visibleEntities.get(i);
       for (final Entity newEntity : entities)
@@ -622,7 +593,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * Removes the given entity from this table model
    * @param entity the entity to remove from the model
    */
-  public synchronized void removeEntity(final Entity entity) {
+  public void removeEntity(final Entity entity) {
     int idx = visibleEntities.indexOf(entity);
     if (idx >= 0) {
       visibleEntities.remove(idx);
@@ -639,7 +610,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @param idx the index
    * @return the Entity at index <code>idx</code>
    */
-  public synchronized Entity getEntityAtViewIndex(final int idx) {
+  public Entity getEntityAtViewIndex(final int idx) {
     if (idx >= 0 && idx < visibleEntities.size())
       return visibleEntities.get(tableSorter.modelIndex(idx));
 
@@ -652,7 +623,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @see #evtFilteringStarted
    * @see #evtFilteringDone
    */
-  public synchronized void filterTable() {
+  public void filterTable() {
     try {
       isFiltering = true;
       evtFilteringStarted.fire();
@@ -725,7 +696,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return the selected entity, null if none is selected
    */
-  public synchronized Entity getSelectedEntity() {
+  public Entity getSelectedEntity() {
     final int idx = selectionModel.getMinSelectionIndex();
     if (idx >= 0 && idx < visibleEntities.size())
       return getEntityAtViewIndex(idx);
@@ -789,12 +760,12 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public void addSelectedItemIndexes(final int[] indexes) {
     try {
-      updatingSelection = true;
+      isUpdatingSelection = true;
       for (int i = 0; i < indexes.length-1; i++)
         selectionModel.addSelectionInterval(indexes[i], indexes[i]);
     }
     finally {
-      updatingSelection = false;
+      isUpdatingSelection = false;
       if (indexes.length > 0)
         selectionModel.addSelectionInterval(indexes[indexes.length-1], indexes[indexes.length-1]);
     }
@@ -832,10 +803,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * Finds entities according to the values of <code>propertyValues</code>
-   * @param propertyValues the property values to use as condition
+   * @param propertyValues the property values to use as condition mapped
+   * to their respective propertyIDs
    * @return the entities having the exact same property values as in <code>properties</properties>
    */
-  public Entity[] getEntitiesByPropertyValues(final HashMap<String, Object> propertyValues) {
+  public Entity[] getEntitiesByPropertyValues(final Map<String, Object> propertyValues) {
     final List<Entity> ret = new ArrayList<Entity>();
     for (final Entity entity : getAllEntities()) {
       boolean equal = true;
@@ -854,8 +826,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return a HashMap containing a all entities which depend on the selected entities,
-   * where the keys are Class objects and the value is an array of entities of that type
+   * @return a Map containing all entities which depend on the selected entities,
+   * where the keys are entityIDs and the value is an array of entities of that type
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
    */
@@ -1047,6 +1019,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return EntityRepository.get().getVisiblePropertyList(getEntityID());
   }
 
+  /**
+   * @return the iterator used when generating reports
+   * @see #getJRDataSource()
+   */
+  protected Iterator<Entity> initializeReportIterator() {
+    return getSelectedEntities().iterator();
+  }
+
   protected void bindEvents() {
     tableSearchModel.evtFilterStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -1084,13 +1064,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return the current record when iterating through this table model during a report generation
+   * Adds the given entities to this table model
+   * @param entities the entities to add
+   * @param atFront if true then the entities are added at the front
    */
-  protected Entity getCurrentReportRecord() {
-    return currentReportRecord;
-  }
-
-  protected synchronized void addEntities(final List<Entity> entities, final boolean atFront) {
+  protected void addEntities(final List<Entity> entities, final boolean atFront) {
     for (final Entity entity : entities) {
       if (tableSearchModel.include(entity)) {
         if (atFront)
@@ -1132,15 +1110,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return -1;
   }
 
-  private Iterator<Entity> initReportPrintIterator() {
-    return getSelectedEntities().iterator();
-  }
-
-  private synchronized int modelIndexOf(final Entity entity) {
+  private int modelIndexOf(final Entity entity) {
     return visibleEntities.indexOf(entity);
   }
 
-  private synchronized int viewIndexOf(final Entity entity) {
+  private int viewIndexOf(final Entity entity) {
     return tableSorter.viewIndex(modelIndexOf(entity));
   }
 
@@ -1159,5 +1133,27 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return Entity.class;
 
     return value == null ? Object.class : value.getClass();
+  }
+
+  private static class EntityJRDataSource implements JRDataSource {
+
+    private final Iterator<Entity> reportIterator;
+    private Entity currentEntity;
+
+    public EntityJRDataSource(final Iterator<Entity> reportIterator) {
+      this.reportIterator = reportIterator;
+    }
+
+    public boolean next() throws JRException {
+      final boolean hasNext = reportIterator.hasNext();
+      if (hasNext)
+        currentEntity = reportIterator.next();
+
+      return hasNext;
+    }
+
+    public Object getFieldValue(final JRField jrField) throws JRException {
+      return currentEntity.getTableValue(jrField.getName());
+    }
   }
 }
