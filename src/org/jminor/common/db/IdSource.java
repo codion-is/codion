@@ -4,30 +4,30 @@
 package org.jminor.common.db;
 
 /**
- * A enum representing the possible ways of auto incrementing a ID value
+ * A enum representing the possible ways of retrieving a new  ID value
  * User: Björn Darri
  * Date: 12.1.2008
  * Time: 20:42:34
- *///todo remove ID_ prefix
+ */
 public enum IdSource {
   /**
    * the id value is set automatically from a sequence (e.g. by trigger) or is automatically incremented
    */
-  ID_AUTO_INCREMENT,
+  AUTO_INCREMENT,
   /**
    * the id value is derived from the max id value in the table
    */
-  ID_MAX_PLUS_ONE,
+  MAX_PLUS_ONE,
   /**
-   * the source of the id value can be safely disregarded
+   * the id is set manually or can be disregarded
    */
-  ID_NONE,
+  NONE,
   /**
    * the id value should be selected from a sequence
    */
-  ID_SEQUENCE,
+  SEQUENCE,
   /**
-   * the id value should be queried
+   * the id source is a query
    */
-  ID_QUERY
+  QUERY
 }

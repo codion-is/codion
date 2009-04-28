@@ -51,17 +51,17 @@ public class SchemaBrowser {
 
   static {
     EntityRepository.get().initialize(T_SCHEMA,
-            IdSource.ID_NONE, null, SCHEMA_NAME, null, true,
+            IdSource.NONE, null, SCHEMA_NAME, null, true,
             new Property.PrimaryKeyProperty(SCHEMA_NAME, Type.STRING, "Name"));
 
     EntityRepository.get().initialize(T_TABLE,
-            IdSource.ID_NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true,
+            IdSource.NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true,
             new Property.EntityProperty(TABLE_SCHEMA_REF, "Schema", T_SCHEMA,
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING)),
             new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name", 1));
 
     EntityRepository.get().initialize(T_COLUMN,
-            IdSource.ID_NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
+            IdSource.NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
             new Property.EntityProperty(COLUMN_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING, null, 0),
                     new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING, null, 1)).setLookup(false),
@@ -69,7 +69,7 @@ public class SchemaBrowser {
             new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"));
 
     EntityRepository.get().initialize(T_CONSTRAINT,
-            IdSource.ID_NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true,
+            IdSource.NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true,
             new Property.EntityProperty(CONSTRAINT_TABLE_REF, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING, null, 0),
                     new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING, null, 1)).setLookup(false),
@@ -77,7 +77,7 @@ public class SchemaBrowser {
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"));
 
     EntityRepository.get().initialize(T_COLUMN_CONSTRAINT,
-            IdSource.ID_NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
+            IdSource.NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
             null, true,
             new Property.EntityProperty(COLUMN_CONSTRAINT_CONSTRAINT_REF, "Constraint", T_CONSTRAINT,
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING, null, 0),

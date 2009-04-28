@@ -30,7 +30,7 @@ public class ModelTestDomain {
             new Property.PrimaryKeyProperty(TEST_MASTER_ID),
             new Property(TEST_MASTER_NAME, Type.STRING));
 
-    EntityRepository.get().initialize(T_TEST_DETAIL, IdSource.ID_NONE, null,
+    EntityRepository.get().initialize(T_TEST_DETAIL, IdSource.NONE, null,
             TEST_DETAIL_STRING, DETAIL_SELECT_TABLE_NAME, false,
             new Property.PrimaryKeyProperty(TEST_DETAIL_ID).setDefaultValue(420),
             new Property(TEST_DETAIL_INT, Type.INT, TEST_DETAIL_INT),

@@ -65,9 +65,9 @@ public class EmployeeModel extends EntityModel {
         getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {
           public boolean include(final Object item) {
             return item instanceof String //the item representing null
-                    || (Entity.equal(Type.ENTITY,
+                    || (Entity.isEqual(Type.ENTITY,
                     ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue())
-                    && !Entity.equal(Type.ENTITY, item, getActiveEntityCopy()));
+                    && !Entity.isEqual(Type.ENTITY, item, getActiveEntityCopy()));
           }
         });
       }

@@ -343,7 +343,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.compactPanel = compactPanel;
-    this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();    
+    this.detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();
     this.stActive.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (isActive()) {
@@ -2051,7 +2051,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       final Property property = iter.next();
       if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty ||
               (property instanceof Property.PrimaryKeyProperty &&
-                      EntityRepository.get().getIdSource(getModel().getEntityID()) != IdSource.ID_NONE))
+                      EntityRepository.get().getIdSource(getModel().getEntityID()) != IdSource.NONE))
         iter.remove();
     }
     Collections.sort(ret, new Comparator<Property>() {

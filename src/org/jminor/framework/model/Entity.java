@@ -590,8 +590,8 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param one the first object
    * @param two the second object
    * @return true if the given objects are equal
-   *///todo rename isEqual
-  public static boolean equal(final Type type, final Object one, final Object two) {
+   */
+  public static boolean isEqual(final Type type, final Object one, final Object two) {
     final boolean oneNull = isValueNull(type, one);
     final boolean twoNull = isValueNull(type, two);
 
@@ -696,7 +696,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     if (!initialization)
       updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
 
-    if (evtPropertyChanged != null && !equal(property.propertyType, newValue, oldValue))
+    if (evtPropertyChanged != null && !isEqual(property.propertyType, newValue, oldValue))
       firePropertyChangeEvent(property, newValue, oldValue, initialization);
   }
 
@@ -757,13 +757,13 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   private void updateModifiedState(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
     if (originalPropertyValues != null && originalPropertyValues.containsKey(propertyID)) {
-      if (equal(type, originalPropertyValues.get(propertyID), newValue)) {
+      if (isEqual(type, originalPropertyValues.get(propertyID), newValue)) {
         originalPropertyValues.remove(propertyID);//we're back to the original value
         if (propertyDebug)
           System.out.println(propertyID + " reverted back to original value " + newValue);
       }
     }
-    else if (!equal(type, oldValue, newValue)) {
+    else if (!isEqual(type, oldValue, newValue)) {
       (originalPropertyValues == null ?
               (originalPropertyValues = new HashMap<String, Object>()) : originalPropertyValues).put(propertyID, oldValue);
     }

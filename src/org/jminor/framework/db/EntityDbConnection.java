@@ -143,12 +143,12 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
           throw new DbException("Cannot insert a read only entity");
 
         final IdSource idSource = EntityRepository.get().getIdSource(entityID);
-        if (idSource == IdSource.ID_MAX_PLUS_ONE || idSource == IdSource.ID_SEQUENCE || idSource == IdSource.ID_QUERY)
+        if (idSource == IdSource.MAX_PLUS_ONE || idSource == IdSource.SEQUENCE || idSource == IdSource.QUERY)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), getNextIdValue(entityID, idSource), false);
 
         execute(sql = getInsertSQL(entity));
 
-        if (idSource == IdSource.ID_AUTO_INCREMENT)
+        if (idSource == IdSource.AUTO_INCREMENT)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
                   queryInteger(Database.getAutoIncrementValueSQL(
                           EntityRepository.get().getEntityIdSource(entityID))), false);
@@ -715,13 +715,13 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private int getNextIdValue(final String entityID, final IdSource idSource) throws DbException {
     String sql;
     switch (idSource) {
-      case ID_MAX_PLUS_ONE:
+      case MAX_PLUS_ONE:
         sql = "select max(" + EntityRepository.get().getPrimaryKeyColumnNames(entityID)[0] + ") + 1 from " + entityID;
         break;
-      case ID_QUERY:
+      case QUERY:
         sql = EntityRepository.get().getEntityIdSource(entityID);
         break;
-      case ID_SEQUENCE:
+      case SEQUENCE:
         sql = Database.getSequenceSQL(EntityRepository.get().getEntityIdSource(entityID));
         break;
       default:

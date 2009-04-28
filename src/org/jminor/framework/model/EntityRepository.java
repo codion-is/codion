@@ -501,7 +501,7 @@ public class EntityRepository implements Serializable {
    */
   public void initialize(final String entityID, final String orderByColumns,
                          final Property... initialPropertyDefinitions) {
-    initialize(entityID, IdSource.ID_AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
+    initialize(entityID, IdSource.AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
   }
 
   /**
@@ -512,7 +512,7 @@ public class EntityRepository implements Serializable {
    */
   public void initialize(final String entityID,
                          final Property... initialPropertyDefinitions) {
-    initialize(entityID, IdSource.ID_AUTO_INCREMENT, initialPropertyDefinitions);
+    initialize(entityID, IdSource.AUTO_INCREMENT, initialPropertyDefinitions);
   }
 
   /**
@@ -619,7 +619,7 @@ public class EntityRepository implements Serializable {
     this.idSources.put(entityID, idSource);
     this.entityOrderByColumns.put(entityID, orderByColumns == null ? "" : orderByColumns);
     this.entityIdSources.put(entityID,
-            (idSource == IdSource.ID_SEQUENCE || idSource == IdSource.ID_AUTO_INCREMENT) ?
+            (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
                     (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null);
 
     final HashMap<String, Property> properties = new LinkedHashMap<String, Property>(initialPropertyDefinitions.length);

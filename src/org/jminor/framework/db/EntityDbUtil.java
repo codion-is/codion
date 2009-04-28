@@ -113,7 +113,7 @@ public class EntityDbUtil {
   public static List<Property> getInsertProperties(final String entityID) {
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : EntityRepository.get().getDatabaseProperties(entityID,
-            EntityRepository.get().getIdSource(entityID) != IdSource.ID_AUTO_INCREMENT, false, true)) {
+            EntityRepository.get().getIdSource(entityID) != IdSource.AUTO_INCREMENT, false, true)) {
       if (!(property instanceof Property.EntityProperty))
         ret.add(property);
     }

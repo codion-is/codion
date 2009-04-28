@@ -60,13 +60,13 @@ public class EmpDept {
 
   static {
     /*Initalizing the entity type T_DEPARTMENT*/
-    EntityRepository.get().initialize(T_DEPARTMENT, IdSource.ID_NONE, null, DEPARTMENT_NAME,
+    EntityRepository.get().initialize(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID)),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME), false, false, 120),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION), false, false, 150));
 
     /*Initalizing the entity type T_EMPLOYEE*/
-    EntityRepository.get().initialize(T_EMPLOYEE, IdSource.ID_MAX_PLUS_ONE, null,
+    EntityRepository.get().initialize(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME)),
