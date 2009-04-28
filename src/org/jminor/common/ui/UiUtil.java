@@ -10,12 +10,28 @@ import org.jminor.common.model.UserCancelException;
 
 import com.toedter.calendar.JCalendar;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.KeyStroke;
+import javax.swing.RootPaneContainer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
 import javax.swing.tree.TreeNode;
@@ -31,6 +47,8 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -457,6 +475,18 @@ public class UiUtil {
           else
             component.transferFocus();
         }
+      }
+    });
+  }
+
+  /**
+   * Selects all text in the given component when it gains focus
+   * @param textComponent the text component
+   */
+  public static void selectAllOnFocusGained(final JTextComponent textComponent) {
+    textComponent.addFocusListener(new FocusAdapter() {
+      public void focusGained(final FocusEvent e) {
+        textComponent.selectAll();
       }
     });
   }

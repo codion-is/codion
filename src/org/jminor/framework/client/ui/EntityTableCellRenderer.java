@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.model.Type;
 
@@ -99,7 +100,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
     public NumberRenderer(final boolean formatValue) {
       super();
-      formatter = NumberFormat.getInstance();
+      this.formatter = NumberFormat.getInstance();
+      this.formatter.setGroupingUsed((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_NUMBER_FORMAT_GROUPING));
       this.formatValue = formatValue;
       setHorizontalAlignment(JLabel.RIGHT);
     }

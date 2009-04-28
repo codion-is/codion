@@ -17,8 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -100,16 +98,8 @@ public class LoginPanel extends JPanel {
 
     txtUsername.setColumns(8);
     txtPassword.setColumns(8);
-    txtUsername.addFocusListener(new FocusAdapter() {
-      public void focusGained(FocusEvent e) {
-        txtUsername.selectAll();
-      }
-    });
-    txtPassword.addFocusListener(new FocusAdapter() {
-      public void focusGained(FocusEvent e) {
-        txtPassword.selectAll();
-      }
-    });
+    UiUtil.selectAllOnFocusGained(txtUsername);
+    UiUtil.selectAllOnFocusGained(txtPassword);
 
     retBase.add(lblUser);
     retBase.add(txtUsername);

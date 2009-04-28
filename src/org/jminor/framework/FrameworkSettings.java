@@ -197,6 +197,14 @@ public class FrameworkSettings implements Serializable {
   public static final String WILDCARD_CHARACTER = "wildcard_character";
 
   /**
+   * Specifies whether or not to use number format grouping in table views,
+   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale
+   * Value type: Boolean
+   * Default value: true
+   */
+  public static final String USE_NUMBER_FORMAT_GROUPING = "use_number_format_grouping";
+
+  /**
    * Specifies the class providing remote db connections
    * Value type: String (the name of a class implementing org.jminor.framework.db.IEntityDbProvider)
    * Default value: org.jminor.framework.server.EntityDbRemoteProvider
@@ -240,6 +248,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(INITIAL_SEARCH_PANEL_STATE, false);
     setProperty(SERVER_NAME_PREFIX, "JMinor EntityDb Server");
     setProperty(WILDCARD_CHARACTER, "%");
+    setProperty(USE_NUMBER_FORMAT_GROUPING, true);
     setProperty(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.EntityDbRemoteProvider");
     setProperty(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.EntityDbLocalProvider");
   }

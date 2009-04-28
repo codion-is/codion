@@ -429,3 +429,5 @@
   Entity.equal() renamed to isEqual
   FrameworkSettings.FILTER_QUERY_BY_MASTER property value is now true by default
   Default usernames are now saved in preferences per application
+  UiUtil.selectAllOnFocusGained(JTextComponent) added
+  FrameworkSettings.USE_NUMBER_FORMAT_GROUPING property added, default true
