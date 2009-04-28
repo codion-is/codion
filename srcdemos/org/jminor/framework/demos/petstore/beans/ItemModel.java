@@ -20,7 +20,6 @@ public class ItemModel extends EntityModel {
 
   public ItemModel(final IEntityDbProvider dbProvider) throws UserException {
     super("Item", dbProvider, Petstore.T_ITEM);
-    getTableModel().setFilterQueryByMaster(true);
   }
 
   /** {@inheritDoc} */

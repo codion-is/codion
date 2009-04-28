@@ -47,7 +47,7 @@ public class Util {
   public static final String LOGGING_LEVEL_FATAL = "fatal";
   public static final String LOGGING_LEVEL_TRACE = "trace";
 
-  public static final String PREF_DEFAULT_USERNAME = "jminor.default.username";
+  public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
   private static Level defaultLoggingLevel;
   private static final Preferences USER_PREFERENCES = Preferences.userRoot();
@@ -75,6 +75,14 @@ public class Util {
 
   public static void putUserPreference(final String key, final String value) {
     USER_PREFERENCES.put(key, value);
+  }
+
+  public static String getDefaultUserName(final String applicationClassname, final String defaultName) {
+    return getUserPreference(applicationClassname + "." + Util.PREF_DEFAULT_USERNAME, defaultName);
+  }
+
+  public static void setDefaultUserName(final String applicationClassname, final String username) {
+    putUserPreference(applicationClassname + "." + Util.PREF_DEFAULT_USERNAME, username);
   }
 
   public static String formatLatitude(final String latitude) {

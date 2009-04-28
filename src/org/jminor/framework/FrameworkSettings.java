@@ -162,7 +162,7 @@ public class FrameworkSettings implements Serializable {
   /**
    * Specifies if the default filtering behaviour should be to filter the underlying query
    * Value type: Boolean
-   * Default value: false todo change to true
+   * Default value: true
    */
   public static final String FILTER_QUERY_BY_MASTER = "filter_query_by_master";
 
@@ -235,7 +235,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(SQL_BOOLEAN_VALUE_FALSE, 0);
     setProperty(SQL_BOOLEAN_VALUE_TRUE, 1);
     setProperty(SQL_BOOLEAN_VALUE_NULL, null);
-    setProperty(FILTER_QUERY_BY_MASTER, false);
+    setProperty(FILTER_QUERY_BY_MASTER, true);
     setProperty(PERSIST_ENTITY_PANELS, false);
     setProperty(INITIAL_SEARCH_PANEL_STATE, false);
     setProperty(SERVER_NAME_PREFIX, "JMinor EntityDb Server");
@@ -257,10 +257,11 @@ public class FrameworkSettings implements Serializable {
   }
 
   /**
+   * @param applicationClassName the application class name
    * @return the default username
    */
-  public static String getDefaultUsername() {
-    final String preferredUserName = Util.getUserPreference(Util.PREF_DEFAULT_USERNAME,
+  public static String getDefaultUsername(final String applicationClassName) {
+    final String preferredUserName = Util.getDefaultUserName(applicationClassName,
             instance.getProperty(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
     return System.getProperty(FrameworkConstants.DEFAULT_USERNAME_PROPERTY, preferredUserName);
   }

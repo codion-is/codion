@@ -17,6 +17,5 @@ public class TagItemModel extends EntityModel {
 
   public TagItemModel(final IEntityDbProvider dbProvider) throws UserException {
     super("Item Tags", dbProvider, Petstore.T_TAG_ITEM);
-    getTableModel().setFilterQueryByMaster(true);
   }
 }

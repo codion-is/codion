@@ -20,7 +20,6 @@ public class ProductModel extends EntityModel {
 
   public ProductModel(final IEntityDbProvider dbProvider) throws UserException {
     super("Product", dbProvider, Petstore.T_PRODUCT);
-    getTableModel().setFilterQueryByMaster(true);
     getTableModel().setShowAllWhenNotFiltered(true);
   }
 

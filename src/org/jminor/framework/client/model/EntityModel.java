@@ -268,9 +268,13 @@ public class EntityModel implements IRefreshable {
     this.activeEntity = new Entity(entityID);
     this.activeEntity.setAs(getDefaultEntity());
     this.detailModels = initializeDetailModels();
-    for (final EntityModel detailModel : this.detailModels)
-      detailModel.setMasterModel(this);
     this.activeEntity.setFirePropertyChangeEvents(true);
+    final boolean filterQueryByMaster = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
+    for (final EntityModel detailModel : this.detailModels) {
+      detailModel.setMasterModel(this);
+      if (detailModel.getTableModel() != null)
+        detailModel.getTableModel().setFilterQueryByMaster(filterQueryByMaster);
+    }
     initializeAssociatedModels();
     bindEvents();
     bindTableModelEvents();

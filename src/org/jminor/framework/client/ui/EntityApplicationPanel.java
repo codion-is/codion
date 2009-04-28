@@ -217,8 +217,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
         log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
-        Util.putUserPreference(Util.PREF_DEFAULT_USERNAME, user.getUsername());
         retry = false;//successful startup
+        Util.setDefaultUserName(applicationPanelClass.getSimpleName(), user.getUsername());
       }
       catch (UserCancelException uce) {
         System.exit(0);
@@ -892,7 +892,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     User user = new User("", "");
     if (applicationPanel.loginRequired()) {
       user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-              new User(FrameworkSettings.getDefaultUsername(), null) : defaultUser,
+              new User(FrameworkSettings.getDefaultUsername(applicationPanel.getClass().getSimpleName()), null) : defaultUser,
               applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
       if (user.getPassword() == null || user.getPassword().length() == 0)
         throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));

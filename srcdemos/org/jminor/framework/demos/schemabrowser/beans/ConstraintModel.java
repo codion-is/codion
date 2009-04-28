@@ -15,7 +15,6 @@ public class ConstraintModel extends EntityModel {
 
   public ConstraintModel(final IEntityDbProvider dbProvider) throws UserException {
     super("Constraints", dbProvider, SchemaBrowser.T_CONSTRAINT);
-    getTableModel().setFilterQueryByMaster(true);
   }
 
   /** {@inheritDoc} */

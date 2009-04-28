@@ -68,7 +68,7 @@ public abstract class EntityTestUnit extends TestCase {
    * @throws org.jminor.common.model.UserCancelException in case the user cancels the login
    */
   protected User getTestUser() throws UserCancelException {
-    return LoginPanel.getUser(null, new User(FrameworkSettings.getDefaultUsername(), null));
+    return LoginPanel.getUser(null, new User(FrameworkSettings.getDefaultUsername(getClass().getName()), null));
   }
 
   protected Entity getReferenceEntity(final String entityID) {

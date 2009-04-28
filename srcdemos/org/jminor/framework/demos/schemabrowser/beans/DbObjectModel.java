@@ -15,7 +15,6 @@ public class DbObjectModel extends EntityModel {
 
   public DbObjectModel(final IEntityDbProvider dbProvider) throws UserException {
     super("Tables", dbProvider, SchemaBrowser.T_TABLE);
-    getTableModel().setFilterQueryByMaster(true);
   }
 
   /** {@inheritDoc} */

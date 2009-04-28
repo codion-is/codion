@@ -12,6 +12,5 @@ public class ColumnModel extends EntityModel {
 
   public ColumnModel(final IEntityDbProvider dbProvider) throws UserException {
     super("Columns", dbProvider, SchemaBrowser.T_COLUMN);
-    getTableModel().setFilterQueryByMaster(true);
   }
 }

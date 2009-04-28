@@ -194,7 +194,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private Iterator<Entity> reportPrintIterator;
   private Entity currentReportRecord;
 
-  private boolean filterQueryByMaster = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
+  private boolean filterQueryByMaster = false;
   private boolean showAllWhenNotFiltered = false;
   private boolean updatingSelection = false;
 

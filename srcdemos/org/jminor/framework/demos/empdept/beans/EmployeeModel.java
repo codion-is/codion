@@ -26,7 +26,6 @@ public class EmployeeModel extends EntityModel {
 
   public EmployeeModel(final IEntityDbProvider dbProvider) throws UserException {
     super(EmpDept.getString(EmpDept.T_EMPLOYEE), dbProvider, EmpDept.T_EMPLOYEE);
-    getTableModel().setFilterQueryByMaster(true);
     getTableModel().setShowAllWhenNotFiltered(true);
   }
 

@@ -427,3 +427,5 @@
   FrameworkSettings.AUTHENTICATION_REQUIRED property added and used in EntityApplicationPanel.loginRequired()
   IdSource constant ID_ prefix removed
   Entity.equal() renamed to isEqual
+  FrameworkSettings.FILTER_QUERY_BY_MASTER property value is now true by default
+  Default usernames are now saved in preferences per application
