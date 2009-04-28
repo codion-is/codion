@@ -28,7 +28,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -123,8 +122,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   private JComponent initEntityField() {
     final EntityComboBoxModel boxModel = ((PropertySearchModel) model).getEntityComboBoxModel();
     if (boxModel != null) {
-      final JComboBox field = new JComboBox(boxModel);
-      field.setPreferredSize(new Dimension(120,field.getPreferredSize().height));
+      final EntityComboBox field = new EntityComboBox(boxModel, null);
       MaximumMatch.enable(field);
 
       return field;
@@ -133,7 +131,6 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       final EntityLookupField field =
               new EntityLookupField(((PropertySearchModel) model).getEntityLookupModel(), getEnableAction());
       field.getModel().refreshSearchText();
-      field.getModel().setAllowMultipleSelection(true);
 
       return field;
     }

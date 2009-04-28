@@ -274,9 +274,11 @@ public class EntityTableSearchModel {
           searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
         }
         else {
-          searchModel = new PropertySearchModel(property, new EntityLookupModel(dbProvider,
+          final EntityLookupModel lookupModel = new EntityLookupModel(dbProvider,
                   ((Property.EntityProperty) property).referenceEntityID,
-                  getSearchProperties(((Property.EntityProperty) property).referenceEntityID)));
+                  getSearchProperties(((Property.EntityProperty) property).referenceEntityID));
+          lookupModel.setAllowMultipleSelection(true);
+          searchModel = new PropertySearchModel(property, lookupModel);
         }
       }
       else {
