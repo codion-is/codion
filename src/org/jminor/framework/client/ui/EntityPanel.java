@@ -56,7 +56,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -868,34 +867,26 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Shows a dialog containing lists of entities which depend on the selected entities
    */
   public void viewSelectionDependencies() {
-    new SwingWorker() {//just testing this thingy
-      protected Object doInBackground() throws Exception {
-        try {
-          final Map<String, List<Entity>> dependencies;
-          try {
-            UiUtil.setWaitCursor(true, EntityPanel.this);
-            dependencies = model.getTableModel().getSelectionDependencies();
-          }
-          finally {
-            UiUtil.setWaitCursor(false, EntityPanel.this);
-          }
-          if (EntityUtil.activeDependencies(dependencies)) {
-            showDependenciesDialog(dependencies, model.getDbConnectionProvider(), EntityPanel.this);
-          }
-          else {
-            JOptionPane.showMessageDialog(EntityPanel.this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
-                    FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
-          }
-
-          return true;
-        }
-        catch (Exception e) {
-          handleException(e);
-        }
-
-        return false;
+    try {
+      final Map<String, List<Entity>> dependencies;
+      try {
+        UiUtil.setWaitCursor(true, EntityPanel.this);
+        dependencies = model.getTableModel().getSelectionDependencies();
       }
-    }.execute();
+      finally {
+        UiUtil.setWaitCursor(false, EntityPanel.this);
+      }
+      if (EntityUtil.activeDependencies(dependencies)) {
+        showDependenciesDialog(dependencies, model.getDbConnectionProvider(), EntityPanel.this);
+      }
+      else {
+        JOptionPane.showMessageDialog(EntityPanel.this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
+                FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
+      }
+    }
+    catch (Exception e) {
+      handleException(e);
+    }
   }
 
   /**
