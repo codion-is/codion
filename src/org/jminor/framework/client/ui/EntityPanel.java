@@ -145,7 +145,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * true if this panel should be compact
    */
-  private final boolean compactPanel;
+  private final boolean compactLayout;
 
   /**
    * true if the rows in the table (if any) should be colored according to the underlying entity
@@ -153,7 +153,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final boolean specialRendering;
 
   /**
-   * true if the data should be refreshed during initialization
+   * true if the data should be refreshed (fetched from the database) during initialization
    */
   private final boolean refreshOnInit;
 
@@ -163,8 +163,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final String buttonPlacement;
 
   /**
-   * A map containing the detail panels providers, if any.
-   * Initialized during <code>initialize()</code>
+   * A map containing the detail panels mapped to their respective provider, if any
    */
   private final Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders;
 
@@ -223,7 +222,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
    */
-  private int editPanelState = HIDDEN;
+  private int editPanelState = EMBEDDED;
 
   /**
    * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
@@ -283,7 +282,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
- * is colored according to the underlying entity
+   * is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
    */
   public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons) {
@@ -294,10 +293,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Initializes a new EntityPanel instance.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param specialRendering if true then each row in the table model (if any)
- * is colored according to the underlying entity
+   * @param specialRendering if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
-* otherwise vertically on its right side
+   * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    */
   public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
@@ -309,10 +307,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Initializes a new EntityPanel instance.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param specialRendering if true then each row in the table model (if any)
- * is colored according to the underlying entity
+   * @param specialRendering if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
-* otherwise vertically on its right side
+   * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
    */
@@ -331,10 +328,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
-   * @param compactPanel true if this panel should be laid out in a compact state
+   * @param compactLayout true if this panel should be laid out in a compact state
    */
   public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
-                     final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactPanel) {
+                     final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactLayout) {
     if (detailPanelState == DIALOG)
       throw new IllegalArgumentException("EntityPanel constructor only accepts HIDDEN or EMBEDDED as default detail states");
 
@@ -346,7 +343,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     this.specialRendering = specialRendering;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
-    this.compactPanel = compactPanel;
+    this.compactLayout = compactLayout;
     this.detailEntityPanelProviders = initializeDetailPanels();
     this.stActive.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -385,40 +382,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     try {
       UiUtil.setWaitCursor(true, this);
-
-      bindEvents();
-      addComponentListener(new ComponentAdapter() {
-        public void componentHidden(ComponentEvent e) {
-          setFilterPanelsVisible(false);
-        }
-        public void componentShown(ComponentEvent e) {
-          setFilterPanelsVisible(true);
-        }
-      });
-      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION))
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
-                new WeakPropertyChangeListener(focusPropertyListener));
       initializeAssociatedPanels();
       setupControls();
       initializeControlPanels();
-
-      editPanel = initializeEditPanel();
-      entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
-      if (entityTablePanel != null) {
-        entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
-        entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
-        entityTablePanel.setMinimumSize(new Dimension(0,0));
-      }
-      horizontalSplitPane = detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
-      detailTabPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
-
+      bindEvents();
       bindTableModelEvents();
-      bindTablePanelEvents();
-
       initializeUI();
-
-      setDetailPanelState(detailPanelState);
-      setEditPanelState(EMBEDDED);
+      bindTablePanelEvents();
 
       if (refreshOnInit)
         model.refresh();//refreshes combo models
@@ -622,14 +592,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       disposeEditDialog();
 
     if (state == EMBEDDED) {
-      if (compactPanel)
+      if (compactLayout)
         compactBase.add(editPanel, BorderLayout.NORTH);
       else
         add(editPanel, BorderLayout.NORTH);
       prepareUI(true, false);
     }
     else if (state == HIDDEN) {
-      if (compactPanel)
+      if (compactLayout)
         compactBase.remove(editPanel);
       else
         remove(editPanel);
@@ -938,7 +908,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (clearUI)
       model.clear();
     if (requestDefaultFocus) {
-      if (getEditPanel() == null && entityTablePanel != null)
+      if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && entityTablePanel != null)
         entityTablePanel.requestFocusInWindow();
       else if (getDefaultFocusComponent() != null)
         getDefaultFocusComponent().requestFocusInWindow();
@@ -1256,13 +1226,23 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * |                  |             |
    * |__________________|_____________|
    */
-  protected void initializeUI() {
+  protected void initializeUI() {    
+    editPanel = initializeEditPanel();
+    entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
+    if (entityTablePanel != null) {
+      entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
+      entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
+      entityTablePanel.setMinimumSize(new Dimension(0,0));
+    }
+    horizontalSplitPane = detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
+    detailTabPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
+
     setLayout(new BorderLayout(5,5));
     if (detailTabPane == null) { //no left right split pane
       add(entityTablePanel, BorderLayout.CENTER);
     }
     else {
-      if (compactPanel) {
+      if (compactLayout) {
         compactBase = new JPanel(new BorderLayout(5,5));
         compactBase.add(entityTablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
@@ -1273,6 +1253,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       horizontalSplitPane.setRightComponent(detailTabPane);
       add(horizontalSplitPane, BorderLayout.CENTER);
     }
+    setDetailPanelState(detailPanelState);
+    setEditPanelState(editPanelState);
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION))
+      KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
+              new WeakPropertyChangeListener(focusPropertyListener));
   }
 
   /**
@@ -1645,9 +1630,19 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   /**
    * Override to keep event bindings in one place,
+   * remember to call super.bindEvents()
    * this method is called during initialization
    */
-  protected void bindEvents() {}
+  protected void bindEvents() {
+    addComponentListener(new ComponentAdapter() {
+      public void componentHidden(ComponentEvent e) {
+        setFilterPanelsVisible(false);
+      }
+      public void componentShown(ComponentEvent e) {
+        setFilterPanelsVisible(true);
+      }
+    });
+  }
 
   /**
    * Override to keep table model event bindings in one place,

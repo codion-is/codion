@@ -90,7 +90,7 @@ public class EntityModel implements IRefreshable {
   public final Event evtAfterDelete = new Event("EntityModel.evtAfterDelete");
 
   /**
-   * Fired when an entity is deleted, inserted or updated
+   * Fired when an entity is deleted, inserted or updated via this EntityModel
    */
   public final Event evtEntitiesChanged = new Event("EntityModel.evtEntitiesChanged");
 
