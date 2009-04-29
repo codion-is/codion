@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.petstore.model.Petstore;
 
@@ -17,6 +18,10 @@ import javax.swing.JTextField;
  * Time: 14:05:58
  */
 public class AddressPanel extends EntityPanel {
+
+  public AddressPanel(final EntityModel model) {
+    super(model);
+  }
 
   /** {@inheritDoc} */
   protected JPanel initializePropertyPanel() {

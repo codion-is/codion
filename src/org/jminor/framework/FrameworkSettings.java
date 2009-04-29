@@ -28,10 +28,10 @@ public class FrameworkSettings implements Serializable {
   public static final String USE_QUERY_RANGE = "use_query_range";
 
   /**
-   * Indicates whether all entity panels should be enabled and
-   * receiving input by default
+   * Indicates whether all entity panels should be enabled and receiving input by default
    * Value type: Boolean
    * Default value: false
+   * @see #USE_FOCUS_ACTIVATION
    */
   public static final String ALL_PANELS_ENABLED = "all_panels_enabled";
 
@@ -43,10 +43,10 @@ public class FrameworkSettings implements Serializable {
   public static final String USE_KEYBOARD_NAVIGATION = "use_keyboard_navigation";
 
   /**
-   * Indicates whether entity panels should be activated and the underlying model enabled
-   * when the panel recieves focus
+   * Indicates whether entity panels should be activated when the panel recieves focus
    * Value type: Boolean
    * Default value: true
+   * @see #ALL_PANELS_ENABLED
    */
   public static final String USE_FOCUS_ACTIVATION = "use_focus_activation";
 

@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.beans.ui;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
@@ -18,8 +19,8 @@ import java.util.List;
 
 public class DepartmentPanel extends EntityPanel {
 
-  public DepartmentPanel() {
-    super(true, false, false, EMBEDDED, true, true);
+  public DepartmentPanel(final EntityModel model) {
+    super(model, true, false, false, EMBEDDED, true, true);
   }
 
   /** {@inheritDoc} */

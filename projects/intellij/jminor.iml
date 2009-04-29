@@ -5,8 +5,8 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../../classes/base" />
-    <exclude-output />
     <output-test url="file://$MODULE_DIR$/../../classes/test" />
+    <exclude-output />
     <content url="file://$MODULE_DIR$/../..">
       <sourceFolder url="file://$MODULE_DIR$/../../src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../srcdemos" isTestSource="false" />
@@ -30,7 +30,6 @@
         <jarDirectory url="file://$MODULE_DIR$/../../lib/derby" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntryProperties />
   </component>
   <component name="copyright">
     <Base>

@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
@@ -20,6 +21,10 @@ import java.util.List;
  * Time: 14:05:58
  */
 public class TagPanel extends EntityPanel {
+
+  public TagPanel(final EntityModel model) {
+    super(model);
+  }
 
   /** {@inheritDoc} */
   protected List<EntityPanelProvider> getDetailPanelProviders() {

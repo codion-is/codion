@@ -67,16 +67,16 @@ public class EntityPanelProvider implements Comparable {
     if (model == null)
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
     try {
-      return getEntityPanelClass().getConstructor().newInstance().setModel(model);
-    }
-    catch (RuntimeException e) {
-      throw e;
+      return getEntityPanelClass().getConstructor(EntityModel.class).newInstance(model);
     }
     catch (InvocationTargetException ite) {
       if (ite.getCause() instanceof UserException)
         throw (UserException) ite.getCause();
 
       throw new UserException(ite.getCause());
+    }
+    catch (RuntimeException e) {
+      throw e;
     }
     catch (Exception e) {
       throw new UserException(e);
@@ -87,17 +87,17 @@ public class EntityPanelProvider implements Comparable {
     try {
       return createInstance(getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
     }
-    catch (UserException e) {
-      throw e;
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
     catch (InvocationTargetException ite) {
       if (ite.getCause() instanceof UserException)
         throw (UserException) ite.getCause();
 
       throw new UserException(ite.getCause());
+    }
+    catch (UserException e) {
+      throw e;
+    }
+    catch (RuntimeException e) {
+      throw e;
     }
     catch (Exception e) {
       throw new UserException(e);

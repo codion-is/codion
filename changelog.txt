@@ -434,3 +434,7 @@
   Refactored EntityTableModel.EntityJRDataSource out of EntityTableModel which no longer implements JRDataSource hence no more reportPrintIterator and currentReportRecord fields
   EntityTableModel.initReportIterator() renamed to initializeReportIterator and made protected
   Removed a few probably ill-placed synchronized keywords, they simply gave the false illusion of thread-secure stuff
+  EntityPanel constructor now takes an EntityModel parameter
+  EntityPanel.setModel() removed
+  UiUtil.showInDialog() improved button caption and mnemonic
+  EntityTableModel constructor parameters reordered

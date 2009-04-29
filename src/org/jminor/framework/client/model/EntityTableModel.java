@@ -199,10 +199,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * Initializes a new EntityTableModel
-   * @param dbProvider a IEntityDbProvider instance
    * @param entityID the ID of the entity this table model should represent
+   * @param dbProvider a IEntityDbProvider instance
    */
-  public EntityTableModel(final IEntityDbProvider dbProvider, final String entityID) {
+  public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider) {
     this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
     this.tableColumnProperties = initializeColumnProperties();
@@ -1135,13 +1135,17 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return value == null ? Object.class : value.getClass();
   }
 
-  private static class EntityJRDataSource implements JRDataSource {
+  protected static class EntityJRDataSource implements JRDataSource {
 
     private final Iterator<Entity> reportIterator;
     private Entity currentEntity;
 
     public EntityJRDataSource(final Iterator<Entity> reportIterator) {
       this.reportIterator = reportIterator;
+    }
+
+    public Entity getCurrentEntity() {
+      return currentEntity;
     }
 
     public boolean next() throws JRException {
@@ -1153,7 +1157,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
 
     public Object getFieldValue(final JRField jrField) throws JRException {
-      return currentEntity.getTableValue(jrField.getName());
+      return getCurrentEntity().getTableValue(jrField.getName());
     }
   }
 }

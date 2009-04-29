@@ -1371,7 +1371,7 @@ public class EntityModel implements IRefreshable {
    * @return the EntityTableModel used by this EntityModel
    */
   protected EntityTableModel initializeTableModel() {
-    return new EntityTableModel(getDbConnectionProvider(), getEntityID());
+    return new EntityTableModel(getEntityID(), getDbConnectionProvider());
   }
 
   /**

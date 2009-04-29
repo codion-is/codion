@@ -160,7 +160,7 @@ public class TestEntityTableModel extends TestCase {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(null, ModelTestDomain.T_TEST_DETAIL);
+      super(ModelTestDomain.T_TEST_DETAIL, null);
     }
 
     public void refresh() throws UserException {

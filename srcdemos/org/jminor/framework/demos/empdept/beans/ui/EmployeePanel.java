@@ -7,6 +7,7 @@ import org.jminor.common.model.formats.ShortDotDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.PropertySummaryPanel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
@@ -16,6 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class EmployeePanel extends EntityPanel {
+
+  public EmployeePanel(final EntityModel model) {
+    super(model);
+  }
 
   /** {@inheritDoc} */
   public void initialize() {

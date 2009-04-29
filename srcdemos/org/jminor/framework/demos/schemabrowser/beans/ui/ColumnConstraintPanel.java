@@ -3,14 +3,15 @@
  */
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
 public class ColumnConstraintPanel extends EntityPanel {
 
-  public ColumnConstraintPanel() {
-    super(false, false);
+  public ColumnConstraintPanel(final EntityModel model) {
+    super(model, false, false);
   }
 
   /** {@inheritDoc} */

@@ -309,6 +309,8 @@
 
   <target name="deploy_project" depends="doc, dist"
           description="Creates a jminor-project.zip file in the base directory">
+    <delete file="${basedir}/${ant.project.name}-${version}-project.zip"/>
+    <delete file="${basedir}/derby.log"/>
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
       <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**,db/**"/>
     </zip>
