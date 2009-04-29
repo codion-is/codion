@@ -11,6 +11,6 @@ import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
 public class ColumnConstraintModel extends EntityModel {
 
   public ColumnConstraintModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Column constraints", dbProvider, SchemaBrowser.T_COLUMN_CONSTRAINT);
+    super("Column constraints", SchemaBrowser.T_COLUMN_CONSTRAINT, dbProvider);
   }
 }

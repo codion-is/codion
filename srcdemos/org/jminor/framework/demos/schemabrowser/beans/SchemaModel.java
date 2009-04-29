@@ -14,7 +14,7 @@ import java.util.List;
 public class SchemaModel extends EntityModel {
 
   public SchemaModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Schema Users", dbProvider, SchemaBrowser.T_SCHEMA);
+    super("Schema Users", SchemaBrowser.T_SCHEMA, dbProvider);
   }
 
   /** {@inheritDoc} */

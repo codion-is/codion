@@ -145,14 +145,14 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private int recordCount = -1;
 
   /**
-   * The IEntityDb connection provider
-   */
-  private final IEntityDbProvider dbConnectionProvider;
-
-  /**
    * The entity ID
    */
   private final String entityID;
+
+  /**
+   * The IEntityDb connection provider
+   */
+  private final IEntityDbProvider dbConnectionProvider;
 
   /**
    * Holds visible entities
@@ -203,8 +203,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @param dbProvider a IEntityDbProvider instance
    */
   public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider) {
-    this.dbConnectionProvider = dbProvider;
     this.entityID = entityID;
+    this.dbConnectionProvider = dbProvider;
     this.tableColumnProperties = initializeColumnProperties();
     this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);

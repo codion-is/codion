@@ -46,7 +46,6 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       bindEvents();
     }
     catch (UserException e) {
-      e.printStackTrace();
       throw e.getRuntimeException();
     }
   }

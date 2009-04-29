@@ -1191,7 +1191,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) throws UserException {
-    final EntityModel model = new EntityModel(entityID, dbProvider, entityID) {
+    final EntityModel model = new EntityModel(entityID, entityID, dbProvider) {
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider) {
           protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {

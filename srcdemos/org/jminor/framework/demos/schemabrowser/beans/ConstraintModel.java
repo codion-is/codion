@@ -14,7 +14,7 @@ import java.util.List;
 public class ConstraintModel extends EntityModel {
 
   public ConstraintModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Constraints", dbProvider, SchemaBrowser.T_CONSTRAINT);
+    super("Constraints", SchemaBrowser.T_CONSTRAINT, dbProvider);
   }
 
   /** {@inheritDoc} */

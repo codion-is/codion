@@ -48,21 +48,21 @@ public class EntityLookupModel {
   private String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
   private String multiValueSeperator = ",";
 
-  public EntityLookupModel(final IEntityDbProvider dbProvider, final String entityID, final List<Property> lookupProperties) {
-    this(dbProvider, entityID, null, lookupProperties);
+  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final List<Property> lookupProperties) {
+    this(entityID, dbProvider, null, lookupProperties);
   }
 
-  public EntityLookupModel(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalLookupCriteria,
+  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
                            final List<Property> lookupProperties) {
-    this(dbProvider, entityID, additionalLookupCriteria, false, lookupProperties);
+    this(entityID, dbProvider, additionalLookupCriteria, false, lookupProperties);
   }
 
-  public EntityLookupModel(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalLookupCriteria,
+  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
                            final boolean caseSensitive, final List<Property> lookupProperties) {
-    this(dbProvider, entityID, additionalLookupCriteria, caseSensitive, true, true, lookupProperties);
+    this(entityID, dbProvider, additionalLookupCriteria, caseSensitive, true, true, lookupProperties);
   }
 
-  public EntityLookupModel(final IEntityDbProvider dbProvider, final String entityID, final ICriteria additionalLookupCriteria,
+  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
                            final List<Property> lookupProperties) {
     setDbProvider(dbProvider);

@@ -438,3 +438,4 @@
   EntityPanel.setModel() removed
   UiUtil.showInDialog() improved button caption and mnemonic
   EntityTableModel constructor parameters reordered
+  EntityLookupModel, EntityComboBoxModel, EntityListModel and EntityModel constructor parameters reordered for consistency

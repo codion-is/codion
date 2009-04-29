@@ -32,8 +32,8 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   public final Event evtSelectionChangedAdjusting = new Event("EntityListModel.evtSelectionChangedAdjusting");
   public final Event evtSelectionChanged = new Event("EntityListModel.evtSelectionChanged");
 
-  private final IEntityDbProvider dbProvider;
   private final String entityID;
+  private final IEntityDbProvider dbProvider;
   private final List<Entity> data = new ArrayList<Entity>();
   private final boolean staticData;
 
@@ -55,14 +55,13 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
     }
   };
 
-  public EntityListModel(final IEntityDbProvider dbProvider, final String entityID) {
-    this(dbProvider, entityID, false);
+  public EntityListModel(final String entityID, final IEntityDbProvider dbProvider) {
+    this(entityID, dbProvider, false);
   }
 
-  public EntityListModel(final IEntityDbProvider dbProvider, final String entityID,
-                         final boolean staticData) {
-    this.dbProvider = dbProvider;
+  public EntityListModel(final String entityID, final IEntityDbProvider dbProvider, final boolean staticData) {
     this.entityID = entityID;
+    this.dbProvider = dbProvider;
     this.staticData = staticData;
   }
 

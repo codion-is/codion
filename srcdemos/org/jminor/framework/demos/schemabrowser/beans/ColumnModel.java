@@ -11,6 +11,6 @@ import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
 public class ColumnModel extends EntityModel {
 
   public ColumnModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Columns", dbProvider, SchemaBrowser.T_COLUMN);
+    super("Columns", SchemaBrowser.T_COLUMN, dbProvider);
   }
 }

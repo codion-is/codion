@@ -65,7 +65,7 @@ public class TestEntityLookupModel extends TestCase {
     super.setUp();
     new EmpDept();
     dbProvider = new EntityDbLocalProvider(new User("scott", "tiger"));
-    lookupModel = new EntityLookupModel(dbProvider, EmpDept.T_EMPLOYEE,
+    lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, dbProvider,
             Arrays.asList(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
 

@@ -14,7 +14,7 @@ import java.util.List;
 public class DbObjectModel extends EntityModel {
 
   public DbObjectModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Tables", dbProvider, SchemaBrowser.T_TABLE);
+    super("Tables", SchemaBrowser.T_TABLE, dbProvider);
   }
 
   /** {@inheritDoc} */

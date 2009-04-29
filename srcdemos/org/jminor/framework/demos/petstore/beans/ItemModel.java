@@ -19,7 +19,7 @@ import java.util.List;
 public class ItemModel extends EntityModel {
 
   public ItemModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Item", dbProvider, Petstore.T_ITEM);
+    super("Item", Petstore.T_ITEM, dbProvider);
   }
 
   /** {@inheritDoc} */

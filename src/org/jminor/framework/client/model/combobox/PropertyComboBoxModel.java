@@ -16,14 +16,14 @@ import java.util.List;
 public class PropertyComboBoxModel extends FilteredComboBoxModel {
 
   /**
-   * The IEntityDbProvider instance to use when populating this combo box model
-   */
-  private final IEntityDbProvider dbProvider;
-
-  /**
    * The ID of the entity
    */
   private final String entityID;
+
+  /**
+   * The IEntityDbProvider instance to use when populating this combo box model
+   */
+  private final IEntityDbProvider dbProvider;
 
   /**
    * The property which values should be shown in this combo box model
@@ -31,16 +31,16 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
   private final Property property;
 
   /**
-   * @param dbProvider a IEntityDbProvider instance
    * @param entityID the ID of the underlying entity
+   * @param dbProvider a IEntityDbProvider instance
    * @param property the underlying property
    * @param nullValue the value to use to represent a null value
    */
-  public PropertyComboBoxModel(final IEntityDbProvider dbProvider, final String entityID,
+  public PropertyComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
                                final Property property, final Object nullValue) {
     super(true, nullValue);
-    this.dbProvider = dbProvider;
     this.entityID = entityID;
+    this.dbProvider = dbProvider;
     this.property = property;
   }
 

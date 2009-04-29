@@ -25,15 +25,15 @@ import java.awt.event.ActionListener;
 public class EmployeeModel extends EntityModel {
 
   public EmployeeModel(final IEntityDbProvider dbProvider) throws UserException {
-    super(EmpDept.getString(EmpDept.T_EMPLOYEE), dbProvider, EmpDept.T_EMPLOYEE);
+    super(EmpDept.getString(EmpDept.T_EMPLOYEE), EmpDept.T_EMPLOYEE, dbProvider);
     getTableModel().setShowAllWhenNotFiltered(true);
   }
 
   /** {@inheritDoc} */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
     if (property.propertyID.equals(EmpDept.EMPLOYEE_MGR_REF)) {
-      final EntityComboBoxModel managerModel = new EntityComboBoxModel(getDbConnectionProvider(), EmpDept.T_EMPLOYEE,
-              false, EmpDept.getString(EmpDept.NONE), true);
+      final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
+              getDbConnectionProvider(), false, EmpDept.getString(EmpDept.NONE), true);
       //Only show the president and managers
       managerModel.setEntityCriteria(new EntityCriteria(EmpDept.T_EMPLOYEE,
               new PropertyCriteria(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),

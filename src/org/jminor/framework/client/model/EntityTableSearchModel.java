@@ -269,14 +269,13 @@ public class EntityTableSearchModel {
       PropertySearchModel searchModel;
       if (property instanceof Property.EntityProperty) {
         if (((Property.EntityProperty) property).isLookup()) {
-          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(dbProvider,
-                ((Property.EntityProperty) property).referenceEntityID, false, "", true));
+          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.EntityProperty) property).referenceEntityID,
+                  dbProvider, false, "", true));
           searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
         }
         else {
-          final EntityLookupModel lookupModel = new EntityLookupModel(dbProvider,
-                  ((Property.EntityProperty) property).referenceEntityID,
-                  getSearchProperties(((Property.EntityProperty) property).referenceEntityID));
+          final EntityLookupModel lookupModel = new EntityLookupModel(((Property.EntityProperty) property).referenceEntityID,
+                  dbProvider, getSearchProperties(((Property.EntityProperty) property).referenceEntityID));
           lookupModel.setAllowMultipleSelection(true);
           searchModel = new PropertySearchModel(property, lookupModel);
         }
