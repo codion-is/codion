@@ -122,9 +122,14 @@ public class Database {
   }
 
   /**
-   * The date format string used for Derby
+   * The date format used for Derby
    */
-  private static DateFormat DERBY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private static DateFormat DERBY_SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+  /**
+   * The date format for long dates (timestamps) used by Derby
+   */
+  private static DateFormat DERBY_LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   /**
    * The active database type
@@ -260,11 +265,11 @@ public class Database {
         return longDate ?
                 "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
                 "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
-      case DERBY://todo hmm, no format string?
+      case DERBY:
       case DERBY_EMBEDDED:
         return longDate ?
-                "DATE('" + LongDateFormat.get().format(value) + "')" :
-                "DATE('" + DERBY_DATE_FORMAT.format(value) + "')";
+                "DATE('" + DERBY_LONG_DATE_FORMAT.format(value) + "')" :
+                "DATE('" + DERBY_SHORT_DATE_FORMAT.format(value) + "')";
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
