@@ -441,3 +441,4 @@
   EntityLookupModel, EntityComboBoxModel, EntityListModel and EntityModel constructor parameters reordered for consistency
   EntityPanel.compactPanel field renamed to compactLayout
   EntityPanel.initialize(), moved some code to initializeUI() and bindEvents()
+  EntityTablePanel.initializeSummaryPanel() now uses the underlying JTable column model when initializing summary panels

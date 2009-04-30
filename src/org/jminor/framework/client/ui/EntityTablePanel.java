@@ -5,10 +5,10 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -610,7 +610,9 @@ public class EntityTablePanel extends JPanel {
   protected JPanel initializeSummaryPanel() {
     final List<JPanel> panels = new ArrayList<JPanel>();
     final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-    for (final Property property : EntityRepository.get().getVisiblePropertyList(getTableModel().getEntityID())) {
+    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    while (columns.hasMoreElements()) {
+      final Property property = (Property) columns.nextElement().getIdentifier();
       final PropertySummaryPanel panel = initializeSummaryPanel(property);
       propertySummaryPanels.put(property.propertyID, panel);
       panels.add(panel);

@@ -251,7 +251,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   };
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
    */
   public EntityPanel(final EntityModel model) {
@@ -259,7 +259,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    */
@@ -268,7 +268,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any)
@@ -290,7 +290,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any) is colored according to the underlying entity
@@ -304,7 +304,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any) is colored according to the underlying entity
@@ -320,7 +320,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Instantiates a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param specialRendering if true then each row in the table model (if any) is colored according to the underlying entity
@@ -359,14 +359,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   /** {@inheritDoc} */
   public EntityModel getModel() {
-    return this.model;
+    return model;
   }
 
   /**
    * @return the master panel, if any
    */
   public EntityPanel getMasterPanel() {
-    return this.masterPanel;
+    return masterPanel;
   }
 
   /**
@@ -1226,7 +1226,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * |                  |             |
    * |__________________|_____________|
    */
-  protected void initializeUI() {    
+  protected void initializeUI() {
     editPanel = initializeEditPanel();
     entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
     if (entityTablePanel != null) {
@@ -2080,12 +2080,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
-                                             final IEntityDbProvider model,
+                                             final IEntityDbProvider dbProvider,
                                              final JComponent dialogParent) throws UserException {
     JPanel dependenciesPanel;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
-      dependenciesPanel = createDependenciesPanel(dependencies, model);
+      dependenciesPanel = createDependenciesPanel(dependencies, dbProvider);
     }
     finally {
       UiUtil.setWaitCursor(false, dialogParent);
