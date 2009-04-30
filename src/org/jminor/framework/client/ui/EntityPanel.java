@@ -675,7 +675,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void handleException(final Throwable throwable, final JComponent dialogParent) {
     log.error(this, throwable);
-    FrameworkUiUtil.handleException(throwable, model.getEntityID(), dialogParent);
+    FrameworkUiUtil.getExceptionHandler().handleException(throwable, model.getEntityID(), dialogParent);
   }
 
   //#############################################################################################

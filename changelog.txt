@@ -443,3 +443,5 @@
   EntityPanel.initialize(), moved some code to initializeUI() and bindEvents()
   EntityTablePanel.initializeSummaryPanel() now uses the underlying JTable column model when initializing summary panels
   Database.DERBY_LONG_DATE_FORMAT added
+  FrameworkUiUtil.IEntityExceptionHandler and DefaultEntityExceptionHandler added
+  FrameworkUiUtil.exceptionHandler static field added plus getter/setter

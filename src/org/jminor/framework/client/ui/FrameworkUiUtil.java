@@ -70,7 +70,17 @@ import java.util.Vector;
 
 public class FrameworkUiUtil {
 
+  private static IEntityExceptionHandler exceptionHandler = new DefaultEntityExceptionHandler();
+
   private FrameworkUiUtil() {}
+
+  public static void setExceptionHandler(final IEntityExceptionHandler handler) {
+    exceptionHandler = handler;
+  }
+
+  public static IEntityExceptionHandler getExceptionHandler() {
+    return exceptionHandler;
+  }
 
   public static void previewReport(final JasperPrint jp, final Container dialogParent) {
     JRViewer viewer = new JRViewer(jp);
@@ -89,63 +99,6 @@ public class FrameworkUiUtil {
     JOptionPane.showMessageDialog(dialogParent, new JComboBox(model),
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
     Util.setLoggingLevel((Level) model.getSelectedItem());
-  }
-
-  public static void handleException(final Throwable exception, final String entityID, final JComponent dialogParent) {
-    if (exception instanceof UserCancelException)
-      return;
-    if (exception instanceof DbException)
-      handleDbException((DbException) exception, entityID, dialogParent);
-    else if (exception instanceof JRException && exception.getCause() != null)
-      handleException(exception.getCause(), entityID, dialogParent);
-    else if (exception instanceof UserException && exception.getCause() instanceof DbException)
-      handleDbException((DbException) exception.getCause(), entityID, dialogParent);
-    else {
-      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(exception), exception.getMessage(), exception);
-    }
-  }
-
-  private static String getMessageTitle(final Throwable e) {
-    if (e instanceof FileNotFoundException)
-      return FrameworkMessages.get(FrameworkMessages.UNABLE_TO_OPEN_FILE);
-
-    return Messages.get(Messages.EXCEPTION);
-  }
-
-  public static void handleDbException(final DbException dbException, final String entityID,
-                                       final JComponent dialogParent) {
-    if (dbException.isInsertNullValueException()) {
-      String columnName = dbException.getNullErrorColumnName().toLowerCase();
-      if (entityID != null) {
-        if (EntityRepository.get().hasProperty(entityID, columnName)) {
-          final Property property = EntityRepository.get().getProperty(entityID, columnName);
-          if (property.getCaption() != null)
-            columnName = property.getCaption();
-        }
-      }
-
-      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), Messages.get(Messages.EXCEPTION),
-              FrameworkMessages.get(FrameworkMessages.VALUE_MISSING) + ": " + columnName, dbException);
-    }
-    else {
-      String errMsg = dbException.getORAErrorMessage();
-      if (errMsg == null || errMsg.length() == 0) {
-        if (dbException.getCause() == null)
-          errMsg = trimMessage(dbException);
-        else
-          errMsg = trimMessage(dbException.getCause());
-      }
-      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
-              Messages.get(Messages.EXCEPTION), errMsg, dbException);
-    }
-  }
-
-  private static String trimMessage(final Throwable e) {
-    final String msg = e.getMessage();
-    if (msg.length() > 50)
-      return msg.substring(0, 50) + "...";
-
-    return msg;
   }
 
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
@@ -704,5 +657,69 @@ public class FrameworkUiUtil {
         }
       }
     });
+  }
+
+  public static interface IEntityExceptionHandler {
+    public void handleException(final Throwable exception, final String entityID, final JComponent dialogParent);
+  }
+
+  public static class DefaultEntityExceptionHandler implements IEntityExceptionHandler {
+
+    public void handleException(final Throwable exception, final String entityID, final JComponent dialogParent) {
+      if (exception instanceof UserCancelException)
+        return;
+      if (exception instanceof DbException)
+        handleDbException((DbException) exception, entityID, dialogParent);
+      else if (exception instanceof JRException && exception.getCause() != null)
+        handleException(exception.getCause(), entityID, dialogParent);
+      else if (exception instanceof UserException && exception.getCause() instanceof DbException)
+        handleDbException((DbException) exception.getCause(), entityID, dialogParent);
+      else {
+        ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(exception), exception.getMessage(), exception);
+      }
+    }
+
+    public void handleDbException(final DbException dbException, final String entityID,
+                                  final JComponent dialogParent) {
+      if (dbException.isInsertNullValueException()) {
+        String columnName = dbException.getNullErrorColumnName().toLowerCase();
+        if (entityID != null) {
+          if (EntityRepository.get().hasProperty(entityID, columnName)) {
+            final Property property = EntityRepository.get().getProperty(entityID, columnName);
+            if (property.getCaption() != null)
+              columnName = property.getCaption();
+          }
+        }
+
+        ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), Messages.get(Messages.EXCEPTION),
+                FrameworkMessages.get(FrameworkMessages.VALUE_MISSING) + ": " + columnName, dbException);
+      }
+      else {
+        String errMsg = dbException.getORAErrorMessage();
+        if (errMsg == null || errMsg.length() == 0) {
+          if (dbException.getCause() == null)
+            errMsg = trimMessage(dbException);
+          else
+            errMsg = trimMessage(dbException.getCause());
+        }
+        ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
+                Messages.get(Messages.EXCEPTION), errMsg, dbException);
+      }
+    }
+
+    private String getMessageTitle(final Throwable e) {
+      if (e instanceof FileNotFoundException)
+        return FrameworkMessages.get(FrameworkMessages.UNABLE_TO_OPEN_FILE);
+
+      return Messages.get(Messages.EXCEPTION);
+    }
+
+    private String trimMessage(final Throwable e) {
+      final String msg = e.getMessage();
+      if (msg.length() > 50)
+        return msg.substring(0, 50) + "...";
+
+      return msg;
+    }
   }
 }

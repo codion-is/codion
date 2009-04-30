@@ -103,7 +103,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /** {@inheritDoc} */
   public void handleException(final Throwable e) {
     log.error(this, e);
-    FrameworkUiUtil.handleException(e, null, this);
+    FrameworkUiUtil.getExceptionHandler().handleException(e, null, this);
   }
 
   /**
@@ -126,6 +126,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     if (model == null)
       throw new UserException("Cannot initialize panel without application model");
 
+    setUncaughtExceptionHandler();
     setupControls();
     initializeUI();
     initializeActiveEntityPanel();
@@ -207,7 +208,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         final long now = System.currentTimeMillis();
 
         applicationPanel.setModel(initializeApplicationModel(applicationModelClass, user));
-        initializeApplicationPanel(applicationPanel);
+        applicationPanel.initialize();
 
         final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
         if (showFrame)
@@ -228,7 +229,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
           initializationDialog.dispose();
 
         if (applicationPanel != null)
-          FrameworkUiUtil.handleException(ue, null, applicationPanel);
+          FrameworkUiUtil.getExceptionHandler().handleException(ue, null, applicationPanel);
         else
           ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
 
@@ -602,6 +603,17 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
   }
 
+  /**
+   * Sets the uncaught exception handler, override to add specific uncaught exception handling
+   */
+  protected void setUncaughtExceptionHandler() {
+    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      public void uncaughtException(final Thread thread, final Throwable throwable) {
+        FrameworkUiUtil.getExceptionHandler().handleException(throwable, null, EntityApplicationPanel.this);
+      }
+    });
+  }
+
   private JScrollPane initializeApplicationTree() {
     final JTree tree = new JTree(createApplicationTree(mainApplicationPanels));
     tree.setShowsRootHandles(true);
@@ -899,16 +911,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
 
     return user;
-  }
-
-  private static void initializeApplicationPanel(final EntityApplicationPanel applicationPanel) throws UserException {
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      public void uncaughtException(Thread t, Throwable e) {
-        FrameworkUiUtil.handleException(e, null, applicationPanel);
-      }
-    });
-
-    applicationPanel.initialize();
   }
 
   private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final IEntityDbProvider dbProvider,
