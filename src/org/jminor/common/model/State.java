@@ -17,21 +17,18 @@ import java.util.ListIterator;
  */
 public class State implements Serializable {
 
-  public final Event evtStateChanged = new Event("State.evtStateChanged") {
-    public String toString() {
-      return super.toString() + " [" + State.this + "]";
-    }
-  };
-  public final Event evtSetActive = new Event("State.evtSetActive") {
-    public String toString() {
-      return super.toString() + " [" + State.this + "]";
-    }
-  };
-  public final Event evtSetInactive = new Event("State.evtSetInactive") {
-    public String toString() {
-      return super.toString() + " [" + State.this + "]";
-    }
-  };
+  /**
+   * Fired each time the state changes
+   */
+  public final Event evtStateChanged = new Event("State.evtStateChanged");
+  /**
+   * Fired each time <code>setActive(true)</code> is called
+   */
+  public final Event evtSetActive = new Event("State.evtSetActive");
+  /**
+   * Fired each time <code>setActive(false)</code> is called
+   */
+  public final Event evtSetInactive = new Event("State.evtSetInactive");
 
   private ReverseState reversedState = null;
   private boolean active = false;
