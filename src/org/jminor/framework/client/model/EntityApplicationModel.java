@@ -145,7 +145,7 @@ public abstract class EntityApplicationModel {
       final List<Class<? extends EntityModel>> mainModelClasses = getMainEntityModelClasses();
       final List<EntityModel> ret = new ArrayList<EntityModel>(mainModelClasses.size());
       for (final Class<? extends EntityModel> mainModelClass : mainModelClasses)
-        ret.add(mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbConnectionProvider()));
+        ret.add(instantiateMainApplicationModel(mainModelClass));
 
       return ret;
     }
@@ -164,6 +164,11 @@ public abstract class EntityApplicationModel {
     catch (InstantiationException e) {
       throw new UserException(e);
     }
+  }
+
+  protected EntityModel instantiateMainApplicationModel(Class<? extends EntityModel> mainModelClass)
+          throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    return mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbConnectionProvider());
   }
 
   protected void bindEvents() {}

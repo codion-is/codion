@@ -57,10 +57,8 @@ public class LoginPanel extends JPanel {
                                     final Icon icon, final String dialogTitle,
                                     final String usernameLabel, final String passwordLabel) throws UserCancelException {
     final LoginPanel panel = new LoginPanel(defaultUser, false, usernameLabel, passwordLabel);
-
     final JOptionPane pane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION, icon);
-
     final JDialog dialog = pane.createDialog(parent, dialogTitle == null ?
             Messages.get(Messages.LOGIN) : dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

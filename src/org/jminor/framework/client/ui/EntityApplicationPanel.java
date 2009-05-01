@@ -203,16 +203,23 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
                 Images.loadImage("jminor_logo32.gif");
         applicationPanel = constructApplicationPanel(applicationPanelClass);
 
-        initializationDialog = showInitializationDialog(null, applicationPanel, applicationIcon, frameCaption);
+        final JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        if (applicationIcon != null)
+          frame.setIconImage(applicationIcon.getImage());
+
+        initializationDialog = showInitializationDialog(frame, applicationPanel, applicationIcon, frameCaption);
+
         final User user = getUser(frameCaption, defaultUser, applicationPanel, applicationIcon);
         final long now = System.currentTimeMillis();
 
         applicationPanel.setModel(initializeApplicationModel(applicationModelClass, user));
-        applicationPanel.initialize();
 
         final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
+        prepareFrame(frame, applicationPanel, frameTitle, maximize, northToolBar, true, size);
+        applicationPanel.initialize();
         if (showFrame)
-          applicationPanel.prepareFrame(applicationIcon, frameTitle, maximize, northToolBar, true, size).setVisible(true);
+          frame.setVisible(true);
 
         initializationDialog.dispose();
 
@@ -626,7 +633,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   /**
    * Initializes a JFrame according to the given parameters
-   * @param applicationIcon the frame icon
+   * @param frame the frame to prepare
+   * @param applicationPanel the EntityApplicationPanel to show in the frame
    * @param title the title string for the JFrame
    * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
    * @param northToolBar true if a toolbar should be included
@@ -636,14 +644,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @throws org.jminor.common.model.UserException in case of a user exception
    * @see #getNorthToolBar()
    */
-  private JFrame prepareFrame(final ImageIcon applicationIcon, final String title, final boolean maximize, final boolean northToolBar,
-                              final boolean showMenuBar, final Dimension size) throws UserException {
-
-    final JFrame frame = UiUtil.createFrame(applicationIcon != null ? applicationIcon.getImage() : null);
+  private static JFrame prepareFrame(final JFrame frame, final EntityApplicationPanel applicationPanel,
+                                     final String title, final boolean maximize, final boolean northToolBar,
+                                     final boolean showMenuBar, final Dimension size) throws UserException {
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         try {
-          exit();
+          applicationPanel.exit();
         }
         catch(UserCancelException uc) {/**/}
       }
@@ -651,18 +658,16 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
     frame.setTitle(title);
     frame.getContentPane().setLayout(new BorderLayout());
-    frame.getContentPane().add(this, BorderLayout.CENTER);
-    if (showMenuBar) {
-      frame.setJMenuBar(createMenuBar());
-    }
+    frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
+    if (showMenuBar)
+      frame.setJMenuBar(applicationPanel.createMenuBar());
     if (northToolBar) {
-      final JToolBar toolbar = getNorthToolBar();
+      final JToolBar toolbar = applicationPanel.getNorthToolBar();
       if (toolbar != null)
         frame.getContentPane().add(toolbar, BorderLayout.NORTH);
     }
-    if (size != null) {
+    if (size != null)
       frame.setSize(size);
-    }
     else {
       frame.pack();
       UiUtil.setSizeWithinScreenBounds(frame);

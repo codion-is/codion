@@ -245,7 +245,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
     public void propertyChange(final PropertyChangeEvent event) {
       final Component focusOwner = (Component) event.getNewValue();
-      if (focusOwner != null && isParentPanel(focusOwner))
+      if (focusOwner != null && isParentPanel(focusOwner) && !isActive())
         setActive(true);
     }
   };
@@ -316,7 +316,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
                      final int detailPanelState, final boolean queryConfigurationAllowed) {
     this(model, refreshOnInit, specialRendering, horizontalButtons, detailPanelState,
-            queryConfigurationAllowed,  false);
+            queryConfigurationAllowed, false);
   }
 
   /**
@@ -332,9 +332,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean specialRendering, final boolean horizontalButtons,
                      final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactLayout) {
-    if (detailPanelState == DIALOG)
-      throw new IllegalArgumentException("EntityPanel constructor only accepts HIDDEN or EMBEDDED as default detail states");
-
     if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_PANELS_ENABLED))
       activeStateGroup.addState(stActive);
     this.model = model;
@@ -350,7 +347,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         if (isActive()) {
           initialize();
           showPanelTab();
-          prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
+          prepareUI(true, false);
         }
       }
     });
@@ -650,19 +647,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     }
   }
 
-  /**
-   * @param component the component
-   * @return true if <code>component</code> is a child component of this EntityPanel
-   */
-  public boolean isParentPanel(final Component component) {
-    final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, component);
-    if (parent == this)
-      return true;
-
-    //is editDialog parent?
-    return editDialog != null && SwingUtilities.getWindowAncestor(component) == editDialog;
-  }
-
   /** {@inheritDoc} */
   public void handleException(final Throwable throwable) {
     handleException(throwable, this);
@@ -904,16 +888,16 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param clearUI if true the the input components are cleared
    * @see #setDefaultFocusComponent(javax.swing.JComponent)
    */
-  public final void prepareUI(boolean requestDefaultFocus, final boolean clearUI) {
+  public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
     if (clearUI)
       model.clear();
     if (requestDefaultFocus) {
       if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && entityTablePanel != null)
-        entityTablePanel.requestFocusInWindow();
+        entityTablePanel.requestFocus();
       else if (getDefaultFocusComponent() != null)
-        getDefaultFocusComponent().requestFocusInWindow();
+        getDefaultFocusComponent().requestFocus();
       else if (getComponentCount() > 0)
-        getComponents()[0].requestFocusInWindow();
+        getComponents()[0].requestFocus();
     }
   }
 
@@ -2057,6 +2041,19 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   private void setMasterPanel(final EntityPanel masterPanel) {
     this.masterPanel = masterPanel;
+  }
+
+  /**
+   * @param component the component
+   * @return true if <code>component</code> is a child component of this EntityPanel
+   */
+  private boolean isParentPanel(final Component component) {
+    final EntityPanel parent = (EntityPanel) SwingUtilities.getAncestorOfClass(EntityPanel.class, component);
+    if (parent == this)
+      return true;
+
+    //is editDialog parent?
+    return editDialog != null && SwingUtilities.getWindowAncestor(component) == editDialog;
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,

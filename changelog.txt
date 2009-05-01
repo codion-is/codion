@@ -445,3 +445,7 @@
   Database.DERBY_LONG_DATE_FORMAT added
   FrameworkUiUtil.IEntityExceptionHandler and DefaultEntityExceptionHandler added
   FrameworkUiUtil.exceptionHandler static field added plus getter/setter
+  EntityApplicationModel.instantiateMainApplicationModel() added, for overriding
+  EntityApplicationPanel.startApplication() refactored along with prepareFrame()
+  EntityPanel now accepts DIALOG as the initial detail panel state
+  EntityPanel focus grabbing on activation improved
