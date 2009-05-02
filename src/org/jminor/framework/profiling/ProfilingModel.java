@@ -11,7 +11,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityTableModel;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -232,37 +232,37 @@ public abstract class ProfilingModel {
     FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
   }
 
-  protected void selectRandomRow(final EntityModel model) {
-    if (model.getTableModel().getRowCount() == 0)
+  protected void selectRandomRow(final EntityTableModel model) {
+    if (model.getRowCount() == 0)
       return;
 
-    model.getTableModel().setSelectedItemIdx(random.nextInt(model.getTableModel().getRowCount()));
+    model.setSelectedItemIdx(random.nextInt(model.getRowCount()));
   }
 
-  protected void selectRandomRows(final EntityModel model, final int count) {
-    if (model.getTableModel().getRowCount() == 0)
+  protected void selectRandomRows(final EntityTableModel model, final int count) {
+    if (model.getRowCount() == 0)
       return;
 
     final IntArray indexes = new IntArray();
     for (int i = 0; i < count; i++)
-      indexes.addInt(random.nextInt(model.getTableModel().getRowCount()));
+      indexes.addInt(random.nextInt(model.getRowCount()));
 
-    model.getTableModel().setSelectedItemIndexes(indexes.toIntArray());
+    model.setSelectedItemIndexes(indexes.toIntArray());
   }
 
-  protected void selectRandomRows(final EntityModel model, final double ratio) {
-    if (model.getTableModel().getRowCount() == 0)
+  protected void selectRandomRows(final EntityTableModel model, final double ratio) {
+    if (model.getRowCount() == 0)
       return;
 
-    final int toSelect = ratio > 0 ? (int) Math.floor(model.getTableModel().getRowCount()/ratio) : 1;
+    final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount()/ratio) : 1;
     final IntArray indexes = new IntArray();
     for (int i = 0; i < toSelect; i++)
       indexes.addInt(i);
 
-    model.getTableModel().setSelectedItemIndexes(indexes.toIntArray());
+    model.setSelectedItemIndexes(indexes.toIntArray());
   }
 
-  private synchronized void adjustClientCount(final int clientCount) throws Exception {
+  private synchronized void adjustClientCount(final int clientCount) {
     final EntityApplicationModel[] models = activeClients.toArray(new EntityApplicationModel[activeClients.size()]);
     final int activeCount = activeClients.size();
     if (activeCount > clientCount)
@@ -328,11 +328,17 @@ public abstract class ProfilingModel {
     }
   }
 
-  private synchronized void removeClient(EntityApplicationModel applicationModel) throws Exception {
-    activeClients.remove(applicationModel);
-    evtClientCountChanged.fire();
-    applicationModel.getDbConnectionProvider().getEntityDb().logout();
-    System.out.println(applicationModel + " logged out and removed");
+  private synchronized void removeClient(EntityApplicationModel applicationModel) {
+    try {
+      activeClients.remove(applicationModel);
+      evtClientCountChanged.fire();
+      applicationModel.getDbConnectionProvider().getEntityDb().logout();
+      System.out.println(applicationModel + " logged out and removed");
+    }
+    catch (Exception e) {
+      System.out.println(applicationModel + " exception while logging out");
+      e.printStackTrace();
+    }
   }
 
   private EntityApplicationModel initApplicationModel() throws UserException, UserCancelException {

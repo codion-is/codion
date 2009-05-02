@@ -660,10 +660,15 @@ public class FrameworkUiUtil {
   }
 
   public static interface IEntityExceptionHandler {
+    public void handleException(final Throwable exception, final JComponent dialogParent);
     public void handleException(final Throwable exception, final String entityID, final JComponent dialogParent);
   }
 
   public static class DefaultEntityExceptionHandler implements IEntityExceptionHandler {
+
+    public void handleException(final Throwable exception, final JComponent dialogParent) {
+      handleException(exception, null, dialogParent);
+    }
 
     public void handleException(final Throwable exception, final String entityID, final JComponent dialogParent) {
       if (exception instanceof UserCancelException)

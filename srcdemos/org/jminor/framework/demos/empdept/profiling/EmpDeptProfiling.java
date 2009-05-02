@@ -45,7 +45,7 @@ public class EmpDeptProfiling extends ProfilingModel {
     try {
       model.getTableModel().setSelectedItemIndexes(new int[0]);
       model.refresh();
-      selectRandomRow(model);
+      selectRandomRow(model.getTableModel());
     }
     catch (UserException e) {
       e.printStackTrace();

@@ -38,37 +38,25 @@ import java.awt.event.WindowEvent;
 
 public class ProfilingPanel extends JPanel {
 
-  private final ProfilingModel model;
-  private final LoginPanel userPanel;
-
-  private final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
-  private final ChartPanel workRequestsChartPanel = new ChartPanel(workRequestsChart);
-
-  private final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
-  private final ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
-
-  private final JFreeChart numberOfClientsChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
-  private final ChartPanel numberOfClientsChartPanel = new ChartPanel(numberOfClientsChart);
-
-  JFrame frame;
+  private final ProfilingModel profilingModel;
 
   /** Constructs a new ProfilingPanel.
    * @param profilingModel the profiling model
    */
   public ProfilingPanel(final ProfilingModel profilingModel) {
-    this.model = profilingModel;
-    this.userPanel = new LoginPanel(model.getUser(), true, "Username", "Password");
-    this.workRequestsChart.getXYPlot().setDataset(model.getWorkRequestsDataset());
-    this.workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    this.thinkTimeChart.getXYPlot().setDataset(model.getThinkTimeDataset());
-    this.thinkTimeChart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    this.numberOfClientsChart.getXYPlot().setDataset(model.getNumberOfClientsDataset());
-    this.numberOfClientsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    this.profilingModel = profilingModel;
     initUI();
-    this.model.evtDoneExiting.addListener(new ActionListener() {
+    showFrame();
+  }
+
+  public ProfilingModel getModel() {
+    return profilingModel;
+  }
+
+  public void showFrame() {
+    final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
+    final String title = "JMinor - " + profilingModel.getClass().getSimpleName();
+    getModel().evtDoneExiting.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (frame != null) {
           frame.setVisible(false);
@@ -76,16 +64,10 @@ public class ProfilingPanel extends JPanel {
         }
       }
     });
-    showFrame();
-  }
-
-  public void showFrame() {
-    final String title = "JMinor - " + model.getClass().getSimpleName();
-    frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         frame.setTitle(title + " - Closing...");
-        model.exit();
+        getModel().exit();
       }
     });
     frame.setTitle(title);
@@ -96,29 +78,47 @@ public class ProfilingPanel extends JPanel {
   }
 
   protected void initUI() {
-    final ToggleBeanPropertyLink pauseControl = ControlFactory.toggleControl(model, "pause", "Pause activity", model.evtPauseChanged);
+    final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
+            null, null, getModel().getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
+    workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel workRequestsChartPanel = new ChartPanel(workRequestsChart);
+
+    final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
+            null, null, getModel().getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
+    thinkTimeChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
+
+    final JFreeChart numberOfClientsChart = ChartFactory.createXYStepChart(null,
+            null, null, getModel().getNumberOfClientsDataset(), PlotOrientation.VERTICAL, true, true, false);
+    numberOfClientsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel numberOfClientsChartPanel = new ChartPanel(numberOfClientsChart);
+
+    final ToggleBeanPropertyLink pauseControl =
+            ControlFactory.toggleControl(getModel(), "pause", "Pause activity", getModel().evtPauseChanged);
     pauseControl.setMnemonic('P');
-    final ToggleBeanPropertyLink relentlessControl = ControlFactory.toggleControl(model, "relentless", "Relentless", model.evtRelentlessChanged);
+    final ToggleBeanPropertyLink relentlessControl =
+            ControlFactory.toggleControl(getModel(), "relentless", "Relentless", getModel().evtRelentlessChanged);
     relentlessControl.setMnemonic('E');
-    final Control addClientsControl = ControlFactory.methodControl(model, "addClients", "Add client batch");
+    final Control addClientsControl = ControlFactory.methodControl(getModel(), "addClients", "Add client batch");
     addClientsControl.setMnemonic('A');
-    final Control removeClientsControl = ControlFactory.methodControl(model, "removeClients", "Remove client batch");
+    final Control removeClientsControl = ControlFactory.methodControl(getModel(), "removeClients", "Remove client batch");
     removeClientsControl.setMnemonic('R');
 
     final IntField clientCountField = new IntField();
     clientCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(clientCountField, model, "clientCount", model.evtClientCountChanged, null, LinkType.READ_ONLY);
+    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().evtClientCountChanged,
+            null, LinkType.READ_ONLY);
 
-    final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(model, "maximumThinkTime",
-            model.evtMaximumThinkTimeChanged, null).getSpinnerModel());
+    final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
+            getModel().evtMaximumThinkTimeChanged, null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    final JSpinner spnMinThinkTimeField = new JSpinner(new IntBeanSpinnerPropertyLink(model, "minimumThinkTime",
-            model.evtMinimumThinkTimeChanged, null).getSpinnerModel());
+    final JSpinner spnMinThinkTimeField = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "minimumThinkTime",
+            getModel().evtMinimumThinkTimeChanged, null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    final JSpinner spnWarningTime = new JSpinner(new IntBeanSpinnerPropertyLink(model, "warningTime",
-            model.evtWarningTimeChanged, null).getSpinnerModel());
+    final JSpinner spnWarningTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "warningTime",
+            getModel().evtWarningTimeChanged, null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
 
     FlexibleGridLayout layout = new FlexibleGridLayout(8,1,5,5,true,false);
@@ -134,8 +134,8 @@ public class ProfilingPanel extends JPanel {
     activityPanel.add(ControlProvider.createToggleButton(pauseControl));
     activityPanel.add(ControlProvider.createToggleButton(relentlessControl));
 
-    final JSpinner spnBatchSize =
-            new JSpinner(new IntBeanSpinnerPropertyLink(model, "batchSize", model.evtMinimumThinkTimeChanged, null).getSpinnerModel());
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "batchSize",
+            getModel().evtMinimumThinkTimeChanged, null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
 
@@ -150,13 +150,14 @@ public class ProfilingPanel extends JPanel {
     clientPanel.add(ControlProvider.createButton(addClientsControl));
     clientPanel.add(ControlProvider.createButton(removeClientsControl));
 
-    final ActionListener listener = new ActionListener() {
+    final LoginPanel userPanel = new LoginPanel(getModel().getUser(), true, "Username", "Password");
+    final ActionListener userInfoListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        model.setUser(userPanel.getUser());
+        getModel().setUser(userPanel.getUser());
       }
     };
-    userPanel.txtPassword.addActionListener(listener);
-    userPanel.txtUsername.addActionListener(listener);
+    userPanel.txtPassword.addActionListener(userInfoListener);
+    userPanel.txtUsername.addActionListener(userInfoListener);
     final JPanel userBase = new JPanel(new BorderLayout(5,5));
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
     userBase.add(userPanel, BorderLayout.NORTH);

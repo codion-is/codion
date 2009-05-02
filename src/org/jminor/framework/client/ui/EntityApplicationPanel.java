@@ -38,7 +38,6 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -63,7 +62,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   protected final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
 
-  protected EntityApplicationModel model;
+  protected EntityApplicationModel applicationModel;
   protected JTabbedPane applicationTabPane;
 
   protected Control ctrSetLoggingLevel;
@@ -76,7 +75,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   private static boolean persistEntityPanels;
   private static Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
-  public static final int DIVIDER_JUMP = 30;
+  private static final int DIVIDER_JUMP = 30;
 
   private static final String NAV_UP = "navigateUp";
   private static final String NAV_DOWN = "navigateDown";
@@ -96,10 +95,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
             (Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLTIP_DELAY));
   }
 
-  public EntityApplicationPanel(final EntityApplicationModel model) throws UserCancelException {
-    setModel(model);
-  }
-
   /** {@inheritDoc} */
   public void handleException(final Throwable e) {
     log.error(this, e);
@@ -107,31 +102,26 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * @param model the application model this application panel should use
-   * @throws org.jminor.common.model.UserCancelException if the user cancels
-   * during the login procedure
+   * @param applicationModel the application model this application panel should use
    */
-  public void setModel(final EntityApplicationModel model) throws UserCancelException {
-    this.model = model;
-  }
+  public void initialize(final EntityApplicationModel applicationModel) throws UserException {
+    if (applicationModel == null)
+      throw new UserException("Unable to initialize application panel without application model");
 
-  /**
-   * @return the application model this application panel uses
-   */
-  public EntityApplicationModel getModel() {
-    return this.model;
-  }
-
-  public void initialize() throws UserException {
-    if (model == null)
-      throw new UserException("Cannot initialize panel without application model");
-
+    this.applicationModel = applicationModel;
     setUncaughtExceptionHandler();
     setupControls();
     initializeUI();
     initializeActiveEntityPanel();
     initializeResizingAndNavigation();
     bindEvents();
+  }
+
+  /**
+   * @return the application model this application panel uses
+   */
+  public EntityApplicationModel getModel() {
+    return this.applicationModel;
   }
 
   /**
@@ -163,61 +153,57 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
   }
 
-  public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                                        final Class<? extends EntityApplicationModel> applicationModelClass,
-                                                        final String iconName, final boolean maximize, final Dimension size) {
-    return startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, size, null);
+  public static void startApplication(final String frameCaption,
+                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
+                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final String iconName, final boolean maximize, final Dimension frameSize) {
+    startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, frameSize, null);
   }
 
-  public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                                        final Class<? extends EntityApplicationModel> applicationModelClass,
-                                                        final String iconName, final boolean maximize,
-                                                        final Dimension size, final User defaultUser) {
-    return startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, size, defaultUser, true);
+  public static void startApplication(final String frameCaption,
+                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
+                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final String iconName, final boolean maximize, final Dimension frameSize,
+                                      final User defaultUser) {
+    startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, frameSize,
+            defaultUser, true);
   }
 
-  public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                                        final Class<? extends EntityApplicationModel> applicationModelClass,
-                                                        final String iconName, final boolean maximize,
-                                                        final Dimension size, final User defaultUser,
-                                                        final boolean northToolBar) {
-    return startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, size, defaultUser, northToolBar, true);
+  public static void startApplication(final String frameCaption,
+                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
+                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final String iconName, final boolean maximize, final Dimension frameSize,
+                                      final User defaultUser, final boolean northToolBar) {
+    startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, frameSize,
+            defaultUser, northToolBar, true);
   }
 
-  public static EntityApplicationPanel startApplication(final String frameCaption,
-                                                        final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                                        final Class<? extends EntityApplicationModel> applicationModelClass,
-                                                        final String iconName, final boolean maximize,
-                                                        final Dimension size, final User defaultUser,
-                                                        final boolean northToolBar, final boolean showFrame) {
+  public static void startApplication(final String frameCaption,
+                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
+                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final String iconName, final boolean maximize, final Dimension frameSize,
+                                      final User defaultUser, final boolean northToolBar, final boolean showFrame) {
     log.info(frameCaption + " starting");
-    EntityApplicationPanel applicationPanel = null;
+    final JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(applicationPanelClass, iconName) :
+            Images.loadImage("jminor_logo32.gif");
+    frame.setIconImage(applicationIcon.getImage());
     JDialog initializationDialog = null;
     boolean retry = true;
     while (retry) {
       try {
-        final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(applicationPanelClass, iconName) :
-                Images.loadImage("jminor_logo32.gif");
-        applicationPanel = constructApplicationPanel(applicationPanelClass);
+        final EntityApplicationPanel applicationPanel = constructApplicationPanel(applicationPanelClass);
+        final User user = applicationPanel.isLoginRequired() ?
+                getUser(frameCaption, defaultUser, applicationPanelClass.getSimpleName(), applicationIcon) : new User("", "");
 
-        final JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        if (applicationIcon != null)
-          frame.setIconImage(applicationIcon.getImage());
-
+        final long now = System.currentTimeMillis();
         initializationDialog = showInitializationDialog(frame, applicationPanel, applicationIcon, frameCaption);
 
-        final User user = getUser(frameCaption, defaultUser, applicationPanel, applicationIcon);
-        final long now = System.currentTimeMillis();
-
-        applicationPanel.setModel(initializeApplicationModel(applicationModelClass, user));
+        applicationPanel.initialize(constructApplicationModel(applicationModelClass, user));
 
         final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
-        prepareFrame(frame, applicationPanel, frameTitle, maximize, northToolBar, true, size);
-        applicationPanel.initialize();
+        prepareFrame(frame, applicationPanel, frameTitle, maximize, northToolBar, true, frameSize);
         if (showFrame)
           frame.setVisible(true);
 
@@ -235,20 +221,16 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         if (initializationDialog != null)
           initializationDialog.dispose();
 
-        if (applicationPanel != null)
-          FrameworkUiUtil.getExceptionHandler().handleException(ue, null, applicationPanel);
-        else
-          ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
+        ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
 
-        retry = JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, FrameworkMessages.get(FrameworkMessages.RETRY),
+        retry = JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,
+                FrameworkMessages.get(FrameworkMessages.RETRY),
                 FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (!retry)
           System.exit(0);
       }
     }
-
-    return applicationPanel;
   }
 
   public static String getUsername(final String username) {
@@ -270,7 +252,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         throw new UserCancelException();
     }
     try {
-      model.getDbConnectionProvider().getEntityDb().logout();
+      applicationModel.getDbConnectionProvider().getEntityDb().logout();
     }
     catch (Exception e) {
       log.debug("Unable to properly log out, no connection");
@@ -363,7 +345,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   protected ControlSet getViewControlSet() {
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
             FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    final Control ctrRefreshAll = ControlFactory.methodControl(model, "refreshAll",
+    final Control ctrRefreshAll = ControlFactory.methodControl(applicationModel, "refreshAll",
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
     ret.add(ctrRefreshAll);
     ret.addSeparator();
@@ -433,14 +415,14 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   protected void setupControls() {
     final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
-    ctrSelectDetail = ControlFactory.toggleControl(model, "selectionFiltersDetail",
-            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), model.evtSelectionFiltersDetailChanged);
+    ctrSelectDetail = ControlFactory.toggleControl(applicationModel, "selectionFiltersDetail",
+            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), applicationModel.evtSelectionFiltersDetailChanged);
     ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
     ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
 
     final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
-    ctrCascadeRefresh = ControlFactory.toggleControl(model, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), model.evtCascadeRefreshChanged);
+    ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
+            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.evtCascadeRefreshChanged);
     ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
     ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
 
@@ -524,7 +506,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   protected void showEntityPanel(final EntityPanelProvider panelProvider) {
     try {
-      showEntityPanelDialog(panelProvider, model.getDbConnectionProvider(), this);
+      showEntityPanelDialog(panelProvider, applicationModel.getDbConnectionProvider(), this);
     }
     catch (UserException ux) {
       throw ux.getRuntimeException();
@@ -554,7 +536,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     });
     final List<EntityPanelProvider> mainEntityPanelProviders = getMainEntityPanelProviders();
     for (final EntityPanelProvider provider : mainEntityPanelProviders) {
-      final EntityModel entityModel = model.getMainApplicationModel(provider.getEntityModelClass());
+      final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getEntityModelClass());
       final EntityPanel entityPanel = provider.createInstance(entityModel);
       mainApplicationPanels.add(entityPanel);
       final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
@@ -568,7 +550,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       add(southPanel, BorderLayout.SOUTH);
   }
 
-  protected boolean loginRequired() {
+  protected boolean isLoginRequired() {
     return (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.AUTHENTICATION_REQUIRED);
   }
 
@@ -859,7 +841,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
   }
 
-  private static EntityApplicationModel initializeApplicationModel(
+  private static EntityApplicationModel constructApplicationModel(
           final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserException {
     try {
       return applicationModelClass.getConstructor(User.class).newInstance(user);
@@ -884,19 +866,19 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     }
   }
 
-  private static JDialog showInitializationDialog(final Frame owner, final EntityApplicationPanel panel,
-                                                  final Icon icon, final String msg) {
-    final String message = msg == null ? "Initializing Application" : msg;
-    final JDialog initDlg = new JDialog(owner, message, false);
-    initDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    p.add(panel.initializeStartupProgressPane(icon));
-    initDlg.getContentPane().add(p, BorderLayout.CENTER);
-    initDlg.pack();
-    UiUtil.centerWindow(initDlg);
-    initDlg.setVisible(true);
+  private static JDialog showInitializationDialog(final JFrame owner, final EntityApplicationPanel applicationPanel,
+                                                  final Icon icon, final String initializationMessage) {
+    final String message = initializationMessage == null ? "Initializing Application" : initializationMessage;
+    final JDialog initializationDialog = new JDialog(owner, message, false);
+    initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    panel.add(applicationPanel.initializeStartupProgressPane(icon));
+    initializationDialog.getContentPane().add(panel, BorderLayout.CENTER);
+    initializationDialog.pack();
+    UiUtil.centerWindow(initializationDialog);
+    initializationDialog.setVisible(true);
 
-    return initDlg;
+    return initializationDialog;
   }
 
   private static String getUserInfo(final User user, final String dbSid) {
@@ -904,16 +886,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   private static User getUser(final String frameCaption, final User defaultUser,
-                              final EntityApplicationPanel applicationPanel, final ImageIcon applicationIcon)
+                              final String applicationIdentifier, final ImageIcon applicationIcon)
           throws UserCancelException, UserException {
-    User user = new User("", "");
-    if (applicationPanel.loginRequired()) {
-      user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-              new User(FrameworkSettings.getDefaultUsername(applicationPanel.getClass().getSimpleName()), null) : defaultUser,
-              applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-      if (user.getPassword() == null || user.getPassword().length() == 0)
-        throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));
-    }
+    final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
+            new User(FrameworkSettings.getDefaultUsername(applicationIdentifier), null) : defaultUser,
+            applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
+    if (user.getPassword() == null || user.getPassword().length() == 0)
+      throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));
 
     return user;
   }

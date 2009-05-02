@@ -266,11 +266,11 @@ public class FrameworkSettings implements Serializable {
   }
 
   /**
-   * @param applicationClassName the application class name
+   * @param applicationIdentifier the application identifier name
    * @return the default username
    */
-  public static String getDefaultUsername(final String applicationClassName) {
-    final String preferredUserName = Util.getDefaultUserName(applicationClassName,
+  public static String getDefaultUsername(final String applicationIdentifier) {
+    final String preferredUserName = Util.getDefaultUserName(applicationIdentifier,
             instance.getProperty(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
     return System.getProperty(FrameworkConstants.DEFAULT_USERNAME_PROPERTY, preferredUserName);
   }

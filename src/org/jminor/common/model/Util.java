@@ -77,12 +77,12 @@ public class Util {
     USER_PREFERENCES.put(key, value);
   }
 
-  public static String getDefaultUserName(final String applicationClassname, final String defaultName) {
-    return getUserPreference(applicationClassname + "." + Util.PREF_DEFAULT_USERNAME, defaultName);
+  public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
+    return getUserPreference(applicationIdentifier + "." + PREF_DEFAULT_USERNAME, defaultName);
   }
 
   public static void setDefaultUserName(final String applicationClassname, final String username) {
-    putUserPreference(applicationClassname + "." + Util.PREF_DEFAULT_USERNAME, username);
+    putUserPreference(applicationClassname + "." + PREF_DEFAULT_USERNAME, username);
   }
 
   public static String formatLatitude(final String latitude) {

@@ -497,10 +497,10 @@
   </target>
 
   <condition property="demodb.not.available">
-    <not >
+    <not>
       <available file="${demo.db.dir}/${demo.db.name}"/>
     </not>
-	</condition>
+  </condition>
 
   <target name="delete_demo_db"
           description="Deletes the unit test derby database">
@@ -531,5 +531,4 @@
       <arg value="shutdown"/>
     </java>
   </target>
-
 </project>

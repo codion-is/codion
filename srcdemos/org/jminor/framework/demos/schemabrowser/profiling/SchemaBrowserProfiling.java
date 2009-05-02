@@ -42,9 +42,9 @@ public class SchemaBrowserProfiling extends ProfilingModel {
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
     try {
       schemaModel.getTableModel().refresh();
-      selectRandomRow(schemaModel);
-      selectRandomRow(schemaModel.getDetailModels().get(0));
-      selectRandomRow(schemaModel.getDetailModels().get(0).getDetailModels().get(0));
+      selectRandomRow(schemaModel.getTableModel());
+      selectRandomRow(schemaModel.getDetailModels().get(0).getTableModel());
+      selectRandomRow(schemaModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
     }
     catch (UserException e) {
       e.printStackTrace();

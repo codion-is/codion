@@ -449,3 +449,8 @@
   EntityApplicationPanel.startApplication() refactored along with prepareFrame()
   EntityPanel now accepts DIALOG as the initial detail panel state
   EntityPanel focus grabbing on activation improved
+  EntityApplicationPanel.loginRequired() renamed to isLoginRequired()
+  EntityApplicationPanel.startApplication() refactored further
+  EntityApplicationPanel.model field renamed to applicationModel
+  ProfilingModel.selectRandomRow() now takes a EntityTableModel as parameter
+  ProfilingPanel/ProfilingModel refactored
