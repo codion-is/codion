@@ -458,3 +458,4 @@
   DbConnection.endTransaction(boolean rollback) is now endTransaction(boolean commit)
   IEntityDb.endTransaction(boolean rollback) is now endTransaction(boolean commit)
   No /bin folder in demos/server deployment, run files fixed
+  ServerMonitor, added option to shutdown the selected server, leaves the server monitor in a bad state

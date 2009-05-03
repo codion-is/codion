@@ -24,6 +24,10 @@ import java.util.List;
  */
 public interface IEntityDbRemoteServerAdmin extends Remote {
 
+  /**
+   * Shuts down the server
+   * @throws RemoteException in case of a communication error
+   */
   public void shutdown() throws RemoteException;
 
   /**

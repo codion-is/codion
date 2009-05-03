@@ -91,6 +91,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
     server.performGC();
   }
 
+  //todo the server monitor is not equipped to handle this at all, but it does shut down the server
   public void shutdownServer() throws RemoteException {
     evtServerShuttingDown.fire();
     server.shutdown();

@@ -84,6 +84,7 @@ public class ServerMonitorPanel extends JPanel implements IPopupProvider {
     infoPanel.add(initMemoryField());
     infoPanel.setBorder(BorderFactory.createTitledBorder("Server"));
     infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "performGC", "Run garbage collector")));
+    infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "shutdownServer", "Shut down server")));
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
