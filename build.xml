@@ -223,8 +223,8 @@
   <target name="deploy_server"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}" />
-    <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/bin" />
+    <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jdbc.drivers}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
@@ -238,8 +238,8 @@
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}" />
-    <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/bin" />
+    <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
@@ -255,10 +255,10 @@
   <target name="deploy_demos"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
-    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/bin" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}/bin" />
+    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jdbc.drivers}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib" />

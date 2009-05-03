@@ -457,3 +457,4 @@
   SchemaBrowser domain model now uses resource bundle
   DbConnection.endTransaction(boolean rollback) is now endTransaction(boolean commit)
   IEntityDb.endTransaction(boolean rollback) is now endTransaction(boolean commit)
+  No /bin folder in demos/server deployment, run files fixed

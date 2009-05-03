@@ -1,0 +1,1 @@
+java -Djminor.client.connection.type=local -Djminor.db.type=derby_embedded -Djminor.db.host=db/demo -Djminor.db.sid=db/demo -Djava.security.policy=jminor_demos.policy -Xmx128m -cp lib/jminor-client.jar;lib/jminor-demos.jar;lib/jminor-common.jar;lib/log4j-1.2.15.jar;lib/jasperreports-3.0.0.jar;lib/derby.jar org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel
