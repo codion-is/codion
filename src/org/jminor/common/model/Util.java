@@ -148,6 +148,14 @@ public class Util {
     return ret;
   }
 
+  public static Logger getLogger(final String name) {
+    final Logger ret = Logger.getLogger(name);
+    ret.setLevel(getLoggingLevel());
+    loggers.add(ret);
+
+    return ret;
+  }
+
   public static Integer getInt(final String text) {
     if (text == null || text.length() == 0)
       return null;

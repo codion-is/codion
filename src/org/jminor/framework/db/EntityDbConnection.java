@@ -328,7 +328,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
       if (result.size() != primaryKeys.size()) {
         try {//this means we got the lock, but for a different number of records than was intended, better release it right away
-          endTransaction(true);
+          endTransaction(false);
         }
         catch (SQLException e) {/**/}
         throw new DbException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
@@ -488,7 +488,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       throw new DbException(e, "");
     }
     finally {
-      endTransaction(!success);
+      endTransaction(success);
     }
   }
 

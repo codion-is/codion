@@ -152,7 +152,7 @@ public class EmpDeptProfiling extends ProfilingModel {
     finally {
       try {
         if (db != null)
-          db.getEntityDb().endTransaction(true);
+          db.getEntityDb().endTransaction(false);
       }
       catch (Exception e) {/**/}
     }

@@ -1579,7 +1579,7 @@ public class EntityModel implements IRefreshable {
       return;
 
     try {
-      getEntityDb().endTransaction(true);
+      getEntityDb().endTransaction(false);
 
       System.out.println("######################### " + "unlocked");
       lockedEntities.clear();

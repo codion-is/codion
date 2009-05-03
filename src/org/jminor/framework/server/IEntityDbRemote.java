@@ -154,7 +154,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
 
   /**
    * Selects for update the entity with the given key.
-   * The update lock is released when the entity is subsequently updated or via endTransaction(true);
+   * The update lock is released when the entity is subsequently updated or via endTransaction(false);
    * @param primaryKeys the keys of the entities to select for update
    * @return the entities selected for update
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found

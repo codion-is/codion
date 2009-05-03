@@ -137,12 +137,12 @@ public class DbConnection {
     transactionOpen = true;
   }
 
-  public void endTransaction(final boolean rollback) throws SQLException {
+  public void endTransaction(final boolean commit) throws SQLException {
     try {
-      if (rollback)
-        rollback();
-      else
+      if (commit)
         commit();
+      else
+        rollback();
     }
     finally {
       if (transactionOpen)

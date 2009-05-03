@@ -454,3 +454,6 @@
   EntityApplicationPanel.model field renamed to applicationModel
   ProfilingModel.selectRandomRow() now takes a EntityTableModel as parameter
   ProfilingPanel/ProfilingModel refactored
+  SchemaBrowser domain model now uses resource bundle
+  DbConnection.endTransaction(boolean rollback) is now endTransaction(boolean commit)
+  IEntityDb.endTransaction(boolean rollback) is now endTransaction(boolean commit)

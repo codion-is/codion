@@ -313,9 +313,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public void endTransaction(final boolean rollback) throws SQLException, RemoteException {
+  public void endTransaction(final boolean commit) throws SQLException, RemoteException {
     try {
-      loggingEntityDbProxy.endTransaction(rollback);
+      loggingEntityDbProxy.endTransaction(commit);
     }
     catch (SQLException sqle) {
       throw sqle;

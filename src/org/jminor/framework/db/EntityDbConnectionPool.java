@@ -130,7 +130,7 @@ public class EntityDbConnectionPool {
         connection.clearStateData();
         try {
           if (connection.isTransactionOpen())
-            connection.endTransaction(true);
+            connection.endTransaction(false);
         }
         catch (SQLException e) {
           log.error(this, e);

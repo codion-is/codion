@@ -7,8 +7,8 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.UserException;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbProviderFactory;
@@ -108,7 +108,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
     finally {
       referencedEntities.clear();
-      getDbConnection().endTransaction(true);
+      getDbConnection().endTransaction(false);
     }
   }
 

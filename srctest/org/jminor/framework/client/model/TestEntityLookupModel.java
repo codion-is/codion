@@ -74,7 +74,7 @@ public class TestEntityLookupModel extends TestCase {
 
   protected void tearDown() throws Exception {
     super.tearDown();
-    dbProvider.getEntityDb().endTransaction(true);
+    dbProvider.getEntityDb().endTransaction(false);
     dbProvider.getEntityDb().logout();
   }
 

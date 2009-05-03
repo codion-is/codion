@@ -67,7 +67,7 @@ public class TestStrictEditMode extends TestCase {
     //assert row is not locked, and then unlock it
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
-      dbProvider.getEntityDb().endTransaction(true);
+      dbProvider.getEntityDb().endTransaction(false);
     }
     catch (Exception e) {
       fail("Row should not be locked after value has been reverted");
@@ -87,7 +87,7 @@ public class TestStrictEditMode extends TestCase {
     //assert row is not locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
-      dbProvider.getEntityDb().endTransaction(true);
+      dbProvider.getEntityDb().endTransaction(false);
     }
     catch (Exception e) {
       fail("Row should not be locked after update");
@@ -105,7 +105,7 @@ public class TestStrictEditMode extends TestCase {
 
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
-      dbProvider.getEntityDb().endTransaction(true);
+      dbProvider.getEntityDb().endTransaction(false);
     }
     catch (Exception e) {
       fail("Row should not be locked after another has been selected");

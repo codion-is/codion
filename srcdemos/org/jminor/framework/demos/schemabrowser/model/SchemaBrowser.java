@@ -11,43 +11,44 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public class SchemaBrowser {
 
-  public static final String T_SCHEMA = Database.isOracle() ? "all_users" : "information_schema.schemata";
+  private static final ResourceBundle bundle =
+          ResourceBundle.getBundle("org.jminor.framework.demos.schemabrowser.model.SchemaBrowser",
+                  new Locale(Database.getType().toString()));
 
-  public static final String SCHEMA_NAME = Database.isOracle() ? "username" : "schema_name";
+  public static final String T_SCHEMA = bundle.getString("t_schema");
+  public static final String SCHEMA_NAME = bundle.getString("schema_name");
 
-  public static final String T_TABLE = Database.isOracle() ? "all_objects where upper(object_type) = upper('table')" : "information_schema.tables";
+  public static final String T_TABLE = bundle.getString("t_table");
+  public static final String TABLE_SCHEMA = bundle.getString("table_schema");
+  public static final String TABLE_SCHEMA_REF = bundle.getString("table_schema_ref");
+  public static final String TABLE_NAME = bundle.getString("table_name");
 
-  public static final String TABLE_SCHEMA = Database.isOracle() ? "owner" : "table_schema";
-  public static final String TABLE_SCHEMA_REF = "schema_ref";
-  public static final String TABLE_NAME = Database.isOracle() ? "object_name" : "table_name";
+  public static final String T_COLUMN = bundle.getString("t_column");
+  public static final String COLUMN_SCHEMA = bundle.getString("column_schema");
+  public static final String COLUMN_TABLE_NAME = bundle.getString("column_table_name");
+  public static final String COLUMN_TABLE_REF = bundle.getString("column_table_ref");
+  public static final String COLUMN_NAME = bundle.getString("column_name");
+  public static final String COLUMN_DATA_TYPE = bundle.getString("column_data_type");
 
-  public static final String T_COLUMN = Database.isOracle() ? "all_tab_cols" : "information_schema.columns";
+  public static final String T_CONSTRAINT = bundle.getString("t_constraint");
+  public static final String CONSTRAINT_SCHEMA = bundle.getString("constraint_schema");
+  public static final String CONSTRAINT_TABLE_NAME = bundle.getString("constraint_table_name");
+  public static final String CONSTRAINT_TABLE_REF = bundle.getString("constraint_table_ref");
+  public static final String CONSTRAINT_NAME = bundle.getString("constraint_name");
+  public static final String CONSTRAINT_TYPE = bundle.getString("constraint_type");
 
-  public static final String COLUMN_SCHEMA = Database.isOracle() ? "owner" : "table_schema";
-  public static final String COLUMN_TABLE_NAME = "table_name";
-  public static final String COLUMN_TABLE_REF = "table_ref";
-  public static final String COLUMN_NAME = "column_name";
-  public static final String COLUMN_DATA_TYPE = "data_type";
-
-  public static final String T_CONSTRAINT = Database.isOracle() ?
-          "all_constraints" : "information_schema.table_constraints";
-
-  public static final String CONSTRAINT_SCHEMA = Database.isOracle() ? "owner" : "table_schema";
-  public static final String CONSTRAINT_TABLE_NAME = "table_name";
-  public static final String CONSTRAINT_TABLE_REF = "table_ref";
-  public static final String CONSTRAINT_NAME = "constraint_name";
-  public static final String CONSTRAINT_TYPE = "constraint_type";
-
-  public static final String T_COLUMN_CONSTRAINT = Database.isOracle() ? "all_cons_columns" : "information_schema.key_column_usage";
-
-  public static final String COLUMN_CONSTRAINT_SCHEMA = Database.isOracle() ? "owner" : "constraint_schema";
-  public static final String COLUMN_CONSTRAINT_CONSTRAINT_NAME = "constraint_name";
-  public static final String COLUMN_CONSTRAINT_CONSTRAINT_REF = "constraint_ref";
-  public static final String COLUMN_CONSTRAINT_TABLE_NAME = "table_name";
-  public static final String COLUMN_CONSTRAINT_COLUMN_NAME = "column_name";
-  public static final String COLUMN_CONSTRAINT_POSITION = Database.isOracle() ? "position" : "ordinal_position";
+  public static final String T_COLUMN_CONSTRAINT = bundle.getString("t_column_constraint");
+  public static final String COLUMN_CONSTRAINT_SCHEMA = bundle.getString("column_constraint_schema");
+  public static final String COLUMN_CONSTRAINT_CONSTRAINT_NAME = bundle.getString("column_constraint_constraint_name");
+  public static final String COLUMN_CONSTRAINT_CONSTRAINT_REF = bundle.getString("column_constraint_constraint_ref");
+  public static final String COLUMN_CONSTRAINT_TABLE_NAME = bundle.getString("column_constraint_table_name");
+  public static final String COLUMN_CONSTRAINT_COLUMN_NAME = bundle.getString("column_constraint_column_name");
+  public static final String COLUMN_CONSTRAINT_POSITION = bundle.getString("column_constraint_position");
 
   static {
     EntityRepository.get().initialize(T_SCHEMA,

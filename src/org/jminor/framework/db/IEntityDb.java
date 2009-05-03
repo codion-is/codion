@@ -62,11 +62,11 @@ public interface IEntityDb {
   /**
    * Ends the transaction on this connection, if no transaction is open
    * then only commit or rollback is performed
-   * @param rollback if true then a rollback is performed, otherwise commit
+   * @param commit if true then a commit is performed, otherwise rollback
    * @throws java.sql.SQLException in case of a sql exception
    * @throws Exception in case of an exception
    */
-  public void endTransaction(final boolean rollback) throws Exception;
+  public void endTransaction(final boolean commit) throws Exception;
 
   /**
    * @param checkDependencies true if dependencies should be checked before a delete is performed
@@ -163,7 +163,7 @@ public interface IEntityDb {
 
   /**
    * Selects for update the entity with the given key.
-   * The update lock is released when the entity is subsequently updated or via endTransaction(true);
+   * The update lock is released when the entity is subsequently updated or via endTransaction(false)
    * @param primaryKeys the keys of the entities to select for update
    * @return the entity
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
