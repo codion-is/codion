@@ -24,7 +24,7 @@ import java.util.List;
 public class ProductPanel extends EntityPanel {
 
   public ProductPanel(final EntityModel model) {
-    super(model);
+    super(model, true, false, false, EMBEDDED, true, true);
   }
 
   /** {@inheritDoc} */
