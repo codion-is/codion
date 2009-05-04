@@ -463,3 +463,5 @@
   EntityApplicationPanel, navigation modifier key changed from CTR to ALT, resizing from SHIFT-CTR to SHIFT_ALT
   Removed the query range explanation from the TipsAndTricks.txt file, since it is rarely used
   EntityPanel, pressing ALT-CTRL-T toggles the focus between the table and input panels.
+  Petstore client, some getDetailSplitPaneResizeWeight() adjustments
+  FrameworkMessages, Suppert tables mnemonic changed from S to P, S conflicted with the edit panel save action

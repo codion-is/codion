@@ -46,4 +46,9 @@ public class CategoryPanel extends EntityPanel {
 
     return ret;
   }
+
+  @Override
+  protected double getDetailSplitPaneResizeWeight() {
+    return 0.2;
+  }
 }
