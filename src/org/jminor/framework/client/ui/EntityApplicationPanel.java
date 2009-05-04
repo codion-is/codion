@@ -103,6 +103,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   /**
    * @param applicationModel the application model this application panel should use
+   * @throws org.jminor.common.model.UserException in case of an exception
    */
   public void initialize(final EntityApplicationModel applicationModel) throws UserException {
     if (applicationModel == null)
@@ -673,13 +674,13 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final InputMap inputMap = panel.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = panel.getActionMap();
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_LEFT);
+            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_LEFT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_RIGHT);
+            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_RIGHT);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_UP);
+            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_UP);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,
-            KeyEvent.SHIFT_MASK + KeyEvent.CTRL_MASK, true), DIV_DOWN);
+            KeyEvent.SHIFT_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), DIV_DOWN);
 
     actionMap.put(DIV_RIGHT, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
@@ -710,10 +711,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   private void initializeNavigation(final EntityPanel panel) {
     final InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
     final ActionMap actionMap = panel.getActionMap();
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK, true), NAV_UP);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK, true), NAV_DOWN);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK, true), NAV_RIGHT);
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK, true), NAV_LEFT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK, true), NAV_UP);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK, true), NAV_DOWN);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, true), NAV_RIGHT);
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, true), NAV_LEFT);
 
     actionMap.put(NAV_UP, new AbstractAction() {
       public void actionPerformed(ActionEvent e) {

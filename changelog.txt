@@ -459,3 +459,7 @@
   IEntityDb.endTransaction(boolean rollback) is now endTransaction(boolean commit)
   No /bin folder in demos/server deployment, run files fixed
   ServerMonitor, added option to shutdown the selected server, leaves the server monitor in a bad state
+  EntityPanel focus grabbing on activation reverted somewhat, so that it does not try to grab default focus when a child component already has the focus, the table for example
+  EntityApplicationPanel, navigation modifier key changed from CTR to ALT, resizing from SHIFT-CTR to SHIFT_ALT
+  Removed the query range explanation from the TipsAndTricks.txt file, since it is rarely used
+  EntityPanel, pressing ALT-CTRL-T toggles the focus between the table and input panels.

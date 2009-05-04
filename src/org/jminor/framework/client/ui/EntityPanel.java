@@ -55,6 +55,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -240,6 +241,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
   /**
+   * Used for actionMap/inputMap action assignment
+   */
+  private static final String SELECT_TABLE_PANEL = "selectTablePanel";
+
+  /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
   private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
@@ -347,7 +353,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         if (isActive()) {
           initialize();
           showPanelTab();
-          prepareUI(true, false);
+          //do not try to grab the default focus when a child component already has the focus, for example the table
+          prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
         }
       }
     });
@@ -893,7 +900,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       model.clear();
     if (requestDefaultFocus) {
       if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && entityTablePanel != null)
-        entityTablePanel.requestFocus();
+        entityTablePanel.getJTable().requestFocus();
       else if (getDefaultFocusComponent() != null)
         getDefaultFocusComponent().requestFocus();
       else if (getComponentCount() > 0)
@@ -1217,6 +1224,16 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       entityTablePanel.setMinimumSize(new Dimension(0,0));
+      getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_T,
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), SELECT_TABLE_PANEL);
+      getActionMap().put(SELECT_TABLE_PANEL, new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          if (entityTablePanel.getJTable().hasFocus())
+            prepareUI(true, false);
+          else
+            entityTablePanel.getJTable().requestFocusInWindow();
+        }
+      });
     }
     horizontalSplitPane = detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
     detailTabPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;

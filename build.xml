@@ -205,7 +205,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy" depends="dist"
+  <target name="deploy" depends="clean,dist"
           description="Deploys all jars to the path defined by the 'deploy.path' property">
     <copy file="${dist}/current/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
