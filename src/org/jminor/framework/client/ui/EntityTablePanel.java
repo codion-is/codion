@@ -188,7 +188,7 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
                           final boolean specialRendering, final boolean allowQueryConfiguration) {
     this.tableModel = tableModel;
-    this.entityTable = initializeJTable(tableModel, specialRendering);
+    this.entityTable = initializeJTable(specialRendering);
     this.tableScrollPane = new JScrollPane(entityTable);
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
@@ -210,7 +210,7 @@ public class EntityTablePanel extends JPanel {
    * @param renderer the renderer to use for presenting column values for the given property
    */
   public void setTableCellRenderer(final String propertyID, final TableCellRenderer renderer) {
-    entityTable.getColumn(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
+    getJTable().getColumn(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
   }
 
   /**
@@ -482,17 +482,17 @@ public class EntityTablePanel extends JPanel {
    * Override to provide specific event bindings, remember to call <code>super.bindEvents()</code>
    */
   protected void bindEvents() {
-    tableModel.evtRefreshStarted.addListener(new ActionListener() {
+    getTableModel().evtRefreshStarted.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityTablePanel.this);
       }
     });
-    tableModel.evtRefreshDone.addListener(new ActionListener() {
+    getTableModel().evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
     });
-    entityTable.addMouseListener(new MouseAdapter() {
+    getJTable().addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent me){
         if(me.getClickCount() == 2){
           evtTableDoubleClick.fire();
@@ -504,28 +504,28 @@ public class EntityTablePanel extends JPanel {
         updateStatusMessage();
       }
     };
-    tableModel.evtSelectionChanged.addListener(statusListener);
-    tableModel.evtFilteringDone.addListener(statusListener);
-    tableModel.evtTableDataChanged.addListener(statusListener);
+    getTableModel().evtSelectionChanged.addListener(statusListener);
+    getTableModel().evtFilteringDone.addListener(statusListener);
+    getTableModel().evtTableDataChanged.addListener(statusListener);
 
-    tableModel.getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
+    getTableModel().getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         toggleColumnFilterPanel(e);
       }
     });
 
-    tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
+    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        if (!tableModel.stSelectionEmpty.isActive())
-          entityTable.scrollRectToVisible(entityTable.getCellRect(
-                  tableModel.getSelectedIndex(), entityTable.getSelectedColumn(), true));
+        if (!getTableModel().stSelectionEmpty.isActive())
+          getJTable().scrollRectToVisible(getJTable().getCellRect(
+                  getTableModel().getSelectedIndex(), getJTable().getSelectedColumn(), true));
       }
     });
 
-    tableModel.getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
+    getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        entityTable.getTableHeader().repaint();
-        entityTable.repaint();
+        getJTable().getTableHeader().repaint();
+        getJTable().repaint();
       }
     });
   }
@@ -567,7 +567,7 @@ public class EntityTablePanel extends JPanel {
     }
     popupControls.addSeparator();
     popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
-    UiUtil.setTablePopup(entityTable, ControlProvider.createPopupMenu(popupControls));
+    UiUtil.setTablePopup(getJTable(), ControlProvider.createPopupMenu(popupControls));
 
     base.add(tableScrollPane, BorderLayout.CENTER);
     add(base, BorderLayout.CENTER);
@@ -600,7 +600,7 @@ public class EntityTablePanel extends JPanel {
     }
     setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
 
-    entityTable.repaint();
+    getJTable().repaint();
   }
 
   /**
@@ -798,9 +798,15 @@ public class EntityTablePanel extends JPanel {
     };
   }
 
-  private JTable initializeJTable(final EntityTableModel tableModel, final boolean specialRendering) {
-    final JTable ret = new JTable(tableModel.getTableSorter(), initializeTableColumnModel(specialRendering),
-            tableModel.getSelectionModel());
+  /**
+   * Initializes the JTable instance
+   * @param specialRendering if true then the JTable should paint each row according to the underlying entity
+   * @return the JTable instance
+   * @see org.jminor.framework.model.EntityProxy#getBackgroundColor(org.jminor.framework.model.Entity)
+   */
+  protected JTable initializeJTable(final boolean specialRendering) {
+    final JTable ret = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(specialRendering),
+            getTableModel().getSelectionModel());
     ret.addMouseListener(initializeTableMouseListener());
 
     final JTableHeader header = ret.getTableHeader();
@@ -822,7 +828,7 @@ public class EntityTablePanel extends JPanel {
 
     ret.setColumnSelectionAllowed(false);
     ret.setAutoResizeMode((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE));
-    tableModel.getTableSorter().setTableHeader(header);
+    getTableModel().getTableSorter().setTableHeader(header);
 
     return ret;
   }
@@ -881,7 +887,7 @@ public class EntityTablePanel extends JPanel {
 
   private TableColumnModel initializeTableColumnModel(final boolean specialRendering) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
-    final List<TableColumn> columns = getTableColumns(tableModel.getTableColumnProperties());
+    final List<TableColumn> columns = getTableColumns(getTableModel().getTableColumnProperties());
     for (final TableColumn column : columns) {
       column.setResizable(true);
       column.setCellRenderer(initializeTableCellRenderer(specialRendering));
@@ -893,7 +899,7 @@ public class EntityTablePanel extends JPanel {
 
   private void updateStatusMessage() {
     if (lblStatusMessage != null) {
-      final String status = tableModel.getStatusMessage();
+      final String status = getTableModel().getStatusMessage();
       lblStatusMessage.setText(status);
       lblStatusMessage.setToolTipText(status);
     }
@@ -901,10 +907,10 @@ public class EntityTablePanel extends JPanel {
 
   private List<PropertyFilterPanel> initializeFilterPanels() {
     final List<PropertyFilterPanel> columnFilterPanels =
-            new ArrayList<PropertyFilterPanel>(tableModel.getSearchModel().getPropertyFilterModels().size());
-    for (final PropertyFilterModel searchModel : tableModel.getSearchModel().getPropertyFilterModels()) {
+            new ArrayList<PropertyFilterPanel>(getTableModel().getSearchModel().getPropertyFilterModels().size());
+    for (final PropertyFilterModel searchModel : getTableModel().getSearchModel().getPropertyFilterModels()) {
       final PropertyFilterPanel ret = new PropertyFilterPanel(searchModel, true, true);
-      final TableColumn tableColumn = entityTable.getColumnModel().getColumn(searchModel.getColumnIndex());
+      final TableColumn tableColumn = getJTable().getColumnModel().getColumn(searchModel.getColumnIndex());
       ret.getModel().evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           if (ret.getModel().isSearchEnabled())
@@ -912,7 +918,7 @@ public class EntityTablePanel extends JPanel {
           else
             removeFilterIndicator(tableColumn);
 
-          entityTable.getTableHeader().repaint();
+          getJTable().getTableHeader().repaint();
         }
       });
       if (ret.getModel().isSearchEnabled())
@@ -925,11 +931,11 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void toggleColumnFilterPanel(final ActionEvent e) {
-    final Point lp = entityTable.getTableHeader().getLocationOnScreen();
+    final Point lp = getJTable().getTableHeader().getLocationOnScreen();
     final Point p = (Point) e.getSource();
     final Point pos = new Point((int) (lp.getX() + p.getX()), (int) (lp.getY() - p.getY()));
-    final int col = entityTable.getColumnModel().getColumnIndexAtX((int) p.getX());
-    toggleFilterPanel(pos, propertyFilterPanels.get(col), entityTable);
+    final int col = getJTable().getColumnModel().getColumnIndexAtX((int) p.getX());
+    toggleFilterPanel(pos, propertyFilterPanels.get(col), getJTable());
   }
 
   private void revalidateAndShowSearchPanel() {

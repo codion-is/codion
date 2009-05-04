@@ -395,9 +395,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       bindTablePanelEvents();
 
       if (refreshOnInit)
-        model.refresh();//refreshes combo models
+        getModel().refresh();//refreshes combo models
       else
-        model.refreshComboBoxModels();
+        getModel().refreshComboBoxModels();
     }
     catch (UserException e) {
       throw e.getRuntimeException();
@@ -568,7 +568,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         if (detailPanel.getDetailPanelState() == DIALOG)
           detailPanel.setDetailPanelState(HIDDEN);
 
-    model.setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().getModel());
+    getModel().setLinkedDetailModel(state == HIDDEN ? null : getSelectedDetailPanel().getModel());
 
     detailPanelState = state;
     if (state != DIALOG)
@@ -623,7 +623,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (!isInitialized())
       return;
 
-    if (model.getTableModel() != null)
+    if (getModel().getTableModel() != null)
       entityTablePanel.setFilterPanelsVisible(value);
     for (final EntityPanel detailEntityPanel : detailEntityPanelProviders.values())
       detailEntityPanel.setFilterPanelsVisible(value);
@@ -666,7 +666,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void handleException(final Throwable throwable, final JComponent dialogParent) {
     log.error(this, throwable);
-    FrameworkUiUtil.getExceptionHandler().handleException(throwable, model.getEntityID(), dialogParent);
+    FrameworkUiUtil.getExceptionHandler().handleException(throwable, getModel().getEntityID(), dialogParent);
   }
 
   //#############################################################################################
@@ -679,7 +679,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public final void handleSave() {
     if ((getModel().getTableModel() != null && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
-            || !getModel().isActiveEntityModified() || !model.isUpdateAllowed()) {
+            || !getModel().isActiveEntityModified() || !getModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       handleInsert();
     }
@@ -706,7 +706,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         validateData();
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
-          model.insert();
+          getModel().insert();
         }
         finally {
           UiUtil.setWaitCursor(false, EntityPanel.this);
@@ -732,7 +732,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       if (confirmDelete()) {
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
-          model.delete();
+          getModel().delete();
         }
         finally {
           UiUtil.setWaitCursor(false, EntityPanel.this);
@@ -758,7 +758,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       if (confirmUpdate()) {
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
-          model.update();
+          getModel().update();
         }
         finally {
           UiUtil.setWaitCursor(false, EntityPanel.this);
@@ -795,12 +795,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
     try {
-      if (model.getTableModel() == null || model.getTableModel().stSelectionEmpty.isActive())
+      if (getModel().getTableModel() == null || getModel().getTableModel().stSelectionEmpty.isActive())
         return;
 
-      final List<Entity> selectedEntities = model.getTableModel().getSelectedEntities();
+      final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
       final EntityPropertyEditor editPanel = new EntityPropertyEditor(propertyToUpdate,
-              selectedEntities, model, getInputManager(propertyToUpdate, selectedEntities));
+              selectedEntities, getModel(), getInputManager(propertyToUpdate, selectedEntities));
       UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.isEditAccepted()) {
@@ -808,7 +808,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                 propertyToUpdate.propertyID, editPanel.getValue(), selectedEntities);
         try {
           UiUtil.setWaitCursor(true, this);
-          model.update(selectedEntities);
+          getModel().update(selectedEntities);
         }
         catch (Exception e) {
           EntityUtil.setPropertyValue(propertyToUpdate.propertyID, oldValues, selectedEntities);
@@ -832,13 +832,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       final Map<String, List<Entity>> dependencies;
       try {
         UiUtil.setWaitCursor(true, EntityPanel.this);
-        dependencies = model.getTableModel().getSelectionDependencies();
+        dependencies = getModel().getTableModel().getSelectionDependencies();
       }
       finally {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
       if (EntityUtil.activeDependencies(dependencies)) {
-        showDependenciesDialog(dependencies, model.getDbConnectionProvider(), EntityPanel.this);
+        showDependenciesDialog(dependencies, getModel().getDbConnectionProvider(), EntityPanel.this);
       }
       else {
         JOptionPane.showMessageDialog(EntityPanel.this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
@@ -856,7 +856,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void printTable() throws UserException {
     try {
-      if (model.getTableModel() != null)
+      if (getModel().getTableModel() != null)
         JPrinter.print(entityTablePanel.getJTable());
 
       prepareUI(true, false);
@@ -897,7 +897,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
     if (clearUI)
-      model.clear();
+      getModel().clear();
     if (requestDefaultFocus) {
       if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && entityTablePanel != null)
         entityTablePanel.getJTable().requestFocus();
@@ -932,7 +932,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public Control getViewDependenciesControl() {
     return ControlFactory.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            model.getTableModel().stSelectionEmpty.getReversedState(),
+            getModel().getTableModel().stSelectionEmpty.getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -951,8 +951,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public Control getDeleteSelectedControl() {
     return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
-                    model.getDeleteAllowedState(),
-                    model.getTableModel().stSelectionEmpty.getReversedState()),
+                    getModel().getDeleteAllowedState(),
+                    getModel().getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -962,7 +962,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return ControlFactory.methodControl(model, "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
+    return ControlFactory.methodControl(getModel(), "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
             stActive, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -974,8 +974,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     return ControlFactory.methodControl(this, "updateSelectedEntities",
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             new AggregateState(AggregateState.Type.AND,
-                    model.getUpdateAllowedState(),
-                    model.getTableModel().stSelectionEmpty.getReversedState()),
+                    getModel().getUpdateAllowedState(),
+                    getModel().getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP), 0,
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -986,8 +986,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public ControlSet getUpdateSelectedControlSet() {
     final State enabled = new AggregateState(AggregateState.Type.AND,
-            model.getUpdateAllowedState(),
-            model.getTableModel().stSelectionEmpty.getReversedState());
+            getModel().getUpdateAllowedState(),
+            getModel().getTableModel().stSelectionEmpty.getReversedState());
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     ret.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -1011,8 +1011,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
-                    model.getDeleteAllowedState(),
-                    model.stEntityActive),//changed from stSelectionEmpty.getReversedState()
+                    getModel().getDeleteAllowedState(),
+                    getModel().stEntityActive),//changed from stSelectionEmpty.getReversedState()
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -1022,7 +1022,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return ControlFactory.methodControl(model, "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return ControlFactory.methodControl(getModel(), "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
             stActive, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
@@ -1035,9 +1035,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     return ControlFactory.methodControl(this, "handleUpdate", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
-                    model.getUpdateAllowedState(),
-                    model.stEntityActive,
-                    model.getActiveEntityModifiedState()),
+                    getModel().getUpdateAllowedState(),
+                    getModel().stEntityActive,
+                    getModel().getActiveEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -1048,7 +1048,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "handleSave", FrameworkMessages.get(FrameworkMessages.INSERT),
-            new AggregateState(AggregateState.Type.AND, stActive, model.getInsertAllowedState()),
+            new AggregateState(AggregateState.Type.AND, stActive, getModel().getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -1058,8 +1058,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, model.getInsertAllowedState(),
-            new AggregateState(AggregateState.Type.AND, model.getUpdateAllowedState(), model.getActiveEntityModifiedState()));
+    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getInsertAllowedState(),
+            new AggregateState(AggregateState.Type.AND, getModel().getUpdateAllowedState(),
+                    getModel().getActiveEntityModifiedState()));
     return ControlFactory.methodControl(this, "handleSave", insertCaption,
             new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
@@ -1143,7 +1144,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) throws UserException {
-    final EntityModel model = new EntityModel(entityID, entityID, dbProvider) {
+    final EntityModel entityModel = new EntityModel(entityID, entityID, dbProvider) {
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider) {
           protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
@@ -1156,9 +1157,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       }
     };
 
-    final EntityPanel ret = new EntityPanel(model, true, false, false, EMBEDDED, false) {
+    final EntityPanel ret = new EntityPanel(entityModel, true, false, false, EMBEDDED, false) {
       protected EntityTablePanel initializeEntityTablePanel(final boolean specialRendering) {
-        return new EntityTablePanel(model.getTableModel(), getTablePopupControlSet(), false, false) {
+        return new EntityTablePanel(entityModel.getTableModel(), getTablePopupControlSet(), false, false) {
           protected JPanel initializeSearchPanel() {
             return null;
           }
@@ -1219,7 +1220,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected void initializeUI() {
     editPanel = initializeEditPanel();
-    entityTablePanel = model.getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
+    entityTablePanel = getModel().getTableModel() != null ? initializeEntityTablePanel(specialRendering) : null;
     if (entityTablePanel != null) {
       entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
@@ -1366,11 +1367,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       }
     });
     for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
-      ret.addTab(detailPanel.model.getCaption(), detailPanel);
+      ret.addTab(detailPanel.getModel().getCaption(), detailPanel);
 
     ret.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
-        model.setLinkedDetailModel(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
+        getModel().setLinkedDetailModel(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
         getSelectedDetailPanel().initialize();
       }
     });
@@ -1421,10 +1422,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       final Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();
       final List<EntityPanelProvider> detailPanelProviders = getDetailPanelProviders();
       for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
-        final EntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityModelClass());
+        final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getEntityModelClass());
         if (detailModel == null)
           throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
-                  + " not found in model of type " + model.getClass());
+                  + " not found in model of type " + getModel().getClass());
         final EntityPanel detailPanel = detailPanelProvider.createInstance(detailModel);
         detailPanel.setMasterPanel(this);
         detailEntityPanelProviders.put(detailPanelProvider, detailPanel);
@@ -1498,20 +1499,21 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @see #getControl(String)
    */
   protected void setupControls() {
-    if (!model.isReadOnly()) {
-      if (model.isInsertAllowed())
+    if (!getModel().isReadOnly()) {
+      if (getModel().isInsertAllowed())
         setControl(INSERT, getInsertControl());
-      if (model.isUpdateAllowed())
+      if (getModel().isUpdateAllowed())
         setControl(UPDATE, getUpdateControl());
-      if (model.isDeleteAllowed())
+      if (getModel().isDeleteAllowed())
         setControl(DELETE, getDeleteControl());
     }
     setControl(CLEAR, getClearControl());
-    if (model.getTableModel() != null) {
-      if (!model.isReadOnly() && model.isUpdateAllowed() && model.isMultipleUpdateAllowed())
+    if (getModel().getTableModel() != null) {
+      if (!getModel().isReadOnly() && getModel().isUpdateAllowed()
+              && getModel().isMultipleUpdateAllowed())
         setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
       setControl(REFRESH, getRefreshControl());
-      if (!model.isReadOnly() && model.isDeleteAllowed())
+      if (!getModel().isReadOnly() && getModel().isDeleteAllowed())
         setControl(MENU_DELETE, getDeleteSelectedControl());
       setControl(PRINT, getPrintControl());
       setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1606,10 +1608,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
-      final EntityModel model = detailPanel.getModel();
-      if (model == null)
+      final EntityModel detailModel = detailPanel.getModel();
+      if (detailModel == null)
         throw new RuntimeException("EntityPanel does not have a EntityModel associated with it");
-      ret.add(new Control(model.getCaption()) {
+      ret.add(new Control(detailModel.getCaption()) {
         public void actionPerformed(ActionEvent e) {
           detailTabPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
@@ -1790,10 +1792,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     detailDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailTabPane, false,
             getModel().getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        setDetailPanelState(HIDDEN);
-      }
-    });
+              public void actionPerformed(ActionEvent e) {
+                setDetailPanelState(HIDDEN);
+              }
+            });
   }
 
   /**
@@ -1814,10 +1816,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     editDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
             getModel().getCaption(), false, true,
             null, null, location, new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        setEditPanelState(HIDDEN);
-      }
-    });
+              public void actionPerformed(ActionEvent e) {
+                setEditPanelState(HIDDEN);
+              }
+            });
     prepareUI(true, false);
   }
 
@@ -1867,7 +1869,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return the multiple entity update button
    */
   private JButton getUpdateButton() {
-    if (model.isReadOnly() || !model.isMultipleUpdateAllowed() || !model.isUpdateAllowed())
+    if (getModel().isReadOnly() || !getModel().isMultipleUpdateAllowed() || !getModel().isUpdateAllowed())
       return null;
 
     final ControlSet updateSet = getUpdateSelectedControlSet();
@@ -1886,7 +1888,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private JButton getDeleteButton() {
-    if (model.isReadOnly() || !model.isDeleteAllowed())
+    if (getModel().isReadOnly() || !getModel().isDeleteAllowed())
       return null;
 
     final Control delete = getDeleteSelectedControl();
@@ -2044,12 +2046,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private void bindModelEvents() {
-    model.evtRefreshStarted.addListener(new ActionListener() {
+    getModel().evtRefreshStarted.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    model.evtRefreshDone.addListener(new ActionListener() {
+    getModel().evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
