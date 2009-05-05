@@ -136,6 +136,7 @@ public class EntityCriteriaPanel extends JPanel {
           return propertyOne.propertyID.compareTo(propertyTwo.propertyID);
       }
     });
+
     return searchCriterias;
   }
 }
