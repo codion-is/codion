@@ -11,6 +11,7 @@ public class FullDateFormat extends AbstractDateMaskFormat {
   public static final String PATTERN = "dd-MM-yyyy HH:mm:ss";
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
     protected synchronized Object initialValue() {
       return new SimpleDateFormat(PATTERN);
     }
@@ -21,6 +22,7 @@ public class FullDateFormat extends AbstractDateMaskFormat {
     super(PATTERN);
   }
 
+  @Override
   public String getDateMask() {
     return MASK_STRING;
   }

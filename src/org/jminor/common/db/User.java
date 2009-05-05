@@ -41,6 +41,7 @@ public class User implements Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return "User: " + username;
   }
@@ -53,10 +54,12 @@ public class User implements Serializable {
     return properties.get(key);
   }
 
-  public boolean equals(Object obj) {
+  @Override
+  public boolean equals(final Object obj) {
     return obj instanceof User && ((User) obj).hashCode == hashCode;
   }
 
+  @Override
   public int hashCode() {
     return hashCode;
   }

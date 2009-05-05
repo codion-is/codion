@@ -84,6 +84,7 @@ public class TextFieldPlus extends JTextField {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setText(final String string) {
     super.setText(string == null ? "" : string);
   }
@@ -93,11 +94,13 @@ public class TextFieldPlus extends JTextField {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Document createDefaultModel() {
     return new DefaultDocument();
   }
 
   private class DefaultDocument extends PlainDocument {
+    @Override
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
       if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;

@@ -89,6 +89,7 @@ public class PropertyCriteria implements ICriteria {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return getConditionString();
   }

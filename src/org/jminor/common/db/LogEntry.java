@@ -46,6 +46,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
       return 0;
   }
 
+  @Override
   public String toString() {
     final StringBuffer ret = new StringBuffer();
     if (done) {

@@ -153,6 +153,7 @@ public class Property implements Serializable {
   /**
    * @return a String representation of this property
    */
+  @Override
   public String toString() {
     return caption != null ? caption : propertyID;
   }
@@ -263,6 +264,7 @@ public class Property implements Serializable {
    * @return true if object is a Property instance and has a
    * property identifier equal to that of this property
    */
+  @Override
   public boolean equals(final Object object) {
     return this == object || object instanceof Property && this.propertyID.equals(((Property) object).propertyID);
   }

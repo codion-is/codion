@@ -20,6 +20,7 @@ public class SchemaPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void initialize() {
     if (isInitialized())
       return;
@@ -29,16 +30,19 @@ public class SchemaPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(DbObjectModel.class, DbObjectPanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected double getDetailSplitPaneResizeWeight() {
     return 0.3;
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     return null;
   }

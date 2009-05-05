@@ -45,11 +45,13 @@ public class Control extends AbstractAction {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isEnabled() {
     return enabledState.isActive();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setEnabled(final boolean enabled) {
     enabledState.setActive(enabled);
   }

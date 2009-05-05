@@ -274,6 +274,7 @@ public class Util {
 
   public static void printMemoryUsage(final long interval) {
     new Timer(true).scheduleAtFixedRate(new TimerTask() {
+      @Override
       public void run() {
         System.out.println(getMemoryUsageString());
       }

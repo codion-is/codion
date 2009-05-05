@@ -32,6 +32,7 @@ public class UserInstanceMonitor extends DefaultMutableTreeNode {
       add(new ClientInstanceMonitor(client , server));
   }
 
+  @Override
   public String toString() {
     return user.toString() + " (" + getChildCount() + ")";
   }

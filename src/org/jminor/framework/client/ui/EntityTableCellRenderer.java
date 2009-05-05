@@ -106,6 +106,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
+    @Override
     public void setValue(final Object value) {
       if (value instanceof String)
         setText((String) value);
@@ -121,6 +122,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setValue(final Object value) {
       String txt = "";
       if (value != null && value instanceof Date)
@@ -140,6 +142,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setValue(final Object value) {
       String txt = "";
       if (value != null && value instanceof Date)

@@ -19,6 +19,7 @@ public class ConstraintPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void initialize() {
     if (isInitialized())
       return;
@@ -28,11 +29,13 @@ public class ConstraintPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(ColumnConstraintModel.class, ColumnConstraintPanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     return null;
   }

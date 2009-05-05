@@ -60,6 +60,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean include(final Object object) {
     return true;
   }
@@ -78,6 +79,7 @@ public class PropertySearchModel extends AbstractSearchModel {
     setLowerBound((Object) value);
   }
 
+  @Override
   public String toString() {
     final StringBuffer ret = new StringBuffer(getProperty().propertyID);
     if (isSearchEnabled()) {

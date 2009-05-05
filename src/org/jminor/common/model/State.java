@@ -69,6 +69,7 @@ public class State implements Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return (name != null ? (name + " ") : "") + (active ? "active" : "inactive");
   }
@@ -127,18 +128,22 @@ public class State implements Serializable {
       });
     }
 
+    @Override
     public boolean isActive() {
       return !referenceState.isActive();
     }
 
+    @Override
     public State getReversedState() {
       return referenceState;
     }
 
+    @Override
     public void setActive(final boolean isActive) {
       throw new RuntimeException("Cannot set the state of a reversed state");
     }
 
+    @Override
     public String toString() {
       return referenceState + " reversed";
     }

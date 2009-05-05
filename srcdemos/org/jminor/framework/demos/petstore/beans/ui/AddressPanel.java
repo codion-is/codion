@@ -24,6 +24,7 @@ public class AddressPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(4,2,5,5));
     JTextField txt = createTextField(Petstore.ADDRESS_CITY);

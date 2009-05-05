@@ -39,10 +39,12 @@ public class IntBeanSpinnerPropertyLink extends BeanPropertyLink {
     return spinnerModel;
   }
 
+  @Override
   protected Object getUIPropertyValue() {
     return spinnerModel.getValue();
   }
 
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     spinnerModel.setValue(propertyValue);
   }

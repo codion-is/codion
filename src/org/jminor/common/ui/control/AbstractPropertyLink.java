@@ -59,6 +59,7 @@ public abstract class AbstractPropertyLink extends Control {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void actionPerformed(final ActionEvent e) {
     updateModel();
   }

@@ -80,6 +80,7 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Dimension getPreferredSize() {
     for (final JPanel searchPanel : searchPanels)
       if (searchPanel instanceof PropertySearchPanel)

@@ -29,11 +29,13 @@ public class PetstoreAppModel extends EntityApplicationModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
     return EntityModel.asList(CategoryModel.class);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void loadDomainModel() {
     new Petstore();
   }

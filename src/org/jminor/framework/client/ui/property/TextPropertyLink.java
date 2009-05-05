@@ -81,6 +81,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
                     textComponent).getFormatter()).getPlaceholderCharacter())) : null;
     if (!this.immediateUpdate) {
       this.textComponent.addFocusListener(new FocusAdapter() {
+        @Override
         public void focusLost(FocusEvent e) {
           actionPerformed(new ActionEvent(e.getSource(), e.getID(), "focusLost"));
         }
@@ -162,11 +163,13 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     return valueFromText(getText());
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     textComponent.setText(getValueAsString(propertyValue));
   }

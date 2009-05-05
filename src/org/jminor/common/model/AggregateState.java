@@ -27,6 +27,7 @@ public class AggregateState extends State {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     final StringBuffer ret = new StringBuffer("Aggregate ");
     ret.append(type == Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
@@ -60,6 +61,7 @@ public class AggregateState extends State {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isActive() {
     if (getType() == Type.AND) { //AND, one inactive is enough
       for (final State state : states) {
@@ -80,6 +82,7 @@ public class AggregateState extends State {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setActive(final boolean isActive) {
     throw new RuntimeException("The state of aggregate states can't be set");
   }

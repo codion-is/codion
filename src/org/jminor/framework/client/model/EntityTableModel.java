@@ -175,6 +175,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private int minSelectedIndex = -1;
 
   private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
+    @Override
     public void fireValueChanged(int min, int max, boolean isAdjusting) {
       super.fireValueChanged(min, max, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());
@@ -397,11 +398,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isCellEditable(final int row, final int column) {
     return false;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Class getColumnClass(final int columnIndex) {
     return getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
             getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).propertyID));
@@ -927,6 +930,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return getEntityID();
   }

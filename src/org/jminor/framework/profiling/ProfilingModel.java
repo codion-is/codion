@@ -85,6 +85,7 @@ public abstract class ProfilingModel {
     initializeSettings();
     loadDomainModel();
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         updateRequestsPerSecond();
         updateChart();

@@ -27,11 +27,13 @@ public class ContactInfoPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,1,5,5));
     JTextField txt = createTextField(Petstore.SELLER_CONTACT_INFO_LAST_NAME);

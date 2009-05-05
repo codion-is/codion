@@ -35,35 +35,20 @@ import java.util.List;
 public class PropertySummaryPanel extends JPanel {
 
   public enum SummaryType {
-    NONE {
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.NONE);
+    NONE, SUM, AVARAGE, MINIMUM, MAXIMUM, MINIMUM_AND_MAXIMUM;
+
+    @Override
+    public String toString() {
+      switch (this) {
+        case NONE: return FrameworkMessages.get(FrameworkMessages.NONE);
+        case SUM: return FrameworkMessages.get(FrameworkMessages.SUM);
+        case AVARAGE: return FrameworkMessages.get(FrameworkMessages.AVERAGE);
+        case MINIMUM: return FrameworkMessages.get(FrameworkMessages.MINIMUM);
+        case MAXIMUM: return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
+        case MINIMUM_AND_MAXIMUM: return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
       }
-    },
-    SUM {
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.SUM);
-      }
-    },
-    AVARAGE {
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.AVERAGE);
-      }
-    },
-    MINIMUM {
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MINIMUM);
-      }
-    },
-    MAXIMUM {
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
-      }
-    },
-    MINIMUM_AND_MAXIMUM {
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
-      }
+
+      return super.toString();
     }
   }
 
@@ -132,6 +117,7 @@ public class PropertySummaryPanel extends JPanel {
 
       final JPopupMenu menu = createPopupMenu(summaryTypes);
       lblSummary.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseReleased(final MouseEvent e) {
           menu.show(lblSummary, e.getX(), e.getY()-menu.getPreferredSize().height);
         }

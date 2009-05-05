@@ -217,6 +217,7 @@ public class UiUtil {
                                                          final boolean charsAsUpper) {
     try {
       final MaskFormatter formatter = new MaskFormatter(mask) {
+        @Override
         public Object stringToValue(final String value) throws ParseException {
           String ret = value;
           if (charsAsUpper)
@@ -375,6 +376,7 @@ public class UiUtil {
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     table.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyReleased(KeyEvent e) {//shift-space shows popup menu
         if (e.isShiftDown() && e.getKeyChar() == ' ')
           popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
@@ -426,12 +428,15 @@ public class UiUtil {
    */
   public static JTextField makeUpperCase(final JTextField textField) {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
+      @Override
       public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, text == null ? text : text.toUpperCase(), attr);
       }
+      @Override
       public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
+      @Override
       public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text == null ? text : text.toUpperCase(), attrs);
       }
@@ -447,12 +452,15 @@ public class UiUtil {
    */
   public static JTextField makeLowerCase(final JTextField textField) {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
+      @Override
       public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
         super.insertString(fb, offset, string.toLowerCase(), attr);
       }
+      @Override
       public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
         super.remove(fb, offset, length);
       }
+      @Override
       public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
         super.replace(fb, offset, length, text.toLowerCase(), attrs);
       }
@@ -468,6 +476,7 @@ public class UiUtil {
    */
   public static void transferFocusOnEnter(final JComponent component) {
     component.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyPressed(final KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
           if (evt.isShiftDown())
@@ -485,6 +494,7 @@ public class UiUtil {
    */
   public static void selectAllOnFocusGained(final JTextComponent textComponent) {
     textComponent.addFocusListener(new FocusAdapter() {
+      @Override
       public void focusGained(final FocusEvent e) {
         textComponent.selectAll();
       }
@@ -510,6 +520,7 @@ public class UiUtil {
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent we) {
           closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
         }

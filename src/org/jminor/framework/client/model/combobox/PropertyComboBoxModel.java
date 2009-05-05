@@ -44,6 +44,7 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
     this.property = property;
   }
 
+  @Override
   protected List<?> getContents() {
     try {
       return dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true, true);

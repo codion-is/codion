@@ -33,11 +33,13 @@ public class SchemaBrowserProfiling extends ProfilingModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void loadDomainModel() {
     new SchemaBrowser();
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void performWork(EntityApplicationModel applicationModel) {
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
     try {
@@ -52,6 +54,7 @@ public class SchemaBrowserProfiling extends ProfilingModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException {
     final EntityApplicationModel ret =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));

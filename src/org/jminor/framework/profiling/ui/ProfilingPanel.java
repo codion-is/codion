@@ -65,6 +65,7 @@ public class ProfilingPanel extends JPanel {
       }
     });
     frame.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         frame.setTitle(title + " - Closing...");
         getModel().exit();

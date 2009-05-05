@@ -52,12 +52,14 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
     return selectedEntities.size() == 0 ? null : selectedEntities.get(0);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     final List<Entity> value = new ArrayList<Entity>();
     if (getModelPropertyValue() != null)

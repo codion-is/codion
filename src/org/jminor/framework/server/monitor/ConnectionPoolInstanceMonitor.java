@@ -153,6 +153,7 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
     return statsUpdateInterval;
   }
 
+  @Override
   public String toString() {
     return "Connection pool: " + user.toString();
   }
@@ -208,6 +209,7 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
       updateTimer.cancel();
     updateTimer = new Timer(false);
     updateTimer.schedule(new TimerTask() {
+      @Override
       public void run() {
         try {
           updateStats();

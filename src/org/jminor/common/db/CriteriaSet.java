@@ -19,6 +19,7 @@ public class CriteriaSet implements ICriteria {
     AND, OR;
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
       switch (this) {
         case AND:
@@ -77,6 +78,7 @@ public class CriteriaSet implements ICriteria {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     if (criterias.size() == 0)
       return "";

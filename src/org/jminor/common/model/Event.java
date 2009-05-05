@@ -66,6 +66,7 @@ public class Event implements ActionListener, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return name;
   }

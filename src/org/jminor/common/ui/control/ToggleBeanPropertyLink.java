@@ -29,6 +29,7 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Method getGetMethod() throws NoSuchMethodException {
     try {
       return getPropertyOwner().getClass().getMethod("is" + getPropertyName());
@@ -39,11 +40,13 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     return button.isSelected();
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     final Boolean value = (Boolean) propertyValue;
     button.setSelected(value != null && value);

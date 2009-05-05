@@ -413,6 +413,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @param object the object to compare with
    * @return true if this entity is equal to object
    */
+  @Override
   public boolean equals(final Object object) {
     return object instanceof Entity && equals((Entity) object);
   }
@@ -445,6 +446,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   /**
    * Returns the hash code of the primary key
    */
+  @Override
   public int hashCode() {
     return primaryKey.hashCode();
   }
@@ -453,6 +455,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * @return a string representation of this entity
    * @see EntityProxy#toString(Entity)
    */
+  @Override
   public String toString() {
     if (toString == null)
       toString = EntityProxy.getEntityProxy(getEntityID()).toString(this);

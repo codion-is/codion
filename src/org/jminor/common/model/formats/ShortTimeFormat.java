@@ -11,6 +11,7 @@ public class ShortTimeFormat extends AbstractDateMaskFormat {
   public static final String PATTERN = "HH:mm";
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
     protected synchronized Object initialValue() {
       return new SimpleDateFormat(PATTERN);
     }
@@ -22,6 +23,7 @@ public class ShortTimeFormat extends AbstractDateMaskFormat {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getDateMask() {
     return MASK_STRING;
   }

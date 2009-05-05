@@ -158,6 +158,7 @@ public class EntityKey implements Externalizable {
   /**
    * @return a string representation of this key
    */
+  @Override
   public String toString() {
     final StringBuffer ret = new StringBuffer();
     int i = 0;
@@ -192,6 +193,7 @@ public class EntityKey implements Externalizable {
    * @param object the object to compare with
    * @return true if object is equal to this key
    */
+  @Override
   public boolean equals(final Object object) {
     return object instanceof EntityKey && equals((EntityKey) object);
   }
@@ -207,6 +209,7 @@ public class EntityKey implements Externalizable {
   /**
    * @return a hash code based on the values of this key, unique among entities of the same type
    */
+  @Override
   public int hashCode() {
     if (hashCodeDirty) {
       int hash = 0;

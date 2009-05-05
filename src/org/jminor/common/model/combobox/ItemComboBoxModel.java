@@ -30,6 +30,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setSelectedItem(final Object item) {
     if (!(item instanceof IItem))
       super.setSelectedItem(getElementAt(indexOf(item)));
@@ -63,6 +64,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     public T getItem();
 
     /** {@inheritDoc} */
+    @Override
     public String toString();
   }
 
@@ -89,6 +91,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
       return getCaption();
     }
@@ -128,6 +131,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
       return item.toString();
     }

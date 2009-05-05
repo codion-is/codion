@@ -63,11 +63,13 @@ public class EntityDbConnectionPool {
             System.getProperty(Database.DATABASE_SID_PROPERTY));
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         cleanPool(false);
       }
     }, new Date(), settings.getPoolCleanupInterval());
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         updateRequestsPerSecond();
       }

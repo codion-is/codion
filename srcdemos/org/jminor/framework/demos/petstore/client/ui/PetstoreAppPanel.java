@@ -29,10 +29,12 @@ import java.util.Locale;
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(CategoryModel.class, CategoryPanel.class));
   }
 
+  @Override
   protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
     return Arrays.asList(
             new EntityPanelProvider("Addresses", AddressModel.class, AddressPanel.class),
@@ -40,6 +42,7 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
             new EntityPanelProvider("Tags", TagModel.class, TagPanel.class));
   }
 
+  @Override
   protected void initializeSettings() {
     Locale.setDefault(new Locale("en"));
     FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);

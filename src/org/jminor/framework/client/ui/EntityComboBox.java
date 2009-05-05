@@ -62,6 +62,7 @@ public class EntityComboBox extends SteppedComboBox {
     setComponentPopupMenu(initializePopupMenu());
   }
 
+  @Override
   public Dimension getPreferredSize() {
     final Dimension ret = super.getPreferredSize();
     ret.setSize(new Dimension(ret.width, UiUtil.getPreferredTextFieldHeight()));
@@ -78,6 +79,7 @@ public class EntityComboBox extends SteppedComboBox {
     return ret;
   }
 
+  @Override
   public EntityComboBoxModel getModel() {
     return (EntityComboBoxModel) super.getModel();
   }

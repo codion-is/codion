@@ -33,6 +33,7 @@ public enum Type implements Serializable {
     public static final String BOOLEAN_FALSE = Messages.get(Messages.NO);
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
       switch(this) {
         case NULL: return BOOLEAN_NULL;

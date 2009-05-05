@@ -247,16 +247,19 @@ public class TableSorter extends AbstractTableModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getColumnName(int column) {
     return tableModel.getColumnName(column);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Class getColumnClass(int column) {
     return tableModel.getColumnClass(column);
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isCellEditable(int row, int column) {
     return tableModel.isCellEditable(modelIndex(row), column);
   }
@@ -267,6 +270,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setValueAt(Object aValue, int row, int column) {
     tableModel.setValueAt(aValue, modelIndex(row), column);
   }
@@ -447,6 +451,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   private class MouseHandler extends MouseAdapter {
+    @Override
     public void mouseClicked(MouseEvent e) {
       if (e.getButton() != MouseEvent.BUTTON1)
         return;

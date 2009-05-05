@@ -29,6 +29,7 @@ public class UserMonitor extends DefaultMutableTreeNode {
       add(new UserInstanceMonitor(server, user));
   }
 
+  @Override
   public String toString() {
     return "Database users" + " (" + getChildCount() + ")";
   }

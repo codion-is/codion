@@ -36,11 +36,13 @@ public class BooleanPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     return buttonModel.isSelected() ? Type.Boolean.TRUE : Type.Boolean.FALSE;
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     buttonModel.setSelected(propertyValue == Type.Boolean.TRUE);
   }

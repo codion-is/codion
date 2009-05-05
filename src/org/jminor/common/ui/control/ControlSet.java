@@ -81,11 +81,13 @@ public class ControlSet extends Control {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setDescription(final String description) {
     this.description = description;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getDescription() {
     return description;
   }

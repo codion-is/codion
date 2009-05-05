@@ -27,6 +27,7 @@ public class TagItemPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(2,1,5,5));
     EntityComboBox box = createEntityComboBox(Petstore.TAG_ITEM_ITEM_REF);

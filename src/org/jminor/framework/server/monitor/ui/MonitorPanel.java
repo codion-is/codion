@@ -127,9 +127,11 @@ public class MonitorPanel extends JPanel {
     final JTree ret = new JTree(model.getTreeModel());
     ret.setRootVisible(false);
     ret.addMouseListener(new MouseAdapter() {
+      @Override
       public void mousePressed(final MouseEvent e) {
         popup(e, ret);
       }
+      @Override
       public void mouseReleased(MouseEvent e) {
         popup(e, ret);
       }

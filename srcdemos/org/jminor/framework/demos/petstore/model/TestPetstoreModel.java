@@ -48,14 +48,17 @@ public class TestPetstoreModel extends EntityTestUnit {
     testEntity(Petstore.T_TAG_ITEM);
   }
 
+  @Override
   protected void loadDomainModel() {
     new Petstore();
   }
 
+  @Override
   protected User getTestUser() throws UserCancelException {
     return new User("scott", "tiger");
   }
 
+  @Override
   protected Entity initializeTestEntity(final String entityID) {
     if (entityID.equals(Petstore.T_ADDRESS)) {
       final Entity address = new Entity(Petstore.T_ADDRESS);
@@ -118,10 +121,11 @@ public class TestPetstoreModel extends EntityTestUnit {
 
       return tagItem;
     }
-    
+
     return null;
   }
 
+  @Override
   protected void modifyEntity(final Entity testEntity) {
     if (testEntity.is(Petstore.T_ADDRESS)) {
       testEntity.setValue(Petstore.ADDRESS_CITY, "new city");
@@ -148,6 +152,7 @@ public class TestPetstoreModel extends EntityTestUnit {
     }
   }
 
+  @Override
   protected Map<String, Entity> initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception {
     final Map<String, Entity> ret = new HashMap<String, Entity>();
     if (referenceEntityIDs.contains(Petstore.T_ADDRESS)) {

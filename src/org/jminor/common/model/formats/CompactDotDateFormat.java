@@ -11,6 +11,7 @@ public class CompactDotDateFormat extends AbstractDateMaskFormat {
   public static final String PATTERN = "dd.MM.yy";
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
     protected synchronized Object initialValue() {
       return new SimpleDateFormat(PATTERN);
     }
@@ -22,6 +23,7 @@ public class CompactDotDateFormat extends AbstractDateMaskFormat {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getDateMask() {
     return MASK_STRING;
   }

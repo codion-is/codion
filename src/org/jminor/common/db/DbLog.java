@@ -122,12 +122,14 @@ public class DbLog implements Serializable {
   }
 
   /** {@inheritDoc} */
-  public boolean equals(Object obj) {
+  @Override
+  public boolean equals(final Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
             && connectionKey.equals(((DbLog) obj).connectionKey);
   }
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode() {
     return connectionKey.hashCode();
   }

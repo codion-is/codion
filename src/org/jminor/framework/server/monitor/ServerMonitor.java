@@ -48,6 +48,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
     connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecond);
     refresh();
     new Timer(false).schedule(new TimerTask() {
+      @Override
       public void run() {
         try {
           updateStats();
@@ -66,6 +67,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
     add(new UserMonitor(server));
   }
 
+  @Override
   public String toString() {
     return "Server: " + getServerName() + " (users: " + getChildCount() + ")";
   }

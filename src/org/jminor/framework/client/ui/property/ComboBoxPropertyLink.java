@@ -84,6 +84,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     Object ret;
     if (boxModel instanceof EntityComboBoxModel)
@@ -100,6 +101,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     boxModel.setSelectedItem(propertyValue);
   }

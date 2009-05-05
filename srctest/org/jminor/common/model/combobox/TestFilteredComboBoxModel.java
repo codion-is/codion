@@ -78,12 +78,14 @@ public class TestFilteredComboBoxModel extends TestCase {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUp() throws Exception {
     testModel = new FilteredComboBoxModel();
     testModel.setContents(initContents());
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void tearDown() throws Exception {
     testModel = null;
   }

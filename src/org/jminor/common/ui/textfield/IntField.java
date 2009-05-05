@@ -27,6 +27,7 @@ public class IntField extends TextFieldPlus {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Object getValue() {
     return this.getInt();
   }
@@ -46,12 +47,14 @@ public class IntField extends TextFieldPlus {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Document createDefaultModel() {
     return new IntFieldDocument();
   }
 
   class IntFieldDocument extends PlainDocument {
     /** {@inheritDoc} */
+    @Override
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
       if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;

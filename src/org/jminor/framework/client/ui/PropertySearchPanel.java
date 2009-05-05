@@ -51,16 +51,19 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected boolean isLowerFieldRequired(final Type type) {
     return !(type == Type.ENTITY || type == Type.BOOLEAN);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
     return !(model.getProperty() instanceof Property.EntityProperty || model.getPropertyType() == Type.BOOLEAN)
             || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
 
+  @Override
   protected JComponent getInputField(final boolean isUpperBound) {
     JComponent field;
     switch (model.getPropertyType()) {
@@ -73,6 +76,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class,  isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "",
                 LinkType.READ_WRITE, format) {
+          @Override
           public void setModelPropertyValue(final Object obj) {
             if (obj != null)
               super.setModelPropertyValue(new Timestamp(((Date) obj).getTime()));

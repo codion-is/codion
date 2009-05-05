@@ -44,6 +44,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
 
     this.fieldMaskString = formatMaskString.replaceAll("#","_");
     entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
+      @Override
       protected void propertyChanged(PropertyChangeEvent e) {
         updateFieldColor(textField);
       }
@@ -57,6 +58,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getParsedValue(final String text) {
     updateValidColor.fire();
     final Date formatted = (Date) super.getParsedValue(text);

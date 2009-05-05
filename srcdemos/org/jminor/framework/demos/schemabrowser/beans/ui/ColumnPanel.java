@@ -15,6 +15,7 @@ public class ColumnPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void initialize() {
     if (isInitialized())
       return;
@@ -24,6 +25,7 @@ public class ColumnPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     return null;
   }

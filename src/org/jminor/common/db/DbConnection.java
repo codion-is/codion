@@ -59,6 +59,7 @@ public class DbConnection {
 
   static {
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         updateRequestsPerSecond();
       }

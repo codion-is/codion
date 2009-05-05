@@ -104,6 +104,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void addCacheQueriesRequest() {
     super.addCacheQueriesRequest();
     if (getCacheQueriesRequests() > 0)
@@ -111,6 +112,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void removeCacheQueriesRequest() {
     super.removeCacheQueriesRequest();
     if (getCacheQueriesRequests() == 0) {

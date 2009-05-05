@@ -102,6 +102,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       }
     }
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         updateRequestsPerSecond();
       }

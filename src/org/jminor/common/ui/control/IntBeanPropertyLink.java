@@ -21,6 +21,7 @@ public class IntBeanPropertyLink extends TextBeanPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     try {
       return Util.getInt(getText());

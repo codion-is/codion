@@ -163,11 +163,13 @@ public class TestEntityTableModel extends TestCase {
       super(ModelTestDomain.T_TEST_DETAIL, null);
     }
 
+    @Override
     public void refresh() throws UserException {
       removeAll();
       addEntities(performQuery(null), false);
     }
 
+    @Override
     protected List<Entity> performQuery(final ICriteria criteria) {
       return Arrays.asList(testEntities);
     }

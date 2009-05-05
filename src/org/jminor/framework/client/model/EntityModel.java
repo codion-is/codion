@@ -302,6 +302,7 @@ public class EntityModel implements IRefreshable {
    * @return a String represention of this EntityModel,
    * returns the model caption by default
    */
+  @Override
   public String toString() {
     return getCaption();
   }
@@ -639,6 +640,7 @@ public class EntityModel implements IRefreshable {
 
     final Event ret = new Event("EntityModel.propertyChangeEvent " + property);
     activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
+      @Override
       protected void propertyChanged(final PropertyChangeEvent e) {
         if (e.getProperty().equals(property))
           ret.fire(e);

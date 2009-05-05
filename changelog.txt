@@ -467,3 +467,4 @@
   FrameworkMessages, Suppert tables mnemonic changed from S to P, S conflicted with the edit panel save action
   EntityPanel, direct references to model replaced by getModel() throughout
   EntityTablePanel, direct references to tableModel replace by getTableModel() throughout, as well as for entityTable/getJTable()
+  @override annotation added where applicable

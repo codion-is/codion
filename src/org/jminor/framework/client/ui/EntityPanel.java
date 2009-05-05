@@ -362,6 +362,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /** {@inheritDoc} */
+  @Override
   public EntityModel getModel() {
     return model;
   }
@@ -495,6 +496,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return getModel().getCaption();
   }
@@ -1145,11 +1147,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) throws UserException {
     final EntityModel entityModel = new EntityModel(entityID, entityID, dbProvider) {
+      @Override
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider) {
+          @Override
           protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
             return entities;
           }
+          @Override
           public boolean isQueryRangeEnabled() {
             return false;
           }
@@ -1158,19 +1163,24 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     };
 
     final EntityPanel ret = new EntityPanel(entityModel, true, false, false, EMBEDDED, false) {
+      @Override
       protected EntityTablePanel initializeEntityTablePanel(final boolean specialRendering) {
         return new EntityTablePanel(entityModel.getTableModel(), getTablePopupControlSet(), false, false) {
+          @Override
           protected JPanel initializeSearchPanel() {
             return null;
           }
+          @Override
           protected JToolBar getRefreshToolbar() {
             return null;
           }
         };
       }
+      @Override
       protected ControlSet getTablePopupControlSet() {
         return includePopupMenu ? super.getTablePopupControlSet() : null;
       }
+      @Override
       protected JPanel initializePropertyPanel() {
         return null;
       }
@@ -1362,6 +1372,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final JTabbedPane ret = new JTabbedPane();
     ret.setFocusable(false);
     ret.setUI(new BasicTabbedPaneUI() {
+      @Override
       protected Insets getContentBorderInsets(final int tabPlacement) {
         return new Insets(1,0,0,0);
       }
@@ -1376,6 +1387,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       }
     });
     ret.addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseReleased(MouseEvent e) {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1)
           setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
@@ -1612,6 +1624,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       if (detailModel == null)
         throw new RuntimeException("EntityPanel does not have a EntityModel associated with it");
       ret.add(new Control(detailModel.getCaption()) {
+        @Override
         public void actionPerformed(ActionEvent e) {
           detailTabPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
@@ -1638,9 +1651,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected void bindEvents() {
     addComponentListener(new ComponentAdapter() {
+      @Override
       public void componentHidden(ComponentEvent e) {
         setFilterPanelsVisible(false);
       }
+      @Override
       public void componentShown(ComponentEvent e) {
         setFilterPanelsVisible(true);
       }
@@ -1662,6 +1677,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     if (!getModel().isReadOnly() && getModel().isDeleteAllowed()) {
       entityTablePanel.getJTable().addKeyListener(new KeyAdapter() {
+        @Override
         public void keyTyped(KeyEvent e) {
           if (e.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stSelectionEmpty.isActive())
             handleDelete();
@@ -1853,6 +1869,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       return null;
 
     final JButton ret = new JButton(new Control() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         tablePanel.toggleSearchPanel();
       }
@@ -2118,6 +2135,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       this.target = target;
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
       target.requestFocusInWindow();//activates this EntityPanel
     }

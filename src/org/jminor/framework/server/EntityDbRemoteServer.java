@@ -340,6 +340,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
     connectionMaintenanceTimer = new Timer(true);
     connectionMaintenanceTimer.scheduleAtFixedRate(new TimerTask() {
+      @Override
       public void run() {
         maintainConnections();
       }

@@ -37,6 +37,7 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     if (comboBoxModel instanceof ItemComboBoxModel)
       return ((ItemComboBoxModel.IItem) comboBoxModel.getSelectedItem()).getItem();
@@ -45,6 +46,7 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     comboBoxModel.setSelectedItem(propertyValue);
   }

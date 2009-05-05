@@ -31,11 +31,13 @@ public class ItemPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,3,5,5));
     EntityComboBox box = createEntityComboBox(Petstore.ITEM_PRODUCT_REF);

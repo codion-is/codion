@@ -20,6 +20,7 @@ public class IntTextPropertyLink extends TextPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object valueFromText(final String text) {
     try {
       return Util.getInt(text);

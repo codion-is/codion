@@ -135,6 +135,7 @@ public class Petstore {
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT, null, 1)));
 
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
+      @Override
       public String toString(final Entity entity) {
         if (entity.is(T_ADDRESS))
           return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)

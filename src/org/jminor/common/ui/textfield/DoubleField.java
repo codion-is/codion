@@ -32,6 +32,7 @@ public class DoubleField extends IntField {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Object getValue() {
     return getDouble();
   }
@@ -70,11 +71,13 @@ public class DoubleField extends IntField {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Document createDefaultModel() {
     return new DoubleFieldDocument();
   }
 
   class DoubleFieldDocument extends PlainDocument {
+    @Override
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
       if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;

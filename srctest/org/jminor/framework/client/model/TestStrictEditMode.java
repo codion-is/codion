@@ -26,6 +26,7 @@ public class TestStrictEditMode extends TestCase {
     super("TestStrictEditMode");
   }
 
+  @Override
   protected void setUp() throws Exception {
     if (Database.isMySQL() || Database.isDerbyEmbedded())
       return;
@@ -36,6 +37,7 @@ public class TestStrictEditMode extends TestCase {
           new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));
   }
 
+  @Override
   protected void tearDown() throws Exception {
     if (Database.isMySQL() || Database.isDerbyEmbedded())
       return;

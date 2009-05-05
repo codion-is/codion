@@ -27,11 +27,13 @@ public class TagPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(1,1,5,5));
     final JTextField txt = createTextField(Petstore.TAG_TAG);

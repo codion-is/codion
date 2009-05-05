@@ -4,8 +4,8 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.DbLog;
-import org.jminor.common.model.Event;
 import org.jminor.common.model.ClientInfo;
+import org.jminor.common.model.Event;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,6 +28,7 @@ public class ClientInstanceMonitor extends DefaultMutableTreeNode {
     this.server = server;
   }
 
+  @Override
   public String toString() {
     return client.toString();
   }

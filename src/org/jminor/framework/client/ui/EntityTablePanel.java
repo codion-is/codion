@@ -357,6 +357,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return "EntityTablePanel: " + getTableModel().getEntityID();
   }
@@ -464,6 +465,7 @@ public class EntityTablePanel extends JPanel {
     lblStatusMessage = new JLabel("", JLabel.CENTER);
     if (allowQueryConfiguration) {
       lblStatusMessage.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseReleased(MouseEvent e) {
           if (e.getClickCount() == 2) {
             configureQuery();
@@ -493,6 +495,7 @@ public class EntityTablePanel extends JPanel {
       }
     });
     getJTable().addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseClicked(MouseEvent me){
         if(me.getClickCount() == 2){
           evtTableDoubleClick.fire();
@@ -788,6 +791,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected MouseListener initializeTableMouseListener() {
     return new MouseAdapter() {
+      @Override
       public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
           final Action doubleClickAction = getDoubleClickAction();
@@ -836,6 +840,7 @@ public class EntityTablePanel extends JPanel {
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             getTableModel().stSelectionEmpty.getReversedState()) {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final JTable table = getJTable();
         final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
@@ -846,6 +851,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control getCopyTableWithHeaderControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)) {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           copyTableAsDelimitedString();

@@ -23,10 +23,12 @@ import java.util.Locale;
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(DepartmentModel.class, DepartmentPanel.class));
   }
 
+  @Override
   protected void initializeSettings() {
     Locale.setDefault(new Locale("en"));
     FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);

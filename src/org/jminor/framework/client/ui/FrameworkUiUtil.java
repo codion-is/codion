@@ -128,6 +128,7 @@ public class FrameworkUiUtil {
     };
 
     final EntityTablePanel entityPanel = new EntityTablePanel(lookupModel, null, false) {
+      @Override
       protected void bindEvents() {
         super.bindEvents();
         evtTableDoubleClick.addListener(new ActionListener() {
@@ -137,6 +138,7 @@ public class FrameworkUiUtil {
           }
         });
       }
+      @Override
       protected JPanel initializeSearchPanel() {
         return simpleSearchPanel ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
       }
@@ -213,6 +215,7 @@ public class FrameworkUiUtil {
             new JTextField(ShortDashDateFormat.get().format(initialValue == null ? new Date() : initialValue));
     txtField.setEditable(false);
     txtField.addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseClicked(final MouseEvent e) {
         try {
           final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
@@ -315,6 +318,7 @@ public class FrameworkUiUtil {
     txt.setEditable(false);
     setPropertyToolTip(entityModel.getEntityID(), property, txt);
     entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
+      @Override
       protected void propertyChanged(final PropertyChangeEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
@@ -603,6 +607,7 @@ public class FrameworkUiUtil {
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseClicked(final MouseEvent e) {
           if (e.getClickCount() == 2)
             okAction.actionPerformed(null);
@@ -637,6 +642,7 @@ public class FrameworkUiUtil {
   public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
                                      final IEntityDbProvider dbProvider) {
     txtField.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
           final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
@@ -649,6 +655,7 @@ public class FrameworkUiUtil {
 
   public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
     txtField.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
           final Object value = lookupPropertyValue(txtField, model.getEntityID(), property, model.getDbConnectionProvider());

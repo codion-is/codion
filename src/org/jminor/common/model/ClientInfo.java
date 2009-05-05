@@ -42,14 +42,17 @@ public class ClientInfo implements Serializable {
     return clientTypeID;
   }
 
+  @Override
   public int hashCode() {
     return getClass().hashCode() + clientID.hashCode();
   }
 
+  @Override
   public boolean equals(Object obj) {
     return obj instanceof ClientInfo && clientID.equals(((ClientInfo) obj).clientID);
   }
 
+  @Override
   public String toString() {
     return user != null ? user + " - " + clientID : clientID;
   }

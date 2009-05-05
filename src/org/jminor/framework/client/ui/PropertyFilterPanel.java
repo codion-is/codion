@@ -135,16 +135,19 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected boolean isLowerFieldRequired(Type type) {
     return type != Type.BOOLEAN;
   }
 
   /** {@inheritDoc} */
+  @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
     return true;
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JComponent getInputField(final boolean isUpperBound) {
     JComponent field;
     switch (model.getPropertyType()) {
@@ -198,6 +201,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     });
 
     searchDlg.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         inactivateDialog();
       }
@@ -228,6 +232,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     });
 
     ret.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyTyped(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
           try {
@@ -292,6 +297,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         return new IntBeanPropertyLink((IntField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
+          @Override
           public void setModelPropertyValue(final Object obj) {
             if (obj instanceof String && obj.equals(""))
               super.setModelPropertyValue(null);
@@ -303,6 +309,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         return new DoubleBeanPropertyLink((DoubleField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null){
+          @Override
           public void setModelPropertyValue(final Object obj) {
             if (obj instanceof String && obj.equals(""))
               super.setModelPropertyValue(null);

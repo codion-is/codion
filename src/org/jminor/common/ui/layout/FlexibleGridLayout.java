@@ -50,6 +50,7 @@ public class FlexibleGridLayout extends GridLayout {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Dimension preferredLayoutSize(Container parent) {
     synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();
@@ -93,6 +94,7 @@ public class FlexibleGridLayout extends GridLayout {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Dimension minimumLayoutSize(final Container parent) {
     synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();
@@ -136,6 +138,7 @@ public class FlexibleGridLayout extends GridLayout {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void layoutContainer(final Container parent) {
     synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();

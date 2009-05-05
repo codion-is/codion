@@ -56,6 +56,7 @@ public class AutoCompletion extends PlainDocument {
       }
     });
     editorKeyListener = new KeyAdapter() {
+      @Override
       public void keyPressed(KeyEvent e) {
         if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar()))
           comboBox.setPopupVisible(true);
@@ -78,9 +79,11 @@ public class AutoCompletion extends PlainDocument {
     hidePopupOnFocusLoss=System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
     editorFocusListener = new FocusAdapter() {
+      @Override
       public void focusGained(FocusEvent e) {
         highlightCompletedText(0);
       }
+      @Override
       public void focusLost(FocusEvent e) {
         // Workaround for Bug 5100422 - Hide Popup on focus loss
         if (hidePopupOnFocusLoss)
@@ -117,6 +120,7 @@ public class AutoCompletion extends PlainDocument {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void remove(int offs, int len) throws BadLocationException {
     // return immediately when selecting an item
     if (selecting)
@@ -141,6 +145,7 @@ public class AutoCompletion extends PlainDocument {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
     // return immediately when selecting an item
     if (selecting || model.getSize() == 0)

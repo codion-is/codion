@@ -24,6 +24,7 @@ public class BooleanComboBoxModel extends DefaultComboBoxModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setSelectedItem(final Object item) {
     super.setSelectedItem(item == null ? Type.Boolean.NULL : item);
 

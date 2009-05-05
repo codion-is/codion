@@ -112,6 +112,7 @@ public class EntityCriteria implements Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return getEntityID() + " " + getWhereClause();
   }

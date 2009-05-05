@@ -22,10 +22,12 @@ import java.util.List;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(SchemaModel.class, SchemaPanel.class));
   }
 
+  @Override
   protected void initializeSettings() {
     Util.setDefaultLoggingLevel(Level.DEBUG);
     FrameworkSettings.get().setProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);

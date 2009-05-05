@@ -23,6 +23,7 @@ public class EmployeePanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void initialize() {
     if (isInitialized())
       return;
@@ -33,6 +34,7 @@ public class EmployeePanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JTextField txtName = UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_NAME));
     setDefaultFocusComponent(txtName);

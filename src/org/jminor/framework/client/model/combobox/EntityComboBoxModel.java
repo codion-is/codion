@@ -168,6 +168,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setSelectedItem(final Object toSelect) {
     if (getSize() == 0)
       return;
@@ -180,6 +181,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString() {
     return getClass().getSimpleName() + " [entityID: " + getEntityID() + "]";
   }
@@ -220,6 +222,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * @return the data to be presented in this EntityComboBoxModel, called when the data is refreshed
    */
+  @Override
   protected List<?> getContents() {
     try {
       if (staticData && dataInitialized && !forceRefresh) {

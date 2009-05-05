@@ -43,6 +43,7 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Object getModelPropertyValue() {
     try {
       return getMethod.invoke(getPropertyOwner());
@@ -56,6 +57,7 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setModelPropertyValue(final Object obj) {
     try {
       setMethod.invoke(getPropertyOwner(), obj);

@@ -45,6 +45,7 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   private boolean dataInitialized = false;
 
   private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
+    @Override
     public void fireValueChanged(int min, int max, boolean isAdjusting) {
       super.fireValueChanged(min, max, isAdjusting);
       stSelectionEmpty.setActive(isSelectionEmpty());

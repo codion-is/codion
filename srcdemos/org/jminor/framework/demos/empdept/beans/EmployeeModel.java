@@ -30,6 +30,7 @@ public class EmployeeModel extends EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
     if (property.propertyID.equals(EmpDept.EMPLOYEE_MGR_REF)) {
       final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
@@ -46,6 +47,7 @@ public class EmployeeModel extends EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void bindEvents() {
     super.bindEvents();
     evtEntitiesChanged.addListener(new ActionListener() {
@@ -59,6 +61,7 @@ public class EmployeeModel extends EntityModel {
       }
     });
     getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_REF).addListener(new PropertyListener() {
+      @Override
       protected void propertyChanged(final PropertyChangeEvent e) {
         //only show managers in the same department as the active entity
         getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {

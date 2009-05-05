@@ -61,6 +61,7 @@ public class TestEntityLookupModel extends TestCase {
     assertFalse("Result should not contain johnson", contains(result, "johnson"));
   }
 
+  @Override
   protected void setUp() throws Exception {
     super.setUp();
     new EmpDept();
@@ -72,6 +73,7 @@ public class TestEntityLookupModel extends TestCase {
     setupData();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     super.tearDown();
     dbProvider.getEntityDb().endTransaction(false);

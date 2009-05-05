@@ -125,6 +125,7 @@ public class EntityCriteriaPanel extends JPanel {
       });
     }
     propertyList.setCellRenderer(new DefaultListCellRenderer() {
+      @Override
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         final PropertySearchModel selected = (PropertySearchModel) value;

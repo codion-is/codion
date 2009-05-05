@@ -147,6 +147,7 @@ public class EntityLookupField extends JTextField {
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseClicked(final MouseEvent e) {
           if (e.getClickCount() == 2)
             okAction.actionPerformed(null);

@@ -12,5 +12,6 @@ public interface ICriteria extends Serializable {
   /**
    * @return a SQL where condition string
    */
+  @Override
   public String toString();
 }

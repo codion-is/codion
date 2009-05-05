@@ -35,11 +35,13 @@ public class EmpDeptProfiling extends ProfilingModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void loadDomainModel() {
     new EmpDept();
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     try {
@@ -53,6 +55,7 @@ public class EmpDeptProfiling extends ProfilingModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected EntityApplicationModel initializeApplicationModel() throws UserException {
     final EntityApplicationModel applicationModel =
             new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));

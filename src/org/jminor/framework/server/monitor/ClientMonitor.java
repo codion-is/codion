@@ -29,6 +29,7 @@ public class ClientMonitor extends DefaultMutableTreeNode {
       add(new ClientTypeMonitor(server, clientType));
   }
 
+  @Override
   public String toString() {
     return "Clients" + " (" + getGrandChildCount() + ")";
   }

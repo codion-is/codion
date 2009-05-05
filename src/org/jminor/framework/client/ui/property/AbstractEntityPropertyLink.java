@@ -30,11 +30,13 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Object getModelPropertyValue() {
     return isModelPropertyValueNull() ? null : getEntityModel().getValue(property.propertyID);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setModelPropertyValue(final Object value) {
     getEntityModel().uiSetValue(property, value);
   }

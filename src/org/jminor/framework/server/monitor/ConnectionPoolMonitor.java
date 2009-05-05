@@ -35,6 +35,7 @@ public class ConnectionPoolMonitor extends DefaultMutableTreeNode {
     refresh();
   }
 
+  @Override
   public String toString() {
     return "Connection pools" + " (" + getChildCount() + ")";
   }

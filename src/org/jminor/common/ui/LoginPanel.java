@@ -66,9 +66,11 @@ public class LoginPanel extends JPanel {
     UiUtil.centerWindow(dialog);
     dialog.setResizable(false);
     dialog.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowOpened(WindowEvent e) {
         panel.init();
       }
+      @Override
       public void windowClosed(WindowEvent e) {
         dialog.dispose();
       }

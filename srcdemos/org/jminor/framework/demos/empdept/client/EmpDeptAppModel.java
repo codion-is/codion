@@ -24,11 +24,13 @@ public class EmpDeptAppModel extends EntityApplicationModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
     return EntityModel.asList(DepartmentModel.class);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void loadDomainModel() {
     new EmpDept();
   }

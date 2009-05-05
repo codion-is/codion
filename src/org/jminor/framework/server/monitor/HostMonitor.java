@@ -55,6 +55,7 @@ public class HostMonitor extends DefaultMutableTreeNode {
     }
   }
 
+  @Override
   public String toString() {
     return "Host: " + hostName + " (servers: " + getChildCount() + ")";
   }

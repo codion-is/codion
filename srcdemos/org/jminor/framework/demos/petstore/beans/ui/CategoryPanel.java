@@ -27,11 +27,13 @@ public class CategoryPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(ProductModel.class, ProductPanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(2,2,5,5));
     JTextField txt = createTextField(Petstore.CATEGORY_ID);

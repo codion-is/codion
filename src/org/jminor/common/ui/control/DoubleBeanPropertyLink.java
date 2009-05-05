@@ -21,6 +21,7 @@ public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Object getUIPropertyValue() {
     try {
       return Util.getDouble(getText());

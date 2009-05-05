@@ -24,11 +24,13 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     final JTextField txtDeptno = createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE,
             true, null, getModel().stEntityActive.getReversedState());

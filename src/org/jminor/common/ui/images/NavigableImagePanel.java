@@ -184,6 +184,7 @@ public class NavigableImagePanel extends JPanel {
     private ZoomDevice(String zoomDevice) {
       this.zoomDevice = zoomDevice;
     }
+    @Override
     public String toString() {
       return zoomDevice;
     }
@@ -203,6 +204,7 @@ public class NavigableImagePanel extends JPanel {
     public int getIntY() {
       return (int)Math.round(y);
     }
+    @Override
     public String toString() {
       return "[Coords: x=" + x + ",y=" + y + "]";
     }
@@ -231,6 +233,7 @@ public class NavigableImagePanel extends JPanel {
   }
 
   private class ButtonZoomDevice extends MouseAdapter {
+    @Override
     public void mouseClicked(MouseEvent e) {
       Point p = e.getPoint();
       if (SwingUtilities.isRightMouseButton(e)) {
@@ -260,6 +263,7 @@ public class NavigableImagePanel extends JPanel {
   public NavigableImagePanel() {
     setOpaque(false);
     addComponentListener(new ComponentAdapter() {
+      @Override
       public void componentResized(ComponentEvent e) {
         if (scale > 0.0) {
           if (isFullImageInPanel()) {
@@ -277,6 +281,7 @@ public class NavigableImagePanel extends JPanel {
     });
 
     addMouseListener(new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
           if (isInNavigationImage(e.getPoint())) {
@@ -726,6 +731,7 @@ public class NavigableImagePanel extends JPanel {
    *
    * @param g the <code>Graphics</code> context for painting
    */
+  @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g); // Paints the background
 

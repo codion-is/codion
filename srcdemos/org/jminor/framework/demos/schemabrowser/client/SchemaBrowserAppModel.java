@@ -24,11 +24,13 @@ public class SchemaBrowserAppModel extends EntityApplicationModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
     return EntityModel.asList(SchemaModel.class);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void loadDomainModel() {
     new SchemaBrowser();
   }

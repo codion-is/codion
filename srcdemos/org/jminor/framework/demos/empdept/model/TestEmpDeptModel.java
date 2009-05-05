@@ -22,14 +22,17 @@ public class TestEmpDeptModel extends EntityTestUnit {
     testEntity(EmpDept.T_EMPLOYEE);
   }
 
+  @Override
   protected User getTestUser() throws UserCancelException {
     return new User("scott", "tiger");
   }
 
+  @Override
   protected void loadDomainModel() {
     new EmpDept();
   }
 
+  @Override
   protected HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
     final HashMap<String, Entity> ret = new HashMap<String, Entity>();
     if (entityIDs.contains(EmpDept.T_DEPARTMENT)) {
@@ -57,6 +60,7 @@ public class TestEmpDeptModel extends EntityTestUnit {
     return ret;
   }
 
+  @Override
   protected Entity initializeTestEntity(final String entityID) {
     if (entityID.equals(EmpDept.T_DEPARTMENT)) {
       final Entity ret = new Entity(EmpDept.T_DEPARTMENT);
@@ -84,6 +88,7 @@ public class TestEmpDeptModel extends EntityTestUnit {
     return null;
   }
 
+  @Override
   protected void modifyEntity(final Entity testEntity) {
     if (testEntity.is(EmpDept.T_DEPARTMENT)) {
       testEntity.setValue(EmpDept.DEPARTMENT_LOCATION, "N/A");

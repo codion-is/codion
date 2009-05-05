@@ -21,6 +21,7 @@ public class DbObjectPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void initialize() {
     if (isInitialized())
       return;
@@ -30,6 +31,7 @@ public class DbObjectPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(
             new EntityPanelProvider(ColumnModel.class, ColumnPanel.class),
@@ -37,11 +39,13 @@ public class DbObjectPanel extends EntityPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected Dimension getDetailDialogSize(final Dimension parentSize) {
     return new Dimension((int) (parentSize.width/1.7), (int) (parentSize.height/1.7)-54);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected JPanel initializePropertyPanel() {
     return null;
   }

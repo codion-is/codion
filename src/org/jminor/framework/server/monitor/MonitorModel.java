@@ -47,6 +47,7 @@ public class MonitorModel extends DefaultMutableTreeNode {
       listener.treeStructureChanged(new TreeModelEvent(this, treeModel.getPathToRoot(this)));
   }
 
+  @Override
   public String toString() {
     return getClass().getSimpleName();
   }

@@ -28,11 +28,13 @@ public class PetstoreProfiling extends ProfilingModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void loadDomainModel() {
     new Petstore();
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
     try {
       final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
@@ -48,6 +50,7 @@ public class PetstoreProfiling extends ProfilingModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected EntityApplicationModel initializeApplicationModel() throws UserException {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));

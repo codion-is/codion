@@ -496,6 +496,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
       ret.add(new Control(panelProvider.getCaption()) {
+        @Override
         public void actionPerformed(ActionEvent e) {
           showEntityPanel(panelProvider);
         }
@@ -631,6 +632,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
                                      final String title, final boolean maximize, final boolean northToolBar,
                                      final boolean showMenuBar, final Dimension size) throws UserException {
     frame.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         try {
           applicationPanel.exit();

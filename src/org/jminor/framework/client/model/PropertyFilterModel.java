@@ -37,6 +37,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Comparable getUpperBound() {
     return (Comparable) super.getUpperBound();
   }
@@ -51,11 +52,13 @@ public class PropertyFilterModel extends AbstractSearchModel {
   /**
    * @return the lower bound
    */
+  @Override
   public Comparable getLowerBound() {
     return (Comparable) super.getLowerBound();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean include(final Object object) {
     return include(getComparable(object));
   }

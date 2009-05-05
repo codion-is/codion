@@ -62,6 +62,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     textComponent.setText(getPropertyValueAsString(propertyValue));
   }
@@ -71,6 +72,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
    * invalid (null) until all placeholder characters have been replaced
    * @return the value, if a formatter is present, the formatted value is returned
    */
+  @Override
   protected Object getUIPropertyValue() {
     final String text = getText();
     if (placeholder != null && text != null && text.contains(placeholder))

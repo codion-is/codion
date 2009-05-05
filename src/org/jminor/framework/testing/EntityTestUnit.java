@@ -44,11 +44,13 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void setUp() throws Exception {
     dbConnection = initializeDbConnection();
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void tearDown() throws Exception {
     if (dbConnection != null)
       dbConnection.logout();
