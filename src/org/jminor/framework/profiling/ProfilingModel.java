@@ -9,7 +9,6 @@ import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.FrameworkConstants;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
@@ -228,10 +227,7 @@ public abstract class ProfilingModel {
 
   protected abstract EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException;
 
-  protected void initializeSettings() {
-    FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
-    FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
-  }
+  protected void initializeSettings() {/**/}
 
   protected void selectRandomRow(final EntityTableModel model) {
     if (model.getRowCount() == 0)

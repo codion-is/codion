@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
@@ -30,8 +29,6 @@ public class TestStrictEditMode extends TestCase {
   protected void setUp() throws Exception {
     if (Database.isMySQL() || Database.isDerbyEmbedded())
       return;
-    FrameworkSettings.get().setProperty(FrameworkSettings.USE_SMART_REFRESH, false);
-    FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
     new EmpDept();
     model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));

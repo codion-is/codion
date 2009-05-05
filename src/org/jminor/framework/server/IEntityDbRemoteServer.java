@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.User;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.EntityRepository;
 
 import java.rmi.Remote;
@@ -19,8 +18,7 @@ import java.rmi.RemoteException;
 public interface IEntityDbRemoteServer extends Remote {
 
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                 final EntityRepository repository, final FrameworkSettings settings)
-          throws RemoteException;
+                                 final EntityRepository repository) throws RemoteException;
 
   /**
    * @return the server name

@@ -16,10 +16,6 @@ public class FrameworkMessages {
 
   public static final String SELECTED = "selected";
   public static final String HIDDEN = "hidden";
-  public static final String RANGE = "range";
-  public static final String FROM = "from";
-  public static final String TO = "to";
-  public static final String OF = "of";
   public static final String FILE = "file";
   public static final String FILE_MNEMONIC = "file_mnemonic";
   public static final String EXIT = "exit";
@@ -57,12 +53,7 @@ public class FrameworkMessages {
   public static final String PRINT_TABLE = "print_table";
   public static final String VIEW_DEPENDENCIES = "view_dependencies";
   public static final String VIEW_DEPENDENCIES_TIP = "view_dependencies_tip";
-  public static final String QUERY_RANGE_DISABLED_MSG = "query_range_disabled";
-  public static final String QUERY_RANGE = "query_range";
-  public static final String SHOW_RANGE = "show_range";
   public static final String LIMIT_QUERY = "limit_query";
-  public static final String ROWS = "rows";
-  public static final String EDIT_QUERY_RANGE = "edit_query_range";
   public static final String SHOW_ALL = "show_all";
   public static final String SET_PROPERTY_VALUE = "set_property_value";
   public static final String SAVE = "save";
@@ -84,6 +75,7 @@ public class FrameworkMessages {
   public static final String CONFIRM_INSERT = "confirm_insert";
   public static final String REPORT_PRINTER = "report_printer";
   public static final String APPLY = "apply";
+  public static final String APPLY_MNEMONIC = "apply_mnemonic";
   public static final String SHOW = "show";
   public static final String NO_RESULTS_FROM_CRITERIA = "no_results_from_criteria";
   public static final String SET_LOG_LEVEL = "set_log_level";

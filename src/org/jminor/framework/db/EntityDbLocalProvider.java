@@ -9,7 +9,6 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
 
 import org.apache.log4j.Logger;
 
@@ -73,7 +72,7 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
 
   private void connect() throws ClassNotFoundException, AuthenticationException {
     log.debug("Initializing connection for " + user);
-    entityDb = new EntityDbConnection(user, FrameworkSettings.get());
+    entityDb = new EntityDbConnection(user);
     evtConnected.fire();
   }
 }

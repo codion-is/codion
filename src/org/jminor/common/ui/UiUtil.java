@@ -540,9 +540,14 @@ public class UiUtil {
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);
-      final Character okMnemonic = okAction != null ?
-              (Character) okAction.getValue(Action.MNEMONIC_KEY) : Messages.get(Messages.OK_MNEMONIC).charAt(0);
-      okButton.setMnemonic(okMnemonic);
+      Character okMnemonic;
+      if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null)
+        okMnemonic = (Character) okAction.getValue(Action.MNEMONIC_KEY);
+      else
+        okMnemonic = Messages.get(Messages.OK_MNEMONIC).charAt(0);
+
+      if (okMnemonic != null)
+        okButton.setMnemonic(okMnemonic);
       buttonPanel.add(okButton);
       dialog.getRootPane().setDefaultButton(okButton);
       dialog.add(buttonPanel, BorderLayout.SOUTH);

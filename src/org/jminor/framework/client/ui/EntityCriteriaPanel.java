@@ -5,7 +5,6 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
@@ -40,17 +39,13 @@ import java.util.Vector;
  */
 public class EntityCriteriaPanel extends JPanel {
 
-  private final IntField queryRangeMin = new IntField(4);
-  private final IntField queryRangeMax = new IntField(4);
-
   private final HashMap<PropertySearchModel, PropertySearchPanel> panels = new HashMap<PropertySearchModel, PropertySearchPanel>();
 
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
 
     final JPanel editPanel = new JPanel(new BorderLayout());
-    editPanel.setPreferredSize(new Dimension(200,150));
-    editPanel.setBorder(BorderFactory.createCompoundBorder());
+    editPanel.setPreferredSize(new Dimension(200,40));
 
     final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel);
     final JScrollPane scroller = new JScrollPane(propertyList);
@@ -69,48 +64,17 @@ public class EntityCriteriaPanel extends JPanel {
       add(southPanel, BorderLayout.SOUTH);
   }
 
-  /**
-   * @return Value for property 'queryRangeFrom'.
-   */
-  public int getQueryRangeFrom() {
-    return queryRangeMin.getInt();
-  }
-
-  /**
-   * @return Value for property 'queryRangeTo'.
-   */
-  public int getQueryRangeTo() {
-    return queryRangeMax.getInt();
-  }
-
   private JPanel initializeSouthPanel(final EntityTableModel tableModel) {
-    if (!tableModel.isQueryRangeEnabled() && !tableModel.isFilterQueryByMaster())
-      return null;
-
-    final JPanel ret = new JPanel(new BorderLayout());
-    if (tableModel.isQueryRangeEnabled()) {
-      final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.QUERY_RANGE)));
-      queryRangeMin.setText(tableModel.getQueryRangeFrom()+"");
-      queryRangeMax.setText(tableModel.getQueryRangeTo()+"");
-      panel.add(new JLabel(FrameworkMessages.get(FrameworkMessages.SHOW_RANGE)));
-      panel.add(queryRangeMin);
-      panel.add(new JLabel(FrameworkMessages.get(FrameworkMessages.TO)));
-      panel.add(queryRangeMax);
-      if (tableModel.getRecordCount() > 0)
-        panel.add(new JLabel(FrameworkMessages.get(FrameworkMessages.OF) + " " + tableModel.getRecordCount()
-                + " " + FrameworkMessages.get(FrameworkMessages.ROWS)));
-      ret.add(panel, BorderLayout.NORTH);
-    }
     if (tableModel.isFilterQueryByMaster()) {
       final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
       panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
       panel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(tableModel,
               "showAllWhenNotFiltered", FrameworkMessages.get(FrameworkMessages.SHOW_ALL_WHEN_NO_FILTER), null)));
-      ret.add(panel, BorderLayout.SOUTH);
+
+      return panel;
     }
 
-    return ret;
+    return null;
   }
 
   private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel) {

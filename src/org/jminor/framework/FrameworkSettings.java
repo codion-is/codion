@@ -21,13 +21,6 @@ import java.util.Map;
 public class FrameworkSettings implements Serializable {
 
   /**
-   * Indicates whether query range is used
-   * Value type: Boolean
-   * Default value: false
-   */
-  public static final String USE_QUERY_RANGE = "use_query_range";
-
-  /**
    * Indicates whether all entity panels should be enabled and receiving input by default
    * Value type: Boolean
    * Default value: false
@@ -56,14 +49,6 @@ public class FrameworkSettings implements Serializable {
    * Default value: JTable.AUTO_RESIZE_OFF
    */
   public static final String TABLE_AUTO_RESIZE_MODE = "table_auto_resize_mode";
-
-  /**
-   * Specifies whether smart refresh is used, which prevents a data refresh
-   * if the underlying table data has not changed since the last refresh
-   * Value type: Boolean
-   * Default value: false
-   */
-  public static final String USE_SMART_REFRESH = "use_smart_refresh";
 
   /**
    * Indicates whether the application should ask for confirmation when exiting
@@ -224,12 +209,10 @@ public class FrameworkSettings implements Serializable {
 
   private FrameworkSettings() {
     //default settings
-    setProperty(USE_QUERY_RANGE, false);
     setProperty(ALL_PANELS_ENABLED, false);
     setProperty(USE_KEYBOARD_NAVIGATION, true);
     setProperty(USE_FOCUS_ACTIVATION, true);
     setProperty(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);
-    setProperty(USE_SMART_REFRESH, false);
     setProperty(CONFIRM_EXIT, false);
     setProperty(PROPERTY_DEBUG_OUTPUT, false);
     setProperty(TAB_PLACEMENT, JTabbedPane.TOP);

@@ -252,22 +252,19 @@ public class EntityTablePanel extends JPanel {
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    UiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY),
-            true, false, new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
+    final AbstractAction action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
       public void actionPerformed(ActionEvent e) {
         try {
-          if (getTableModel().isQueryRangeEnabled()) {
-            getTableModel().setQueryRangeFrom(panel.getQueryRangeFrom());
-            getTableModel().setQueryRangeTo(panel.getQueryRangeTo());
-          }
           getTableModel().refresh();
         }
         catch (UserException ex) {
           throw ex.getRuntimeException();
         }
       }
-    });
+    };
+    action.putValue(Action.MNEMONIC_KEY, FrameworkMessages.get(FrameworkMessages.APPLY_MNEMONIC).charAt(0));
+    UiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
+            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), true, false, action);
   }
 
   /**

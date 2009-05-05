@@ -1154,14 +1154,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
           protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
             return entities;
           }
-          @Override
-          public boolean isQueryRangeEnabled() {
-            return false;
-          }
         };
       }
     };
-
     final EntityPanel ret = new EntityPanel(entityModel, true, false, false, EMBEDDED, false) {
       @Override
       protected EntityTablePanel initializeEntityTablePanel(final boolean specialRendering) {

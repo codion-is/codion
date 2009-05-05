@@ -53,11 +53,6 @@ public class EntityRepository implements Serializable {
    */
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
 
-  /**
-   * Maps the name of the create date columns (if any) in the underlying table to each entities entityID
-   */
-  private final Map<String, String> createDateColumns = new HashMap<String, String>();
-
   private final Map<String, Map<String, String>> propertyDescriptions = new HashMap<String, Map<String, String>>();
   private final Map<String, String[]> entitySearchPropertyIDs = new HashMap<String, String[]>();
 
@@ -99,7 +94,6 @@ public class EntityRepository implements Serializable {
     instance.entityTableNames.putAll(repository.entityTableNames);
     instance.entitySelectTableNames.putAll(repository.entitySelectTableNames);
     instance.entityIdSources.putAll(repository.entityIdSources);
-    instance.createDateColumns.putAll(repository.createDateColumns);
   }
 
   /**
@@ -663,36 +657,6 @@ public class EntityRepository implements Serializable {
       initialize(entityID);
 
     return this;
-  }
-
-  /**
-   * @param entityID the entityID
-   * @return true if the table on which the entity identified by <code>entityID</code> is based
-   * contains a create date column
-   */
-  public boolean hasCreateDateColumn(final String entityID) {
-    return createDateColumns.containsKey(entityID);
-  }
-
-  /**
-   * Specify the name of the create date column for the given entity
-   * @param entityID the entityID of the entity for which to specify the create date column name
-   * @param createDateColumnName the name of the create date column
-   */
-  public void setCreateDateColumn(final String entityID, final String createDateColumnName) {
-    if (createDateColumnName == null || createDateColumnName.length() == 0)
-      createDateColumns.remove(entityID);
-    else
-      createDateColumns.put(entityID, createDateColumnName);
-  }
-
-  /**
-   * @param entityID the entityID
-   * @return the create date column name of the table on which the entity identified
-   * by <code>entityID</code> is based on, null if none is specified
-   */
-  public String getCreateDateColumn(final String entityID) {
-    return createDateColumns.get(entityID);
   }
 
   public String[] getInitializedEntities() {

@@ -14,7 +14,6 @@ import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
@@ -54,7 +53,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private boolean checkDependenciesOnDelete = false;
   private boolean entityCacheEnabled = false;
-  private boolean useQueryRange = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE);
 
   private static int cachedKeyQueries = 0;
   private static int partiallyCachedKeyQueries = 0;
@@ -62,10 +60,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private long poolTime = -1;
 
-  public EntityDbConnection(final User user, final FrameworkSettings settings)
-          throws AuthenticationException, ClassNotFoundException {
+  public EntityDbConnection(final User user) throws AuthenticationException, ClassNotFoundException {
     super(user);
-    initialize(settings);
   }
 
   public void setPoolTime(final long poolTime) {
@@ -268,13 +264,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     try {
       final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
-      final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
-      if (useQueryRange && EntityRepository.get().hasCreateDateColumn(criteria.getEntityID())) {
-        final String innerSubQuery = "(" + DbUtil.generateSelectSql(datasource, selectString, "",
-                EntityRepository.get().getCreateDateColumn(criteria.getEntityID()) + " desc") + ")";
-        datasource = "(" + DbUtil.generateSelectSql(innerSubQuery, selectString + ", rownum row_num", "", null) + ")";
-      }
-      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, criteria.getOrderByClause());
+      sql = DbUtil.generateSelectSql(datasource, selectString,
+              criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
@@ -505,10 +496,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     catch (SQLException e) {
       throw new DbException(e, "");
     }
-  }
-
-  void initialize(final FrameworkSettings settings) {
-    useQueryRange = (Boolean) settings.getProperty(FrameworkSettings.USE_QUERY_RANGE);
   }
 
   /**

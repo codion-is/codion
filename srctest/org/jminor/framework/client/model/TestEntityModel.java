@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
@@ -21,7 +20,6 @@ public class TestEntityModel extends TestCase {
   static {
     try {
       new EmpDept();
-      FrameworkSettings.get().setProperty(FrameworkSettings.USE_QUERY_RANGE, false);
       testModel  = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
     }
     catch (UserException e) {

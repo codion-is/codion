@@ -15,7 +15,6 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.IEntityDb;
@@ -76,7 +75,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   private String lastAccessMessage;
   private String lastExitedMethod;
 
-  private final FrameworkSettings settings;
   private EntityDbConnection entityDbConnection;
 
   private final static Map<User, EntityDbConnectionPool> connectionPools =
@@ -109,7 +107,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     }, new Date(), 15000);
   }
 
-  public EntityDbRemoteAdapter(final ClientInfo client, final FrameworkSettings settings, final int dbRemotePort,
+  public EntityDbRemoteAdapter(final ClientInfo client, final int dbRemotePort,
                                final boolean loggingEnabled) throws RemoteException {
     super(dbRemotePort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -117,7 +115,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       connectionPools.get(client.getUser()).setPassword(client.getUser().getPassword());
     this.client = client;
     this.client.getUser().setProperty(Database.DATABASE_SID_PROPERTY, System.getProperty(Database.DATABASE_SID_PROPERTY));
-    this.settings = settings;
     this.loggingEntityDbProxy = initializeProxy();
     this.loggingEnabled = loggingEnabled;
   }
@@ -610,7 +607,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, UserException, AuthenticationException {
     if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()){
-      final EntityDbConnection ret = connectionPools.get(user).checkOutConnection(settings);
+      final EntityDbConnection ret = connectionPools.get(user).checkOutConnection();
       if (ret != null) {
         if (entityDbConnection != null) {//pool has been turned on since this one was created
           entityDbConnection.disconnect();//discard
@@ -622,7 +619,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     }
 
     if (entityDbConnection == null)
-      entityDbConnection = new EntityDbConnection(client.getUser(), settings);
+      entityDbConnection = new EntityDbConnection(client.getUser());
 
     return entityDbConnection;
   }

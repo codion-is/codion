@@ -3,22 +3,18 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
 import org.jminor.common.model.IntArray;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
-import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
@@ -55,11 +51,6 @@ import java.util.Map;
 public class EntityTableModel extends AbstractTableModel implements IRefreshable {
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
-
-  /**
-   * The default query range
-   */
-  public static final int DEFAULT_QUERY_RANGE = 1000;
 
   /**
    * Fired when the model is about to be refreshed
@@ -143,23 +134,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private final TableSorter tableSorter;
 
   /**
-   * Represents the range of records to select from the underlying table
-   */
-  private final PropertyCriteria queryRangeCriteria =
-          new PropertyCriteria(new Property("row_num", Type.INT), SearchType.INSIDE, 1, DEFAULT_QUERY_RANGE);
-
-  /**
-   * False if the table should ignore the query range when refreshing
-   */
-  private final boolean queryRangeEnabled;
-
-  /**
-   * Used for keeping the number of records in the underlying table when query range is being used,
-   * this value is updated on each table model refresh
-   */
-  private int recordCount = -1;
-
-  /**
    * Holds the selected items while sorting
    */
   private List<EntityKey> selectedPrimaryKeys;
@@ -230,8 +204,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     this.tableColumnProperties = initializeColumnProperties();
     this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);
-    this.queryRangeEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_QUERY_RANGE)
-            && EntityRepository.get().hasCreateDateColumn(entityID);
     bindEvents();
   }
 
@@ -495,8 +467,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
             Integer.toString(getSelectedModelIndexes().length)).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
             filteredCount > 0 ? ", " + filteredCount + " "
-                    + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").append(
-            queryRangeEnabled ? getRangeDescription() : "").toString();
+                    + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
   public int[] getSelectedViewIndexes() {
@@ -537,8 +508,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       log.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      if (isQueryRangeEnabled())
-        refreshRecordCount();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       removeAll();
       addEntities(performQuery(getQueryCriteria()), false);
@@ -907,49 +876,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return ret;
   }
 
-  /**
-   * @return the number of records in the underlying table, available only when query range is active
-   */
-  public int getRecordCount() {
-    return recordCount;
-  }
-
-  /**
-   * @return true if query range is enabled
-   */
-  public boolean isQueryRangeEnabled() {
-    return queryRangeEnabled;
-  }
-
-  /**
-   * Sets the query query range lower bound
-   * @param from the new query range from value
-   */
-  public void setQueryRangeFrom(final int from) {
-    queryRangeCriteria.setValues(from, getQueryRangeTo());
-  }
-
-  /**
-   * @return Value for property 'queryRangeFrom'.
-   */
-  public int getQueryRangeFrom() {
-    return (Integer) queryRangeCriteria.getValues().get(0);
-  }
-
-  /**
-   * @param to the query range upper bound
-   */
-  public void setQueryRangeTo(final int to) {
-    queryRangeCriteria.setValues(getQueryRangeFrom(), to);
-  }
-
-  /**
-   * @return Value for property 'queryRangeTo'.
-   */
-  public int getQueryRangeTo() {
-    return Math.min((Integer) queryRangeCriteria.getValues().get(1), getRowCount());
-  }
-
   /** {@inheritDoc} */
   @Override
   public String toString() {
@@ -968,19 +894,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return new ArrayList<Entity>();
 
     try {
-      if (criteria != null || isQueryRangeEnabled()) {
-        final CriteriaSet criteriaSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
-        if (criteria != null)
-          criteriaSet.addCriteria(criteria);
-        if (isQueryRangeEnabled())
-          criteriaSet.addCriteria(getQueryRangeCriteria());
-        final EntityCriteria entityCriteria = new EntityCriteria(getEntityID(), criteriaSet,
-                EntityRepository.get().getOrderByColumnNames(getEntityID()));
-
-        return getEntityDb().selectMany(entityCriteria);
-      }
-      else
-        return getEntityDb().selectAll(getEntityID(), true);
+      return criteria == null? getEntityDb().selectAll(getEntityID(), true) :
+              getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
+                      EntityRepository.get().getOrderByColumnNames(getEntityID())));
     }
     catch (DbException dbe) {
       throw dbe;
@@ -1015,14 +931,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   protected ICriteria getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
-  }
-
-  /**
-   * @return a PropertyCriteria used to limit the range of records selected when
-   * this table models data is queried
-   */
-  protected PropertyCriteria getQueryRangeCriteria() {
-    return queryRangeCriteria;
   }
 
   /**
@@ -1105,25 +1013,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         filteredEntities.add(entity);
     }
     fireTableDataChanged();
-  }
-
-  private String getRangeDescription() {
-    if (!queryRangeEnabled || (visibleEntities.size() == 0 && filteredEntities.size() == 0))
-      return "";
-
-    return " " + FrameworkMessages.get(FrameworkMessages.RANGE) + " " + getQueryRangeFrom() + " "
-            + FrameworkMessages.get(FrameworkMessages.TO) + " " + getQueryRangeTo()
-            + (getRecordCount() < 0 ? "" : (" " + FrameworkMessages.get(FrameworkMessages.OF) + " "
-            + getRecordCount()));
-  }
-
-  private void refreshRecordCount() throws UserException {
-    try {
-      recordCount = getEntityDb().selectRowCount(new EntityCriteria(getEntityID()));
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
   }
 
   private int getColumnIndex(final String masterEntityID) {

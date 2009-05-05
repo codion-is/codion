@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,7 +59,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
           Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
-  private final Properties dbConnectionProperties = new Properties();
   private final String serverName;
   private int connectionTimeout = 120000;
   private static boolean useSecureConnection =
@@ -86,7 +84,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     serverName = FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + sid.toUpperCase()
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
-    dbConnectionProperties.put(Database.DATABASE_SID_PROPERTY, sid);
     startConnectionCheckTimer();
   }
 
@@ -163,7 +160,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                 final EntityRepository repository, final FrameworkSettings settings)
+                                 final EntityRepository repository)
           throws RemoteException {
     if (connectionKey == null)
       return null;
@@ -175,7 +172,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (connections.containsKey(client))
       return connections.get(client);
 
-    return doConnect(client, settings);
+    return doConnect(client);
   }
 
   /** {@inheritDoc} */
@@ -363,8 +360,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     }
   }
 
-  private EntityDbRemoteAdapter doConnect(final ClientInfo client, final FrameworkSettings settings) throws RemoteException {
-    final EntityDbRemoteAdapter ret = new EntityDbRemoteAdapter(client, settings, SERVER_DB_PORT, loggingEnabled);
+  private EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
+    final EntityDbRemoteAdapter ret = new EntityDbRemoteAdapter(client, SERVER_DB_PORT, loggingEnabled);
     ret.evtLoggingOut.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
