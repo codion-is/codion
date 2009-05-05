@@ -108,43 +108,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public final State stSelectionEmpty = new State("EntityTableModel.stSelectionEmpty", true);
 
   /**
-   * true while the model data is being refreshed
-   */
-  private boolean isRefreshing = false;
-
-  /**
-   * true while the model data is being filtered
-   */
-  private boolean isFiltering = false;
-
-  /**
-   * true while the model data is being sorted
-   */
-  private boolean isSorting = false;
-
-  /**
-   * true while the selection is being updated
-   */
-  private boolean isUpdatingSelection = false;
-
-  /**
-   * False if the table should ignore the query range when refreshing
-   */
-  private final boolean queryRangeEnabled;
-
-  /**
-   * Represents the range of records to select from the underlying table
-   */
-  private final PropertyCriteria queryRangeCriteria =
-          new PropertyCriteria(new Property("row_num", Type.INT), SearchType.INSIDE, 1, DEFAULT_QUERY_RANGE);
-
-  /**
-   * Used for keeping the number of records in the underlying table when query range is being used,
-   * this value is updated on each table model refresh
-   */
-  private int recordCount = -1;
-
-  /**
    * The entity ID
    */
   private final String entityID;
@@ -165,15 +128,80 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private final List<Entity> filteredEntities = new ArrayList<Entity>();
 
   /**
+   * The properties on which to base the table columns
+   */
+  private final List<Property> tableColumnProperties;
+
+  /**
+   * The search model
+   */
+  private final EntityTableSearchModel tableSearchModel;
+
+  /**
+   * The sorter model
+   */
+  private final TableSorter tableSorter;
+
+  /**
+   * Represents the range of records to select from the underlying table
+   */
+  private final PropertyCriteria queryRangeCriteria =
+          new PropertyCriteria(new Property("row_num", Type.INT), SearchType.INSIDE, 1, DEFAULT_QUERY_RANGE);
+
+  /**
+   * False if the table should ignore the query range when refreshing
+   */
+  private final boolean queryRangeEnabled;
+
+  /**
+   * Used for keeping the number of records in the underlying table when query range is being used,
+   * this value is updated on each table model refresh
+   */
+  private int recordCount = -1;
+
+  /**
    * Holds the selected items while sorting
    */
   private List<EntityKey> selectedPrimaryKeys;
+
+  /**
+   * If true the underlying query should be filtered by the selected master record
+   */
+  private boolean filterQueryByMaster = false;
+
+  /**
+   * If true then all underlying records should be shown if no master record is selected
+   */
+  private boolean showAllWhenNotFiltered = false;
+
+  /**
+   * true while the model data is being refreshed
+   */
+  private boolean isRefreshing = false;
+
+  /**
+   * true while the model data is being filtered
+   */
+  private boolean isFiltering = false;
+
+  /**
+   * true while the model data is being sorted
+   */
+  private boolean isSorting = false;
+
+  /**
+   * true while the selection is being updated
+   */
+  private boolean isUpdatingSelection = false;
 
   /**
    * Holds the topmost (minimum) selected index
    */
   private int minSelectedIndex = -1;
 
+  /**
+   * The selection model
+   */
   private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
     @Override
     public void fireValueChanged(int min, int max, boolean isAdjusting) {
@@ -190,13 +218,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         evtSelectionChanged.fire();
     }
   };
-
-  private final List<Property> tableColumnProperties;
-  private final EntityTableSearchModel tableSearchModel;
-  private final TableSorter tableSorter;
-
-  private boolean filterQueryByMaster = false;
-  private boolean showAllWhenNotFiltered = false;
 
   /**
    * Initializes a new EntityTableModel

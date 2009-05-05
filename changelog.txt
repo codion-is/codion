@@ -468,3 +468,4 @@
   EntityPanel, direct references to model replaced by getModel() throughout
   EntityTablePanel, direct references to tableModel replace by getTableModel() throughout, as well as for entityTable/getJTable()
   @override annotation added where applicable
+  EntityTableModel, some reordering of fields
