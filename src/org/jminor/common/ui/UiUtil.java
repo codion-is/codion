@@ -190,6 +190,7 @@ public class UiUtil {
     if (startDate != null)
       calendar.setTime(startDate);
     jCalendar.setCalendar(calendar);
+    //todo Enter should approve the selection
     final int res = JOptionPane.showOptionDialog(parent, jCalendar, message, -1, -1, null, options, null);
     if (res == 0) {
       jCalendar.getCalendar().set(Calendar.HOUR_OF_DAY, 0);

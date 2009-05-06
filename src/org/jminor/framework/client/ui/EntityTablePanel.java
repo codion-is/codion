@@ -280,6 +280,9 @@ public class EntityTablePanel extends JPanel {
    * @param visible if true then the summary panel is shown, if false it is hidden
    */
   public void setSummaryPanelVisible(final boolean visible) {
+    if (visible && isSummaryPanelVisible())
+      return;
+
     if (summaryScrollPane != null) {
       summaryScrollPane.setVisible(visible);
       if (visible) {
@@ -308,6 +311,9 @@ public class EntityTablePanel extends JPanel {
    * @param visible if true the search panel is shown, if false it is hidden
    */
   public void setSearchPanelVisible(final boolean visible) {
+    if (visible && isSearchPanelVisible())
+      return;
+
     if (searchScrollPane != null) {
       searchScrollPane.getViewport().setView(visible ? searchPanel : null);
       if (searchRefreshToolBar != null)

@@ -14,6 +14,8 @@ import org.jminor.framework.demos.empdept.model.EmpDept;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,13 +34,27 @@ public class DepartmentPanel extends EntityPanel {
   /** {@inheritDoc} */
   @Override
   protected JPanel initializePropertyPanel() {
-    final JTextField txtDeptno = createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE,
-            true, null, getModel().stEntityActive.getReversedState());
+    final JTextField txtDeptno =
+            createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
     setDefaultFocusComponent(txtDeptno);
     txtDeptno.setColumns(10);
 
     final JTextField txtName = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
     txtName.setColumns(10);
+
+    //we don't allow editing of the department number since it's a primary key
+    getModel().stEntityActive.evtStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (getModel().stEntityActive.isActive()) {
+          txtDeptno.setEnabled(false);
+          setDefaultFocusComponent(txtName);
+        }
+        else {
+          txtDeptno.setEnabled(true);
+          setDefaultFocusComponent(txtDeptno);
+        }
+      }
+    });
 
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,1,5,5,true,false));
     ret.add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDeptno));
