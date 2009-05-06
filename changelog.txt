@@ -474,4 +474,5 @@
   EntityPanel, keyboard actions added, ALT-CTRL-T focuses the table, ALT-CTRL-W the edit panel and ALT-CTRL-S the search panel
   EntityTablePanel, ALT-CTRL-T shows the popup menu instead of SHIFT-SPACE
   EntityTablePanel.addJTablePopupMenu() added (removed from UiUtil)
-  PropertyCriteria.getMultiReferenceCriteriaString(), bug fixed, searchType NOT_LIKE did not trigger "not in" condition 
+  PropertyCriteria.getMultiReferenceCriteriaString(), bug fixed, searchType NOT_LIKE did not trigger "not in" condition
+  EntityTablePanel, a tentative searchPanel/summaryPanel scrollbar fix, added 15 pixel label buffer to each panel, somewhat hacky but seems to work

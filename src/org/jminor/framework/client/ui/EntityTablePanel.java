@@ -546,7 +546,7 @@ public class EntityTablePanel extends JPanel {
     final JPanel base = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
-      searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+      searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       if (searchPanel instanceof EntityTableSearchPanel)
         searchScrollPane.getHorizontalScrollBar().setModel(tableScrollPane.getHorizontalScrollBar().getModel());
@@ -580,7 +580,7 @@ public class EntityTablePanel extends JPanel {
     add(base, BorderLayout.CENTER);
     final JPanel tableSummaryPanel = initializeSummaryPanel();
     if (tableSummaryPanel != null) {
-      summaryScrollPane = new JScrollPane(tableSummaryPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+      summaryScrollPane = new JScrollPane(tableSummaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
       tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
@@ -641,8 +641,11 @@ public class EntityTablePanel extends JPanel {
       panels.add(panel);
       ret.add(panel);
     }
-
     UiUtil.bindColumnAndPanelSizes(getJTable().getColumnModel(), panels);
+
+    final JLabel scrollBarBuffer = new JLabel();
+    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
+    ret.add(scrollBarBuffer);
 
     return ret;
   }
@@ -746,6 +749,10 @@ public class EntityTablePanel extends JPanel {
     final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel(),
             getTableModel().getTableColumnProperties());
     searchPanel.bindToColumnSizes(getJTable());
+
+    final JLabel scrollBarBuffer = new JLabel();
+    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
+    searchPanel.add(scrollBarBuffer);
 
     return searchPanel;
   }
