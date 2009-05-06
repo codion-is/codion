@@ -262,6 +262,7 @@
     <copy file="${lib.jdbc.drivers}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib" />
     <copy todir="${deploy.demos.path}">

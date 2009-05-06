@@ -20,8 +20,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -365,24 +363,6 @@ public class UiUtil {
       tree.expandPath(parent);
     else
       tree.collapsePath(parent);
-  }
-
-  /**
-   * Sets the popup menu as the table popup menu and adds a key listener which
-   * shows the popup menu on SHIFT-space
-   * @param table the table
-   * @param popupMenu the popup menu
-   */
-  public static void setTablePopup(final JTable table, final JPopupMenu popupMenu) {
-    table.setComponentPopupMenu(popupMenu);
-    table.getTableHeader().setComponentPopupMenu(popupMenu);
-    table.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyReleased(KeyEvent e) {//shift-space shows popup menu
-        if (e.isShiftDown() && e.getKeyChar() == ' ')
-          popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
-      }
-    });
   }
 
   public static void setWaitCursor(final boolean on, final JComponent component) {

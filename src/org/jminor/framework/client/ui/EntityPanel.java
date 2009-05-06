@@ -241,13 +241,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private static final State.StateGroup activeStateGroup = new State.StateGroup();
 
   /**
-   * Used for actionMap/inputMap action assignment
-   */
-  private static final String SELECT_TABLE_PANEL = "selectTablePanel";
-  private static final String SELECT_EDIT_PANEL = "selectEditPanel";
-  private static final String SELECT_SEARCH_PANEL = "selectSearchPanel";
-
-  /**
    * Hold a reference to this PropertyChangeListener so that it will be garbage collected along with this EntityPanel instance
    */
   private final PropertyChangeListener focusPropertyListener = new PropertyChangeListener() {
@@ -1263,23 +1256,23 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Initializes the keyboard navigation actions.
    * By default ALT-CTRL-T transfers focus to the table in case one is available,
-   * ALT-CTR-R transfers focus to the edit panel in case one is available
+   * ALT-CTR-E transfers focus to the edit panel in case one is available
    * and ALT-CTR-S transfers focus to the search panel.
    */
   protected void setupKeyboardActions() {
     if (getTablePanel() != null) {
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), SELECT_TABLE_PANEL);
-      getActionMap().put(SELECT_TABLE_PANEL, new AbstractAction() {
+                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectTablePanel");
+      getActionMap().put("selectTablePanel", new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           getTablePanel().getJTable().requestFocusInWindow();
         }
       });
     }
     if (getEditPanel() != null) {
-      getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), SELECT_EDIT_PANEL);
-      getActionMap().put(SELECT_EDIT_PANEL, new AbstractAction() {
+      getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectEditPanel");
+      getActionMap().put("selectEditPanel", new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           if (getEditPanelState() == HIDDEN)
             setEditPanelState(EMBEDDED);
@@ -1289,8 +1282,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     }
     if (getTablePanel().getSearchPanel() != null) {
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), SELECT_SEARCH_PANEL);
-      getActionMap().put(SELECT_SEARCH_PANEL, new AbstractAction() {
+                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectSearchPanel");
+      getActionMap().put("selectSearchPanel", new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           getTablePanel().setSearchPanelVisible(true);
           getTablePanel().getSearchPanel().requestFocusInWindow();

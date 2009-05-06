@@ -200,7 +200,8 @@ public class PropertyCriteria implements ICriteria {
       return set.toString();
     }
     else
-      return getInList(((Property.EntityProperty) property).referenceProperties.get(0).propertyID, false);
+      return getInList(((Property.EntityProperty) property).referenceProperties.get(0).propertyID,
+              searchType == SearchType.NOT_LIKE);
   }
 
   private boolean containsWildcard(final String val) {
@@ -208,15 +209,15 @@ public class PropertyCriteria implements ICriteria {
   }
 
   private String getInList(final String whereColumn, final boolean notIn) {
-    final StringBuffer ret = new StringBuffer(whereColumn + (notIn ? " not" : "") + " in (");
+    final StringBuffer ret = new StringBuffer(whereColumn + (notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
       String sqlValue = EntityDbUtil.getSQLStringValue(property, values.get(i));
-      if (!caseSensitive)
+      if (property.propertyType == Type.STRING && !caseSensitive)
         sqlValue = "upper(" + sqlValue + ")";
       ret.append(sqlValue);
       if (cnt++ == 1000 && i < values.size()-1) {//Oracle limit
-        ret.append(") or ").append(whereColumn).append(" in (");
+        ret.append(notIn ? ") and " : ") or ").append(whereColumn).append(" in (");
         cnt = 1;
       }
       else if (i < values.size()-1)

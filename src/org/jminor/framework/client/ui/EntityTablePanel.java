@@ -33,9 +33,11 @@ import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -319,7 +321,6 @@ public class EntityTablePanel extends JPanel {
       if (searchRefreshToolBar != null)
         searchRefreshToolBar.setVisible(visible);
       evtSearchPanelVisibleChanged.fire();
-      revalidate();
     }
   }
 
@@ -573,7 +574,7 @@ public class EntityTablePanel extends JPanel {
     }
     popupControls.addSeparator();
     popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
-    UiUtil.setTablePopup(getJTable(), ControlProvider.createPopupMenu(popupControls));
+    addJTablePopupMenu(getJTable(), popupControls);
 
     base.add(tableScrollPane, BorderLayout.CENTER);
     add(base, BorderLayout.CENTER);
@@ -605,8 +606,24 @@ public class EntityTablePanel extends JPanel {
       add(southBase, BorderLayout.SOUTH);
     }
     setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
+  }
 
-    getJTable().repaint();
+  /**
+   * Adds a popup menu to <code>table</code>
+   * @param table the table
+   * @param popupControls a ControlSet specifying the controls in the popup menu
+   */
+  protected void addJTablePopupMenu(final JTable table, final ControlSet popupControls) {
+    final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
+    table.setComponentPopupMenu(popupMenu);
+    table.getTableHeader().setComponentPopupMenu(popupMenu);
+    table.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_G,
+                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "showPopupMenu");
+    table.getActionMap().put("showPopupMenu", new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
+      }
+    });
   }
 
   /**
