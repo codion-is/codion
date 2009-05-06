@@ -478,3 +478,4 @@
   EntityTablePanel, a tentative searchPanel/summaryPanel scrollbar fix, added 15 pixel label buffer to each panel, somewhat hacky but seems to work
   UiUtil.getDateFromUser() simplified and refactored
   PropertyFilterPanel, removed unused/inactive key listener from date input field for getting date from use via dialog
+  FrameworkUiUtil.getDateChooserPanel() doesn't use todays date as default value if initialValue is not provided

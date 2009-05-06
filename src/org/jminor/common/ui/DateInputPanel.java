@@ -35,8 +35,8 @@ public class DateInputPanel extends JPanel {
             currentValue = maskFormat.parse(inputField.getText());
           }
           catch (ParseException ex) {/**/}
-          final Date newValue = UiUtil.getDateFromUser(
-                  currentValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), inputField);
+          final Date newValue = UiUtil.getDateFromUser(currentValue,
+                  FrameworkMessages.get(FrameworkMessages.SELECT_DATE), inputField);
           inputField.setText(maskFormat.format(newValue));
         }
       };

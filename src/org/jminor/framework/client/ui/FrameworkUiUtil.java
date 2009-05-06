@@ -205,7 +205,8 @@ public class FrameworkUiUtil {
 
   public static DateInputPanel createDateChooserPanel(final Date initialValue, final AbstractDateMaskFormat maskFormat) {
     final JFormattedTextField txtField = UiUtil.createFormattedField(maskFormat.getDateMask());
-    txtField.setText(maskFormat.format(initialValue == null ? new Date() : initialValue));
+    if (initialValue != null)
+      txtField.setText(maskFormat.format(initialValue));
 
     return new DateInputPanel(txtField, maskFormat, true, null);
   }
