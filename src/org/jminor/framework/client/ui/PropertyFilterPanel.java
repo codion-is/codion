@@ -3,10 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
@@ -35,8 +33,6 @@ import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
@@ -47,8 +43,8 @@ import java.util.Date;
 
 public class PropertyFilterPanel extends AbstractSearchPanel {
 
-  private final State stIsDialogActive = new State("ColumnSearchPanel.stIsDialogActive");
-  private final State stIsDialogShowing = new State("ColumnSearchPanel.stIsDialogShowing");
+  private final State stIsDialogActive = new State("PropertyFilterPanel.stIsDialogActive");
+  private final State stIsDialogShowing = new State("PropertyFilterPanel.stIsDialogShowing");
 
   private JDialog searchDlg;
   private Point lastPosition;
@@ -231,23 +227,6 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       }
     });
 
-    ret.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyTyped(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-          try {
-            final Date currVal = isUpperBound ? (Date) model.getUpperBound() : (Date) model.getLowerBound();
-            final Date val = UiUtil.getDateFromUser(currVal, Messages.get(Messages.CHOOSE_DATE), PropertyFilterPanel.this);
-            if (isUpperBound)
-              model.setUpperBound(useLongDate ? new Timestamp(val.getTime()) : val);
-            else
-              model.setLowerBound(useLongDate ? new Timestamp(val.getTime()) : val);
-          }
-          catch (UserCancelException uce) {/**/}
-        }
-      }
-    });
-
     return ret;
   }
 
@@ -279,6 +258,8 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     final Date date = format.parse(dateField.getText());
     final Calendar cal = Calendar.getInstance();
     cal.setTime(date);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
     cal.set(Calendar.SECOND, 0);
     cal.set(Calendar.MILLISECOND, 0);
 

@@ -4,7 +4,6 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.formats.AbstractDateMaskFormat;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -31,17 +30,14 @@ public class DateInputPanel extends JPanel {
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
         public void actionPerformed(ActionEvent e) {
+          Date currentValue = null;
           try {
-            Date currentValue = null;
-            try {
-              currentValue = maskFormat.parse(inputField.getText());
-            }
-            catch (ParseException ex) {/**/}
-            final Date newValue = UiUtil.getDateFromUser(
-                    currentValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), inputField);
-            inputField.setText(maskFormat.format(newValue));
+            currentValue = maskFormat.parse(inputField.getText());
           }
-          catch (UserCancelException ex) {/**/}
+          catch (ParseException ex) {/**/}
+          final Date newValue = UiUtil.getDateFromUser(
+                  currentValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), inputField);
+          inputField.setText(maskFormat.format(newValue));
         }
       };
       final JButton btnChooser = new JButton(buttonAction);

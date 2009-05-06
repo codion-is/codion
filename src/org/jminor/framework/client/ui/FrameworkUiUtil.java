@@ -217,11 +217,8 @@ public class FrameworkUiUtil {
     txtField.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        try {
-          final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
-          txtField.setText(ShortDashDateFormat.get().format(d));
-        }
-        catch (UserCancelException ex) {/**/}
+        final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
+        txtField.setText(ShortDashDateFormat.get().format(d));
       }
     });
 

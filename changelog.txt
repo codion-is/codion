@@ -476,3 +476,5 @@
   EntityTablePanel.addJTablePopupMenu() added (removed from UiUtil)
   PropertyCriteria.getMultiReferenceCriteriaString(), bug fixed, searchType NOT_LIKE did not trigger "not in" condition
   EntityTablePanel, a tentative searchPanel/summaryPanel scrollbar fix, added 15 pixel label buffer to each panel, somewhat hacky but seems to work
+  UiUtil.getDateFromUser() simplified and refactored
+  PropertyFilterPanel, removed unused/inactive key listener from date input field for getting date from use via dialog

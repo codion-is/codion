@@ -179,27 +179,21 @@ public class UiUtil {
     return selectedFile;
   }
 
-  public static Date getDateFromUser(final Date startDate, final String message,
-                                     final JComponent parent) throws UserCancelException {
-    final String[] options = new String[] {
-            Messages.get(Messages.OK), Messages.get(Messages.CANCEL)};
-    final Calendar calendar = Calendar.getInstance();
-    final JCalendar jCalendar = new JCalendar();
+  public static Date getDateFromUser(final Date startDate, final String message, final Container parent) {
+    final Calendar cal = Calendar.getInstance();
     if (startDate != null)
-      calendar.setTime(startDate);
-    jCalendar.setCalendar(calendar);
-    //todo Enter should approve the selection
-    final int res = JOptionPane.showOptionDialog(parent, jCalendar, message, -1, -1, null, options, null);
-    if (res == 0) {
-      jCalendar.getCalendar().set(Calendar.HOUR_OF_DAY, 0);
-      jCalendar.getCalendar().set(Calendar.MINUTE, 0);
-      jCalendar.getCalendar().set(Calendar.SECOND, 0);
-      jCalendar.getCalendar().set(Calendar.MILLISECOND, 0);
+      cal.setTime(startDate);
 
-      return new Date(jCalendar.getCalendar().getTimeInMillis());
-    }
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
 
-    throw new UserCancelException();
+    final JCalendar calendar = new JCalendar(cal);
+
+    showInDialog(getParentWindow(parent), calendar, true, message, true, true, null);
+
+    return new Date(calendar.getCalendar().getTimeInMillis());
   }
 
   public static JFormattedTextField createFormattedField(final String mask) {
@@ -323,8 +317,8 @@ public class UiUtil {
     window.setSize(ratioSize);
   }
 
-  public static Window getParentWindow(Container container) {
-    Window ret = getParentDialog(container);
+  public static Window getParentWindow(final Container container) {
+    final Window ret = getParentDialog(container);
 
     return ret == null ? getParentFrame(container) : ret;
   }
@@ -549,8 +543,9 @@ public class UiUtil {
     return dialog;
   }
 
-  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal, final String title,
-                                     final Dimension size, final JButton defaultButton, final Event closeEvent) {
+  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
+                                     final String title, final Dimension size, final JButton defaultButton,
+                                     final Event closeEvent) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
