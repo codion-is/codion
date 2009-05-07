@@ -87,7 +87,7 @@ public class Petstore {
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude"));
 
     EntityRepository.get().initialize(T_CATEGORY, IdSource.MAX_PLUS_ONE, CATEGORY_NAME,
-            new Property.PrimaryKeyProperty(CATEGORY_ID, Type.INT, "Id"),
+            new Property.PrimaryKeyProperty(CATEGORY_ID),
             new Property(CATEGORY_NAME, Type.STRING, "Name"),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description"),
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL", true));

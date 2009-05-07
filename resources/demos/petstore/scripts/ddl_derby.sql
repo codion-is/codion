@@ -1,11 +1,11 @@
 create schema petstore;
 
 create table petstore.category(
-    categoryid INTEGER NOT NULL,
-    name VARCHAR(25) NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    imageurl VARCHAR(55),
-    primary key (categoryid)
+  categoryid INTEGER NOT NULL,
+  name VARCHAR(25) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  imageurl VARCHAR(55),
+  primary key (categoryid)
 );
 
 CREATE TABLE petstore.product (
@@ -58,16 +58,16 @@ CREATE TABLE petstore.item (
 );
 
 create table petstore.tag(
-    tagid INTEGER NOT NULL,
-    tag VARCHAR(30) NOT NULL,
-    primary key (tagid),
-    unique(tag)
+  tagid INTEGER NOT NULL,
+  tag VARCHAR(30) NOT NULL,
+  primary key (tagid),
+  unique(tag)
 );
 
 create table petstore.tag_item(
-    tagid INTEGER NOT NULL,
-    itemid INTEGER NOT NULL,
-    unique(tagid, itemid),
-    foreign key (itemid) references petstore.item(itemid),
-    foreign key (tagid) references petstore.tag(tagid)
+  tagid INTEGER NOT NULL,
+  itemid INTEGER NOT NULL,
+  unique(tagid, itemid),
+  foreign key (itemid) references petstore.item(itemid),
+  foreign key (tagid) references petstore.tag(tagid)
 );

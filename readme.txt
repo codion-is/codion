@@ -5,7 +5,7 @@ http://jminor.org
 
 1. INTRODUCTION
 
-JMinor is a minimalistic rich client CRUD application framework based solely on J2SE, it includes:
+JMinor is a minimalistic Java rich client CRUD application framework based solely on J2SE components, it includes:
 
 * Simple domain modelling in plain Java code, no XML files required.
 
@@ -13,7 +13,10 @@ JMinor is a minimalistic rich client CRUD application framework based solely on 
 
 * A minimal but complete JDBC abstraction layer.
 
-* A straight forward and simple way of wiring together a rich Swing client on top the domain model.
+* A straight forward and simple way of wiring together a rich Swing client on top of the domain model,
+  all done in plain Java code, no XML configuration involved.
+
+* Clients are run with either a local JDBC connection or served by a featherweight RMI server.
 
 * Integrated JasperReports support.
 

@@ -36,14 +36,13 @@ public class CategoryPanel extends EntityPanel {
   @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(2,2,5,5));
-    JTextField txt = createTextField(Petstore.CATEGORY_ID);
-    setDefaultFocusComponent(txt);
-    txt.setColumns(10);
-    ret.add(createControlPanel(Petstore.CATEGORY_ID, txt));
-    txt = createTextField(Petstore.CATEGORY_NAME);
-    txt.setColumns(10);
-    ret.add(createControlPanel(Petstore.CATEGORY_NAME, txt));
-    ret.add(createControlPanel(Petstore.CATEGORY_DESCRIPTION, createTextField(Petstore.CATEGORY_DESCRIPTION)));
+    final JTextField txtName = createTextField(Petstore.CATEGORY_NAME);
+    setDefaultFocusComponent(txtName);
+    txtName.setColumns(10);
+    ret.add(createControlPanel(Petstore.CATEGORY_NAME, txtName));
+    final JTextField txtDesc = createTextField(Petstore.CATEGORY_DESCRIPTION);
+    txtDesc.setColumns(18);
+    ret.add(createControlPanel(Petstore.CATEGORY_DESCRIPTION, txtDesc));
     ret.add(createControlPanel(Petstore.CATEGORY_IMAGE_URL, createTextField(Petstore.CATEGORY_IMAGE_URL)));
 
     return ret;
