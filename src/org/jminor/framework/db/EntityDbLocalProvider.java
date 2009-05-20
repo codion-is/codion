@@ -37,9 +37,10 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
   public EntityDbLocalProvider(final User user) {
     this.user = user;
     final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
-    if (sid == null || sid.length() == 0)
+    if (!Database.isDerbyEmbedded() && (sid == null || sid.length() == 0))
       throw new RuntimeException("Required property value not found: " + Database.DATABASE_SID_PROPERTY);
-    user.setProperty(Database.DATABASE_SID_PROPERTY, sid);
+    if (sid != null)
+      user.setProperty(Database.DATABASE_SID_PROPERTY, sid);
   }
 
   public final IEntityDb getEntityDb() throws UserException {

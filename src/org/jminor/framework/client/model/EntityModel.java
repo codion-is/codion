@@ -801,7 +801,7 @@ public class EntityModel implements IRefreshable {
     }
 
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
-    refreshDetailModelsAfterInsertOrUpdate();
+    refreshDetailModelsAfterInsert(primaryKeys);
   }
 
   /**
@@ -857,7 +857,7 @@ public class EntityModel implements IRefreshable {
     }
 
     evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities));
-    refreshDetailModelsAfterInsertOrUpdate();
+    refreshDetailModelsAfterUpdate(updatedEntities);
   }
 
   /**
@@ -1494,7 +1494,40 @@ public class EntityModel implements IRefreshable {
     }
   }
 
-  protected void refreshDetailModelsAfterInsertOrUpdate() throws UserException {
+  /**
+   * Refreshes the EntityComboBoxModels based on the inserted entity type in the detail models
+   * and sets the value of the master property to the entity with the primary key found
+   * at index 0 in <code>primaryKeys</code>
+   * @param primaryKeys the primary keys of the inserted entities
+   * @throws UserException in case of an exception
+   */
+  protected void refreshDetailModelsAfterInsert(final List<EntityKey> primaryKeys) throws UserException {
+    if (detailModels.size() == 0)
+      return;
+
+    try {
+      final Entity insertedEntity = getEntityDb().selectSingle(primaryKeys.get(0));
+      for (final EntityModel detailModel : detailModels) {
+        for (final Property.EntityProperty property :
+                EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
+          final EntityComboBoxModel entityComboBoxModel =
+                  (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
+          if (entityComboBoxModel != null)
+            entityComboBoxModel.refresh();
+          detailModel.setValue(property, insertedEntity);
+        }
+      }
+    }
+    catch (UserException ue) {
+      throw ue;
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
+  @SuppressWarnings({"UnusedDeclaration"})
+  protected void refreshDetailModelsAfterUpdate(final List<Entity> entities) throws UserException {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.EntityProperty property :
               EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {

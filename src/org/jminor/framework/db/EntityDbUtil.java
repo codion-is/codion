@@ -106,15 +106,15 @@ public class EntityDbUtil {
   }
 
   /**
-   * Returns the insert properties for this entityID
-   * @param entityID the entityID
+   * Returns the insert properties for this entity, leaving out properties with null values
+   * @param entity the entity
    * @return the properties used to insert the given entity type
    */
-  public static List<Property> getInsertProperties(final String entityID) {
+  public static List<Property> getInsertProperties(final Entity entity) {
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : EntityRepository.get().getDatabaseProperties(entityID,
-            EntityRepository.get().getIdSource(entityID) != IdSource.AUTO_INCREMENT, false, true)) {
-      if (!(property instanceof Property.EntityProperty))
+    for (final Property property : EntityRepository.get().getDatabaseProperties(entity.getEntityID(),
+            EntityRepository.get().getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
+      if (!(property instanceof Property.EntityProperty) && !entity.isValueNull(property.propertyID))
         ret.add(property);
     }
 

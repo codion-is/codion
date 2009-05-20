@@ -21,6 +21,20 @@ import java.util.Map;
 public class FrameworkSettings implements Serializable {
 
   /**
+   * The date format pattern to use when showing long dates in tables
+   * Value type: String
+   * Default value: dd-MM-yyyy HH:mm
+   */
+  public static final String DEFAULT_LONG_DATE_FORMAT = "default_long_date_format";
+
+  /**
+   * The date format pattern to use when shortlong dates in tables
+   * Value type: String
+   * Default value: dd-MM-yyyy
+   */
+  public static final String DEFAULT_SHORT_DATE_FORMAT = "default_short_date_format";
+
+  /**
    * Indicates whether all entity panels should be enabled and receiving input by default
    * Value type: Boolean
    * Default value: false
@@ -209,6 +223,8 @@ public class FrameworkSettings implements Serializable {
 
   private FrameworkSettings() {
     //default settings
+    setProperty(DEFAULT_LONG_DATE_FORMAT, "dd-MM-yyyy HH:mm");
+    setProperty(DEFAULT_SHORT_DATE_FORMAT, "dd-MM-yyyy");
     setProperty(ALL_PANELS_ENABLED, false);
     setProperty(USE_KEYBOARD_NAVIGATION, true);
     setProperty(USE_FOCUS_ACTIVATION, true);

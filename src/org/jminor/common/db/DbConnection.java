@@ -411,8 +411,8 @@ public class DbConnection {
   }
 
   /**
-   * Executes the given DML-query
-   * @param sql the query to execute
+   * Executes the given statment, which can be anything except a select query.
+   * @param sql the statement to execute
    * @throws SQLException thrown if anything goes wrong during execution
    */
   public synchronized final void execute(final String sql) throws SQLException {
@@ -421,7 +421,7 @@ public class DbConnection {
     log.debug(sql);
     Statement statement = null;
     try {
-      (statement = connection.createStatement()).execute(sql);
+      (statement = connection.createStatement()).executeUpdate(sql);
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
     }
     catch (SQLException e) {

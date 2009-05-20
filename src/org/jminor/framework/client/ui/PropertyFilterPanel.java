@@ -234,7 +234,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                                 final boolean useLongDate, final boolean isUpperBound) {
     try {
       final String txt = dateField.getText();
-      if (Util.isDateOk(txt, false, useLongDate)) {
+      if (Util.isDateOk(txt, false, useLongDate)) {//todo localize
         final SimpleDateFormat format = useLongDate ? LongDateFormat.get() : ShortDashDateFormat.get();
         final Date val = getDate(format, dateField);
         if (isUpperBound)

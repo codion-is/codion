@@ -225,6 +225,7 @@ public class UiUtil {
 
       final JFormattedTextField ret = new JFormattedTextField(formatter);
       ret.setFocusLostBehavior(JFormattedTextField.COMMIT);
+      moveCaretToStartOnFocusGained(ret);
 
       return ret;
     }
@@ -472,6 +473,19 @@ public class UiUtil {
       @Override
       public void focusGained(final FocusEvent e) {
         textComponent.selectAll();
+      }
+    });
+  }
+
+  /**
+   * Sets the caret position to 0 in the given component when it gains focus
+   * @param textComponent the text component
+   */
+  public static void moveCaretToStartOnFocusGained(final JTextComponent textComponent) {
+    textComponent.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusGained(final FocusEvent e) {
+        textComponent.setCaretPosition(0);
       }
     });
   }

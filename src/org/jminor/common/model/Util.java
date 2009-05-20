@@ -474,6 +474,81 @@ public class Util {
     return c.getTime();
   }
 
+  public static Date getFirstDayOfYear() {
+    final Calendar c = Calendar.getInstance();
+    c.set(Calendar.MONTH, Calendar.JANUARY);
+    c.set(Calendar.DAY_OF_MONTH, 1);
+
+    return c.getTime();
+  }
+
+  public static Date getLastDayOfYear() {
+    final Calendar c = Calendar.getInstance();
+    c.set(Calendar.MONTH, Calendar.DECEMBER);
+    c.set(Calendar.DAY_OF_MONTH, 31);
+
+    return c.getTime();
+  }
+
+  public static Date getFirstDayOfQuarter(final int quarter) {
+    if (quarter < 1 || quarter > 4)
+      throw new IllegalArgumentException("Quarter must be between 1 and 4");
+
+    final Calendar c = Calendar.getInstance();
+    c.set(Calendar.DAY_OF_MONTH, 1);
+    switch (quarter) {
+      case 1: {
+        c.set(Calendar.MONTH, Calendar.JANUARY);
+        return c.getTime();
+      }
+      case 2: {
+        c.set(Calendar.MONTH, Calendar.APRIL);
+        return c.getTime();
+      }
+      case 3: {
+        c.set(Calendar.MONTH, Calendar.JULY);
+        return c.getTime();
+      }
+      case 4: {
+        c.set(Calendar.MONTH, Calendar.OCTOBER);
+        return c.getTime();
+      }
+    }
+
+    return null;
+  }
+
+  public static Date getLastDayOfQuarter(final int quarter) {
+    if (quarter < 1 || quarter > 4)
+      throw new IllegalArgumentException("Quarter must be between 1 and 4");
+
+    final Calendar c = Calendar.getInstance();
+    switch (quarter) {
+      case 1: {
+        c.set(Calendar.MONTH, Calendar.MARCH);
+        c.set(Calendar.DAY_OF_MONTH, 31);
+        return c.getTime();
+      }
+      case 2: {
+        c.set(Calendar.MONTH, Calendar.JUNE);
+        c.set(Calendar.DAY_OF_MONTH, 30);
+        return c.getTime();
+      }
+      case 3: {
+        c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+        c.set(Calendar.DAY_OF_MONTH, 30);
+        return c.getTime();
+      }
+      case 4: {
+        c.set(Calendar.MONTH, Calendar.DECEMBER);
+        c.set(Calendar.DAY_OF_MONTH, 31);
+        return c.getTime();
+      }
+    }
+
+    return null;
+  }
+
   public static double roundDouble(final double d, final int places) {
     return Math.round(d * Math.pow(10, (double) places)) / Math.pow(10, (double) places);
   }

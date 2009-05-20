@@ -69,7 +69,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     switch (model.getPropertyType()) {
       case LONG_DATE:
       case SHORT_DATE:
-        final AbstractDateMaskFormat format =
+        final AbstractDateMaskFormat format =//todo localize
                 model.getPropertyType() == Type.LONG_DATE ? new LongDateFormat() : new ShortDashDateFormat();
         field = UiUtil.createFormattedField(format.getDateMask());
         new TextBeanPropertyLink((JFormattedTextField) field, model,

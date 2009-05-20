@@ -39,6 +39,14 @@ public class TestEntityDbConnection extends TestCase {
     referencedEntityValue.setValue(ModelTestDomain.TEST_MASTER_ID, referenceId);
     referencedEntityValue.setValue(ModelTestDomain.TEST_MASTER_NAME, stringValue);
 
+    //test with null values
+    final Entity testEntity2 = TestEntity.getTestMasterEntity(idValue, intValue, null,
+            stringValue, null, null, booleanValue, referencedEntityValue);
+    assertEquals(EntityDbConnection.getInsertSQL(testEntity2),
+            "insert into " + ModelTestDomain.T_TEST_DETAIL
+                    + "(int, string, boolean, entity_id, id)"
+                    + " values(2, 'string', 1, 2, 1)");
+
     final Entity testEntity = TestEntity.getTestMasterEntity(idValue, intValue, doubleValue,
             stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue);
     //assert dml

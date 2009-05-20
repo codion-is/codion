@@ -42,7 +42,8 @@ import java.util.Vector;
 public class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
-  private final Action action;
+
+  private Action enterAction;
 
   /**
    * Initializes a new EntityLookupField
@@ -60,19 +61,24 @@ public class EntityLookupField extends JTextField {
    */
   public EntityLookupField(final EntityLookupModel model, final boolean transferFocusOnEnter) {
     this(model, null);
-    if (transferFocusOnEnter)
-      UiUtil.transferFocusOnEnter(this);
+    if (transferFocusOnEnter) {
+      setEnterAction(new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+          transferFocus();
+        }
+      });
+    }
   }
 
   /**
    * Initializes a new EntityLookupField
    * @param model the model
-   * @param action the action that is performed if enter is pressed while the field text represents
+   * @param enterAction the action that is performed if enter is pressed while the field text represents
    * the selected entities
    */
-  public EntityLookupField(final EntityLookupModel model, final Action action) {
+  public EntityLookupField(final EntityLookupModel model, final Action enterAction) {
     this.model = model;
-    this.action = action;
+    this.enterAction = enterAction;
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
@@ -81,9 +87,9 @@ public class EntityLookupField extends JTextField {
             model.setSelectedEntities(null);
           }
           else {
-            if (model.textRepresentsSelected() && EntityLookupField.this.action != null)
-              EntityLookupField.this.action.actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
-            else
+            if (model.textRepresentsSelected() && getEnterAction() != null)
+              getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
+            else if (!model.textRepresentsSelected())
               selectEntities(model.performQuery());
           }
         }
@@ -102,6 +108,14 @@ public class EntityLookupField extends JTextField {
 
   public EntityLookupModel getModel() {
     return model;
+  }
+
+  public Action getEnterAction() {
+    return enterAction;
+  }
+
+  public void setEnterAction(final Action enterAction) {
+    this.enterAction = enterAction;
   }
 
   private void selectEntities(final List<Entity> entities) {

@@ -1785,8 +1785,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected boolean confirmUpdate() {
     final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
-    final JPanel dialogParent = getEditPanel() == null ? this : getEditPanel();
-    final int res = JOptionPane.showConfirmDialog(dialogParent,
+    final int res = JOptionPane.showConfirmDialog(this,
             msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;

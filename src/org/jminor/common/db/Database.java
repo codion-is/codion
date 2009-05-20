@@ -105,7 +105,7 @@ public class Database {
   public static final String DATABASE_HOST_PROPERTY = "jminor.db.host";
 
   /**
-   * Specifies the datbase sid (used for dbname for MySQL connections)
+   * Specifies the database sid (used for dbname for MySQL connections and Derby server connections)
    */
   public static final String DATABASE_SID_PROPERTY = "jminor.db.sid";
 

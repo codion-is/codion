@@ -81,7 +81,8 @@ public interface IEntityDb {
   public boolean isCheckDependencies() throws Exception;
 
   /**
-   * Executes the given statement
+   * Executes the given statement.
+   * This method does not handle select statements.
    * @param statement the statement to execute
    * @throws org.jminor.common.db.DbException in case of a database error
    * @throws Exception in case of exception
@@ -89,7 +90,8 @@ public interface IEntityDb {
   public void executeStatement(final String statement) throws Exception;
 
   /**
-   * Executes the given statement
+   * Executes the given statement.
+   * This method does not handle select statements.
    * @param statement the statement to execute
    * @param outParamType the type of the output param, if any, java.sql.Types.*
    * @throws org.jminor.common.db.DbException in case of a database error

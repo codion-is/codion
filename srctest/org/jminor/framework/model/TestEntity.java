@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class TestEntity extends TestCase {
 
-  public static Entity getTestMasterEntity(final int id, final int intValue, final double doubleValue,
+  public static Entity getTestMasterEntity(final int id, final Integer intValue, final Double doubleValue,
                                            final String stringValue, final Date shortDateValue, final Date longDateValue,
                                            final Type.Boolean booleanValue, final Entity entityValue) {
     final Entity ret = new Entity(ModelTestDomain.T_TEST_DETAIL);

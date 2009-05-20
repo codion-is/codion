@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.model.Type;
@@ -17,6 +15,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -116,6 +115,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class ShortDateRenderer extends DefaultTableCellRenderer {
+    final SimpleDateFormat format = new SimpleDateFormat((String)
+            FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT));
+
     public ShortDateRenderer() {
       super();
       setHorizontalAlignment(JLabel.RIGHT);
@@ -126,7 +128,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     public void setValue(final Object value) {
       String txt = "";
       if (value != null && value instanceof Date)
-        txt = ShortDashDateFormat.get().format(value);
+        txt = format.format(value);
       else if (value instanceof String)
         txt = (String) value;
 
@@ -135,7 +137,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class LongDateRenderer extends DefaultTableCellRenderer {
-    /** Constructs a new LongDateRenderer. */
+    final SimpleDateFormat format = new SimpleDateFormat((String)
+            FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_LONG_DATE_FORMAT));
+
     public LongDateRenderer() {
       super();
       setHorizontalAlignment(JLabel.RIGHT);
@@ -146,7 +150,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     public void setValue(final Object value) {
       String txt = "";
       if (value != null && value instanceof Date)
-        txt = LongDateFormat.get().format(value);
+        txt = format.format(value);
       else if (value instanceof String)
         txt = (String) value;
 
