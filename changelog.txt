@@ -491,3 +491,4 @@
   EntityModel.updateDetailModelsAfterInsertOrUpdate split in two
   EntityModel now sets the appropriate property value in detail models as the newly inserted record
   Util.getFirst/LastDayOfYear/Quarter added
+  H2 database support added

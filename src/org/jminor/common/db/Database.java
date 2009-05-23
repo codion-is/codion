@@ -58,6 +58,18 @@ public class Database {
   public static final String DATABASE_TYPE_EMBEDDED_DERBY = "derby_embedded";
 
   /**
+   * H2 database type
+   * @see #DATABASE_TYPE_PROPERTY
+   */
+  public static final String DATABASE_TYPE_H2 = "h2";
+
+  /**
+   * H2 embedded database type
+   * @see #DATABASE_TYPE_PROPERTY
+   */
+  public static final String DATABASE_TYPE_EMBEDDED_H2 = "h2_embedded";
+
+  /**
    * The driver class name use for Oracle connections
    */
   public static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
@@ -88,6 +100,11 @@ public class Database {
   public static final String DERBY_EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 
   /**
+   * The driver class name used for connections to a H2 database
+   */
+  public static final String H2_DRIVER = "org.h2.Driver";
+
+  /**
    * Specifies the database type
    * @see Database#DATABASE_TYPE_MYSQL
    * @see Database#DATABASE_TYPE_ORACLE
@@ -95,6 +112,8 @@ public class Database {
    * @see Database#DATABASE_TYPE_SQL_SERVER
    * @see Database#DATABASE_TYPE_DERBY
    * @see Database#DATABASE_TYPE_EMBEDDED_DERBY
+   * @see Database#DATABASE_TYPE_H2
+   * @see Database#DATABASE_TYPE_EMBEDDED_H2
    */
   public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
 
@@ -118,7 +137,7 @@ public class Database {
    * Represents the supported database types
    */
   public static enum DbType {
-    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED
+    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED, H2, H2_EMBEDDED
   }
 
   /**
@@ -179,6 +198,20 @@ public class Database {
   }
 
   /**
+   * @return true if the active database is H2
+   */
+  public static boolean isH2() {
+    return DB_TYPE == DbType.H2;
+  }
+
+  /**
+   * @return true if the active database is embedded H2
+   */
+  public static boolean isH2Embedded() {
+    return DB_TYPE == DbType.H2_EMBEDDED;
+  }
+
+  /**
    * Loads the driver for the active database
    * @throws ClassNotFoundException in case the driver class was not found in the class path
    */
@@ -194,15 +227,15 @@ public class Database {
   public static String getURL(final Properties connectionProperties) {
     final String host = System.getProperty(DATABASE_HOST_PROPERTY);
     if (host == null || host.length() == 0)
-      throw new RuntimeException("Required system property missing: " + DATABASE_HOST_PROPERTY);
+      throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + DB_TYPE);
     final String port = System.getProperty(DATABASE_PORT_PROPERTY);
-    if (DB_TYPE != DbType.DERBY_EMBEDDED)
+    if (DB_TYPE != DbType.DERBY_EMBEDDED && DB_TYPE != DbType.H2_EMBEDDED)
       if (port == null || port.length() == 0)
-        throw new RuntimeException("Required system property missing: " + DATABASE_PORT_PROPERTY);
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + DB_TYPE);
     final String sid = System.getProperty(DATABASE_SID_PROPERTY);
-    if (DB_TYPE != DbType.DERBY_EMBEDDED)
+    if (DB_TYPE != DbType.DERBY_EMBEDDED && DB_TYPE != DbType.H2_EMBEDDED)
       if (sid == null || sid.length() == 0)
-        throw new RuntimeException("Required system property missing: " + DATABASE_SID_PROPERTY);
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + DB_TYPE);
 
     switch (DB_TYPE) {
       case MYSQL:
@@ -217,6 +250,10 @@ public class Database {
         return "jdbc:derby://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
       case DERBY_EMBEDDED:
         return "jdbc:derby:" + host + getUserInfoString(connectionProperties);
+      case H2:
+        return "jdbc:h2://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
+      case H2_EMBEDDED:
+        return "jdbc:h2:" + host + getUserInfoString(connectionProperties);
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
@@ -242,6 +279,9 @@ public class Database {
       case DERBY:
       case DERBY_EMBEDDED:
         return "select IDENTITY_VAL_LOCAL() from " + idSource;
+      case H2:
+      case H2_EMBEDDED:
+        return "CALL IDENTITY()";
       default :
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
@@ -270,6 +310,11 @@ public class Database {
         return longDate ?
                 "DATE('" + DERBY_LONG_DATE_FORMAT.format(value) + "')" :
                 "DATE('" + DERBY_SHORT_DATE_FORMAT.format(value) + "')";
+      case H2:
+      case H2_EMBEDDED:
+        return longDate ?
+                "PARSEDATETIME('" + DERBY_LONG_DATE_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss')" :
+                "PARSEDATETIME('" + DERBY_SHORT_DATE_FORMAT.format(value) + "','yyyy-MM-dd')";
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
@@ -281,6 +326,9 @@ public class Database {
         return "select nextval(" + sequenceName + ")";
       case ORACLE:
         return "select " + sequenceName + ".nextval from dual";
+      case H2:
+      case H2_EMBEDDED:
+        return "select next value for " + sequenceName;
       default:
         throw new IllegalArgumentException("Sequence support is not implemented for database type: " + DB_TYPE);
     }
@@ -303,6 +351,10 @@ public class Database {
       return DbType.DERBY;
     else if (dbType.equals(DATABASE_TYPE_EMBEDDED_DERBY))
       return DbType.DERBY_EMBEDDED;
+    else if (dbType.equals(DATABASE_TYPE_H2))
+      return DbType.H2;
+    else if (dbType.equals(DATABASE_TYPE_EMBEDDED_H2))
+      return DbType.H2_EMBEDDED;
 
     throw new IllegalArgumentException("Unknown database type: " + dbType);
   }
@@ -336,6 +388,9 @@ public class Database {
         return DERBY_DRIVER;
       case DERBY_EMBEDDED:
         return DERBY_EMBEDDED_DRIVER;
+      case H2:
+      case H2_EMBEDDED:
+        return H2_DRIVER;
       default:
         throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
     }
