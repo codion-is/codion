@@ -492,3 +492,8 @@
   EntityModel now sets the appropriate property value in detail models as the newly inserted record
   Util.getFirst/LastDayOfYear/Quarter added
   H2 database support added
+  Database.isEmbedded() added
+  Fixed some server side issues with sid being a required property
+  Added jcalendar library to server monitor
+  Added server security policy entries for embedded databases
+  Added run_server_localhost_derby_embedded.bat

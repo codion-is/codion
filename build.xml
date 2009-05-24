@@ -244,6 +244,7 @@
     <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jdbc.drivers}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
@@ -486,6 +487,7 @@
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jfreechart.base}"/>
         <pathelement location="${lib.jfreechart.common}"/>
+        <pathelement location="${lib.jcalendar}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>

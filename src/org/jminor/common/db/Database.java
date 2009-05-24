@@ -212,6 +212,13 @@ public class Database {
   }
 
   /**
+   * @return true if the active database is an embedded one
+   */
+  public static boolean isEmbedded() {
+    return isH2Embedded() || isDerbyEmbedded();
+  }
+
+  /**
    * Loads the driver for the active database
    * @throws ClassNotFoundException in case the driver class was not found in the class path
    */
@@ -229,11 +236,11 @@ public class Database {
     if (host == null || host.length() == 0)
       throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + DB_TYPE);
     final String port = System.getProperty(DATABASE_PORT_PROPERTY);
-    if (DB_TYPE != DbType.DERBY_EMBEDDED && DB_TYPE != DbType.H2_EMBEDDED)
+    if (!isEmbedded())
       if (port == null || port.length() == 0)
         throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + DB_TYPE);
     final String sid = System.getProperty(DATABASE_SID_PROPERTY);
-    if (DB_TYPE != DbType.DERBY_EMBEDDED && DB_TYPE != DbType.H2_EMBEDDED)
+    if (!isEmbedded())
       if (sid == null || sid.length() == 0)
         throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + DB_TYPE);
 

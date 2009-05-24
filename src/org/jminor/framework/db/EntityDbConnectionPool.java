@@ -3,25 +3,12 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.AuthenticationException;
-import org.jminor.common.db.ConnectionPoolSettings;
-import org.jminor.common.db.ConnectionPoolState;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.User;
+import org.apache.log4j.Logger;
+import org.jminor.common.db.*;
 import org.jminor.common.model.Util;
 
-import org.apache.log4j.Logger;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * A simple connection pool implementation, pools connections on username basis
@@ -58,8 +45,9 @@ public class EntityDbConnectionPool {
 
   public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
     this.user = user;
-    this.user.setProperty(Database.DATABASE_SID_PROPERTY,
-            System.getProperty(Database.DATABASE_SID_PROPERTY));
+    final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
+    if (sid != null && sid.length() != 0)
+      this.user.setProperty(Database.DATABASE_SID_PROPERTY, sid);
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       @Override
