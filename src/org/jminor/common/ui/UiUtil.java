@@ -478,7 +478,7 @@ public class UiUtil {
   }
 
   /**
-   * Sets the caret position to 0 in the given component when it gains focus
+   * Sets the caret position to 0 in the given text component when it gains focus
    * @param textComponent the text component
    */
   public static void moveCaretToStartOnFocusGained(final JTextComponent textComponent) {
@@ -486,6 +486,19 @@ public class UiUtil {
       @Override
       public void focusGained(final FocusEvent e) {
         textComponent.setCaretPosition(0);
+      }
+    });
+  }
+
+  /**
+   * Sets the caret position to the right of the last character in the given text component when it gains focus
+   * @param textComponent the text component
+   */
+  public static void moveCaretToEndOnFocusGained(final JTextComponent textComponent) {
+    textComponent.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusGained(final FocusEvent e) {
+        textComponent.setCaretPosition(textComponent.getText().length());
       }
     });
   }

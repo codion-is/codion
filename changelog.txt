@@ -497,3 +497,4 @@
   Added jcalendar library to server monitor
   Added server security policy entries for embedded databases
   Added run_server_localhost_derby_embedded.bat
+  UiUtil.moveCaretToEndOnFocusGained() added
