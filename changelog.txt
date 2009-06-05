@@ -498,3 +498,4 @@
   Added server security policy entries for embedded databases
   Added run_server_localhost_derby_embedded.bat
   UiUtil.moveCaretToEndOnFocusGained() added
+  Util.addAcceptSingleFileDragAndDrop(JTextComponent) added
