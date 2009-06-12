@@ -40,6 +40,10 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     evtSelectedItemChanged.fire();
   }
 
+  public int getIndexOfItem(final Object item) {
+    return indexOf(item);
+  }
+
   protected void initItems(final IItem[] items) {
     if (items != null) {
       for (final IItem item : items)

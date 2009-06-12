@@ -3,8 +3,7 @@
  */
 package org.jminor.common.model;
 
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.framework.FrameworkSettings;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -26,6 +25,7 @@ import java.net.URI;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -53,6 +53,11 @@ public class Util {
   public static final String LOGGING_LEVEL_TRACE = "trace";
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
+
+  private static final DateFormat DEFAULT_SHORT_DATE_FORMAT = new SimpleDateFormat((String)
+          FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT));
+  private static final DateFormat DEFAULT_LONG_DATE_FORMAT = new SimpleDateFormat((String)
+          FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_LONG_DATE_FORMAT));
 
   private static Level defaultLoggingLevel;
   private static final Preferences USER_PREFERENCES = Preferences.userRoot();
@@ -191,7 +196,10 @@ public class Util {
     return value;
   }
 
-  public static long getLong(final String text) {
+  public static Long getLong(final String text) {
+    if (text == null || text.length() == 0)
+      return null;
+
     long value;
     if ((text.length() > 0) && (!text.equals("-")))
       value = Long.parseLong(text);
@@ -237,33 +245,65 @@ public class Util {
     return ret.toString();
   }
 
-  public static boolean isDateOk(final String date) {
-    return isDateOk(date, false);
+  /**
+   * @param date the date to check for validity
+   * @return true if the date is valid, using the default short date format
+   * @see FrameworkSettings#DEFAULT_SHORT_DATE_FORMAT
+   */
+  public static boolean isDateValid(final String date) {
+    return isDateValid(date, false);
   }
 
-  public static boolean isDateOk(final String date, final boolean emptyStringOk) {
-    return isDateOk(date, emptyStringOk, false);
+  /**
+   * @param date the date to check for validity
+   * @param emptyStringOk if true then an empty string is regarded as a valid date
+   * @return true if the date is valid, using the default short date format
+   * @see FrameworkSettings#DEFAULT_SHORT_DATE_FORMAT
+   */
+  public static boolean isDateValid(final String date, final boolean emptyStringOk) {
+    return isDateValid(date, emptyStringOk, false);
   }
 
-  public static boolean isDateOk(final String date, final boolean emptyStringOk,
-                                 final boolean longFormat) {
+  /**
+   * @param date the date to check for validity
+   * @param emptyStringOk if true then an empty string is regarded as a valid date
+   * @param longFormat if true then the default long date format is used, otherwise
+   * the default short date format is used
+   * @return true if the date is valid, using the default date format
+   * @see FrameworkSettings#DEFAULT_SHORT_DATE_FORMAT
+   * @see FrameworkSettings#DEFAULT_LONG_DATE_FORMAT
+   */
+  public static boolean isDateValid(final String date, final boolean emptyStringOk,
+                                    final boolean longFormat) {
     if (longFormat)
-      return isDateOk(date, emptyStringOk, LongDateFormat.get());
+      return isDateValid(date, emptyStringOk, DEFAULT_LONG_DATE_FORMAT);
     else
-      return isDateOk(date, emptyStringOk, ShortDashDateFormat.get());
+      return isDateValid(date, emptyStringOk, DEFAULT_SHORT_DATE_FORMAT);
   }
 
-  public static boolean isDateOk(final String date, final boolean emptyStringOk,
-                                 final DateFormat format) {
-    return isDateOk(date, emptyStringOk, new DateFormat[] {format});
+  /**
+   * @param date the date to check for validity
+   * @param emptyStringOk if true then an empty string is regarded as a valid date
+   * @param format the date format to use for validation
+   * @return true if the date is valid, using the given date format
+   */
+  public static boolean isDateValid(final String date, final boolean emptyStringOk,
+                                    final DateFormat format) {
+    return isDateValid(date, emptyStringOk, new DateFormat[] {format});
   }
 
-  public static boolean isDateOk(final String date, final boolean emptyStringOk,
-                                 final DateFormat[] formats) {
+  /**
+   * @param date the date to check for validity
+   * @param emptyStringOk if true then an empty string is regarded as a valid date
+   * @param formats the date formats to use for validation
+   * @return true if the date is valid, using the given date format
+   */
+  public static boolean isDateValid(final String date, final boolean emptyStringOk,
+                                    final DateFormat[] formats) {
     if (date == null || date.length() == 0)
       return emptyStringOk;
 
-    for (DateFormat format : formats) {
+    for (final DateFormat format : formats) {
       format.setLenient(false);
       try {
         format.parse(date);

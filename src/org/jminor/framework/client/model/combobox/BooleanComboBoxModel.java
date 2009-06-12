@@ -23,9 +23,16 @@ public class BooleanComboBoxModel extends DefaultComboBoxModel {
     addElement(Type.Boolean.FALSE);
   }
 
+  public void setSelectedItem(final boolean item) {
+    setSelectedItem(item ? Type.Boolean.TRUE : Type.Boolean.FALSE);
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Object item) {
+    if (item != null && !(item instanceof Type.Boolean))
+      throw new IllegalArgumentException("BooleanComboBoxModel only accepts org.jminor.framework.model.Type.Boolean values");
+
     super.setSelectedItem(item == null ? Type.Boolean.NULL : item);
 
     evtSelectedItemChanged.fire();

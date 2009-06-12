@@ -499,3 +499,8 @@
   Added run_server_localhost_derby_embedded.bat
   UiUtil.moveCaretToEndOnFocusGained() added
   Util.addAcceptSingleFileDragAndDrop(JTextComponent) added
+  ItemComboBoxModel.getIndexOfItem() added
+  BooleanComboBoxModel.setSelectedItem(boolean) added
+  Util.DEFAULT_SHORT/LONG_DATE_FORMAT private fields added
+  Util.isDateOk() renamed to isDateValid()
+  TestCriteriaSet, TestDbUtil, TestItemComboBoxModel, TestEvent, TestUtil and TestBooleanComboBoxModel added

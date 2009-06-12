@@ -102,14 +102,15 @@ public class DbUtil {
 
   /**
    * Generates a sql select query with the given parameters
-   * @param table the table from which to select
-   * @param columns the columns to select
+   * @param table the name of the table from which to select
+   * @param columns the columns to select, example: "col1, col2"
    * @param whereCondition the where condition
-   * @param orderByColumns a string for the 'ORDER BY' clause ["col1, col2"] = " order by col1, col2"
+   * @param orderByColumns a string specifying the columns 'ORDER BY' clause,
+   * "col1, col2" as input results in the following order by clause "order by col1, col2"
    * @return the generated sql query
    */
-  public static String generateSelectSql(final String table, final String columns,
-                                         final String whereCondition, final String orderByColumns) {
+  public static String generateSelectSql(final String table, final String columns, final String whereCondition,
+                                         final String orderByColumns) {
     final StringBuffer sql = new StringBuffer("select ");
     sql.append(columns);
     sql.append(" from ");
