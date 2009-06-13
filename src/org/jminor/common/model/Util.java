@@ -3,39 +3,24 @@
  */
 package org.jminor.common.model;
 
-import org.jminor.framework.FrameworkSettings;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jminor.framework.FrameworkSettings;
 
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 /**
@@ -187,7 +172,7 @@ public class Util {
 
     double value;
     if ((text.length() > 0) && (!text.equals("-")))
-      value = new Double(text.replace(',', '.'));
+      value = Double.parseDouble(text.replace(',', '.'));
     else if (text.equals("-"))
       value = -1;
     else
