@@ -17,11 +17,7 @@ import org.jminor.framework.model.Type;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: Björn Darri
@@ -276,7 +272,7 @@ public class EntityTableSearchModel {
         else {
           final EntityLookupModel lookupModel = new EntityLookupModel(((Property.EntityProperty) property).referenceEntityID,
                   dbProvider, getSearchProperties(((Property.EntityProperty) property).referenceEntityID));
-          lookupModel.setAllowMultipleSelection(true);
+          lookupModel.setMultipleSelectionAllowed(true);
           searchModel = new PropertySearchModel(property, lookupModel);
         }
       }

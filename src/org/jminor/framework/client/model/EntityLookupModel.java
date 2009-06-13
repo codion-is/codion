@@ -37,11 +37,14 @@ public class EntityLookupModel {
    */
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 
-  private IEntityDbProvider dbProvider;
-  private ICriteria additionalLookupCriteria;
+  /**
+   * The IEntityDbProvider instance used by this EntityLookupModel
+   */
+  private final IEntityDbProvider dbProvider;
 
+  private ICriteria additionalLookupCriteria;
   private String searchString;
-  private boolean allowMultipleSelection;
+  private boolean multipleSelectionAllowed;
   private boolean caseSensitive;
   private boolean wildcardPrefix;
   private boolean wildcardPostfix;
@@ -65,7 +68,7 @@ public class EntityLookupModel {
   public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
                            final List<Property> lookupProperties) {
-    setDbProvider(dbProvider);
+    this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
     this.additionalLookupCriteria = additionalLookupCriteria;
@@ -74,16 +77,12 @@ public class EntityLookupModel {
     this.wildcardPostfix = wildcardPostfix;
   }
 
-  public void setDbProvider(final IEntityDbProvider dbProvider) {
-    this.dbProvider = dbProvider;
+  public boolean isMultipleSelectionAllowed() {
+    return multipleSelectionAllowed;
   }
 
-  public boolean isAllowMultipleSelection() {
-    return allowMultipleSelection;
-  }
-
-  public void setAllowMultipleSelection(final boolean allowMultipleSelection) {
-    this.allowMultipleSelection = allowMultipleSelection;
+  public void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed) {
+    this.multipleSelectionAllowed = multipleSelectionAllowed;
   }
 
   public void setSelectedEntity(final Entity entity) {
@@ -91,7 +90,7 @@ public class EntityLookupModel {
   }
 
   public void setSelectedEntities(final List<Entity> entities) {
-    if (entities != null && entities.size() > 1 && !isAllowMultipleSelection())
+    if (entities != null && entities.size() > 1 && !isMultipleSelectionAllowed())
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
 
     this.selectedEntities.clear();
@@ -178,7 +177,7 @@ public class EntityLookupModel {
 
   public EntityCriteria getEntityCriteria() {
     final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
-    final String[] lookupTexts = isAllowMultipleSelection() ? getSearchString().split(getMultiValueSeperator()) : new String[] {getSearchString()};
+    final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultiValueSeperator()) : new String[] {getSearchString()};
     for (final Property lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
         final String modifiedLookupText = (isWildcardPrefix() ? getWildcard() : "") + lookupText

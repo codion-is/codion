@@ -1,5 +1,6 @@
 package org.jminor.framework.client.model;
 
+import junit.framework.TestCase;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDbLocalProvider;
@@ -8,8 +9,6 @@ import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
-
-import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -25,7 +24,7 @@ public class TestEntityLookupModel extends TestCase {
   }
 
   public void testLookupModel() throws Exception {
-    lookupModel.setAllowMultipleSelection(true);
+    lookupModel.setMultipleSelectionAllowed(true);
     lookupModel.setSearchString("joh");
     List<Entity> result = lookupModel.performQuery();
     assertTrue("Result should not be empty", result.size() > 0);

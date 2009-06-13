@@ -504,3 +504,5 @@
   Util.DEFAULT_SHORT/LONG_DATE_FORMAT private fields added
   Util.isDateOk() renamed to isDateValid()
   TestCriteriaSet, TestDbUtil, TestItemComboBoxModel, TestEvent, TestUtil and TestBooleanComboBoxModel added
+  EntityLookupModel.dbProvider field finalized
+  EntityLookupModel.allowMultipleSelection field renamed to multipleSelectionAllowed
