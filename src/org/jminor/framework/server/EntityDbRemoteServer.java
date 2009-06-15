@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbLog;
@@ -14,6 +12,9 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.model.EntityRepository;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
@@ -27,7 +28,17 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The remote server class, responsible for handling remote db connection requests
@@ -65,9 +76,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
     if (host == null || host.length() == 0)
       throw new IllegalArgumentException("Db host must be specified!");
-    if (!Database.isEmbedded() && (sid == null || sid.length() == 0))
+    if (!Database.get().isEmbedded() && (sid == null || sid.length() == 0))
       throw new IllegalArgumentException("Db sid must be specified");
-    if (!Database.isEmbedded() && (port == null || port.length() == 0))
+    if (!Database.get().isEmbedded() && (port == null || port.length() == 0))
       throw new IllegalArgumentException("Db port must be specified");
 
     serverName = FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)
@@ -103,7 +114,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public String getDatabaseURL() {
-    return Database.getURL(null);
+    return Database.get().getURL(null);
   }
 
   /** {@inheritDoc} */

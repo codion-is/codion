@@ -50,8 +50,8 @@ public class TestEntityDbConnection extends TestCase {
     final Entity testEntity = TestEntity.getTestMasterEntity(idValue, intValue, doubleValue,
             stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue);
     //assert dml
-    final String shortDateStringSql = Database.getSQLDateString(shortDateValue, false);
-    final String longDateStringSql = Database.getSQLDateString(longDateValue, true);
+    final String shortDateStringSql = Database.get().getSQLDateString(shortDateValue, false);
+    final String longDateStringSql = Database.get().getSQLDateString(longDateValue, true);
     assertEquals(EntityDbConnection.getInsertSQL(testEntity),
             "insert into " + ModelTestDomain.T_TEST_DETAIL
                     + "(int, double, string, short_date, long_date, boolean, entity_id, id)"

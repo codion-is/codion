@@ -57,7 +57,7 @@ public class TestDbConnection extends TestCase {
       assertTrue(result.size() == 1);
       final List row = result.get(0);
       assertEquals(row.size(), 3);
-      assertEquals(Database.isOracle() ? BigDecimal.class : Integer.class, row.get(0).getClass());
+      assertEquals(Database.get() instanceof Database.OracleDatabase ? BigDecimal.class : Integer.class, row.get(0).getClass());
       assertEquals(String.class, row.get(1).getClass());
       assertEquals(String.class, row.get(2).getClass());
     }

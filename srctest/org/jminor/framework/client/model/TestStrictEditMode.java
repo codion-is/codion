@@ -27,7 +27,7 @@ public class TestStrictEditMode extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    if (Database.isMySQL() || Database.isDerbyEmbedded())
+    if (Database.get() instanceof Database.MySQLDatabase || Database.get() instanceof Database.DerbyEmbeddedDatabase)
       return;
     new EmpDept();
     model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
@@ -36,14 +36,14 @@ public class TestStrictEditMode extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    if (Database.isMySQL() || Database.isDerbyEmbedded())
+    if (Database.get() instanceof Database.MySQLDatabase || Database.get() instanceof Database.DerbyEmbeddedDatabase)
       return;
     dbProvider.getEntityDb().logout();
     model.getEntityDb().logout();
   }
 
   public void testStrictEditMode() throws Exception {
-    if (Database.isMySQL() || Database.isDerbyEmbedded())
+    if (Database.get() instanceof Database.MySQLDatabase || Database.get() instanceof Database.DerbyEmbeddedDatabase)
       return;//MySQL does not have the NOWAIT option, without which this test simply hangs
 
     model.refresh();

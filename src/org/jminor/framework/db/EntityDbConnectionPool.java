@@ -3,12 +3,25 @@
  */
 package org.jminor.framework.db;
 
-import org.apache.log4j.Logger;
-import org.jminor.common.db.*;
+import org.jminor.common.db.AuthenticationException;
+import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.ConnectionPoolState;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 
+import org.apache.log4j.Logger;
+
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple connection pool implementation, pools connections on username basis

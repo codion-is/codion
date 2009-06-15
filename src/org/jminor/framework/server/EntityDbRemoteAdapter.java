@@ -3,11 +3,13 @@
  */
 package org.jminor.framework.server;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import org.apache.log4j.Logger;
-import org.jminor.common.db.*;
+import org.jminor.common.db.AuthenticationException;
+import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.DbException;
+import org.jminor.common.db.DbLog;
+import org.jminor.common.db.LogEntry;
+import org.jminor.common.db.User;
 import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
@@ -20,6 +22,11 @@ import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.log4j.Logger;
+
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.lang.reflect.InvocationHandler;
@@ -30,7 +37,14 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * An adapter for handling logging and database connection pooling

@@ -148,7 +148,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
         if (idSource == IdSource.AUTO_INCREMENT)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
-                  queryInteger(Database.getAutoIncrementValueSQL(
+                  queryInteger(Database.get().getAutoIncrementValueSQL(
                           EntityRepository.get().getEntityIdSource(entityID))), false);
 
         ret.add(entity.getPrimaryKey());
@@ -314,7 +314,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update" + ((Database.isOracle() || Database.isPostgreSQL()) ? " nowait" : "");
+      sql += " for update" + ((Database.get() instanceof Database.OracleDatabase
+              || Database.get() instanceof Database.PostgreSQLDatabase) ? " nowait" : "");
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
       if (result.size() == 0)
@@ -711,7 +712,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         sql = EntityRepository.get().getEntityIdSource(entityID);
         break;
       case SEQUENCE:
-        sql = Database.getSequenceSQL(EntityRepository.get().getEntityIdSource(entityID));
+        sql = Database.get().getSequenceSQL(EntityRepository.get().getEntityIdSource(entityID));
         break;
       default:
         throw new IllegalArgumentException(idSource + " is not a valid auto-increment ID source constant");

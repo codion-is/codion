@@ -423,7 +423,7 @@
   Added IntelliJ project file
   Excluded *Stub.class files from jminor-server.jar
   Added user authentication (scott/tiger) to demo db
-  Database.getURL() and onDisconnect() now takes a connectionProperties parameter for derby user authentication
+  Database.get().getURL() and onDisconnect() now takes a connectionProperties parameter for derby user authentication
   FrameworkSettings.AUTHENTICATION_REQUIRED property added and used in EntityApplicationPanel.loginRequired()
   IdSource constant ID_ prefix removed
   Entity.equal() renamed to isEqual
@@ -442,7 +442,7 @@
   EntityPanel.compactPanel field renamed to compactLayout
   EntityPanel.initialize(), moved some code to initializeUI() and bindEvents()
   EntityTablePanel.initializeSummaryPanel() now uses the underlying JTable column model when initializing summary panels
-  Database.DERBY_LONG_DATE_FORMAT added
+  Database.get().DERBY_LONG_DATE_FORMAT added
   FrameworkUiUtil.IEntityExceptionHandler and DefaultEntityExceptionHandler added
   FrameworkUiUtil.exceptionHandler static field added plus getter/setter
   EntityApplicationModel.instantiateMainApplicationModel() added, for overriding
@@ -485,14 +485,14 @@
   TestEntityDbConnection, TestEntity, EntityDbUtil, null value properties not included in insert statements
   UiUtil.moveCaretToStartOnFocusGained added
   UiUtil, createFormattedField, text field moves cursor to start on focus gained
-  Database.DATABASE_HOST_PROPERTY used for Derby embedded instead of SID
+  Database.get().DATABASE_HOST_PROPERTY used for Derby embedded instead of SID
   DbConnection.execute() uses executeUpdate()
   EntityPanel.confirmUpdate() now uses the EntityPanel for dialogOwner instead of the editPanel
   EntityModel.updateDetailModelsAfterInsertOrUpdate split in two
   EntityModel now sets the appropriate property value in detail models as the newly inserted record
   Util.getFirst/LastDayOfYear/Quarter added
   H2 database support added
-  Database.isEmbedded() added
+  Database.get().isEmbedded() added
   Fixed some server side issues with sid being a required property
   Added jcalendar library to server monitor
   Added server security policy entries for embedded databases
@@ -508,3 +508,5 @@
   EntityLookupModel.allowMultipleSelection field renamed to multipleSelectionAllowed
   EntityProperty.isLookup field removed
   EntityRepository largeDataset property added for entities, replacing the above
+  Property.isUpdatable field renamed to updatable
+  Database is now inheritance based

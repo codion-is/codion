@@ -51,7 +51,7 @@ public class Property implements Serializable {
   /**
    * True if this property is updatable
    */
-  private final boolean isUpdatable;
+  private final boolean updatable;
 
   /**
    * A reference to a parent property, if one exists
@@ -147,7 +147,7 @@ public class Property implements Serializable {
     this.hidden = hidden;
     this.preferredColumnWidth = preferredColumnWidth;
     this.selectOnly = selectOnly;
-    this.isUpdatable = isUpdatable;
+    this.updatable = isUpdatable;
   }
 
   /**
@@ -169,7 +169,7 @@ public class Property implements Serializable {
    * @return true if this property is updatable
    */
   public boolean isUpdatable() {
-    return this.isUpdatable;
+    return this.updatable;
   }
 
   /**

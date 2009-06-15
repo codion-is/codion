@@ -251,34 +251,34 @@ public class TestPropertyCriteria extends TestCase {
     //string, =
     Date value = ShortDashDateFormat.get().parse("10-12-2004");
     testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
-    String requiredValue =  "colName = " + Database.getSQLDateString(value, false);
+    String requiredValue =  "colName = " + Database.get().getSQLDateString(value, false);
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, <>
     testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
-    requiredValue =  "colName <> " + Database.getSQLDateString(value, false);
+    requiredValue =  "colName <> " + Database.get().getSQLDateString(value, false);
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, between
     Date value2 = ShortDashDateFormat.get().parse("10-09-2001");
     testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2);
-    requiredValue =  "(colName >= " + Database.getSQLDateString(value, false) + " and " +
-            "colName <= " + Database.getSQLDateString(value2, false) + ")";
+    requiredValue =  "(colName >= " + Database.get().getSQLDateString(value, false) + " and " +
+            "colName <= " + Database.get().getSQLDateString(value2, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, outside
     testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2);
-    requiredValue =  "(colName <= " + Database.getSQLDateString(value, false) + " or " +
-            "colName >= " + Database.getSQLDateString(value2, false) + ")";
+    requiredValue =  "(colName <= " + Database.get().getSQLDateString(value, false) + " or " +
+            "colName >= " + Database.get().getSQLDateString(value2, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, in
     final Date value3 = ShortDashDateFormat.get().parse("12-10-2001");
     testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3);
     requiredValue = "colName in ("
-            + Database.getSQLDateString(value, false) + ", "
-            + Database.getSQLDateString(value2, false) + ", "
-            + Database.getSQLDateString(value3, false) + ")";
+            + Database.get().getSQLDateString(value, false) + ", "
+            + Database.get().getSQLDateString(value2, false) + ", "
+            + Database.get().getSQLDateString(value3, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
   }
 

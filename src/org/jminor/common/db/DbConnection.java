@@ -92,7 +92,8 @@ public class DbConnection {
    */
   public boolean isConnectionValid() {
     try {
-      return Database.isOracle() || Database.isPostgreSQL() ? checkConnection() : connection.isValid(0);
+      return Database.get() instanceof Database.OracleDatabase ||
+              Database.get() instanceof Database.PostgreSQLDatabase ? checkConnection() : connection.isValid(0);
     }
     catch (SQLException e) {
       log.error(this, e);
@@ -119,7 +120,7 @@ public class DbConnection {
     catch (SQLException ex) {
       log.error(this, ex);
     }
-    Database.onDisconnect(connectionProperties);
+    Database.get().onDisconnect(connectionProperties);
     connection = null;
     checkConnectionStatement = null;
   }
@@ -465,9 +466,9 @@ public class DbConnection {
     }
     catch (SQLException e) {/**/}
 
-    Database.loadDriver();
+    Database.get().loadDriver();
     try {
-      connection = DriverManager.getConnection(Database.getURL(connectionProperties), connectionProperties);
+      connection = DriverManager.getConnection(Database.get().getURL(connectionProperties), connectionProperties);
       connection.setAutoCommit(false);
       checkConnectionStatement = connection.createStatement();
       connected = true;

@@ -45,7 +45,7 @@ public class EntityDbUtil {
       case SHORT_DATE :
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + property + ", got: " + value.getClass());
-        return Database.getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);
+        return Database.get().getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);
       case CHAR :
         return "'" + value + "'";
       case STRING :

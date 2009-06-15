@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.common.db;
 
 import org.jminor.common.model.formats.LongDateFormat;
@@ -13,14 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-/**
- * A class encapsulating database specific code, such as retrieval of auto increment values,
- * string to date conversions and driver class loading.
- * User: Björn Darri
- * Date: 2.2.2008
- * Time: 12:53:14
- */
-public class Database {
+public abstract class Database {
   /**
    * Oracle database type
    * @see #DATABASE_TYPE_PROPERTY
@@ -68,42 +58,6 @@ public class Database {
    * @see #DATABASE_TYPE_PROPERTY
    */
   public static final String DATABASE_TYPE_EMBEDDED_H2 = "h2_embedded";
-
-  /**
-   * The driver class name use for Oracle connections
-   */
-  public static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
-
-  /**
-   * The driver class name used for MySQL connections
-   */
-  public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-
-  /**
-   * The driver class name used for PostgreSQL connections
-   */
-  public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
-
-  /**
-   * The driver class name used for SQL Server connections
-   */
-  public static final String SQL_SERVER_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-
-  /**
-   * The driver class name used for connections to a networked Derby database (as opposed to embedded)
-   */
-  public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
-
-  /**
-   * The driver class name used for connections to a embedded Derby database
-   */
-  public static final String DERBY_EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-
-  /**
-   * The driver class name used for connections to a H2 database
-   */
-  public static final String H2_DRIVER = "org.h2.Driver";
-
   /**
    * Specifies the database type
    * @see Database#DATABASE_TYPE_MYSQL
@@ -116,6 +70,44 @@ public class Database {
    * @see Database#DATABASE_TYPE_EMBEDDED_H2
    */
   public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
+
+  /**
+   * Represents the supported database types
+   */
+  public static enum DbType {
+    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED, H2, H2_EMBEDDED
+  }
+
+  private static Database instance;
+
+  public static Database get() {
+    if (instance == null) {
+      final String dbType = System.getProperty(DATABASE_TYPE_PROPERTY);
+      if (dbType == null)
+        throw new IllegalArgumentException("Required system property missing: " + DATABASE_TYPE_PROPERTY);
+
+      if (dbType.equals(DATABASE_TYPE_POSTGRESQL))
+        instance = new PostgreSQLDatabase();
+      else if (dbType.equals(DATABASE_TYPE_MYSQL))
+        instance = new MySQLDatabase();
+      else if (dbType.equals(DATABASE_TYPE_ORACLE))
+        instance = new OracleDatabase();
+      else if (dbType.equals(DATABASE_TYPE_SQL_SERVER))
+        instance = new SQLServerDatabase();
+      else if (dbType.equals(DATABASE_TYPE_DERBY))
+        instance = new DerbyDatabase();
+      else if (dbType.equals(DATABASE_TYPE_EMBEDDED_DERBY))
+        instance = new DerbyEmbeddedDatabase();
+      else if (dbType.equals(DATABASE_TYPE_H2))
+        instance = new H2Database();
+      else if (dbType.equals(DATABASE_TYPE_EMBEDDED_H2))
+        instance = new H2EmbeddedDatabase();
+      else
+        throw new IllegalArgumentException("Unknown database type: " + dbType);
+    }
+
+    return instance;
+  }
 
   /**
    * Specifies the machine hosting the database, in the case of embedded Derby databases
@@ -134,240 +126,372 @@ public class Database {
   public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
 
   /**
-   * Represents the supported database types
-   */
-  public static enum DbType {
-    ORACLE, MYSQL, POSTGRESQL, SQLSERVER, DERBY, DERBY_EMBEDDED, H2, H2_EMBEDDED
-  }
-
-  /**
-   * The date format used for Derby
-   */
-  private static DateFormat DERBY_SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-  /**
-   * The date format for long dates (timestamps) used by Derby
-   */
-  private static DateFormat DERBY_LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-  /**
-   * The active database type
-   */
-  private static final DbType DB_TYPE = getType();
-
-  /**
-   * @return true if the active database is PostgreSQL
-   */
-  public static boolean isPostgreSQL() {
-    return DB_TYPE == DbType.POSTGRESQL;
-  }
-
-  /**
-   * @return true if the active database is MySQL
-   */
-  public static boolean isMySQL() {
-    return DB_TYPE == DbType.MYSQL;
-  }
-
-  /**
-   * @return true if the active database is Oracle
-   */
-  public static boolean isOracle() {
-    return DB_TYPE == DbType.ORACLE;
-  }
-
-  /**
-   * @return true if the active database is SQLServer
-   */
-  public static boolean isSQLServer() {
-    return DB_TYPE == DbType.SQLSERVER;
-  }
-
-  /**
-   * @return true if the active database is Derby
-   */
-  public static boolean isDerby() {
-    return DB_TYPE == DbType.DERBY;
-  }
-
-  /**
-   * @return true if the active database is embedded Derby
-   */
-  public static boolean isDerbyEmbedded() {
-    return DB_TYPE == DbType.DERBY_EMBEDDED;
-  }
-
-  /**
-   * @return true if the active database is H2
-   */
-  public static boolean isH2() {
-    return DB_TYPE == DbType.H2;
-  }
-
-  /**
-   * @return true if the active database is embedded H2
-   */
-  public static boolean isH2Embedded() {
-    return DB_TYPE == DbType.H2_EMBEDDED;
-  }
-
-  /**
-   * @return true if the active database is an embedded one
-   */
-  public static boolean isEmbedded() {
-    return isH2Embedded() || isDerbyEmbedded();
-  }
-
-  /**
-   * Loads the driver for the active database
-   * @throws ClassNotFoundException in case the driver class was not found in the class path
-   */
-  public static void loadDriver() throws ClassNotFoundException {
-    Class.forName(getDriverName());
-  }
-
-  /**
    * @param connectionProperties the connection properties, used primarily to provide
    * a derby database with user info for authentication purposes
    * @return the database url of the active database, based on system properties
    */
-  public static String getURL(final Properties connectionProperties) {
-    final String host = System.getProperty(DATABASE_HOST_PROPERTY);
-    if (host == null || host.length() == 0)
-      throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + DB_TYPE);
-    final String port = System.getProperty(DATABASE_PORT_PROPERTY);
-    if (!isEmbedded())
-      if (port == null || port.length() == 0)
-        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + DB_TYPE);
-    final String sid = System.getProperty(DATABASE_SID_PROPERTY);
-    if (!isEmbedded())
-      if (sid == null || sid.length() == 0)
-        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + DB_TYPE);
-
-    switch (DB_TYPE) {
-      case MYSQL:
-        return "jdbc:mysql://" + host + ":" + port + "/" + sid;
-      case POSTGRESQL:
-        return "jdbc:postgresql://" + host + ":" + port + "/" + sid;
-      case ORACLE:
-        return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
-      case SQLSERVER:
-        return "jdbc:sqlserver://" + host + ":" + port + ";databaseName=" + sid;
-      case DERBY:
-        return "jdbc:derby://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
-      case DERBY_EMBEDDED:
-        return "jdbc:derby:" + host + getUserInfoString(connectionProperties);
-      case H2:
-        return "jdbc:h2://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
-      case H2_EMBEDDED:
-        return "jdbc:h2:" + host + getUserInfoString(connectionProperties);
-      default:
-        throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
-    }
-  }
+  public abstract String getURL(final Properties connectionProperties);
 
   /**
-   * Returns a query string for retrieving the last automatically generated id from the given id source,
-   * in Oracle/PostgreSQL this means the value from a defined sequence, in MySQL the value fetched from last_inserted_id(),
-   * in SQL server the last generated IDENTITY value and in Derby the result from IDENTITY_VAL_LOCAL()
+   * Returns a query string for retrieving the last automatically generated id from the given id source
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table
    * @return a query string for retrieving the last auto-increment value from idSource
    */
-  public static String getAutoIncrementValueSQL(final String idSource) {
-    switch (DB_TYPE) {
-      case MYSQL:
-        return "select last_insert_id() from dual";
-      case POSTGRESQL:
-        return "select currval(" + idSource + ")";
-      case ORACLE:
-        return "select " + idSource + ".currval from dual";
-      case SQLSERVER:
-        return "select @@IDENTITY";
-      case DERBY:
-      case DERBY_EMBEDDED:
-        return "select IDENTITY_VAL_LOCAL() from " + idSource;
-      case H2:
-      case H2_EMBEDDED:
-        return "CALL IDENTITY()";
-      default :
-        throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
-    }
+  public abstract String getAutoIncrementValueSQL(final String idSource);
+
+  /**
+   * @param value the date value
+   * @param longDate if true then a long date including time is expected
+   * @return a sql string for inserting the given date
+   */
+  public abstract String getSQLDateString(final Date value, final boolean longDate);
+
+  /**
+   * @param sequenceName the name of the sequence
+   * @return a query for selecting the next value from the given sequence
+   */
+  public abstract String getSequenceSQL(final String sequenceName);
+
+  /**
+   * @return the database type
+   */
+  public abstract DbType getType();
+
+  /**
+   * @return the JDBC driver name
+   */
+  public abstract String getDriverName();
+
+  /**
+   * @return true if the database is an embedded one
+   */
+  public boolean isEmbedded() {
+    return false;
   }
 
-  public static String getSQLDateString(final Date value, final boolean longDate) {
-    switch (DB_TYPE) {
-      case MYSQL:
-        return longDate ?
-                "str_to_date('" + LongDateFormat.get().format(value) + "', '%d-%m-%Y %H:%i')" :
-                "str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')";
-      case POSTGRESQL:
-        return longDate ?
-                "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
-                "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
-      case ORACLE:
-        return longDate ?
-                "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
-                "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
-      case SQLSERVER:
-        return longDate ?
-                "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
-                "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
-      case DERBY:
-      case DERBY_EMBEDDED:
-        return longDate ?
-                "DATE('" + DERBY_LONG_DATE_FORMAT.format(value) + "')" :
-                "DATE('" + DERBY_SHORT_DATE_FORMAT.format(value) + "')";
-      case H2:
-      case H2_EMBEDDED:
-        return longDate ?
-                "PARSEDATETIME('" + DERBY_LONG_DATE_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss')" :
-                "PARSEDATETIME('" + DERBY_SHORT_DATE_FORMAT.format(value) + "','yyyy-MM-dd')";
-      default:
-        throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
-    }
+  /**
+   * @param connectionProperties the database connection properties
+   * @return a string containing the user info found in <code>connectionProperties</code>
+   * to append to the database URL if that applies
+   */
+  public String getUserInfoString(final Properties connectionProperties) {
+    return "";
   }
 
-  public static String getSequenceSQL(final String sequenceName) {
-    switch (DB_TYPE) {
-      case POSTGRESQL:
-        return "select nextval(" + sequenceName + ")";
-      case ORACLE:
-        return "select " + sequenceName + ".nextval from dual";
-      case H2:
-      case H2_EMBEDDED:
-        return "select next value for " + sequenceName;
-      default:
-        throw new IllegalArgumentException("Sequence support is not implemented for database type: " + DB_TYPE);
-    }
+  /**
+   * This method is called when <code>disconnect</code> is called on the database connection
+   * @param connectionProperties the database connection properties
+   */
+  public void onDisconnect(final Properties connectionProperties) {}
+
+  /**
+   * Loads the driver
+   * @throws ClassNotFoundException in case the driver class in not found
+   */
+  public void loadDriver() throws ClassNotFoundException {
+    Class.forName(getDriverName());
   }
 
-  public static DbType getType() {
-    final String dbType = System.getProperty(DATABASE_TYPE_PROPERTY);
-    if (dbType == null)
-      throw new IllegalArgumentException("Required system property missing: " + DATABASE_TYPE_PROPERTY);
+  public static class OracleDatabase extends Database {
 
-    if (dbType.equals(DATABASE_TYPE_POSTGRESQL))
-      return DbType.POSTGRESQL;
-    else if (dbType.equals(DATABASE_TYPE_MYSQL))
-      return DbType.MYSQL;
-    else if (dbType.equals(DATABASE_TYPE_ORACLE))
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "select " + idSource + ".currval from dual";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      return "select " + sequenceName + ".nextval from dual";
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
+              "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
+    }
+
+    @Override
+    public DbType getType() {
       return DbType.ORACLE;
-    else if (dbType.equals(DATABASE_TYPE_SQL_SERVER))
-      return DbType.SQLSERVER;
-    else if (dbType.equals(DATABASE_TYPE_DERBY))
-      return DbType.DERBY;
-    else if (dbType.equals(DATABASE_TYPE_EMBEDDED_DERBY))
-      return DbType.DERBY_EMBEDDED;
-    else if (dbType.equals(DATABASE_TYPE_H2))
-      return DbType.H2;
-    else if (dbType.equals(DATABASE_TYPE_EMBEDDED_H2))
-      return DbType.H2_EMBEDDED;
+    }
 
-    throw new IllegalArgumentException("Unknown database type: " + dbType);
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
+    }
+
+    @Override
+    public String getDriverName() {
+      return "oracle.jdbc.driver.OracleDriver";
+    }
   }
 
-  public static void onDisconnect(final Properties connectionProperties) {
-    if (isDerbyEmbedded()) {
+  public static class MySQLDatabase extends Database {
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "select last_insert_id() from dual";
+    }
+
+    @Override
+    public String getDriverName() {
+      return "com.mysql.jdbc.Driver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      throw new IllegalArgumentException("Sequence support is not implemented for database type: " + getType());
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "str_to_date('" + LongDateFormat.get().format(value) + "', '%d-%m-%Y %H:%i')" :
+              "str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.MYSQL;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:mysql://" + host + ":" + port + "/" + sid;
+    }
+  }
+
+  public static class PostgreSQLDatabase extends Database {
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "select currval(" + idSource + ")";
+    }
+
+    @Override
+    public String getDriverName() {
+      return "org.postgresql.Driver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      return "select nextval(" + sequenceName + ")";
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
+              "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.POSTGRESQL;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:postgresql://" + host + ":" + port + "/" + sid;
+    }
+  }
+
+  public static class SQLServerDatabase extends Database {
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "select @@IDENTITY";
+    }
+
+    @Override
+    public String getDriverName() {
+      return "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      throw new IllegalArgumentException("Sequence support is not implemented for database type: " + getType());
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
+              "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.SQLSERVER;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:sqlserver://" + host + ":" + port + ";databaseName=" + sid;
+    }
+  }
+
+  public static class DerbyDatabase extends Database {
+    /**
+     * The date format used for Derby
+     */
+    private DateFormat DERBY_SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * The date format for long dates (timestamps) used by Derby
+     */
+    private DateFormat DERBY_LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "select IDENTITY_VAL_LOCAL() from " + idSource;
+    }
+
+    @Override
+    public String getDriverName() {
+      return "org.apache.derby.jdbc.ClientDriver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      throw new IllegalArgumentException("Sequence support is not implemented for database type: " + getType());
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "DATE('" + DERBY_LONG_DATE_FORMAT.format(value) + "')" :
+              "DATE('" + DERBY_SHORT_DATE_FORMAT.format(value) + "')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.DERBY;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:derby://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
+    }
+
+    @Override
+    public String getUserInfoString(final Properties connectionProperties) {
+      if (connectionProperties != null) {
+        final String username = (String) connectionProperties.get("user");
+        final String password = (String) connectionProperties.get("password");
+        if (username != null && username.length() > 0 && password != null && password.length() > 0)
+          return ";" + "user=" + username + ";" + "password=" + password;
+      }
+
+      return "";
+    }
+  }
+
+  public static class DerbyEmbeddedDatabase extends Database {
+    /**
+     * The date format used for Derby
+     */
+    private DateFormat DERBY_SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * The date format for long dates (timestamps) used by Derby
+     */
+    private DateFormat DERBY_LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "select IDENTITY_VAL_LOCAL() from " + idSource;
+    }
+
+    @Override
+    public String getDriverName() {
+      return "org.apache.derby.jdbc.EmbeddedDriver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      throw new IllegalArgumentException("Sequence support is not implemented for database type: " + getType());
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "DATE('" + DERBY_LONG_DATE_FORMAT.format(value) + "')" :
+              "DATE('" + DERBY_SHORT_DATE_FORMAT.format(value) + "')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.DERBY_EMBEDDED;
+    }
+
+    @Override
+    public boolean isEmbedded() {
+      return true;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:derby:" + host + getUserInfoString(connectionProperties);
+    }
+
+    @Override
+    public void onDisconnect(final Properties connectionProperties) {
       try {
         DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true"
                 + getUserInfoString(connectionProperties));
@@ -379,38 +503,138 @@ public class Database {
           e.printStackTrace();
       }
     }
-  }
 
-  private static String getDriverName() {
-    switch (DB_TYPE) {
-      case MYSQL:
-        return MYSQL_DRIVER;
-      case POSTGRESQL:
-        return POSTGRESQL_DRIVER;
-      case ORACLE:
-        return ORACLE_DRIVER;
-      case SQLSERVER:
-        return SQL_SERVER_DRIVER;
-      case DERBY:
-        return DERBY_DRIVER;
-      case DERBY_EMBEDDED:
-        return DERBY_EMBEDDED_DRIVER;
-      case H2:
-      case H2_EMBEDDED:
-        return H2_DRIVER;
-      default:
-        throw new IllegalArgumentException("Database type not supported: " + DB_TYPE);
+    @Override
+    public String getUserInfoString(final Properties connectionProperties) {
+      if (connectionProperties != null) {
+        final String username = (String) connectionProperties.get("user");
+        final String password = (String) connectionProperties.get("password");
+        if (username != null && username.length() > 0 && password != null && password.length() > 0)
+          return ";" + "user=" + username + ";" + "password=" + password;
+      }
+
+      return "";
     }
   }
 
-  private static String getUserInfoString(final Properties connectionProperties) {
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get("user");
-      final String password = (String) connectionProperties.get("password");
-      if (username != null && username.length() > 0 && password != null && password.length() > 0)
-        return ";" + "user=" + username + ";" + "password=" + password;
+  public static class H2Database extends Database {
+
+    /**
+     * The date format used
+     */
+    private DateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * The date format for long dates (timestamps)
+     */
+    private DateFormat LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "CALL IDENTITY()";
     }
 
-    return "";
+    @Override
+    public String getDriverName() {
+      return "org.h2.Driver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      return "select next value for " + sequenceName;
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "PARSEDATETIME('" + LONG_DATE_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss')" :
+              "PARSEDATETIME('" + SHORT_DATE_FORMAT.format(value) + "','yyyy-MM-dd')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.H2;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:h2://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
+    }
+
+    @Override
+    public String getUserInfoString(final Properties connectionProperties) {
+      if (connectionProperties != null) {
+        final String username = (String) connectionProperties.get("user");
+        final String password = (String) connectionProperties.get("password");
+        if (username != null && username.length() > 0 && password != null && password.length() > 0)
+          return ";" + "user=" + username + ";" + "password=" + password;
+      }
+
+      return "";
+    }
+  }
+
+  public static class H2EmbeddedDatabase extends Database {
+
+    /**
+     * The date format used
+     */
+    private DateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * The date format for long dates (timestamps)
+     */
+    private DateFormat LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return "CALL IDENTITY()";
+    }
+
+    @Override
+    public String getDriverName() {
+      return "org.h2.Driver";
+    }
+
+    @Override
+    public String getSequenceSQL(final String sequenceName) {
+      return "select next value for " + sequenceName;
+    }
+
+    @Override
+    public String getSQLDateString(final Date value, final boolean longDate) {
+      return longDate ?
+              "PARSEDATETIME('" + LONG_DATE_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss')" :
+              "PARSEDATETIME('" + SHORT_DATE_FORMAT.format(value) + "','yyyy-MM-dd')";
+    }
+
+    @Override
+    public DbType getType() {
+      return DbType.H2_EMBEDDED;
+    }
+
+    @Override
+    public boolean isEmbedded() {
+      return true;
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getType());
+
+      return "jdbc:h2:" + host + getUserInfoString(connectionProperties);
+    }
   }
 }

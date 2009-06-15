@@ -3,13 +3,14 @@
  */
 package org.jminor.framework.db;
 
-import org.apache.log4j.Logger;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
+
+import org.apache.log4j.Logger;
 
 /**
  * A class responsible for managing local db connections
