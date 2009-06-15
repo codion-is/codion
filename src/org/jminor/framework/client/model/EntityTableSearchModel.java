@@ -17,7 +17,11 @@ import org.jminor.framework.model.Type;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: Björn Darri
@@ -264,16 +268,16 @@ public class EntityTableSearchModel {
     for (final Property property : properties) {
       PropertySearchModel searchModel;
       if (property instanceof Property.EntityProperty) {
-        if (((Property.EntityProperty) property).isLookup()) {
-          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.EntityProperty) property).referenceEntityID,
-                  dbProvider, false, "", true));
-          searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
-        }
-        else {
+        if (EntityRepository.get().isLargeDataset(((Property.EntityProperty) property).referenceEntityID)) {
           final EntityLookupModel lookupModel = new EntityLookupModel(((Property.EntityProperty) property).referenceEntityID,
                   dbProvider, getSearchProperties(((Property.EntityProperty) property).referenceEntityID));
           lookupModel.setMultipleSelectionAllowed(true);
           searchModel = new PropertySearchModel(property, lookupModel);
+        }
+        else {
+          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.EntityProperty) property).referenceEntityID,
+                  dbProvider, false, "", true));
+          searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
         }
       }
       else {

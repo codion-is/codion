@@ -320,21 +320,17 @@ public class Property implements Serializable {
      * the ID of the referenced entity
      */
     public final String referenceEntityID;
+
     /**
      * the actual reference properties
      */
     public final List<Property> referenceProperties;
+
     /**
      * if true the referenced entity is automatically loaded with the parent entity,
      * otherwise a shallow entity instance with only the primary key is loaded
      */
     public final boolean isWeakReference;
-    /**
-     * this is a hint specifying whether this reference entity is suitible for simple lookup operations,
-     * such as in combo boxes. Entities based on large data sets, which are not suitible for loading into
-     * lists or combo boxes should have this attribute set to false
-     */
-    public boolean lookup = true;
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
@@ -392,23 +388,6 @@ public class Property implements Serializable {
      */
     public boolean isMultiColumnReference() {
       return this.referenceProperties.size() > 1;
-    }
-
-    /**
-     * @return true if this reference entity is suited for simple lookups, as in, if the underlying dataset
-     * is sufficiently small for loading into lists or combo boxes
-     */
-    public boolean isLookup() {
-      return lookup;
-    }
-
-    /**
-     * @param lookup specifies whether the underlying dataset is sufficiently small for usage in lists or combo boxes
-     * @return this EntityProperty instance
-     */
-    public EntityProperty setLookup(final boolean lookup) {
-      this.lookup = lookup;
-      return this;
     }
   }
 

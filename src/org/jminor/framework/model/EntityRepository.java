@@ -53,6 +53,11 @@ public class EntityRepository implements Serializable {
    */
   private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
 
+  /**
+   * Maps the largeDataset value to each entities entityID
+   */
+  private final Map<String, Boolean> largeDataset = new HashMap<String, Boolean>();
+
   private final Map<String, Map<String, String>> propertyDescriptions = new HashMap<String, Map<String, String>>();
   private final Map<String, String[]> entitySearchPropertyIDs = new HashMap<String, String[]>();
 
@@ -80,6 +85,7 @@ public class EntityRepository implements Serializable {
 
   public void add(final EntityRepository repository) {
     initContainers();
+    instance.largeDataset.putAll(repository.largeDataset);
     instance.readOnly.putAll(repository.readOnly);
     instance.properties.putAll(repository.properties);
     instance.visibleProperties.putAll(repository.visibleProperties);
@@ -200,6 +206,19 @@ public class EntityRepository implements Serializable {
     final Boolean ret = readOnly.get(entityID);
     if (ret == null)
       throw new RuntimeException("Read only value not defined for entity: " + entityID);
+
+    return ret;
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @return true if the entity identified by <code>entityID</code> is based on a large dataset
+   * @throws RuntimeException if the large dataset value is undefined
+   */
+  public boolean isLargeDataset(final String entityID) {
+    final Boolean ret = largeDataset.get(entityID);
+    if (ret == null)
+      throw new RuntimeException("Large dataset value not defined for entity: " + entityID);
 
     return ret;
   }
@@ -584,7 +603,29 @@ public class EntityRepository implements Serializable {
                          final String dbSelectTableName, final boolean isReadOnly,
                          final Property... initialPropertyDefinitions) {
     initialize(entityID, null, idSource, entityIdSource, orderByColumns, dbSelectTableName,
-            isReadOnly, initialPropertyDefinitions);
+            isReadOnly, false, initialPropertyDefinitions);
+  }
+
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
+   * in case it differs from the table used to insert/update/delete entities
+   * @param isReadOnly true if entities of this type should be regarded as read-only
+   * @param largeDataset true if the dataset this entity is based on will become large, mostly used
+   * to judge if the dataset can be shown in a combo box or list component
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
+  public void initialize(final String entityID, final IdSource idSource,
+                         final String entityIdSource, final String orderByColumns,
+                         final String dbSelectTableName, final boolean isReadOnly,
+                         final boolean largeDataset, final Property... initialPropertyDefinitions) {
+    initialize(entityID, null, idSource, entityIdSource, orderByColumns, dbSelectTableName,
+            isReadOnly, largeDataset, initialPropertyDefinitions);
   }
 
   /**
@@ -604,9 +645,33 @@ public class EntityRepository implements Serializable {
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
                          final Property... initialPropertyDefinitions) {
+    initialize(entityID, dbTableName, idSource, entityIdSource, orderByColumns, dbSelectTableName,
+            isReadOnly, false, initialPropertyDefinitions);
+  }
+
+  /**
+   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * specified by that same string
+   * @param entityID the full table name of the entity being specified, serves as the entity ID
+   * @param dbTableName the name of the table used to insert/update/delete entities of this type
+   * @param idSource specifies the primary key value source for the table this entity is based on
+   * @param entityIdSource the name of the primary key value source, such as a sequence name
+   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
+   * in case it differs from the table used to insert/update/delete entities
+   * @param isReadOnly true if entities of this type should be regarded as read-only
+   * @param largeDataset true if the dataset this entity is based on will become large, mostly used
+   * to judge if the dataset can be shown in a combo box or list component
+   * @param initialPropertyDefinitions the properties comprising this entity
+   */
+  public void initialize(final String entityID, final String dbTableName, final IdSource idSource,
+                         final String entityIdSource, final String orderByColumns,
+                         final String dbSelectTableName, final boolean isReadOnly,
+                         final boolean largeDataset, final Property... initialPropertyDefinitions) {
     if (this.readOnly.containsKey(entityID))
       throw new IllegalArgumentException("Entity with ID '" + entityID + "' has already been initialized!");
     this.readOnly.put(entityID, isReadOnly);
+    this.largeDataset.put(entityID, largeDataset);
     this.entityTableNames.put(entityID, dbTableName == null ? entityID : dbTableName.toLowerCase());
     this.entitySelectTableNames.put(entityID,
             dbSelectTableName == null ? this.entityTableNames.get(entityID) : dbSelectTableName.toLowerCase());

@@ -207,7 +207,7 @@ public class EntityPropertyEditor extends JPanel {
 
   private JComponent createEntityField(final EntityModel entityModel, final Object currentValue) throws UserException {
     final Property.EntityProperty entityProperty = (Property.EntityProperty) property;
-    if (entityProperty.isLookup()) {
+    if (!EntityRepository.get().isLargeDataset(entityProperty.referenceEntityID)) {
       final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(entityProperty);
       model.refresh();
       if (currentValue != null)

@@ -506,3 +506,5 @@
   TestCriteriaSet, TestDbUtil, TestItemComboBoxModel, TestEvent, TestUtil and TestBooleanComboBoxModel added
   EntityLookupModel.dbProvider field finalized
   EntityLookupModel.allowMultipleSelection field renamed to multipleSelectionAllowed
+  EntityProperty.isLookup field removed
+  EntityRepository largeDataset property added for entities, replacing the above
