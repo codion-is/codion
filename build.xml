@@ -220,7 +220,7 @@
     <copy file="${dist}/current/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
   </target>
 
-  <target name="deploy_server"
+  <target name="deploy_server" depends="create_derby_db, create_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}" />
     <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib" />
@@ -233,6 +233,12 @@
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
     <copy todir="${deploy.server.path}" >
       <fileset dir="${basedir}/resources/server/" />
+    </copy>
+    <copy todir="${deploy.server.path}/h2db" >
+      <fileset dir="${db.h2.dir}" />
+    </copy>
+    <copy todir="${deploy.server.path}/derbydb" >
+      <fileset dir="${db.derby.dir}" />
     </copy>
   </target>
 
@@ -255,7 +261,7 @@
     </copy>
   </target>
 
-  <target name="deploy_demos"
+  <target name="deploy_demos" depends="create_derby_db, create_h2_db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
     <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
@@ -269,14 +275,20 @@
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib" />
+    <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}" />
+    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
     <copy todir="${deploy.demos.path}">
       <fileset dir="${basedir}/resources/demos/empdept/" />
       <fileset dir="${basedir}/resources/demos/petstore/" />
       <fileset dir="${basedir}/resources/demos/schemabrowser/" />
     </copy>
-    <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
+    <copy todir="${deploy.demos.path}/h2db" >
+      <fileset dir="${db.h2.dir}" />
+    </copy>
+    <copy todir="${deploy.demos.path}/derbydb" >
+      <fileset dir="${db.derby.dir}" />
+    </copy>
   </target>
 
   <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_demos"
@@ -317,7 +329,7 @@
     <delete file="${basedir}/${ant.project.name}-${version}-project.zip"/>
     <delete file="${basedir}/derby.log"/>
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
-      <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**,db/**"/>
+      <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
   </target>
 
