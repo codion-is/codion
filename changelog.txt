@@ -510,3 +510,4 @@
   EntityRepository largeDataset property added for entities, replacing the above
   Property.isUpdatable field renamed to updatable
   Database is now inheritance based
+  IDatabase created in org.jminor.common.db.dbms as well as implementations for supported databases

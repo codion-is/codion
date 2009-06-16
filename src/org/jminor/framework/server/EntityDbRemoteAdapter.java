@@ -5,11 +5,11 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
-import org.jminor.common.db.Database;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
@@ -114,9 +114,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     if (connectionPools.containsKey(client.getUser()))
       connectionPools.get(client.getUser()).setPassword(client.getUser().getPassword());
     this.client = client;
-    final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
     if (sid != null && sid.length() != 0)
-      this.client.getUser().setProperty(Database.DATABASE_SID_PROPERTY, sid);
+      this.client.getUser().setProperty(IDatabase.DATABASE_SID_PROPERTY, sid);
     this.loggingEntityDbProxy = initializeProxy();
     this.loggingEnabled = loggingEnabled;
   }

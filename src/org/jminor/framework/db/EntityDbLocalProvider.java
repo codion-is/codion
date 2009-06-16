@@ -4,8 +4,8 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.AuthenticationException;
-import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
@@ -36,9 +36,9 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
 
   public EntityDbLocalProvider(final User user) {
     this.user = user;
-    final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
     if (sid != null)
-      user.setProperty(Database.DATABASE_SID_PROPERTY, sid);
+      user.setProperty(IDatabase.DATABASE_SID_PROPERTY, sid);
   }
 
   public final IEntityDb getEntityDb() throws UserException {

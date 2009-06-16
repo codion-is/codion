@@ -6,8 +6,8 @@ package org.jminor.framework.db;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
-import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -58,9 +58,9 @@ public class EntityDbConnectionPool {
 
   public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
     this.user = user;
-    final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
     if (sid != null && sid.length() != 0)
-      this.user.setProperty(Database.DATABASE_SID_PROPERTY, sid);
+      this.user.setProperty(IDatabase.DATABASE_SID_PROPERTY, sid);
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       @Override

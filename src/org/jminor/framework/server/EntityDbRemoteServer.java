@@ -7,6 +7,7 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
@@ -71,9 +72,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private EntityDbRemoteServer() throws RemoteException {
     super(SERVER_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    final String host = System.getProperty(Database.DATABASE_HOST_PROPERTY);
-    final String port = System.getProperty(Database.DATABASE_PORT_PROPERTY);
-    final String sid = System.getProperty(Database.DATABASE_SID_PROPERTY);
+    final String host = System.getProperty(IDatabase.DATABASE_HOST_PROPERTY);
+    final String port = System.getProperty(IDatabase.DATABASE_PORT_PROPERTY);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
     if (host == null || host.length() == 0)
       throw new IllegalArgumentException("Db host must be specified!");
     if (!Database.get().isEmbedded() && (sid == null || sid.length() == 0))
