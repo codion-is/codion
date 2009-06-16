@@ -226,7 +226,8 @@
     <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.jdbc.drivers}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib.derby}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib.h2}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
@@ -245,7 +246,8 @@
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.jdbc.drivers}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib.derby}" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${lib.h2}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
     <copy todir="${deploy.server.monitor.path}" >
@@ -260,7 +262,8 @@
     <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib" />
     <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib" />
     <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jdbc.drivers}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.derby}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.h2}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib" />
@@ -327,7 +330,7 @@
     </junitreport>
   </target>
 
-  <target name="run_unit_tests" depends="build, create_demo_db"
+  <target name="run_unit_tests" depends="build, create_derby_db"
           description="Runs the unit tests">
     <mkdir dir="${reports}" />
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
@@ -349,7 +352,7 @@
     </junit>
   </target>
 
-  <target name="run_demo_empdept_local" depends="build, create_demo_db"
+  <target name="run_demo_empdept_local" depends="build, create_derby_db"
           description="Runs the EmpDept demo application with a local db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
@@ -357,7 +360,7 @@
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.jdbc.drivers}"/>
+        <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
@@ -384,7 +387,7 @@
     </java>
   </target>
 
-  <target name="run_demo_petstore_local" depends="build, create_demo_db"
+  <target name="run_demo_petstore_local" depends="build, create_derby_db"
           description="Runs the Petstore demo application with a local db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
@@ -392,7 +395,7 @@
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.jdbc.drivers}"/>
+        <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
@@ -427,7 +430,7 @@
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.jdbc.drivers}"/>
+        <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
@@ -459,7 +462,7 @@
     <java classname="org.jminor.framework.server.EntityDbRemoteServer" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
-        <pathelement location="${lib.jdbc.drivers}"/>
+        <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jasperreports.base}"/>
       </classpath>
@@ -483,7 +486,7 @@
     <java classname="org.jminor.framework.server.monitor.ui.MonitorPanel" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
-        <pathelement location="${lib.jdbc.drivers}"/>
+        <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jfreechart.base}"/>
         <pathelement location="${lib.jfreechart.common}"/>
@@ -499,27 +502,58 @@
     </java>
   </target>
 
-  <condition property="demodb.not.available">
+  <condition property="derbydb.not.available">
     <not>
-      <available file="${demo.db.dir}/${demo.db.name}"/>
+      <available file="${db.derby.dir}/${db.derby.name}"/>
     </not>
   </condition>
 
-  <target name="delete_demo_db"
+  <target name="delete_derby_db"
           description="Deletes the unit test derby database">
-    <delete dir="${demo.db.dir}"/>
+    <delete dir="${db.derby.dir}"/>
   </target>
 
-  <target name="create_demo_db" if="demodb.not.available"
+  <target name="create_derby_db" if="derbydb.not.available"
           description="Creates the demo derby database in case it is not already available. The demo database includes
           the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
-      <sysproperty key="ij.connection.demo" value="jdbc:derby:${demo.db.dir}/${demo.db.name};create=true" />
-      <arg value="${junit.sql.dir}/create_demo_db.sql"/>
+      <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true" />
+      <arg value="${db.sql.dir}/create_derby_db.sql"/>
     </java>
   </target>
 
-  <target name="run_derby_server" depends="create_demo_db"
+  <condition property="h2db.not.available">
+    <not>
+      <available file="${db.h2.dir}"/>
+    </not>
+  </condition>
+
+  <target name="delete_h2_db"
+          description="Deletes the unit test h2 database">
+    <delete dir="${db.h2.dir}"/>
+  </target>
+
+  <target name="create_h2_db" if="h2db.not.available"
+          description="Creates the demo h2 database in case it is not already available. The demo database includes
+          the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/db/scripts/initialize_h2_db.sql"/>
+    </java>
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/empdept/scripts/ddl.sql"/>
+    </java>
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/empdept/scripts/dml.sql"/>
+    </java>
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/petstore/scripts/ddl.sql"/>
+    </java>
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/petstore/scripts/dml.sql"/>
+    </java>
+  </target>
+
+  <target name="run_derby_server" depends="create_derby_db"
           description="Runs the derby network server">
     <java fork="true" jar="${lib.derby.run}" classpathref="libraries">
       <arg value="server"/>

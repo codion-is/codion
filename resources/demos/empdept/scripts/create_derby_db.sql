@@ -1,3 +1,3 @@
-RUN './resources/demos/empdept/scripts/ddl_derby.sql';
-RUN './resources/demos/empdept/scripts/dml_derby.sql';
+RUN './resources/demos/empdept/scripts/ddl.sql';
+RUN './resources/demos/empdept/scripts/dml.sql';
 EXIT;

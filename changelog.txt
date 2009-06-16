@@ -511,3 +511,6 @@
   Property.isUpdatable field renamed to updatable
   Database is now inheritance based
   IDatabase created in org.jminor.common.db.dbms as well as implementations for supported databases
+  H2 database creation task added to build.xml
+  Updated and added some run scripts according to the above
+  EntityApplicationPanel.getUser() now accepts empty passwords

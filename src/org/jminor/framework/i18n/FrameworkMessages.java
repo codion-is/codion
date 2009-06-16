@@ -64,6 +64,7 @@ public class FrameworkMessages {
   public static final String INSERT_UPDATE_TIP = "insert_update_tip";
   public static final String INSERT_TIP = "insert_tip";
   public static final String SELECT_PROPERTY_FOR_UPDATE = "select_property_for_update";
+  public static final String EMPTY_USERNAME = "empty_username";
   public static final String EMPTY_PASSWORD = "empty_password";
   public static final String CONFIGURE_QUERY = "configure_query";
   public static final String CONFIRM_EXIT = "confirm_exit";

@@ -1,3 +1,3 @@
-RUN './resources/demos/petstore/scripts/ddl_derby.sql';
-RUN './resources/demos/petstore/scripts/dml_derby.sql';
+RUN './resources/demos/petstore/scripts/ddl.sql';
+RUN './resources/demos/petstore/scripts/dml.sql';
 EXIT;

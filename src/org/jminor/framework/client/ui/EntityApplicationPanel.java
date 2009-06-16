@@ -894,8 +894,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
             new User(FrameworkSettings.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-    if (user.getPassword() == null || user.getPassword().length() == 0)
-      throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_PASSWORD));
+    if (user.getUsername() == null || user.getUsername().length() == 0)
+      throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
 
     return user;
   }
