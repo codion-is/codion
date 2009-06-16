@@ -352,7 +352,7 @@
     </junit>
   </target>
 
-  <target name="run_demo_empdept_local" depends="build, create_derby_db"
+  <target name="run_demo_empdept_local" depends="build, create_derby_db, create_h2_db"
           description="Runs the EmpDept demo application with a local db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
@@ -361,6 +361,7 @@
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.derby}"/>
+        <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
@@ -387,7 +388,7 @@
     </java>
   </target>
 
-  <target name="run_demo_petstore_local" depends="build, create_derby_db"
+  <target name="run_demo_petstore_local" depends="build, create_derby_db, create_h2_db"
           description="Runs the Petstore demo application with a local db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
@@ -396,6 +397,7 @@
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.derby}"/>
+        <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
@@ -422,47 +424,13 @@
     </java>
   </target>
 
-  <target name="run_demo_schemabrowser_local" depends="build"
-          description="Runs the SchemaBrowser demo application with a local db connection">
-    <java classname="org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel" fork="yes">
-      <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.derby}"/>
-        <pathelement location="${lib.log4j}"/>
-      </classpath>
-      <jvmarg value="-Djminor.db.type=${run.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${run.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${run.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
-    </java>
-  </target>
-
-  <target name="run_demo_schemabrowser_remote" depends="build"
-          description="Runs the SchemaBrowser demo application with a remote db connection">
-    <java classname="org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel" fork="yes">
-      <classpath>
-        <pathelement path="${build.base}"/>
-        <pathelement path="${build.demos}"/>
-        <pathelement location="${lib.jasperreports.base}"/>
-        <pathelement location="${lib.jcalendar}"/>
-        <pathelement location="${lib.log4j}"/>
-      </classpath>
-      <jvmarg value="-Djminor.client.connection.type=remote"/>
-      <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
-    </java>
-  </target>
-
-  <target name="run_rmi_server" depends="build"
+  <target name="run_rmi_server" depends="build, create_derby_db, create_h2_db"
           description="Runs the RMI server">
     <java classname="org.jminor.framework.server.EntityDbRemoteServer" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
         <pathelement location="${lib.derby}"/>
+        <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jasperreports.base}"/>
       </classpath>
@@ -509,7 +477,7 @@
   </condition>
 
   <target name="delete_derby_db"
-          description="Deletes the unit test derby database">
+          description="Deletes the derby database">
     <delete dir="${db.derby.dir}"/>
   </target>
 
@@ -529,7 +497,7 @@
   </condition>
 
   <target name="delete_h2_db"
-          description="Deletes the unit test h2 database">
+          description="Deletes the h2 database">
     <delete dir="${db.h2.dir}"/>
   </target>
 

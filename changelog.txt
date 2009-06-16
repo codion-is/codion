@@ -514,3 +514,6 @@
   H2 database creation task added to build.xml
   Updated and added some run scripts according to the above
   EntityApplicationPanel.getUser() now accepts empty passwords
+  Added h2 lib to run targets in ant build file
+  Added H2 support to SchemaBrowser (not quite working, key_column_usage table not available)
+  Removed run_schema_browser targets from ant build file
