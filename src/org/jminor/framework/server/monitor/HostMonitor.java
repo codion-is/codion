@@ -44,7 +44,7 @@ public class HostMonitor extends DefaultMutableTreeNode {
         model = new ServerMonitor(hostName, serverName);
         model.evtServerShuttingDown.addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            refresh();
+            remove(model);
           }
         });
         add(model);

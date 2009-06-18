@@ -40,4 +40,9 @@ public class UserInstanceMonitor extends DefaultMutableTreeNode {
   public IEntityDbRemoteServerAdmin getServer() {
     return server;
   }
+
+  public void shutdown() throws RemoteException {
+    System.out.println("UserInstanceMonitor shutdown");
+    removeAllChildren();
+  }
 }

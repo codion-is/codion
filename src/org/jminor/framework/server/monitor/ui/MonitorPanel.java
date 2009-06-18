@@ -4,11 +4,9 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.AuthenticationException;
-import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.IPopupProvider;
-import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -228,8 +226,8 @@ public class MonitorPanel extends JPanel {
       catch (Exception e) {
         e.printStackTrace();
       }
-      final User user = LoginPanel.getUser(null, new User("scott", "tiger"));
-      authenticate(user);
+//      final User user = LoginPanel.getUser(null, new User("scott", "tiger"));
+//      authenticate(user);
       new MonitorPanel().showFrame();
     }
     catch (Exception e) {
@@ -239,15 +237,15 @@ public class MonitorPanel extends JPanel {
   }
 
   private static void authenticate(final User user) throws AuthenticationException, ClassNotFoundException {
-    DbConnection db = null;
-    try {
-      db = new DbConnection(user);
-      System.out.println(user + " is authenticated");
-    }
-    finally {
-      if (db != null)
-        db.disconnect();
-    }
+//    DbConnection db = null;
+//    try {
+//      db = new DbConnection(user);
+//      System.out.println(user + " is authenticated");
+//    }
+//    finally {
+//      if (db != null)
+//        db.disconnect();
+//    }
   }
 
   private void showFrame() {

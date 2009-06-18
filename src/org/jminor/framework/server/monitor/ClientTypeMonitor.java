@@ -50,4 +50,9 @@ public class ClientTypeMonitor extends DefaultMutableTreeNode {
     server.removeConnections(true);
     refresh();
   }
+
+  public void shutdown() throws RemoteException {
+    System.out.println("ClientTypeMonitor shutdown");
+    removeAllChildren();
+  }
 }

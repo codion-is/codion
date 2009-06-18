@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 public class ConnectionPoolMonitor extends DefaultMutableTreeNode {
 
   private final IEntityDbRemoteServerAdmin server;
+  private boolean shutdown = false;
 
   public ConnectionPoolMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
     this.server = server;
@@ -26,8 +27,10 @@ public class ConnectionPoolMonitor extends DefaultMutableTreeNode {
 
   public void refresh() throws RemoteException {
     removeAllChildren();
-    for (final ConnectionPoolSettings settings : server.getActiveConnectionPools())
-      add(new ConnectionPoolInstanceMonitor(settings.getUser(), server));
+    if (!shutdown) {
+      for (final ConnectionPoolSettings settings : server.getActiveConnectionPools())
+        add(new ConnectionPoolInstanceMonitor(settings.getUser(), server));
+    }
   }
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
@@ -43,5 +46,14 @@ public class ConnectionPoolMonitor extends DefaultMutableTreeNode {
   public void addConnectionPools(final String[] strings) throws RemoteException {
     for (final String username : strings)
       setConnectionPoolSettings(ConnectionPoolSettings.getDefault(new User(username.trim(), null)));
+  }
+
+  public void shutdown() throws RemoteException {
+    System.out.println("ConnectionPoolMonitor shutdown");
+    shutdown = true;
+    final int childCount = getChildCount();
+    for (int i = 0; i < childCount; i++)
+      ((ConnectionPoolInstanceMonitor) getChildAt(i)).shutdown();
+    removeAllChildren();
   }
 }

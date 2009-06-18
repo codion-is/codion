@@ -40,6 +40,8 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   private final XYSeries warningTimeExceededSecond = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
 
+  private boolean shutdown = false;
+
   public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
     this.hostName = hostName;
     this.serverName = serverName;
@@ -51,7 +53,8 @@ public class ServerMonitor extends DefaultMutableTreeNode {
       @Override
       public void run() {
         try {
-          updateStats();
+          if (!shutdown)
+            updateStats();
         }
         catch (RemoteException e) {
           e.printStackTrace();
@@ -62,9 +65,11 @@ public class ServerMonitor extends DefaultMutableTreeNode {
 
   public void refresh() throws RemoteException {
     removeAllChildren();
-    add(new ConnectionPoolMonitor(server));
-    add(new ClientMonitor(server));
-    add(new UserMonitor(server));
+    if (!shutdown) {
+      add(new ConnectionPoolMonitor(server));
+      add(new ClientMonitor(server));
+      add(new UserMonitor(server));
+    }
   }
 
   @Override
@@ -96,7 +101,17 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   //todo the server monitor is not equipped to handle this at all, but it does shut down the server
   public void shutdownServer() throws RemoteException {
     evtServerShuttingDown.fire();
-    server.shutdown();
+    shutdown = true;
+    ((ConnectionPoolMonitor) getChildAt(0)).shutdown();
+    ((ClientMonitor) getChildAt(1)).shutdown();
+    ((UserMonitor) getChildAt(2)).shutdown();
+    try {
+      server.shutdown();
+    }
+    catch (RemoteException e) {
+      e.printStackTrace();
+    }
+    System.out.println("Shutdown Server done");
   }
 
   public String getServerName() {

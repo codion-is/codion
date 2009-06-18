@@ -53,7 +53,10 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
+  private boolean shutdown = false;
+
   public ConnectionPoolInstanceMonitor(final User user, final IEntityDbRemoteServerAdmin server) throws RemoteException {
+    System.out.println("new ConnectionPoolInstanceMonitor for user: " + user);
     this.user = user;
     this.server = server;
     this.macroStatsCollection.addSeries(inPoolSeriesMacro);
@@ -158,7 +161,12 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
     return "Connection pool: " + user.toString();
   }
 
-  public void updateStats() throws RemoteException {
+  public void shutdown() {
+    System.out.println("ConnectionPoolInstanceMonitor shutdown: " + user);
+    shutdown = true;
+  }
+
+  private void updateStats() throws RemoteException {
     poolStats = server.getConnectionPoolSettings(user, lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
     poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getLiveConnectionCount());
@@ -212,7 +220,9 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
       @Override
       public void run() {
         try {
-          updateStats();
+          System.out.println("ConnectionPoolInstanceMonitor: run() shutdown is " + shutdown);
+          if (!shutdown)
+            updateStats();
         }
         catch (RemoteException e) {
           e.printStackTrace();
