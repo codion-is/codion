@@ -35,6 +35,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   private final String hostName;
   private final String serverName;
   private final IEntityDbRemoteServerAdmin server;
+  private final Timer updateTimer;
 
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecond = new XYSeries("Service calls exceeding warning time per second");
@@ -49,7 +50,8 @@ public class ServerMonitor extends DefaultMutableTreeNode {
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecond);
     refresh();
-    new Timer(false).schedule(new TimerTask() {
+    updateTimer = new Timer(false);
+    updateTimer.schedule(new TimerTask() {
       @Override
       public void run() {
         try {
@@ -102,6 +104,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   public void shutdownServer() throws RemoteException {
     evtServerShuttingDown.fire();
     shutdown = true;
+    updateTimer.cancel();
     ((ConnectionPoolMonitor) getChildAt(0)).shutdown();
     ((ClientMonitor) getChildAt(1)).shutdown();
     ((UserMonitor) getChildAt(2)).shutdown();
