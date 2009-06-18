@@ -3,40 +3,57 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ControlSet;
+import org.jminor.framework.server.monitor.UserInstanceMonitor;
 import org.jminor.framework.server.monitor.UserMonitor;
 
+import javax.swing.BorderFactory;
+import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import java.rmi.RemoteException;
 
 /**
  * User: Björn Darri
  * Date: 11.12.2007
  * Time: 12:23:17
  */
-public class UserMonitorPanel  extends JPanel implements IPopupProvider {
+public class UserMonitorPanel  extends JPanel {
 
   private final UserMonitor model;
-  private JPopupMenu popupMenu;
 
   public UserMonitorPanel(final UserMonitor model) {
     this.model = model;
+    initUI();
   }
 
-  public JPopupMenu getPopupMenu() {
-    if (popupMenu == null)
-      popupMenu = ControlProvider.createPopupMenu(getPopupCommands());
+  private void initUI() {
+    setLayout(new BorderLayout());
+    final JList userInstanceList = new JList(model.getUserInstanceMonitorsListModel());
+    userInstanceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    userInstanceList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(final ListSelectionEvent e) {
+        try {
+          final UserInstanceMonitor userInstanceMonitor = (UserInstanceMonitor) userInstanceList.getSelectedValue();
+          if (userInstanceMonitor != null)
+            add(new UserInstanceMonitorPanel(userInstanceMonitor), BorderLayout.CENTER);
+        }
+        catch (RemoteException e1) {
+          throw new RuntimeException(e1);
+        }
+      }
+    });
 
-    return popupMenu;
-  }
-
-  private ControlSet getPopupCommands() {
-    final ControlSet ret = new ControlSet();
-    ret.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
-
-    return ret;
+    final JPanel usersBase = new JPanel(new BorderLayout());
+    final JScrollPane usersScroller = new JScrollPane(userInstanceList);
+    usersScroller.setBorder(BorderFactory.createTitledBorder("Users"));
+    usersBase.add(usersScroller, BorderLayout.CENTER);
+    usersBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
+    add(usersBase, BorderLayout.WEST);
   }
 }

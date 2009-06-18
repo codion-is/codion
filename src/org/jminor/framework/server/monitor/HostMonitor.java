@@ -9,9 +9,6 @@ import org.jminor.framework.FrameworkSettings;
 
 import org.apache.log4j.Logger;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -24,7 +21,7 @@ import java.util.List;
  * Date: 4.12.2007
  * Time: 17:46:40
  */
-public class HostMonitor extends DefaultMutableTreeNode {
+public class HostMonitor {
 
   private static final Logger log = Util.getLogger(HostMonitor.class);
 
@@ -39,28 +36,17 @@ public class HostMonitor extends DefaultMutableTreeNode {
     refresh();
   }
 
-  public void refresh() {
-    removeAllChildren();
-    for (final String serverName : getEntityDbRemoteServers(hostName)) {
-      final ServerMonitor model;
-      try {
-        model = new ServerMonitor(hostName, serverName);
-        model.evtServerShutDown.addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            refresh();
-          }
-        });
-        add(model);
-      }
-      catch (RemoteException e) {
-        e.printStackTrace();
-      }
-    }
+  public String getHostName() {
+    return hostName;
   }
 
-  @Override
-  public String toString() {
-    return "Host: " + hostName + " (servers: " + getChildCount() + ")";
+  public void refresh() {
+    for (final String serverName : getEntityDbRemoteServers(hostName))
+      serverNames.add(serverName);
+  }
+
+  public Collection<String> getServerNames() {
+    return serverNames;
   }
 
   public boolean isLiveUpdate() {
@@ -69,10 +55,6 @@ public class HostMonitor extends DefaultMutableTreeNode {
 
   public void setLiveUpdate(final boolean value) {
     stLiveUpdate.setActive(value);
-  }
-
-  public void discoverServers() throws RemoteException {
-    refresh();
   }
 
   private static String[] getEntityServers(final Registry registry) throws RemoteException {
@@ -107,9 +89,5 @@ public class HostMonitor extends DefaultMutableTreeNode {
       log.error(this, e);
       return new ArrayList<String>();
     }
-  }
-
-  public String getHostName() {
-    return hostName;
   }
 }

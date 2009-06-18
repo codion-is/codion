@@ -4,7 +4,6 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.ui.ExceptionDialog;
-import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -27,7 +26,7 @@ import java.rmi.RemoteException;
  * Date: 11.12.2007
  * Time: 12:58:29
  */
-public class ClientTypeMonitorPanel extends JPanel implements IPopupProvider {
+public class ClientTypeMonitorPanel extends JPanel {
 
   private final ClientTypeMonitor model;
 
@@ -37,18 +36,6 @@ public class ClientTypeMonitorPanel extends JPanel implements IPopupProvider {
   public ClientTypeMonitorPanel(final ClientTypeMonitor model) throws RemoteException {
     this.model = model;
     initUI();
-    updateView();
-  }
-
-  public JPopupMenu getPopupMenu() {
-    if (popupMenu == null)
-      popupMenu = ControlProvider.createPopupMenu(getPopupCommands());
-
-    return popupMenu;
-  }
-
-  public void updateView() throws RemoteException {
-    cmbMaintainanceCheck.setSelectedItem(model.getServer().getCheckMaintenanceInterval());
   }
 
   private void initUI() throws RemoteException {
@@ -62,10 +49,12 @@ public class ClientTypeMonitorPanel extends JPanel implements IPopupProvider {
     actionBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "disconnectAll",
             "Disconnect all", null, "Disconnect all")));
     add(actionBase, BorderLayout.NORTH);
+    //todo client list
   }
 
-  private JComponent initCheckIntervalComponent() {
+  private JComponent initCheckIntervalComponent() throws RemoteException {
     cmbMaintainanceCheck = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
+    cmbMaintainanceCheck.setSelectedItem(model.getServer().getCheckMaintenanceInterval());
     cmbMaintainanceCheck.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         try {

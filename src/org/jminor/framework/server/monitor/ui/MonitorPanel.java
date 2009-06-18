@@ -6,7 +6,6 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -14,30 +13,14 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.FrameworkConstants;
-import org.jminor.framework.server.monitor.ClientInstanceMonitor;
-import org.jminor.framework.server.monitor.ClientTypeMonitor;
-import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
-import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
-import org.jminor.framework.server.monitor.ServerMonitor;
-import org.jminor.framework.server.monitor.UserInstanceMonitor;
-import org.jminor.framework.server.monitor.UserMonitor;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
+import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 
 /**
@@ -50,22 +33,13 @@ public class MonitorPanel extends JPanel {
   private final Event evtAlwaysOnTopChanged = new Event("MonitorPanel.evtAlwaysOnTopChanged");
 
   private final MonitorModel model;
-
-  private JTree hostTree;
   private JFrame monitorFrame;
-
-  private JPanel detailBasePanel;
-
-//  private final ImageIcon hostIcon = Images.loadImage("host.gif");
-//  private final ImageIcon serverIcon = Images.loadImage("server.gif");
-//  private final ImageIcon userIcon = Images.loadImage("user.gif");
-//  private final ImageIcon connectionIcon = Images.loadImage("connection.gif");
 
   public MonitorPanel() throws RemoteException {
     this(new MonitorModel(System.getProperty(FrameworkConstants.SERVER_HOST_NAME_PROPERTY)));
   }
 
-  public MonitorPanel(final MonitorModel model) {
+  public MonitorPanel(final MonitorModel model) throws RemoteException {
     this.model = model;
     initUI();
   }
@@ -89,10 +63,6 @@ public class MonitorPanel extends JPanel {
     evtAlwaysOnTopChanged.fire();
   }
 
-  public void disconnectSelected() throws RemoteException {
-    throw new RuntimeException("MonitorPanel.disconnectSelected() has not been implemented");
-  }
-
   public void exit() {
     System.exit(0);
   }
@@ -103,86 +73,14 @@ public class MonitorPanel extends JPanel {
 
   public void refresh() throws RemoteException {
     model.refresh();
-    UiUtil.expandAll(hostTree, new TreePath(hostTree.getModel().getRoot()), true);
   }
 
-  private void initUI() {
-    this.hostTree = initializeHostTree();
+  private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
-    final JScrollPane treeScroller = new JScrollPane(hostTree);
-    treeScroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    treeScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    final JSplitPane splitBase = new JSplitPane();
-    splitBase.setDividerSize(18);
-    splitBase.setOneTouchExpandable(true);
-    splitBase.setLeftComponent(treeScroller);
-    detailBasePanel = new JPanel(new BorderLayout());
-    splitBase.setRightComponent(detailBasePanel);
-    add(splitBase, BorderLayout.CENTER);
-  }
-
-  private JTree initializeHostTree() {
-    final JTree ret = new JTree(model.getTreeModel());
-    ret.setRootVisible(false);
-    ret.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(final MouseEvent e) {
-        popup(e, ret);
-      }
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        popup(e, ret);
-      }
-    });
-    ret.addTreeSelectionListener(new TreeSelectionListener() {
-      public void valueChanged(TreeSelectionEvent e) {
-        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) ret.getLastSelectedPathComponent();
-        try {
-          if (node == null)
-            return;
-
-          detailBasePanel.removeAll();
-          JPanel detailPanel = null;
-          if (node instanceof HostMonitor)
-            detailPanel = new HostMonitorPanel((HostMonitor) node);
-          else if (node instanceof ServerMonitor)
-            detailPanel = new ServerMonitorPanel((ServerMonitor) node);
-          else if (node instanceof ConnectionPoolMonitor)
-            detailPanel = new ConnectionPoolMonitorPanel((ConnectionPoolMonitor) node);
-          else if (node instanceof ConnectionPoolInstanceMonitor)
-            detailPanel = new ConnectionPoolInstanceMonitorPanel((ConnectionPoolInstanceMonitor) node);
-          else if (node instanceof UserMonitor)
-            detailPanel = new UserMonitorPanel((UserMonitor) node);
-          else if (node instanceof UserInstanceMonitor)
-            detailPanel = new UserInstanceMonitorPanel((UserInstanceMonitor) node);
-          else if (node instanceof ClientTypeMonitor)
-            detailPanel = new ClientTypeMonitorPanel((ClientTypeMonitor) node);
-          else if (node instanceof ClientInstanceMonitor)
-            detailPanel = new ClientInstanceMonitorPanel((ClientInstanceMonitor) node);
-
-          if (detailPanel != null)
-            detailBasePanel.add(detailPanel, BorderLayout.CENTER);
-
-          revalidate();
-          repaint();
-        }
-        catch (RemoteException ex) {
-          ex.printStackTrace();
-          throw new RuntimeException(ex);
-        }
-      }
-    });
-
-    return ret;
-  }
-
-  private void popup(final MouseEvent e, final JTree ret) {
-    if (e.isPopupTrigger()) {
-      final Component selectedPanel = detailBasePanel.getComponents().length > 0 ?
-              detailBasePanel.getComponent(0) : null;
-      if (selectedPanel instanceof IPopupProvider)
-        ((IPopupProvider) selectedPanel).getPopupMenu().show(ret, e.getX(), e.getY());
-    }
+    final JTabbedPane hostPane = new JTabbedPane();
+    for (final String hostName : model.getHostNames())
+      hostPane.addTab(hostName, new HostMonitorPanel(new HostMonitor(hostName)));
+    add(hostPane, BorderLayout.CENTER);
   }
 
   private ControlSet initMainMenuControlSets() {

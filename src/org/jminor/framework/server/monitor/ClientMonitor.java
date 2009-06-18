@@ -5,53 +5,38 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * User: Björn Darri
  * Date: 11.12.2007
  * Time: 12:58:44
  */
-public class ClientMonitor extends DefaultMutableTreeNode {
+public class ClientMonitor {
 
   private final IEntityDbRemoteServerAdmin server;
+
+  private Collection<ClientTypeMonitor> clientTypeMonitors = new ArrayList<ClientTypeMonitor>();
 
   public ClientMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
 
+  public Collection<ClientTypeMonitor> getClientTypeMonitors() {
+    return clientTypeMonitors;
+  }
+
   public void refresh() throws RemoteException{
-    removeAllChildren();
     for (final String clientType : server.getClientTypes())
-      add(new ClientTypeMonitor(server, clientType));
-  }
-
-  @Override
-  public String toString() {
-    return "Clients" + " (" + getGrandChildCount() + ")";
-  }
-
-  public int getGrandChildCount() {
-    int ret = 0;
-    if (getChildCount() > 0) {
-      TreeNode node = getFirstChild();
-      while (node != null) {
-        ret += node.getChildCount();
-        node = getChildAfter(node);
-      }
-    }
-
-    return ret;
+      clientTypeMonitors.add(new ClientTypeMonitor(server, clientType));
   }
 
   public void shutdown() throws RemoteException {
     System.out.println("ClientMonitor shutdown");
-    final int childCount = getChildCount();
-    for (int i = 0; i < childCount; i++)
-      ((ClientTypeMonitor) getChildAt(i)).shutdown();
-    removeAllChildren();
+    for (final ClientTypeMonitor monitor : clientTypeMonitors)
+      monitor.shutdown();
   }
 }

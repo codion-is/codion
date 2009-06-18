@@ -5,9 +5,9 @@ grant {
   permission java.io.FilePermission "-", "read,write,delete";
   permission java.lang.RuntimePermission "createClassLoader";
 
-  permission java.io.FilePermission "<<ALL FILES>>", "read";
+  //permission java.io.FilePermission "<<ALL FILES>>", "read";
 
   permission java.net.SocketPermission "*:80-", "connect,accept,listen,resolve";
 
-  permission java.util.PropertyPermission "*", "read";
+  permission java.util.PropertyPermission "*", "read,write";
 };

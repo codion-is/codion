@@ -3,15 +3,15 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.IPopupProvider;
 import org.jminor.common.ui.control.ControlFactory;
-import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
@@ -19,13 +19,13 @@ import java.rmi.RemoteException;
  * Date: 10.12.2007
  * Time: 15:54:36
  */
-public class ConnectionPoolMonitorPanel extends JPanel implements IPopupProvider {
+public class ConnectionPoolMonitorPanel extends JPanel {
 
   private final ConnectionPoolMonitor model;
-  private JPopupMenu popupMenu;
 
-  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) {
+  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) throws RemoteException {
     this.model = model;
+    initUI();
   }
 
   public void addConnectionPool() throws RemoteException {
@@ -34,11 +34,12 @@ public class ConnectionPoolMonitorPanel extends JPanel implements IPopupProvider
       model.addConnectionPools(usernames.split(","));
   }
 
-  public JPopupMenu getPopupMenu() {
-    if (popupMenu == null)
-      popupMenu = ControlProvider.createPopupMenu(getPopupCommands());
-
-    return popupMenu;
+  private void initUI() throws RemoteException {
+    setLayout(new BorderLayout());
+    final JTabbedPane connectionPoolPane = new JTabbedPane();
+    for (final ConnectionPoolInstanceMonitor monitor : model.getConnectionPoolInstanceMonitors())
+      connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolInstanceMonitorPanel(monitor));
+    add(connectionPoolPane, BorderLayout.CENTER);
   }
 
   private ControlSet getPopupCommands() {

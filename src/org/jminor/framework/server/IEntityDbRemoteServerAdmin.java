@@ -173,4 +173,6 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void removeConnections(final boolean inactiveOnly) throws RemoteException;
 
   public void resetConnectionPoolStatistics(final User user) throws RemoteException;
+
+  public String getSystemProperties() throws RemoteException;
 }

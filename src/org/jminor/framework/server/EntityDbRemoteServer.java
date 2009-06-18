@@ -332,6 +332,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     return connectionTimeout;
   }
 
+  public String getSystemProperties() {
+    return Util.getSystemProperties();
+  }
+
   private void startConnectionCheckTimer() {
     if (connectionMaintenanceTimer != null)
       connectionMaintenanceTimer.cancel();

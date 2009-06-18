@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -24,19 +23,26 @@ import java.util.TimerTask;
  * Date: 4.12.2007
  * Time: 17:53:50
  */
-public class ServerMonitor extends DefaultMutableTreeNode {
+public class ServerMonitor {
 
   private static final Logger log = Util.getLogger(ServerMonitor.class);
 
-  public final Event evtRefresh = new Event("ServerMonitor.evtRefresh");
   public final Event evtServerShutDown = new Event("ServerMonitor.evtServerShutDown");
-  public final Event evtWarningThresholdChanged = new Event("ServerMonitor.evtWarningThresholdChanged");
+  public final Event evtStatsUpdated = new Event("ServerMonitor.evtStatsUpdated");
 
+  public final Event evtWarningThresholdChanged = new Event("ServerMonitor.evtWarningThresholdChanged");
   private final String hostName;
   private final String serverName;
   private final IEntityDbRemoteServerAdmin server;
-  private final Timer updateTimer;
 
+  private final Timer updateTimer;
+  private final ConnectionPoolMonitor connectionPoolMonitor;
+  private final ClientMonitor clientMonitor;
+
+  private final UserMonitor userMonitor;
+  private int connectionCount = 0;
+
+  private String memoryUsage;
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecond = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -47,7 +53,9 @@ public class ServerMonitor extends DefaultMutableTreeNode {
     this.server = connectServer(serverName);
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecond);
-    refresh();
+    connectionPoolMonitor = new ConnectionPoolMonitor(server);
+    clientMonitor = new ClientMonitor(server);
+    userMonitor = new UserMonitor(server);
     updateTimer = new Timer(false);
     updateTimer.schedule(new TimerTask() {
       @Override
@@ -62,20 +70,28 @@ public class ServerMonitor extends DefaultMutableTreeNode {
     }, new Date(), 2000);
   }
 
-  public void refresh() throws RemoteException {
-    removeAllChildren();
-    add(new ConnectionPoolMonitor(server));
-    add(new ClientMonitor(server));
-    add(new UserMonitor(server));
-  }
-
-  @Override
-  public String toString() {
-    return "Server: " + getServerName() + " (users: " + getChildCount() + ")";
-  }
-
   public IEntityDbRemoteServerAdmin getServer() {
     return server;
+  }
+
+  public String getMemoryUsage() {
+    return memoryUsage;
+  }
+
+  public int getConnectionCount() {
+    return connectionCount;
+  }
+
+  public ClientMonitor getClientMonitor() {
+    return clientMonitor;
+  }
+
+  public ConnectionPoolMonitor getConnectionPoolMonitor() {
+    return connectionPoolMonitor;
+  }
+
+  public UserMonitor getUserMonitor() {
+    return userMonitor;
   }
 
   public int getWarningThreshold() throws RemoteException {
@@ -98,9 +114,9 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   //todo the server monitor is not equipped to handle this at all, but it does shut down the server
   public void shutdownServer() throws RemoteException {
     updateTimer.cancel();
-    ((ConnectionPoolMonitor) getChildAt(0)).shutdown();
-    ((ClientMonitor) getChildAt(1)).shutdown();
-    ((UserMonitor) getChildAt(2)).shutdown();
+    connectionPoolMonitor.shutdown();
+    clientMonitor.shutdown();
+    userMonitor.shutdown();
     try {
       server.shutdown();
     }
@@ -141,7 +157,10 @@ public class ServerMonitor extends DefaultMutableTreeNode {
 
   private void updateStats() throws RemoteException {
     final long time = System.currentTimeMillis();
+    connectionCount = server.getConnectionCount();
+    memoryUsage = server.getMemoryUsage();
     connectionRequestsPerSecond.add(time, server.getRequestsPerSecond());
     warningTimeExceededSecond.add(time, server.getWarningTimeExceededPerSecond());
+    evtStatsUpdated.fire();
   }
 }

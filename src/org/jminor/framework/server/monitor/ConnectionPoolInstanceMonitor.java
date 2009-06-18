@@ -13,7 +13,6 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +25,7 @@ import java.util.TimerTask;
  * Date: 4.12.2007
  * Time: 18:20:24
  */
-public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
+public class ConnectionPoolInstanceMonitor {
 
   public final Event evtStatsUpdated = new Event("ConnectionPoolInstanceMonitor.evtStatsUpdated");
   public final Event evtStatsUpdateIntervalChanged = new Event("ConnectionPoolInstanceMonitor.statsUpdateIntervalChanged");
@@ -68,6 +67,10 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
     this.connectionRequestsPerSecondCollection.addSeries(delayedRequestsPerSecond);
     updateStats();
     setStatsUpdateInterval(3);
+  }
+
+  public User getUser() {
+    return user;
   }
 
   public ConnectionPoolSettings getConnectionPoolStats() {
@@ -152,11 +155,6 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
 
   public int getStatsUpdateInterval() {
     return statsUpdateInterval;
-  }
-
-  @Override
-  public String toString() {
-    return "Connection pool: " + user.toString();
   }
 
   public void shutdown() {

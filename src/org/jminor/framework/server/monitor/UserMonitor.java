@@ -6,17 +6,20 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.db.User;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
 
 /**
  * User: Björn Darri
  * Date: 11.12.2007
  * Time: 11:26:21
  */
-public class UserMonitor extends DefaultMutableTreeNode {
+public class UserMonitor {
 
   private final IEntityDbRemoteServerAdmin server;
+
+  private final DefaultListModel userInstanceMonitorsListModel = new DefaultListModel();
 
   public UserMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
     this.server = server;
@@ -24,14 +27,13 @@ public class UserMonitor extends DefaultMutableTreeNode {
   }
 
   public void refresh() throws RemoteException {
-    removeAllChildren();
+    userInstanceMonitorsListModel.clear();
     for (final User user : server.getUsers())
-      add(new UserInstanceMonitor(server, user));
+      userInstanceMonitorsListModel.addElement(new UserInstanceMonitor(server, user));
   }
 
-  @Override
-  public String toString() {
-    return "Database users" + " (" + getChildCount() + ")";
+  public DefaultListModel getUserInstanceMonitorsListModel() {
+    return userInstanceMonitorsListModel;
   }
 
   public IEntityDbRemoteServerAdmin getServer() {
@@ -40,9 +42,8 @@ public class UserMonitor extends DefaultMutableTreeNode {
 
   public void shutdown() throws RemoteException {
     System.out.println("UserMonitor shutdown");
-    final int childCount = getChildCount();
-    for (int i = 0; i < childCount; i++)
-      ((UserInstanceMonitor) getChildAt(i)).shutdown();
-    removeAllChildren();
+    final Enumeration enumeration = userInstanceMonitorsListModel.elements();
+    while (enumeration.hasMoreElements())
+      ((UserInstanceMonitor) enumeration.nextElement()).shutdown();
   }
 }

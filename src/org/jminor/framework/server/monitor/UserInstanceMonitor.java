@@ -7,7 +7,7 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.ClientInfo;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
 
 /**
@@ -15,10 +15,12 @@ import java.rmi.RemoteException;
  * Date: 11.12.2007
  * Time: 11:28:28
  */
-public class UserInstanceMonitor extends DefaultMutableTreeNode {
+public class UserInstanceMonitor {
 
   private final IEntityDbRemoteServerAdmin server;
   private final User user;
+
+  final DefaultListModel clientListModel = new DefaultListModel();
 
   public UserInstanceMonitor(final IEntityDbRemoteServerAdmin server, final User user) throws RemoteException {
     this.server = server;
@@ -26,15 +28,14 @@ public class UserInstanceMonitor extends DefaultMutableTreeNode {
     refresh();
   }
 
-  public void refresh() throws RemoteException {
-    removeAllChildren();
-    for (final ClientInfo client : server.getClients(user))
-      add(new ClientInstanceMonitor(client , server));
+  public DefaultListModel getClientListModel() {
+    return clientListModel;
   }
 
-  @Override
-  public String toString() {
-    return user.toString() + " (" + getChildCount() + ")";
+  public void refresh() throws RemoteException {
+    clientListModel.clear();
+    for (final ClientInfo client : server.getClients(user))
+      clientListModel.addElement(new ClientInstanceMonitor(client , server));
   }
 
   public IEntityDbRemoteServerAdmin getServer() {
@@ -43,6 +44,10 @@ public class UserInstanceMonitor extends DefaultMutableTreeNode {
 
   public void shutdown() throws RemoteException {
     System.out.println("UserInstanceMonitor shutdown");
-    removeAllChildren();
+  }
+
+  @Override
+  public String toString() {
+    return user.toString();
   }
 }
