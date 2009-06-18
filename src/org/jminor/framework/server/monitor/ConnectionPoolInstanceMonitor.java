@@ -163,6 +163,8 @@ public class ConnectionPoolInstanceMonitor extends DefaultMutableTreeNode {
 
   public void shutdown() {
     System.out.println("ConnectionPoolInstanceMonitor shutdown: " + user);
+    if (updateTimer != null)
+      updateTimer.cancel();
     shutdown = true;
   }
 
