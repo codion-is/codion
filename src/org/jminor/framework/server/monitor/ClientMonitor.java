@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 public class ClientMonitor extends DefaultMutableTreeNode {
 
   private final IEntityDbRemoteServerAdmin server;
-  private boolean shutdown = false;
 
   public ClientMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
     this.server = server;
@@ -26,10 +25,8 @@ public class ClientMonitor extends DefaultMutableTreeNode {
 
   public void refresh() throws RemoteException{
     removeAllChildren();
-    if (!shutdown) {
-      for (final String clientType : server.getClientTypes())
-        add(new ClientTypeMonitor(server, clientType));
-    }
+    for (final String clientType : server.getClientTypes())
+      add(new ClientTypeMonitor(server, clientType));
   }
 
   @Override
@@ -52,10 +49,9 @@ public class ClientMonitor extends DefaultMutableTreeNode {
 
   public void shutdown() throws RemoteException {
     System.out.println("ClientMonitor shutdown");
-    shutdown = true;
     final int childCount = getChildCount();
     for (int i = 0; i < childCount; i++)
-      ((ClientTypeMonitor) getChildAt(0)).shutdown();
+      ((ClientTypeMonitor) getChildAt(i)).shutdown();
     removeAllChildren();
   }
 }

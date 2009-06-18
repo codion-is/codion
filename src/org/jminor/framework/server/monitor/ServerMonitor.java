@@ -29,7 +29,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   private static final Logger log = Util.getLogger(ServerMonitor.class);
 
   public final Event evtRefresh = new Event("ServerMonitor.evtRefresh");
-  public final Event evtServerShuttingDown = new Event("ServerMonitor.evtServerShuttingDown");
+  public final Event evtServerShutDown = new Event("ServerMonitor.evtServerShutDown");
   public final Event evtWarningThresholdChanged = new Event("ServerMonitor.evtWarningThresholdChanged");
 
   private final String hostName;
@@ -40,8 +40,6 @@ public class ServerMonitor extends DefaultMutableTreeNode {
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecond = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
-
-  private boolean shutdown = false;
 
   public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
     this.hostName = hostName;
@@ -55,8 +53,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
       @Override
       public void run() {
         try {
-          if (!shutdown)
-            updateStats();
+          updateStats();
         }
         catch (RemoteException e) {
           e.printStackTrace();
@@ -67,11 +64,9 @@ public class ServerMonitor extends DefaultMutableTreeNode {
 
   public void refresh() throws RemoteException {
     removeAllChildren();
-    if (!shutdown) {
-      add(new ConnectionPoolMonitor(server));
-      add(new ClientMonitor(server));
-      add(new UserMonitor(server));
-    }
+    add(new ConnectionPoolMonitor(server));
+    add(new ClientMonitor(server));
+    add(new UserMonitor(server));
   }
 
   @Override
@@ -102,8 +97,6 @@ public class ServerMonitor extends DefaultMutableTreeNode {
 
   //todo the server monitor is not equipped to handle this at all, but it does shut down the server
   public void shutdownServer() throws RemoteException {
-    evtServerShuttingDown.fire();
-    shutdown = true;
     updateTimer.cancel();
     ((ConnectionPoolMonitor) getChildAt(0)).shutdown();
     ((ClientMonitor) getChildAt(1)).shutdown();
@@ -115,6 +108,7 @@ public class ServerMonitor extends DefaultMutableTreeNode {
       e.printStackTrace();
     }
     System.out.println("Shutdown Server done");
+    evtServerShutDown.fire();
   }
 
   public String getServerName() {

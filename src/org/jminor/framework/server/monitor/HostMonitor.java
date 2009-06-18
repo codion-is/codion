@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class HostMonitor extends DefaultMutableTreeNode {
 
   private final String hostName;
 
+  private Collection<String> serverNames = new ArrayList<String>();
+
   public HostMonitor(final String hostName) throws RemoteException {
     this.hostName = hostName;
     refresh();
@@ -42,9 +45,9 @@ public class HostMonitor extends DefaultMutableTreeNode {
       final ServerMonitor model;
       try {
         model = new ServerMonitor(hostName, serverName);
-        model.evtServerShuttingDown.addListener(new ActionListener() {
+        model.evtServerShutDown.addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            remove(model);
+            refresh();
           }
         });
         add(model);

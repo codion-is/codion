@@ -39,6 +39,10 @@ public class MonitorModel extends DefaultMutableTreeNode {
     add(new HostMonitor(newHost));
   }
 
+  public Collection<String> getHostNames() {
+    return hostNames;
+  }
+
   public void refresh() throws RemoteException {
     removeAllChildren();
     for (final String hostName : hostNames)

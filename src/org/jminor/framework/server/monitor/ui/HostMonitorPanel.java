@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -50,6 +51,7 @@ public class HostMonitorPanel extends JPanel implements IPopupProvider {
     infoPanel.add(new JLabel("Name"));
     infoPanel.add(txtHost);
     add(infoPanel, BorderLayout.NORTH);
+    final JTabbedPane serverPane = new JTabbedPane();
   }
 
   private ControlSet getPopupCommands() {
