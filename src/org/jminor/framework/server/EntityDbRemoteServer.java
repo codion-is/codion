@@ -4,7 +4,9 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
@@ -12,6 +14,7 @@ import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.model.EntityRepository;
 
 import org.apache.log4j.Level;
@@ -260,8 +263,22 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public ConnectionPoolSettings getConnectionPoolSettings(final User user, final long since) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolSettings(user, since);
+  public ConnectionPoolSettings getConnectionPoolSettings(final User user) throws RemoteException {
+    return EntityDbRemoteAdapter.getConnectionPoolSettings(user);
+  }
+
+  /** {@inheritDoc} */
+  public ConnectionPoolStatistics getConnectionPoolStats(final User user, final long since) throws RemoteException {
+    return EntityDbRemoteAdapter.getConnectionPoolStats(user, since);
+  }
+
+  /** {@inheritDoc} */
+  public DatabaseStatistics getDatabaseStats() throws RemoteException {
+    final DatabaseStatistics ret = new DatabaseStatistics();
+    ret.setQueriesPerSecond(EntityDbConnection.getQueriesPerSecond());
+    ret.setCachedQueriesPerSecond(EntityDbConnection.getCachedQueriesPerSecond());
+
+    return ret;
   }
 
   /** {@inheritDoc} */
@@ -378,7 +395,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       }
     });
     connections.put(client, ret);
-    log.info("EntityDbServer added connection (" + client + ")");
+    log.info("JMinor server added connection (" + client + ")");
 
     return ret;
   }

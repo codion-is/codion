@@ -245,7 +245,7 @@ public class FrameworkSettings implements Serializable {
     setProperty(FILTER_QUERY_BY_MASTER, true);
     setProperty(PERSIST_ENTITY_PANELS, false);
     setProperty(INITIAL_SEARCH_PANEL_STATE, false);
-    setProperty(SERVER_NAME_PREFIX, "JMinor EntityDb Server");
+    setProperty(SERVER_NAME_PREFIX, "JMinor Server");
     setProperty(WILDCARD_CHARACTER, "%");
     setProperty(USE_NUMBER_FORMAT_GROUPING, true);
     setProperty(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.EntityDbRemoteProvider");

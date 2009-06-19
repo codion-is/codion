@@ -78,7 +78,7 @@ public class ServerMonitorPanel extends JPanel {
     final JTabbedPane pane = new JTabbedPane();
     pane.addTab("Performance", performancePanel);
     pane.addTab("Environment", initEnvironmentInfoPanel());
-    pane.addTab("Connection pools", new ConnectionPoolMonitorPanel(model.getConnectionPoolMonitor()));
+    pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients", new ClientMonitorPanel(model.getClientMonitor()));
     pane.addTab("Users", new UserMonitorPanel(model.getUserMonitor()));
 

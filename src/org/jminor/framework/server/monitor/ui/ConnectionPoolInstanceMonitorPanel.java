@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.FullDateFormat;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -68,14 +68,14 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
   }
 
   public void updateView() {
-    final ConnectionPoolSettings settings = model.getConnectionPoolStats();
-    txtPoolSize.setText(format.format(settings.getLiveConnectionCount()));
-    txtCreated.setText(format.format(settings.getConnectionsCreated()));
-    txtDestroyed.setText(format.format(settings.getConnectionsDestroyed()));
-    txtCreatedDestroyedResetTime.setText(FullDateFormat.get().format(settings.getResetDate()));
-    txtRequested.setText(format.format(settings.getConnectionRequests()));
-    final double prc = (double) settings.getConnectionRequestsDelayed()/(double) settings.getConnectionRequests()*100;
-    txtDelayed.setText(format.format(settings.getConnectionRequestsDelayed())
+    final ConnectionPoolStatistics stats = model.getConnectionPoolStats();
+    txtPoolSize.setText(format.format(stats.getLiveConnectionCount()));
+    txtCreated.setText(format.format(stats.getConnectionsCreated()));
+    txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
+    txtCreatedDestroyedResetTime.setText(FullDateFormat.get().format(stats.getResetDate()));
+    txtRequested.setText(format.format(stats.getConnectionRequests()));
+    final double prc = (double) stats.getConnectionRequestsDelayed()/(double) stats.getConnectionRequests()*100;
+    txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
     if (model.datasetContainsData())
       inPoolChart.getXYPlot().setDataset(model.getInPoolDataSet());
@@ -91,7 +91,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     add(statusBase, BorderLayout.CENTER);
   }
 
-  private void initializeCharts(ConnectionPoolInstanceMonitor model) {
+  private void initializeCharts(final ConnectionPoolInstanceMonitor model) {
     inPoolMacroChart.getXYPlot().setDataset(model.getInPoolDataSetMacro());
     inPoolMacroChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolMacroChart.getXYPlot().getRenderer();

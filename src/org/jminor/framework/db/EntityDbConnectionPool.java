@@ -6,6 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
+import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Util;
@@ -189,34 +190,31 @@ public class EntityDbConnectionPool {
   }
 
   public ConnectionPoolSettings getConnectionPoolSettings() {
-    return getConnectionPoolSettings(false, -1);
+    return connectionPoolSettings;
   }
 
-  public ConnectionPoolSettings getConnectionPoolSettings(final boolean includeStatistics, final long since) {
-    if (includeStatistics) {
-      synchronized (connectionPool) {
-        synchronized (connectionsInUse) {
-          connectionPoolSettings.setConnectionsInUse(connectionsInUse.size());
-          connectionPoolSettings.setAvailableInPool(connectionPool.size());
-        }
+  public ConnectionPoolStatistics getConnectionPoolStats(final long since) {
+    final ConnectionPoolStatistics ret = new ConnectionPoolStatistics(user);
+    synchronized (connectionPool) {
+      synchronized (connectionsInUse) {
+        ret.setConnectionsInUse(connectionsInUse.size());
+        ret.setAvailableInPool(connectionPool.size());
       }
-      connectionPoolSettings.setLiveConnectionCount(liveConnections);
-      connectionPoolSettings.setConnectionsCreated(connectionsCreated);
-      connectionPoolSettings.setConnectionsDestroyed(connectionsDestroyed);
-      connectionPoolSettings.setCreationDate(creationDate);
-      connectionPoolSettings.setConnectionRequests(connectionRequests);
-      connectionPoolSettings.setConnectionRequestsDelayed(connectionRequestsDelayed);
-      connectionPoolSettings.setRequestsDelayedPerSecond(requestsDelayedPerSecond);
-      connectionPoolSettings.setRequestsPerSecond(requestsPerSecond);
-      connectionPoolSettings.setQueriesPerSecond(EntityDbConnection.getQueriesPerSecond());
-      connectionPoolSettings.setCachedQueriesPerSecond(EntityDbConnection.getCachedQueriesPerSecond());
-      connectionPoolSettings.setResetDate(resetDate);
-      connectionPoolSettings.setTimestamp(System.currentTimeMillis());
-      if (since >= 0)
-        connectionPoolSettings.setPoolStatistics(getPoolStatistics(since));
     }
+    ret.setLiveConnectionCount(liveConnections);
+    ret.setConnectionsCreated(connectionsCreated);
+    ret.setConnectionsDestroyed(connectionsDestroyed);
+    ret.setCreationDate(creationDate);
+    ret.setConnectionRequests(connectionRequests);
+    ret.setConnectionRequestsDelayed(connectionRequestsDelayed);
+    ret.setRequestsDelayedPerSecond(requestsDelayedPerSecond);
+    ret.setRequestsPerSecond(requestsPerSecond);
+    ret.setResetDate(resetDate);
+    ret.setTimestamp(System.currentTimeMillis());
+    if (since >= 0)
+      ret.setPoolStatistics(getPoolStatistics(since));
 
-    return connectionPoolSettings;
+    return ret;
   }
 
   private EntityDbConnection getConnectionFromPool() {

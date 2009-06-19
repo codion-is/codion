@@ -5,6 +5,7 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
+import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
@@ -33,7 +34,8 @@ public class ConnectionPoolInstanceMonitor {
 
   private final User user;
   private final IEntityDbRemoteServerAdmin server;
-  private ConnectionPoolSettings poolStats;
+  private ConnectionPoolSettings poolSettings;
+  private ConnectionPoolStatistics poolStats;
 
   private final XYSeries poolSizeSeries = new XYSeries("Pool size");
   private final XYSeries minimumPoolSizeSeries = new XYSeries("Minimum size");
@@ -44,8 +46,6 @@ public class ConnectionPoolInstanceMonitor {
   private final XYSeriesCollection macroStatsCollection = new XYSeriesCollection();
   private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed requests per second");
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Connection requests per second");
-  private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
-  private final XYSeries cachedQueriesPerSecond = new XYSeries("Cached queries per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
   private long lastStatsUpdateTime = 0;
 
@@ -56,13 +56,12 @@ public class ConnectionPoolInstanceMonitor {
     System.out.println("new ConnectionPoolInstanceMonitor for user: " + user);
     this.user = user;
     this.server = server;
+    this.poolSettings = server.getConnectionPoolSettings(user);
     this.macroStatsCollection.addSeries(inPoolSeriesMacro);
     this.macroStatsCollection.addSeries(inUseSeriesMacro);
     this.macroStatsCollection.addSeries(poolSizeSeries);
     this.macroStatsCollection.addSeries(minimumPoolSizeSeries);
     this.macroStatsCollection.addSeries(maximumPoolSizeSeries);
-    this.connectionRequestsPerSecondCollection.addSeries(queriesPerSecond);
-    this.connectionRequestsPerSecondCollection.addSeries(cachedQueriesPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(delayedRequestsPerSecond);
     updateStats();
@@ -73,38 +72,41 @@ public class ConnectionPoolInstanceMonitor {
     return user;
   }
 
-  public ConnectionPoolSettings getConnectionPoolStats() {
+  public ConnectionPoolStatistics getConnectionPoolStats() {
     return poolStats;
   }
 
   public int getPooledConnectionTimout() throws RemoteException {
-    return server.getConnectionPoolSettings(user, -1).getPooledConnectionTimeout()/1000;
+    return server.getConnectionPoolSettings(user).getPooledConnectionTimeout()/1000;
   }
 
   public void setPooledConnectionTimout(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user, -1);
+    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
     settings.setPooledConnectionTimeout(value*1000);
     server.setConnectionPoolSettings(settings);
+    this.poolSettings = settings;
   }
 
   public int getMinimumPoolSize() {
-    return poolStats.getMinimumPoolSize();
+    return poolSettings.getMinimumPoolSize();
   }
 
   public void setMinimumPoolSize(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user, -1);
+    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
     settings.setMinimumPoolSize(value);
     server.setConnectionPoolSettings(settings);
+    this.poolSettings = settings;
   }
 
   public int getMaximumPoolSize() {
-    return poolStats.getMaximumPoolSize();
+    return poolSettings.getMaximumPoolSize();
   }
 
   public void setMaximumPoolSize(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user, -1);
+    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
     settings.setMaximumPoolSize(value);
     server.setConnectionPoolSettings(settings);
+    this.poolSettings = settings;
   }
 
   public boolean datasetContainsData() {
@@ -138,8 +140,6 @@ public class ConnectionPoolInstanceMonitor {
     inUseSeriesMacro.clear();
     connectionRequestsPerSecond.clear();
     delayedRequestsPerSecond.clear();
-    queriesPerSecond.clear();
-    cachedQueriesPerSecond.clear();
     poolSizeSeries.clear();
     minimumPoolSizeSeries.clear();
     maximumPoolSizeSeries.clear();
@@ -164,17 +164,15 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   private void updateStats() throws RemoteException {
-    poolStats = server.getConnectionPoolSettings(user, lastStatsUpdateTime);
+    poolStats = server.getConnectionPoolStats(user, lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
     poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getLiveConnectionCount());
-    minimumPoolSizeSeries.add(poolStats.getTimestamp(), poolStats.getMinimumPoolSize());
-    maximumPoolSizeSeries.add(poolStats.getTimestamp(), poolStats.getMaximumPoolSize());
+    minimumPoolSizeSeries.add(poolStats.getTimestamp(), poolSettings.getMinimumPoolSize());
+    maximumPoolSizeSeries.add(poolStats.getTimestamp(), poolSettings.getMaximumPoolSize());
     inPoolSeriesMacro.add(poolStats.getTimestamp(), poolStats.getAvailableInPool());
     inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getConnectionsInUse());
     connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());
     delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsDelayedPerSecond());
-    queriesPerSecond.add(poolStats.getTimestamp(), poolStats.getQueriesPerSecond());
-    cachedQueriesPerSecond.add(poolStats.getTimestamp(), poolStats.getCachedQueriesPerSecond());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getPoolStatistics());
     if (stats.size() > 0) {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");

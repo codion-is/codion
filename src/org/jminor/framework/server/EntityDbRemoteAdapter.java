@@ -5,6 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
@@ -121,8 +122,12 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     this.loggingEnabled = loggingEnabled;
   }
 
-  public static ConnectionPoolSettings getConnectionPoolSettings(final User user, final long includeStatsSince) {
-    return connectionPools.get(user).getConnectionPoolSettings(true, includeStatsSince);
+  public static ConnectionPoolSettings getConnectionPoolSettings(final User user) {
+    return connectionPools.get(user).getConnectionPoolSettings();
+  }
+
+  public static ConnectionPoolStatistics getConnectionPoolStats(final User user, final long since) {
+    return connectionPools.get(user).getConnectionPoolStats(since);
   }
 
   public static void setConnectionPoolSettings(final User user, final ConnectionPoolSettings settings) {

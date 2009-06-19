@@ -4,6 +4,8 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.ConnectionPoolSettings;
+import org.jminor.common.db.ConnectionPoolStatistics;
+import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
 import org.jminor.common.model.ClientInfo;
@@ -160,7 +162,11 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException;
 
-  public ConnectionPoolSettings getConnectionPoolSettings(final User user, final long since) throws RemoteException;
+  public ConnectionPoolSettings getConnectionPoolSettings(final User user) throws RemoteException;
+
+  public ConnectionPoolStatistics getConnectionPoolStats(final User user, final long since) throws RemoteException;
+
+  public DatabaseStatistics getDatabaseStats() throws RemoteException;
 
   public int getRequestsPerSecond() throws RemoteException;
 

@@ -36,10 +36,10 @@ public class ServerMonitor {
   private final IEntityDbRemoteServerAdmin server;
 
   private final Timer updateTimer;
-  private final ConnectionPoolMonitor connectionPoolMonitor;
+  private final DatabaseMonitor databaseMonitor;
   private final ClientMonitor clientMonitor;
-
   private final UserMonitor userMonitor;
+
   private int connectionCount = 0;
 
   private String memoryUsage;
@@ -53,7 +53,7 @@ public class ServerMonitor {
     this.server = connectServer(serverName);
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecond);
-    connectionPoolMonitor = new ConnectionPoolMonitor(server);
+    databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientMonitor(server);
     userMonitor = new UserMonitor(server);
     updateTimer = new Timer(false);
@@ -86,8 +86,8 @@ public class ServerMonitor {
     return clientMonitor;
   }
 
-  public ConnectionPoolMonitor getConnectionPoolMonitor() {
-    return connectionPoolMonitor;
+  public DatabaseMonitor getDatabaseMonitor() {
+    return databaseMonitor;
   }
 
   public UserMonitor getUserMonitor() {
@@ -111,10 +111,9 @@ public class ServerMonitor {
     server.performGC();
   }
 
-  //todo the server monitor is not equipped to handle this at all, but it does shut down the server
   public void shutdownServer() throws RemoteException {
     updateTimer.cancel();
-    connectionPoolMonitor.shutdown();
+    databaseMonitor.shutdown();
     clientMonitor.shutdown();
     userMonitor.shutdown();
     try {
