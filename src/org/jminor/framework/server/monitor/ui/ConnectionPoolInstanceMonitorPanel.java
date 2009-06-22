@@ -5,6 +5,7 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.FullDateFormat;
+import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
@@ -87,6 +88,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     setLayout(new BorderLayout(5,5));
 
     final JTabbedPane tabPane = new JTabbedPane();
+    tabPane.setUI(new BorderlessTabbedPaneUI());
     final JPanel configBase = new JPanel(new BorderLayout());
     configBase.add(getPoolConfigPanel(), BorderLayout.NORTH);
     final JPanel statusBase = new JPanel(new BorderLayout(5,5));

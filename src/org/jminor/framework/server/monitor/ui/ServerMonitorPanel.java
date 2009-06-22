@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.formats.FullDateFormat;
+import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -25,11 +26,9 @@ import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.rmi.RemoteException;
 
 /**
@@ -50,6 +49,10 @@ public class ServerMonitorPanel extends JPanel {
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataSet());
     requestsPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     initUI();
+  }
+
+  public ServerMonitor getModel() {
+    return model;
   }
 
   private void initUI() throws RemoteException {
@@ -76,27 +79,7 @@ public class ServerMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
     final JTabbedPane pane = new JTabbedPane();
-    pane.setUI(new BasicTabbedPaneUI() {
-      @Override
-      protected Insets getContentBorderInsets(final int tabPlacement) {
-        return new Insets(1,0,1,0);
-      }
-
-      @Override
-      protected Insets getSelectedTabPadInsets(int tabPlacement) {
-        return new Insets(2,2,2,1);
-      }
-
-      @Override
-      protected Insets getTabAreaInsets(int tabPlacement) {
-        return new Insets(3,2,0,2);
-      }
-
-      @Override
-      protected Insets getTabInsets(int tabPlacement, int tabIndex) {
-        return new Insets(0,4,1,4);
-      }
-    });
+    pane.setUI(new BorderlessTabbedPaneUI());
     pane.addTab("Performance", performancePanel);
     pane.addTab("Environment", initEnvironmentInfoPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));

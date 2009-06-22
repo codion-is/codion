@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
+import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
@@ -25,10 +26,11 @@ public class HostMonitor {
 
   private static final Logger log = Util.getLogger(HostMonitor.class);
 
+  public final Event evtRefreshed = new Event("HostMonitor.evtRefreshed");
+
   public final State stLiveUpdate = new State();
 
   private final String hostName;
-
   private Collection<String> serverNames = new ArrayList<String>();
 
   public HostMonitor(final String hostName) throws RemoteException {
@@ -41,8 +43,10 @@ public class HostMonitor {
   }
 
   public void refresh() {
+    serverNames.clear();
     for (final String serverName : getEntityDbRemoteServers(hostName))
       serverNames.add(serverName);
+    evtRefreshed.fire();
   }
 
   public Collection<String> getServerNames() {

@@ -59,12 +59,10 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
@@ -1391,12 +1389,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected JTabbedPane initializeDetailTabPane() {
     final JTabbedPane ret = new JTabbedPane();
     ret.setFocusable(false);
-    ret.setUI(new BasicTabbedPaneUI() {
-      @Override
-      protected Insets getContentBorderInsets(final int tabPlacement) {
-        return new Insets(1,0,0,0);
-      }
-    });
+    ret.setUI(new BorderlessTabbedPaneUI());
     for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
       ret.addTab(detailPanel.getModel().getCaption(), detailPanel);
 

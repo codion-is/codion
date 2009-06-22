@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
@@ -37,6 +38,7 @@ public class ConnectionPoolMonitorPanel extends JPanel {
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
+    connectionPoolPane.setUI(new BorderlessTabbedPaneUI());
     for (final ConnectionPoolInstanceMonitor monitor : model.getConnectionPoolInstanceMonitors())
       connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolInstanceMonitorPanel(monitor));
     add(connectionPoolPane, BorderLayout.CENTER);

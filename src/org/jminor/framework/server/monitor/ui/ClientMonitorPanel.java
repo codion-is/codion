@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientTypeMonitor;
 
@@ -28,6 +29,7 @@ public class ClientMonitorPanel extends JPanel {
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane clientTypesPane = new JTabbedPane();
+    clientTypesPane.setUI(new BorderlessTabbedPaneUI());
     for (final ClientTypeMonitor monitor : model.getClientTypeMonitors())
       clientTypesPane.addTab(monitor.getClientTypeID(), new ClientTypeMonitorPanel(monitor));
   }
