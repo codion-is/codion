@@ -34,6 +34,14 @@ public class DbException extends Exception  {
   /**
    * Constructs a new DbException instance
    * @param cause the Throwable cause of the exception
+   */
+  public DbException(final Throwable cause) {
+    super(cause);
+  }
+
+  /**
+   * Constructs a new DbException instance
+   * @param cause the Throwable cause of the exception
    * @param sql the sql query which cause the exception
    */
   public DbException(final Throwable cause, final String sql) {

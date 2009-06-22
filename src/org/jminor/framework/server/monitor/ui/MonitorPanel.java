@@ -20,7 +20,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.rmi.RemoteException;
 
 /**
@@ -78,6 +80,27 @@ public class MonitorPanel extends JPanel {
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane hostPane = new JTabbedPane();
+    hostPane.setUI(new BasicTabbedPaneUI() {
+      @Override
+      protected Insets getContentBorderInsets(final int tabPlacement) {
+        return new Insets(1,0,1,0);
+      }
+
+      @Override
+      protected Insets getSelectedTabPadInsets(int tabPlacement) {
+        return new Insets(2,2,2,1);
+      }
+
+      @Override
+      protected Insets getTabAreaInsets(int tabPlacement) {
+        return new Insets(3,2,0,2);
+      }
+
+      @Override
+      protected Insets getTabInsets(int tabPlacement, int tabIndex) {
+        return new Insets(0,4,1,4);
+      }
+    });
     for (final String hostName : model.getHostNames())
       hostPane.addTab(hostName, new HostMonitorPanel(new HostMonitor(hostName)));
     add(hostPane, BorderLayout.CENTER);

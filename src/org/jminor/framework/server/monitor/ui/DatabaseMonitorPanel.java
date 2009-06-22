@@ -10,7 +10,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -61,7 +60,6 @@ public class DatabaseMonitorPanel extends JPanel {
             ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
     final JPanel ret = new JPanel(new BorderLayout(5,5));
-    ret.setBorder(BorderFactory.createTitledBorder("Connection pool status"));
     ret.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
     ret.add(configBase, BorderLayout.NORTH);
 

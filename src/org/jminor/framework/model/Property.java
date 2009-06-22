@@ -687,6 +687,10 @@ public class Property implements Serializable {
       else
         return ret == null ? "null" : ret.toString();
     }
+    
+    public Object toSQLValue(final Type.Boolean value) {
+      return value == Type.Boolean.FALSE ? falseValue : (value == Type.Boolean.TRUE ? trueValue : nullValue);
+    }
   }
 
   public static class BlobProperty extends Property {

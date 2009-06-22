@@ -18,7 +18,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,9 +25,11 @@ import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.rmi.RemoteException;
 
 /**
@@ -57,7 +58,6 @@ public class ServerMonitorPanel extends JPanel {
     infoPanel.add(initConnectionCountField());
     infoPanel.add(new JLabel("Memory usage", JLabel.RIGHT));
     infoPanel.add(initMemoryField());
-    infoPanel.setBorder(BorderFactory.createTitledBorder("Server"));
     infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "performGC", "Run garbage collector")));
     infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "shutdownServer", "Shut down server")));
 
@@ -76,13 +76,32 @@ public class ServerMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
     final JTabbedPane pane = new JTabbedPane();
+    pane.setUI(new BasicTabbedPaneUI() {
+      @Override
+      protected Insets getContentBorderInsets(final int tabPlacement) {
+        return new Insets(1,0,1,0);
+      }
+
+      @Override
+      protected Insets getSelectedTabPadInsets(int tabPlacement) {
+        return new Insets(2,2,2,1);
+      }
+
+      @Override
+      protected Insets getTabAreaInsets(int tabPlacement) {
+        return new Insets(3,2,0,2);
+      }
+
+      @Override
+      protected Insets getTabInsets(int tabPlacement, int tabIndex) {
+        return new Insets(0,4,1,4);
+      }
+    });
     pane.addTab("Performance", performancePanel);
     pane.addTab("Environment", initEnvironmentInfoPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients", new ClientMonitorPanel(model.getClientMonitor()));
     pane.addTab("Users", new UserMonitorPanel(model.getUserMonitor()));
-
-    setBorder(BorderFactory.createTitledBorder("Server information"));
 
     add(pane, BorderLayout.CENTER);
   }

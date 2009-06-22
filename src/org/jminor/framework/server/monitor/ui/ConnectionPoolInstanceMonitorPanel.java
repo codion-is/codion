@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -84,11 +85,19 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
   private void initUI() {
     initializeCharts(model);
     setLayout(new BorderLayout(5,5));
-    add(getPoolConfigPanel(), BorderLayout.NORTH);
+
+    final JTabbedPane tabPane = new JTabbedPane();
+    final JPanel configBase = new JPanel(new BorderLayout());
+    configBase.add(getPoolConfigPanel(), BorderLayout.NORTH);
     final JPanel statusBase = new JPanel(new BorderLayout(5,5));
     statusBase.add(getStatsPanel(), BorderLayout.NORTH);
-    statusBase.add(getChartPanel(), BorderLayout.CENTER);
-    add(statusBase, BorderLayout.CENTER);
+    final JPanel leftBase = new JPanel(new BorderLayout());
+    leftBase.add(configBase, BorderLayout.NORTH);
+    leftBase.add(statusBase, BorderLayout.CENTER);
+
+    tabPane.addTab("Config", leftBase);
+    tabPane.addTab("Stats", getChartPanel());
+    add(tabPane, BorderLayout.CENTER);
   }
 
   private void initializeCharts(final ConnectionPoolInstanceMonitor model) {
