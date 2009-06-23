@@ -520,3 +520,7 @@
   Server monitor now handles server shutdown a bit more gracefully
   IEntityDbRemoteServerAdmin.getSystemProperties() added and to implementation as well
   Server monitor code base changed radically, no more messing about with trees
+  IEntityDbRemoteServerAdmin.getDatabase.getConnectionPoolStats() renamed to getConnectionPoolStatistics
+  IEntityDbRemoteServerAdmin.getDatabase.getDatabaseStats() renamed to getDatabaseStatistics
+  DbConnection does not call IDatabase.onDisconnect() on logout since it obviously wreaks havoc when an embedded database is running in the server
+  IDatabase.onDisconnect() renamed to shutdownEmbedded(), which is called in the server on exit and in EntityDbLocalProvider on logout

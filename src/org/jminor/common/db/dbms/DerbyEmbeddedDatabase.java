@@ -72,7 +72,7 @@ public class DerbyEmbeddedDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public void onDisconnect(final Properties connectionProperties) {
+  public void shutdownEmbedded(final Properties connectionProperties) {
     try {
       DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true"
               + getUserInfoString(connectionProperties));

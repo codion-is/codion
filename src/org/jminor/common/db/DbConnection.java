@@ -119,7 +119,6 @@ public class DbConnection {
     catch (SQLException ex) {
       log.error(this, ex);
     }
-    Database.get().onDisconnect(connectionProperties);
     connection = null;
     checkConnectionStatement = null;
   }

@@ -164,8 +164,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                 final EntityRepository repository)
-          throws RemoteException {
+                                 final EntityRepository repository) throws RemoteException {
     if (connectionKey == null)
       return null;
 
@@ -201,6 +200,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
         log.error(this, ex);
       }
     }
+    Database.get().shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
     System.exit(0);
   }
 
@@ -268,12 +268,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public ConnectionPoolStatistics getConnectionPoolStats(final User user, final long since) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolStats(user, since);
+  public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException {
+    return EntityDbRemoteAdapter.getConnectionPoolStatistics(user, since);
   }
 
   /** {@inheritDoc} */
-  public DatabaseStatistics getDatabaseStats() throws RemoteException {
+  public DatabaseStatistics getDatabaseStatistics() throws RemoteException {
     final DatabaseStatistics ret = new DatabaseStatistics();
     ret.setQueriesPerSecond(EntityDbConnection.getQueriesPerSecond());
     ret.setCachedQueriesPerSecond(EntityDbConnection.getCachedQueriesPerSecond());

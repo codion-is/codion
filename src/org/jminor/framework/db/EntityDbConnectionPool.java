@@ -193,7 +193,7 @@ public class EntityDbConnectionPool {
     return connectionPoolSettings;
   }
 
-  public ConnectionPoolStatistics getConnectionPoolStats(final long since) {
+  public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
     final ConnectionPoolStatistics ret = new ConnectionPoolStatistics(user);
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {

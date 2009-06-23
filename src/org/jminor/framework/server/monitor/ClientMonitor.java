@@ -34,7 +34,7 @@ public class ClientMonitor {
       clientTypeMonitors.add(new ClientTypeMonitor(server, clientType));
   }
 
-  public void shutdown() throws RemoteException {
+  public void shutdown() {
     System.out.println("ClientMonitor shutdown");
     for (final ClientTypeMonitor monitor : clientTypeMonitors)
       monitor.shutdown();

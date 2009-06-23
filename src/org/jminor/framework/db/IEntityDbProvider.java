@@ -27,4 +27,10 @@ public interface IEntityDbProvider {
    * @return an Event fired when a successful connection is made
    */
   public Event getConnectEvent();
+
+  /**
+   * Logs out, disconnects and performs cleanup if required
+   * @throws UserException in case of an exception
+   */
+  public void logout() throws UserException;
 }

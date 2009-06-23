@@ -72,6 +72,15 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     return evtConnected;
   }
 
+  public void logout() throws UserException {
+    try {
+      getEntityDb().logout();
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
   protected void initializeEntityDb() throws UserException {
     try {
       if (entityDb == null || !connectionValid()) {

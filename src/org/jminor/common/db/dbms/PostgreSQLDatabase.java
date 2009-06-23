@@ -61,7 +61,7 @@ public class PostgreSQLDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public void onDisconnect(final Properties connectionProperties) {}
+  public void shutdownEmbedded(final Properties connectionProperties) {}
 
   /** {@inheritDoc} */
   public boolean supportsNoWait() {

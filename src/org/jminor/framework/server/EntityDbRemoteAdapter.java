@@ -126,8 +126,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     return connectionPools.get(user).getConnectionPoolSettings();
   }
 
-  public static ConnectionPoolStatistics getConnectionPoolStats(final User user, final long since) {
-    return connectionPools.get(user).getConnectionPoolStats(since);
+  public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
+    return connectionPools.get(user).getConnectionPoolStatistics(since);
   }
 
   public static void setConnectionPoolSettings(final User user, final ConnectionPoolSettings settings) {

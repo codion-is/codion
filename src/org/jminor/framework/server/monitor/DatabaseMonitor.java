@@ -48,7 +48,7 @@ public class DatabaseMonitor {
     return connectionPoolMonitor;
   }
 
-  public void shutdown() throws RemoteException {
+  public void shutdown() {
     if (updateTimer != null)
       updateTimer.cancel();
     connectionPoolMonitor.shutdown();
@@ -60,7 +60,7 @@ public class DatabaseMonitor {
   }
 
   public void updateStats() throws RemoteException {
-    final DatabaseStatistics dbStats = server.getDatabaseStats();
+    final DatabaseStatistics dbStats = server.getDatabaseStatistics();
     queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
     cachedQueriesPerSecond.add(dbStats.getTimestamp(), dbStats.getCachedQueriesPerSecond());
   }

@@ -164,9 +164,9 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
 
   public ConnectionPoolSettings getConnectionPoolSettings(final User user) throws RemoteException;
 
-  public ConnectionPoolStatistics getConnectionPoolStats(final User user, final long since) throws RemoteException;
+  public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException;
 
-  public DatabaseStatistics getDatabaseStats() throws RemoteException;
+  public DatabaseStatistics getDatabaseStatistics() throws RemoteException;
 
   public int getRequestsPerSecond() throws RemoteException;
 

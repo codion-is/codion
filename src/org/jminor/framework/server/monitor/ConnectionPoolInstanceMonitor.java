@@ -164,7 +164,7 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   private void updateStats() throws RemoteException {
-    poolStats = server.getConnectionPoolStats(user, lastStatsUpdateTime);
+    poolStats = server.getConnectionPoolStatistics(user, lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
     poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getLiveConnectionCount());
     minimumPoolSizeSeries.add(poolStats.getTimestamp(), poolSettings.getMinimumPoolSize());

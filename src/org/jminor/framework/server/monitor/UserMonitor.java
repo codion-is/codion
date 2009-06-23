@@ -40,7 +40,7 @@ public class UserMonitor {
     return server;
   }
 
-  public void shutdown() throws RemoteException {
+  public void shutdown() {
     System.out.println("UserMonitor shutdown");
     final Enumeration enumeration = userInstanceMonitorsListModel.elements();
     while (enumeration.hasMoreElements())

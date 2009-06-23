@@ -46,7 +46,7 @@ public class ConnectionPoolMonitor {
     return connectionPoolInstanceMonitors;
   }
 
-  public void shutdown() throws RemoteException {
+  public void shutdown() {
     System.out.println("ConnectionPoolMonitor shutdown");
     for (final ConnectionPoolInstanceMonitor monitor : connectionPoolInstanceMonitors)
       monitor.shutdown();

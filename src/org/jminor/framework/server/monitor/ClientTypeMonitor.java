@@ -52,7 +52,7 @@ public class ClientTypeMonitor {
     refresh();
   }
 
-  public void shutdown() throws RemoteException {
+  public void shutdown() {
     System.out.println("ClientTypeMonitor shutdown");
   }
 }

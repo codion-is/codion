@@ -70,6 +70,14 @@ public class ServerMonitor {
     }, new Date(), 2000);
   }
 
+  public void shutdown() {
+    if (updateTimer != null)
+      updateTimer.cancel();
+    databaseMonitor.shutdown();
+    clientMonitor.shutdown();
+    userMonitor.shutdown();
+  }
+
   public IEntityDbRemoteServerAdmin getServer() {
     return server;
   }
@@ -112,10 +120,7 @@ public class ServerMonitor {
   }
 
   public void shutdownServer() throws RemoteException {
-    updateTimer.cancel();
-    databaseMonitor.shutdown();
-    clientMonitor.shutdown();
-    userMonitor.shutdown();
+    shutdown();
     try {
       server.shutdown();
     }

@@ -148,11 +148,11 @@ public interface IDatabase {
   public boolean isEmbedded();
 
   /**
-   * Called after a connection is disconnected, this is useful when the
-   * database is an embedded one that needs closing.
+   * This should shutdown the database in case it is an embedded one
+   * and if that is applicaple, such as for Derby.
    * @param connectionProperties the connection properties
    */
-  public void onDisconnect(final Properties connectionProperties);
+  public void shutdownEmbedded(final Properties connectionProperties);
 
   /**
    * @return true if the dbms supports select for update with the nowait option
