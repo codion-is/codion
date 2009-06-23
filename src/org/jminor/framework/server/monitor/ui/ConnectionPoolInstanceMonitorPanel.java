@@ -97,8 +97,8 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     leftBase.add(configBase, BorderLayout.NORTH);
     leftBase.add(statusBase, BorderLayout.CENTER);
 
-    tabPane.addTab("Config", leftBase);
-    tabPane.addTab("Stats", getChartPanel());
+    tabPane.addTab("Configuration", leftBase);
+    tabPane.addTab("Statistics", getChartPanel());
     add(tabPane, BorderLayout.CENTER);
   }
 

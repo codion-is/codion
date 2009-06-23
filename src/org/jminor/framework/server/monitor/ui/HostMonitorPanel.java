@@ -64,6 +64,16 @@ public class HostMonitorPanel extends JPanel {
         }
       }
     });
+    model.evtServerMonitorRemoved.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          refreshServerTabs();
+        }
+        catch (RemoteException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    });
   }
 
   private void refreshServerTabs() throws RemoteException {
@@ -71,22 +81,26 @@ public class HostMonitorPanel extends JPanel {
     for (int i = 0; i < serverPane.getTabCount(); i++)
       serverTabs.add((ServerMonitorPanel) serverPane.getComponentAt(i));
 
-    final Collection<String> serverNames = model.getServerNames();
+    final Collection<ServerMonitor> serverMonitors = model.getServerMonitors();
     //remove disconnected server tabs and remove server names that already have tabs
     for (final ServerMonitorPanel panel : serverTabs) {
       final ServerMonitor model = panel.getModel();
-      if (!serverNames.contains(model.getServerName()))
-        removeServer(panel);
-      serverNames.remove(model.getServerName());
+      if (!serverMonitors.contains(model))
+        removeServerTab(panel);
+      serverMonitors.remove(model);
     }
 
     //add the remaining servers
-    for (final String serverName : serverNames)
-      serverPane.add(serverName, new ServerMonitorPanel(new ServerMonitor(model.getHostName(), serverName)));
+    for (final ServerMonitor serverMonitor : serverMonitors)
+      addServerTab(serverMonitor);
   }
 
-  private void removeServer(final ServerMonitorPanel panel) {
-    panel.getModel().shutdown();
+  private void addServerTab(final ServerMonitor serverMonitor) throws RemoteException {
+    final ServerMonitorPanel serverMonitorPanel = new ServerMonitorPanel(serverMonitor);
+    serverPane.add(serverMonitor.getServerName(), serverMonitorPanel);
+  }
+
+  private void removeServerTab(final ServerMonitorPanel panel) {
     serverPane.remove(panel);
   }
 }

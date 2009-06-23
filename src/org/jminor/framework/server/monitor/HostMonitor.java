@@ -10,6 +10,8 @@ import org.jminor.framework.FrameworkSettings;
 
 import org.apache.log4j.Logger;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -27,11 +29,11 @@ public class HostMonitor {
   private static final Logger log = Util.getLogger(HostMonitor.class);
 
   public final Event evtRefreshed = new Event("HostMonitor.evtRefreshed");
+  public final Event evtServerMonitorRemoved = new Event("HostMonitor.evtServerMonitorRemoved");
 
   public final State stLiveUpdate = new State();
-
   private final String hostName;
-  private Collection<String> serverNames = new ArrayList<String>();
+  private Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
 
   public HostMonitor(final String hostName) throws RemoteException {
     this.hostName = hostName;
@@ -42,15 +44,23 @@ public class HostMonitor {
     return hostName;
   }
 
-  public void refresh() {
-    serverNames.clear();
-    for (final String serverName : getEntityDbRemoteServers(hostName))
-      serverNames.add(serverName);
+  public void refresh() throws RemoteException {
+    for (final String serverName : getEntityDbRemoteServers(hostName)) {
+      if (!containsServerMonitor(serverName)) {
+        final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName);
+        serverMonitor.evtServerShutDown.addListener(new ActionListener() {
+          public void actionPerformed(final ActionEvent e) {
+            removeServer(serverMonitor);
+          }
+        });
+        serverMonitors.add(serverMonitor);
+      }
+    }
     evtRefreshed.fire();
   }
 
-  public Collection<String> getServerNames() {
-    return serverNames;
+  public Collection<ServerMonitor> getServerMonitors() {
+    return serverMonitors;
   }
 
   public boolean isLiveUpdate() {
@@ -61,15 +71,27 @@ public class HostMonitor {
     stLiveUpdate.setActive(value);
   }
 
+  private void removeServer(final ServerMonitor serverMonitor) {
+    serverMonitors.remove(serverMonitor);
+    evtServerMonitorRemoved.fire();
+  }
+
   private static String[] getEntityServers(final Registry registry) throws RemoteException {
     final ArrayList<String> ret = new ArrayList<String>();
     final String[] boundNames = registry.list();
-    for (final String name : boundNames) {
+    for (final String name : boundNames)
       if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)))
         ret.add(name);
-    }
 
     return ret.toArray(new String[ret.size()]);
+  }
+
+  private boolean containsServerMonitor(final String serverName) {
+    for (final ServerMonitor serverMonitor : serverMonitors)
+      if (serverMonitor.getServerName().equals(serverName))
+        return true;
+
+    return false;
   }
 
   private List<String> getEntityDbRemoteServers(final String serverHostName) {

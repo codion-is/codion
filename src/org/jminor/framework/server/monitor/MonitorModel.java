@@ -20,24 +20,31 @@ public class MonitorModel {
   public final Event evtHostAdded = new Event("MonitorModel.evtHostAdded");
   public final Event evtHostRemoved = new Event("MonitorModel.evtHostRemoved");
 
-  private final Collection<String> hostNames = new ArrayList<String>();
+  private final Collection<HostMonitor> hostMonitors = new ArrayList<HostMonitor>();
 
   public MonitorModel(final String hostNames) throws RemoteException {
     if (hostNames == null || hostNames.length() == 0)
       throw new RuntimeException("No server host names specified for server monitor");
-    this.hostNames.addAll(Arrays.asList(hostNames.split(",")));
-    refresh();
+    for (final String hostname : Arrays.asList(hostNames.split(",")))
+      addHost(hostname);
   }
 
-  public void addHost(final String newHost) throws RemoteException {
-    hostNames.add(newHost);
+  public void addHost(final String hostname) throws RemoteException {
+    hostMonitors.add(new HostMonitor(hostname));
+    evtHostAdded.fire();
   }
 
-  public Collection<String> getHostNames() {
-    return hostNames;
+  public void removeHost(final HostMonitor hostMonitor) {
+    hostMonitors.remove(hostMonitor);
+    evtHostRemoved.fire();
+  }
+
+  public Collection<HostMonitor> getHostMonitors() {
+    return hostMonitors;
   }
 
   public void refresh() throws RemoteException {
-    //todo
+    for (final HostMonitor hostMonitor : hostMonitors)
+      hostMonitor.refresh();
   }
 }

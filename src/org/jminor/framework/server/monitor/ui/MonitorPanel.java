@@ -76,8 +76,8 @@ public class MonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     final JTabbedPane hostPane = new JTabbedPane();
     hostPane.setUI(new BorderlessTabbedPaneUI());
-    for (final String hostName : model.getHostNames())
-      hostPane.addTab(hostName, new HostMonitorPanel(new HostMonitor(hostName)));
+    for (final HostMonitor hostMonitor : model.getHostMonitors())
+      hostPane.addTab(hostMonitor.getHostName(), new HostMonitorPanel(hostMonitor));
     add(hostPane, BorderLayout.CENTER);
   }
 
