@@ -342,6 +342,8 @@ public class FrameworkUiUtil {
   public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel,
                                                           final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
+    if (searchPropertyIDs.length == 0)
+      throw new RuntimeException("No search properties specified");
     final List<Property> searchProperties = EntityRepository.get().getProperties(property.referenceEntityID, searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)

@@ -8,10 +8,7 @@ import org.jminor.framework.FrameworkSettings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import javax.swing.TransferHandler;
-import javax.swing.text.JTextComponent;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,7 +18,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,7 +29,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.prefs.Preferences;
@@ -616,69 +611,4 @@ public class Util {
     return numberOfDays;
   }
 
-  /**
-   * Makes the text component accept files during drag and drop operations and
-   * insert the absolute path of the dropped file (the first file in a list if more
-   * than one file is dropped)
-   * @param textComponent the text component
-   */
-  public static void addAcceptSingleFileDragAndDrop(final JTextComponent textComponent) {
-    textComponent.setDragEnabled(true);
-    textComponent.setTransferHandler(new TransferHandler() {
-      @Override
-      public boolean canImport(final TransferSupport support) {
-        try {
-          final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-          for (final DataFlavor flavor : support.getDataFlavors())
-            if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor))
-              return true;
-
-          return false;
-        }
-        catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      @Override
-      public boolean importData(final TransferSupport support) {
-        final String path = getFileDataFlavor(support);
-        if (path != null) {
-          textComponent.setText(path);
-          return true;
-        }
-        else
-          return false;
-      }
-    });
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private static String getFileDataFlavor(final TransferHandler.TransferSupport support) {
-    try {
-      for (final DataFlavor flavor : support.getDataFlavors()) {
-        if (flavor.isFlavorJavaFileListType()) {
-          final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-
-          return files.size() > 0 ? files.get(0).getAbsolutePath() : null;
-        }
-      }
-      //the code below is for handling unix/linux
-      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
-      for(final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
-        final String token = st.nextToken().trim();
-        if(token.startsWith("#") || token.isEmpty()) // comment line, by RFC 2483
-          continue;
-
-        return new File(new URI(token)).getAbsolutePath();
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-
-    return null;
-  }
 }
