@@ -525,3 +525,4 @@
   DbConnection does not call IDatabase.onDisconnect() on logout since it obviously wreaks havoc when an embedded database is running in the server
   IDatabase.onDisconnect() renamed to shutdownEmbedded(), which is called in the server on exit and in EntityDbLocalProvider on logout
   Util.addAcceptSingleFileDragAndDrop() moved to UiUtil
+  FrameworkUIUtil.createComboBox() now calls UiUtil.transferFocusOnEnter for both the combobox and the editor component, it now works for uneditable boxes as well

@@ -405,8 +405,10 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new ComboBoxPropertyLink(entityModel, property, ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
+    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
+      UiUtil.transferFocusOnEnter(ret);
+    }
 
     return ret;
   }
