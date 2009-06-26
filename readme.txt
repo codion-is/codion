@@ -34,7 +34,7 @@ Release contents (~13 MB):
               and the demo applications. resources/project_template contains an ant build file template
               for projects using the JMinor framework.
 * "src" contains the Java source files for the framework
-* "srcdemos" contains the Java source files for the framework demos: EmpDept, PetStore and SchemaBrowser
+* "srcdemos" contains the Java source files for the framework demos: EmpDept, Petstore and SchemaBrowser
 * "srctest" contains the JUnit test sources for the framework
 
 
@@ -71,4 +71,20 @@ The "dist" directory contains the following distinct jar files for use in applic
 
 4. GETTING STARTED
 
-Documentation on how to run the demos is available on-line at http://jminor.org
+JMinor comes with three demo applications, a small one based on the SCOTT schema found in most if not all Oracle
+setups called EmpDept, a larger one called Petstore based on a schema of the same name and a SchemaBrowser, which
+is limited to Oracle, MySQL and H2 databases. Apache Derby or H2 databases containing the required schemas are
+generated via respective ant targets.
+
+In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
+builds can be found at ant.apache.org), which deployes the demo applications into the folder dist/current along
+with the required databases.
+
+dist
+ '-current
+     '-jminor_demos          - application jar files, Derby and H2 databases, files to run the demo applications
+     '-jminor_server         - server jar files, Derby and H2 databases, files to run the server
+     '-jminor_server_monitor - server monitorjar files, files to run the server monitor
+
+The demo applications can be run either with an embedded Derby or H2 database (located in the jminor_demos folder)
+or using the JMinor RMI Server.
