@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.model.formats.ShortDotDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -56,7 +55,7 @@ public class EmployeePanel extends EntityPanel {
     ret.add(createControlPanel(EmpDept.EMPLOYEE_SALARY, createTextField(EmpDept.EMPLOYEE_SALARY)));
     ret.add(createControlPanel(EmpDept.EMPLOYEE_COMMISSION, createTextField(EmpDept.EMPLOYEE_COMMISSION)));
 
-    ret.add(createControlPanel(EmpDept.EMPLOYEE_HIREDATE, createDateInputPanel(EmpDept.EMPLOYEE_HIREDATE, new ShortDotDateFormat())));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_HIREDATE, createDateInputPanel(EmpDept.EMPLOYEE_HIREDATE)));
     ret.add(new JLabel());
     ret.add(new JLabel());
 

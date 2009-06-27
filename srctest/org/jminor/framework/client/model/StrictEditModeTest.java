@@ -15,15 +15,11 @@ import junit.framework.TestCase;
 
 import java.util.Arrays;
 
-public class TestStrictEditMode extends TestCase {
+public class StrictEditModeTest extends TestCase {
 
   private final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
-          new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName());
+          new User("scott", "tiger"), StrictEditModeTest.class.getSimpleName());
   private DepartmentModel model;
-
-  public TestStrictEditMode() {
-    super("TestStrictEditMode");
-  }
 
   @Override
   protected void setUp() throws Exception {
@@ -31,7 +27,7 @@ public class TestStrictEditMode extends TestCase {
       return;
     new EmpDept();
     model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
-          new User("scott", "tiger"), TestStrictEditMode.class.getSimpleName()));
+          new User("scott", "tiger"), StrictEditModeTest.class.getSimpleName()));
   }
 
   @Override

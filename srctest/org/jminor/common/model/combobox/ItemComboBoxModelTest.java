@@ -2,11 +2,7 @@ package org.jminor.common.model.combobox;
 
 import junit.framework.TestCase;
 
-public class TestItemComboBoxModel extends TestCase {
-
-  public TestItemComboBoxModel() {
-    super("TestItemComboBoxModel");
-  }
+public class ItemComboBoxModelTest extends TestCase {
 
   public void test() throws Exception {
     final ItemComboBoxModel.Item[] items = new ItemComboBoxModel.Item[] {

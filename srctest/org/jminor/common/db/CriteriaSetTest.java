@@ -2,11 +2,7 @@ package org.jminor.common.db;
 
 import junit.framework.TestCase;
 
-public class TestCriteriaSet extends TestCase {
-
-  public TestCriteriaSet() {
-    super("TestCriteriaSet");
-  }
+public class CriteriaSetTest extends TestCase {
 
   public void test() throws Exception {
     final CriteriaSet andSet = new CriteriaSet(CriteriaSet.Conjunction.AND,

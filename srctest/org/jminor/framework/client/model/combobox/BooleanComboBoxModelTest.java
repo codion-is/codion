@@ -4,11 +4,7 @@ import org.jminor.framework.model.Type;
 
 import junit.framework.TestCase;
 
-public class TestBooleanComboBoxModel extends TestCase {
-
-  public TestBooleanComboBoxModel() {
-    super("TestBooleanComboBoxModel");
-  }
+public class BooleanComboBoxModelTest extends TestCase {
 
   public void test() throws Exception {
     final BooleanComboBoxModel model = new BooleanComboBoxModel();

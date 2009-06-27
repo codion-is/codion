@@ -526,3 +526,7 @@
   IDatabase.onDisconnect() renamed to shutdownEmbedded(), which is called in the server on exit and in EntityDbLocalProvider on logout
   Util.addAcceptSingleFileDragAndDrop() moved to UiUtil
   FrameworkUIUtil.createComboBox() now calls UiUtil.transferFocusOnEnter for both the combobox and the editor component, it now works for uneditable boxes as well
+  All unit test classes renamed ...Test from Test...
+  AbstractDateMaskFormat.getDateMask() is no longer abstract
+  AbstractDateMaskFormat renamed to DateMaskFormat
+  EntityBindingPanel.createDateInputPanel(propertyID) added, uses the default short date format

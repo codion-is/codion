@@ -16,10 +16,9 @@ import junit.framework.TestCase;
 
 import java.util.Date;
 
-public class TestPropertyCriteria extends TestCase {
+public class PropertyCriteriaTest extends TestCase {
 
-  public TestPropertyCriteria(String name) {
-    super(name);
+  public PropertyCriteriaTest() {
     new EmpDept();
   }
 
@@ -245,7 +244,7 @@ public class TestPropertyCriteria extends TestCase {
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.LIKE, null);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, (Object[]) null);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =

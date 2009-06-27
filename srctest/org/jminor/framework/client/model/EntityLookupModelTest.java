@@ -1,6 +1,5 @@
 package org.jminor.framework.client.model;
 
-import junit.framework.TestCase;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDbLocalProvider;
@@ -10,18 +9,16 @@ import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityRepository;
 
+import junit.framework.TestCase;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class TestEntityLookupModel extends TestCase {
+public class EntityLookupModelTest extends TestCase {
 
   private IEntityDbProvider dbProvider;
   private EntityLookupModel lookupModel;
-
-  public TestEntityLookupModel() {
-    super("TestEntityLookupModel");
-  }
 
   public void testLookupModel() throws Exception {
     lookupModel.setMultipleSelectionAllowed(true);

@@ -18,7 +18,7 @@ import java.util.Map;
  * Date: 24.12.2007
  * Time: 13:20:26
  */
-public class TestPetstoreModel extends EntityTestUnit {
+public class PetstoreTest extends EntityTestUnit {
 
   public void testAddress() throws Exception {
     testEntity(Petstore.T_ADDRESS);

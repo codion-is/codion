@@ -18,7 +18,7 @@ import javax.swing.JTextField;
  * Date: 13.1.2008
  * Time: 12:15:13
  */
-public class TestBeanPropertyLink extends TestCase {
+public class BeanPropertyLinkTest extends TestCase {
 
   private Integer intValue;
   private Event evtIntValueChanged = new Event("");
@@ -35,18 +35,14 @@ public class TestBeanPropertyLink extends TestCase {
   private String selectedItem;
   private Event evtSelectedItemChanged = new Event("");
 
-  public TestBeanPropertyLink() {
-    super("TestBeanPropertyLink");
-  }
-
   public void testIntBeanPropertyLink() throws Exception {
     final IntField txtInt = new IntField();
     new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged, "");
     assertNull("Int value should be null on initialization", txtInt.getInt());
     setIntValue(2);
-    assertEquals("Int value should be 2", 2, (int) txtInt.getInt());
+    assertEquals("Int value should be 2", 2, txtInt.getInt());
     txtInt.setText("42");
-    assertEquals("Int value should be 42", 42, (int) getIntValue());
+    assertEquals("Int value should be 42", 42, getIntValue());
     txtInt.setText("");
     assertNull("Int value should be null", getIntValue());
   }

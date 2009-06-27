@@ -8,15 +8,11 @@ import junit.framework.TestCase;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class TestState extends TestCase {
+public class StateTest extends TestCase {
 
   private int stateChanged = 0;
   private int setActive = 0;
   private int setInactive = 0;
-
-  public TestState() {
-    super("TestState");
-  }
 
   public void test() {
     final State state = new State();

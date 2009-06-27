@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
-import org.jminor.common.model.formats.AbstractDateMaskFormat;
+import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
@@ -69,7 +69,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     switch (model.getPropertyType()) {
       case LONG_DATE:
       case SHORT_DATE:
-        final AbstractDateMaskFormat format =//todo localize
+        final DateMaskFormat format =//todo localize
                 model.getPropertyType() == Type.LONG_DATE ? new LongDateFormat() : new ShortDashDateFormat();
         field = UiUtil.createFormattedField(format.getDateMask());
         new TextBeanPropertyLink((JFormattedTextField) field, model,

@@ -27,12 +27,11 @@ import java.util.Date;
  * Date: 13.1.2008
  * Time: 13:23:40
  */
-public class TestEntityPropertyLink extends TestCase {
+public class EntityPropertyLinkTest extends TestCase {
 
   private EntityModel model;
 
-  public TestEntityPropertyLink() throws UserException {
-    super("TestEntityPropertyLink");
+  public EntityPropertyLinkTest() throws UserException {
     new EmpDept();
     model = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
   }

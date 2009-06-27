@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import java.util.Arrays;
 import java.util.List;
 
-public class TestEntityTableModel extends TestCase {
+public class EntityTableModelTest extends TestCase {
 
   private static final Entity[] testEntities;
 
@@ -34,10 +34,6 @@ public class TestEntityTableModel extends TestCase {
     }
 
     return testEntities;
-  }
-
-  public TestEntityTableModel(final String name) {
-    super(name);
   }
 
   public void testEntityTableModel() throws Exception {

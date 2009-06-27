@@ -13,7 +13,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.formats.AbstractDateMaskFormat;
+import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.ExceptionDialog;
@@ -203,7 +203,7 @@ public class FrameworkUiUtil {
       return selected;
   }
 
-  public static DateInputPanel createDateChooserPanel(final Date initialValue, final AbstractDateMaskFormat maskFormat) {
+  public static DateInputPanel createDateChooserPanel(final Date initialValue, final DateMaskFormat maskFormat) {
     final JFormattedTextField txtField = UiUtil.createFormattedField(maskFormat.getDateMask());
     if (initialValue != null)
       txtField.setText(maskFormat.format(initialValue));
@@ -414,13 +414,13 @@ public class FrameworkUiUtil {
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
-                                                    final AbstractDateMaskFormat dateMaskFormat,
+                                                    final DateMaskFormat dateMaskFormat,
                                                     final LinkType linkType, final boolean includeButton) {
     return createDateInputPanel(property, entityModel, dateMaskFormat, linkType, includeButton, null);
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
-                                                    final AbstractDateMaskFormat dateMaskFormat,
+                                                    final DateMaskFormat dateMaskFormat,
                                                     final LinkType linkType, final boolean includeButton,
                                                     final State enabledState) {
     if (property.getPropertyType() != Type.SHORT_DATE && property.getPropertyType() != Type.LONG_DATE)
@@ -469,7 +469,7 @@ public class FrameworkUiUtil {
 
   public static JTextField createTextField(final Property property, final EntityModel entityModel,
                                            final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final AbstractDateMaskFormat dateFormat,
+                                           final boolean immediateUpdate, final DateMaskFormat dateFormat,
                                            final State enabledState) {
     return createTextField(property, entityModel, linkType, formatMaskString, immediateUpdate, dateFormat,
             enabledState, false);
@@ -477,7 +477,7 @@ public class FrameworkUiUtil {
 
   public static JTextField createTextField(final Property property, final EntityModel entityModel,
                                            final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final AbstractDateMaskFormat dateFormat,
+                                           final boolean immediateUpdate, final DateMaskFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
     final JTextField ret;
     switch (property.getPropertyType()) {

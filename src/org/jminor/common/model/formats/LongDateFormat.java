@@ -5,9 +5,8 @@ package org.jminor.common.model.formats;
 
 import java.text.SimpleDateFormat;
 
-public class LongDateFormat extends AbstractDateMaskFormat {
+public class LongDateFormat extends DateMaskFormat {
 
-  public static final String MASK_STRING = "##-##-#### ##:##";
   public static final String PATTERN = "dd-MM-yyyy HH:mm";
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
@@ -20,12 +19,6 @@ public class LongDateFormat extends AbstractDateMaskFormat {
   /** Constructs a new LongDateFormat. */
   public LongDateFormat() {
     super(PATTERN);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDateMask() {
-    return MASK_STRING;
   }
 
   public static SimpleDateFormat get() {

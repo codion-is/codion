@@ -14,13 +14,9 @@ import javax.swing.JButton;
  * Date: 13.1.2008
  * Time: 13:05:09
  */
-public class TestMethodControl extends TestCase {
+public class MethodControlTest extends TestCase {
 
   private int callCount = 0;
-
-  public TestMethodControl() {
-    super("TestMethodControl");
-  }
 
   public void method() {
     callCount++;

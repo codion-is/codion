@@ -5,8 +5,8 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityTest;
 import org.jminor.framework.model.ModelTestDomain;
-import org.jminor.framework.model.TestEntity;
 import org.jminor.framework.model.Type;
 
 import junit.framework.TestCase;
@@ -18,10 +18,9 @@ import java.util.Date;
  * Date: 31.3.2009
  * Time: 21:02:43
  */
-public class TestEntityDbConnection extends TestCase {
+public class EntityDbConnectionTest extends TestCase {
 
-  public TestEntityDbConnection(String name) {
-    super(name);
+  public EntityDbConnectionTest() {
     new ModelTestDomain();
   }
 
@@ -40,14 +39,14 @@ public class TestEntityDbConnection extends TestCase {
     referencedEntityValue.setValue(ModelTestDomain.TEST_MASTER_NAME, stringValue);
 
     //test with null values
-    final Entity testEntity2 = TestEntity.getTestMasterEntity(idValue, intValue, null,
+    final Entity testEntity2 = EntityTest.getTestMasterEntity(idValue, intValue, null,
             stringValue, null, null, booleanValue, referencedEntityValue);
     assertEquals(EntityDbConnection.getInsertSQL(testEntity2),
             "insert into " + ModelTestDomain.T_TEST_DETAIL
                     + "(int, string, boolean, entity_id, id)"
                     + " values(2, 'string', 1, 2, 1)");
 
-    final Entity testEntity = TestEntity.getTestMasterEntity(idValue, intValue, doubleValue,
+    final Entity testEntity = EntityTest.getTestMasterEntity(idValue, intValue, doubleValue,
             stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue);
     //assert dml
     final String shortDateStringSql = Database.get().getSQLDateString(shortDateValue, false);

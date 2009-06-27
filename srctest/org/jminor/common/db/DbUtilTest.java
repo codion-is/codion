@@ -2,11 +2,7 @@ package org.jminor.common.db;
 
 import junit.framework.TestCase;
 
-public class TestDbUtil extends TestCase {
-
-  public TestDbUtil() {
-    super("TestDbUtil");
-  }
+public class DbUtilTest extends TestCase {
 
   public void testGenerateSelectSql() throws Exception {
     final String generated = DbUtil.generateSelectSql("table", "col, col2", "where col = 1", "col2");

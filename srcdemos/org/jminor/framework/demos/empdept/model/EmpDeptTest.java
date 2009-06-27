@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-public class TestEmpDeptModel extends EntityTestUnit {
+public class EmpDeptTest extends EntityTestUnit {
 
   public void testDepartment() throws Exception {
     testEntity(EmpDept.T_DEPARTMENT);

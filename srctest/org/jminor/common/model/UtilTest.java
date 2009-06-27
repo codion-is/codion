@@ -7,11 +7,7 @@ import junit.framework.TestCase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestUtil extends TestCase {
-
-  public TestUtil() {
-    super("TestUtil");
-  }
+public class UtilTest extends TestCase {
 
   public void testEqual() throws Exception {
     assertTrue("Two null values should be equal", Util.equal(null, null));

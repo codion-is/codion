@@ -4,7 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.State;
-import org.jminor.common.model.formats.AbstractDateMaskFormat;
+import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;
@@ -19,9 +19,9 @@ import java.util.Date;
 public class DateInputPanel extends JPanel {
 
   public final JFormattedTextField inputField;
-  public final AbstractDateMaskFormat maskFormat;
+  public final DateMaskFormat maskFormat;
 
-  public DateInputPanel(final JFormattedTextField inputField, final AbstractDateMaskFormat maskFormat,
+  public DateInputPanel(final JFormattedTextField inputField, final DateMaskFormat maskFormat,
                         final boolean includeButton, final State enabledState) {
     super(new BorderLayout());
     this.inputField = inputField;

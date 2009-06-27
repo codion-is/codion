@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 
 import java.sql.Timestamp;
 
-public class TestEntityModel extends TestCase {
+public class EntityModelTest extends TestCase {
 
   private static EntityModel testModel;
 
@@ -25,10 +25,6 @@ public class TestEntityModel extends TestCase {
     catch (UserException e) {
       e.printStackTrace();
     }
-  }
-
-  public TestEntityModel(final String name) {
-    super(name);
   }
 
   public void testSelection() throws Exception {

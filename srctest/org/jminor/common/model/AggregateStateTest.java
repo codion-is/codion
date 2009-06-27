@@ -5,11 +5,7 @@ package org.jminor.common.model;
 
 import junit.framework.TestCase;
 
-public class TestAggregateState extends TestCase {
-
-  public TestAggregateState() {
-    super("TestAggregateState");
-  }
+public class AggregateStateTest extends TestCase {
 
   public void test() {
     final AggregateState orState = new AggregateState(AggregateState.Type.OR);

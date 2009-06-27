@@ -358,8 +358,8 @@
       <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <batchtest todir="${reports}">
-        <fileset dir="${srctest}" includes="**/Test*.java" />
-        <fileset dir="${srcdemos}" includes="**/Test*.java" />
+        <fileset dir="${srctest}" includes="**/*Test.java" />
+        <fileset dir="${srcdemos}" includes="**/*Test.java" />
       </batchtest>
     </junit>
   </target>

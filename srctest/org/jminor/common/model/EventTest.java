@@ -7,11 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestEvent extends TestCase {
-
-  public TestEvent() {
-    super("TestEvent");
-  }
+public class EventTest extends TestCase {
 
   public void test() throws Exception {
     final Event event = new Event("test");

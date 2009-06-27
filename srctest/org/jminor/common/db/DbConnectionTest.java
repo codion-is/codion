@@ -13,11 +13,7 @@ import java.util.List;
 /**
  * This test relies on the emp/dept schema
  */
-public class TestDbConnection extends TestCase {
-
-  public TestDbConnection() {
-    super("TestDbConnection");
-  }
+public class DbConnectionTest extends TestCase {
 
   /*public void testBlob() throws Exception {
     DbConnection dbConnection = null;

@@ -5,12 +5,13 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.State;
-import org.jminor.common.model.formats.AbstractDateMaskFormat;
+import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.model.EntityRepository;
@@ -104,49 +105,60 @@ public abstract class EntityBindingPanel extends JPanel {
             null, buttonFocusable);
   }
 
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final AbstractDateMaskFormat dateMaskFormat) {
+  /**
+   * Creates a new DateInputPanel using the default short date format
+   * @param propertyID the ID of the property for which to create the panel
+   * @return a DateInputPanel using the default short date format
+   * @see FrameworkSettings#DEFAULT_SHORT_DATE_FORMAT
+   */
+  protected final DateInputPanel createDateInputPanel(final String propertyID) {
+    return createDateInputPanel(propertyID,
+            new DateMaskFormat((String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT)));
+  }
+
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat) {
     return createDateInputPanel(propertyID, dateMaskFormat, true);
   }
 
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton) {
     return createDateInputPanel(propertyID, dateMaskFormat, includeButton, null);
   }
 
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton, final State enabledState) {
     return createDateInputPanel(propertyID, dateMaskFormat, includeButton, enabledState, LinkType.READ_WRITE);
   }
 
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton, final State enabledState,
                                                       final LinkType linkType) {
     return createDateInputPanel(EntityRepository.get().getProperty(getModel().getEntityID(), propertyID),
             dateMaskFormat, includeButton, enabledState, getModel(), linkType);
   }
 
-  protected final DateInputPanel createDateInputPanel(final Property property, final AbstractDateMaskFormat dateMaskFormat) {
+  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat) {
     return createDateInputPanel(property, dateMaskFormat, true);
   }
 
-  protected final DateInputPanel createDateInputPanel(final Property property, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton) {
     return createDateInputPanel(property, dateMaskFormat, includeButton, null);
   }
 
-  protected final DateInputPanel createDateInputPanel(final Property property, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton, final State enabledState) {
     return createDateInputPanel(property, dateMaskFormat, includeButton, enabledState, getModel());
   }
 
-  protected final DateInputPanel createDateInputPanel(final Property property, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton, final State enabledState,
                                                       final EntityModel entityModel) {
     return createDateInputPanel(property, dateMaskFormat, includeButton, enabledState,
             entityModel, LinkType.READ_WRITE);
   }
 
-  protected final DateInputPanel createDateInputPanel(final Property property, final AbstractDateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
                                                       final boolean includeButton, final State enabledState,
                                                       final EntityModel entityModel, final LinkType linkType) {
     return FrameworkUiUtil.createDateInputPanel(property, entityModel, dateMaskFormat,

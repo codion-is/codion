@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import java.util.Date;
 
-public class TestEntity extends TestCase {
+public class EntityTest extends TestCase {
 
   public static Entity getTestMasterEntity(final int id, final Integer intValue, final Double doubleValue,
                                            final String stringValue, final Date shortDateValue, final Date longDateValue,
@@ -27,8 +27,7 @@ public class TestEntity extends TestCase {
     return ret;
   }
 
-  public TestEntity(String name) {
-    super(name);
+  public EntityTest() {
     new ModelTestDomain();
   }
 

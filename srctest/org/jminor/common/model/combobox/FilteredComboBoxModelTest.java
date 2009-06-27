@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import java.util.Vector;
 
-public class TestFilteredComboBoxModel extends TestCase {
+public class FilteredComboBoxModelTest extends TestCase {
 
   private FilteredComboBoxModel testModel;
 
@@ -18,10 +18,6 @@ public class TestFilteredComboBoxModel extends TestCase {
   private static final String SIGGI = "siggi";
   private static final String TOMAS = "tomas";
   private static final String BJORN = "björn";
-
-  public TestFilteredComboBoxModel(String name) {
-    super(name);
-  }
 
   public void testSort() {
     testModel.setSortContents(true);

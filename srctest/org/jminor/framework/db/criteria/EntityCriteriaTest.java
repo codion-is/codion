@@ -11,11 +11,7 @@ import org.jminor.framework.model.Type;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class TestEntityCriteria extends TestCase {
-
-  public TestEntityCriteria(String name) {
-    super(name);
-  }
+public class EntityCriteriaTest extends TestCase {
 
   public void test() {
     final CriteriaSet set1 = new CriteriaSet(
