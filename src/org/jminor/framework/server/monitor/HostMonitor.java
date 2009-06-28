@@ -80,7 +80,8 @@ public class HostMonitor {
     final ArrayList<String> ret = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames)
-      if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)))
+      if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
+              && name.endsWith("-admin"))
         ret.add(name);
 
     return ret.toArray(new String[ret.size()]);

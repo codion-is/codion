@@ -53,6 +53,7 @@
     </javac>
 
     <rmic base="${build.base}" includes="org/jminor/framework/server/EntityDbRemoteServer.class,
+                                         org/jminor/framework/server/EntityDbRemoteServerAdmin.class,
                                          org/jminor/framework/server/EntityDbRemoteAdapter.class">
       <classpath refid="libraries"/>
     </rmic>
@@ -118,7 +119,6 @@
                 org/jminor/framework/server/EntityDbRemoteProvider*,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
-                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
@@ -135,7 +135,6 @@
                 org/jminor/framework/server/EntityDbRemoteProvider*,
                 org/jminor/framework/server/IEntityDbRemote.class,
                 org/jminor/framework/server/IEntityDbRemoteServer.class,
-                org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
@@ -154,11 +153,8 @@
                 org/jminor/framework/db/IEntityDb.class,
                 org/jminor/framework/db/DbException.class,
                 org/jminor/framework/server/monitor/**,
-                org/jminor/framework/server/IEntityDbRemote.class,
-                org/jminor/framework/server/IEntityDbRemoteServer.class,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
-                org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
-                org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
+                org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
 
     <jar jarfile="${dist}/${version}/${ant.project.name}-demos.jar" basedir="${build.demos}" />
 

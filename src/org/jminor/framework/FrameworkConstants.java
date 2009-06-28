@@ -48,6 +48,11 @@ public class FrameworkConstants {
   public static final String SERVER_PORT_PROPERTY = "jminor.server.port";
 
   /**
+   * The port on which the server should export the remote admin interface
+   */
+  public static final String SERVER_ADMIN_PORT_PROPERTY = "jminor.server.admin.port";
+
+  /**
    * The port on which the server should export the remote database connections
    */
   public static final String SERVER_DB_PORT_PROPERTY = "jminor.server.db.port";

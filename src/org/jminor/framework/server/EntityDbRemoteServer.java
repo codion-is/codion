@@ -3,10 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.ConnectionPoolSettings;
-import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
@@ -14,10 +11,8 @@ import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.FrameworkSettings;
-import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.model.EntityRepository;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
@@ -47,19 +42,39 @@ import java.util.TimerTask;
 /**
  * The remote server class, responsible for handling remote db connection requests
  */
-public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntityDbRemoteServer, IEntityDbRemoteServerAdmin {
+public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntityDbRemoteServer {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean loggingEnabled =
           System.getProperty(FrameworkConstants.SERVER_LOGGING_ON, "1").equalsIgnoreCase("1");
-  private static final int SERVER_PORT = Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_PORT_PROPERTY));
 
-  private static final int SERVER_DB_PORT = Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_DB_PORT_PROPERTY));
+  private static final int SERVER_PORT;
+  private static final int SERVER_ADMIN_PORT;
+  private static final int SERVER_DB_PORT;
+
+  static {
+    final String serverPortProperty = System.getProperty(FrameworkConstants.SERVER_PORT_PROPERTY);
+    final String serverAdminPortProperty = System.getProperty(FrameworkConstants.SERVER_ADMIN_PORT_PROPERTY);
+    final String serverDbPortProperty = System.getProperty(FrameworkConstants.SERVER_DB_PORT_PROPERTY);
+
+    if (serverPortProperty == null)
+      throw new RuntimeException("Required server property missing: " + FrameworkConstants.SERVER_PORT_PROPERTY);
+    if (serverAdminPortProperty == null)
+      throw new RuntimeException("Required server property missing: " + FrameworkConstants.SERVER_ADMIN_PORT_PROPERTY);
+    if (serverDbPortProperty == null)
+      throw new RuntimeException("Required server property missing: " + FrameworkConstants.SERVER_DB_PORT_PROPERTY);
+
+    SERVER_PORT = Integer.parseInt(serverPortProperty);
+    SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
+    SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
+  }
 
   private final Date startDate = new Date();
   private Timer connectionMaintenanceTimer;
   private transient int checkMaintenanceInterval = 30; //seconds
+
+  private final EntityDbRemoteServerAdmin serverAdmin;
 
   private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
           Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
@@ -79,15 +94,16 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     final String port = System.getProperty(IDatabase.DATABASE_PORT_PROPERTY);
     final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
     if (host == null || host.length() == 0)
-      throw new IllegalArgumentException("Db host must be specified!");
+      throw new RuntimeException("Database host must be specified (" + IDatabase.DATABASE_HOST_PROPERTY +")");
     if (!Database.get().isEmbedded() && (sid == null || sid.length() == 0))
-      throw new IllegalArgumentException("Db sid must be specified");
+      throw new RuntimeException("Database sid must be specified (" + IDatabase.DATABASE_SID_PROPERTY +")");
     if (!Database.get().isEmbedded() && (port == null || port.length() == 0))
-      throw new IllegalArgumentException("Db port must be specified");
+      throw new RuntimeException("Database port must be specified (" + IDatabase.DATABASE_PORT_PROPERTY +")");
 
     serverName = FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
+    serverAdmin = new EntityDbRemoteServerAdmin(this, SERVER_ADMIN_PORT, useSecureConnection);
     startConnectionCheckTimer();
   }
 
@@ -107,62 +123,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public int getServerDbPort() throws RemoteException {
-    return SERVER_DB_PORT;
-  }
-
-  /** {@inheritDoc} */
-  public Date getStartDate() {
-    return startDate;
-  }
-
-  /** {@inheritDoc} */
-  public String getDatabaseURL() {
-    return Database.get().getURL(null);
-  }
-
-  /** {@inheritDoc} */
-  public Level getLoggingLevel() throws RemoteException {
-    return Util.getLoggingLevel();
-  }
-
-  /** {@inheritDoc} */
-  public void setLoggingLevel(final Level level) throws RemoteException {
-    Util.setLoggingLevel(level);
-  }
-
-  /** {@inheritDoc} */
-  public Collection<User> getUsers() throws RemoteException {
-    final Set<User> ret = new HashSet<User>();
-    synchronized (connections) {
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        ret.add(adapter.getUser());
-    }
-
-    return ret;
-  }
-
-  /** {@inheritDoc} */
-  public Collection<ClientInfo> getClients(final User user) throws RemoteException {
-    final Collection<ClientInfo> ret = new ArrayList<ClientInfo>();
-    synchronized (connections) {
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        if (user == null || adapter.getUser().equals(user))
-          ret.add(adapter.getClient());
-    }
-
-    return ret;
-  }
-
-  public Collection<String> getClientTypes() throws RemoteException {
-    final Set<String> ret = new HashSet<String>();
-    for (final ClientInfo client : getClients(null))
-      ret.add(client.getClientTypeID());
-
-    return ret;
-  }
-
-  /** {@inheritDoc} */
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
                                  final EntityRepository repository) throws RemoteException {
     if (connectionKey == null)
@@ -178,7 +138,31 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     return doConnect(client);
   }
 
-  /** {@inheritDoc} */
+  public int getConnectionTimeout() {
+    return connectionTimeout;
+  }
+
+  public Collection<User> getUsers() throws RemoteException {
+    final Set<User> ret = new HashSet<User>();
+    synchronized (connections) {
+      for (final EntityDbRemoteAdapter adapter : connections.values())
+        ret.add(adapter.getUser());
+    }
+
+    return ret;
+  }
+
+  public Collection<ClientInfo> getClients(final User user) throws RemoteException {
+    final Collection<ClientInfo> ret = new ArrayList<ClientInfo>();
+    synchronized (connections) {
+      for (final EntityDbRemoteAdapter adapter : connections.values())
+        if (user == null || adapter.getUser().equals(user))
+          ret.add(adapter.getClient());
+    }
+
+    return ret;
+  }
+
   public void disconnect(final String connectionKey) throws RemoteException {
     if (connectionKey == null)
       return;
@@ -186,15 +170,74 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     removeConnection(new ClientInfo(connectionKey));
   }
 
+  public int getCheckMaintenanceInterval() {
+    return checkMaintenanceInterval;
+  }
+
+  public void setCheckMaintenanceInterval(final int checkTimerInterval) {
+    if (checkMaintenanceInterval != checkTimerInterval)
+      checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
+  }
+
+  public DbLog getConnectionLog(final String connectionKey) {
+    synchronized (connections) {
+      final ClientInfo client = new ClientInfo(connectionKey);
+      for (final EntityDbRemoteAdapter adapter : connections.values())
+        if (adapter.getClient().equals(client))
+          return adapter.getEntityDbLog();
+    }
+
+    return null;
+  }
+
+  public int getConnectionCount() {
+    return connections.size();
+  }
+
+  public boolean isLoggingOn(final String connectionKey) {
+    synchronized (connections) {
+      final ClientInfo client = new ClientInfo(connectionKey);
+      for (final EntityDbRemoteAdapter connection : connections.values()) {
+        if (connection.getClient().equals(client)) {
+          return connection.isLoggingEnabled();
+        }
+      }
+    }
+
+    return false;
+  }
+
+  public void setLoggingOn(final String connectionKey, final boolean status) {
+    synchronized (connections) {
+      final ClientInfo client = new ClientInfo(connectionKey);
+      for (final EntityDbRemoteAdapter connection : connections.values()) {
+        if (connection.getClient().equals(client)) {
+          connection.setLoggingEnabled(status);
+          return;
+        }
+      }
+    }
+  }
+
+  public int getServerDbPort() {
+    return SERVER_DB_PORT;
+  }
+
+  public Date getStartDate() {
+    return startDate;
+  }
+
   /** {@inheritDoc} */
   public synchronized void shutdown() throws RemoteException {
     unexport(this);
+    unexport(serverAdmin);
     removeConnections(false);
     final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT );
     if (localRegistry != null) {
       try {
         log.info("Shutting down server: " + serverName);
         localRegistry.unbind(serverName);
+        localRegistry.unbind(serverName + "-admin");
       }
       catch (NotBoundException ex) {
         log.error(this, ex);
@@ -202,23 +245,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     }
     Database.get().shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
     System.exit(0);
-  }
-
-  /** {@inheritDoc} */
-  public int getActiveConnectionCount() throws RemoteException {
-    return EntityDbRemoteAdapter.getActiveCount();
-  }
-
-  /** {@inheritDoc} */
-  public int getCheckMaintenanceInterval() {
-    return checkMaintenanceInterval;
-  }
-
-  /** {@inheritDoc} */
-  public void setCheckMaintenanceInterval(final int checkTimerInterval) {
-    if (this.checkMaintenanceInterval != checkTimerInterval) {
-      this.checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
-    }
   }
 
   /** {@inheritDoc} */
@@ -237,122 +263,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     }
   }
 
-  /** {@inheritDoc} */
-  public void resetConnectionPoolStatistics(final User user) throws RemoteException {
-    EntityDbRemoteAdapter.resetConnectionPoolStats(user);
-  }
-
-  /** {@inheritDoc} */
-  public int getRequestsPerSecond() throws RemoteException {
-    return EntityDbRemoteAdapter.getRequestsPerSecond();
-  }
-
-  /** {@inheritDoc} */
-  public int getWarningTimeThreshold() throws RemoteException {
-    return EntityDbRemoteAdapter.getWarningThreshold();
-  }
-
-  /** {@inheritDoc} */
-  public void setWarningTimeThreshold(int threshold) throws RemoteException {
-    EntityDbRemoteAdapter.setWarningThreshold(threshold);
-  }
-
-  /** {@inheritDoc} */
-  public int getWarningTimeExceededPerSecond() throws RemoteException {
-    return EntityDbRemoteAdapter.getWarningTimeExceededPerSecond();
-  }
-
-  /** {@inheritDoc} */
-  public ConnectionPoolSettings getConnectionPoolSettings(final User user) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolSettings(user);
-  }
-
-  /** {@inheritDoc} */
-  public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException {
-    return EntityDbRemoteAdapter.getConnectionPoolStatistics(user, since);
-  }
-
-  /** {@inheritDoc} */
-  public DatabaseStatistics getDatabaseStatistics() throws RemoteException {
-    final DatabaseStatistics ret = new DatabaseStatistics();
-    ret.setQueriesPerSecond(EntityDbConnection.getQueriesPerSecond());
-    ret.setCachedQueriesPerSecond(EntityDbConnection.getCachedQueriesPerSecond());
-
-    return ret;
-  }
-
-  /** {@inheritDoc} */
-  public List<ConnectionPoolSettings> getActiveConnectionPools() throws RemoteException {
-    return EntityDbRemoteAdapter.getActiveConnectionPoolSettings();
-  }
-
-  /** {@inheritDoc} */
-  public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
-    EntityDbRemoteAdapter.setConnectionPoolSettings(settings.getUser(), settings);
-  }
-
-  /** {@inheritDoc} */
-  public String getMemoryUsage() throws RemoteException {
-    return Util.getMemoryUsageString();
-  }
-
-  /** {@inheritDoc} */
-  public void performGC() throws RemoteException {
-    Runtime.getRuntime().gc();
-  }
-
-  /** {@inheritDoc} */
-  public int getConnectionCount() {
-    return connections.size();
-  }
-
-  /** {@inheritDoc} */
-  public DbLog getConnectionLog(final String connectionKey) {
-    synchronized (connections) {
-      final ClientInfo client = new ClientInfo(connectionKey);
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        if (adapter.getClient().equals(client))
-          return adapter.getEntityDbLog();
-    }
-
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public boolean isLoggingOn(final String connectionKey) throws RemoteException {
-    synchronized (connections) {
-      final ClientInfo client = new ClientInfo(connectionKey);
-      for (final EntityDbRemoteAdapter connection : connections.values()) {
-        if (connection.getClient().equals(client)) {
-          return connection.isLoggingEnabled();
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /** {@inheritDoc} */
-  public void setLoggingOn(final String connectionKey, final boolean status) {
-    synchronized (connections) {
-      final ClientInfo client = new ClientInfo(connectionKey);
-      for (final EntityDbRemoteAdapter connection : connections.values()) {
-        if (connection.getClient().equals(client)) {
-          connection.setLoggingEnabled(status);
-          return;
-        }
-      }
-    }
-  }
-
-  public int getConnectionTimeout() {
-    return connectionTimeout;
-  }
-
-  public String getSystemProperties() {
-    return Util.getSystemProperties();
-  }
-
   private void startConnectionCheckTimer() {
     if (connectionMaintenanceTimer != null)
       connectionMaintenanceTimer.cancel();
@@ -363,7 +273,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       public void run() {
         maintainConnections();
       }
-    }, new Date(), getCheckMaintenanceInterval() * 1000L);
+    }, new Date(), checkMaintenanceInterval * 1000L);
   }
 
   private void maintainConnections() {
@@ -424,6 +334,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       final EntityDbRemoteServer server = new EntityDbRemoteServer();
 
       localRegistry.rebind(server.getServerName(), server);
+      localRegistry.rebind(server.getServerName() + "-admin", server.serverAdmin);
       final String connectInfo = server.getServerName() + " bound to registry";
       log.info(connectInfo);
       System.out.println(connectInfo);

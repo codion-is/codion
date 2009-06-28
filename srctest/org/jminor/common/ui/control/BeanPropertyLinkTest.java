@@ -40,9 +40,9 @@ public class BeanPropertyLinkTest extends TestCase {
     new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged, "");
     assertNull("Int value should be null on initialization", txtInt.getInt());
     setIntValue(2);
-    assertEquals("Int value should be 2", 2, txtInt.getInt());
+    assertEquals("Int value should be 2", 2, (int) txtInt.getInt());
     txtInt.setText("42");
-    assertEquals("Int value should be 42", 42, getIntValue());
+    assertEquals("Int value should be 42", 42, (int) getIntValue());
     txtInt.setText("");
     assertNull("Int value should be null", getIntValue());
   }

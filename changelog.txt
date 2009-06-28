@@ -530,3 +530,5 @@
   AbstractDateMaskFormat.getDateMask() is no longer abstract
   AbstractDateMaskFormat renamed to DateMaskFormat
   EntityBindingPanel.createDateInputPanel(propertyID) added, uses the default short date format
+  EntityDbRemoteServerAdmin refactored out of EntityDbRemoteServer, exported on seperate port, changes in dist ant target and run files
+  FrameworkConstants.SERVER_ADMIN_PORT_PROPERTY added
