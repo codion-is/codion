@@ -534,3 +534,7 @@
   FrameworkConstants.SERVER_ADMIN_PORT_PROPERTY added
   EntityDbRemoteServer.shutdown() now exits properly by simply unexporting the remote object, no call to System.exit() necessary
   EntityDbRemoteAdapter now unexports itself on logout
+  Updated source copyright notice where needed, removed it from 3d party files
+  deploy targets in ant build file use chmod to make .sh files executable
+  initialize_h2_db.sql fixed and renamed create_h2_db.sql, create_h2_db ant target changed accordingly
+  run_rmi_registry.bat/sh files added to resources/server as well as resources/security/all_permissions.policy for running the registry

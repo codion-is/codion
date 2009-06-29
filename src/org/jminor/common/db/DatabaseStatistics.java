@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.db;
 
 import java.io.Serializable;

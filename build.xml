@@ -226,10 +226,12 @@
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}" />
+    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
     <copy todir="${deploy.server.path}" >
       <fileset dir="${basedir}/resources/server/" />
     </copy>
+    <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.server.path}/h2db" >
       <fileset dir="${db.h2.dir}" />
     </copy>
@@ -255,6 +257,7 @@
     <copy todir="${deploy.server.monitor.path}" >
       <fileset dir="${basedir}/resources/server_monitor/" />
     </copy>
+    <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
   <target name="deploy_demos" depends="create_derby_db, create_h2_db"
@@ -279,6 +282,7 @@
       <fileset dir="${basedir}/resources/demos/petstore/" />
       <fileset dir="${basedir}/resources/demos/schemabrowser/" />
     </copy>
+    <chmod dir="${deploy.demos.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.demos.path}/h2db" >
       <fileset dir="${db.h2.dir}" />
     </copy>
@@ -513,19 +517,7 @@
           description="Creates the demo h2 database in case it is not already available. The demo database includes
           the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/db/scripts/initialize_h2_db.sql"/>
-    </java>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/empdept/scripts/ddl.sql"/>
-    </java>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/empdept/scripts/dml.sql"/>
-    </java>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/petstore/scripts/ddl.sql"/>
-    </java>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/demos/petstore/scripts/dml.sql"/>
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/db/scripts/create_h2_db.sql -showResults"/>
     </java>
   </target>
 

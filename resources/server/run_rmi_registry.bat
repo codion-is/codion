@@ -1,0 +1,1 @@
+java -Djava.security.policy=all_permissions.policy -cp lib/derby.jar;lib/h2-1.1.114.jar;jasperreports-3.0.0.jar;lib/jminor-common.jar;lib/jminor-server.jar;lib/log4j-1.2.15.jar sun.rmi.registry.RegistryImpl

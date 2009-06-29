@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model.combobox;
 
 import org.jminor.framework.model.Type;

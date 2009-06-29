@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.common.ui.combobox;
 
 import javax.swing.ComboBoxEditor;

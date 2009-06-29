@@ -14,7 +14,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
@@ -31,7 +30,6 @@ public class ClientTypeMonitorPanel extends JPanel {
   private final ClientTypeMonitor model;
 
   private JComboBox cmbMaintainanceCheck;
-  private JPopupMenu popupMenu;
 
   public ClientTypeMonitorPanel(final ClientTypeMonitor model) throws RemoteException {
     this.model = model;

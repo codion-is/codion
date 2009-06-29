@@ -43,8 +43,8 @@ public class UserMonitorPanel  extends JPanel {
           if (userInstanceMonitor != null)
             add(new UserInstanceMonitorPanel(userInstanceMonitor), BorderLayout.CENTER);
         }
-        catch (RemoteException e1) {
-          throw new RuntimeException(e1);
+        catch (RemoteException ex) {
+          throw new RuntimeException(ex);
         }
       }
     });

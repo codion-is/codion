@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.ui.BorderlessTabbedPaneUI;

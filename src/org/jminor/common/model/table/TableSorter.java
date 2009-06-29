@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.common.model.table;
 
 import org.jminor.common.model.Event;

@@ -84,7 +84,10 @@ dist
  '-current
      '-jminor_demos          - application jar files, Derby and H2 databases, files to run the demo applications
      '-jminor_server         - server jar files, Derby and H2 databases, files to run the server
-     '-jminor_server_monitor - server monitorjar files, files to run the server monitor
+     '-jminor_server_monitor - server monitor jar files, files to run the server monitor
 
-The demo applications can be run either with an embedded Derby or H2 database (located in the jminor_demos folder)
-or using the JMinor RMI Server.
+The demo applications can be run either with an embedded Derby or H2 database or using the JMinor RMI Server.
+
+To run the demo applications with the RMI server you must first start the server by executing one of the run files
+ in the jminor_server directory, with the server running you can start the remote demo client by executing one of
+ the ...client_remote.bat/sh run files.

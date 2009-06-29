@@ -43,8 +43,8 @@ public class UserInstanceMonitorPanel extends JPanel {
         try {
           clientInstancePanel.setModel((ClientInstanceMonitor) clientList.getSelectedValue());
         }
-        catch (RemoteException e1) {
-          throw new RuntimeException(e1);
+        catch (RemoteException ex) {
+          throw new RuntimeException(ex);
         }
       }
     });

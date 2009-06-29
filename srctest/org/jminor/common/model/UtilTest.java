@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.model;
 
 import org.jminor.common.model.formats.ShortDotDateFormat;
