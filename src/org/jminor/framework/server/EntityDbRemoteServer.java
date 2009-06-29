@@ -227,7 +227,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     return startDate;
   }
 
-  /** {@inheritDoc} */
   public synchronized void shutdown() throws RemoteException {
     unexport(this);
     unexport(serverAdmin);
@@ -246,7 +245,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     Database.get().shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
   }
 
-  /** {@inheritDoc} */
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
     synchronized (connections) {
       final List<ClientInfo> clients = new ArrayList<ClientInfo>(connections.keySet());

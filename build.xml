@@ -39,7 +39,6 @@
     <mkdir dir="${build.demos}" />
     <mkdir dir="${build.test}" />
     <mkdir dir="${dist}" />
-    <mkdir dir="${dist}/current" />
   </target>
 
   <target name="build" depends="init"
@@ -93,22 +92,21 @@
   </target>
 
   <target name="dist" depends="build"
-          description="Creates all distribution jar files in the dist/version directory">
+          description="Creates all distribution jar files in the dist directory">
     <tstamp />
-    <mkdir dir="dist/${version}" />
-    <jar jarfile="${dist}/${version}/${ant.project.name}.jar" basedir="${build.base}" />
-    <zip destfile="${dist}/${version}/${ant.project.name}.jar" update="true" duplicate="add" >
+    <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}" />
+    <zip destfile="${dist}/${ant.project.name}.jar" update="true" duplicate="add" >
       <fileset refid="common_resources" />
       <fileset refid="framework_resources" />
     </zip>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-common.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
          includes="org/jminor/common/**"/>
-    <zip destfile="${dist}/${version}/${ant.project.name}-common.jar" update="true" duplicate="add" >
+    <zip destfile="${dist}/${ant.project.name}-common.jar" update="true" duplicate="add" >
       <fileset refid="common_resources" />
     </zip>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-client.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/client/**,
@@ -122,7 +120,7 @@
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/client/**,
@@ -138,7 +136,7 @@
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-server.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/${ant.project.name}-server.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/model/*,
@@ -146,7 +144,7 @@
                 org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/model/EntityRepository.class,
@@ -156,17 +154,14 @@
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-demos.jar" basedir="${build.demos}" />
+    <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}" />
 
-    <jar jarfile="${dist}/${version}/${ant.project.name}-src.jar" basedir="${src}" />
-    <jar jarfile="${dist}/${version}/${ant.project.name}-src-test.jar" basedir="${srctest}" />
-    <jar jarfile="${dist}/${version}/${ant.project.name}-src-demos.jar" basedir="${srcdemos}" />
-    <jar jarfile="${dist}/${version}/${ant.project.name}-api-doc.jar" basedir="${docsapi}" />
+    <jar jarfile="${dist}/${ant.project.name}-src.jar" basedir="${src}" />
+    <jar jarfile="${dist}/${ant.project.name}-src-test.jar" basedir="${srctest}" />
+    <jar jarfile="${dist}/${ant.project.name}-src-demos.jar" basedir="${srcdemos}" />
+    <jar jarfile="${dist}/${ant.project.name}-api-doc.jar" basedir="${docsapi}" />
 
-    <copy file="${basedir}/changelog.txt" todir="${dist}/${version}" />
-    <copy todir="${dist}/current">
-      <fileset dir="${dist}/${version}" />
-    </copy>
+    <copy file="${basedir}/changelog.txt" todir="${dist}" />
   </target>
 
   <target name="doc" depends="build"
@@ -201,26 +196,11 @@
     </javadoc>
   </target>
 
-  <target name="deploy" depends="clean,dist"
-          description="Deploys all jars to the path defined by the 'deploy.path' property">
-    <copy file="${dist}/current/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-src.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-src-test.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-src-demos.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/current/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
-  </target>
-
   <target name="deploy_server" depends="create_derby_db, create_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}" />
-    <copy file="${dist}/current/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.derby}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib" />
@@ -243,8 +223,8 @@
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}" />
-    <copy file="${dist}/current/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
@@ -263,10 +243,10 @@
   <target name="deploy_demos" depends="create_derby_db, create_h2_db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
-    <copy file="${dist}/current/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${dist}/current/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${dist}/current/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${dist}/current/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib" />
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.derby}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.h2}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
@@ -291,10 +271,12 @@
     </copy>
   </target>
 
-  <target name="deploy_all" depends="deploy, deploy_server, deploy_server_monitor, deploy_demos"
+  <target name="deploy_all" depends="dist, deploy_server, deploy_server_monitor, deploy_demos"
           description="A convenience target for deploying the server, server monitor and demo applications">
-    <delete file="${dist}/current/jminor-${version}.zip"/>
-    <zip basedir="${dist}/current" destfile="${dist}/current/jminor-${version}.zip"/>
+    <delete file="${dist}/deployment/jminor-${version}.zip"/>
+    <zip destfile="${dist}/deployment/jminor-${version}.zip" >
+      <fileset dir="${dist}" excludes="deployment/**"/>
+    </zip>
   </target>
 
   <target name="deploy_to_wiki" depends="doc, report"
@@ -324,12 +306,12 @@
     <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
   </target>
 
-  <target name="deploy_project" depends="doc, dist"
+  <target name="deploy_project"
           description="Creates a jminor-project.zip file in the base directory">
     <delete file="${basedir}/${ant.project.name}-${version}-project.zip"/>
     <delete file="${basedir}/derby.log"/>
     <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
-      <fileset dir="${basedir}" excludes="test/**,dist/current/**,classes/**,derbydb/**,h2db/**"/>
+      <fileset dir="${basedir}" excludes="test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
   </target>
 
