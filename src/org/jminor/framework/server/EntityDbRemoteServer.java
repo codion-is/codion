@@ -167,7 +167,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (connectionKey == null)
       return;
 
-    removeConnection(new ClientInfo(connectionKey));
+    removeConnection(new ClientInfo(connectionKey), true);
   }
 
   public int getCheckMaintenanceInterval() {
@@ -244,7 +244,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       }
     }
     Database.get().shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
-    System.exit(0);
   }
 
   /** {@inheritDoc} */
@@ -285,10 +284,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     }
   }
 
-  private void removeConnection(final ClientInfo client) throws RemoteException {
+  private void removeConnection(final ClientInfo client, final boolean logout) throws RemoteException {
     if (connections.containsKey(client)) {
-      log.debug(client + " is being closed");
-      connections.remove(client).logout();
+      log.debug("Removing connection: " + client);
+      final EntityDbRemoteAdapter adapter = connections.remove(client);
+      if (logout)
+        adapter.logout();
     }
   }
 
@@ -297,7 +298,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     ret.evtLoggingOut.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          removeConnection(client);
+          removeConnection(client, false);
         }
         catch (RemoteException ex) {
           ex.printStackTrace();
@@ -312,7 +313,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   private static void unexport(final UnicastRemoteObject connection) {
     try {
-      UnicastRemoteObject.unexportObject(connection, false);
+      UnicastRemoteObject.unexportObject(connection, true);
     }
     catch (NoSuchObjectException e) {
       log.error(e);
@@ -334,7 +335,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       final EntityDbRemoteServer server = new EntityDbRemoteServer();
 
       localRegistry.rebind(server.getServerName(), server);
-      localRegistry.rebind(server.getServerName() + "-admin", server.serverAdmin);
+      localRegistry.rebind(server.getServerName() + IEntityDbRemoteServer.SERVER_ADMIN_SUFFIX, server.serverAdmin);
       final String connectInfo = server.getServerName() + " bound to registry";
       log.info(connectInfo);
       System.out.println(connectInfo);

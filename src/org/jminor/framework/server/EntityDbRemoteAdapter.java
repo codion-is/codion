@@ -226,6 +226,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
       loggedIn = false;
 
+      UnicastRemoteObject.unexportObject(this, true);
       evtLoggingOut.fire();
     }
     catch (Exception e) {

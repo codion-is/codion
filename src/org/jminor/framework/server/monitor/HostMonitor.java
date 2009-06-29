@@ -76,17 +76,6 @@ public class HostMonitor {
     evtServerMonitorRemoved.fire();
   }
 
-  private static String[] getEntityServers(final Registry registry) throws RemoteException {
-    final ArrayList<String> ret = new ArrayList<String>();
-    final String[] boundNames = registry.list();
-    for (final String name : boundNames)
-      if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
-              && name.endsWith("-admin"))
-        ret.add(name);
-
-    return ret.toArray(new String[ret.size()]);
-  }
-
   private boolean containsServerMonitor(final String serverName) {
     for (final ServerMonitor serverMonitor : serverMonitors)
       if (serverMonitor.getServerName().equals(serverName))
@@ -96,25 +85,38 @@ public class HostMonitor {
   }
 
   private List<String> getEntityDbRemoteServers(final String serverHostName) {
+    final ArrayList<String> ret = new ArrayList<String>();
     try {
-      System.out.println("HostMonitor locating registry on host: " + serverHostName);
-      log.info("HostMonitor locating registry on host: " + serverHostName);
+      String message = "HostMonitor locating registry on host: " + serverHostName;
+      System.out.println(message);
+      log.info(message);
       final Registry registry = LocateRegistry.getRegistry(serverHostName);
-      final ArrayList<String> ret = new ArrayList<String>();
-      System.out.println("HostMonitor located registry: " + registry);
-      log.info("HostMonitor located registry: " + registry);
+      message = "HostMonitor located registry: " + registry;
+      System.out.println(message);
+      log.info(message);
       final String[] boundNames = getEntityServers(registry);
       for (final String name : boundNames) {
-        System.out.println("HostMonitor found server \"" + name + "\".");
-        log.info("HostMonitor found server \"" + name + "\".");
+        message = "HostMonitor found server '" + name + "'";
+        System.out.println(message);
+        log.info(message);
         ret.add(name);
       }
-
-      return ret;
     }
     catch (RemoteException e) {
       log.error(this, e);
-      return new ArrayList<String>();
     }
+
+    return ret;
+  }
+
+  private static String[] getEntityServers(final Registry registry) throws RemoteException {
+    final ArrayList<String> ret = new ArrayList<String>();
+    final String[] boundNames = registry.list();
+    for (final String name : boundNames)
+      if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
+              && name.endsWith("-admin"))
+        ret.add(name);
+
+    return ret.toArray(new String[ret.size()]);
   }
 }

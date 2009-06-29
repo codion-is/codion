@@ -171,7 +171,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
       final String[] boundNames = registry.list();
       for (final String name : boundNames) {
         if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
-                && name.contains(version)) {
+                && name.contains(version) && !name.contains(IEntityDbRemoteServer.SERVER_ADMIN_SUFFIX)) {
           try {
             final IEntityDbRemoteServer server = checkServer((IEntityDbRemoteServer) registry.lookup(name));
             if (server != null)

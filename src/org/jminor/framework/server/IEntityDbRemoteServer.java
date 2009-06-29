@@ -17,6 +17,8 @@ import java.rmi.RemoteException;
  */
 public interface IEntityDbRemoteServer extends Remote {
 
+  public final String SERVER_ADMIN_SUFFIX = "-admin";
+
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
                                  final EntityRepository repository) throws RemoteException;
 
