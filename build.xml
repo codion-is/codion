@@ -225,13 +225,10 @@
     <mkdir dir="${deploy.server.monitor.path}" />
     <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.jasperreports.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.derby}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.h2}" todir="${deploy.server.monitor.path}/lib" />
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
     <copy todir="${deploy.server.monitor.path}" >

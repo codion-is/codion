@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2009, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.framework.server;
 
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 28.6.2009
  * Time: 16:17:14
  */
