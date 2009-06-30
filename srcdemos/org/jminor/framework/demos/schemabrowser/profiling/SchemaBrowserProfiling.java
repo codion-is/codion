@@ -12,7 +12,7 @@ import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
 import org.jminor.framework.profiling.ProfilingModel;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
-import org.jminor.framework.server.EntityDbRemoteProvider;
+import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import javax.swing.UIManager;
 

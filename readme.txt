@@ -88,5 +88,5 @@ dist
 The demo applications can be run either with an embedded Derby or H2 database or using the JMinor RMI Server.
 
 To run the demo applications with the RMI server you must first start the server by executing one of the run files
- in the jminor_server directory, with the server running you can start the remote demo client by executing one of
- the ...client_remote.bat/sh run files.
+in the 'jminor_server' directory, with the server running you can start the remote demo client by executing one of
+the ...client_remote.bat/sh run files in the 'jminor_demos' directory.

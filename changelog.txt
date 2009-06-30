@@ -539,3 +539,5 @@
   initialize_h2_db.sql fixed and renamed create_h2_db.sql, create_h2_db ant target changed accordingly
   run_rmi_registry.bat/sh files added to resources/server as well as resources/security/all_permissions.policy for running the registry
   build.xml cleaned up, removed dist/version and current directories, removed deploy target
+  EntityDbRemoteProvider moved to server.provider
+  Ant build file cleanup

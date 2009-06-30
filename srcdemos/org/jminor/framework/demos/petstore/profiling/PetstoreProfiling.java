@@ -11,7 +11,7 @@ import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.model.Petstore;
 import org.jminor.framework.profiling.ProfilingModel;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
-import org.jminor.framework.server.EntityDbRemoteProvider;
+import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import javax.swing.UIManager;
 

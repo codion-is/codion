@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package org.jminor.framework.server.provider;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
@@ -12,6 +12,8 @@ import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.EntityRepository;
+import org.jminor.framework.server.IEntityDbRemote;
+import org.jminor.framework.server.IEntityDbRemoteServer;
 
 import org.apache.log4j.Logger;
 
