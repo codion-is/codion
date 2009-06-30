@@ -15,11 +15,9 @@
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
   <fileset id="framework_resources" dir="${src}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
-  <fileset id="common_test_resources" dir="${srctest}" includes=
-          "org/jminor/common/**/*.gif, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
-  <fileset id="framework_test_resources" dir="${srctest}" includes=
-          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
-  <fileset id="framework_demos_resources" dir="${srcdemos}" includes=
+  <fileset id="test_resources" dir="${srctest}" includes=
+          "org/jminor/**/*.gif, org/jminor/**/*.properties, org/jminor/**/*.txt"/>
+  <fileset id="demos_resources" dir="${srcdemos}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
 
   <target name="clean"
@@ -71,7 +69,7 @@
     </javac>
 
     <copy todir="${build.demos}" >
-      <fileset refid="framework_demos_resources" />
+      <fileset refid="demos_resources" />
     </copy>
 
     <javac destdir="${build.test}" debug="{build.debug}" >
@@ -84,8 +82,7 @@
     </javac>
 
     <copy todir="${build.test}" >
-      <fileset refid="common_test_resources" />
-      <fileset refid="framework_test_resources" />
+      <fileset refid="test_resources" />
     </copy>
 
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
@@ -95,16 +92,9 @@
           description="Creates all distribution jar files in the dist directory">
     <tstamp />
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}" />
-    <zip destfile="${dist}/${ant.project.name}.jar" update="true" duplicate="add" >
-      <fileset refid="common_resources" />
-      <fileset refid="framework_resources" />
-    </zip>
 
     <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
-         includes="org/jminor/common/**"/>
-    <zip destfile="${dist}/${ant.project.name}-common.jar" update="true" duplicate="add" >
-      <fileset refid="common_resources" />
-    </zip>
+         includes="org/jminor/common/**, log4j.properties"/>
 
     <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
          includes="org/jminor/framework/FrameworkSettings*,
@@ -284,16 +274,16 @@
       <fileset dir="${src}" excludes="*.svn*"/>
     </copy>
     <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srctest}" excludes="*.svn*"/>
+      <fileset dir="${srctest}"/>
     </copy>
     <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srcdemos}" excludes="*.svn*"/>
+      <fileset dir="${srcdemos}"/>
     </copy>
     <copy todir="${wiki.media.project}/docs">
-      <fileset dir="${docs}" excludes="*.svn*"/>
+      <fileset dir="${docs}"/>
     </copy>
     <copy todir="${wiki.media.project}/resources">
-      <fileset dir="${resources}" excludes="*.svn*"/>
+      <fileset dir="${resources}"/>
     </copy>
     <copy todir="${wiki.media.project}/test">
       <fileset dir="${test}" />
