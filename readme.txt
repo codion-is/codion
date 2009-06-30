@@ -25,7 +25,7 @@ JMinor is a minimalistic Java rich client CRUD application framework based solel
 
 2. RELEASE INFO
 
-Release contents (~13 MB):
+Release contents (~15 MB):
 * "dist" contains the JMinor binary jar files
 * "docs" contains basic documentation as well as API javadocs
 * "lib" contains third-party libraries needed for building the framework and/or running the samples
@@ -90,3 +90,10 @@ The demo applications can be run either with an embedded Derby or H2 database or
 To run the demo applications with the RMI server you must first start the server by executing one of the run files
 in the 'jminor_server' directory, with the server running you can start the remote demo client by executing one of
 the ...client_remote.bat/sh run files in the 'jminor_demos' directory.
+
+
+5. BUILDING THE PROJECT
+
+The Ant build file included in the project contains standard targets for building the project, running unit tests
+and packaging the compiled classes as well a targets for running the server and demo applications and creating the
+required databases.

@@ -1,2 +1,2 @@
 Replace "project_name" (without the quotation marks) in build.xml and build.properties with the actual project name
-Configure the junit.db.* and lib.jdbc properties in build.properties to in accordance with your environment
+Configure the junit.db.* and lib.jdbc properties in build.properties according to your environment

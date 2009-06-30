@@ -5,7 +5,11 @@
 
   <property file="build.properties"/>
 
-  <fileset id="libs" dir="${lib}" />
+  <path id="libraries">
+    <fileset dir="${lib}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
 
   <fileset id="resources" dir="${src}" includes="**/*.jpg,**/*.gif,**/*.png,**/*.properties,**/*.jasper" />
 
@@ -20,7 +24,7 @@
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
-  <target name="init" depends="clean">
+  <target name="init">
     <mkdir dir="${build.root}" />
     <mkdir dir="${build.base}" />
     <mkdir dir="${build.test}" />
@@ -32,23 +36,10 @@
     <mkdir dir="${htmlreports}" />
   </target>
 
-  <target name="prep_libraries" depends="init" >
-    <delete dir="${lib}" />
-    <mkdir dir="${lib}" />
-    <copy file="${elibdir}/${lib.jminor}" todir="${lib}" />
-    <copy file="${elibdir}/${lib.jcalendar}" todir="${lib}" />
-    <copy file="${elibdir}/${lib.jdbc}" todir="${lib}" />
-    <copy file="${elibdir}/${lib.log4j}" todir="${lib}" />
-    <copy file="${elibdir}/${lib.jasperreports.base}" todir="${lib}" />
-    <copy file="${elibdir}/${lib.junit}" todir="${lib}" />
-  </target>
-
   <target name="build" depends="init">
     <javac destdir="${build.base}" debug="true" >
       <src path="${src}" />
-      <classpath>
-        <fileset refid="libs" />
-      </classpath>
+      <classpath refid="libraries"/>
     </javac>
   </target>
 
@@ -63,7 +54,7 @@
       <fileset refid="resources" />
     </zip>
     <copy todir="${dist}/${DSTAMP}/lib">
-      <fileset refid="libs" />
+      <path refid="libraries" />
     </copy>
     <copy file="${basedir}/${launch.file.dev}" todir="${dist}/${DSTAMP}" overwrite="true" />
     <copy file="${basedir}/${launch.file.test}" todir="${dist}/${DSTAMP}" overwrite="true" />
@@ -142,9 +133,7 @@
   <target name="doc" depends="init">
     <javadoc destdir="${docsapi}" author="true" version="true"
         use="true" windowtitle="API for project_name">
-      <classpath>
-        <fileset refid="libs" />
-      </classpath>
+      <classpath refid="libraries" />
       <fileset dir="${src}" defaultexcludes="yes" excludes="**/Test*.java" />
     </javadoc>
   </target>
@@ -158,7 +147,7 @@
       <formatter type="xml" usefile="true" />
       <classpath>
         <dirset dir="${build.base}" />
-        <fileset refid="libs" />
+        <path refid="libraries" />
       </classpath>
       <batchtest todir="${reports}">
         <fileset dir="${build.test}" includes="**/Test*.class" />

@@ -543,3 +543,5 @@
   Ant build file cleanup
   DateTextPropertyLink improved somewhat
   Event, removed name field
+  Added run_rmi_registry target to build.xml, removed run/shutdown_derby_server
+  Cleaned up project_template build file
