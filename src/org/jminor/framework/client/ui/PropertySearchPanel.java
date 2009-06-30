@@ -6,8 +6,6 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.DateMaskFormat;
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -17,6 +15,7 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Property;
@@ -69,8 +68,9 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     switch (model.getPropertyType()) {
       case LONG_DATE:
       case SHORT_DATE:
-        final DateMaskFormat format =//todo localize
-                model.getPropertyType() == Type.LONG_DATE ? new LongDateFormat() : new ShortDashDateFormat();
+        final DateMaskFormat format =
+                new DateMaskFormat((String) FrameworkSettings.get().getProperty(model.getPropertyType() == Type.LONG_DATE
+                        ? FrameworkSettings.DEFAULT_LONG_DATE_FORMAT : FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT));
         field = UiUtil.createFormattedField(format.getDateMask());
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
@@ -78,10 +78,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 LinkType.READ_WRITE, format) {
           @Override
           public void setModelPropertyValue(final Object obj) {
-            if (obj != null)
-              super.setModelPropertyValue(new Timestamp(((Date) obj).getTime()));
-            else
-              super.setModelPropertyValue(obj);
+            super.setModelPropertyValue(obj != null ? new Timestamp(((Date) obj).getTime()) : obj);
           }
         };
         break;

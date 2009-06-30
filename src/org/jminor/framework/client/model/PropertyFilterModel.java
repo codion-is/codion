@@ -29,34 +29,6 @@ public class PropertyFilterModel extends AbstractSearchModel {
     return columnIndex;
   }
 
-  /**
-   * @param value the upper bound
-   */
-  public void setUpperBound(final Comparable value) {
-    super.setUpperBound(value);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Comparable getUpperBound() {
-    return (Comparable) super.getUpperBound();
-  }
-
-  /**
-   * @param value the lower bound
-   */
-  public void setLowerBound(final Comparable value) {
-    super.setLowerBound(value);
-  }
-
-  /**
-   * @return the lower bound
-   */
-  @Override
-  public Comparable getLowerBound() {
-    return (Comparable) super.getLowerBound();
-  }
-
   /** {@inheritDoc} */
   @Override
   public boolean include(final Object object) {

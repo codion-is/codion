@@ -6,9 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.formats.LongDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.common.model.formats.ShortDotDateFormat;
+import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -17,6 +15,7 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.model.Type;
 
@@ -45,6 +44,11 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   private final State stIsDialogActive = new State("PropertyFilterPanel.stIsDialogActive");
   private final State stIsDialogShowing = new State("PropertyFilterPanel.stIsDialogShowing");
+
+  private final SimpleDateFormat longDateFormat =
+          new SimpleDateFormat((String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_LONG_DATE_FORMAT));
+  private final SimpleDateFormat shortDateFormat =
+          new SimpleDateFormat((String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT));
 
   private JDialog searchDlg;
   private Point lastPosition;
@@ -234,8 +238,8 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                                 final boolean useLongDate, final boolean isUpperBound) {
     try {
       final String txt = dateField.getText();
-      if (Util.isDateValid(txt, false, useLongDate)) {//todo localize
-        final SimpleDateFormat format = useLongDate ? LongDateFormat.get() : ShortDashDateFormat.get();
+      final SimpleDateFormat format = useLongDate ? longDateFormat : shortDateFormat;
+      if (Util.isDateValid(txt, false, format)) {
         final Date val = getDate(format, dateField);
         if (isUpperBound)
           model.setUpperBound(useLongDate ? new Timestamp(val.getTime()) : val);
@@ -280,10 +284,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
           @Override
           public void setModelPropertyValue(final Object obj) {
-            if (obj instanceof String && obj.equals(""))
-              super.setModelPropertyValue(null);
-            else
-              super.setModelPropertyValue(obj);
+            super.setModelPropertyValue(obj instanceof String && obj.equals("") ? null : obj);
           }
         };
       case DOUBLE :
@@ -292,10 +293,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null){
           @Override
           public void setModelPropertyValue(final Object obj) {
-            if (obj instanceof String && obj.equals(""))
-              super.setModelPropertyValue(null);
-            else
-              super.setModelPropertyValue(obj);
+            super.setModelPropertyValue(obj instanceof String && obj.equals("") ? null : obj);
           }
         };
       case SHORT_DATE :
@@ -303,8 +301,9 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, model.getPropertyType() == Type.SHORT_DATE
-                ? new ShortDotDateFormat() : new LongDateFormat());
+                LinkType.READ_WRITE, new DateMaskFormat(
+                        (String) FrameworkSettings.get().getProperty(model.getPropertyType() == Type.LONG_DATE
+                                ? FrameworkSettings.DEFAULT_LONG_DATE_FORMAT : FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT)));
       default :
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,

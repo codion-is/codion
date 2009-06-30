@@ -549,3 +549,5 @@
   IDatabase.DATABASE_EMBEDDED property added
   DerbyEmbeddedDatabase and H2EmbeddedDatabase removed
   Build and run files changed according to the above
+  PropertyFilterPanel and PropertySearchPanel now use default date formats
+  PropertyFilterModel.get/setUpper/LowerBound(Comparable) removed
