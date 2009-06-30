@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +21,8 @@ public class DerbyDatabase implements IDatabase {
    */
   private DateFormat DERBY_LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
+
   /** {@inheritDoc} */
   public String getDatabaseType() {
     return DATABASE_TYPE_DERBY;
@@ -26,7 +30,7 @@ public class DerbyDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("org.apache.derby.jdbc.ClientDriver");
+    Class.forName(isEmbedded() ? "org.apache.derby.jdbc.EmbeddedDriver" : "org.apache.derby.jdbc.ClientDriver");
   }
 
   /** {@inheritDoc} */
@@ -48,17 +52,26 @@ public class DerbyDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = System.getProperty(DATABASE_HOST_PROPERTY);
-    if (host == null || host.length() == 0)
-      throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
-    final String port = System.getProperty(DATABASE_PORT_PROPERTY);
-    if (port == null || port.length() == 0)
-      throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getDatabaseType());
-    final String sid = System.getProperty(DATABASE_SID_PROPERTY);
-    if (sid == null || sid.length() == 0)
-      throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getDatabaseType());
+    if (isEmbedded()) {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
 
-    return "jdbc:derby://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
+      return "jdbc:derby:" + host + getUserInfoString(connectionProperties);
+    }
+    else {
+      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      if (host == null || host.length() == 0)
+        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
+      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      if (port == null || port.length() == 0)
+        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getDatabaseType());
+      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      if (sid == null || sid.length() == 0)
+        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getDatabaseType());
+
+      return "jdbc:derby://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
+    }
   }
 
   /** {@inheritDoc} */
@@ -75,11 +88,22 @@ public class DerbyDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public boolean isEmbedded() {
-    return false;
+    return embedded;
   }
 
   /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {}
+  public void shutdownEmbedded(final Properties connectionProperties) {
+    try {
+      DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST_PROPERTY) + ";shutdown=true"
+              + getUserInfoString(connectionProperties));
+    }
+    catch (SQLException e) {
+      if (e.getSQLState().equals("08006"))//08006 is expected on Derby shutdown
+        System.out.println("Embedded Derby database successfully shut down!");
+      else
+        e.printStackTrace();
+    }
+  }
 
   /** {@inheritDoc} */
   public boolean supportsNoWait() {

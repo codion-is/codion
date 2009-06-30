@@ -15,14 +15,12 @@ public interface IDatabase {
 
   /**
    * Specifies the database type
+   * @see IDatabase#DATABASE_TYPE_DERBY
+   * @see IDatabase#DATABASE_TYPE_H2
    * @see IDatabase#DATABASE_TYPE_MYSQL
    * @see IDatabase#DATABASE_TYPE_ORACLE
    * @see IDatabase#DATABASE_TYPE_POSTGRESQL
    * @see IDatabase#DATABASE_TYPE_SQLSERVER
-   * @see IDatabase#DATABASE_TYPE_DERBY
-   * @see IDatabase#DATABASE_TYPE_EMBEDDED_DERBY
-   * @see IDatabase#DATABASE_TYPE_H2
-   * @see IDatabase#DATABASE_TYPE_EMBEDDED_H2
    */
   public String DATABASE_TYPE_PROPERTY = "jminor.db.type";
 
@@ -41,6 +39,13 @@ public interface IDatabase {
    * Specifies the database port
    */
   public String DATABASE_PORT_PROPERTY = "jminor.db.port";
+
+  /**
+   * Specifies whether or not the database should be run in embedded mode, if applicable
+   * Values: true/false
+   * Default: false
+   */
+  public String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
    * Specifies the IDatabase implementation class to use in case of a dbms that is not directly supported
@@ -79,22 +84,10 @@ public interface IDatabase {
   public String DATABASE_TYPE_DERBY = "derby";
 
   /**
-   * Derby embedded database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
-   */
-  public String DATABASE_TYPE_EMBEDDED_DERBY = "derby_embedded";
-
-  /**
    * H2 database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
   public String DATABASE_TYPE_H2 = "h2";
-
-  /**
-   * H2 embedded database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
-   */
-  public String DATABASE_TYPE_EMBEDDED_H2 = "h2_embedded";
 
   /**
    * Loads the database driver

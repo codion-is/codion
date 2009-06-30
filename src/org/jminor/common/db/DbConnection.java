@@ -325,11 +325,9 @@ public class DbConnection {
     final long time = System.currentTimeMillis();
     ByteArrayInputStream inputStream = null;
     PreparedStatement statement = null;
+    final String sql = "update " + tableName + " set " + columnName + " = ? " + whereClause;
     try {
-      statement = connection.prepareStatement("update " + tableName + " set "
-              + columnName + " = ?" + " " + whereClause);
-
-      log.debug(statement);
+      statement = connection.prepareStatement(sql);
 
       inputStream = new ByteArrayInputStream(blobData);
 
@@ -338,7 +336,6 @@ public class DbConnection {
       statement.execute();
     }
     catch (SQLException e) {
-      final String sql = statement != null ? statement.toString() : "no statement for blob error";
       System.out.println(sql);
       log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;

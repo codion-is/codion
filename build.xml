@@ -336,6 +336,7 @@
       <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
       <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
       <batchtest todir="${reports}">
         <fileset dir="${srctest}" includes="**/*Test.java" />
         <fileset dir="${srcdemos}" includes="**/*Test.java" />
@@ -359,6 +360,7 @@
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>
       <jvmarg value="-Djminor.db.port=${run.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
     </java>
   </target>
 
@@ -395,6 +397,7 @@
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>
       <jvmarg value="-Djminor.db.port=${run.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
     </java>
   </target>
 
@@ -429,6 +432,7 @@
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>
       <jvmarg value="-Djminor.db.port=${run.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
       <jvmarg value="-Djminor.server.pooling.initial=scott"/>
       <jvmarg value="-Djminor.server.logging.status=1"/>
       <jvmarg value="-Djminor.server.port=2222"/>

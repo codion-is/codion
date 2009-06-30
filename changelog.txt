@@ -545,3 +545,7 @@
   Event, removed name field
   Added run_rmi_registry target to build.xml, removed run/shutdown_derby_server
   Cleaned up project_template build file
+  IDatabase.DATABASE_TYPE_DERBY_EMBEDDED and DATABASE_TYPE_H2_EMBEDDED removed
+  IDatabase.DATABASE_EMBEDDED property added
+  DerbyEmbeddedDatabase and H2EmbeddedDatabase removed
+  Build and run files changed according to the above

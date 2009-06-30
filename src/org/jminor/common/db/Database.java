@@ -28,12 +28,8 @@ public class Database {
             dbImplementationClass = "org.jminor.common.db.dbms.SQLServerDatabase";
           else if (dbType.equals(IDatabase.DATABASE_TYPE_DERBY))
             dbImplementationClass = "org.jminor.common.db.dbms.DerbyDatabase";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_EMBEDDED_DERBY))
-            dbImplementationClass = "org.jminor.common.db.dbms.DerbyEmbeddedDatabase";
           else if (dbType.equals(IDatabase.DATABASE_TYPE_H2))
             dbImplementationClass = "org.jminor.common.db.dbms.H2Database";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_EMBEDDED_H2))
-            dbImplementationClass = "org.jminor.common.db.dbms.H2EmbeddedDatabase";
           else
             throw new IllegalArgumentException("Unknown database type: " + dbType);
         }
