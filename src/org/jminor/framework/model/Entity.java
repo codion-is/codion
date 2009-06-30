@@ -130,7 +130,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    */
   public Event getPropertyChangeEvent() {
     if (evtPropertyChanged == null)
-      evtPropertyChanged = new Event(getEntityID() + ".evtPropertyChanged");
+      evtPropertyChanged = new Event();
 
     return evtPropertyChanged;
   }
@@ -526,7 +526,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   public void setFirePropertyChangeEvents(final boolean value) {
     if (value) {
       if (evtPropertyChanged == null)
-        evtPropertyChanged = new Event("Entity.evtPropertyChanged");
+        evtPropertyChanged = new Event();
     }
     else
       evtPropertyChanged = null;

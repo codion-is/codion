@@ -14,7 +14,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public class BooleanComboBoxModel extends DefaultComboBoxModel {
 
-  public final Event evtSelectedItemChanged = new Event("BooleanComboBoxModel.evtSelectedItemChanged");
+  public final Event evtSelectedItemChanged = new Event();
 
   /** Constructs a new BooleanComboBoxModel. */
   public BooleanComboBoxModel() {

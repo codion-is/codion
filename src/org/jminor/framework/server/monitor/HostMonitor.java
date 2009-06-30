@@ -28,8 +28,8 @@ public class HostMonitor {
 
   private static final Logger log = Util.getLogger(HostMonitor.class);
 
-  public final Event evtRefreshed = new Event("HostMonitor.evtRefreshed");
-  public final Event evtServerMonitorRemoved = new Event("HostMonitor.evtServerMonitorRemoved");
+  public final Event evtRefreshed = new Event();
+  public final Event evtServerMonitorRemoved = new Event();
 
   public final State stLiveUpdate = new State();
   private final String hostName;

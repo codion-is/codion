@@ -39,7 +39,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   /**
    * Fired when a successful connection has been made
    */
-  public final Event evtConnected = new Event("EntityDbRemoteProvider.evtConnected");
+  public final Event evtConnected = new Event();
 
   private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
 

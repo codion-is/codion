@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class EntityPropertyEditor extends JPanel {
 
-  public final Event evtButtonClicked = new Event("EntityPropertyEditor.evtButtonClicked");
+  public final Event evtButtonClicked = new Event();
 
   private final JComponent field;
   private final Property property;

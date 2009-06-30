@@ -14,7 +14,7 @@ import java.awt.Graphics;
 
 public class ItemComboBoxModel extends DefaultComboBoxModel {
 
-  public final Event evtSelectedItemChanged = new Event("ItemComboBoxModel.evtSelectedItemChanged");
+  public final Event evtSelectedItemChanged = new Event();
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {

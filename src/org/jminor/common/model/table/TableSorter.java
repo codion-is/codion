@@ -89,10 +89,10 @@ public class TableSorter extends AbstractTableModel {
   public static final int NOT_SORTED = 0;
   public static final int ASCENDING = 1;
 
-  public final Event evtBeforeSort = new Event("TableSorter.evtBeforeSort");
-  public final Event evtAfterSort = new Event("TableSorter.evtAfterSort");
+  public final Event evtBeforeSort = new Event();
+  public final Event evtAfterSort = new Event();
 
-  public final Event evtTableHeaderShiftClick = new Event("TableSorter.evtTableHeaderShiftClick");
+  public final Event evtTableHeaderShiftClick = new Event();
 
   public static final Comparator COMPARABLE_COMAPRATOR = new Comparator() {
     public int compare(Object o1, Object o2) {

@@ -25,12 +25,12 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
 
   private static final Logger log = Util.getLogger(EntityListModel.class);
 
-  public final Event evtRefreshDone = new Event("EntityComboBoxModel.evtRefreshDone");
+  public final Event evtRefreshDone = new Event();
 
   public final State stSelectionEmpty = new State();
 
-  public final Event evtSelectionChangedAdjusting = new Event("EntityListModel.evtSelectionChangedAdjusting");
-  public final Event evtSelectionChanged = new Event("EntityListModel.evtSelectionChanged");
+  public final Event evtSelectionChangedAdjusting = new Event();
+  public final Event evtSelectionChanged = new Event();
 
   private final String entityID;
   private final IEntityDbProvider dbProvider;

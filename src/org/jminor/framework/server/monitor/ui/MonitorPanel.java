@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
  */
 public class MonitorPanel extends JPanel {
 
-  private final Event evtAlwaysOnTopChanged = new Event("MonitorPanel.evtAlwaysOnTopChanged");
+  private final Event evtAlwaysOnTopChanged = new Event();
 
   private final MonitorModel model;
   private JFrame monitorFrame;

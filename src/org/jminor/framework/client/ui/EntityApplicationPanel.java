@@ -69,8 +69,8 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   protected ToggleBeanPropertyLink ctrSelectDetail;
   protected ToggleBeanPropertyLink ctrCascadeRefresh;
 
-  private final Event evtSelectedEntityPanelChanged = new Event("EntityApplicationPanel.evtSelectedEntityPanelChanged");
-  private final Event evtAlwaysOnTopChanged = new Event("EntityApplicationPanel.evtAlwaysOnTopChanged");
+  private final Event evtSelectedEntityPanelChanged = new Event();
+  private final Event evtAlwaysOnTopChanged = new Event();
 
   private static boolean persistEntityPanels;
   private static Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();

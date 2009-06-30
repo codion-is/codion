@@ -35,7 +35,7 @@ public class EntityTableSearchModel {
   /**
    * Fired when the state of the filter models changes
    */
-  public final Event evtFilterStateChanged = new Event("EntityTableSearchModel.evtFilterStateChanged");
+  public final Event evtFilterStateChanged = new Event();
 
   /**
    * When active the search should be simplified

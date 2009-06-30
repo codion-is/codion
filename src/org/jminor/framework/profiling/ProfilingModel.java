@@ -25,14 +25,14 @@ import java.util.TimerTask;
 
 public abstract class ProfilingModel {
 
-  public final Event evtPauseChanged = new Event("ProfilingModel.evtPauseChanged");
-  public final Event evtRelentlessChanged = new Event("ProfilingModel.evtRelentlessChanged");
-  public final Event evtMaximumThinkTimeChanged = new Event("ProfilingModel.evtDelayChanged");
-  public final Event evtMinimumThinkTimeChanged = new Event("ProfilingModel.evtMinDelayChanged");
-  public final Event evtWarningTimeChanged = new Event("ProfilingModel.evtWarningTimeChanged");
-  public final Event evtClientCountChanged = new Event("ProfilingModel.evtClientCountChanged");
-  public final Event evtBatchSizeChanged = new Event("ProfilingModel.evtBatchSizeChanged");
-  public final Event evtDoneExiting = new Event("ProfilingModel.evtDoneExiting");
+  public final Event evtPauseChanged = new Event();
+  public final Event evtRelentlessChanged = new Event();
+  public final Event evtMaximumThinkTimeChanged = new Event();
+  public final Event evtMinimumThinkTimeChanged = new Event();
+  public final Event evtWarningTimeChanged = new Event();
+  public final Event evtClientCountChanged = new Event();
+  public final Event evtBatchSizeChanged = new Event();
+  public final Event evtDoneExiting = new Event();
 
   protected static final Random random = new Random();
 

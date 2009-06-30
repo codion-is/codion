@@ -21,9 +21,8 @@ import java.util.List;
 
 public class EntityLookupModel {
 
-  public final Event evtSelectedEntitiesChanged = new Event("EntityLookupModel.selectedEntitiesChanged");
-
-  public final Event evtSearchStringChanged = new Event("EntityLookupModel.evtSearchStringChanged");
+  public final Event evtSelectedEntitiesChanged = new Event();
+  public final Event evtSearchStringChanged = new Event();
 
   /**
    * The ID of the entity this lookup model is based on

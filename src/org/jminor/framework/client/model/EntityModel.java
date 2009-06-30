@@ -62,63 +62,63 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired before an insert is performed
    */
-  public final Event evtBeforeInsert = new Event("EntityModel.evtBeforeInsert");
+  public final Event evtBeforeInsert = new Event();
 
   /**
    * Fired when an Entity has been inserted
    */
-  public final Event evtAfterInsert = new Event("EntityModel.evtAfterInsert");
+  public final Event evtAfterInsert = new Event();
 
   /**
    * Fired before an update is performed
    */
-  public final Event evtBeforeUpdate = new Event("EntityModel.evtBeforeUpdate");
+  public final Event evtBeforeUpdate = new Event();
 
   /**
    * Fired when an Entity has been updated
    */
-  public final Event evtAfterUpdate = new Event("EntityModel.evtAfterUpdate");
+  public final Event evtAfterUpdate = new Event();
 
   /**
    * Fired before a delete is performed
    */
-  public final Event evtBeforeDelete = new Event("EntityModel.evtBeforeDelete");
+  public final Event evtBeforeDelete = new Event();
 
   /**
    * Fired when an Entity has been deleted
    */
-  public final Event evtAfterDelete = new Event("EntityModel.evtAfterDelete");
+  public final Event evtAfterDelete = new Event();
 
   /**
    * Fired when an entity is deleted, inserted or updated via this EntityModel
    */
-  public final Event evtEntitiesChanged = new Event("EntityModel.evtEntitiesChanged");
+  public final Event evtEntitiesChanged = new Event();
 
   /**
    * Fired when the model has been refreshed, N.B. this event
    * is fired even if the refresh results in an exception
    */
-  public final Event evtRefreshDone = new Event("EntityModel.evtRefreshDone");
+  public final Event evtRefreshDone = new Event();
 
   /**
    * Fired when the model is about to be refreshed
    */
-  public final Event evtRefreshStarted = new Event("EntityModel.evtRefreshStarted");
+  public final Event evtRefreshStarted = new Event();
 
   /**
    * Fired when the model has been cleared
    */
-  public final Event evtModelCleared = new Event("EntityModel.evtModelCleared");
+  public final Event evtModelCleared = new Event();
 
   /**
    * Fired when the active entity is about to be changed
    */
-  public final Event evtActiveEntityChanging = new Event("EntityModel.evtActiveEntityChanging");
+  public final Event evtActiveEntityChanging = new Event();
 
   /**
    * Fired when the active entity is changed
    */
-  public final Event evtActiveEntityChanged = new Event("EntityModel.evtActiveEntityChanged");
+  public final Event evtActiveEntityChanged = new Event();
 
   /**
    * Active when a non-null entity is active
@@ -128,7 +128,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Fired when detail models are linked or unlinked
    */
-  public final Event evtLinkedDetailModelsChanged = new Event("EntityModel.evtLinkedDetailModelsChanged");
+  public final Event evtLinkedDetailModelsChanged = new Event();
 
   /**
    * If this state is active selection in this model triggers the filtering of all linked detail models
@@ -594,7 +594,7 @@ public class EntityModel implements IRefreshable {
     if (uiChangeEventMap.containsKey(property))
       return uiChangeEventMap.get(property);
 
-    final Event ret = new Event("EntityModel.propertyUIChangeEvent " + property);
+    final Event ret = new Event();
     uiChangeEventMap.put(property, ret);
 
     return ret;
@@ -616,7 +616,7 @@ public class EntityModel implements IRefreshable {
     if (modelChangeEventMap.containsKey(property))
       return modelChangeEventMap.get(property);
 
-    final Event ret = new Event("EntityModel.propertyModelChangeEvent " + property);
+    final Event ret = new Event();
     modelChangeEventMap.put(property, ret);
 
     return ret;
@@ -638,7 +638,7 @@ public class EntityModel implements IRefreshable {
     if (changeEventMap.containsKey(property))
       return changeEventMap.get(property);
 
-    final Event ret = new Event("EntityModel.propertyChangeEvent " + property);
+    final Event ret = new Event();
     activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(final PropertyChangeEvent e) {

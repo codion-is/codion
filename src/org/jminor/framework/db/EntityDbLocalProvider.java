@@ -25,7 +25,7 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
   /**
    * Fired when a successful connection has been made
    */
-  public final Event evtConnected = new Event("EntityDbLocalProvider.evtConnected");
+  public final Event evtConnected = new Event();
 
   /**
    * The user used by this db provider when connecting to the database server

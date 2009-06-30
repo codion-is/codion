@@ -541,3 +541,5 @@
   build.xml cleaned up, removed dist/version and current directories, removed deploy target
   EntityDbRemoteProvider moved to server.provider
   Ant build file cleanup
+  DateTextPropertyLink improved somewhat
+  Event, removed name field

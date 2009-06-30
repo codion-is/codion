@@ -26,11 +26,11 @@ public abstract class AbstractSearchModel {
   public static final String UPPER_BOUND_PROPERTY = "upperBound";
   public static final String LOWER_BOUND_PROPERTY = "lowerBound";
 
-  public final Event evtUpperBoundChanged = new Event("AbstractSearchModel.evtUpperBoundChanged");
-  public final Event evtLowerBoundChanged = new Event("AbstractSearchModel.evtLowerBoundChanged");
-  public final Event evtSearchTypeChanged = new Event("AbstractSearchModel.evtSearchTypeChanged");
-  public final Event evtSearchStateChanged = new Event("AbstractSearchModel.evtSearchStateChanged");
-  public final Event evtSearchModelCleared = new Event("AbstractSearchModel.evtSearchModelCleared");
+  public final Event evtUpperBoundChanged = new Event();
+  public final Event evtLowerBoundChanged = new Event();
+  public final Event evtSearchTypeChanged = new Event();
+  public final Event evtSearchStateChanged = new Event();
+  public final Event evtSearchModelCleared = new Event();
 
   public final State stLocked = new State("AbstractSearchModel.stLocked", false);
 

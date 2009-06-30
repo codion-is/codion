@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.PropertyChangeEvent;
 import org.jminor.common.model.PropertyListener;
 import org.jminor.common.ui.control.LinkType;
@@ -13,8 +12,6 @@ import org.jminor.framework.model.Property;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Date;
@@ -25,7 +22,7 @@ import java.util.Date;
 public class DateTextPropertyLink extends TextPropertyLink {
 
   private final String fieldMaskString;
-  private final Event updateValidColor = new Event("DateTextPropertyLink.updateValidColor");
+  private final Color defaultTextFieldBackground = new JTextField().getBackground();
 
   /**
    * Instantiates a new DateTextPropertyLink
@@ -46,12 +43,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
     entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(PropertyChangeEvent e) {
-        updateFieldColor(textField);
-      }
-    });
-    updateValidColor.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        updateFieldColor(textField);
+        updateFieldColor();
       }
     });
     updateUI();
@@ -60,14 +52,14 @@ public class DateTextPropertyLink extends TextPropertyLink {
   /** {@inheritDoc} */
   @Override
   protected Object getParsedValue(final String text) {
-    updateValidColor.fire();
+    updateFieldColor();
     final Date formatted = (Date) super.getParsedValue(text);
     return formatted == null ? null : new Timestamp(formatted.getTime());
   }
 
-  private void updateFieldColor(final JFormattedTextField textField) {
+  private void updateFieldColor() {
     final boolean validInput = !isModelPropertyValueNull() || fieldContainsMaskOnly();
-    textField.setBackground(validInput ? (new JTextField()).getBackground() : Color.LIGHT_GRAY);
+    getTextComponent().setBackground(validInput ? defaultTextFieldBackground : Color.LIGHT_GRAY);
   }
 
   private boolean fieldContainsMaskOnly() {

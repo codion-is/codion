@@ -15,8 +15,8 @@ import java.util.List;
 
 public abstract class EntityApplicationModel {
 
-  public final Event evtSelectionFiltersDetailChanged = new Event("EntityApplicationModel.evtSelectionFiltersDetailChanged");
-  public final Event evtCascadeRefreshChanged = new Event("EntityApplicationModel.evtCascadeRefreshChanged");
+  public final Event evtSelectionFiltersDetailChanged = new Event();
+  public final Event evtCascadeRefreshChanged = new Event();
 
   private final IEntityDbProvider dbProvider;
   private final List<EntityModel> mainApplicationModels;

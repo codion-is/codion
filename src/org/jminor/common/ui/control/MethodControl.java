@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
  */
 public class MethodControl extends Control {
 
-  public final Event evtActionPerfomed = new Event("MethodControl.evtActionPerformed");
+  public final Event evtActionPerfomed = new Event();
 
   private final Object owner;
   private final Method method;

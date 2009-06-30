@@ -28,9 +28,9 @@ import java.util.TimerTask;
  */
 public class ConnectionPoolInstanceMonitor {
 
-  public final Event evtStatsUpdated = new Event("ConnectionPoolInstanceMonitor.evtStatsUpdated");
-  public final Event evtStatsUpdateIntervalChanged = new Event("ConnectionPoolInstanceMonitor.statsUpdateIntervalChanged");
-  public final Event evtRefresh = new Event("ConnectionPoolInstanceMonitor.evtRefresh");
+  public final Event evtStatsUpdated = new Event();
+  public final Event evtStatsUpdateIntervalChanged = new Event();
+  public final Event evtRefresh = new Event();
 
   private final User user;
   private final IEntityDbRemoteServerAdmin server;

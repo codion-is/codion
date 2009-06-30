@@ -27,10 +27,10 @@ public class ServerMonitor {
 
   private static final Logger log = Util.getLogger(ServerMonitor.class);
 
-  public final Event evtServerShutDown = new Event("ServerMonitor.evtServerShutDown");
-  public final Event evtStatsUpdated = new Event("ServerMonitor.evtStatsUpdated");
+  public final Event evtServerShutDown = new Event();
+  public final Event evtStatsUpdated = new Event();
 
-  public final Event evtWarningThresholdChanged = new Event("ServerMonitor.evtWarningThresholdChanged");
+  public final Event evtWarningThresholdChanged = new Event();
   private final String hostName;
   private final String serverName;
   private final IEntityDbRemoteServerAdmin server;

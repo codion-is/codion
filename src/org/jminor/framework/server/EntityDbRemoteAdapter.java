@@ -54,7 +54,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
   private static final Logger logger = Util.getLogger(EntityDbRemoteAdapter.class);
 
-  public final Event evtLoggingOut = new Event("EntityDbRemoteAdapter.evtLoggingOut");
+  public final Event evtLoggingOut = new Event();
 
   private ClientInfo client;
   private final long creationDate = System.currentTimeMillis();

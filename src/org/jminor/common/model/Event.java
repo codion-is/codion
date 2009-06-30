@@ -14,24 +14,14 @@ import java.util.List;
  */
 public class Event implements ActionListener, Serializable {
 
-  private final String name;
-
   private transient final List<ActionListener> listeners = new ArrayList<ActionListener>();
-  private transient final ActionEvent defaultEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
-
-  /**
-   * Instantiates a new Event
-   * @param name the name of this event, useful for debuggin purposes
-   */
-  public Event(final String name) {
-    this.name = name;
-  }
+  private transient final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
 
   /**
    * Notifies all listeners
    */
   public void fire() {
-    fire(defaultEvent);
+    fire(defaultActionEvent);
   }
 
   /**
@@ -63,11 +53,5 @@ public class Event implements ActionListener, Serializable {
    */
   public void removeListener(final ActionListener listener) {
     listeners.remove(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String toString() {
-    return name;
   }
 }

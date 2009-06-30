@@ -25,7 +25,7 @@ import java.util.Vector;
  */
 public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
 
-  public final Event evtSelectionChanged = new Event("FilteredComboBoxModel.evtSelectionChanged");
+  public final Event evtSelectionChanged = new Event();
 
   private final List<Object> visibleItems = new ArrayList<Object>();
   private final List<Object> filteredItems = new ArrayList<Object>();

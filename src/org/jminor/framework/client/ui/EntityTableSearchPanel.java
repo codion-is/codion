@@ -22,7 +22,7 @@ import java.util.List;
 
 public class EntityTableSearchPanel extends JPanel {
 
-  public final Event evtAdvancedChanged = new Event("EntityTableSearchPanel.evtAdvancedChanged");
+  public final Event evtAdvancedChanged = new Event();
 
   private final EntityTableSearchModel searchModel;
   private final List<Property> tableColumnProperties;

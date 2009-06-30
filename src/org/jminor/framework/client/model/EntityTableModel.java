@@ -55,43 +55,43 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * Fired when the model is about to be refreshed
    */
-  public final Event evtRefreshStarted = new Event("EntityTableModel.evtRefreshStarted");
+  public final Event evtRefreshStarted = new Event();
 
   /**
    * Fired when the model has been refreshed, N.B. this event
    * is fired even if the refresh results in an exception
    */
-  public final Event evtRefreshDone = new Event("EntityTableModel.evtRefreshDone");
+  public final Event evtRefreshDone = new Event();
 
   /**
    * Fired when the model is about to be filtered
    */
-  public final Event evtFilteringStarted = new Event("EntityTableModel.evtFilteringStarted");
+  public final Event evtFilteringStarted = new Event();
 
   /**
    * Fired when the model has been filtered
    */
-  public final Event evtFilteringDone = new Event("EntityTableModel.evtFilteringDone");
+  public final Event evtFilteringDone = new Event();
 
   /**
    * Fired after the table data has changed
    */
-  public final Event evtTableDataChanged = new Event("EntityTableModel.evtTableDataChanged");
+  public final Event evtTableDataChanged = new Event();
 
   /**
    * Fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
    */
-  public final Event evtSelectedIndexChanged = new Event("EntityTableModel.evtSelectedIndexChanged");
+  public final Event evtSelectedIndexChanged = new Event();
 
   /**
    * Fired when the selection is changing
    */
-  public final Event evtSelectionChangedAdjusting = new Event("EntityTableModel.evtSelectionChangedAdjusting");
+  public final Event evtSelectionChangedAdjusting = new Event();
 
   /**
    * Fired after the selection has changed
    */
-  public final Event evtSelectionChanged = new Event("EntityTableModel.evtSelectionChanged");
+  public final Event evtSelectionChanged = new Event();
 
   /**
    * Active when the selection is empty

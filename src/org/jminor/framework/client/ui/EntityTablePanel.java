@@ -78,17 +78,17 @@ public class EntityTablePanel extends JPanel {
   /**
    * fired when the table is double clicked
    */
-  public final Event evtTableDoubleClick = new Event("EntityTablePanel.evtTableDoubleClick");
+  public final Event evtTableDoubleClick = new Event();
 
   /**
    * fired when the search panel state is changed
    */
-  public final Event evtSearchPanelVisibleChanged = new Event("EntityTablePanel.evtSearchPanelVisibleChanged");
+  public final Event evtSearchPanelVisibleChanged = new Event();
 
   /**
    * fired when the summary panel state is changed
    */
-  public final Event evtTableSummaryPanelVisibleChanged = new Event("EventTablePanel.evtTableSummaryPanelVisibleChanged");
+  public final Event evtTableSummaryPanelVisibleChanged = new Event();
 
   /**
    * the EntityTableModel instance used by this EntityTablePanel

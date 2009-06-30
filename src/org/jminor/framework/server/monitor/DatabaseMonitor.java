@@ -16,13 +16,14 @@ import java.util.TimerTask;
 
 public class DatabaseMonitor {
 
-  public final Event evtStatsUpdateIntervalChanged = new Event("DatabaseMonitor.evtStatsUpdateIntervalChanged");
-  private final IEntityDbRemoteServerAdmin server;
+  public final Event evtStatsUpdateIntervalChanged = new Event();
 
+  private final IEntityDbRemoteServerAdmin server;
   private final ConnectionPoolMonitor connectionPoolMonitor;
   private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
   private final XYSeries cachedQueriesPerSecond = new XYSeries("Cached queries per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
+
   private Timer updateTimer;
   private int statsUpdateInterval;
 

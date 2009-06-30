@@ -28,7 +28,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * fired when a refresh has been performed
    */
-  public final Event evtRefreshDone = new Event("EntityComboBoxModel.evtRefreshDone");
+  public final Event evtRefreshDone = new Event();
 
   /**
    * the ID of the underlying entity

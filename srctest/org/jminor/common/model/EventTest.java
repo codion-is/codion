@@ -13,7 +13,7 @@ import java.util.List;
 public class EventTest extends TestCase {
 
   public void test() throws Exception {
-    final Event event = new Event("test");
+    final Event event = new Event();
     final List<Object> res = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
       public void actionPerformed(final ActionEvent e) {

@@ -21,19 +21,19 @@ import javax.swing.JTextField;
 public class BeanPropertyLinkTest extends TestCase {
 
   private Integer intValue;
-  private Event evtIntValueChanged = new Event("");
+  private Event evtIntValueChanged = new Event();
 
   private Double doubleValue;
-  private Event evtDoubleValueChanged = new Event("");
+  private Event evtDoubleValueChanged = new Event();
 
   private String stringValue;
-  private Event evtStringValueChanged = new Event("");
+  private Event evtStringValueChanged = new Event();
 
   private boolean booleanValue;
-  private Event evtBooleanValueChanged = new Event("");
+  private Event evtBooleanValueChanged = new Event();
 
   private String selectedItem;
-  private Event evtSelectedItemChanged = new Event("");
+  private Event evtSelectedItemChanged = new Event();
 
   public void testIntBeanPropertyLink() throws Exception {
     final IntField txtInt = new IntField();

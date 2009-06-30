@@ -52,7 +52,7 @@ public class PropertySummaryPanel extends JPanel {
     }
   }
 
-  public final Event evtSummaryTypeChanged = new Event("PropertySummaryPanel.evtSummaryTypeChanged");
+  public final Event evtSummaryTypeChanged = new Event();
 
   private final Property property;
   private final EntityTableModel tableModel;
