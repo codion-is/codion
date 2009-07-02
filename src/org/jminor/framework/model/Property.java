@@ -329,8 +329,8 @@ public class Property implements Serializable {
     public final List<Property> referenceProperties;
 
     /**
-     * if true the referenced entity is automatically loaded with the parent entity,
-     * otherwise a shallow entity instance with only the primary key is loaded
+     * if true a shallow entity instance with only the primary key is loaded as opposed to
+     * loading the referenced entity with all property values populated
      */
     public final boolean isWeakReference;
 
