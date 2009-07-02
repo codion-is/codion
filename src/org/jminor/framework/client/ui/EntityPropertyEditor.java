@@ -171,9 +171,9 @@ public class EntityPropertyEditor extends JPanel {
 
     switch (property.getPropertyType()) {
       case LONG_DATE:
-        return FrameworkUiUtil.createDateChooserPanel((Date) currentValue, new LongMediumDateFormat());
+        return FrameworkUiUtil.createDateInputPanel((Date) currentValue, new LongMediumDateFormat());
       case SHORT_DATE:
-        return FrameworkUiUtil.createDateChooserPanel((Date) currentValue, new ShortDashDateFormat());
+        return FrameworkUiUtil.createDateInputPanel((Date) currentValue, new ShortDashDateFormat());
       case DOUBLE:
         final DoubleField dfield = new DoubleField();
         if (currentValue != null)

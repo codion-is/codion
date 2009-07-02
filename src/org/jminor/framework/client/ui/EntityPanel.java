@@ -39,24 +39,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -672,11 +655,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Saves the active entity, that is, if no entity is selected it performs a insert otherwise the user
    * is asked whether to update the selected record or insert a new one
    */
-  public final void handleSave() {
+  public final void save() {
     if ((getModel().getTableModel() != null && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
             || !getModel().isActiveEntityModified() || !getModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
-      handleInsert();
+      insert();
     }
     else {//possibly update
       final int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT),
@@ -685,9 +668,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) //update
-        handleUpdate();
+        update();
       else if (choiceIdx == 1) //insert
-        handleInsert();
+        insert();
     }
   }
 
@@ -695,7 +678,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Performs a insert on the active entity
    * @return true in case of successful insert, false otherwise
    */
-  public final boolean handleInsert() {
+  public final boolean insert() {
     try {
       if (confirmInsert()) {
         validateData();
@@ -722,7 +705,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Performs a delete on the active entity or if a table model is available, the selected entities
    * @return true if the delete operation was successful
    */
-  public final boolean handleDelete() {
+  public final boolean delete() {
     try {
       if (confirmDelete()) {
         try {
@@ -747,7 +730,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Performs an update on the active entity
    * @return true if the update operation was successful
    */
-  public final boolean handleUpdate() {
+  public final boolean update() {
     try {
       validateData();
       if (confirmUpdate()) {
@@ -944,7 +927,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return a control for deleting the selected entities
    */
   public Control getDeleteSelectedControl() {
-    return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
+    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
                     getModel().getDeleteAllowedState(),
                     getModel().getTableModel().stSelectionEmpty.getReversedState()),
@@ -1003,7 +986,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleDelete", FrameworkMessages.get(FrameworkMessages.DELETE),
+    return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
                     getModel().getDeleteAllowedState(),
@@ -1027,7 +1010,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleUpdate", FrameworkMessages.get(FrameworkMessages.UPDATE),
+    return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
                     getModel().getUpdateAllowedState(),
@@ -1042,7 +1025,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return ControlFactory.methodControl(this, "handleSave", FrameworkMessages.get(FrameworkMessages.INSERT),
+    return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
             new AggregateState(AggregateState.Type.AND, stActive, getModel().getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
@@ -1056,7 +1039,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getInsertAllowedState(),
             new AggregateState(AggregateState.Type.AND, getModel().getUpdateAllowedState(),
                     getModel().getActiveEntityModifiedState()));
-    return ControlFactory.methodControl(this, "handleSave", insertCaption,
+    return ControlFactory.methodControl(this, "save", insertCaption,
             new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_PROPERTIES_16));
@@ -1693,7 +1676,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         @Override
         public void keyTyped(KeyEvent e) {
           if (e.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stSelectionEmpty.isActive())
-            handleDelete();
+            delete();
         }
       });
     }

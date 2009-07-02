@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class Property implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * The property type
    */

@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class DbLog implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   public final Date logCreationDate = new Date();
 
   public final List<LogEntry> log;

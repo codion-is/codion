@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public class EntityKey implements Externalizable {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * the entity ID
    */

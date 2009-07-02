@@ -551,3 +551,9 @@
   Build and run files changed according to the above
   PropertyFilterPanel and PropertySearchPanel now use default date formats
   PropertyFilterModel.get/setUpper/LowerBound(Comparable) removed
+  FrameworkUiUtil.createDateChooserPanel/Field rename to createDateInput...
+  EntityBindingPanel.createControlPanel are now protected final
+  EntityPanel.handleSave/Insert/Update/Delete renamed to save/insert/update/delete
+  serialVersionUID added to Serializable and Externalizable classes
+  State, Event and FrameworkSettings no longer implement Serializable
+  manifest target added to build file

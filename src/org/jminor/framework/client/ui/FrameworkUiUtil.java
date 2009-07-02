@@ -203,29 +203,6 @@ public class FrameworkUiUtil {
       return selected;
   }
 
-  public static DateInputPanel createDateChooserPanel(final Date initialValue, final DateMaskFormat maskFormat) {
-    final JFormattedTextField txtField = UiUtil.createFormattedField(maskFormat.getDateMask());
-    if (initialValue != null)
-      txtField.setText(maskFormat.format(initialValue));
-
-    return new DateInputPanel(txtField, maskFormat, true, null);
-  }
-
-  public static JTextField createDateChooserField(final Date initialValue, final JComponent parent) {
-    final JTextField txtField =
-            new JTextField(ShortDashDateFormat.get().format(initialValue == null ? new Date() : initialValue));
-    txtField.setEditable(false);
-    txtField.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
-        txtField.setText(ShortDashDateFormat.get().format(d));
-      }
-    });
-
-    return txtField;
-  }
-
   public static JCheckBox createCheckBox(final Property property, final EntityModel entityModel) {
     return createCheckBox(property, entityModel, null);
   }
@@ -411,6 +388,29 @@ public class FrameworkUiUtil {
     }
 
     return ret;
+  }
+
+  public static JTextField createDateInputField(final Date initialValue, final JComponent parent) {
+    final JTextField txtField =
+            new JTextField(ShortDashDateFormat.get().format(initialValue == null ? new Date() : initialValue));
+    txtField.setEditable(false);
+    txtField.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
+        txtField.setText(ShortDashDateFormat.get().format(d));
+      }
+    });
+
+    return txtField;
+  }
+
+  public static DateInputPanel createDateInputPanel(final Date initialValue, final DateMaskFormat maskFormat) {
+    final JFormattedTextField txtField = UiUtil.createFormattedField(maskFormat.getDateMask());
+    if (initialValue != null)
+      txtField.setText(maskFormat.format(initialValue));
+
+    return new DateInputPanel(txtField, maskFormat, true, null);
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
@@ -641,6 +641,10 @@ public class FrameworkUiUtil {
     }
   }
 
+  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
+    addLookupDialog(txtField, model.getEntityID(), property, model.getDbConnectionProvider());
+  }
+
   public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
                                      final IEntityDbProvider dbProvider) {
     txtField.addKeyListener(new KeyAdapter() {
@@ -650,19 +654,6 @@ public class FrameworkUiUtil {
           final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
           if (value != null)
             txtField.setText(value.toString());
-        }
-      }
-    });
-  }
-
-  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
-    txtField.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
-          final Object value = lookupPropertyValue(txtField, model.getEntityID(), property, model.getDbConnectionProvider());
-          if (value != null)
-            model.uiSetValue(property, value);
         }
       }
     });

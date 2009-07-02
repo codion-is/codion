@@ -19,6 +19,8 @@ import java.util.Map;
  */
 public class EntityRepository implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   private final Map<String, Map<String, Property>> properties = new HashMap<String, Map<String, Property>>();
 
   /**

@@ -25,6 +25,8 @@ import java.util.Map;
  */
 public final class Entity implements Externalizable, Comparable<Entity> {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * A central repository containing information about loaded entity definitions
    */

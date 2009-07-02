@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class IntArray extends ArrayList<Integer> implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   /** Constructs a new IntArray. */
   public IntArray() {}
 

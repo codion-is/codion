@@ -35,26 +35,26 @@ public abstract class EntityBindingPanel extends JPanel {
    */
   public abstract EntityModel getModel();
 
-  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent) {
+  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent) {
     return createControlPanel(propertyID, inputComponent, true);
   }
 
-  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
+  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                    final boolean labelOnTop) {
     return createControlPanel(propertyID, inputComponent, labelOnTop, 0, 0);
   }
 
-  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
+  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                    final boolean labelOnTop, final int hgap, final int vgap) {
     return createControlPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
   }
 
-  public JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
+  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                    final boolean labelOnTop, final int hgap, final int vgap, final int labelAlignment) {
     return createControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
-  public JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
+  protected final JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
                                    final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel ret = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));

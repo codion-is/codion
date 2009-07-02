@@ -14,6 +14,8 @@ import java.io.Serializable;
 */
 public class ClientInfo implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   final String clientID;
   final String clientTypeID;
   final User user;

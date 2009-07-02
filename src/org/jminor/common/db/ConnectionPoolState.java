@@ -12,6 +12,8 @@ import java.io.Serializable;
 */
 public class ConnectionPoolState implements Serializable, Comparable<ConnectionPoolState> {
 
+  private static final long serialVersionUID = 1L;
+
   public long time;
   public int connectionCount;
   public int inUse;

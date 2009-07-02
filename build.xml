@@ -88,15 +88,18 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="dist" depends="build"
+  <target name="dist" depends="build, manifest"
           description="Creates all distribution jar files in the dist directory">
     <tstamp />
-    <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}" />
+    <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**, log4j.properties"/>
 
     <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/client/**,
@@ -111,6 +114,7 @@
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/client/**,
@@ -127,6 +131,7 @@
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-server.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/db/**,
@@ -135,6 +140,7 @@
          excludes="org/jminor/framework/server/*Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/FrameworkSettings*,
                 org/jminor/framework/FrameworkConstants*,
                 org/jminor/framework/db/DbException.class,
@@ -144,15 +150,30 @@
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}" />
+    <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-src.jar" basedir="${src}" />
-    <jar jarfile="${dist}/${ant.project.name}-src-test.jar" basedir="${srctest}" />
-    <jar jarfile="${dist}/${ant.project.name}-src-demos.jar" basedir="${srcdemos}" />
-    <jar jarfile="${dist}/${ant.project.name}-api-doc.jar" basedir="${docsapi}" />
+    <jar jarfile="${dist}/${ant.project.name}-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/${ant.project.name}-src-test.jar" basedir="${srctest}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/${ant.project.name}-src-demos.jar" basedir="${srcdemos}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/${ant.project.name}-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}" />
   </target>
+
+  <target name="manifest">
+		<mkdir dir="${build.base}/META-INF"/>
+		<manifest file="${build.base}/META-INF/MANIFEST.MF">
+			<attribute name="Implementation-Title" value="JMinor Application Framework"/>
+			<attribute name="Implementation-Version" value="${version}"/>
+			<attribute name="Implementation-URL" value="http://jminor.org"/>
+			<attribute name="Build-Jdk" value="${java.specification.version}"/>
+		</manifest>
+	</target>
 
   <target name="doc" depends="build"
           description="Generates framework javadocs">

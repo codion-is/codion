@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public class EntityCriteria implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   private final String entityID;
   private final ICriteria criteria;
   private final int fetchCount;

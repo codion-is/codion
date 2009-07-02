@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 public class DatabaseStatistics implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   private final long timestamp = System.currentTimeMillis();
   private int queriesPerSecond;
   private int cachedQueriesPerSecond;

@@ -7,7 +7,6 @@ import org.jminor.common.model.Util;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ import java.util.Map;
  * EntityApplicationPanel.initializeSettings is a convenience method for this purpose,
  * override and use it to set settings properties.
  */
-public class FrameworkSettings implements Serializable {
+public class FrameworkSettings {
 
   /**
    * The date format pattern to use when showing long dates in tables

@@ -6,7 +6,6 @@ package org.jminor.common.model;
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.ListIterator;
 /**
  * A class encapsulting a simple boolean state, providing change events
  */
-public class State implements Serializable {
+public class State {
 
   /** Fired each time the state changes */
   public final Event evtStateChanged = new Event();
