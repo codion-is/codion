@@ -9,6 +9,9 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * Works for SQL Server 2000 and higher
+ */
 public class SQLServerDatabase implements IDatabase {
 
   /** {@inheritDoc} */
@@ -23,7 +26,7 @@ public class SQLServerDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getAutoIncrementValueSQL(final String idSource) {
-    return "select @@IDENTITY";
+    return "SELECT SCOPE_IDENTITY()";
   }
 
   /** {@inheritDoc} */

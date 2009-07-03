@@ -557,3 +557,5 @@
   serialVersionUID added to Serializable and Externalizable classes
   State, Event and FrameworkSettings no longer implement Serializable
   manifest target added to build file
+  EntityDbResultPacker.loadEntity() now catches Exception instead of SQLException
+  SQLServerDatabase.getAutoIncrementValueSQL() now uses SELECT SCOPE_IDENTITY() instead of select @@IDENTITY

@@ -55,10 +55,30 @@ public class EntityResultPacker implements IResultPacker<Entity> {
     }
   }
 
-  private Integer getInteger(final int columnIndex) throws SQLException {
-    final int value = resultSet.getInt(columnIndex);
+  private Entity loadEntity() throws SQLException {
+    final Entity entity = new Entity(entityID);
+    for (final Property property : properties)
+      if (!(property instanceof Property.EntityProperty)) {
+        try {
+          entity.initializeValue(property, getValue(property));
+        }
+        catch (Exception e) {
+          throw new SQLException("Unable to load property: " + property, e);
+        }
+      }
 
-    return resultSet.wasNull() ? null : value;
+    return entity;
+  }
+
+  private Object getValue(final Property property) throws SQLException {
+    switch (property.propertyType) {
+      case ENTITY :
+        throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
+      case BOOLEAN :
+        return getBoolean(property);
+      default:
+        return getValue(property.propertyType, property.selectIndex);
+    }
   }
 
   private Type.Boolean getBoolean(final Property property) throws SQLException {
@@ -75,48 +95,6 @@ public class EntityResultPacker implements IResultPacker<Entity> {
         case 1 : return Type.Boolean.TRUE;
         default : return null;
       }
-    }
-  }
-
-  private Double getDouble(final int columnIndex) throws SQLException {
-    final double value = resultSet.getDouble(columnIndex);
-
-    return resultSet.wasNull() ? null : value;
-  }
-
-  private String getString(final int columnIndex) throws SQLException {
-    final String ret = resultSet.getString(columnIndex);
-
-    return ret == null ? "" : ret;
-  }
-
-  private Timestamp getTimestamp(final int columnIndex) throws SQLException {
-    return resultSet.getTimestamp(columnIndex);
-  }
-
-  private Entity loadEntity() throws SQLException {
-    final Entity entity = new Entity(entityID);
-    for (final Property property : properties)
-      if (!(property instanceof Property.EntityProperty)) {
-        try {
-          entity.initializeValue(property, getValue(property));
-        }
-        catch (SQLException e) {
-          throw new SQLException("Unable to load property: " + property, e);
-        }
-      }
-
-    return entity;
-  }
-
-  private Object getValue(final Property property) throws SQLException {
-    switch (property.propertyType) {
-      case ENTITY :
-        throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
-      case BOOLEAN :
-        return getBoolean(property);
-      default:
-        return getValue(property.propertyType, property.selectIndex);
     }
   }
 
@@ -140,5 +118,27 @@ public class EntityResultPacker implements IResultPacker<Entity> {
       default :
         throw new IllegalArgumentException("Unknown property type: " + propertyType);
     }
+  }
+
+  private Integer getInteger(final int columnIndex) throws SQLException {
+    final int value = resultSet.getInt(columnIndex);
+
+    return resultSet.wasNull() ? null : value;
+  }
+
+  private Double getDouble(final int columnIndex) throws SQLException {
+    final double value = resultSet.getDouble(columnIndex);
+
+    return resultSet.wasNull() ? null : value;
+  }
+
+  private String getString(final int columnIndex) throws SQLException {
+    final String ret = resultSet.getString(columnIndex);
+
+    return ret == null ? "" : ret;
+  }
+
+  private Timestamp getTimestamp(final int columnIndex) throws SQLException {
+    return resultSet.getTimestamp(columnIndex);
   }
 }
