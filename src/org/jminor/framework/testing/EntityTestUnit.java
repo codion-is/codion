@@ -163,12 +163,14 @@ public abstract class EntityTestUnit extends TestCase {
       assertEquals("Primary keys of entity and its updated counterpart should be equal",
               testEntity.getPrimaryKey(), tmp.getPrimaryKey());
       for (final Property property : EntityRepository.get().getProperties(testEntity.getEntityID()).values()) {
-        final Object beforeUpdate = testEntity.getRawValue(property.propertyID);
-        final Object afterUpdate = tmp.getRawValue(property.propertyID);
-        assertTrue("Values of property " + property + " should be equal after update ["
-                + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
-                Util.equal(beforeUpdate, afterUpdate));
+        if (!property.isSelectOnly() && property.isUpdatable()) {
+          final Object beforeUpdate = testEntity.getRawValue(property.propertyID);
+          final Object afterUpdate = tmp.getRawValue(property.propertyID);
+          assertTrue("Values of property " + property + " should be equal after update ["
+                  + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
+                  + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
+                  Util.equal(beforeUpdate, afterUpdate));
+        }
       }
     }
     catch (Exception e) {

@@ -559,3 +559,4 @@
   manifest target added to build file
   EntityDbResultPacker.loadEntity() now catches Exception instead of SQLException
   SQLServerDatabase.getAutoIncrementValueSQL() now uses SELECT SCOPE_IDENTITY() instead of select @@IDENTITY
+  EntityTestUnit.testUpdate() does not check properties which are selectOnly or not updatable
