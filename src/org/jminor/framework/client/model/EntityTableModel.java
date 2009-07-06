@@ -630,7 +630,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
           iterator.remove();
         }
       }
-      fireTableChanged(new TableModelEvent(this, 0, Integer.MAX_VALUE, -1, 2));//todo type?
+      fireTableChanged(new TableModelEvent(this, 0, Integer.MAX_VALUE, -1));
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
     finally {
@@ -639,8 +639,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     }
   }
 
-  public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID)
-          throws UserException {
+  public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID) throws UserException {
     if (filterQueryByMaster) {
       if (tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities))
         refresh();
@@ -975,9 +974,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
     addTableModelListener(new TableModelListener() {
       public void tableChanged(TableModelEvent e) {
-        if (e.getType() == TableModelEvent.DELETE || e.getType() == TableModelEvent.INSERT
-                || e.getType() == TableModelEvent.UPDATE || e.getType() == 2)//todo type?
-          evtTableDataChanged.fire();
+        evtTableDataChanged.fire();
       }
     });
 
