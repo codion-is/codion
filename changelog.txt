@@ -563,3 +563,8 @@
   FrameworkUiUtil/EntityBindingPanel createEntityLookupFieldPanel removed
   EntityLookupField.createPanel() added
   EntityBindingPanel javadoc'ed
+  Oracle specific code removed from DbException and DbUtil
+  IDatabase.getErrorMessage() added
+  FrameworkMessages.VALUE_MISSING moved to Messages
+  FrameworkUiUtil.IEntityExceptionHandler simplified
+  EntityDbUtil.getDbException() added

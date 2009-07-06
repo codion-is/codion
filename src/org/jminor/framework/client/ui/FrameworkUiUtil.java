@@ -628,55 +628,34 @@ public class FrameworkUiUtil {
 
   public static interface IEntityExceptionHandler {
     public void handleException(final Throwable exception, final JComponent dialogParent);
-    public void handleException(final Throwable exception, final String entityID, final JComponent dialogParent);
   }
 
   public static class DefaultEntityExceptionHandler implements IEntityExceptionHandler {
 
     public void handleException(final Throwable exception, final JComponent dialogParent) {
-      handleException(exception, null, dialogParent);
-    }
-
-    public void handleException(final Throwable exception, final String entityID, final JComponent dialogParent) {
       if (exception instanceof UserCancelException)
         return;
       if (exception instanceof DbException)
-        handleDbException((DbException) exception, entityID, dialogParent);
+        handleDbException((DbException) exception, dialogParent);
       else if (exception instanceof JRException && exception.getCause() != null)
-        handleException(exception.getCause(), entityID, dialogParent);
+        handleException(exception.getCause(), dialogParent);
       else if (exception instanceof UserException && exception.getCause() instanceof DbException)
-        handleDbException((DbException) exception.getCause(), entityID, dialogParent);
+        handleDbException((DbException) exception.getCause(), dialogParent);
       else {
         ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(exception), exception.getMessage(), exception);
       }
     }
 
-    public void handleDbException(final DbException dbException, final String entityID,
-                                  final JComponent dialogParent) {
-      if (dbException.isInsertNullValueException()) {
-        String columnName = dbException.getNullErrorColumnName().toLowerCase();
-        if (entityID != null) {
-          if (EntityRepository.get().hasProperty(entityID, columnName)) {
-            final Property property = EntityRepository.get().getProperty(entityID, columnName);
-            if (property.getCaption() != null)
-              columnName = property.getCaption();
-          }
-        }
-
-        ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), Messages.get(Messages.EXCEPTION),
-                FrameworkMessages.get(FrameworkMessages.VALUE_MISSING) + ": " + columnName, dbException);
+    public void handleDbException(final DbException dbException, final JComponent dialogParent) {
+      String errMsg = dbException.getMessage();
+      if (errMsg == null || errMsg.length() == 0) {
+        if (dbException.getCause() == null)
+          errMsg = trimMessage(dbException);
+        else
+          errMsg = trimMessage(dbException.getCause());
       }
-      else {
-        String errMsg = dbException.getORAErrorMessage();
-        if (errMsg == null || errMsg.length() == 0) {
-          if (dbException.getCause() == null)
-            errMsg = trimMessage(dbException);
-          else
-            errMsg = trimMessage(dbException.getCause());
-        }
-        ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
-                Messages.get(Messages.EXCEPTION), errMsg, dbException);
-      }
+      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
+              Messages.get(Messages.EXCEPTION), errMsg, dbException);
     }
 
     private String getMessageTitle(final Throwable e) {

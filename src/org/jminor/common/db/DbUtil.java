@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.i18n.Messages;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,35 +10,12 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * A static utility class
  */
 public class DbUtil {
-
-  public static final int ORA_INVALID_IDENTIFIER_ERR_CODE = 904;
-  public static final int ORA_NULL_VALUE_ERR_CODE = 1400;
-  public static final int ORA_INTEGRITY_CONSTRAINT_ERR_CODE = 2291;
-  public static final int ORA_CHILD_RECORD_ERR_CODE = 2292;
-
-  public static final HashMap<Integer, String> oracleSqlErrorCodes = new HashMap<Integer, String>();
-
-  static {
-    oracleSqlErrorCodes.put(1, Messages.get(Messages.UNIQUE_KEY_ERROR));
-    oracleSqlErrorCodes.put(ORA_CHILD_RECORD_ERR_CODE, Messages.get(Messages.CHILD_RECORD_ERROR));
-    oracleSqlErrorCodes.put(ORA_NULL_VALUE_ERR_CODE, Messages.get(Messages.NULL_VALUE_ERROR));
-    oracleSqlErrorCodes.put(ORA_INTEGRITY_CONSTRAINT_ERR_CODE, Messages.get(Messages.INTEGRITY_CONSTRAINT_ERROR));
-    oracleSqlErrorCodes.put(2290, Messages.get(Messages.CHECK_CONSTRAINT_ERROR));
-    oracleSqlErrorCodes.put(1407, Messages.get(Messages.NULL_VALUE_ERROR));
-    oracleSqlErrorCodes.put(1031, Messages.get(Messages.MISSING_PRIVILEGES_ERROR));
-    oracleSqlErrorCodes.put(1017, Messages.get(Messages.LOGIN_CREDENTIALS_ERROR));
-    oracleSqlErrorCodes.put(942, Messages.get(Messages.TABLE_NOT_FOUND_ERROR));
-    oracleSqlErrorCodes.put(1045, Messages.get(Messages.USER_UNABLE_TO_CONNECT_ERROR));
-    oracleSqlErrorCodes.put(1401, Messages.get(Messages.VALUE_TOO_LARGE_FOR_COLUMN_ERROR));
-    oracleSqlErrorCodes.put(4063, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
-  }
 
   public static byte[] getBytesFromFile(final File file) throws IOException {
     InputStream inputStream = null;

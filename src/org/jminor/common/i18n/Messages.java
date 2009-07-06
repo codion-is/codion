@@ -9,9 +9,6 @@ import java.util.ResourceBundle;
 
 public class Messages {
 
-  public static final String OptionPane_inputDialogTitle = "OptionPane.inputDialogTitle";
-  public static final String OptionPane_messageDialogTitle = "OptionPane.messageDialogTitle";
-
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.common.i18n.Messages", Locale.getDefault());
 
@@ -61,14 +58,15 @@ public class Messages {
   public static final String VALUE_TOO_LARGE_FOR_COLUMN_ERROR = "value_too_large_for_column_error";
   public static final String VIEW_HAS_ERRORS_ERROR = "view_has_errors_error";
   public static final String DATABASE_EXCEPTION = "database_exception";
+  public static final String VALUE_MISSING = "value_missing";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));
     UIManager.put("OptionPane.noButtonText", get(NO));
     UIManager.put("OptionPane.cancelButtonText", get(CANCEL));
     UIManager.put("OptionPane.okButtonText", get(OK));
-    UIManager.put(OptionPane_inputDialogTitle, get(OptionPane_inputDialogTitle));
-    UIManager.put(OptionPane_messageDialogTitle, get(OptionPane_messageDialogTitle));
+    UIManager.put("OptionPane.inputDialogTitle", get("OptionPane.inputDialogTitle"));
+    UIManager.put("OptionPane.messageDialogTitle", get("OptionPane.messageDialogTitle"));
   }
 
   public static String get(final String key) {

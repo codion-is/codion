@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.dbms;
 
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -101,5 +102,10 @@ public class H2Database implements IDatabase {
   /** {@inheritDoc} */
   public boolean supportsIsValid() {
     return true;
+  }
+
+  /** {@inheritDoc} */
+  public String getErrorMessage(final SQLException exception) {
+    return null;
   }
 }

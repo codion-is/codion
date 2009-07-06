@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.dbms;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -22,72 +23,72 @@ public interface IDatabase {
    * @see IDatabase#DATABASE_TYPE_POSTGRESQL
    * @see IDatabase#DATABASE_TYPE_SQLSERVER
    */
-  public String DATABASE_TYPE_PROPERTY = "jminor.db.type";
+  public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
 
   /**
    * Specifies the machine hosting the database, in the case of embedded databases
    * this specifies the name of the database
    */
-  public String DATABASE_HOST_PROPERTY = "jminor.db.host";
+  public static final String DATABASE_HOST_PROPERTY = "jminor.db.host";
 
   /**
    * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
    */
-  public String DATABASE_SID_PROPERTY = "jminor.db.sid";
+  public static final String DATABASE_SID_PROPERTY = "jminor.db.sid";
 
   /**
    * Specifies the database port
    */
-  public String DATABASE_PORT_PROPERTY = "jminor.db.port";
+  public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable
    * Values: true/false
    * Default: false
    */
-  public String DATABASE_EMBEDDED = "jminor.db.embedded";
+  public static final String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
    * Specifies the IDatabase implementation class to use in case of a dbms that is not directly supported
    * @see IDatabase
    */
-  public String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
+  public static final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
    * Oracle database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
-  public String DATABASE_TYPE_ORACLE = "oracle";
+  public static final String DATABASE_TYPE_ORACLE = "oracle";
 
   /**
    * MySQL database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
-  public String DATABASE_TYPE_MYSQL = "mysql";
+  public static final String DATABASE_TYPE_MYSQL = "mysql";
 
   /**
    * PostgreSQL database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
-  public String DATABASE_TYPE_POSTGRESQL = "postgresql";
+  public static final String DATABASE_TYPE_POSTGRESQL = "postgresql";
 
   /**
    * Microsoft SQL Server database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
-  public String DATABASE_TYPE_SQLSERVER = "sqlserver";
+  public static final String DATABASE_TYPE_SQLSERVER = "sqlserver";
 
   /**
    * Derby database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
-  public String DATABASE_TYPE_DERBY = "derby";
+  public static final String DATABASE_TYPE_DERBY = "derby";
 
   /**
    * H2 database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
    */
-  public String DATABASE_TYPE_H2 = "h2";
+  public static final String DATABASE_TYPE_H2 = "h2";
 
   /**
    * Loads the database driver
@@ -159,4 +160,11 @@ public interface IDatabase {
    * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
    */
   public boolean supportsIsValid();
+
+  /**
+   * Returns a user friendly error message for the given exception
+   * @param exception the underlying SQLException
+   * @return the message assigned to the given exception
+   */
+  public String getErrorMessage(final SQLException exception);
 }

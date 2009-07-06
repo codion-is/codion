@@ -84,7 +84,6 @@ public class FrameworkMessages {
   public static final String NONE_FOUND = "none_found";
   public static final String NO_DEPENDENT_RECORDS = "no_dependent_records";
   public static final String DEPENDENT_RECORDS_FOUND = "dependent_records_found";
-  public static final String VALUE_MISSING = "value_missing";
   public static final String SELECT_DATE = "select_date";
   public static final String SELECTION_FILTER = "selection_filter";
   public static final String SELECTION_FILTER_DESC = "selection_filter_desc";

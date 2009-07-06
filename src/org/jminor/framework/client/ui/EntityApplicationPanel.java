@@ -98,7 +98,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /** {@inheritDoc} */
   public void handleException(final Throwable e) {
     log.error(this, e);
-    FrameworkUiUtil.getExceptionHandler().handleException(e, null, this);
+    FrameworkUiUtil.getExceptionHandler().handleException(e, this);
   }
 
   /**
@@ -600,7 +600,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   protected void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(final Thread thread, final Throwable throwable) {
-        FrameworkUiUtil.getExceptionHandler().handleException(throwable, null, EntityApplicationPanel.this);
+        FrameworkUiUtil.getExceptionHandler().handleException(throwable, EntityApplicationPanel.this);
       }
     });
   }

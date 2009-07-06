@@ -41,11 +41,31 @@ public class DbException extends Exception  {
 
   /**
    * Constructs a new DbException instance
+   * @param message the exception message
+   * @param cause the Throwable cause of the exception
+   */
+  public DbException(final String message, final Throwable cause) {
+    super(message, cause);
+  }
+
+  /**
+   * Constructs a new DbException instance
    * @param cause the Throwable cause of the exception
    * @param sql the sql query which cause the exception
    */
   public DbException(final Throwable cause, final String sql) {
     super(cause);
+    this.sql = sql;
+  }
+
+  /**
+   * Constructs a new DbException instance
+   * @param message the exception message
+   * @param cause the Throwable cause of the exception
+   * @param sql the sql query which cause the exception
+   */
+  public DbException(final String message, final Throwable cause, final String sql) {
+    super(message, cause);
     this.sql = sql;
   }
 
@@ -64,47 +84,13 @@ public class DbException extends Exception  {
   }
 
   /**
-   * @return true if this exception represents a 'insertNullValueException'.
-   */
-  //todo oracle specific
-  public boolean isInsertNullValueException() {
-    return getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE;
-  }
-
-  /**
-   * @return the name of the column which triggered the "cannot insert NULL into" exception
-   */
-  //todo oracle specific
-  public String getNullErrorColumnName() {
-    if (getORAErrorCode() == DbUtil.ORA_NULL_VALUE_ERR_CODE) {
-      final String errorMsg = getCause().getMessage();
-
-      return errorMsg.substring(errorMsg.lastIndexOf('.')+2, errorMsg.lastIndexOf(')')-1);
-    }
-
-    return null;
-  }
-
-  /**
    * @return the error code in case the cause was a SQLException, -1 is returned otherwise
    */
-  public int getORAErrorCode() {
+  public int getErrorCode() {
     final Throwable cause = getCause();
     if (cause instanceof SQLException)
       return ((SQLException)cause).getErrorCode();
 
     return -1;
-  }
-
-  /**
-   * @return the message assigned to the given ORACLE error
-   * code in case the cause was a SQLException, null is returned otherwise
-   */
-  public String getORAErrorMessage() {
-    int err = getORAErrorCode();
-    if (err != -1)
-      return DbUtil.oracleSqlErrorCodes.get(Integer.valueOf(err));
-    else
-      return null;
   }
 }

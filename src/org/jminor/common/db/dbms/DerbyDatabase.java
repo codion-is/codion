@@ -114,4 +114,9 @@ public class DerbyDatabase implements IDatabase {
   public boolean supportsIsValid() {
     return true;
   }
+
+  /** {@inheritDoc} */
+  public String getErrorMessage(final SQLException exception) {
+    return null;
+  }
 }

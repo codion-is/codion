@@ -6,6 +6,7 @@ package org.jminor.common.db.dbms;
 import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -77,5 +78,10 @@ public class SQLServerDatabase implements IDatabase {
   /** {@inheritDoc} */
   public boolean supportsIsValid() {
     return true;
+  }
+
+  /** {@inheritDoc} */
+  public String getErrorMessage(final SQLException exception) {
+    return null;
   }
 }

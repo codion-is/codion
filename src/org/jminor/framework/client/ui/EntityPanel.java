@@ -39,7 +39,24 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -644,7 +661,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void handleException(final Throwable throwable, final JComponent dialogParent) {
     log.error(this, throwable);
-    FrameworkUiUtil.getExceptionHandler().handleException(throwable, getModel().getEntityID(), dialogParent);
+    FrameworkUiUtil.getExceptionHandler().handleException(throwable, dialogParent);
   }
 
   //#############################################################################################
