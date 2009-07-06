@@ -204,13 +204,11 @@ public class UiUtil {
     return createFormattedField(mask, false);
   }
 
-  public static JFormattedTextField createFormattedField(final String mask,
-                                                         final boolean valueContainsLiteralCharacter) {
+  public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter) {
     return createFormattedField(mask,valueContainsLiteralCharacter,false);
   }
 
-  public static JFormattedTextField createFormattedField(final String mask,
-                                                         final boolean valueContainsLiteralCharacter,
+  public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter,
                                                          final boolean charsAsUpper) {
     try {
       final MaskFormatter formatter = new MaskFormatter(mask) {

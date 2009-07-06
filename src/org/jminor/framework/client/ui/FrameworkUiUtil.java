@@ -336,39 +336,6 @@ public class FrameworkUiUtil {
     return lookupField;
   }
 
-  public static JPanel createEntityLookupFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final String searchPropertyID, final EntityTableModel lookupModel) {
-    return createEntityLookupFieldPanel(property, entityModel, searchPropertyID, null, lookupModel);
-  }
-
-  public static JPanel createEntityLookupFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
-                                                    final String searchPropertyID, final ICriteria additionalSearchCriteria,
-                                                    final EntityTableModel lookupModel) {
-    final Property searchProperty = EntityRepository.get().getProperty(property.referenceEntityID, searchPropertyID);
-    if (searchProperty.getPropertyType() != Type.STRING)
-      throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
-
-    final EntityLookupField lookupField = createEntityLookupField(property, entityModel,
-            additionalSearchCriteria, searchPropertyID);
-    final JButton btn = new JButton(new AbstractAction("...") {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(lookupField),
-                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
-        }
-        catch (UserCancelException ex) {/**/}
-      }
-    });
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-
-    final JPanel ret = new JPanel(new BorderLayout(5,0));
-    ret.add(lookupField, BorderLayout.CENTER);
-    ret.add(btn, BorderLayout.EAST);
-
-    return ret;
-  }
-
   public static SteppedComboBox createComboBox(final Property property, final EntityModel entityModel,
                                                final ComboBoxModel model, final State enabledState) {
     return createComboBox(property, entityModel, model, enabledState, false);

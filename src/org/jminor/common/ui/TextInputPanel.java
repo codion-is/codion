@@ -16,6 +16,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
+/**
+ * A panel that includes a JTextComponent in a BorderLayout.CENTER position and a button in BorderLayout.EAST
+ * which opens a JTextArea for editing long strings.
+ */
 public class TextInputPanel extends JPanel {
 
   private final JTextComponent textComponent;

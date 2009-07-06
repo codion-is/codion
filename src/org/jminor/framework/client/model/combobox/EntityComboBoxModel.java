@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A ComboBoxModel based on an Entity
+ * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table
  */
 public class EntityComboBoxModel extends FilteredComboBoxModel {
 
