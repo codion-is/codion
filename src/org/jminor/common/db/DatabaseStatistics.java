@@ -7,22 +7,19 @@ import java.io.Serializable;
 
 public class DatabaseStatistics implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   private final long timestamp = System.currentTimeMillis();
-  private int queriesPerSecond;
-  private int cachedQueriesPerSecond;
+  private final int queriesPerSecond;
+  private final int cachedQueriesPerSecond;
 
-  public void setCachedQueriesPerSecond(int cachedQueriesPerSecond) {
+  public DatabaseStatistics(final int queriesPerSecond, final int cachedQueriesPerSecond) {
+    this.queriesPerSecond = queriesPerSecond;
     this.cachedQueriesPerSecond = cachedQueriesPerSecond;
   }
 
   public int getCachedQueriesPerSecond() {
     return cachedQueriesPerSecond;
-  }
-
-  public void setQueriesPerSecond(int queriesPerSecond) {
-    this.queriesPerSecond = queriesPerSecond;
   }
 
   public int getQueriesPerSecond() {

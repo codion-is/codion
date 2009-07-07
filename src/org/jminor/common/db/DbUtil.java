@@ -31,14 +31,12 @@ public class DbUtil {
       // Read in the bytes
       int offset = 0;
       int numRead;
-      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length-offset)) >= 0) {
+      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length-offset)) >= 0)
         offset += numRead;
-      }
 
       // Ensure all the bytes have been read in
-      if (offset < bytes.length) {
+      if (offset < bytes.length)
         throw new IOException("Could not completely read file "+file.getName());
-      }
 
       return bytes;
     }

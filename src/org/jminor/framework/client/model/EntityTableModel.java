@@ -199,6 +199,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @param dbProvider a IEntityDbProvider instance
    */
   public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider) {
+    if (dbProvider == null)
+      throw new IllegalArgumentException("dbProvider can not be null");
+    if (entityID == null || entityID.length() == 0)
+      throw new IllegalArgumentException("entityID must be specified");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.tableColumnProperties = initializeColumnProperties();
@@ -445,10 +449,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return the entity with the given primary key from the table model, null if it's not found
    */
   public Entity getEntityByPrimaryKey(final EntityKey primaryKey) {
-    for (final Entity entity : visibleEntities) {
+    for (final Entity entity : visibleEntities)
       if (entity.getPrimaryKey().equals(primaryKey))
         return entity;
-    }
 
     return null;
   }

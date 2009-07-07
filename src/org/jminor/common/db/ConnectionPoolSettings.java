@@ -10,14 +10,14 @@ import java.io.Serializable;
  */
 public class ConnectionPoolSettings implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
-  private User user;
+  private final User user;
+  private final int poolCleanupInterval;
   private boolean enabled;
   private int pooledConnectionTimeout;
   private int maximumPoolSize;
   private int minimumPoolSize;
-  private int poolCleanupInterval;
 
   public ConnectionPoolSettings(final User user, final boolean enabled, final int pooledConnectionTimeout,
                                 final int minimumPoolSize, final int poolCleanupInterval) {
@@ -31,10 +31,6 @@ public class ConnectionPoolSettings implements Serializable {
 
   public User getUser() {
     return user;
-  }
-
-  public void setUser(final User user) {
-    this.user = user;
   }
 
   public int getPoolCleanupInterval() {

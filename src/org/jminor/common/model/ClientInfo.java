@@ -14,16 +14,14 @@ import java.io.Serializable;
 */
 public class ClientInfo implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
-  final String clientID;
-  final String clientTypeID;
-  final User user;
+  private final String clientID;
+  private final String clientTypeID;
+  private final User user;
 
   public ClientInfo(final String clientID) {
-    this.clientID = clientID;
-    this.clientTypeID = null;
-    this.user = null;
+    this(clientID, null, null);
   }
 
   public ClientInfo(final String clientID, final String clientTypeID, final User user) {

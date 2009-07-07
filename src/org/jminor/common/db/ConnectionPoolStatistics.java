@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class ConnectionPoolStatistics implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
-  private User user;
+  private final User user;
   private long timestamp;
   private int connectionsInUse;
   private int availableInPool;
@@ -37,10 +37,6 @@ public class ConnectionPoolStatistics implements Serializable {
 
   public User getUser() {
     return user;
-  }
-
-  public void setUser(final User user) {
-    this.user = user;
   }
 
   public void setPoolStatistics(final List<ConnectionPoolState> stats) {

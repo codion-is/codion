@@ -173,24 +173,24 @@ public class EntityTablePanel extends JPanel {
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param popupControls a ControlSet on which the table popup menu is based
-   * @param specialRendering true if each row should be colored according to the underlying entity
+   * @param rowColoring true if each row should be colored according to the underlying entity
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
-                          final boolean specialRendering) {
-    this(tableModel, popupControls, specialRendering, true);
+                          final boolean rowColoring) {
+    this(tableModel, popupControls, rowColoring, true);
   }
 
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param popupControls a ControlSet on which the table popup menu is based
-   * @param specialRendering true if each row should be colored according to the underlying entity
+   * @param rowColoring true if each row should be colored according to the underlying entity
    * @param allowQueryConfiguration true if the underlying query should be configurable
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
-                          final boolean specialRendering, final boolean allowQueryConfiguration) {
+                          final boolean rowColoring, final boolean allowQueryConfiguration) {
     this.tableModel = tableModel;
-    this.entityTable = initializeJTable(specialRendering);
+    this.entityTable = initializeJTable(rowColoring);
     this.tableScrollPane = new JScrollPane(entityTable);
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
@@ -801,11 +801,11 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Returns the TableCellRenderer used for this EntityTablePanel
-   * @param specialRendering if true then the underlying Entity has specific background coloring
+   * @param rowColoring if true then the underlying Entity has specific background coloring
    * @return the TableCellRenderer
    */
-  protected TableCellRenderer initializeTableCellRenderer(final boolean specialRendering) {
-    return new EntityTableCellRenderer(getTableModel(), specialRendering);
+  protected TableCellRenderer initializeTableCellRenderer(final boolean rowColoring) {
+    return new EntityTableCellRenderer(getTableModel(), rowColoring);
   }
 
   /**
@@ -831,12 +831,12 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes the JTable instance
-   * @param specialRendering if true then the JTable should paint each row according to the underlying entity
+   * @param rowColoring if true then the JTable should paint each row according to the underlying entity
    * @return the JTable instance
    * @see org.jminor.framework.model.EntityProxy#getBackgroundColor(org.jminor.framework.model.Entity)
    */
-  protected JTable initializeJTable(final boolean specialRendering) {
-    final JTable ret = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(specialRendering),
+  protected JTable initializeJTable(final boolean rowColoring) {
+    final JTable ret = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),
             getTableModel().getSelectionModel());
     ret.addMouseListener(initializeTableMouseListener());
 
@@ -918,12 +918,12 @@ public class EntityTablePanel extends JPanel {
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
   }
 
-  private TableColumnModel initializeTableColumnModel(final boolean specialRendering) {
+  private TableColumnModel initializeTableColumnModel(final boolean rowColoring) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final List<TableColumn> columns = getTableColumns(getTableModel().getTableColumnProperties());
     for (final TableColumn column : columns) {
       column.setResizable(true);
-      column.setCellRenderer(initializeTableCellRenderer(specialRendering));
+      column.setCellRenderer(initializeTableCellRenderer(rowColoring));
       columnModel.addColumn(column);
     }
 

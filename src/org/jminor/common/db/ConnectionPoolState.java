@@ -12,16 +12,14 @@ import java.io.Serializable;
 */
 public class ConnectionPoolState implements Serializable, Comparable<ConnectionPoolState> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   public long time;
   public int connectionCount;
   public int inUse;
 
   public ConnectionPoolState(final long time, final int connectionCount, final int connectionsInUse) {
-    this.time = time;
-    this.connectionCount = connectionCount;
-    this.inUse = connectionsInUse;
+    set(time, connectionCount, connectionsInUse);
   }
 
   public void set(final long time, final int connectionCount, final int connectionsInUse) {

@@ -83,9 +83,9 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  public EntityPanel createInstance(final IEntityDbProvider provider) throws UserException {
+  public EntityPanel createInstance(final IEntityDbProvider dbProvider) throws UserException {
     try {
-      return createInstance(getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(provider));
+      return createInstance(getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(dbProvider));
     }
     catch (InvocationTargetException ite) {
       if (ite.getCause() instanceof UserException)
@@ -106,13 +106,13 @@ public class EntityPanelProvider implements Comparable {
 
   /** {@inheritDoc} */
   @Override
-  public boolean equals(Object obj) {
-    if(this == obj)
+  public boolean equals(final Object object) {
+    if(this == object)
       return true;
-    if((obj == null) || (obj.getClass() != this.getClass()))
+    if((object == null) || (object.getClass() != getClass()))
       return false;
 
-    final EntityPanelProvider panelProvider = (EntityPanelProvider) obj;
+    final EntityPanelProvider panelProvider = (EntityPanelProvider) object;
 
     return getCaption().equals(panelProvider.getCaption())
             && getEntityModelClass().equals(panelProvider.getEntityModelClass())
@@ -131,10 +131,10 @@ public class EntityPanelProvider implements Comparable {
   }
 
   /** {@inheritDoc} */
-  public int compareTo(Object o) {
+  public int compareTo(final Object object) {
     final String thisCompare = getCaption() == null ? entityPanelClass.getSimpleName() : getCaption();
-    final String thatCompare = ((EntityPanelProvider)o).getCaption() == null
-            ? ((EntityPanelProvider)o).entityPanelClass.getSimpleName() : ((EntityPanelProvider)o).getCaption();
+    final String thatCompare = ((EntityPanelProvider)object).getCaption() == null
+            ? ((EntityPanelProvider)object).entityPanelClass.getSimpleName() : ((EntityPanelProvider)object).getCaption();
 
     return thisCompare.compareTo(thatCompare);
   }

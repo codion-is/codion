@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class EntityRepository implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   private final Map<String, Map<String, Property>> properties = new HashMap<String, Map<String, Property>>();
 
@@ -139,7 +139,7 @@ public class EntityRepository implements Serializable {
 
   /**
    * @param entityID the entity ID
-   * @param searchPropertyIDs the IDs of the properties to use as default search properties for
+   * @param searchPropertyIDs the IDs of the properties to use as default lookup properties for
    * entities identified by <code>entityID</code>, these must be STRING properties
    * @throws RuntimeException in case of a non-string property ID
    */

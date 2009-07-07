@@ -4,6 +4,7 @@
 package org.jminor.common.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A state which behaves according to a set of states, either ANDing or ORing those together
@@ -13,7 +14,7 @@ public class AggregateState extends State {
 
   public enum Type {AND, OR}
 
-  private final ArrayList<State> states = new ArrayList<State>();
+  private final List<State> states = new ArrayList<State>();
   private final Type type;
 
   public AggregateState(final Type type) {
@@ -45,7 +46,7 @@ public class AggregateState extends State {
   }
 
   public void addState(final State state) {
-    boolean wasActive = isActive();
+    final boolean wasActive = isActive();
     states.add(state);
     state.evtStateChanged.addListener(evtStateChanged);
     if (wasActive != isActive())
@@ -53,7 +54,7 @@ public class AggregateState extends State {
   }
 
   public void removeState(final State state) {
-    boolean wasActive = isActive();
+    final boolean wasActive = isActive();
     state.evtStateChanged.removeListener(evtStateChanged);
     states.remove(state);
     if (wasActive != isActive())

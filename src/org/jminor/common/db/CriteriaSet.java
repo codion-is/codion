@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import java.util.List;
  * A class encapsulating a set of ICriteria objects, that should be either AND'ed
  * or OR'ed together in a query context
  */
-public class CriteriaSet implements ICriteria {
+public class CriteriaSet implements ICriteria, Serializable {
+
+  private static final long serialVersionUID = 1;
 
   /**
    * Represents two possible conjunctions, AND and OR
@@ -35,12 +38,12 @@ public class CriteriaSet implements ICriteria {
   /**
    * The conjunction used by this CriteriaSet
    */
-  final Conjunction conjunction;
+  private final Conjunction conjunction;
 
   /**
    * The criterias in this set
    */
-  final List<ICriteria> criterias = new ArrayList<ICriteria>();
+  private final List<ICriteria> criterias = new ArrayList<ICriteria>();
 
   /**
    * Initializes a new CriteriaSet instance

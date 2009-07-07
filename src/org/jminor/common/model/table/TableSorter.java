@@ -72,7 +72,7 @@ import java.util.Map;
  * This is a long overdue rewrite of a class of the same name that
  * first appeared in the swing table demos in 1997.
  *
- * Slightly modified by Björn Darri, formatting and events, disregard the above copyright notice
+ * Slightly modified by Björn Darri, formatting and events
  *
  * @author Philip Milne
  * @author Brendon McLean

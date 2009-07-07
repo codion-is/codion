@@ -17,12 +17,11 @@ public class DbException extends Exception  {
   private Object userObject;
 
   public DbException(final String message) {
-    super(message);
+    this(message, null);
   }
 
   public DbException(final String message, final String sql) {
-    super(message);
-    this.sql = sql;
+    this(message, sql, null);
   }
 
   public DbException(final String message, final String sql, final Object userObject) {
@@ -41,30 +40,20 @@ public class DbException extends Exception  {
 
   /**
    * Constructs a new DbException instance
-   * @param message the exception message
    * @param cause the Throwable cause of the exception
+   * @param message the exception message
    */
-  public DbException(final String message, final Throwable cause) {
+  public DbException(final Throwable cause, final String message) {
     super(message, cause);
   }
 
   /**
    * Constructs a new DbException instance
    * @param cause the Throwable cause of the exception
-   * @param sql the sql query which cause the exception
-   */
-  public DbException(final Throwable cause, final String sql) {
-    super(cause);
-    this.sql = sql;
-  }
-
-  /**
-   * Constructs a new DbException instance
    * @param message the exception message
-   * @param cause the Throwable cause of the exception
    * @param sql the sql query which cause the exception
    */
-  public DbException(final String message, final Throwable cause, final String sql) {
+  public DbException(final Throwable cause, final String message, final String sql) {
     super(message, cause);
     this.sql = sql;
   }

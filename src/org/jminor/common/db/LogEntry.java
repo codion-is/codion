@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class LogEntry implements Serializable, Comparable<LogEntry> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   public String method;
   public String message;

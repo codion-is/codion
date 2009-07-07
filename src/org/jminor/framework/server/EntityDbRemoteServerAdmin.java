@@ -166,11 +166,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IE
 
   /** {@inheritDoc} */
   public DatabaseStatistics getDatabaseStatistics() throws RemoteException {
-    final DatabaseStatistics ret = new DatabaseStatistics();
-    ret.setQueriesPerSecond(EntityDbConnection.getQueriesPerSecond());
-    ret.setCachedQueriesPerSecond(EntityDbConnection.getCachedQueriesPerSecond());
-
-    return ret;
+    return new DatabaseStatistics(EntityDbConnection.getQueriesPerSecond(), EntityDbConnection.getCachedQueriesPerSecond());
   }
 
   /** {@inheritDoc} */

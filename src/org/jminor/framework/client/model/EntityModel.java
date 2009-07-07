@@ -259,6 +259,10 @@ public class EntityModel implements IRefreshable {
    */
   public EntityModel(final String caption, final String entityID, final IEntityDbProvider dbProvider,
                      final boolean includeTableModel) throws UserException {
+    if (dbProvider == null)
+      throw new IllegalArgumentException("dbProvider can not be null");
+    if (entityID == null || entityID.length() == 0)
+      throw new IllegalArgumentException("entityID must be specified");
     this.caption = caption;
     this.dbProvider = dbProvider;
     this.entityID = entityID;

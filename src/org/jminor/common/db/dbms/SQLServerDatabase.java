@@ -58,7 +58,7 @@ public class SQLServerDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public String getUserInfoString(final Properties connectionProperties) {
+  public String getAuthenticationInfo(final Properties connectionProperties) {
     return null;
   }
 

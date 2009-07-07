@@ -127,15 +127,15 @@ public class EntityPropertyEditor extends JPanel {
       case LONG_DATE:
       case SHORT_DATE:
         try {
-          final String dateText = ((DateInputPanel)field).inputField.getText();
+          final String dateText = ((DateInputPanel)field).getInputField().getText();
           if (!dateText.contains("_"))
-            return new Timestamp(((DateInputPanel)field).maskFormat.parse(dateText).getTime());
+            return new Timestamp(((DateInputPanel)field).getMaskFormat().parse(dateText).getTime());
           else
             return null;
         }
         catch (ParseException e) {
           throw new UserException("Wrong date format "
-                  + ((DateInputPanel)field).maskFormat.toPattern() + " expected");
+                  + ((DateInputPanel)field).getMaskFormat().toPattern() + " expected");
         }
       case DOUBLE:
         return ((DoubleField)field).getDouble();

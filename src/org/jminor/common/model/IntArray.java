@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class IntArray extends ArrayList<Integer> implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   /** Constructs a new IntArray. */
   public IntArray() {}

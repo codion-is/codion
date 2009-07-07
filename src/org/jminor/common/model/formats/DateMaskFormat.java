@@ -14,7 +14,7 @@ public class DateMaskFormat extends SimpleDateFormat {
   /**
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
-  public final String getDateMask() {
+  public String getDateMask() {
     return parseDateMask(toPattern());
   }
 

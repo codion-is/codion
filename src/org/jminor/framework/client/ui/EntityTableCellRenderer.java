@@ -25,15 +25,15 @@ import java.util.HashMap;
 public class EntityTableCellRenderer implements TableCellRenderer {
 
   private final EntityTableModel tableModel;
-  private final boolean specialRendering;
+  private final boolean rowColoring;
 
   private final HashMap<Integer, TableCellRenderer> renderers = new HashMap<Integer, TableCellRenderer>();
 
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
-  public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean specialRendering) {
-    this.specialRendering = specialRendering;
+  public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
+    this.rowColoring = rowColoring;
     this.tableModel = tableModel;
   }
 
@@ -48,7 +48,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
     final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(column);
     final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(column);
-    final Color rowColor = specialRendering ? tableModel.getRowBackgroundColor(row) : null;
+    final Color rowColor = rowColoring ? tableModel.getRowBackgroundColor(row) : null;
     if (rowColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
       component.setBackground(table.getBackground());
       component.setForeground(table.getForeground());

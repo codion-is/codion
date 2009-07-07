@@ -8,6 +8,7 @@ import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.Property;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +17,9 @@ import java.util.List;
 /**
  * A class encapsulating a query criteria with EntityKey objects as values
  */
-public class EntityKeyCriteria implements ICriteria {
+public class EntityKeyCriteria implements ICriteria, Serializable {
+
+  private static final long serialVersionUID = 1;
 
   private final List<EntityKey> keys;
   private final List<Property> properties;
@@ -81,7 +84,7 @@ public class EntityKeyCriteria implements ICriteria {
   }
 
   /**
-   * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value"
+   * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value2"
    */
   public String getConditionString() {
     final StringBuffer ret = new StringBuffer();

@@ -157,8 +157,8 @@ public class ProfilingPanel extends JPanel {
         getModel().setUser(userPanel.getUser());
       }
     };
-    userPanel.txtPassword.addActionListener(userInfoListener);
-    userPanel.txtUsername.addActionListener(userInfoListener);
+    userPanel.getPasswordField().addActionListener(userInfoListener);
+    userPanel.getUsernameField().addActionListener(userInfoListener);
     final JPanel userBase = new JPanel(new BorderLayout(5,5));
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
     userBase.add(userPanel, BorderLayout.NORTH);

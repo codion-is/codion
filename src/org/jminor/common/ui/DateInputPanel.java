@@ -18,8 +18,8 @@ import java.util.Date;
 
 public class DateInputPanel extends JPanel {
 
-  public final JFormattedTextField inputField;
-  public final DateMaskFormat maskFormat;
+  private final JFormattedTextField inputField;
+  private final DateMaskFormat maskFormat;
 
   public DateInputPanel(final JFormattedTextField inputField, final DateMaskFormat maskFormat,
                         final boolean includeButton, final State enabledState) {
@@ -46,5 +46,13 @@ public class DateInputPanel extends JPanel {
         UiUtil.linkToEnabledState(enabledState, btnChooser);
       add(btnChooser, BorderLayout.EAST);
     }
+  }
+
+  public JFormattedTextField getInputField() {
+    return inputField;
+  }
+
+  public DateMaskFormat getMaskFormat() {
+    return maskFormat;
   }
 }

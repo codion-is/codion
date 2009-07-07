@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public final class Entity implements Externalizable, Comparable<Entity> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   /**
    * A central repository containing information about loaded entity definitions
@@ -523,7 +523,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   }
 
   /**
-   * @param value if true this entity should start firing propertyChangeEvents, false if it should stop
+   * @param value if true this entity should start firing propertyChangeEvents, if false it should stop
    */
   public void setFirePropertyChangeEvents(final boolean value) {
     if (value) {
@@ -676,7 +676,7 @@ public final class Entity implements Externalizable, Comparable<Entity> {
    * can be safely disregarded during the value setting
    * @param propagateReferenceValues if set to true then both reference key values and
    * denormalized values are set in case <code>property</code> is a Property.EntityProperty.
-   * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preveting circular references
+   * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preventing circular references
    */
   private void doSetValue(final Property property, final Object newValue, final boolean primaryKeyProperty,
                           final boolean initialization, boolean propagateReferenceValues) {

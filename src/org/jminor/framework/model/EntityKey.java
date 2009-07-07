@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class EntityKey implements Externalizable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   /**
    * the entity ID
@@ -35,9 +35,9 @@ public class EntityKey implements Externalizable {
   int propertyCount;
 
   /**
-   * True if this is a single integer key
+   * True if this key consists of a single integer value
    */
-  private boolean isSingleIntegerKey;
+  private boolean singleIntegerKey;
 
   /**
    * Caching the hash code
@@ -67,7 +67,7 @@ public class EntityKey implements Externalizable {
     this.entityID = entityID;
     this.properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
     this.propertyCount = properties.size();
-    this.isSingleIntegerKey = propertyCount == 1 && properties.get(0).propertyType == Type.INT;
+    this.singleIntegerKey = propertyCount == 1 && properties.get(0).propertyType == Type.INT;
     this.keyValues = new HashMap<String, Object>(propertyCount);
   }
 
@@ -115,7 +115,7 @@ public class EntityKey implements Externalizable {
    * @return true if this is a single integer column key
    */
   public boolean isSingleIntegerKey() {
-    return isSingleIntegerKey;
+    return singleIntegerKey;
   }
 
   /**
@@ -229,7 +229,7 @@ public class EntityKey implements Externalizable {
    * @return true if one of the properties has a null value
    */
   public boolean isNull() {
-    if (isSingleIntegerKey)
+    if (singleIntegerKey)
       return hashCode() == -Integer.MAX_VALUE;
 
     if (hashCode() == -Integer.MAX_VALUE)
@@ -256,7 +256,7 @@ public class EntityKey implements Externalizable {
     out.writeObject(entityID);
     out.writeObject(keyValues);
     out.writeInt(propertyCount);
-    out.writeBoolean(isSingleIntegerKey);
+    out.writeBoolean(singleIntegerKey);
     out.writeBoolean(hashCodeDirty);
     out.writeInt(hashCode);
   }
@@ -267,7 +267,7 @@ public class EntityKey implements Externalizable {
     entityID = (String) in.readObject();
     keyValues = (Map<String, Object>) in.readObject();
     propertyCount = in.readInt();
-    isSingleIntegerKey = in.readBoolean();
+    singleIntegerKey = in.readBoolean();
     hashCodeDirty = in.readBoolean();
     hashCode = in.readInt();
     properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
@@ -307,7 +307,7 @@ public class EntityKey implements Externalizable {
   void setValue(final String propertyID, final Object newValue) {
     keyValues.put(propertyID, newValue);
     hashCodeDirty = true;
-    if (isSingleIntegerKey) {
+    if (singleIntegerKey) {
       if (!(newValue == null || newValue instanceof Integer))
         throw new IllegalArgumentException("Expecting a Integer value for EntityKey: " + entityID + ", "
                 + propertyID + ", got " + newValue + "; " + newValue.getClass());

@@ -139,7 +139,7 @@ public class EntityDbUtil {
   public static DbException getDbException(final SQLException exception, final String sqlStatement) {
     final String message = Database.get().getErrorMessage(exception);
     if (message != null)
-      return new DbException(message, exception, sqlStatement);
+      return new DbException(exception, message, sqlStatement);
 
     return new DbException(exception, sqlStatement);
   }

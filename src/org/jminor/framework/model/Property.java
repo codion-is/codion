@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Property implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   /**
    * The property type
@@ -689,7 +689,7 @@ public class Property implements Serializable {
       else
         return ret == null ? "null" : ret.toString();
     }
-    
+
     public Object toSQLValue(final Type.Boolean value) {
       return value == Type.Boolean.FALSE ? falseValue : (value == Type.Boolean.TRUE ? trueValue : nullValue);
     }

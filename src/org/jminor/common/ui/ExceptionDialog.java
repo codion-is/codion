@@ -47,7 +47,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Before you can use the ExceptionDialog email mechanism you need to call at least
+ * Before you can use the ExceptionDialog email mechanism (Windows only) you need to call at least
  * ExceptionDialog.setErrorReportEmailFrom() and ExceptionDialog.setErrorReportEmailTo(),
  * to prefix a string to the subject field call ExceptionDialog.setErrorReportEmailSubjectPrefix()
  */

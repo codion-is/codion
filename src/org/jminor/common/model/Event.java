@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class Event implements ActionListener {
 
-  private transient final List<ActionListener> listeners = new ArrayList<ActionListener>();
-  private transient final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
+  private final List<ActionListener> listeners = new ArrayList<ActionListener>();
+  private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
 
   /**
    * Notifies all listeners

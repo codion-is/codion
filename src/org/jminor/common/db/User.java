@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class User implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1;
 
   private final String username;
   private final Properties properties = new Properties();

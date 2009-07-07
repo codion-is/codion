@@ -4,9 +4,11 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.ICriteria;
+import org.jminor.common.db.User;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
+import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.ModelTestDomain;
 
@@ -156,7 +158,7 @@ public class EntityTableModelTest extends TestCase {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(ModelTestDomain.T_TEST_DETAIL, null);
+      super(ModelTestDomain.T_TEST_DETAIL, new EntityDbLocalProvider(new User("scott", "tiger")));
     }
 
     @Override

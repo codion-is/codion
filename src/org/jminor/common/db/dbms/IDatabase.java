@@ -135,9 +135,10 @@ public interface IDatabase {
    * the username and password info, otherwise it should be safe to return null.
    * This method is usually used in <code>getURL()</code> and <code>onDisconnect()</code>.
    * @param connectionProperties the connection properties
-   * @return a identification string to append to the connection url
+   * @return an authentication string to append to the connection url,
+   * f.ex. user=scott;password=tiger, null if none is required
    */
-  public String getUserInfoString(final Properties connectionProperties);
+  public String getAuthenticationInfo(final Properties connectionProperties);
 
   /**
    * @return true if this database is an embedded one

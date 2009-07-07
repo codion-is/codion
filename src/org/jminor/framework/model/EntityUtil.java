@@ -24,19 +24,17 @@ public class EntityUtil {
    */
   public static List<Entity> getModifiedEntities(final List<Entity> entities) {
     final List<Entity> ret = new ArrayList<Entity>();
-    for (final Entity entity : entities) {
+    for (final Entity entity : entities)
       if (entity.isModified())
         ret.add(entity);
-    }
 
     return ret;
   }
 
   public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
-    for (final List<Entity> ents : entities.values()) {
+    for (final List<Entity> ents : entities.values())
       if (ents.size() > 0)
         return true;
-    }
 
     return false;
   }

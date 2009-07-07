@@ -157,32 +157,6 @@ public class EntityDbConnectionPool {
     cleanPool(true);
   }
 
-  public void resetPoolStatistics() {
-    connectionsCreated = 0;
-    connectionsDestroyed = 0;
-    connectionRequests = 0;
-    connectionRequestsDelayed = 0;
-    resetDate = new Date();
-  }
-
-  /**
-   * @param since the time
-   * @return stats collected since <code>since</code>, the results are not garanteed to be ordered
-   */
-  public List<ConnectionPoolState> getPoolStatistics(final long since) {
-    final List<ConnectionPoolState> ret = new ArrayList<ConnectionPoolState>();
-    synchronized (inPoolStats) {
-      final ListIterator<ConnectionPoolState> iterator = inPoolStats.listIterator();
-      while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
-        final ConnectionPoolState state = iterator.next();
-        if (state.time > since)
-          ret.add(state);
-      }
-    }
-
-    return ret;
-  }
-
   public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {
     connectionPoolSettings = poolSettings;
     if (!poolSettings.isEnabled())
@@ -215,6 +189,32 @@ public class EntityDbConnectionPool {
       ret.setPoolStatistics(getPoolStatistics(since));
 
     return ret;
+  }
+
+  /**
+   * @param since the time
+   * @return stats collected since <code>since</code>, the results are not garanteed to be ordered
+   */
+  public List<ConnectionPoolState> getPoolStatistics(final long since) {
+    final List<ConnectionPoolState> ret = new ArrayList<ConnectionPoolState>();
+    synchronized (inPoolStats) {
+      final ListIterator<ConnectionPoolState> iterator = inPoolStats.listIterator();
+      while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
+        final ConnectionPoolState state = iterator.next();
+        if (state.time > since)
+          ret.add(state);
+      }
+    }
+
+    return ret;
+  }
+
+  public void resetPoolStatistics() {
+    connectionsCreated = 0;
+    connectionsDestroyed = 0;
+    connectionRequests = 0;
+    connectionRequestsDelayed = 0;
+    resetDate = new Date();
   }
 
   private EntityDbConnection getConnectionFromPool() {

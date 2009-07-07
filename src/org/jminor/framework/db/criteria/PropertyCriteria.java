@@ -15,6 +15,7 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +24,9 @@ import java.util.List;
 /**
  * A object for encapsulating a query criteria with a single property and one or more values
  */
-public class PropertyCriteria implements ICriteria {
+public class PropertyCriteria implements ICriteria, Serializable {
+
+  private static final long serialVersionUID = 1;
 
   /**
    * The property used in this criteria

@@ -22,8 +22,8 @@ import java.awt.event.WindowEvent;
 
 public class LoginPanel extends JPanel {
 
-  public final JTextField txtUsername = new JTextField(8);
-  public final JPasswordField txtPassword = new JPasswordField(8);
+  private final JTextField usernameField = new JTextField(8);
+  private final JPasswordField passwordField = new JPasswordField(8);
 
   private final JLabel lblUser = new JLabel("", JLabel.RIGHT);
   private final JLabel lblPass = new JLabel("", JLabel.RIGHT);
@@ -34,14 +34,13 @@ public class LoginPanel extends JPanel {
     this(defaultUser, false, null, null);
   }
 
-  public LoginPanel(final User defaultUser, final boolean labelsOnTop,
-                    final String userLabel, final String passLabel) {
+  public LoginPanel(final User defaultUser, final boolean labelsOnTop, final String userLabel, final String passLabel) {
     this.defaultUser = defaultUser;
     initUI(labelsOnTop, userLabel, passLabel);
   }
 
   public User getUser() {
-    return new User(txtUsername.getText(), new String(txtPassword.getPassword()));
+    return new User(usernameField.getText(), new String(passwordField.getPassword()));
   }
 
   public static User showLoginPanel(final JComponent parent, final User defaultUser) throws UserCancelException {
@@ -83,6 +82,14 @@ public class LoginPanel extends JPanel {
       throw new UserCancelException();
   }
 
+  public JPasswordField getPasswordField() {
+    return passwordField;
+  }
+
+  public JTextField getUsernameField() {
+    return usernameField;
+  }
+
   public static User getUser(final JComponent parent, final User defaultUser) throws UserCancelException {
     return showLoginPanel(parent, defaultUser);
   }
@@ -93,19 +100,19 @@ public class LoginPanel extends JPanel {
     lblPass.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
     lblUser.setText(userLabel == null ? Messages.get(Messages.USERNAME) : userLabel);
     lblPass.setText(passLabel == null ? Messages.get(Messages.PASSWORD) : passLabel);
-    txtUsername.setText(defaultUser == null ? "" : defaultUser.getUsername());
-    txtPassword.setText(defaultUser == null ? "" : defaultUser.getPassword());
+    usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
+    passwordField.setText(defaultUser == null ? "" : defaultUser.getPassword());
 
-    txtUsername.setColumns(8);
-    txtPassword.setColumns(8);
-    UiUtil.selectAllOnFocusGained(txtUsername);
-    UiUtil.selectAllOnFocusGained(txtPassword);
+    usernameField.setColumns(8);
+    passwordField.setColumns(8);
+    UiUtil.selectAllOnFocusGained(usernameField);
+    UiUtil.selectAllOnFocusGained(passwordField);
 
     retBase.add(lblUser);
-    retBase.add(txtUsername);
+    retBase.add(usernameField);
 
     retBase.add(lblPass);
-    retBase.add(txtPassword);
+    retBase.add(passwordField);
 
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
@@ -113,13 +120,13 @@ public class LoginPanel extends JPanel {
   }
 
   private void init() {
-    if (txtUsername.getText().length() == 0) {
-      txtUsername.requestFocusInWindow();
-      txtUsername.setCaretPosition(txtUsername.getText().length());
+    if (usernameField.getText().length() == 0) {
+      usernameField.requestFocusInWindow();
+      usernameField.setCaretPosition(usernameField.getText().length());
     }
     else {
-      txtPassword.requestFocusInWindow();
-      txtPassword.setCaretPosition(txtPassword.getPassword().length);
+      passwordField.requestFocusInWindow();
+      passwordField.setCaretPosition(passwordField.getPassword().length);
     }
   }
 }

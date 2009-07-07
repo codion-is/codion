@@ -570,3 +570,6 @@
   EntityDbUtil.getDbException() added
   StrictEditModelTest now sets the lock timeout if the underlying database is H2 to speed up the test
   EntityApplicationModel/EntityModel/EntityTableModel.getDbConnectionProvider() renamed to getDbProvider()
+  IDatabase.getUserInfoString() renamed to getAuthenticationInfo()
+  Misc code cleanup
+  specialRendering renamed to rowColoring everywhere

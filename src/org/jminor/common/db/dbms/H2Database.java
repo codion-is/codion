@@ -52,12 +52,13 @@ public class H2Database implements IDatabase {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
+    final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
       final String host = System.getProperty(DATABASE_HOST_PROPERTY);
       if (host == null || host.length() == 0)
         throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
 
-      return "jdbc:h2:" + host + getUserInfoString(connectionProperties);
+      return "jdbc:h2:" + host + (authentication == null ? "" : ";" + authentication);
     }
     else {
       final String host = System.getProperty(DATABASE_HOST_PROPERTY);
@@ -70,20 +71,20 @@ public class H2Database implements IDatabase {
       if (sid == null || sid.length() == 0)
         throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getDatabaseType());
 
-      return "jdbc:h2://" + host + ":" + port + "/" + sid + getUserInfoString(connectionProperties);
+      return "jdbc:h2://" + host + ":" + port + "/" + sid + (authentication == null ? "" : ";" + authentication);
     }
   }
 
   /** {@inheritDoc} */
-  public String getUserInfoString(final Properties connectionProperties) {
+  public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
       final String password = (String) connectionProperties.get("password");
       if (username != null && username.length() > 0 && password != null && password.length() > 0)
-        return ";" + "user=" + username + ";" + "password=" + password;
+        return "user=" + username + ";" + "password=" + password;
     }
 
-    return "";
+    return null;
   }
 
   /** {@inheritDoc} */

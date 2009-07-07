@@ -39,8 +39,8 @@ public abstract class AbstractSearchPanel extends JPanel {
   public final State stTwoSearchFields = new State("AbstractSearchPanel.stTwoSearchFields", false);
 
   protected static final SearchType[] searchTypes = new SearchType[] {
-          SearchType.LIKE, SearchType.NOT_LIKE, SearchType.MAX, SearchType.MIN,
-          SearchType.INSIDE, SearchType.OUTSIDE};
+          SearchType.LIKE, SearchType.NOT_LIKE, SearchType.MAX,
+          SearchType.MIN, SearchType.INSIDE, SearchType.OUTSIDE};
 
   protected static final String[] searchTypeImageNames = new String[] {
           "Equals60x16.gif", "NotEquals60x16.gif", "LessThanOrEquals60x16.gif",

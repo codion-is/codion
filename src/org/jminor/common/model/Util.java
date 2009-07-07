@@ -610,5 +610,4 @@ public class Util {
 
     return numberOfDays;
   }
-
 }

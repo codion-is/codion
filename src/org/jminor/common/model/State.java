@@ -23,9 +23,9 @@ public class State {
   /** Fired each time <code>setActive(false)</code> is called */
   public final Event evtSetInactive = new Event();
 
+  private final String name;
   private ReverseState reversedState = null;
   private boolean active = false;
-  private final String name;
 
   /**
    * Constructs a new anonymous State instance initialized as inactive
