@@ -34,7 +34,7 @@ public class EmployeeModel extends EntityModel {
   public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
     if (property.propertyID.equals(EmpDept.EMPLOYEE_MGR_REF)) {
       final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
-              getDbConnectionProvider(), false, EmpDept.getString(EmpDept.NONE), true);
+              getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
       //Only show the president and managers
       managerModel.setEntityCriteria(new EntityCriteria(EmpDept.T_EMPLOYEE,
               new PropertyCriteria(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),

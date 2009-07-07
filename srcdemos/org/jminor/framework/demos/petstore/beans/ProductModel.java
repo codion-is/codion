@@ -26,6 +26,6 @@ public class ProductModel extends EntityModel {
   /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
-    return Arrays.asList(new ItemModel(getDbConnectionProvider()));
+    return Arrays.asList(new ItemModel(getDbProvider()));
   }
 }

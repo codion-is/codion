@@ -21,7 +21,7 @@ public class DbObjectModel extends EntityModel {
   @Override
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
     return Arrays.asList(
-            new ColumnModel(getDbConnectionProvider()),
-            new ConstraintModel(getDbConnectionProvider()));
+            new ColumnModel(getDbProvider()),
+            new ConstraintModel(getDbProvider()));
   }
 }

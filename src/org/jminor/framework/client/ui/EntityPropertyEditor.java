@@ -97,7 +97,7 @@ public class EntityPropertyEditor extends JPanel {
     this.field = getInputField(entityModel, values.size() == 1 ? values.iterator().next() : null);
     if (this.field instanceof JTextField)
       FrameworkUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,
-              entityModel.getDbConnectionProvider());
+              entityModel.getDbProvider());
     initUI(property.getCaption());
   }
 

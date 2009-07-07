@@ -253,7 +253,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
         throw new UserCancelException();
     }
     try {
-      applicationModel.getDbConnectionProvider().logout();
+      applicationModel.getDbProvider().logout();
     }
     catch (Exception e) {
       log.debug("Unable to properly log out, no connection");
@@ -508,7 +508,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   protected void showEntityPanel(final EntityPanelProvider panelProvider) {
     try {
-      showEntityPanelDialog(panelProvider, applicationModel.getDbConnectionProvider(), this);
+      showEntityPanelDialog(panelProvider, applicationModel.getDbProvider(), this);
     }
     catch (UserException ux) {
       throw ux.getRuntimeException();
@@ -562,7 +562,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
     final Properties properties =
-            getModel().getDbConnectionProvider().getEntityDb().getUser().getProperties();
+            getModel().getDbProvider().getEntityDb().getUser().getProperties();
     return frameCaption + " - " + getUserInfo(user,
             properties != null ? properties.getProperty(IDatabase.DATABASE_SID_PROPERTY) : null);
   }

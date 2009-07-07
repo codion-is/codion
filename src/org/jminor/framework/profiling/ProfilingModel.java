@@ -281,7 +281,7 @@ public abstract class ProfilingModel {
             try {
               if (!stopped)
                 Thread.sleep(getClientThinkTime(false));
-              if (!pause && applicationModel.getDbConnectionProvider().getEntityDb().isConnected()) {
+              if (!pause && applicationModel.getDbProvider().getEntityDb().isConnected()) {
                 if (relentless || !working) {
                   if (stopped)
                     removeClient(applicationModel);
@@ -329,7 +329,7 @@ public abstract class ProfilingModel {
     try {
       activeClients.remove(applicationModel);
       evtClientCountChanged.fire();
-      applicationModel.getDbConnectionProvider().getEntityDb().logout();
+      applicationModel.getDbProvider().getEntityDb().logout();
       System.out.println(applicationModel + " logged out and removed");
     }
     catch (Exception e) {

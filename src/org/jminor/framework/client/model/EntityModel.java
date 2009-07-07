@@ -169,7 +169,7 @@ public class EntityModel implements IRefreshable {
   /**
    * The IEntityDb connection provider
    */
-  private final IEntityDbProvider dbConnectionProvider;
+  private final IEntityDbProvider dbProvider;
 
   /**
    * The currently selected entity
@@ -260,7 +260,7 @@ public class EntityModel implements IRefreshable {
   public EntityModel(final String caption, final String entityID, final IEntityDbProvider dbProvider,
                      final boolean includeTableModel) throws UserException {
     this.caption = caption;
-    this.dbConnectionProvider = dbProvider;
+    this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.propertyComboBoxModels = initializeEntityComboBoxModels();
     this.tableModel = includeTableModel ? initializeTableModel() : null;
@@ -310,8 +310,8 @@ public class EntityModel implements IRefreshable {
   /**
    * @return the database connection provider
    */
-  public IEntityDbProvider getDbConnectionProvider() {
-    return dbConnectionProvider;
+  public IEntityDbProvider getDbProvider() {
+    return dbProvider;
   }
 
   /**
@@ -319,7 +319,7 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of an exception
    */
   public IEntityDb getEntityDb() throws UserException {
-    return getDbConnectionProvider().getEntityDb();
+    return getDbProvider().getEntityDb();
   }
 
   /**
@@ -1015,8 +1015,7 @@ public class EntityModel implements IRefreshable {
       if (property instanceof Property.EntityProperty)
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
                 + property.propertyID + ",\nuse an EntityComboBoxModel instead!");
-      final PropertyComboBoxModel comboBoxModel =
-              new PropertyComboBoxModel(getEntityID(), getDbConnectionProvider(), property, nullValue);
+      final PropertyComboBoxModel comboBoxModel = new PropertyComboBoxModel(getEntityID(), getDbProvider(), property, nullValue);
 
       comboBoxModel.refresh();
 
@@ -1097,7 +1096,7 @@ public class EntityModel implements IRefreshable {
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property,
                                                        final String nullValueItem, final boolean sortContents) {
-    return new EntityComboBoxModel(property.referenceEntityID, getDbConnectionProvider(), false, nullValueItem, sortContents);
+    return new EntityComboBoxModel(property.referenceEntityID, getDbProvider(), false, nullValueItem, sortContents);
   }
 
   /**
@@ -1109,7 +1108,7 @@ public class EntityModel implements IRefreshable {
    */
   public EntityLookupModel createEntityLookupModel(final String entityID, final ICriteria additionalSearchCriteria,
                                                    final List<Property> lookupProperties) {
-    return new EntityLookupModel(entityID, getDbConnectionProvider(), additionalSearchCriteria, lookupProperties);
+    return new EntityLookupModel(entityID, getDbProvider(), additionalSearchCriteria, lookupProperties);
   }
 
   /**
@@ -1372,7 +1371,7 @@ public class EntityModel implements IRefreshable {
    * @return the EntityTableModel used by this EntityModel
    */
   protected EntityTableModel initializeTableModel() {
-    return new EntityTableModel(getEntityID(), getDbConnectionProvider());
+    return new EntityTableModel(getEntityID(), getDbProvider());
   }
 
   /**

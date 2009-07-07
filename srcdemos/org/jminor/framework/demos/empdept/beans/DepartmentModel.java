@@ -20,6 +20,6 @@ public class DepartmentModel extends EntityModel {
   /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
-    return Arrays.asList(new EmployeeModel(getDbConnectionProvider()));
+    return Arrays.asList(new EmployeeModel(getDbProvider()));
   }
 }

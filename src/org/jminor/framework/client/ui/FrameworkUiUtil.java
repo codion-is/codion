@@ -609,7 +609,7 @@ public class FrameworkUiUtil {
   }
 
   public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
-    addLookupDialog(txtField, model.getEntityID(), property, model.getDbConnectionProvider());
+    addLookupDialog(txtField, model.getEntityID(), property, model.getDbProvider());
   }
 
   public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,

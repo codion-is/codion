@@ -20,6 +20,6 @@ public class SchemaModel extends EntityModel {
   /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
-    return Arrays.asList(new DbObjectModel(getDbConnectionProvider()));
+    return Arrays.asList(new DbObjectModel(getDbProvider()));
   }
 }

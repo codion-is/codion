@@ -20,6 +20,6 @@ public class ConstraintModel extends EntityModel {
   /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
-    return Arrays.asList(new ColumnConstraintModel(getDbConnectionProvider()));
+    return Arrays.asList(new ColumnConstraintModel(getDbProvider()));
   }
 }

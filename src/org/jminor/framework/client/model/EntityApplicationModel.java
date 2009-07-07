@@ -48,7 +48,7 @@ public abstract class EntityApplicationModel {
   /**
    * @return the IEntityDbProvider instance being used by this EntityApplicationModel
    */
-  public IEntityDbProvider getDbConnectionProvider() {
+  public IEntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
@@ -168,7 +168,7 @@ public abstract class EntityApplicationModel {
 
   protected EntityModel instantiateMainApplicationModel(Class<? extends EntityModel> mainModelClass)
           throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    return mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbConnectionProvider());
+    return mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbProvider());
   }
 
   protected void bindEvents() {}

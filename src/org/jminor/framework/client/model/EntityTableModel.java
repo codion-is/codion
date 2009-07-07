@@ -106,7 +106,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * The IEntityDb connection provider
    */
-  private final IEntityDbProvider dbConnectionProvider;
+  private final IEntityDbProvider dbProvider;
 
   /**
    * Holds visible entities
@@ -200,7 +200,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider) {
     this.entityID = entityID;
-    this.dbConnectionProvider = dbProvider;
+    this.dbProvider = dbProvider;
     this.tableColumnProperties = initializeColumnProperties();
     this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);
@@ -288,8 +288,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return the IEntityDbConnection provider
    */
-  public IEntityDbProvider getDbConnectionProvider() {
-    return dbConnectionProvider;
+  public IEntityDbProvider getDbProvider() {
+    return dbProvider;
   }
 
   /**
@@ -297,7 +297,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @throws UserException in case of an exception
    */
   public IEntityDb getEntityDb() throws UserException {
-    return getDbConnectionProvider().getEntityDb();
+    return getDbProvider().getEntityDb();
   }
 
   /**
@@ -921,7 +921,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   protected EntityTableSearchModel initializeSearchModel() {
     return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(),
-            getDbConnectionProvider(), EntityRepository.get().getVisiblePropertyList(getEntityID()));
+            getDbProvider(), EntityRepository.get().getVisiblePropertyList(getEntityID()));
   }
 
   /**

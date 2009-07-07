@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.H2Database;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
@@ -28,6 +29,8 @@ public class StrictEditModeTest extends TestCase {
     new EmpDept();
     model = new DepartmentModel(EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), StrictEditModeTest.class.getSimpleName()));
+    if (Database.get() instanceof H2Database)
+      dbProvider.getEntityDb().executeStatement("SET LOCK_TIMEOUT 100");
   }
 
   @Override

@@ -833,7 +833,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
       if (EntityUtil.activeDependencies(dependencies)) {
-        showDependenciesDialog(dependencies, getModel().getDbConnectionProvider(), EntityPanel.this);
+        showDependenciesDialog(dependencies, getModel().getDbProvider(), EntityPanel.this);
       }
       else {
         JOptionPane.showMessageDialog(EntityPanel.this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),

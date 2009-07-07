@@ -25,6 +25,6 @@ public class TagModel extends EntityModel {
   /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() throws UserException {
-    return Arrays.asList(new TagItemModel(getDbConnectionProvider()));
+    return Arrays.asList(new TagItemModel(getDbProvider()));
   }
 }
