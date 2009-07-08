@@ -128,7 +128,6 @@ public class EntityDbConnectionPool {
         connectionsInUse.remove(connection);
       }
       if (connection.isConnectionValid()) {
-        connection.clearStateData();
         try {
           if (connection.isTransactionOpen())
             connection.endTransaction(false);

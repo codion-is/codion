@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,15 +47,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
-  private final Map<String, Map<EntityKey, Entity>> entityCache = new HashMap<String, Map<EntityKey, Entity>>();
   private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
 
-  private static int cachedKeyQueries = 0;
-  private static int partiallyCachedKeyQueries = 0;
-  private static int queriedByKey;
-
   private boolean checkDependenciesOnDelete = false;
-  private boolean entityCacheEnabled = false;
   private long poolTime = -1;
 
   public EntityDbConnection(final User user) throws AuthenticationException, ClassNotFoundException {
@@ -71,24 +64,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public void logout() throws Exception {
     disconnect();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void addCacheQueriesRequest() {
-    super.addCacheQueriesRequest();
-    if (getCacheQueriesRequests() > 0)
-      this.entityCacheEnabled = true;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void removeCacheQueriesRequest() {
-    super.removeCacheQueriesRequest();
-    if (getCacheQueriesRequests() == 0) {
-      this.entityCacheEnabled = false;
-      this.entityCache.clear();
-    }
   }
 
   /** {@inheritDoc} */
@@ -477,23 +452,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     return poolTime;
   }
 
-  public void clearStateData() {
-    poolTime = -1;
-    entityCache.clear();
-  }
-
-  public static int getCachedKeyQueries() {
-    return cachedKeyQueries;
-  }
-
-  public static int getPartiallyCachedKeyQueries() {
-    return partiallyCachedKeyQueries;
-  }
-
-  public static int getQueriedByKey() {
-    return queriedByKey;
-  }
-
   /**
    * @param entity the Entity instance
    * @return a query for inserting this entity instance
@@ -580,41 +538,26 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final String entityID = primaryKeys.get(0).getEntityID();
     final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
     final List<Entity> returnList = new ArrayList<Entity>(primaryKeyList.size());
-    if (entityCacheEnabled && (properties == null || properties.size() == 0))//dont use the cache unless the query is straight forward
-      returnList.addAll(getCachedEntities(entityID, primaryKeyList));//removes those primary keys from the list
     try {
-      if (primaryKeyList.size() > 0) {
-        if (primaryKeys.size() != primaryKeyList.size())
-          partiallyCachedKeyQueries++;
-        else
-          queriedByKey++;
+      String sql = null;
+      try {
+        final EntityCriteria criteria = new EntityCriteria(entityID,
+                new EntityKeyCriteria(properties, primaryKeyList.toArray(new EntityKey[primaryKeyList.size()])));
+        final String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
+        sql = DbUtil.generateSelectSql(datasource, EntityRepository.get().getSelectString(criteria.getEntityID()),
+                criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
 
-        String sql = null;
-        try {
-          final EntityCriteria criteria = new EntityCriteria(entityID,
-                  new EntityKeyCriteria(properties, primaryKeyList.toArray(new EntityKey[primaryKeyList.size()])));
-          final String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
-          sql = DbUtil.generateSelectSql(datasource, EntityRepository.get().getSelectString(criteria.getEntityID()),
-                  criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
+        final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
 
-          final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
+        if (!lastQueryResultCached())
+          setReferencedEntities(result);
 
-          if (entityCacheEnabled && (properties == null || properties.size() == 0))
-            addToEntityCache(entityID, result);
-
-          if (!lastQueryResultCached())
-            setReferencedEntities(result);
-
-          returnList.addAll(result);
-        }
-        catch (SQLException sqle) {
-          log.info(sql);
-          log.error(this, sqle);
-          throw new DbException(sqle, sql);
-        }
+        returnList.addAll(result);
       }
-      else {
-        cachedKeyQueries++;
+      catch (SQLException sqle) {
+        log.info(sql);
+        log.error(this, sqle);
+        throw new DbException(sqle, sql);
       }
     }
     finally {
@@ -647,32 +590,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final Map<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
     for (final EntityKey key : referencedPrimaryKeys)
       ret.put(key, new Entity(key));
-
-    return ret;
-  }
-
-  private void addToEntityCache(final String entityID, final Collection<Entity> entities) {
-    if (!entityCache.containsKey(entityID))
-      entityCache.put(entityID, new HashMap<EntityKey, Entity>(entities.size()));
-    final Map<EntityKey, Entity> entityMap = entityCache.get(entityID);
-    for (final Entity entity : entities)
-      entityMap.put(entity.getPrimaryKey(), entity);
-  }
-
-  private Collection<Entity> getCachedEntities(final String entityID, final List<EntityKey> primaryKeyList) {
-    final int keyCount = primaryKeyList.size();
-    final Collection<Entity> ret = new ArrayList<Entity>(keyCount);
-    final ListIterator<EntityKey> keyIterator = primaryKeyList.listIterator();
-    final Map<EntityKey, Entity> cache = entityCache.get(entityID);
-    if (cache != null && cache.size() > 0) {
-      while (keyIterator.hasNext()) {
-        final Entity cachedEntity = cache.get(keyIterator.next());
-        if (cachedEntity != null) {
-          ret.add(cachedEntity);
-          keyIterator.remove();
-        }
-      }
-    }
 
     return ret;
   }

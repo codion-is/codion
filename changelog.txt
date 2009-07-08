@@ -582,3 +582,4 @@
   EntityKey.keyValues field renamed to values
   Entity.propertyValues field renamed to values
   Entity.originalPropertyValues field renamed to originalValues
+  EntityDbConnection entityCache functionality removed
