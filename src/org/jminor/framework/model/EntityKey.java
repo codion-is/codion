@@ -19,17 +19,17 @@ public class EntityKey implements Serializable {
   /**
    * the entity ID
    */
-  final String entityID;
+  private final String entityID;
 
   /**
    * Contains the values of this key
    */
-  final Map<String, Object> values;
+  private final Map<String, Object> values;
 
   /**
    * The number of properties comprising this key
    */
-  final int propertyCount;
+  private final int propertyCount;
 
   /**
    * True if this key consists of a single integer value
@@ -49,7 +49,7 @@ public class EntityKey implements Serializable {
   /**
    * Caching this extremely frequently referenced attribute
    */
-  transient List<Property.PrimaryKeyProperty> properties;
+  private transient List<Property.PrimaryKeyProperty> properties;
 
   /**
    * Instantiates a new EntityKey for the given entity type
@@ -74,6 +74,9 @@ public class EntityKey implements Serializable {
    * @return a List containing the properties comprising this key
    */
   public List<Property.PrimaryKeyProperty> getProperties() {
+    if (properties == null)
+      properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
+
     return properties;
   }
 
@@ -82,7 +85,7 @@ public class EntityKey implements Serializable {
    * @return the key property identified by propertyID, null if the property is not found
    */
   public Property.PrimaryKeyProperty getProperty(final String propertyID) {
-    for (final Property.PrimaryKeyProperty property : properties)
+    for (final Property.PrimaryKeyProperty property : getProperties())
       if (property.propertyID.equals(propertyID))
         return property;
 
@@ -93,7 +96,7 @@ public class EntityKey implements Serializable {
    * @return the first key property
    */
   public Property getFirstKeyProperty() {
-    return properties.size() > 0 ? properties.get(0) : null;
+    return getProperties().size() > 0 ? getProperties().get(0) : null;
   }
 
   /**
@@ -123,7 +126,7 @@ public class EntityKey implements Serializable {
    * @return true if this key contains a property with the given identifier
    */
   public boolean containsProperty(final String propertyID) {
-    for (final Property.PrimaryKeyProperty property : properties)
+    for (final Property.PrimaryKeyProperty property : getProperties())
       if (property.propertyID.equals(propertyID))
         return true;
 
@@ -139,13 +142,9 @@ public class EntityKey implements Serializable {
 
   /**
    * @param propertyID the property identifier
-   * @return the value of the property identified by propertyID, if the key
-   * does not contain a value for the property, the default value is returned
+   * @return the value of the property identified by propertyID
    */
   public Object getValue(final String propertyID) {
-    if (!values.containsKey(propertyID))
-      return getProperty(propertyID).getDefaultValue();
-
     return values.get(propertyID);
   }
 
@@ -156,7 +155,7 @@ public class EntityKey implements Serializable {
   public String toString() {
     final StringBuffer ret = new StringBuffer();
     int i = 0;
-    for (final Property.PrimaryKeyProperty property : properties) {
+    for (final Property.PrimaryKeyProperty property : getProperties()) {
       ret.append(property.propertyID).append("=");
       ret.append(getValue(property.propertyID));
       if (i++ < propertyCount -1)
@@ -258,7 +257,7 @@ public class EntityKey implements Serializable {
   void setValue(final EntityKey key) {
     clear();
     if (key != null) {
-      for (final Property.PrimaryKeyProperty property : properties) {
+      for (final Property.PrimaryKeyProperty property : getProperties()) {
         final String propertyID = property.propertyID;
         final Object newValue = key.getValue(propertyID);
         values.put(propertyID, Entity.copyPropertyValue(newValue));

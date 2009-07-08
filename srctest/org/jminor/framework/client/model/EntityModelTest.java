@@ -20,7 +20,7 @@ public class EntityModelTest extends TestCase {
   static {
     try {
       new EmpDept();
-      testModel  = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
+      testModel = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
     }
     catch (UserException e) {
       e.printStackTrace();

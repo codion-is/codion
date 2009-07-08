@@ -86,14 +86,14 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Entity(final EntityKey key) {
     primaryKey = key;
-    hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
+    hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.getEntityID());
   }
 
   /**
    * @return the entity ID
    */
   public String getEntityID() {
-    return primaryKey.entityID;
+    return primaryKey.getEntityID();
   }
 
   /**
@@ -108,7 +108,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return true if this entity is of the given type
    */
   public boolean is(final String entityID) {
-    return primaryKey.entityID.equals(entityID);
+    return primaryKey.getEntityID().equals(entityID);
   }
 
   /**
@@ -117,7 +117,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return the property identified by propertyID
    */
   public Property getProperty(final String propertyID) {
-    return repository.getProperty(primaryKey.entityID, propertyID);
+    return repository.getProperty(primaryKey.getEntityID(), propertyID);
   }
 
   /**
@@ -190,7 +190,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       validateValue(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization = primarKeyProperty ? !primaryKey.values.containsKey(property.propertyID)
+    final boolean initialization = primarKeyProperty ? !primaryKey.hasValue(property.propertyID)
             : !values.containsKey(property.propertyID);
     doSetValue(property, value, primarKeyProperty, initialization, true);
   }
@@ -216,7 +216,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(primaryKey.entityID).getValue(this, property);
+    return EntityProxy.getEntityProxy(primaryKey.getEntityID()).getValue(this, property);
   }
 
   /**
@@ -308,7 +308,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValueAsString((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(primaryKey.entityID).getValueAsString(this, property);
+    return EntityProxy.getEntityProxy(primaryKey.getEntityID()).getValueAsString(this, property);
   }
 
   /**
@@ -331,7 +331,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(primaryKey.entityID).getTableValue(this, property);
+    return EntityProxy.getEntityProxy(primaryKey.getEntityID()).getTableValue(this, property);
   }
 
   /**
@@ -380,7 +380,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Object getRawValue(final String propertyID) {
     if (primaryKey.containsProperty(propertyID))
-      return primaryKey.values.get(propertyID);
+      return primaryKey.getValue(propertyID);
 
     return values.get(propertyID);
   }
@@ -670,7 +670,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
-            primaryKeyProperty ? primaryKey.values.get(property.propertyID) : values.get(property.propertyID);
+            primaryKeyProperty ? primaryKey.getValue(property.propertyID) : values.get(property.propertyID);
     if (primaryKeyProperty)
       primaryKey.setValue(property.propertyID, newValue);
     else
@@ -688,7 +688,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     setReferenceKeyValues(property, newValue);
     if (hasDenormalizedProperties) {
       final Collection<Property.DenormalizedProperty> properties =
-              repository.getDenormalizedProperties(primaryKey.entityID, property.referenceEntityID);
+              repository.getDenormalizedProperties(primaryKey.getEntityID(), property.referenceEntityID);
       setDenormalizedValues(property, newValue, properties);
     }
   }
@@ -700,13 +700,13 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   private void setReferenceKeyValues(final Property.EntityProperty property, final Entity entity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
-            entity != null ? entity.primaryKey.properties
+            entity != null ? entity.primaryKey.getProperties()
                     : repository.getPrimaryKeyProperties(property.referenceEntityID);
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = property.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
-        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.values.containsKey(referenceProperty.propertyID)
+        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.propertyID)
             : !values.containsKey(referenceProperty.propertyID);
         doSetValue(referenceProperty, entity != null ? entity.getRawValue(primaryKeyProperty.propertyID) : null,
                 isPrimaryKeyProperty, initialization, true);

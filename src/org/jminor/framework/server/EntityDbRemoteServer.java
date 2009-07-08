@@ -251,7 +251,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       for (final ClientInfo client : clients) {
         final EntityDbRemoteAdapter adapter = connections.get(client);
         if (inactiveOnly) {
-          if (!adapter.isWorking() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
+          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
             adapter.logout();
         }
         else

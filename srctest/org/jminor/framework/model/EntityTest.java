@@ -48,9 +48,6 @@ public class EntityTest extends TestCase {
     Entity test = new Entity(ModelTestDomain.T_TEST_DETAIL);
     //assert not modified
     assertFalse(test.isModified());
-    //assert default values
-    assertEquals(test.getValue(ModelTestDomain.TEST_DETAIL_ID), 420);
-    assertEquals(test.getValue(ModelTestDomain.TEST_DETAIL_BOOLEAN), Type.Boolean.TRUE);
 
     final Entity testEntity = getTestMasterEntity(idValue, intValue, doubleValue,
             stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue);

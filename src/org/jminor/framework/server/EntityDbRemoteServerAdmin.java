@@ -131,7 +131,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IE
 
   /** {@inheritDoc} */
   public void resetConnectionPoolStatistics(final User user) throws RemoteException {
-    EntityDbRemoteAdapter.resetConnectionPoolStats(user);
+    EntityDbRemoteAdapter.resetConnectionPoolStatistics(user);
   }
 
   /** {@inheritDoc} */

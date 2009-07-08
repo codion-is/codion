@@ -583,3 +583,8 @@
   Entity.propertyValues field renamed to values
   Entity.originalPropertyValues field renamed to originalValues
   EntityDbConnection entityCache functionality removed
+  EntityDbRemoteAdapter loggedIn field removed, not really used
+  EntityKey no longer returns the default value for a property if no value is set
+  EntityModelTest, removed the default value test according to the above
+  EntityKey, all fields privatized
+  Entity, changes related to the above

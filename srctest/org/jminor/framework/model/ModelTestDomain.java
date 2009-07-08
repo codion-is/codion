@@ -32,7 +32,7 @@ public class ModelTestDomain {
 
     EntityRepository.get().initialize(T_TEST_DETAIL, IdSource.NONE, null,
             TEST_DETAIL_STRING, DETAIL_SELECT_TABLE_NAME, false,
-            new Property.PrimaryKeyProperty(TEST_DETAIL_ID).setDefaultValue(420),
+            new Property.PrimaryKeyProperty(TEST_DETAIL_ID).setDefaultValue(42),
             new Property(TEST_DETAIL_INT, Type.INT, TEST_DETAIL_INT),
             new Property(TEST_DETAIL_DOUBLE, Type.DOUBLE, TEST_DETAIL_DOUBLE),
             new Property(TEST_DETAIL_STRING, Type.STRING, TEST_DETAIL_STRING),

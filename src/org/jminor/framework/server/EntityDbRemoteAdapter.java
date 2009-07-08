@@ -52,35 +52,30 @@ import java.util.TimerTask;
  */
 public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntityDbRemote {
 
-  private static final Logger logger = Util.getLogger(EntityDbRemoteAdapter.class);
+  private static final Logger log = Util.getLogger(EntityDbRemoteAdapter.class);
 
   public final Event evtLoggingOut = new Event();
 
   private final ClientInfo client;
   private final long creationDate = System.currentTimeMillis();
-
-  private static final int logSize =
-          Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_CONNECTION_LOG_SIZE, "40"));
-  private static final boolean useSecureConnection =
-          Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_SECURE_CONNECTION, "1")) == 1;
-  private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
-
   private final IEntityDb loggingEntityDbProxy;
-  private boolean loggingEnabled = false;
-  private List<LogEntry> log;
-  private int logIdx = 0;
+  private EntityDbConnection entityDbConnection;
 
+  private List<LogEntry> logEntries;
+  private int logEntryIndex = 0;
+  private boolean loggingEnabled = false;
   private long lastAccessDate = System.currentTimeMillis();
   private long lastExitDate = System.currentTimeMillis();//not quite logical
   private String lastAccessedMethod;
   private String lastAccessMessage;
   private String lastExitedMethod;
 
-  private EntityDbConnection entityDbConnection;
-
-  private final static Map<User, EntityDbConnectionPool> connectionPools =
+  private static final int logSize = Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_CONNECTION_LOG_SIZE, "40"));
+  private static final boolean useSecureConnection = Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_SECURE_CONNECTION, "1")) == 1;
+  private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
+  private static final Map<User, EntityDbConnectionPool> connectionPools =
           Collections.synchronizedMap(new HashMap<User, EntityDbConnectionPool>());
-  private boolean loggedIn = true;
+
   private static long requestsPerSecondTime = System.currentTimeMillis();
   private static int requestsPerSecond = 0;
   private static int requestsPerSecondCounter = 0;
@@ -122,87 +117,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     this.loggingEnabled = loggingEnabled;
   }
 
-  public static ConnectionPoolSettings getConnectionPoolSettings(final User user) {
-    return connectionPools.get(user).getConnectionPoolSettings();
-  }
-
-  public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
-    return connectionPools.get(user).getConnectionPoolStatistics(since);
-  }
-
-  public static void setConnectionPoolSettings(final User user, final ConnectionPoolSettings settings) {
-    EntityDbConnectionPool pool = connectionPools.get(user);
-    if (pool == null)
-      connectionPools.put(user, new EntityDbConnectionPool(user, settings));
-    else
-      pool.setConnectionPoolSettings(settings);
-  }
-
-  public static int getRequestsPerSecond() {
-    return requestsPerSecond;
-  }
-
-  public static int getWarningTimeExceededPerSecond() {
-    return warningTimeExceededPerSecond;
-  }
-
-  public boolean isWorking() {
-    return active.contains(this);
-  }
-
-  public DbLog getEntityDbLog() {
-    return new DbLog(getClient().getClientID(), creationDate, log, lastAccessDate, lastExitDate,
-            lastAccessedMethod, lastAccessMessage, lastExitedMethod);
-  }
-
-  public ClientInfo getClient() {
-    return client;
-  }
-
-  public boolean isLoggingEnabled() {
-    return loggingEnabled;
-  }
-
-  public void setLoggingEnabled(final boolean logginEnabled) {
-    this.loggingEnabled = logginEnabled;
-    if (!logginEnabled)
-      log.clear();
-  }
-
-  public boolean hasBeenInactive(final long timout) {
-    return System.currentTimeMillis() - lastAccessDate > timout;
-  }
-
-  public static List<ConnectionPoolSettings> getActiveConnectionPoolSettings() {
-    final List<ConnectionPoolSettings> ret = new ArrayList<ConnectionPoolSettings>();
-    for (final EntityDbConnectionPool pool : connectionPools.values()) {
-      if (pool.getConnectionPoolSettings().isEnabled())
-        ret.add(pool.getConnectionPoolSettings());
-    }
-
-    return ret;
-  }
-
-  public static void resetConnectionPoolStats(final User user) {
-    connectionPools.get(user).resetPoolStatistics();
-  }
-
-  /**
-   * Only returns a valid value when logging is enabled
-   * @return the number of connections that are active at this moment
-   */
-  public static int getActiveCount() {
-    return active.size();
-  }
-
-  public static int getWarningThreshold() {
-    return warningThreshold;
-  }
-
-  public static void setWarningThreshold(final int threshold) {
-    warningThreshold = threshold;
-  }
-
   /** {@inheritDoc} */
   public User getUser() throws RemoteException {
     return client.getUser();
@@ -211,7 +125,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   /** {@inheritDoc} */
   public boolean isConnected() throws RemoteException {
     try {
-      return entityDbConnection == null ? loggedIn : entityDbConnection.isConnected();
+      return entityDbConnection != null && entityDbConnection.isConnected();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -224,7 +138,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       if (entityDbConnection != null)
         entityDbConnection.logout();
 
-      loggedIn = false;
+      entityDbConnection = null;
 
       UnicastRemoteObject.unexportObject(this, true);
       evtLoggingOut.fire();
@@ -574,6 +488,93 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     }
   }
 
+  public ClientInfo getClient() {
+    return client;
+  }
+
+  public DbLog getEntityDbLog() {
+    return new DbLog(getClient().getClientID(), creationDate, logEntries, lastAccessDate, lastExitDate,
+            lastAccessedMethod, lastAccessMessage, lastExitedMethod);
+  }
+
+  public boolean isLoggingEnabled() {
+    return loggingEnabled;
+  }
+
+  public void setLoggingEnabled(final boolean logginEnabled) {
+    this.loggingEnabled = logginEnabled;
+    if (!logginEnabled)
+      logEntries.clear();
+  }
+
+  /**
+   * @return true during a remote method call
+   */
+  public boolean isActive() {
+    return active.contains(this);
+  }
+
+  /**
+   * @param timout the number of milliseconds
+   * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
+   */
+  public boolean hasBeenInactive(final long timout) {
+    return System.currentTimeMillis() - lastAccessDate > timout;
+  }
+
+  public static List<ConnectionPoolSettings> getActiveConnectionPoolSettings() {
+    final List<ConnectionPoolSettings> ret = new ArrayList<ConnectionPoolSettings>();
+    for (final EntityDbConnectionPool pool : connectionPools.values()) {
+      if (pool.getConnectionPoolSettings().isEnabled())
+        ret.add(pool.getConnectionPoolSettings());
+    }
+
+    return ret;
+  }
+
+  public static ConnectionPoolSettings getConnectionPoolSettings(final User user) {
+    return connectionPools.get(user).getConnectionPoolSettings();
+  }
+
+  public static void setConnectionPoolSettings(final User user, final ConnectionPoolSettings settings) {
+    EntityDbConnectionPool pool = connectionPools.get(user);
+    if (pool == null)
+      connectionPools.put(user, new EntityDbConnectionPool(user, settings));
+    else
+      pool.setConnectionPoolSettings(settings);
+  }
+
+  public static ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
+    return connectionPools.get(user).getConnectionPoolStatistics(since);
+  }
+
+  public static void resetConnectionPoolStatistics(final User user) {
+    connectionPools.get(user).resetPoolStatistics();
+  }
+
+  public static int getRequestsPerSecond() {
+    return requestsPerSecond;
+  }
+
+  public static int getWarningTimeExceededPerSecond() {
+    return warningTimeExceededPerSecond;
+  }
+
+  /**
+   * @return the number of connections that are active at this moment
+   */
+  public static int getActiveCount() {
+    return active.size();
+  }
+
+  public static int getWarningThreshold() {
+    return warningThreshold;
+  }
+
+  public static void setWarningThreshold(final int threshold) {
+    warningThreshold = threshold;
+  }
+
   private IEntityDb initializeProxy() {
     return (IEntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
             EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
@@ -588,7 +589,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
           return method.invoke(connection = getConnection(client.getUser()), args);
         }
         catch (InvocationTargetException ie) {
-          logger.error(this, ie);
+          log.error(this, ie);
           throw ie.getTargetException();
         }
         finally {
@@ -601,7 +602,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
               warningTimeExceededCounter++;
           }
           catch (Exception e) {
-            logger.error(this, e);
+            log.error(this, e);
           }
         }
       }
@@ -650,36 +651,36 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     return -1;
   }
 
-  private static boolean shouldMethodBeLogged(final int hashCode) {
-    return hashCode != IS_LOGGED_IN && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
-  }
-
-  private static List<LogEntry> initializeLog() {
-    final List<LogEntry> log = new ArrayList<LogEntry>(logSize);
-    for (int i = 0; i < logSize; i++)
-      log.add(new LogEntry());
-
-    return log;
-  }
-
   private long addLogEntry(final String method, final String message, final long time, final boolean isExit) {
-    if (log == null)
-      log = initializeLog();
+    if (logEntries == null)
+      logEntries = initializeLogEntryList();
     if (!isExit) {
-      if (logIdx > log.size()-1)
-        logIdx = 0;
+      if (logEntryIndex > logEntries.size()-1)
+        logEntryIndex = 0;
 
-      log.get(logIdx).set(method, message, time);
+      logEntries.get(logEntryIndex).set(method, message, time);
 
       return -1;
     }
     else {//add to last log entry
-      final LogEntry lastEntry = log.get(logIdx);
+      final LogEntry lastEntry = logEntries.get(logEntryIndex);
       assert lastEntry.method.equals(method);
-      logIdx++;
+      logEntryIndex++;
 
       return lastEntry.setExitTime(time);
     }
+  }
+
+  private static boolean shouldMethodBeLogged(final int hashCode) {
+    return hashCode != IS_LOGGED_IN && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
+  }
+
+  private static List<LogEntry> initializeLogEntryList() {
+    final List<LogEntry> logEntries = new ArrayList<LogEntry>(logSize);
+    for (int i = 0; i < logSize; i++)
+      logEntries.add(new LogEntry());
+
+    return logEntries;
   }
 
   private static String parameterArrayToString(final Object[] args) {
