@@ -200,11 +200,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (entities == null || entities.size() == 0)
       return;
 
-    if (isCheckDependencies()) {
-      final Map<String, List<Entity>> dependencies = getDependentEntities(entities);
-      if (EntityUtil.activeDependencies(dependencies))
-        throw new DbException("Entity has dependencies", "", entities.get(0));
-    }
+    if (isCheckDependencies() && EntityUtil.activeDependencies(getDependentEntities(entities)))
+      throw new DbException("Unable to perform delete, the entities have dependencies");
 
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
@@ -281,7 +278,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     catch (SQLException sqle) {
       log.info(sql);
       log.error(this, sqle);
-      throw EntityDbUtil.getDbException(sqle, sql);
+      throw new DbException(sqle, sql);
     }
     finally {
       removeCacheQueriesRequest();
@@ -335,7 +332,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     catch (SQLException sqle) {
       log.info(sql);
       log.error(this, sqle);
-      throw EntityDbUtil.getDbException(sqle, sql);
+      throw new DbException(sqle, sql);
     }
   }
 
@@ -350,8 +347,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
       return query(sql, getPacker(EntityRepository.get().getProperty(entityID, columnName).propertyType), -1);
     }
-    catch (SQLException e) {
-      throw EntityDbUtil.getDbException(e, sql);
+    catch (SQLException sqle) {
+      throw new DbException(sqle, sql);
     }
   }
 
@@ -360,8 +357,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     try {
       return queryObjects(statement, recordCount);
     }
-    catch (SQLException e) {
-      throw EntityDbUtil.getDbException(e, statement);
+    catch (SQLException sqle) {
+      throw new DbException(sqle, statement);
     }
   }
 
@@ -374,7 +371,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
               criteria.getWhereClause(), null));
     }
     catch (SQLException sqle) {
-      throw EntityDbUtil.getDbException(sqle, sql);
+      throw new DbException(sqle, sql);
     }
   }
 
@@ -416,7 +413,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       if (!isTransactionOpen())
         commit();
     }
-    catch (SQLException e) {
+    catch (SQLException sqle) {
       try {
         if (!isTransactionOpen())
           rollback();
@@ -425,7 +422,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-      throw EntityDbUtil.getDbException(e, statement);
+      throw new DbException(sqle, statement);
     }
   }
 
@@ -438,7 +435,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
       return ret;
     }
-    catch (SQLException e) {
+    catch (SQLException sqle) {
       try {
         if (!isTransactionOpen())
           rollback();
@@ -447,7 +444,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-      throw EntityDbUtil.getDbException(e, statement);
+      throw new DbException(sqle, statement);
     }
   }
 
@@ -477,8 +474,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
       return entity;
     }
-    catch (SQLException e) {
-      throw EntityDbUtil.getDbException(e, "");
+    catch (SQLException sqle) {
+      throw new DbException(sqle, "");
     }
     finally {
       endTransaction(success);
@@ -493,8 +490,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       return readBlobField(EntityRepository.get().getTableName(entity.getEntityID()), property.getBlobColumnName(),
               EntityDbUtil.getWhereCondition(entity));
     }
-    catch (SQLException e) {
-      throw EntityDbUtil.getDbException(e, "");
+    catch (SQLException sqle) {
+      throw new DbException(sqle);
     }
   }
 
@@ -560,7 +557,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       if (!isTransactionOpen())
         commit();
     }
-    catch (SQLException e) {
+    catch (SQLException sqle) {
       try {
         if (!isTransactionOpen())
           rollback();
@@ -570,7 +567,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         log.error(this, ex);
       }
 
-      throw EntityDbUtil.getDbException(e, sql);
+      throw new DbException(sqle, sql);
     }
   }
 
@@ -614,7 +611,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         catch (SQLException sqle) {
           log.info(sql);
           log.error(this, sqle);
-          throw EntityDbUtil.getDbException(sqle, sql);
+          throw new DbException(sqle, sql);
         }
       }
       else {
@@ -719,8 +716,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     try {
       return queryInteger(sql);
     }
-    catch (SQLException e) {
-      throw EntityDbUtil.getDbException(e, sql);
+    catch (SQLException sqle) {
+      throw new DbException(sqle, sql);
     }
   }
 

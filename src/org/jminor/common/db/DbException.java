@@ -11,75 +11,66 @@ import java.sql.SQLException;
 public class DbException extends Exception  {
 
   /**
-   * The query string being run when this exception occurred
+   * The sql statement being run when this exception occurred
    */
-  private String sql;
-  private Object userObject;
+  private String statement;
 
+  /**
+   * Constructs a new DbException instance
+   * @param message the exception message
+   */
   public DbException(final String message) {
-    this(message, null);
-  }
-
-  public DbException(final String message, final String sql) {
-    this(message, sql, null);
-  }
-
-  public DbException(final String message, final String sql, final Object userObject) {
     super(message);
-    this.sql = sql;
-    this.userObject = userObject;
   }
 
   /**
    * Constructs a new DbException instance
-   * @param cause the Throwable cause of the exception
+   * @param message the exception message
+   * @param statement the sql statement which caused the exception
    */
-  public DbException(final Throwable cause) {
-    super(cause);
+  public DbException(final String message, final String statement) {
+    super(message);
+    this.statement = statement;
   }
 
   /**
    * Constructs a new DbException instance
-   * @param cause the Throwable cause of the exception
+   * @param cause the cause of the exception
+   */
+  public DbException(final SQLException cause) {
+    this(cause, null);
+  }
+
+  /**
+   * Constructs a new DbException instance
+   * @param cause the cause of the exception
+   * @param statement the sql statement which caused the exception
+   */
+  public DbException(final SQLException cause, final String statement) {
+    this(cause, statement, getMessage(cause));
+  }
+
+  /**
+   * Constructs a new DbException instance
+   * @param cause the cause of the exception
+   * @param statement the sql statement which caused the exception
    * @param message the exception message
    */
-  public DbException(final Throwable cause, final String message) {
+  public DbException(final SQLException cause, final String statement, final String message) {
     super(message, cause);
-  }
-
-  /**
-   * Constructs a new DbException instance
-   * @param cause the Throwable cause of the exception
-   * @param message the exception message
-   * @param sql the sql query which cause the exception
-   */
-  public DbException(final Throwable cause, final String message, final String sql) {
-    super(message, cause);
-    this.sql = sql;
+    this.statement = statement;
   }
 
   /**
    * @return the sql query which caused the exception
    */
-  public String getSql() {
-    return this.sql;
+  public String getStatement() {
+    return this.statement;
   }
 
-  /**
-   * @return the user object associated with this exception
-   */
-  public Object getUserObject() {
-    return this.userObject;
-  }
+  private static String getMessage(final SQLException exception) {
+    final String message = Database.get().getErrorMessage(exception);
 
-  /**
-   * @return the error code in case the cause was a SQLException, -1 is returned otherwise
-   */
-  public int getErrorCode() {
-    final Throwable cause = getCause();
-    if (cause instanceof SQLException)
-      return ((SQLException)cause).getErrorCode();
-
-    return -1;
+    return message == null ? exception.getMessage() : message;
   }
 }

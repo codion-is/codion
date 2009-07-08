@@ -4,7 +4,6 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DbException;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
@@ -14,7 +13,6 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -134,13 +132,5 @@ public class EntityDbUtil {
         ret.add(property);
 
     return ret;
-  }
-
-  public static DbException getDbException(final SQLException exception, final String sqlStatement) {
-    final String message = Database.get().getErrorMessage(exception);
-    if (message != null)
-      return new DbException(exception, message, sqlStatement);
-
-    return new DbException(exception, sqlStatement);
   }
 }

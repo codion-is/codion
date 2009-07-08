@@ -214,7 +214,7 @@ public abstract class EntityTestUnit extends TestCase {
       return getDbConnection().selectSingle(getDbConnection().insert(Arrays.asList(entity)).get(0));
     }
     catch (DbException e) {
-      System.out.println(e.getSql());
+      System.out.println(e.getStatement());
       e.printStackTrace();
       throw e;
     }
