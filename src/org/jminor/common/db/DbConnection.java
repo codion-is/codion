@@ -233,7 +233,7 @@ public class DbConnection {
       return ret;
     }
     catch (SQLException e) {
-      log.debug(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
     finally {
@@ -336,7 +336,6 @@ public class DbConnection {
       statement.execute();
     }
     catch (SQLException e) {
-      System.out.println(sql);
       log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
@@ -393,8 +392,7 @@ public class DbConnection {
       return hasOutParameter ? statement.getObject(1) : null;
     }
     catch (SQLException e) {
-      System.out.println(sqlStatement);
-      log.debug(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sqlStatement+";", e);
+      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sqlStatement+";", e);
       throw e;
     }
     finally {
@@ -421,7 +419,6 @@ public class DbConnection {
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
     }
     catch (SQLException e) {
-      System.out.println(sql);
       log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }

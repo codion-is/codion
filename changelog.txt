@@ -573,3 +573,4 @@
   IDatabase.getUserInfoString() renamed to getAuthenticationInfo()
   Misc code cleanup
   specialRendering renamed to rowColoring everywhere
+  H2/Derby jars included in demo remote run file classpath for db specific exception classes
