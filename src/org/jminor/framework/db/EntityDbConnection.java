@@ -51,42 +51,16 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private final Map<String, Map<EntityKey, Entity>> entityCache = new HashMap<String, Map<EntityKey, Entity>>();
   private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
 
-  private boolean checkDependenciesOnDelete = false;
-  private boolean entityCacheEnabled = false;
-
   private static int cachedKeyQueries = 0;
   private static int partiallyCachedKeyQueries = 0;
   private static int queriedByKey;
 
+  private boolean checkDependenciesOnDelete = false;
+  private boolean entityCacheEnabled = false;
   private long poolTime = -1;
 
   public EntityDbConnection(final User user) throws AuthenticationException, ClassNotFoundException {
     super(user);
-  }
-
-  public void setPoolTime(final long poolTime) {
-    this.poolTime = poolTime;
-  }
-
-  public long getPoolTime() {
-    return poolTime;
-  }
-
-  public static int getCachedKeyQueries() {
-    return cachedKeyQueries;
-  }
-
-  public static int getPartiallyCachedKeyQueries() {
-    return partiallyCachedKeyQueries;
-  }
-
-  public static int getQueriedByKey() {
-    return queriedByKey;
-  }
-
-  public void clearStateData() {
-    poolTime = -1;
-    entityCache.clear();
   }
 
   /** {@inheritDoc} */
@@ -493,6 +467,31 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     catch (SQLException sqle) {
       throw new DbException(sqle);
     }
+  }
+
+  public void setPoolTime(final long poolTime) {
+    this.poolTime = poolTime;
+  }
+
+  public long getPoolTime() {
+    return poolTime;
+  }
+
+  public void clearStateData() {
+    poolTime = -1;
+    entityCache.clear();
+  }
+
+  public static int getCachedKeyQueries() {
+    return cachedKeyQueries;
+  }
+
+  public static int getPartiallyCachedKeyQueries() {
+    return partiallyCachedKeyQueries;
+  }
+
+  public static int getQueriedByKey() {
+    return queriedByKey;
   }
 
   /**

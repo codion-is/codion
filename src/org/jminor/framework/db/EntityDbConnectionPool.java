@@ -37,11 +37,11 @@ public class EntityDbConnectionPool {
   private final Stack<EntityDbConnection> connectionPool = new Stack<EntityDbConnection>();
   private final Set<EntityDbConnection> connectionsInUse = new HashSet<EntityDbConnection>();
 
-  private final List<ConnectionPoolState> inPoolStats = new ArrayList<ConnectionPoolState>(1000);
+  private final List<ConnectionPoolState> connectionPoolStatistics = new ArrayList<ConnectionPoolState>(1000);
   private final Date creationDate = new Date();
   private Date resetDate = new Date();
   private ConnectionPoolSettings connectionPoolSettings;
-  private int poolStatisticsIndex = 0;
+  private int connectionPoolStatisticsIndex = 0;
   private int liveConnections = 0;
   private int connectionsCreated = 0;
   private int connectionsDestroyed = 0;
@@ -83,8 +83,8 @@ public class EntityDbConnectionPool {
 
     connectionRequests++;
     requestsPerSecondCounter++;
-    EntityDbConnection ret = getConnectionFromPool();
-    if (ret == null) {
+    EntityDbConnection connection = getConnectionFromPool();
+    if (connection == null) {
       connectionRequestsDelayed++;
       requestsDelayedPerSecondCounter++;
       synchronized (connectionPool) {
@@ -98,17 +98,17 @@ public class EntityDbConnectionPool {
       }
       int retryCount = 0;
       final long time = System.currentTimeMillis();
-      while (ret == null) {
+      while (connection == null) {
         try {
           synchronized (connectionPool) {
             if (connectionPool.size() == 0)
               connectionPool.wait();
-            ret = getConnectionFromPool();
+            connection = getConnectionFromPool();
             retryCount++;
           }
-          if (ret != null && log.isDebugEnabled())
+          if (connection != null && log.isDebugEnabled())
             log.debug("##### " + user + " got connection"
-                    + " after " + (System.currentTimeMillis() - time) + "ms (count: " + retryCount + ")");
+                    + " after " + (System.currentTimeMillis() - time) + "ms (retries: " + retryCount + ")");
         }
         catch (InterruptedException e) {
           e.printStackTrace();
@@ -116,7 +116,7 @@ public class EntityDbConnectionPool {
       }
     }
 
-    return ret;
+    return connection;
   }
 
   public void checkInConnection(final EntityDbConnection connection) {
@@ -197,8 +197,8 @@ public class EntityDbConnectionPool {
    */
   public List<ConnectionPoolState> getPoolStatistics(final long since) {
     final List<ConnectionPoolState> ret = new ArrayList<ConnectionPoolState>();
-    synchronized (inPoolStats) {
-      final ListIterator<ConnectionPoolState> iterator = inPoolStats.listIterator();
+    synchronized (connectionPoolStatistics) {
+      final ListIterator<ConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
         if (state.time > since)
@@ -232,14 +232,14 @@ public class EntityDbConnectionPool {
   }
 
   private void addInPoolStats(final int size, final int inUse, final long time) {
-    synchronized (inPoolStats) {
-      poolStatisticsIndex = poolStatisticsIndex == poolStatisticsSize ? 0 : poolStatisticsIndex;
-      if (inPoolStats.size() == poolStatisticsSize) //filled already, reuse
-        inPoolStats.get(poolStatisticsIndex).set(time, size, inUse);
+    synchronized (connectionPoolStatistics) {
+      connectionPoolStatisticsIndex = connectionPoolStatisticsIndex == poolStatisticsSize ? 0 : connectionPoolStatisticsIndex;
+      if (connectionPoolStatistics.size() == poolStatisticsSize) //filled already, reuse
+        connectionPoolStatistics.get(connectionPoolStatisticsIndex).set(time, size, inUse);
       else
-        inPoolStats.add(new ConnectionPoolState(time, size, inUse));
+        connectionPoolStatistics.add(new ConnectionPoolState(time, size, inUse));
 
-      poolStatisticsIndex++;
+      connectionPoolStatisticsIndex++;
     }
   }
 

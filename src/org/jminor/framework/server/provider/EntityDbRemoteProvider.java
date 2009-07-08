@@ -4,7 +4,6 @@
 package org.jminor.framework.server.provider;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkConstants;
@@ -36,11 +35,6 @@ import java.util.List;
  */
 public class EntityDbRemoteProvider implements IEntityDbProvider {
 
-  /**
-   * Fired when a successful connection has been made
-   */
-  public final Event evtConnected = new Event();
-
   private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
 
   static {
@@ -70,10 +64,6 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     return entityDbProxy;
   }
 
-  public Event getConnectEvent() {
-    return evtConnected;
-  }
-
   public void logout() throws UserException {
     try {
       getEntityDb().logout();
@@ -83,12 +73,10 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     }
   }
 
-  protected void initializeEntityDb() throws UserException {
+  private void initializeEntityDb() throws UserException {
     try {
-      if (entityDb == null || !connectionValid()) {
+      if (entityDb == null || !connectionValid())
         entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.get());
-        evtConnected.fire();
-      }
     }
     catch (RemoteException e) {
       throw new UserException(e);

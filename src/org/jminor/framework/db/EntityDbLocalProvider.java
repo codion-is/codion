@@ -7,7 +7,6 @@ import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
-import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 
@@ -21,11 +20,6 @@ import java.util.Properties;
 public class EntityDbLocalProvider implements IEntityDbProvider {
 
   private static final Logger log = Util.getLogger(EntityDbLocalProvider.class);
-
-  /**
-   * Fired when a successful connection has been made
-   */
-  public final Event evtConnected = new Event();
 
   /**
    * The user used by this db provider when connecting to the database server
@@ -53,11 +47,6 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
     validateDbConnection();
 
     return entityDb;
-  }
-
-  /** {@inheritDoc} */
-  public Event getConnectEvent() {
-    return evtConnected;
   }
 
   /** {@inheritDoc} */
@@ -91,6 +80,5 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
   private void connect() throws ClassNotFoundException, AuthenticationException {
     log.debug("Initializing connection for " + user);
     entityDb = new EntityDbConnection(user);
-    evtConnected.fire();
   }
 }

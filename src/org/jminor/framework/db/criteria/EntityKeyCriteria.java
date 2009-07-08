@@ -21,7 +21,14 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
 
   private static final long serialVersionUID = 1;
 
+  /**
+   * The keys used in this criteria
+   */
   private final List<EntityKey> keys;
+
+  /**
+   * The properties to use for column names when constructing the criteria string
+   */
   private final List<Property> properties;
 
   /**
@@ -52,8 +59,8 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
     if (properties != null && properties.size() != keys[0].getPropertyCount())
       throw new IllegalArgumentException("Reference property count mismatch");
 
-    this.properties = properties;
     this.keys = new ArrayList<EntityKey>(Arrays.asList(keys));
+    this.properties = properties;
   }
 
   /**

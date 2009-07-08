@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 
 /**
@@ -22,11 +21,6 @@ public interface IEntityDbProvider {
    * @throws UserException in case of a problem
    */
   public IEntityDb getEntityDb() throws UserException;
-
-  /**
-   * @return an Event fired when a successful connection is made
-   */
-  public Event getConnectEvent();
 
   /**
    * Logs out, disconnects and performs cleanup if required
