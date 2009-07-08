@@ -588,3 +588,4 @@
   EntityModelTest, removed the default value test according to the above
   EntityKey, all fields privatized
   Entity, changes related to the above
+  EntityDbConnection, selectMany() removed redundant return ArrayList, now simply returns the query result list

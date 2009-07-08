@@ -87,7 +87,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
         if (EntityRepository.get().isReadOnly(entityID))
-          throw new DbException("Cannot insert a read only entity");
+          throw new DbException("Can not insert a read only entity");
 
         final IdSource idSource = EntityRepository.get().getIdSource(entityID);
         if (idSource == IdSource.MAX_PLUS_ONE || idSource == IdSource.SEQUENCE || idSource == IdSource.QUERY)
@@ -128,7 +128,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
       if (EntityRepository.get().isReadOnly(entity.getEntityID()))
-        throw new DbException("Cannot update a read only entity");
+        throw new DbException("Can not update a read only entity");
       if (!entity.isModified())
         throw new DbException("Trying to update non-modified entity: " + entity);
       else
@@ -155,7 +155,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
       if (EntityRepository.get().isReadOnly(entity.getEntityID()))
-        throw new DbException("Cannot delete a read only entity");
+        throw new DbException("Can not delete a read only entity");
       statements.add(0, getDeleteSQL(entity));
     }
 
@@ -218,11 +218,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       if (!lastQueryResultCached())
         setReferencedEntities(result);
 
-      final List<Entity> ret = new ArrayList<Entity>(result.size());
-      for (final Entity entity : result)
-        ret.add(entity);
-
-      return ret;
+      return result;
     }
     catch (SQLException sqle) {
       log.info(sql);
@@ -249,9 +245,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws Exception {
     if (primaryKeys == null || primaryKeys.size() == 0)
-      throw new IllegalArgumentException("Cannot select for update without keys");
+      throw new IllegalArgumentException("Can not select for update without keys");
     if (isTransactionOpen())
-      throw new IllegalStateException("Cannot use select for update within an open transaction");
+      throw new IllegalStateException("Can not use select for update within an open transaction");
 
     String sql = null;
     try {
@@ -405,7 +401,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws Exception {
     if (isTransactionOpen())
-      throw new DbException("Cannot save blob within an open transaction");
+      throw new DbException("Can not save blob within an open transaction");
 
     boolean success = false;
     try {
@@ -537,7 +533,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final String entityID = primaryKeys.get(0).getEntityID();
     final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
-    final List<Entity> returnList = new ArrayList<Entity>(primaryKeyList.size());
     try {
       String sql = null;
       try {
@@ -552,7 +547,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         if (!lastQueryResultCached())
           setReferencedEntities(result);
 
-        returnList.addAll(result);
+        return result;
       }
       catch (SQLException sqle) {
         log.info(sql);
@@ -563,8 +558,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     finally {
       removeCacheQueriesRequest();
     }
-
-    return returnList;
   }
 
   /**
