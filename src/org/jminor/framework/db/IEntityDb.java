@@ -273,7 +273,23 @@ public interface IEntityDb {
    */
   public List<List> selectRows(final String statement, final int recordCount) throws Exception;
 
+  /**
+   * Writes <code>blobData</code> in the blob field specified by the property identified by <code>propertyID</code>
+   * for the given entity
+   * @param entity the entity for which to write the blob
+   * @param propertyID the ID of the blob property
+   * @param blobData the blob data
+   * @return the entity
+   * @throws Exception in case of an exception
+   */
   public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws Exception;
 
+  /**
+   * Reads the blob specified by the property identified by <code>propertyID</code> from the given entity
+   * @param entity the entity
+   * @param propertyID the ID of the blob property
+   * @return a byte array containing the blob data
+   * @throws Exception in case of an exception
+   */
   public byte[] readBlob(final Entity entity, final String propertyID) throws Exception;
 }
