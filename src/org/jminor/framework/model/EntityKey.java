@@ -24,7 +24,7 @@ public class EntityKey implements Serializable {
   /**
    * Contains the values of this key
    */
-  final Map<String, Object> keyValues;
+  final Map<String, Object> values;
 
   /**
    * The number of properties comprising this key
@@ -60,7 +60,7 @@ public class EntityKey implements Serializable {
     this.properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
     this.propertyCount = properties.size();
     this.singleIntegerKey = propertyCount == 1 && properties.get(0).propertyType == Type.INT;
-    this.keyValues = new HashMap<String, Object>(propertyCount);
+    this.values = new HashMap<String, Object>(propertyCount);
   }
 
   /**
@@ -115,7 +115,7 @@ public class EntityKey implements Serializable {
    * @return true if this key contains a value for propertyID
    */
   public boolean hasValue(final String propertyID) {
-    return keyValues.containsKey(propertyID);
+    return values.containsKey(propertyID);
   }
 
   /**
@@ -134,7 +134,7 @@ public class EntityKey implements Serializable {
    * @return the first value contained in this key, useful for single property keys
    */
   public Object getFirstKeyValue() {
-    return keyValues.values().iterator().next();
+    return values.values().iterator().next();
   }
 
   /**
@@ -143,10 +143,10 @@ public class EntityKey implements Serializable {
    * does not contain a value for the property, the default value is returned
    */
   public Object getValue(final String propertyID) {
-    if (!keyValues.containsKey(propertyID))
+    if (!values.containsKey(propertyID))
       return getProperty(propertyID).getDefaultValue();
 
-    return keyValues.get(propertyID);
+    return values.get(propertyID);
   }
 
   /**
@@ -207,7 +207,7 @@ public class EntityKey implements Serializable {
   public int hashCode() {
     if (hashCodeDirty) {
       int hash = 0;
-      for (final Object value : keyValues.values())
+      for (final Object value : values.values())
         hash = hash + (value == null ? 0 : value.hashCode());
 
       hashCode = hash == 0 ? -Integer.MAX_VALUE : hash;//in case all values were null
@@ -228,7 +228,7 @@ public class EntityKey implements Serializable {
       return true;
 
     for (final Property property : properties)
-      if (Entity.isValueNull(property.propertyType, keyValues.get(property.propertyID)))
+      if (Entity.isValueNull(property.propertyType, values.get(property.propertyID)))
         return true;
 
     return false;
@@ -238,7 +238,7 @@ public class EntityKey implements Serializable {
    * Clears all values from this key
    */
   public void clear() {
-    keyValues.clear();
+    values.clear();
     hashCode = -Integer.MAX_VALUE;
     hashCodeDirty = true;
   }
@@ -261,7 +261,7 @@ public class EntityKey implements Serializable {
       for (final Property.PrimaryKeyProperty property : properties) {
         final String propertyID = property.propertyID;
         final Object newValue = key.getValue(propertyID);
-        keyValues.put(propertyID, Entity.copyPropertyValue(newValue));
+        values.put(propertyID, Entity.copyPropertyValue(newValue));
       }
 
       hashCode = key.hashCode;
@@ -275,7 +275,7 @@ public class EntityKey implements Serializable {
    * @param newValue the new value
    */
   void setValue(final String propertyID, final Object newValue) {
-    keyValues.put(propertyID, newValue);
+    values.put(propertyID, newValue);
     hashCodeDirty = true;
     if (singleIntegerKey) {
       if (!(newValue == null || newValue instanceof Integer))

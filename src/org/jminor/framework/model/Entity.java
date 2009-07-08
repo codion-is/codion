@@ -37,12 +37,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * Holds the values of all properties except primary key properties
    */
-  private final Map<String, Object> propertyValues = new HashMap<String, Object>();
+  private final Map<String, Object> values = new HashMap<String, Object>();
 
   /**
    * Holds the original value of properties which values have changed
    */
-  private Map<String, Object> originalPropertyValues;
+  private Map<String, Object> originalValues;
 
   /**
    * An event fired when a property changes, is null until initialized with
@@ -147,7 +147,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * since the entity was instantiated
    */
   public boolean isModified() {
-    return originalPropertyValues != null && originalPropertyValues.size() > 0;
+    return originalValues != null && originalValues.size() > 0;
   }
 
   /**
@@ -155,7 +155,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return true if the property has been modified since the entity was instantiated
    */
   public boolean isModified(final String propertyID) {
-    return originalPropertyValues != null && originalPropertyValues.containsKey(propertyID);
+    return originalValues != null && originalValues.containsKey(propertyID);
   }
 
   /**
@@ -190,8 +190,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
       validateValue(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization = primarKeyProperty ? !primaryKey.keyValues.containsKey(property.propertyID)
-            : !propertyValues.containsKey(property.propertyID);
+    final boolean initialization = primarKeyProperty ? !primaryKey.values.containsKey(property.propertyID)
+            : !values.containsKey(property.propertyID);
     doSetValue(property, value, primarKeyProperty, initialization, true);
   }
 
@@ -360,7 +360,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Object getOriginalValue(final String propertyID) {
     if (isModified(propertyID))
-      return originalPropertyValues.get(propertyID);
+      return originalValues.get(propertyID);
 
     return getValue(propertyID);
   }
@@ -371,7 +371,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * N.B. does not include the primary key properties
    */
   public boolean hasValue(final String propertyID) {
-    return propertyValues.containsKey(propertyID);
+    return values.containsKey(propertyID);
   }
 
   /**
@@ -380,9 +380,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Object getRawValue(final String propertyID) {
     if (primaryKey.containsProperty(propertyID))
-      return primaryKey.keyValues.get(propertyID);
+      return primaryKey.values.get(propertyID);
 
-    return propertyValues.get(propertyID);
+    return values.get(propertyID);
   }
 
   /**
@@ -393,9 +393,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (!entity.primaryKey.equals(primaryKey))
       return false;
 
-    for (final Map.Entry<String, Object> entry : entity.propertyValues.entrySet()) {
-      if (propertyValues.containsKey(entry.getKey())) {
-        if (!Util.equal(entry.getValue(), propertyValues.get(entry.getKey())))
+    for (final Map.Entry<String, Object> entry : entity.values.entrySet()) {
+      if (values.containsKey(entry.getKey())) {
+        if (!Util.equal(entry.getValue(), values.get(entry.getKey())))
           return false;
       }
       else
@@ -480,9 +480,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Entity getOriginalCopy() {
     final Entity ret = getCopy();
-    if (originalPropertyValues != null) {
-      for (final Map.Entry<String, Object> entry : originalPropertyValues.entrySet())
-        propertyValues.put(entry.getKey(), copyPropertyValue(entry.getValue()));
+    if (originalValues != null) {
+      for (final Map.Entry<String, Object> entry : originalValues.entrySet())
+        values.put(entry.getKey(), copyPropertyValue(entry.getValue()));
     }
 
     return ret;
@@ -496,16 +496,16 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public void setAs(final Entity sourceEntity) {
     primaryKey.setValue(sourceEntity.getPrimaryKey());
-    propertyValues.clear();
-    if (originalPropertyValues != null)
-      originalPropertyValues.clear();
-    for (final Map.Entry<String, Object> entry : sourceEntity.propertyValues.entrySet()) {
-      propertyValues.put(entry.getKey(), copyPropertyValue(sourceEntity.propertyValues.get(entry.getKey())));
+    values.clear();
+    if (originalValues != null)
+      originalValues.clear();
+    for (final Map.Entry<String, Object> entry : sourceEntity.values.entrySet()) {
+      values.put(entry.getKey(), copyPropertyValue(sourceEntity.values.get(entry.getKey())));
     }
-    if (sourceEntity.originalPropertyValues != null && !sourceEntity.originalPropertyValues.isEmpty()) {
-      if (originalPropertyValues == null)
-        originalPropertyValues = new HashMap<String, Object>();
-      originalPropertyValues.putAll(sourceEntity.originalPropertyValues);
+    if (sourceEntity.originalValues != null && !sourceEntity.originalValues.isEmpty()) {
+      if (originalValues == null)
+        originalValues = new HashMap<String, Object>();
+      originalValues.putAll(sourceEntity.originalValues);
     }
     if (evtPropertyChanged != null)
       for (final Property property : repository.getProperties(getEntityID(), true))
@@ -542,7 +542,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       final Property referenceKeyProperty = property.referenceProperties.get(i);
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? primaryKey.getValue(referenceKeyProperty.propertyID)
-              : propertyValues.get(referenceKeyProperty.propertyID);
+              : values.get(referenceKeyProperty.propertyID);
       if (!isValueNull(referenceKeyProperty.propertyType, value)) {
         if (key == null)
           (referencedKeysCache == null ? referencedKeysCache = new HashMap<Property.EntityProperty, EntityKey>()
@@ -670,11 +670,11 @@ public final class Entity implements Serializable, Comparable<Entity> {
       propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
-            primaryKeyProperty ? primaryKey.keyValues.get(property.propertyID) : propertyValues.get(property.propertyID);
+            primaryKeyProperty ? primaryKey.values.get(property.propertyID) : values.get(property.propertyID);
     if (primaryKeyProperty)
       primaryKey.setValue(property.propertyID, newValue);
     else
-      propertyValues.put(property.propertyID, newValue);
+      values.put(property.propertyID, newValue);
 
     if (!initialization)
       updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
@@ -706,8 +706,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
       final Property referenceProperty = property.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
-        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.keyValues.containsKey(referenceProperty.propertyID)
-            : !propertyValues.containsKey(referenceProperty.propertyID);
+        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.values.containsKey(referenceProperty.propertyID)
+            : !values.containsKey(referenceProperty.propertyID);
         doSetValue(referenceProperty, entity != null ? entity.getRawValue(primaryKeyProperty.propertyID) : null,
                 isPrimaryKeyProperty, initialization, true);
       }
@@ -726,7 +726,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         doSetValue(denormalizedProperty,
                 entity == null ? null : entity.getRawValue(denormalizedProperty.valueSourceProperty.propertyID),
-                false, !propertyValues.containsKey(property.propertyID), true);
+                false, !values.containsKey(property.propertyID), true);
       }
     }
   }
@@ -739,17 +739,15 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param oldValue the previous value
    */
   private void updateModifiedState(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
-    if (originalPropertyValues != null && originalPropertyValues.containsKey(propertyID)) {
-      if (isEqual(type, originalPropertyValues.get(propertyID), newValue)) {
-        originalPropertyValues.remove(propertyID);//we're back to the original value
+    if (originalValues != null && originalValues.containsKey(propertyID)) {
+      if (isEqual(type, originalValues.get(propertyID), newValue)) {
+        originalValues.remove(propertyID);//we're back to the original value
         if (propertyDebug)
           System.out.println(propertyID + " reverted back to original value " + newValue);
       }
     }
-    else if (!isEqual(type, oldValue, newValue)) {
-      (originalPropertyValues == null ?
-              (originalPropertyValues = new HashMap<String, Object>()) : originalPropertyValues).put(propertyID, oldValue);
-    }
+    else if (!isEqual(type, oldValue, newValue))
+      (originalValues == null ? (originalValues = new HashMap<String, Object>()) : originalValues).put(propertyID, oldValue);
 
     if (stModified != null)
       stModified.setActive(isModified());
