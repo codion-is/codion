@@ -9,10 +9,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.FrameworkSettings;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Collection;
@@ -23,7 +20,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table
  */
-public final class Entity implements Externalizable, Comparable<Entity> {
+public final class Entity implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -35,12 +32,12 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   /**
    * The primary key of this entity
    */
-  private EntityKey primaryKey;
+  private final EntityKey primaryKey;
 
   /**
    * Holds the values of all properties except primary key properties
    */
-  private Map<String, Object> propertyValues = new HashMap<String, Object>();
+  private final Map<String, Object> propertyValues = new HashMap<String, Object>();
 
   /**
    * Holds the original value of properties which values have changed
@@ -74,9 +71,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
   private transient Map<Property.EntityProperty, EntityKey> referencedKeysCache;
 
   private static boolean propertyDebug = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT);
-
-  /** Not for general usage, required for serialization */
-  public Entity() {}
 
   /**
    * Instantiates a new entity
@@ -571,22 +565,6 @@ public final class Entity implements Externalizable, Comparable<Entity> {
     final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
 
     return isValueNull(property.propertyType, value);
-  }
-
-  /** {@inheritDoc} */
-  public void writeExternal(final ObjectOutput out) throws IOException {
-    out.writeObject(primaryKey);
-    out.writeObject(propertyValues);
-    out.writeObject(originalPropertyValues);
-  }
-
-  /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
-  public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    primaryKey = (EntityKey) in.readObject();
-    propertyValues = (Map<String, Object>) in.readObject();
-    originalPropertyValues = (Map<String, Object>) in.readObject();
-    hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.entityID);
   }
 
   /**

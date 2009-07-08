@@ -3,10 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,29 +12,29 @@ import java.util.Map;
 /**
  * A class for representing column key objects for entities, contains the values for those columns
  */
-public class EntityKey implements Externalizable {
+public class EntityKey implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   /**
    * the entity ID
    */
-  String entityID;
+  final String entityID;
 
   /**
    * Contains the values of this key
    */
-  Map<String, Object> keyValues;
+  final Map<String, Object> keyValues;
 
   /**
    * The number of properties comprising this key
    */
-  int propertyCount;
+  final int propertyCount;
 
   /**
    * True if this key consists of a single integer value
    */
-  private boolean singleIntegerKey;
+  private final boolean singleIntegerKey;
 
   /**
    * Caching the hash code
@@ -53,11 +50,6 @@ public class EntityKey implements Externalizable {
    * Caching this extremely frequently referenced attribute
    */
   transient List<Property.PrimaryKeyProperty> properties;
-
-  /**
-   * For the Externalizable implementation
-   */
-  public EntityKey() {}
 
   /**
    * Instantiates a new EntityKey for the given entity type
@@ -249,28 +241,6 @@ public class EntityKey implements Externalizable {
     keyValues.clear();
     hashCode = -Integer.MAX_VALUE;
     hashCodeDirty = true;
-  }
-
-  /** {@inheritDoc} */
-  public void writeExternal(final ObjectOutput out) throws IOException {
-    out.writeObject(entityID);
-    out.writeObject(keyValues);
-    out.writeInt(propertyCount);
-    out.writeBoolean(singleIntegerKey);
-    out.writeBoolean(hashCodeDirty);
-    out.writeInt(hashCode);
-  }
-
-  /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
-  public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    entityID = (String) in.readObject();
-    keyValues = (Map<String, Object>) in.readObject();
-    propertyCount = in.readInt();
-    singleIntegerKey = in.readBoolean();
-    hashCodeDirty = in.readBoolean();
-    hashCode = in.readInt();
-    properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
   }
 
   public static List<EntityKey> copyEntityKeys(final List<EntityKey> entityKeys) {

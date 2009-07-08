@@ -578,3 +578,4 @@
   DbException refactored
   EntityDbConnection exception handling changed according to the above
   IEntityDbProvider.getConnectEvent() removed
+  Entity and EntityKey are now Serializable instead of Externalizable, the latter resulted in more bytes :|
