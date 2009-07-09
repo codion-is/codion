@@ -31,19 +31,12 @@
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
-  <target name="init"
-          description="Creates all output dirs">
+  <target name="build"
+          description="Compiles all source files">
     <mkdir dir="${build.base}" />
     <mkdir dir="${build.demos}" />
     <mkdir dir="${build.test}" />
-    <mkdir dir="${dist}" />
-  </target>
 
-  <target name="build" depends="init"
-          description="Compiles all source files">
-    <tstamp>
-      <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm" />
-    </tstamp>
     <javac destdir="${build.base}" debug="${build.debuginfo}" >
       <src path="${src}" />
       <classpath refid="libraries"/>
@@ -85,12 +78,15 @@
       <fileset refid="test_resources" />
     </copy>
 
+    <tstamp>
+      <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm" />
+    </tstamp>
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
   <target name="dist" depends="build, manifest"
           description="Creates all distribution jar files in the dist directory">
-    <tstamp />
+    <mkdir dir="${dist}" />
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
@@ -165,7 +161,8 @@
     <copy file="${basedir}/changelog.txt" todir="${dist}" />
   </target>
 
-  <target name="manifest">
+  <target name="manifest"
+          description="Generates a MANIFEST.MF file for inclusion in jars">
 		<mkdir dir="${build.base}/META-INF"/>
 		<manifest file="${build.base}/META-INF/MANIFEST.MF">
 			<attribute name="Implementation-Title" value="JMinor Application Framework"/>
@@ -175,7 +172,7 @@
 		</manifest>
 	</target>
 
-  <target name="doc" depends="build"
+  <target name="javadoc" depends="build"
           description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true" />
     <delete dir="${docstestapi}" includeEmptyDirs="true" />
@@ -287,7 +284,7 @@
     </zip>
   </target>
 
-  <target name="deploy_to_wiki" depends="doc, report"
+  <target name="deploy_to_wiki" depends="javadoc, report"
           description="Copies the relevant files for the documentation wiki">
     <delete dir="${wiki.media.project}"/>
     <mkdir dir="${wiki.media.project}"/>

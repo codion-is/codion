@@ -68,12 +68,15 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   private transient boolean hasDenormalizedProperties;
 
+  /**
+   * Caches the result of <code>getReferencedKey</code> method
+   */
   private transient Map<Property.EntityProperty, EntityKey> referencedKeysCache;
 
   private static boolean propertyDebug = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT);
 
   /**
-   * Instantiates a new entity
+   * Instantiates a new Entity
    * @param entityID the ID of the entity type
    */
   public Entity(final String entityID) {
@@ -81,12 +84,14 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Instantiates a new entity
-   * @param key the primary key
+   * Instantiates a new Entity
+   * @param primaryKey the primary key
    */
-  public Entity(final EntityKey key) {
-    primaryKey = key;
-    hasDenormalizedProperties = repository.hasDenormalizedProperties(primaryKey.getEntityID());
+  public Entity(final EntityKey primaryKey) {
+    if (primaryKey == null)
+      throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
+    this.primaryKey = primaryKey;
+    hasDenormalizedProperties = repository.hasDenormalizedProperties(this.primaryKey.getEntityID());
   }
 
   /**
@@ -335,7 +340,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Returns a formatted date value
+   * Returns a date value formatted with <code>dateFormat</code>
    * @param propertyID the ID of the property for which to retrieve a formatted value
    * @param dateFormat the DateFormat to use when formatting the value
    * @return a formatted date value
@@ -345,16 +350,14 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * @return true if the this entity instance is null
+   * @return true if the this entity instance has a null primary key
    */
   public boolean isNull() {
-    if (getPrimaryKey() == null)
-      throw new RuntimeException("Can only tell if entity is null if it has a primary key");
-
     return getPrimaryKey().isNull();
   }
 
   /**
+   * Returns the value this property had when the entity was loaded
    * @param propertyID the property identifier
    * @return the original value of the property
    */
@@ -480,17 +483,16 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Entity getOriginalCopy() {
     final Entity ret = getCopy();
-    if (originalValues != null) {
+    if (originalValues != null)
       for (final Map.Entry<String, Object> entry : originalValues.entrySet())
         values.put(entry.getKey(), copyPropertyValue(entry.getValue()));
-    }
 
     return ret;
   }
 
   /**
    * Makes this entity identical to <code>sourceEntity</code>.
-   * Entity values, which are mutable, are copied with getCopy()
+   * Reference entity values, which are mutable, are deep copied with getCopy()
    * Original property values, if any are not deep-copied
    * @param sourceEntity the entity to copy
    */
@@ -499,9 +501,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
     values.clear();
     if (originalValues != null)
       originalValues.clear();
-    for (final Map.Entry<String, Object> entry : sourceEntity.values.entrySet()) {
+    for (final Map.Entry<String, Object> entry : sourceEntity.values.entrySet())
       values.put(entry.getKey(), copyPropertyValue(sourceEntity.values.get(entry.getKey())));
-    }
+
     if (sourceEntity.originalValues != null && !sourceEntity.originalValues.isEmpty()) {
       if (originalValues == null)
         originalValues = new HashMap<String, Object>();
@@ -694,13 +696,16 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Sets the actual reference id property values
+   * Sets the values of the properties used in the reference to the corresponding values found in <code>referencedEntity</code>.
+   * Example: EntityOne references EntityTwo via entityTwoID, after a call to this method the EntityOne.entityTwoID
+   * property has the value of EntityTwo's primary key property. If <code>referencedEntity</code> is null then
+   * the corresponding reference values are set to null.
    * @param property the entity reference property
-   * @param entity the entity value
+   * @param referencedEntity the referenced entity
    */
-  private void setReferenceKeyValues(final Property.EntityProperty property, final Entity entity) {
+  private void setReferenceKeyValues(final Property.EntityProperty property, final Entity referencedEntity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
-            entity != null ? entity.primaryKey.getProperties()
+            referencedEntity != null ? referencedEntity.primaryKey.getProperties()
                     : repository.getPrimaryKeyProperties(property.referenceEntityID);
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = property.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
@@ -708,7 +713,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.propertyID)
             : !values.containsKey(referenceProperty.propertyID);
-        doSetValue(referenceProperty, entity != null ? entity.getRawValue(primaryKeyProperty.propertyID) : null,
+        doSetValue(referenceProperty, referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.propertyID) : null,
                 isPrimaryKeyProperty, initialization, true);
       }
     }
@@ -781,9 +786,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Performes a basic data validation of <code>value</code>, checking if the
-   * <code>value</code> data type is consistent with the data type of this
-   * property, returns the value
+   * Performes a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
+   * consistent with the data type of this property, returns the value
    * @param value the value to validate
    * @param property the property
    * @return the value
