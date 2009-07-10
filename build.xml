@@ -285,7 +285,7 @@
   </target>
 
   <target name="deploy_to_wiki" depends="javadoc, report"
-          description="Copies the relevant files for the documentation wiki">
+          description="Publishes the relevant files to the documentation wiki">
     <delete dir="${wiki.media.project}"/>
     <mkdir dir="${wiki.media.project}"/>
     <copy todir="${wiki.media.project}/src">
@@ -330,7 +330,7 @@
   </target>
 
   <target name="run_unit_tests" depends="build, create_derby_db"
-          description="Runs the unit tests">
+          description="Runs the framework unit tests">
     <mkdir dir="${reports}" />
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
@@ -471,7 +471,7 @@
   </target>
 
   <target name="run_rmi_registry" depends="build"
-          description="Runs the RMI registry">
+          description="Runs the RMI registry with the classpath required for bootstrapping the framework rmi server">
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
