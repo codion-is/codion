@@ -125,7 +125,7 @@ public class Petstore {
     EntityRepository.get().initialize(T_TAG, IdSource.MAX_PLUS_ONE, TAG_TAG, null, "petstore.tag tag",
             new Property.PrimaryKeyProperty(TAG_ID),
             new Property(TAG_TAG, Type.STRING, "Tag"),
-            new Property.SubQueryProperty(TAG_REFCOUNT, Type.INT, false, "Reference count",
+            new Property.SubqueryProperty(TAG_REFCOUNT, Type.INT, false, "Reference count",
                     "select count(*) from " + T_TAG_ITEM + "  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID));
 
     EntityRepository.get().initialize(T_TAG_ITEM, IdSource.NONE,

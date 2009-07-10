@@ -821,8 +821,8 @@ public class EntityRepository implements Serializable {
     final StringBuffer ret = new StringBuffer();
     int i = 0;
     for (final Property property : selectProperties) {
-      if (property instanceof Property.SubQueryProperty)
-        ret.append("(").append(((Property.SubQueryProperty)property).getSubQuery()).append(
+      if (property instanceof Property.SubqueryProperty)
+        ret.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
                 ") ").append(property.propertyID);
       else
         ret.append(property.propertyID);

@@ -552,21 +552,21 @@ public class Property implements Serializable {
   /**
    * A property based on a subquery, returning a single value
    */
-  public static class SubQueryProperty extends Property {
+  public static class SubqueryProperty extends Property {
     /**
      * the sql query string
      */
     private final String subquery;
 
     /**
-     * @param propertyID the property ID, since SubQueryProperties do not map to underlying table columns,
+     * @param propertyID the property ID, since SubqueryProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
      * @param type the datatype of this property
      * @param hidden indicates whether this property should be visible to the user
      * @param caption the caption of this property
      * @param subquery the sql query
      */
-    public SubQueryProperty(final String propertyID, final Type type, final boolean hidden,
+    public SubqueryProperty(final String propertyID, final Type type, final boolean hidden,
                             final String caption, final String subquery) {
       super(propertyID, type, caption, hidden || caption == null, true, -1, false);
       this.subquery = subquery;
@@ -589,7 +589,6 @@ public class Property implements Serializable {
      * the datatype of the underlying column
      */
     public final Type columnType;
-
     /**
      * the Object value representing true
      */
@@ -602,12 +601,10 @@ public class Property implements Serializable {
      * the Object value representing null
      */
     private final Object nullValue;
-
     /**
      * for quick comparison of 'true' values
      */
     private final int trueValueHash;
-
     /**
      * for quick comparison of 'false' values
      */

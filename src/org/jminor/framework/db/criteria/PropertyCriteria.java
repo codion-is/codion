@@ -105,8 +105,8 @@ public class PropertyCriteria implements ICriteria, Serializable {
       return getReferenceCriteriaString();
 
     String columnName;
-    if (property instanceof Property.SubQueryProperty)
-      columnName = "("+((Property.SubQueryProperty)property).getSubQuery()+")";
+    if (property instanceof Property.SubqueryProperty)
+      columnName = "("+((Property.SubqueryProperty)property).getSubQuery()+")";
     else
       columnName = property.propertyID;
 

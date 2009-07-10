@@ -591,3 +591,4 @@
   EntityDbConnection, selectMany() removed redundant return ArrayList, now simply returns the query result list
   build.xml, doc -> javadoc, removed init target
   Some javadoc additions in Entity
+  Property.SubQueryProperty renamed to SubqueryProperty
