@@ -46,7 +46,7 @@ public interface IDatabase {
    * Values: true/false
    * Default: false
    */
-  public static final String DATABASE_EMBEDDED = "jminor.db.embedded";
+  public static final String DATABASE_EMBEDDED_PROPERTY = "jminor.db.embedded";
 
   /**
    * Specifies the IDatabase implementation class to use in case of a dbms that is not directly supported

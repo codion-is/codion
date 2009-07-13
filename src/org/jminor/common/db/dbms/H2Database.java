@@ -21,7 +21,7 @@ public class H2Database implements IDatabase {
    */
   private DateFormat LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
+  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED_PROPERTY, "false").toUpperCase().equals("TRUE");
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
