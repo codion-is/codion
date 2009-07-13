@@ -147,7 +147,7 @@ public interface IDatabase {
 
   /**
    * This should shutdown the database in case it is an embedded one
-   * and if that is applicaple, such as for Derby.
+   * and if that is applicable, such as for Derby.
    * @param connectionProperties the connection properties
    */
   public void shutdownEmbedded(final Properties connectionProperties);
