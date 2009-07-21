@@ -964,32 +964,32 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   protected void bindEvents() {
     tableSearchModel.evtFilterStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         filterTable();
       }
     });
 
     evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         tableSearchModel.setSearchModelState();
       }
     });
 
     addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent e) {
+      public void tableChanged(TableModelEvent event) {
         evtTableDataChanged.fire();
       }
     });
 
     tableSorter.evtBeforeSort.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         isSorting = true;
         selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       }
     });
 
     tableSorter.evtAfterSort.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         setSelectedByPrimaryKeys(selectedPrimaryKeys);
         isSorting = false;
       }

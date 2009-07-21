@@ -25,25 +25,7 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -255,7 +237,7 @@ public class EntityTablePanel extends JPanel {
       UiUtil.setWaitCursor(false, this);
     }
     final AbstractAction action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         try {
           getTableModel().refresh();
         }
@@ -270,10 +252,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the summary provider panel
+   * @param propertyID the ID of the property for which to retrieve the summary panel
    * @return the PropertySummaryPanel for the given property ID
    */
-  public PropertySummaryPanel getSummaryProvider(final String propertyID) {
+  public PropertySummaryPanel getSummaryPanel(final String propertyID) {
     return propertySummaryPanels.get(propertyID);
   }
 
@@ -437,10 +419,10 @@ public class EntityTablePanel extends JPanel {
         final TableColumn column = getJTable().getColumn(property);
         column.setMaxWidth(Integer.MAX_VALUE);
         column.setMinWidth(15);
-        Integer prw = property.getPreferredColumnWidth();
-        if (prw == null || prw < 0)
-          prw = 80;
-        column.setPreferredWidth(prw);
+        Integer preferredColumnWidth = property.getPreferredColumnWidth();
+        if (preferredColumnWidth == null || preferredColumnWidth < 0)
+          preferredColumnWidth = 80;
+        column.setPreferredWidth(preferredColumnWidth);
       }
     }
     else {
@@ -470,8 +452,8 @@ public class EntityTablePanel extends JPanel {
     if (allowQueryConfiguration) {
       lblStatusMessage.addMouseListener(new MouseAdapter() {
         @Override
-        public void mouseReleased(MouseEvent e) {
-          if (e.getClickCount() == 2) {
+        public void mouseReleased(MouseEvent event) {
+          if (event.getClickCount() == 2) {
             configureQuery();
           }
         }
@@ -489,25 +471,25 @@ public class EntityTablePanel extends JPanel {
    */
   protected void bindEvents() {
     getTableModel().evtRefreshStarted.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(true, EntityTablePanel.this);
       }
     });
     getTableModel().evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
     });
     getJTable().addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseClicked(MouseEvent me){
-        if(me.getClickCount() == 2){
+      public void mouseClicked(MouseEvent event){
+        if(event.getClickCount() == 2){
           evtTableDoubleClick.fire();
         }
       }
     });
     final ActionListener statusListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         updateStatusMessage();
       }
     };
@@ -516,13 +498,13 @@ public class EntityTablePanel extends JPanel {
     getTableModel().evtTableDataChanged.addListener(statusListener);
 
     getTableModel().getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        toggleColumnFilterPanel(e);
+      public void actionPerformed(final ActionEvent event) {
+        toggleColumnFilterPanel(event);
       }
     });
 
     getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         if (!getTableModel().stSelectionEmpty.isActive())
           getJTable().scrollRectToVisible(getJTable().getCellRect(
                   getTableModel().getSelectedIndex(), getJTable().getSelectedColumn(), true));
@@ -530,7 +512,7 @@ public class EntityTablePanel extends JPanel {
     });
 
     getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
       }
@@ -556,7 +538,7 @@ public class EntityTablePanel extends JPanel {
     final ControlSet popupControls = tablePopupControls == null ? new ControlSet() : tablePopupControls;
     if (searchPanel instanceof EntityTableSearchPanel) {
       ((EntityTableSearchPanel)searchPanel).evtAdvancedChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           if (isSearchPanelVisible()) {
             revalidateAndShowSearchPanel();
           }
@@ -584,7 +566,7 @@ public class EntityTablePanel extends JPanel {
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
       tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
-        public void stateChanged(final ChangeEvent e) {
+        public void stateChanged(final ChangeEvent event) {
           horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
           revalidate();
         }
@@ -620,7 +602,7 @@ public class EntityTablePanel extends JPanel {
     table.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_G,
                 KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "showPopupMenu");
     table.getActionMap().put("showPopupMenu", new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
       }
     });
@@ -710,7 +692,7 @@ public class EntityTablePanel extends JPanel {
 
     final JTextField txtField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         try {
           getTableModel().getSearchModel().clearPropertySearchModels();
           if (txtField.getText().length() > 0) {
@@ -784,7 +766,7 @@ public class EntityTablePanel extends JPanel {
     button.setPreferredSize(new Dimension(20,20));
     button.setFocusable(false);
     getTableModel().getSearchModel().stSearchStateChanged.evtSetActive.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         UiUtil.showToolTip(button);
       }
     });
@@ -819,8 +801,8 @@ public class EntityTablePanel extends JPanel {
   protected MouseListener initializeTableMouseListener() {
     return new MouseAdapter() {
       @Override
-      public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
+      public void mouseClicked(MouseEvent event) {
+        if (event.getClickCount() == 2) {
           final Action doubleClickAction = getDoubleClickAction();
           if (doubleClickAction != null)
             doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
@@ -868,7 +850,7 @@ public class EntityTablePanel extends JPanel {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             getTableModel().stSelectionEmpty.getReversedState()) {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         final JTable table = getJTable();
         final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
         Util.setClipboard(value == null ? "" : value.toString());
@@ -879,7 +861,7 @@ public class EntityTablePanel extends JPanel {
   private Control getCopyTableWithHeaderControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)) {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         try {
           copyTableAsDelimitedString();
         }
@@ -945,7 +927,7 @@ public class EntityTablePanel extends JPanel {
       final PropertyFilterPanel ret = new PropertyFilterPanel(searchModel, true, true);
       final TableColumn tableColumn = getJTable().getColumnModel().getColumn(searchModel.getColumnIndex());
       ret.getModel().evtSearchStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(final ActionEvent event) {
           if (ret.getModel().isSearchEnabled())
             addFilterIndicator(tableColumn);
           else
@@ -963,12 +945,12 @@ public class EntityTablePanel extends JPanel {
     return columnFilterPanels;
   }
 
-  private void toggleColumnFilterPanel(final ActionEvent e) {
-    final Point lp = getJTable().getTableHeader().getLocationOnScreen();
-    final Point p = (Point) e.getSource();
-    final Point pos = new Point((int) (lp.getX() + p.getX()), (int) (lp.getY() - p.getY()));
-    final int col = getJTable().getColumnModel().getColumnIndexAtX((int) p.getX());
-    toggleFilterPanel(pos, propertyFilterPanels.get(col), getJTable());
+  private void toggleColumnFilterPanel(final ActionEvent event) {
+    final Point location = getJTable().getTableHeader().getLocationOnScreen();
+    final Point point = (Point) event.getSource();
+    final Point position = new Point((int) (location.getX() + point.getX()), (int) (location.getY() - point.getY()));
+    final int column = getJTable().getColumnModel().getColumnIndexAtX((int) point.getX());
+    toggleFilterPanel(position, propertyFilterPanels.get(column), getJTable());
   }
 
   private void revalidateAndShowSearchPanel() {
@@ -1006,13 +988,13 @@ public class EntityTablePanel extends JPanel {
     final ArrayList<TableColumn> ret = new ArrayList<TableColumn>(columnProperties.size());
     int i = 0;
     for (final Property property : columnProperties) {
-      final TableColumn col = new TableColumn(i++);
-      col.setIdentifier(property);
-      col.setHeaderValue(property.getCaption());
-      final Integer prw = property.getPreferredColumnWidth();
-      if (prw != null && prw > 0)
-        col.setPreferredWidth(prw);
-      ret.add(col);
+      final TableColumn column = new TableColumn(i++);
+      column.setIdentifier(property);
+      column.setHeaderValue(property.getCaption());
+      final Integer preferredColumnWidth = property.getPreferredColumnWidth();
+      if (preferredColumnWidth != null && preferredColumnWidth > 0)
+        column.setPreferredWidth(preferredColumnWidth);
+      ret.add(column);
     }
 
     return ret;

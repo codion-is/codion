@@ -39,24 +39,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -342,7 +325,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     this.compactLayout = compactLayout;
     this.detailEntityPanelProviders = initializeDetailPanels();
     this.stActive.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         if (isActive()) {
           initialize();
           showPanelTab();
@@ -989,7 +972,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     for (final Property property : getUpdateProperties()) {
       final String caption = property.getCaption() == null ? property.propertyID : property.getCaption();
       ret.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(final ActionEvent event) {
           updateSelectedEntities(property);
         }
       }));
@@ -1262,7 +1245,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                 KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectTablePanel");
       getActionMap().put("selectTablePanel", new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           getTablePanel().getJTable().requestFocusInWindow();
         }
       });
@@ -1271,7 +1254,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_E,
                 KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectEditPanel");
       getActionMap().put("selectEditPanel", new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           if (getEditPanelState() == HIDDEN)
             setEditPanelState(EMBEDDED);
           prepareUI(true, false);
@@ -1282,7 +1265,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectSearchPanel");
       getActionMap().put("selectSearchPanel", new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           getTablePanel().setSearchPanelVisible(true);
           getTablePanel().getSearchPanel().requestFocusInWindow();
         }
@@ -1394,17 +1377,17 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       ret.addTab(detailPanel.getModel().getCaption(), detailPanel);
 
     ret.addChangeListener(new ChangeListener() {
-      public void stateChanged(final ChangeEvent e) {
+      public void stateChanged(final ChangeEvent event) {
         getModel().setLinkedDetailModel(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
         getSelectedDetailPanel().initialize();
       }
     });
     ret.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseReleased(MouseEvent e) {
-        if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1)
+      public void mouseReleased(MouseEvent event) {
+        if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1)
           setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
-        else if (e.getButton() == MouseEvent.BUTTON2)
+        else if (event.getButton() == MouseEvent.BUTTON2)
           setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
       }
     });
@@ -1611,7 +1594,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         if (editPanel != null || detailEntityPanelProviders.size() > 0) {
           if (editPanel != null && getEditPanelState() == HIDDEN)
             setEditPanelState(DIALOG);
@@ -1638,7 +1621,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         throw new RuntimeException("EntityPanel does not have a EntityModel associated with it");
       ret.add(new Control(detailModel.getCaption()) {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           detailTabPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
         }
@@ -1665,11 +1648,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void bindEvents() {
     addComponentListener(new ComponentAdapter() {
       @Override
-      public void componentHidden(ComponentEvent e) {
+      public void componentHidden(ComponentEvent event) {
         setFilterPanelsVisible(false);
       }
       @Override
-      public void componentShown(ComponentEvent e) {
+      public void componentShown(ComponentEvent event) {
         setFilterPanelsVisible(true);
       }
     });
@@ -1691,14 +1674,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (!getModel().isReadOnly() && getModel().isDeleteAllowed()) {
       entityTablePanel.getJTable().addKeyListener(new KeyAdapter() {
         @Override
-        public void keyTyped(KeyEvent e) {
-          if (e.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stSelectionEmpty.isActive())
+        public void keyTyped(KeyEvent event) {
+          if (event.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stSelectionEmpty.isActive())
             delete();
         }
       });
     }
     getModel().evtEntitiesChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         entityTablePanel.getJTable().repaint();
       }
     });
@@ -1820,7 +1803,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     detailDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailTabPane, false,
             getModel().getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(ActionEvent event) {
                 setDetailPanelState(HIDDEN);
               }
             });
@@ -1844,7 +1827,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     editDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
             getModel().getCaption(), false, true,
             null, null, location, new AbstractAction() {
-              public void actionPerformed(ActionEvent e) {
+              public void actionPerformed(ActionEvent event) {
                 setEditPanelState(HIDDEN);
               }
             });
@@ -1882,7 +1865,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     final JButton ret = new JButton(new Control() {
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         tablePanel.toggleSearchPanel();
       }
     });
@@ -1907,7 +1890,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     ret.setToolTipText(updateSet.getDescription());
     UiUtil.linkToEnabledState(updateSet.getEnabledState(), ret);
     ret.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         menu.show(ret, ret.getWidth()/2, ret.getHeight()/2-menu.getPreferredSize().height);
       }
     });
@@ -2076,12 +2059,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   private void bindModelEvents() {
     getModel().evtRefreshStarted.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
     getModel().evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });
@@ -2148,7 +2131,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent event) {
       target.requestFocusInWindow();//activates this EntityPanel
     }
   }

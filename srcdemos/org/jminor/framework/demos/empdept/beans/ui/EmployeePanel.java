@@ -28,7 +28,7 @@ public class EmployeePanel extends EntityPanel {
       return;
 
     super.initialize();
-    getTablePanel().getSummaryProvider(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryPanel.SummaryType.AVARAGE);
+    getTablePanel().getSummaryPanel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryPanel.SummaryType.AVERAGE);
     getTablePanel().setSummaryPanelVisible(true);
   }
 

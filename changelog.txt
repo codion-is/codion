@@ -595,3 +595,4 @@
   Entity.validateValue renamed to validateType
   EntityRepository.setIsLargeDataset() added
   EntityModelTest refactored a bit
+  EntityTablePanel.getSummaryProvider() renamed to getSummaryPanel

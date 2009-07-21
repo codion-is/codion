@@ -319,6 +319,9 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
+   * Returns the IEntityDb connection, the instance returned by this
+   * method should not be viewed as long lived since it does not survive
+   * network connection outages for example
    * @return the database connection
    * @throws UserException in case of an exception
    */
@@ -559,7 +562,7 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @return a copy of the active entity
+   * @return a deep copy of the active entity
    * @see org.jminor.framework.model.Entity#getCopy()
    */
   public Entity getActiveEntityCopy() {
@@ -645,9 +648,9 @@ public class EntityModel implements IRefreshable {
     final Event ret = new Event();
     activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(final PropertyChangeEvent e) {
-        if (e.getProperty().equals(property))
-          ret.fire(e);
+      protected void propertyChanged(final PropertyChangeEvent event) {
+        if (event.getProperty().equals(property))
+          ret.fire(event);
       }
     });
     changeEventMap.put(property, ret);
@@ -895,7 +898,7 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Default behaviour is returning a copy of the active entity
+   * Default behaviour is returning a List containing a copy of the active entity
    * This method should return an empty List instead of null.
    * @return the entities to use when insert is triggered
    * @see #insert()
@@ -905,8 +908,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
+   * Default behaviour is returning a List containing a copy of the active entity
    * This method should return an empty List instead of null.
-   * Default behaviour is returning a copy of the active entity
    * @return the entities to use when update is triggered
    * @see #update()
    */
@@ -918,7 +921,7 @@ public class EntityModel implements IRefreshable {
    * Returns the entities to use when delete is triggered.
    * Default behaviour is returning the selected entities
    * from the table model or if no table model is available
-   * the active entity.
+   * a List containing a copy of the active entity.
    * This method should return an empty List instead of null.
    * @return the entities to use when delete is triggered
    * @see #delete()
@@ -1025,7 +1028,7 @@ public class EntityModel implements IRefreshable {
 
       if (refreshEvent != null) {
         refreshEvent.addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
+          public void actionPerformed(ActionEvent event) {
             try {
               comboBoxModel.refresh();
             }
@@ -1386,7 +1389,7 @@ public class EntityModel implements IRefreshable {
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         try {
           if (!isActiveEntityNull())
             updateDetailModelsByActiveEntity();
@@ -1397,7 +1400,7 @@ public class EntityModel implements IRefreshable {
       }
     });
     activeEntity.getModifiedState().evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         try {
           if (strictEditingEnabled && !isActiveEntityNull()) {
             if (activeEntity.isModified())
@@ -1413,7 +1416,7 @@ public class EntityModel implements IRefreshable {
     });
     //always release the write lock if the entity being edited is de-selected
     evtActiveEntityChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         try {
           if (strictEditingEnabled)
             releaseWriteLock();
@@ -1425,7 +1428,7 @@ public class EntityModel implements IRefreshable {
     });
     if (tableModel == null) {
       evtActiveEntityChanged.addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           try {
             updateDetailModelsByActiveEntity();
           }
@@ -1446,7 +1449,7 @@ public class EntityModel implements IRefreshable {
       return;
 
     tableModel.evtSelectionChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         try {
           updateDetailModelsByActiveEntity();
         }
@@ -1457,15 +1460,15 @@ public class EntityModel implements IRefreshable {
     });
 
     tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(final ActionEvent event) {
         setActive(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
       }
     });
 
     tableModel.addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent e) {
+      public void tableChanged(TableModelEvent event) {
         //if the selected record is being updated via the table model refresh the one in the model
-        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == tableModel.getSelectedIndex()) {
+        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == tableModel.getSelectedIndex()) {
           setActive(null);
           setActive(tableModel.getSelectedEntity());
         }

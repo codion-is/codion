@@ -30,19 +30,19 @@ import java.util.List;
 
 /**
  * A panel that shows a summary value for a numerical column property in a EntityTableModel.
- * The following summary types are implemented: Sum, avarage, minimum, maximum and minimum & maximum
+ * The following summary types are implemented: Sum, average, minimum, maximum and minimum & maximum
  */
 public class PropertySummaryPanel extends JPanel {
 
   public enum SummaryType {
-    NONE, SUM, AVARAGE, MINIMUM, MAXIMUM, MINIMUM_AND_MAXIMUM;
+    NONE, SUM, AVERAGE, MINIMUM, MAXIMUM, MINIMUM_AND_MAXIMUM;
 
     @Override
     public String toString() {
       switch (this) {
         case NONE: return FrameworkMessages.get(FrameworkMessages.NONE);
         case SUM: return FrameworkMessages.get(FrameworkMessages.SUM);
-        case AVARAGE: return FrameworkMessages.get(FrameworkMessages.AVERAGE);
+        case AVERAGE: return FrameworkMessages.get(FrameworkMessages.AVERAGE);
         case MINIMUM: return FrameworkMessages.get(FrameworkMessages.MINIMUM);
         case MAXIMUM: return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
         case MINIMUM_AND_MAXIMUM: return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
@@ -182,8 +182,8 @@ public class PropertySummaryPanel extends JPanel {
     switch (summaryType) {
       case SUM:
         return sum(values);
-      case AVARAGE:
-        return avarage(values);
+      case AVERAGE:
+        return average(values);
       case MINIMUM:
         return minimum(values);
       case MAXIMUM:
@@ -261,7 +261,7 @@ public class PropertySummaryPanel extends JPanel {
     return txt;
   }
 
-  private String avarage(final Collection<Object> values) {
+  private String average(final Collection<Object> values) {
     String txt = "";
     if (property.getPropertyType() == Type.INT) {
       double sum = 0;

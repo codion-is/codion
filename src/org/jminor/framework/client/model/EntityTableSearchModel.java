@@ -284,7 +284,7 @@ public class EntityTableSearchModel {
         searchModel = new PropertySearchModel(property);
       }
       searchModel.evtSearchStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(final ActionEvent event) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
         }
       });
