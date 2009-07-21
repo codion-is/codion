@@ -4,7 +4,6 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
@@ -15,16 +14,10 @@ import java.sql.Timestamp;
 
 public class EntityModelTest extends TestCase {
 
-  private static EntityModel testModel;
+  private EntityModel testModel;
 
   static {
-    try {
-      new EmpDept();
-      testModel = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
-    }
-    catch (UserException e) {
-      e.printStackTrace();
-    }
+    new EmpDept();
   }
 
   public void testSelection() throws Exception {
@@ -71,5 +64,15 @@ public class EntityModelTest extends TestCase {
 
     testModel.getTableModel().getSelectionModel().clearSelection();
     assertTrue("Active entity is not null after selection is cleared", testModel.getActiveEntityCopy().isNull());
+  }
+
+  @Override
+  protected void setUp() throws Exception {
+    testModel = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    testModel.getDbProvider().logout();
   }
 }

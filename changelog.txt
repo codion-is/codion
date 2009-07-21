@@ -592,3 +592,6 @@
   build.xml, doc -> javadoc, removed init target
   Some javadoc additions in Entity
   Property.SubQueryProperty renamed to SubqueryProperty
+  Entity.validateValue renamed to validateType
+  EntityRepository.setIsLargeDataset() added
+  EntityModelTest refactored a bit

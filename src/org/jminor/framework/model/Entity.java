@@ -91,7 +91,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
-    hasDenormalizedProperties = repository.hasDenormalizedProperties(this.primaryKey.getEntityID());
+    hasDenormalizedProperties = repository.hasDenormalizedProperties(getEntityID());
   }
 
   /**
@@ -113,7 +113,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return true if this entity is of the given type
    */
   public boolean is(final String entityID) {
-    return primaryKey.getEntityID().equals(entityID);
+    return getEntityID().equals(entityID);
   }
 
   /**
@@ -122,7 +122,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return the property identified by propertyID
    */
   public Property getProperty(final String propertyID) {
-    return repository.getProperty(primaryKey.getEntityID(), propertyID);
+    return repository.getProperty(getEntityID(), propertyID);
   }
 
   /**
@@ -192,7 +192,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public void setValue(final Property property, final Object value, final boolean validate) {
     if (validate)
-      validateValue(property, value);
+      validateType(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
     final boolean initialization = primarKeyProperty ? !primaryKey.hasValue(property.propertyID)
@@ -221,7 +221,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(primaryKey.getEntityID()).getValue(this, property);
+    return EntityProxy.getEntityProxy(getEntityID()).getValue(this, property);
   }
 
   /**
@@ -313,7 +313,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValueAsString((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(primaryKey.getEntityID()).getValueAsString(this, property);
+    return EntityProxy.getEntityProxy(getEntityID()).getValueAsString(this, property);
   }
 
   /**
@@ -336,7 +336,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(primaryKey.getEntityID()).getTableValue(this, property);
+    return EntityProxy.getEntityProxy(getEntityID()).getTableValue(this, property);
   }
 
   /**
@@ -690,7 +690,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     setReferenceKeyValues(property, newValue);
     if (hasDenormalizedProperties) {
       final Collection<Property.DenormalizedProperty> properties =
-              repository.getDenormalizedProperties(primaryKey.getEntityID(), property.referenceEntityID);
+              repository.getDenormalizedProperties(getEntityID(), property.referenceEntityID);
       setDenormalizedValues(property, newValue, properties);
     }
   }
@@ -790,10 +790,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * consistent with the data type of this property, returns the value
    * @param value the value to validate
    * @param property the property
-   * @return the value
+   * @return the value to validate
    * @throws IllegalArgumentException when the value is not of the same type as the propertyValue
    */
-  private static Object validateValue(final Property property, final Object value) throws IllegalArgumentException {
+  private static Object validateType(final Property property, final Object value) throws IllegalArgumentException {
     final Type propertyType = property.propertyType;
     if (value == null)
       return value;

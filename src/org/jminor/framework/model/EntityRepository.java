@@ -227,6 +227,14 @@ public class EntityRepository implements Serializable {
 
   /**
    * @param entityID the entity ID
+   * @param value true if the entity identified by <code>entityID</code> is based on a large dataset
+   */
+  public void setIsLargeDataset(final String entityID, final boolean value) {
+    largeDataset.put(entityID, value);
+  }
+
+  /**
+   * @param entityID the entity ID
    * @return a comma seperated list of columns to use in the order by clause
    */
   public String getOrderByColumnNames(final String entityID) {
