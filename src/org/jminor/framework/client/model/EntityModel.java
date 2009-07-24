@@ -844,10 +844,13 @@ public class EntityModel implements IRefreshable {
 
     log.debug(caption + " - update " + Util.getListContentsAsString(entities, false));
 
-    evtBeforeUpdate.fire();
-    validateData(entities, UPDATE);
-
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
+    if (modifiedEntities.size() == 0)
+      return;
+
+    evtBeforeUpdate.fire();
+    validateData(modifiedEntities, UPDATE);
+
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     if (tableModel != null) {
       if (EntityUtil.isPrimaryKeyModified(modifiedEntities)) {

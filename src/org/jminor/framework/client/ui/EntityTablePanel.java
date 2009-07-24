@@ -135,7 +135,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * the action performed when the table is double clicked
    */
-  private Action doubleClickAction;
+  private Action tableDoubleClickAction;
 
   /**
    * the toolbar containing the refresh button
@@ -201,7 +201,7 @@ public class EntityTablePanel extends JPanel {
    * @param doubleClickAction the action to perform when a double click is performed on the table
    */
   public void setTableDoubleClickAction(final Action doubleClickAction) {
-    this.doubleClickAction = doubleClickAction;
+    this.tableDoubleClickAction = doubleClickAction;
   }
 
   /**
@@ -742,8 +742,8 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the Action performed when the table receives a double click
    */
-  protected Action getDoubleClickAction() {
-    return doubleClickAction;
+  protected Action getTableDoubleClickAction() {
+    return tableDoubleClickAction;
   }
 
   /**
@@ -796,14 +796,14 @@ public class EntityTablePanel extends JPanel {
    * by <code>getDoubleClickAction()</code> on a double click with
    * the JTable as the ActionEvent source.
    * @return the MouseListener for the table
-   * @see #getDoubleClickAction()
+   * @see #getTableDoubleClickAction()
    */
   protected MouseListener initializeTableMouseListener() {
     return new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
         if (event.getClickCount() == 2) {
-          final Action doubleClickAction = getDoubleClickAction();
+          final Action doubleClickAction = getTableDoubleClickAction();
           if (doubleClickAction != null)
             doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
         }

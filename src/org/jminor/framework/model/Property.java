@@ -411,8 +411,7 @@ public class Property implements Serializable {
   public static class DenormalizedProperty extends Property {
 
     /**
-     * The ID of the reference entity which owns the property, from which this property
-     * gets its value
+     * The ID of the reference entity which owns the property, from which this property gets its value
      */
     public final String ownerEntityID;
     /**

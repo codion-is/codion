@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Acts as a proxy for retrieving values from Entity objects, allowing for plugged
@@ -12,7 +13,7 @@ import java.util.HashMap;
  */
 public class EntityProxy {
 
-  private static HashMap<String, EntityProxy> entityProxies;
+  private static Map<String, EntityProxy> entityProxies;
   private static EntityProxy defaultEntityProxy = new EntityProxy();
 
   /**

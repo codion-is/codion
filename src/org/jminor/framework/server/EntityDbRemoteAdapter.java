@@ -60,6 +60,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   private final long creationDate = System.currentTimeMillis();
   private final IEntityDb loggingEntityDbProxy;
   private EntityDbConnection entityDbConnection;
+  private boolean connected = true;
 
   private List<LogEntry> logEntries;
   private int logEntryIndex = 0;
@@ -125,7 +126,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   /** {@inheritDoc} */
   public boolean isConnected() throws RemoteException {
     try {
-      return entityDbConnection != null && entityDbConnection.isConnected();
+      return entityDbConnection == null ? connected : entityDbConnection.isConnected();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -139,6 +140,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
         entityDbConnection.logout();
 
       entityDbConnection = null;
+      connected = false;
 
       UnicastRemoteObject.unexportObject(this, true);
       evtLoggingOut.fire();

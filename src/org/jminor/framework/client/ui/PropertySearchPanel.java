@@ -17,6 +17,7 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.FrameworkSettings;
 import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
@@ -51,7 +52,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected boolean isLowerFieldRequired(final Type type) {
+  protected boolean isLowerBoundFieldRequired(final Type type) {
     return !(type == Type.ENTITY || type == Type.BOOLEAN);
   }
 
@@ -95,7 +96,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                 isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "");
         break;
       case BOOLEAN:
-        field = new JComboBox(isUpperBound ? upperBooleanComboBoxModel : lowerBooleanComboBoxModel);
+        field = new JComboBox(new BooleanComboBoxModel());
         new SelectedItemBeanPropertyLink((JComboBox) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Object.class,

@@ -179,7 +179,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
   }
 
-  public DbLog getConnectionLog(final String connectionKey) {
+  public DbLog getEntityDbLog(final String connectionKey) {
     synchronized (connections) {
       final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter adapter : connections.values())
@@ -314,7 +314,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       UnicastRemoteObject.unexportObject(connection, true);
     }
     catch (NoSuchObjectException e) {
-      log.error(e);
+      log.warn(e);
     }
   }
 

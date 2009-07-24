@@ -440,7 +440,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return the values of <code>property</code> from the entities in the table model
    */
   public Collection<Object> getValues(final Property property, final boolean selectedOnly) {
-    return Arrays.asList(EntityUtil.getPropertyValue(property.propertyID,
+    return Arrays.asList(EntityUtil.getPropertyValues(property.propertyID,
             selectedOnly ? getSelectedEntities() : visibleEntities, false));
   }
 

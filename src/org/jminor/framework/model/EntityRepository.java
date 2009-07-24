@@ -505,7 +505,7 @@ public class EntityRepository implements Serializable {
   /**
    * @param entityGroup a group of related entities (from the same domain fx), for which
    * we can deduce that if one has been initialized all have.
-   * @return true if any one of the entities in the group have already initialzed, hmm?
+   * @return true if any one of the entities in the group have already initialized, hmm?
    */
   public boolean contains(final Collection<String> entityGroup) {
     for (final String entityID : entityGroup)

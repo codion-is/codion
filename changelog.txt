@@ -596,3 +596,8 @@
   EntityRepository.setIsLargeDataset() added
   EntityModelTest refactored a bit
   EntityTablePanel.getSummaryProvider() renamed to getSummaryPanel
+  EntityTablePanel.doubleClickAction renamed to tableDoubleClickAction
+  EntityDbRemoteServer.getConnectionLog() renamed to getEntityDbLog
+  EntityModel.update() now returns silently if it receives only unmodified entities
+  EntityDbRemoteAdapter loggedIn field added again, renamed to connected, it was really used
+  AbstractSearchPanel.upper/lowerBooleanComboBoxModel removed

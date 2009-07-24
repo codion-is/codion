@@ -115,7 +115,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   public void showDialog() {
     if (isDialogActive() && !isDialogShowing()) {
       searchDlg.setVisible(true);
-      upperField.requestFocusInWindow();
+      upperBoundField.requestFocusInWindow();
       stIsDialogShowing.setActive(true);
     }
   }
@@ -136,7 +136,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected boolean isLowerFieldRequired(Type type) {
+  protected boolean isLowerBoundFieldRequired(Type type) {
     return type != Type.BOOLEAN;
   }
 

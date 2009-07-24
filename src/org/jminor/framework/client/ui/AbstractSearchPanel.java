@@ -13,7 +13,6 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.AbstractSearchModel;
-import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.model.Type;
 
 import javax.swing.JComboBox;
@@ -65,10 +64,8 @@ public abstract class AbstractSearchPanel extends JPanel {
    * A JComboBox for selecting the search type
    */
   protected final JComboBox searchTypeCombo;
-  protected final BooleanComboBoxModel upperBooleanComboBoxModel;
-  protected final BooleanComboBoxModel lowerBooleanComboBoxModel;
-  protected final JComponent upperField;
-  protected final JComponent lowerField;
+  protected final JComponent upperBoundField;
+  protected final JComponent lowerBoundField;
 
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
@@ -77,11 +74,9 @@ public abstract class AbstractSearchPanel extends JPanel {
     this.model = model;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
-    this.upperBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
-    this.lowerBooleanComboBoxModel = model.getPropertyType() == Type.BOOLEAN ? new BooleanComboBoxModel() : null;
     this.searchTypeCombo = initSearchTypeComboBox();
-    this.upperField = getInputField(true);
-    this.lowerField = isLowerFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
+    this.upperBoundField = getInputField(true);
+    this.lowerBoundField = isLowerBoundFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(model, "searchEnabled", null, model.getSearchStateChangedEvent()));
@@ -89,7 +84,7 @@ public abstract class AbstractSearchPanel extends JPanel {
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.evtStateChanged));
     toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
-    linkComponentsToLockState();
+    linkComponentsToLockedState();
     initUI();
     initializePanel();
     bindEvents();
@@ -119,15 +114,15 @@ public abstract class AbstractSearchPanel extends JPanel {
   /**
    * @return the JComponent used to specify the upper bound
    */
-  public JComponent getUpperField() {
-    return upperField;
+  public JComponent getUpperBoundField() {
+    return upperBoundField;
   }
 
   /**
    * @return the JComponent used to specify the lower bound
    */
-  public JComponent getLowerField() {
-    return lowerField;
+  public JComponent getLowerBoundField() {
+    return lowerBoundField;
   }
 
   /**
@@ -140,7 +135,7 @@ public abstract class AbstractSearchPanel extends JPanel {
         if (toggleSearchAdvanced != null)
           toggleSearchAdvanced.requestFocusInWindow();
         else
-          upperField.requestFocusInWindow();
+          upperBoundField.requestFocusInWindow();
       }
     });
     model.evtSearchTypeChanged.addListener(new ActionListener() {
@@ -193,7 +188,7 @@ public abstract class AbstractSearchPanel extends JPanel {
    * @param type the Type
    * @return true if a lower bound field is required given the data type
    */
-  protected abstract boolean isLowerFieldRequired(final Type type);
+  protected abstract boolean isLowerBoundFieldRequired(final Type type);
 
   private JComboBox initSearchTypeComboBox() {
     final JComboBox ret = new SteppedComboBox(initSearchTypeModel());
@@ -216,12 +211,12 @@ public abstract class AbstractSearchPanel extends JPanel {
     final JPanel basePanel = new JPanel(new BorderLayout(1,1));
     if (stTwoSearchFields.isActive()) {
       final JPanel fieldBase = new JPanel(new GridLayout(1,2,1,1));
-      fieldBase.add(upperField);
-      fieldBase.add(lowerField);
+      fieldBase.add(upperBoundField);
+      fieldBase.add(lowerBoundField);
       basePanel.add(fieldBase, BorderLayout.CENTER);
     }
     else
-      basePanel.add(upperField, BorderLayout.CENTER);
+      basePanel.add(upperBoundField, BorderLayout.CENTER);
 
     if (includeToggleSearchEnabledBtn)
       basePanel.add(toggleSearchEnabled, BorderLayout.EAST);
@@ -241,12 +236,12 @@ public abstract class AbstractSearchPanel extends JPanel {
     final JPanel inputPanel = new JPanel(new BorderLayout(1,1));
     if (stTwoSearchFields.isActive()) {
       final JPanel fieldBase = new JPanel(new GridLayout(1,2,1,1));
-      fieldBase.add(lowerField);
-      fieldBase.add(upperField);
+      fieldBase.add(lowerBoundField);
+      fieldBase.add(upperBoundField);
       inputPanel.add(fieldBase, BorderLayout.CENTER);
     }
     else
-      inputPanel.add(upperField, BorderLayout.CENTER);
+      inputPanel.add(upperBoundField, BorderLayout.CENTER);
 
     final JPanel controlPanel = new JPanel(new BorderLayout(1,1));
     controlPanel.add(searchTypeCombo, BorderLayout.CENTER);
@@ -263,12 +258,12 @@ public abstract class AbstractSearchPanel extends JPanel {
     revalidate();
   }
 
-  private void linkComponentsToLockState() {
+  private void linkComponentsToLockedState() {
     final State stUnlocked = model.stLocked.getReversedState();
     UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
-    UiUtil.linkToEnabledState(stUnlocked, upperField);
-    if (lowerField != null)
-      UiUtil.linkToEnabledState(stUnlocked, lowerField);
+    UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
+    if (lowerBoundField != null)
+      UiUtil.linkToEnabledState(stUnlocked, lowerBoundField);
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchAdvanced);
     UiUtil.linkToEnabledState(stUnlocked, toggleSearchEnabled);
   }

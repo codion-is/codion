@@ -320,7 +320,7 @@ public class FrameworkUiUtil {
                                                           final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)
-      throw new RuntimeException("No search properties specified");
+      throw new RuntimeException("No search properties specified for entity lookup field: " + property.referenceEntityID);
     final List<Property> searchProperties = EntityRepository.get().getProperties(property.referenceEntityID, searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)

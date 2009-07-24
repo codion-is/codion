@@ -220,8 +220,7 @@ public abstract class EntityBindingPanel extends JPanel {
    * @see FrameworkSettings#DEFAULT_SHORT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID) {
-    return createDateInputPanel(propertyID,
-            new DateMaskFormat((String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT)));
+    return createDateInputPanel(propertyID, true);
   }
 
   /**
@@ -232,6 +231,19 @@ public abstract class EntityBindingPanel extends JPanel {
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat) {
     return createDateInputPanel(propertyID, dateMaskFormat, true);
+  }
+
+  /**
+   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * @param propertyID the ID of the property for which to create the panel
+   * @param includeButton if true a button for visually editing the date is included
+   * @return a DateInputPanel using the default short date format
+   * @see FrameworkSettings#DEFAULT_SHORT_DATE_FORMAT
+   */
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
+    return createDateInputPanel(propertyID,
+            new DateMaskFormat((String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT)),
+            includeButton, null);
   }
 
   /**

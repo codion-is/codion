@@ -196,7 +196,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IE
 
   /** {@inheritDoc} */
   public DbLog getConnectionLog(final String connectionKey) {
-    return server.getConnectionLog(connectionKey);
+    return server.getEntityDbLog(connectionKey);
   }
 
   /** {@inheritDoc} */
