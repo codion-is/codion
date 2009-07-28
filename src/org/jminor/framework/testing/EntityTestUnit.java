@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public abstract class EntityTestUnit extends TestCase {
 
@@ -73,6 +71,10 @@ public abstract class EntityTestUnit extends TestCase {
     return LoginPanel.getUser(null, new User(FrameworkSettings.getDefaultUsername(getClass().getName()), null));
   }
 
+  protected IEntityDb getDbConnection() {
+    return dbConnection;
+  }
+
   protected Entity getReferenceEntity(final String entityID) {
     final Entity ret = referencedEntities.get(entityID);
     if (ret == null)
@@ -81,24 +83,14 @@ public abstract class EntityTestUnit extends TestCase {
     return ret;
   }
 
-  protected IEntityDb getDbConnection() {
-    return dbConnection;
-  }
-
-  protected Map<String, Entity> initializeReferenceEntities(final String entityID) throws Exception {
-    final Set<String> referencedEntityIDs = new HashSet<String>();
-    addAllReferencedEntityIDs(entityID, referencedEntityIDs);
-
-    return initializeReferenceEntities(referencedEntityIDs);
+  protected void setReferenceEntity(final String entityID, final Entity entity) throws Exception {
+    referencedEntities.put(entityID, initialize(entity));
   }
 
   protected void testEntity(final String entityID) throws Exception {
     try {
       getDbConnection().startTransaction();
-      final Map<String, Entity> referenceEntities = initializeReferenceEntities(
-              addAllReferencedEntityIDs(entityID, new HashSet<String>()));
-      if (referenceEntities != null)
-        referencedEntities.putAll(referenceEntities);
+      initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new HashSet<String>()));
       final Entity initialEntity = initializeTestEntity(entityID);
       if (initialEntity == null)
         throw new Exception("No test entity provided " + entityID);
@@ -199,28 +191,6 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /**
-   * Initializes the given entity, that is, performes an insert on it in case it doesn't
-   * already exist in the database, returns the same entity
-   * @param entity the entity to initialize
-   * @return the entity
-   * @throws Exception in case of an exception
-   */
-  protected Entity initialize(final Entity entity) throws Exception {
-    try {
-      final List<Entity> entities = getDbConnection().selectMany(Arrays.asList(entity.getPrimaryKey()));
-      if (entities.size() > 0)
-        return entities.get(0);
-
-      return getDbConnection().selectSingle(getDbConnection().insert(Arrays.asList(entity)).get(0));
-    }
-    catch (DbException e) {
-      System.out.println(e.getStatement());
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  /**
    * This method should load the domain model, for example by instantiating the domain model
    * class or simply loading it by name
    */
@@ -240,14 +210,35 @@ public abstract class EntityTestUnit extends TestCase {
   protected abstract void modifyEntity(final Entity testEntity);
 
   /**
-   * This method should return a Map containing initialized (via this.initialize) instances of entities
-   * specified by the entityIDs found in the <code>entityIDs</code> Collection, mapped to their
-   * respective enitityIDs
+   * This method should initialize instances of entities specified by the entityIDs found in the
+   * <code>entityIDs</code> Collection and map them to their respective enitityIDs via the setReferenceEntity method
    * @param referenceEntityIDs the IDs of the entities that should be initialized
-   * @return a Map of initialized entities
+   * @throws Exception in case of an exception
+   * @see #setReferenceEntity(String, org.jminor.framework.model.Entity)
+   */
+  protected abstract void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception;
+
+  /**
+   * Initializes the given entity, that is, performes an insert on it in case it doesn't
+   * already exist in the database, returns the same entity
+   * @param entity the entity to initialize
+   * @return the entity
    * @throws Exception in case of an exception
    */
-  protected abstract Map<String, Entity> initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception;
+  private Entity initialize(final Entity entity) throws Exception {
+    try {
+      final List<Entity> entities = getDbConnection().selectMany(Arrays.asList(entity.getPrimaryKey()));
+      if (entities.size() > 0)
+        return entities.get(0);
+
+      return getDbConnection().selectSingle(getDbConnection().insert(Arrays.asList(entity)).get(0));
+    }
+    catch (DbException e) {
+      System.out.println(e.getStatement());
+      e.printStackTrace();
+      throw e;
+    }
+  }
 
   private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {
     final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);

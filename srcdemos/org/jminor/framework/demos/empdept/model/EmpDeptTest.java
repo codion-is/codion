@@ -10,7 +10,6 @@ import org.jminor.framework.testing.EntityTestUnit;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 
 public class EmpDeptTest extends EntityTestUnit {
 
@@ -33,18 +32,17 @@ public class EmpDeptTest extends EntityTestUnit {
   }
 
   @Override
-  protected HashMap<String, Entity> initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
-    final HashMap<String, Entity> ret = new HashMap<String, Entity>();
+  protected void initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
     if (entityIDs.contains(EmpDept.T_DEPARTMENT)) {
       final Entity dept = new Entity(EmpDept.T_DEPARTMENT);
       dept.setValue(EmpDept.DEPARTMENT_ID, 98);
       dept.setValue(EmpDept.DEPARTMENT_LOCATION, "Abyss");
       dept.setValue(EmpDept.DEPARTMENT_NAME, "Marketing");
 
-      ret.put(EmpDept.T_DEPARTMENT, initialize(dept));
+      setReferenceEntity(EmpDept.T_DEPARTMENT, dept);
     }
     if (entityIDs.contains(EmpDept.T_EMPLOYEE)) {
-      final Entity department = ret.get(EmpDept.T_DEPARTMENT);
+      final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
       final Entity emp = new Entity(EmpDept.T_EMPLOYEE);
       emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
       emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department.getValue(EmpDept.DEPARTMENT_ID));
@@ -54,10 +52,8 @@ public class EmpDeptTest extends EntityTestUnit {
       emp.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
       emp.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-      ret.put(EmpDept.T_EMPLOYEE, initialize(emp));
+      setReferenceEntity(EmpDept.T_EMPLOYEE, emp);
     }
-
-    return ret;
   }
 
   @Override

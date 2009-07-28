@@ -607,3 +607,4 @@
   StringBuffer replaced with StringBuilder globally
   EntityLookupFieldTest, added more test cases
   EntityModelTest.testDetailModel() added
+  EntityTestUnit refactored, initializeReferenceEntities now void, setReferenceEntity() added
