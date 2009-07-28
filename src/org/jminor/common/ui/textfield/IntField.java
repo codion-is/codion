@@ -74,7 +74,7 @@ public class IntField extends TextFieldPlus {
         valueOk = !((offset == 0) && (value < 0));
       // Range check
       if (valueOk) {
-        StringBuffer sb = new StringBuffer(text);
+        StringBuilder sb = new StringBuilder(text);
         sb.insert(offset, string);
         valueOk = isWithinRange(Util.getLong(sb.toString()));
       }

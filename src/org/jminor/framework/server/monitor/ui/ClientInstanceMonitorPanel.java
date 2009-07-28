@@ -52,7 +52,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
   }
 
   public void updateView() throws RemoteException {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     if (model != null) {
       final DbLog dbLog = model.getLog();
       if (dbLog != null)

@@ -94,7 +94,7 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
    * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value2"
    */
   public String getConditionString() {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     if (keys.get(0).getPropertyCount() > 1) {//multi column key
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
@@ -134,7 +134,7 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
    * @return a query condition string based on the given key and column names
    */
   private static String getQueryConditionString(final EntityKey key, final List<String> columnNames) {
-    final StringBuffer ret = new StringBuffer("(");
+    final StringBuilder ret = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
       ret.append(EntityDbUtil.getQueryString(columnNames == null ? property.propertyID : columnNames.get(i),
@@ -146,7 +146,7 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
     return ret.append(")").toString();
   }
 
-  private static void appendInCondition(final String whereColumn, final StringBuffer ret, final List<EntityKey> keys) {
+  private static void appendInCondition(final String whereColumn, final StringBuilder ret, final List<EntityKey> keys) {
     ret.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {

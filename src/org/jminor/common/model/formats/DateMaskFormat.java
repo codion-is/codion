@@ -19,7 +19,7 @@ public class DateMaskFormat extends SimpleDateFormat {
   }
 
   private static String parseDateMask(final String datePattern) {
-    final StringBuffer ret = new StringBuffer(datePattern.length());
+    final StringBuilder ret = new StringBuilder(datePattern.length());
     for (final Character character : datePattern.toCharArray())
       ret.append(Character.isLetter(character) ? "#" : character);
 

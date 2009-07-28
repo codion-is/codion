@@ -114,7 +114,7 @@ public class DoubleField extends IntField {
       }
       // Range check
       if (valueOk) {
-        StringBuffer sb = new StringBuffer(text);
+        StringBuilder sb = new StringBuilder(text);
         sb.insert(offset, string);
         valueOk = isWithinRange(Util.getDouble(sb.toString()));
       }

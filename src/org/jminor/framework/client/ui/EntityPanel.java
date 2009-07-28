@@ -179,7 +179,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * A tab pane for the detail panels, if any
    */
-  private JTabbedPane detailTabPane;
+  private JTabbedPane detailPanelTabbedPane;
 
   /**
    * A base panel used in case this EntityPanel is configured to be compact
@@ -189,12 +189,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * The dialog used when detail panels are undocked
    */
-  private JDialog detailDialog;
+  private JDialog detailPanelDialog;
 
   /**
    * The dialog used when the edit panel is undocked
    */
-  private JDialog editDialog;
+  private JDialog editPanelDialog;
 
   /**
    * The component that should receive focus when the UI is prepared for a new record
@@ -442,7 +442,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return the currently visible/linked detail EntityPanel, if any
    */
   public EntityPanel getLinkedDetailPanel() {
-    return detailTabPane != null ? (EntityPanel) detailTabPane.getSelectedComponent() : null;
+    return detailPanelTabbedPane != null ? (EntityPanel) detailPanelTabbedPane.getSelectedComponent() : null;
   }
 
   /**
@@ -450,10 +450,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * If no detail panels are defined a RuntimeException is thrown.
    */
   public EntityPanel getSelectedDetailPanel() {
-    if (detailTabPane == null)
+    if (detailPanelTabbedPane == null)
       throw new RuntimeException("No detail panels available");
 
-    return (EntityPanel) detailTabPane.getSelectedComponent();
+    return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
   }
 
   /**
@@ -463,10 +463,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return the detail panel of the given type
    */
   public EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
-    for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
+    for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
       if (detailPanel.getClass().equals(detailPanelClass))
         return detailPanel;
-    }
 
     throw new RuntimeException("Detail panel of type: " + detailPanelClass + " not found in panel: " + getClass());
   }
@@ -535,7 +534,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param state the detail panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public void setDetailPanelState(final int state) {
-    if (detailTabPane == null)
+    if (detailPanelTabbedPane == null)
       return;
 
     if (state != HIDDEN)
@@ -553,7 +552,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       disposeDetailDialog();
 
     if (state == EMBEDDED)
-      horizontalSplitPane.setRightComponent(detailTabPane);
+      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
     else if (state == HIDDEN)
       horizontalSplitPane.setRightComponent(null);
     else
@@ -1208,10 +1207,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
     horizontalSplitPane = detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
-    detailTabPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
+    detailPanelTabbedPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
 
     setLayout(new BorderLayout(5,5));
-    if (detailTabPane == null) { //no left right split pane
+    if (detailPanelTabbedPane == null) { //no left right split pane
       add(entityTablePanel, BorderLayout.CENTER);
     }
     else {
@@ -1223,7 +1222,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       else {
         horizontalSplitPane.setLeftComponent(entityTablePanel);
       }
-      horizontalSplitPane.setRightComponent(detailTabPane);
+      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
       add(horizontalSplitPane, BorderLayout.CENTER);
     }
     setDetailPanelState(detailPanelState);
@@ -1622,7 +1621,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       ret.add(new Control(detailModel.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent event) {
-          detailTabPane.setSelectedComponent(detailPanel);
+          detailPanelTabbedPane.setSelectedComponent(detailPanel);
           setDetailPanelState(status);
         }
       });
@@ -1800,7 +1799,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)-29);
-    detailDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailTabPane, false,
+    detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
             getModel().getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
@@ -1824,7 +1823,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void showEditDialog() {
     final Point location = getLocationOnScreen();
     location.setLocation(location.x+1, location.y + getSize().height-editPanel.getSize().height-98);
-    editDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
+    editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
             getModel().getCaption(), false, true,
             null, null, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
@@ -1995,18 +1994,18 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private void disposeEditDialog() {
-    if (editDialog != null) {
-      editDialog.setVisible(false);
-      editDialog.dispose();
-      editDialog = null;
+    if (editPanelDialog != null) {
+      editPanelDialog.setVisible(false);
+      editPanelDialog.dispose();
+      editPanelDialog = null;
     }
   }
 
   private void disposeDetailDialog() {
-    if (detailDialog != null) {
-      detailDialog.setVisible(false);
-      detailDialog.dispose();
-      detailDialog = null;
+    if (detailPanelDialog != null) {
+      detailPanelDialog.setVisible(false);
+      detailPanelDialog.dispose();
+      detailPanelDialog = null;
     }
   }
 
@@ -2083,8 +2082,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (parent == this)
       return true;
 
-    //is editDialog parent?
-    return editDialog != null && SwingUtilities.getWindowAncestor(component) == editDialog;
+    //is editPanelDialog parent?
+    return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,

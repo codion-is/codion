@@ -28,10 +28,10 @@ public class EntityLookupModelTest extends TestCase {
     lookupModel.setSearchString("joh");
     List<Entity> result = lookupModel.performQuery();
     assertTrue("Result should not be empty", result.size() > 0);
-    assertTrue("Result should contain john", contains(result, "john"));
+    assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertFalse("Result should contain andy", contains(result, "andy"));
-    assertFalse("Result should not contain andrew", contains(result, "andrew"));
+    assertFalse("Result should not contain Andy", contains(result, "Andy"));
+    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
     assertEquals("Search string should not have changed", lookupModel.getSearchString(), "joh");
 //    lookupModel.setSelectedEntities(result);
 //    assertEquals("Search string should have been updated",//this test fails due to the toString cache, strange?
@@ -40,23 +40,53 @@ public class EntityLookupModelTest extends TestCase {
 
     lookupModel.setSearchString("jo");
     result = lookupModel.performQuery();
-    assertTrue("Result should contain john", contains(result, "john"));
+    assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertTrue("Result should contain andy", contains(result, "andy"));
-    assertTrue("Result should contain andrew", contains(result, "andrew"));
+    assertTrue("Result should contain Andy", contains(result, "Andy"));
+    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
 
     lookupModel.setWildcardPrefix(false);
     result = lookupModel.performQuery();
-    assertTrue("Result should contain john", contains(result, "john"));
+    assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertFalse("Result should contain andy", contains(result, "andy"));
-    assertFalse("Result should not contain andrew", contains(result, "andrew"));
+    assertFalse("Result should not contain Andy", contains(result, "Andy"));
+    assertFalse("Result should not contain andrew", contains(result, "Andrew"));
 
+    lookupModel.setSearchString("Joh");
+    lookupModel.setCaseSensitive(true);
+    result = lookupModel.performQuery();
+    assertEquals("Result count should be 1", 1, result.size());
+    assertTrue("Result should contain John", contains(result, "John"));
+    lookupModel.setCaseSensitive(false);
+    result = lookupModel.performQuery();
+    assertTrue("Result should contain John", contains(result, "John"));
+    assertTrue("Result should contain johnson", contains(result, "johnson"));
+    assertFalse("Result should not contain Andy", contains(result, "Andy"));
+    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
+
+    lookupModel.setMultiValueSeperator(";");
+    lookupModel.setSearchString("andy;Andrew");
+    result = lookupModel.performQuery();
+    assertEquals("Result count should be 2", 2, result.size());
+    assertTrue("Result should contain Andy", contains(result, "Andy"));
+    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+
+    lookupModel.setSearchString("and;rew");
+    lookupModel.setWildcardPrefix(true);
+    lookupModel.setWildcardPostfix(false);
+    result = lookupModel.performQuery();
+    assertEquals("Result count should be 1", 1, result.size());
+    assertFalse("Result should not contain Andy", contains(result, "Andy"));
+    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+
+    lookupModel.setSearchString("Joh");
+    lookupModel.setCaseSensitive(true);
+    lookupModel.setWildcardPostfix(true);
     lookupModel.setAdditionalLookupCriteria(
             new PropertyCriteria(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
-    assertTrue("Result should contain john", contains(result, "john"));
+    assertTrue("Result should contain john", contains(result, "John"));
     assertFalse("Result should not contain johnson", contains(result, "johnson"));
   }
 
@@ -99,7 +129,7 @@ public class EntityLookupModelTest extends TestCase {
     emp.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp.setValue(EmpDept.EMPLOYEE_JOB, "nojob");
-    emp.setValue(EmpDept.EMPLOYEE_NAME, "john");
+    emp.setValue(EmpDept.EMPLOYEE_NAME, "John");
     emp.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     final Entity emp2 = new Entity(EmpDept.T_EMPLOYEE);
@@ -115,7 +145,7 @@ public class EntityLookupModelTest extends TestCase {
     emp3.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp3.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp3.setValue(EmpDept.EMPLOYEE_JOB, "nojob");
-    emp3.setValue(EmpDept.EMPLOYEE_NAME, "andy");
+    emp3.setValue(EmpDept.EMPLOYEE_NAME, "Andy");
     emp3.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     final Entity emp4 = new Entity(EmpDept.T_EMPLOYEE);
@@ -123,7 +153,7 @@ public class EntityLookupModelTest extends TestCase {
     emp4.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp4.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp4.setValue(EmpDept.EMPLOYEE_JOB, "ajob");
-    emp4.setValue(EmpDept.EMPLOYEE_NAME, "andrew");
+    emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
     emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     dbProvider.getEntityDb().startTransaction();

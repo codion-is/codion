@@ -826,7 +826,7 @@ public class EntityRepository implements Serializable {
       if (!(property instanceof Property.EntityProperty))
         selectProperties.add(property);
 
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     int i = 0;
     for (final Property property : selectProperties) {
       if (property instanceof Property.SubqueryProperty)

@@ -50,7 +50,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
 
   @Override
   public String toString() {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     if (done) {
       ret.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");

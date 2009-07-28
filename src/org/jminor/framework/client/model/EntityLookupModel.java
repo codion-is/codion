@@ -202,7 +202,7 @@ public class EntityLookupModel {
   }
 
   private String toString(final List<Entity> entityList) {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     for (int i = 0; i < entityList.size(); i++) {
       ret.append(entityList.get(i).toString());
       if (i < entityList.size()-1)

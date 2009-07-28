@@ -466,7 +466,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public String getStatusMessage() {
     final int filteredCount = getFilteredCount();
 
-    return new StringBuffer(Integer.toString(getRowCount())).append(" (").append(
+    return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
             Integer.toString(getSelectedModelIndexes().length)).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
             filteredCount > 0 ? ", " + filteredCount + " "

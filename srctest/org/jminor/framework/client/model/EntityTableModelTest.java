@@ -10,7 +10,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.ModelTestDomain;
+import org.jminor.framework.model.EntityTestDomain;
 
 import junit.framework.TestCase;
 
@@ -24,15 +24,15 @@ public class EntityTableModelTest extends TestCase {
   private final EntityTableModel testModel = new EntityTableModelTmp();
 
   static {
-    new ModelTestDomain();
+    new EntityTestDomain();
     testEntities = initTestEntities(new Entity[5]);
   }
 
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = new Entity(ModelTestDomain.T_TEST_DETAIL);
-      testEntities[i].setValue(ModelTestDomain.TEST_DETAIL_ID, i+1);
-      testEntities[i].setValue(ModelTestDomain.TEST_DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
+      testEntities[i] = new Entity(EntityTestDomain.T_DETAIL);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
     }
 
     return testEntities;
@@ -43,28 +43,28 @@ public class EntityTableModelTest extends TestCase {
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
     //test filters
-    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("a");
-    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("a");
+    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
     assertEquals("4 entities should be filtered", 4, testModel.getFilteredCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
     assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(testEntities, true, testModel));
-    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
-    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
+    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
 
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
-    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("t"); // ekki til
-    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("t"); // ekki til
+    assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
     assertEquals("all 5 entities should be filtered", 5, testModel.getFilteredCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
     assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(testEntities, true, testModel));
-    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
+    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
-    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).isSearchEnabled());
+    assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
 
     //test selection
     testModel.setSelectedEntity(testEntities[0]);
@@ -114,11 +114,11 @@ public class EntityTableModelTest extends TestCase {
     testModel.addSelectedItemIndexes(new int[]{3});
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
 
-    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setLikeValue("d");
+    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("d");
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected indexes should fit", new IntArray(new int[]{0}), new IntArray(testModel.getSelectedViewIndexes()));
-    testModel.getSearchModel().getPropertyFilterModel(ModelTestDomain.TEST_DETAIL_STRING).setSearchEnabled(false);
+    testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected item should fit", testEntities[3], testModel.getSelectedEntity());
@@ -158,7 +158,7 @@ public class EntityTableModelTest extends TestCase {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(ModelTestDomain.T_TEST_DETAIL, new EntityDbLocalProvider(new User("scott", "tiger")));
+      super(EntityTestDomain.T_DETAIL, new EntityDbLocalProvider(new User("scott", "tiger")));
     }
 
     @Override

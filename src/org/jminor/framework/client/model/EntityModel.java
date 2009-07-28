@@ -549,7 +549,7 @@ public class EntityModel implements IRefreshable {
    * @see #evtModelCleared
    */
   public final void clear() {
-    setActive(null);
+    setActiveEntity(null);
     evtModelCleared.fire();
   }
 
@@ -664,7 +664,7 @@ public class EntityModel implements IRefreshable {
    * @see #evtActiveEntityChanging
    * @see #evtActiveEntityChanged
    */
-  public final void setActive(final Entity entity) {
+  public final void setActiveEntity(final Entity entity) {
     if (entity != null && activeEntity.propertyValuesEqual(entity))
       return;
     if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT) && entity != null)
@@ -1464,7 +1464,7 @@ public class EntityModel implements IRefreshable {
 
     tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        setActive(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
+        setActiveEntity(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
       }
     });
 
@@ -1472,8 +1472,8 @@ public class EntityModel implements IRefreshable {
       public void tableChanged(TableModelEvent event) {
         //if the selected record is being updated via the table model refresh the one in the model
         if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == tableModel.getSelectedIndex()) {
-          setActive(null);
-          setActive(tableModel.getSelectedEntity());
+          setActiveEntity(null);
+          setActiveEntity(tableModel.getSelectedEntity());
         }
       }
     });
@@ -1651,7 +1651,7 @@ public class EntityModel implements IRefreshable {
   private String getPropertyChangeDebugString(final Property property, final Object oldValue,
                                               final Object newValue, final boolean isModelChange) {
     final String simpleClassName = getClass().getSimpleName();
-    final StringBuffer ret = new StringBuffer().append(simpleClassName.length() > 0 ? (simpleClassName + " ") : "");
+    final StringBuilder ret = new StringBuilder().append(simpleClassName.length() > 0 ? (simpleClassName + " ") : "");
     ret.append(isModelChange ? "MODEL SET" : "UI SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
     ret.append(getEntityID()).append(" -> ").append(property).append("; ");
     if (oldValue != null)

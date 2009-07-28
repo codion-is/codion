@@ -212,7 +212,7 @@ public class PropertyCriteria implements ICriteria, Serializable {
   }
 
   private String getInList(final String whereColumn, final boolean notIn) {
-    final StringBuffer ret = new StringBuffer(whereColumn + (notIn ? " not in (" : " in ("));
+    final StringBuilder ret = new StringBuilder(whereColumn + (notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
       String sqlValue = EntityDbUtil.getSQLStringValue(property, values.get(i));

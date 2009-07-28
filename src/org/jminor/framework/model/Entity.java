@@ -639,7 +639,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public static String getValueString(final Property property, final Object value) {
     final boolean valueIsNull = isValueNull(property.propertyType, value);
-    final StringBuffer ret = new StringBuffer("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
+    final StringBuilder ret = new StringBuilder("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)
       ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
 
@@ -844,7 +844,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private static String getPropertyChangeDebugString(final String entityID, final Property property,
                                                     final Object oldValue, final Object newValue,
                                                     final boolean isInitialization) {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     if (isInitialization)
       ret.append("INIT ");
     else

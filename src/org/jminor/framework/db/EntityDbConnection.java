@@ -453,9 +453,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
    * @return a query for inserting this entity instance
    */
   static String getInsertSQL(final Entity entity) {
-    final StringBuffer sql = new StringBuffer("insert into ");
+    final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append("(");
-    final StringBuffer columnValues = new StringBuffer(") values(");
+    final StringBuilder columnValues = new StringBuilder(") values(");
     final List<Property> insertProperties = EntityDbUtil.getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
@@ -479,7 +479,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (!entity.isModified())
       throw new RuntimeException("Can not get update sql for an unmodified entity");
 
-    final StringBuffer sql = new StringBuffer("update ");
+    final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = EntityDbUtil.getUpdateProperties(entity);
     if (properties.size() == 0)

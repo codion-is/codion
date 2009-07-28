@@ -94,7 +94,7 @@ public class ServerMonitorPanel extends JPanel {
     infoArea.setAutoscrolls(false);
     infoArea.setEditable(false);
 
-    final StringBuffer contents = new StringBuffer();
+    final StringBuilder contents = new StringBuilder();
     final IEntityDbRemoteServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(

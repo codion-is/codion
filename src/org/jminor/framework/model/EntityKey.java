@@ -153,7 +153,7 @@ public class EntityKey implements Serializable {
    */
   @Override
   public String toString() {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     int i = 0;
     for (final Property.PrimaryKeyProperty property : getProperties()) {
       ret.append(property.propertyID).append("=");

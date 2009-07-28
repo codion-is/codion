@@ -84,7 +84,7 @@ public class DbUtil {
    */
   public static String generateSelectSql(final String table, final String columns, final String whereCondition,
                                          final String orderByColumns) {
-    final StringBuffer sql = new StringBuffer("select ");
+    final StringBuilder sql = new StringBuilder("select ");
     sql.append(columns);
     sql.append(" from ");
     sql.append(table);

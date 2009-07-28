@@ -83,7 +83,7 @@ public class EntityDbUtil {
    * e.g. " where (idCol = 42)", " where (idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Entity entity) {
-    final StringBuffer ret = new StringBuffer(" where (");
+    final StringBuilder ret = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : entity.getPrimaryKey().getProperties()) {
       ret.append(getQueryString(property.propertyID, getSQLStringValue(property, entity.getOriginalValue(property.propertyID))));
@@ -101,7 +101,7 @@ public class EntityDbUtil {
    * or "columnName is null" in case sqlStringValue is 'null'
    */
   public static String getQueryString(final String columnName, final String sqlStringValue) {
-    return new StringBuffer(columnName).append(sqlStringValue.toUpperCase().equals("NULL") ?
+    return new StringBuilder(columnName).append(sqlStringValue.toUpperCase().equals("NULL") ?
             " is " : " = ").append(sqlStringValue).toString();
   }
 

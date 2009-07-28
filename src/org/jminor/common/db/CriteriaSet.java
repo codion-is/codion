@@ -86,7 +86,7 @@ public class CriteriaSet implements ICriteria, Serializable {
     if (criterias.size() == 0)
       return "";
 
-    final StringBuffer ret = new StringBuffer(criterias.size() > 1 ? "(" : "");
+    final StringBuilder ret = new StringBuilder(criterias.size() > 1 ? "(" : "");
     int i = 0;
     for (final ICriteria criteria : criterias) {
       ret.append(criteria.toString());

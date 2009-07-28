@@ -314,7 +314,7 @@ public class EntityTableSearchModel {
    * @return a String representing the current state of the search models
    */
   private String getSearchModelState() {
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     for (final AbstractSearchModel model : getPropertySearchModels())
       ret.append(model.toString());
 

@@ -81,7 +81,7 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   @Override
   public String toString() {
-    final StringBuffer ret = new StringBuffer(getProperty().propertyID);
+    final StringBuilder ret = new StringBuilder(getProperty().propertyID);
     if (isSearchEnabled()) {
       ret.append(getSearchType());
       ret.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
@@ -133,7 +133,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   private String toString(final Object object) {
-    final StringBuffer ret = new StringBuffer(getSearchType().toString());
+    final StringBuilder ret = new StringBuilder(getSearchType().toString());
     if (object instanceof Collection)
       for (final Object obj : ((Collection) object))
         ret.append(toString(obj));

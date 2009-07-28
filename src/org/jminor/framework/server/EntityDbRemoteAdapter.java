@@ -689,7 +689,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     if (args == null)
       return "";
 
-    final StringBuffer ret = new StringBuffer(args.length*40);//best guess ?
+    final StringBuilder ret = new StringBuilder(args.length*40);//best guess ?
     for (int i = 0; i < args.length; i++) {
       parameterToString(args[i], ret);
       if (i < args.length-1)
@@ -699,7 +699,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     return ret.toString();
   }
 
-  private static void parameterToString(final Object arg, final StringBuffer dest) {
+  private static void parameterToString(final Object arg, final StringBuilder dest) {
     if (arg instanceof Object[]) {
       if (((Object[]) arg).length > 0)
         dest.append("[").append(parameterArrayToString((Object[]) arg)).append("]");

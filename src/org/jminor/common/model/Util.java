@@ -115,7 +115,7 @@ public class Util {
     if (orig.length() == length)
       return orig;
 
-    final StringBuffer ret = new StringBuffer(orig);
+    final StringBuilder ret = new StringBuilder(orig);
     while (ret.length() < length) {
       if (atFront)
         ret.insert(0, padChar);
@@ -226,7 +226,7 @@ public class Util {
     if (items == null)
       return "";
 
-    final StringBuffer ret = new StringBuffer();
+    final StringBuilder ret = new StringBuilder();
     for (int i = 0; i < items.length; i++) {
       final Object item = items[i];
       if (item instanceof Object[])
@@ -333,7 +333,7 @@ public class Util {
    * @throws IOException if an IOException should occur
    */
   public static String getContents(final Class cls, final String resourceName) throws IOException {
-    final StringBuffer contents = new StringBuffer();
+    final StringBuilder contents = new StringBuilder();
     BufferedReader input = null;
     try {
       final InputStream inputStream = cls.getResourceAsStream(resourceName);
@@ -390,7 +390,7 @@ public class Util {
       orderedPropertyNames.add((String) propNames.nextElement());
 
     Collections.sort(orderedPropertyNames);
-    final StringBuffer propsString = new StringBuffer();
+    final StringBuilder propsString = new StringBuilder();
     for (final String key : orderedPropertyNames)
       propsString.append(key).append(": ").append(props.getProperty(key)).append("\n");
 
@@ -403,7 +403,7 @@ public class Util {
 
   public static String getDelimitedString(final String[][] headers, final String[][] data,
                                           final String delimiter) throws UserException {
-    final StringBuffer contents = new StringBuffer();
+    final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
         contents.append(header[j]);

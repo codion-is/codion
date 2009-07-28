@@ -601,3 +601,9 @@
   EntityModel.update() now returns silently if it receives only unmodified entities
   EntityDbRemoteAdapter loggedIn field added again, renamed to connected, it was really used
   AbstractSearchPanel.upper/lowerBooleanComboBoxModel removed
+  ModelTestDomain renamed to EntityTestDomain
+  EntityPanel, renamed detailTabPane to detailPanelTabbedPanel, editDialog to editPanelDialog, detailDialog to detailPanelDialog
+  EntityModel.setActive() renamed to setActiveEntity
+  StringBuffer replaced with StringBuilder globally
+  EntityLookupFieldTest, added more test cases
+  EntityModelTest.testDetailModel() added
