@@ -94,7 +94,7 @@ public class TableSorter extends AbstractTableModel {
 
   public final Event evtTableHeaderShiftClick = new Event();
 
-  public static final Comparator COMPARABLE_COMAPRATOR = new Comparator() {
+  public static final Comparator COMPARABLE_COMPARATOR = new Comparator() {
     public int compare(Object o1, Object o2) {
       return ((Comparable) o1).compareTo(o2);
     }
@@ -287,7 +287,7 @@ public class TableSorter extends AbstractTableModel {
       return comparator;
     }
     if (Comparable.class.isAssignableFrom(columnType)) {
-      return COMPARABLE_COMAPRATOR;
+      return COMPARABLE_COMPARATOR;
     }
     return LEXICAL_COMPARATOR;
   }

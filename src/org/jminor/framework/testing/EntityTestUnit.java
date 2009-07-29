@@ -64,6 +64,8 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /**
+   * Returns the database user to use when running the tests, this default implementation
+   * prompts for the user/password information, usually overridden
    * @return the db user to use when running the test
    * @throws org.jminor.common.model.UserCancelException in case the user cancels the login
    */
@@ -84,6 +86,9 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   protected void setReferenceEntity(final String entityID, final Entity entity) throws Exception {
+    if (!entity.is(entityID))
+      throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
+
     referencedEntities.put(entityID, initialize(entity));
   }
 

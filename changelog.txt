@@ -608,3 +608,5 @@
   EntityLookupFieldTest, added more test cases
   EntityModelTest.testDetailModel() added
   EntityTestUnit refactored, initializeReferenceEntities now void, setReferenceEntity() added
+  StrictEditModeTest code moved to EntityModelTest
+  PropertySearchModelTest added

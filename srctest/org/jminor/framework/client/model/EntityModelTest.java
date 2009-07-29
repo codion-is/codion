@@ -3,9 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.db.EntityDbLocalProvider;
+import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
@@ -14,11 +16,13 @@ import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.Entity;
+import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
 
 import junit.framework.TestCase;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 public class EntityModelTest extends TestCase {
@@ -47,14 +51,6 @@ public class EntityModelTest extends TestCase {
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getAllEntities();
     assertTrue("Filtered list should contain all employees for department", containsAll(employees, employeesFromDetailModel));
-  }
-
-  private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {
-    for (final Entity entity : employeesFromModel)
-      if (!employees.contains(entity))
-        return false;
-
-    return true;
   }
 
   public void testSelection() throws Exception {
@@ -107,15 +103,104 @@ public class EntityModelTest extends TestCase {
     assertTrue("Active entity is not null after model is cleared", employeeModel.getActiveEntityCopy().isNull());
   }
 
+  public void testStrictEditMode() throws Exception {
+    if (!Database.get().supportsNoWait())
+      return;
+
+    final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
+          new User("scott", "tiger"), "EntityModelTest");
+
+    if (Database.get() instanceof H2Database)
+      dbProvider.getEntityDb().executeStatement("SET LOCK_TIMEOUT 100");
+
+    departmentModel.refresh();
+    departmentModel.setStrictEditMode(true);
+
+    //select entity and change a value
+    departmentModel.getTableModel().setSelectedItemIdx(0);
+    final EntityKey primaryKey = departmentModel.getActiveEntityCopy().getPrimaryKey();
+    final Object originalValue = departmentModel.getValue(EmpDept.DEPARTMENT_LOCATION);
+    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
+    //assert row is locked
+    try {
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
+      fail("Row should be locked after modification");
+    }
+    catch (Exception e) {}
+
+    //revert value to original
+    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
+    //assert row is not locked, and then unlock it
+    try {
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
+      dbProvider.getEntityDb().endTransaction(false);
+    }
+    catch (Exception e) {
+      fail("Row should not be locked after value has been reverted");
+    }
+
+    //change value
+    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
+    //assert row is locked
+    try {
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
+      fail("Row should be locked after modification");
+    }
+    catch (Exception e) {}
+
+    //do update
+    departmentModel.update();
+    //assert row is not locked
+    try {
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
+      dbProvider.getEntityDb().endTransaction(false);
+    }
+    catch (Exception e) {
+      fail("Row should not be locked after update");
+    }
+
+    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
+    //assert row is locked
+    try {
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
+      fail("Row should be locked after modification");
+    }
+    catch (Exception e) {}
+
+    departmentModel.getTableModel().setSelectedItemIdx(1);
+
+    try {
+      dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
+      dbProvider.getEntityDb().endTransaction(false);
+    }
+    catch (Exception e) {
+      fail("Row should not be locked after another has been selected");
+    }
+
+    //clean up by resetting the value
+    departmentModel.getTableModel().setSelectedItemIdx(0);
+    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
+    departmentModel.update();
+  }
+
   @Override
   protected void setUp() throws Exception {
-    final IEntityDbProvider dbProvider = new EntityDbLocalProvider(new User("scott", "tiger"));
-    employeeModel = new EmployeeModel(dbProvider);
+    final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
+          new User("scott", "tiger"), "EntityModelTest");
     departmentModel = new DepartmentModel(dbProvider);
+    employeeModel = (EmployeeModel) departmentModel.getDetailModel(EmployeeModel.class);
   }
 
   @Override
   protected void tearDown() throws Exception {
-    employeeModel.getDbProvider().logout();
+    departmentModel.getDbProvider().logout();
+  }
+
+  private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {
+    for (final Entity entity : employeesFromModel)
+      if (!employees.contains(entity))
+        return false;
+
+    return true;
   }
 }
