@@ -10,6 +10,7 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
+import java.awt.Color;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -94,6 +95,16 @@ public class EmpDept {
                   + ", " + entity.getEntityValue(EMPLOYEE_DEPARTMENT_REF);
 
         return super.toString(entity);
+      }
+
+      @Override
+      public Color getBackgroundColor(final Entity entity) {
+        if (entity.is(T_EMPLOYEE)) {
+          if (entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
+            return Color.CYAN;
+        }
+
+        return super.getBackgroundColor(entity);
       }
     });
   }

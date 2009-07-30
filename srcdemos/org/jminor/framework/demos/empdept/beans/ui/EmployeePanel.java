@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model);
+    super(model, true, true);
   }
 
   /** {@inheritDoc} */

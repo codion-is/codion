@@ -31,7 +31,7 @@ public class DepartmentPanel extends EntityPanel {
     super(model, true, false, false, EMBEDDED, true, true);
   }
 
-  public void printEmployeeReport() throws Exception {
+  public void viewEmployeeReport() throws Exception {
     if (getModel().getTableModel().getSelectionModel().isSelectionEmpty())
       return;
 
@@ -46,7 +46,7 @@ public class DepartmentPanel extends EntityPanel {
   @Override
   public ControlSet getPrintControls() {
     final ControlSet ret = new ControlSet("Print");
-    ret.add(ControlFactory.methodControl(this, "printEmployeeReport", "Employee report"));
+    ret.add(ControlFactory.methodControl(this, "viewEmployeeReport", "Employee report"));
     ret.add(getControl(PRINT));
 
     return ret;

@@ -611,3 +611,4 @@
   StrictEditModeTest code moved to EntityModelTest
   PropertySearchModelTest added
   Improved JasperReports integration, added client.model.reporting.EntityReportUtil, moved EntityJRDataSource from EntityTableModel to there
+  Added rowColoring to EmpDept demo
