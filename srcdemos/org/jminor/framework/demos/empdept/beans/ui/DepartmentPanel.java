@@ -4,25 +4,52 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.control.ControlFactory;
+import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.FrameworkConstants;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
+import org.jminor.framework.model.EntityUtil;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
     super(model, true, false, false, EMBEDDED, true, true);
+  }
+
+  public void printEmployeeReport() throws Exception {
+    if (getModel().getTableModel().getSelectionModel().isSelectionEmpty())
+      return;
+
+    final String reportPath = System.getProperty(FrameworkConstants.REPORT_PATH_PROPERTY) + "/empdept_employees.jasper";
+    final Collection<Object> departmentNumbers =
+            EntityUtil.getPropertyValues(getModel().getTableModel().getSelectedEntities(), EmpDept.DEPARTMENT_ID);
+    final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+    reportParameters.put("DEPTNO", departmentNumbers);
+    viewJdbcReport(reportPath, reportParameters, null);
+  }
+
+  @Override
+  public ControlSet getPrintControls() {
+    final ControlSet ret = new ControlSet("Print");
+    ret.add(ControlFactory.methodControl(this, "printEmployeeReport", "Employee report"));
+    ret.add(getControl(PRINT));
+
+    return ret;
   }
 
   /** {@inheritDoc} */

@@ -12,6 +12,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
+import org.jminor.framework.client.model.reporting.EntityJRDataSource;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
@@ -25,8 +26,6 @@ import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
 import org.apache.log4j.Logger;
 
 import javax.swing.DefaultListSelectionModel;
@@ -387,8 +386,12 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
+   * Returns an initialized JRDataSource instance, the default implementation
+   * returns an instance of EntityJRDataSource using the Iterator returned by
+   * the <code>initializeReportIterator()</code> method
    * @return an initialized JRDataSource
    * @see #initializeReportIterator()
+   * @see org.jminor.framework.client.model.reporting.EntityJRDataSource
    */
   public JRDataSource getJRDataSource() {
     return new EntityJRDataSource(initializeReportIterator());
@@ -955,6 +958,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
+   * Returns an Iterator which iterates through the selected entities
    * @return the iterator used when generating reports
    * @see #getJRDataSource()
    */
@@ -1047,31 +1051,5 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return Entity.class;
 
     return value == null ? Object.class : value.getClass();
-  }
-
-  protected static class EntityJRDataSource implements JRDataSource {
-
-    private final Iterator<Entity> reportIterator;
-    private Entity currentEntity;
-
-    public EntityJRDataSource(final Iterator<Entity> reportIterator) {
-      this.reportIterator = reportIterator;
-    }
-
-    public Entity getCurrentEntity() {
-      return currentEntity;
-    }
-
-    public boolean next() throws JRException {
-      final boolean hasNext = reportIterator.hasNext();
-      if (hasNext)
-        currentEntity = reportIterator.next();
-
-      return hasNext;
-    }
-
-    public Object getFieldValue(final JRField jrField) throws JRException {
-      return getCurrentEntity().getTableValue(jrField.getName());
-    }
   }
 }

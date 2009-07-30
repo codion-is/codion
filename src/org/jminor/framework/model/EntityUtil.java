@@ -89,6 +89,20 @@ public class EntityUtil {
   }
 
   /**
+   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities
+   * @param entities the entities from which to retrieve the values
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @return a Collection containing the distinct property values
+   */
+  public static Collection<Object> getPropertyValues(final List<Entity> entities, final String propertyID) {
+    final Set<Object> ret = new HashSet<Object>();
+    for (final Entity entity : entities)
+      ret.add(entity.getValue(propertyID));
+
+    return ret;
+  }
+
+  /**
    * Sets the value of the property with ID <code>propertyID</code> to <code>value</code>
    * in the given entities
    * @param propertyID the ID of the property for which to set the value
@@ -153,20 +167,6 @@ public class EntityUtil {
         ret.put(entityID, list);
       }
     }
-
-    return ret;
-  }
-
-  /**
-   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities
-   * @param entities the entities from which to retrieve the values
-   * @param propertyID the ID of the property for which to retrieve the values
-   * @return a Collection containing the distinct property values
-   */
-  public static Collection<Object> getPropertyValues(final List<Entity> entities, final String propertyID) {
-    final Set<Object> ret = new HashSet<Object>();
-    for (final Entity entity : entities)
-      ret.add(entity.getValue(propertyID));
 
     return ret;
   }

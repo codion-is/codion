@@ -50,8 +50,6 @@ import org.apache.log4j.Level;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -82,14 +80,18 @@ public class FrameworkUiUtil {
     return exceptionHandler;
   }
 
-  public static void previewReport(final JasperPrint jp, final Container dialogParent) {
-    JRViewer viewer = new JRViewer(jp);
-    JDialog dlg = new JDialog(UiUtil.getParentWindow(dialogParent), Dialog.ModalityType.APPLICATION_MODAL);
-    dlg.getContentPane().add(viewer);
-    dlg.pack();
-    dlg.setLocationRelativeTo(dialogParent);
-    UiUtil.centerWindow(dlg);
-    dlg.setVisible(true);
+  /**
+   * Shows a JRViewer for report printing
+   * @param jasperPrint the JasperPrint object to view
+   * @param frameTitle the title to display on the frame
+   */
+  public static void viewReport(final JasperPrint jasperPrint, final String frameTitle) {
+    final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.getContentPane().add(new JRViewer(jasperPrint));
+    UiUtil.resizeWindow(frame, 0.8, new Dimension(800, 600));
+    UiUtil.centerWindow(frame);
+    frame.setVisible(true);
   }
 
   public static void setLoggingLevel(final JComponent dialogParent) {

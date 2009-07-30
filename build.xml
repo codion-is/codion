@@ -257,6 +257,9 @@
     <copy file="${lib.derby}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.h2}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib" />
@@ -265,7 +268,7 @@
     <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}" />
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
     <copy todir="${deploy.demos.path}">
-      <fileset dir="${basedir}/resources/demos/empdept/" />
+      <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/petstore/" />
       <fileset dir="${basedir}/resources/demos/schemabrowser/" />
     </copy>

@@ -19,6 +19,7 @@ import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
+import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.Entity;
@@ -27,6 +28,9 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
@@ -935,6 +939,46 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
+   * Takes a JasperReport object which uses a JDBC datasource and returns an initialized JasperPrint object
+   * @param reportPath the path to the report to fill
+   * @param reportParameters the report parameters
+   * @return an initialized JasperPrint object
+   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
+   * @throws Exception in case of exception
+   */
+  public JasperPrint fillJdbcReport(final String reportPath, final Map reportParameters) throws Exception {
+    return EntityReportUtil.fillJdbcReport(getDbProvider().getEntityDb(), reportPath, reportParameters);
+  }
+
+  /**
+   * Takes a path to a report and returns an initialized JasperPrint object using the
+   * datasource returned by <code>getTableModel().getJRDataSource()</code> method
+   * @param reportPath the path to the report file
+   * @param reportParameters the report parameters
+   * @return an initialized JasperPrint object
+   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
+   * @throws Exception in case of exception
+   * @see org.jminor.framework.client.model.EntityTableModel#getJRDataSource()
+   */
+  public JasperPrint fillReport(final String reportPath, final Map reportParameters) throws Exception {
+    return fillReport(reportPath, reportParameters, getTableModel().getJRDataSource());
+  }
+
+  /**
+   * Takes a path to a report which uses a JRDataSource and returns an initialized JasperPrint object
+   * @param reportPath the path to the report file, this path can be http or file based
+   * @param reportParameters the report parameters
+   * @param dataSource the JRDataSource used to provide the report data
+   * @return an initialized JasperPrint object
+   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
+   * @throws Exception in case of exception
+   */
+  public JasperPrint fillReport(final String reportPath, final Map reportParameters,
+                                final JRDataSource dataSource) throws Exception {
+    return JasperFillManager.fillReport(EntityReportUtil.loadJasperReport(reportPath), reportParameters, dataSource);
+  }
+
+  /**
    * Refreshes this EntityModel
    * @throws UserException in case of a user exception
    * @see #evtRefreshStarted
@@ -1006,7 +1050,7 @@ public class EntityModel implements IRefreshable {
     PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
     if (ret == null)
       setComboBoxModel(property, ret =
-            createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
+              createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
 
     return ret;
   }

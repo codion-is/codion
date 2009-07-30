@@ -33,10 +33,7 @@ import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
+import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -60,9 +57,6 @@ import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1242,7 +1236,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void setupKeyboardActions() {
     if (getTablePanel() != null) {
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectTablePanel");
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectTablePanel");
       getActionMap().put("selectTablePanel", new AbstractAction() {
         public void actionPerformed(ActionEvent event) {
           getTablePanel().getJTable().requestFocusInWindow();
@@ -1251,7 +1245,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     }
     if (getEditPanel() != null) {
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_E,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectEditPanel");
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectEditPanel");
       getActionMap().put("selectEditPanel", new AbstractAction() {
         public void actionPerformed(ActionEvent event) {
           if (getEditPanelState() == HIDDEN)
@@ -1262,7 +1256,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     }
     if (getTablePanel().getSearchPanel() != null) {
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectSearchPanel");
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectSearchPanel");
       getActionMap().put("selectSearchPanel", new AbstractAction() {
         public void actionPerformed(ActionEvent event) {
           getTablePanel().setSearchPanelVisible(true);
@@ -1834,19 +1828,48 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Prints a report based on the selected entities
+   * Shows a JRViewer for report printing
    * @param reportPath the path to the report object
-   * @param reportParams a map containing the parameters required for the report
+   * @param reportParameters a map containing the parameters required for the report
+   * @param frameTitle the title to display on the frame
    * @throws UserException in case of an exception
    */
-  protected void printReportForSelected(final String reportPath, final HashMap reportParams) throws UserException {
+  protected void viewJdbcReport(final String reportPath, final Map<String, Object> reportParameters,
+                                final String frameTitle) throws UserException {
     try {
-      final JFrame frame = new JFrame(FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER));
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      frame.getContentPane().add(new JRViewer(initJasperPrintObject(reportPath, reportParams)));
-      UiUtil.resizeWindow(frame, 0.8, new Dimension(800, 600));
-      UiUtil.centerWindow(frame);
-      frame.setVisible(true);
+      FrameworkUiUtil.viewReport(getModel().fillJdbcReport(reportPath, reportParameters), frameTitle);
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
+  /**
+   * Shows a JRViewer for printing a report using the datasource returned
+   * by <code>getModel().getTableModel().getJRDataSource()</code> method
+   * @param reportPath the path to the report object
+   * @param reportParameters a map containing the parameters required for the report
+   * @param frameTitle the title to display on the frame
+   * @throws UserException in case of an exception
+   * @see org.jminor.framework.client.model.EntityTableModel#getJRDataSource()
+   */
+  protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
+                            final String frameTitle) throws UserException {
+    viewReport(reportPath, reportParameters, getModel().getTableModel().getJRDataSource(), frameTitle);
+  }
+
+  /**
+   * Shows a JRViewer for report printing
+   * @param reportPath the path to the report object
+   * @param reportParameters a map containing the parameters required for the report
+   * @param dataSource the JRDataSource used to provide the report data
+   * @param frameTitle the title to display on the frame
+   * @throws UserException in case of an exception
+   */
+  protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
+                            final JRDataSource dataSource, final String frameTitle) throws UserException {
+    try {
+      FrameworkUiUtil.viewReport(getModel().fillReport(reportPath, reportParameters, dataSource), frameTitle);
     }
     catch (Exception e) {
       throw new UserException(e);
@@ -2006,22 +2029,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       detailPanelDialog.setVisible(false);
       detailPanelDialog.dispose();
       detailPanelDialog = null;
-    }
-  }
-
-  private JasperPrint initJasperPrintObject(final String reportPath, final HashMap reportParams)
-          throws JRException, IOException {
-    InputStream stream = null;
-    try {
-      if (reportPath.toUpperCase().startsWith("HTTP"))
-        return JasperFillManager.fillReport(stream = new URL(reportPath).openStream(),
-                reportParams, getModel().getTableModel().getJRDataSource());
-      else
-        return JasperFillManager.fillReport(reportPath, reportParams, getModel().getTableModel().getJRDataSource());
-    }
-    finally {
-      if (stream != null)
-        stream.close();
     }
   }
 
