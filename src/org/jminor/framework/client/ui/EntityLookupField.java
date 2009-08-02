@@ -82,6 +82,8 @@ public class EntityLookupField extends JTextField {
    * the selected entities
    */
   public EntityLookupField(final EntityLookupModel model, final Action enterAction) {
+    if (model == null)
+      throw new IllegalArgumentException("Can not construct a EntityLookupField without a EntityLookupModel");
     this.model = model;
     this.enterAction = enterAction;
     setComponentPopupMenu(initializePopupMenu());

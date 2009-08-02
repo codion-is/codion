@@ -71,6 +71,8 @@ public abstract class AbstractSearchPanel extends JPanel {
   private final boolean includeToggleSearchAdvancedBtn;
 
   public AbstractSearchPanel(final AbstractSearchModel model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+    if (model == null)
+      throw new IllegalArgumentException("Can not construct a AbstractSearchPanel without a AbstractSearchModel");
     this.model = model;
     this.includeToggleSearchEnabledBtn = includeActivateBtn;
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;

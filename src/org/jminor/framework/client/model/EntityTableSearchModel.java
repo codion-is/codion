@@ -59,6 +59,8 @@ public class EntityTableSearchModel {
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
                                 final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
                                 final List<Property> visibleProperties) {
+    if (entityID == null)
+      throw new IllegalArgumentException("EntityTableSearchModel requires a non-null entityID");
     this.entityID = entityID;
     this.visibleProperties = visibleProperties;
     this.propertyFilterModels = initPropertyFilterModels(tableColumnProperties);

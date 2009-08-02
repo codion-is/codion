@@ -60,6 +60,10 @@ public class PropertyCriteria implements ICriteria, Serializable {
    * @param values the values
    */
   public PropertyCriteria(final Property property, final SearchType searchType, final Object... values) {
+    if (property == null)
+      throw new IllegalArgumentException("Property criteria requires a non-null property");
+    if (searchType == null)
+      throw new IllegalArgumentException("Property criteria requires a non-null search type");
     this.property = property;
     this.searchType = searchType;
     setValues(values);

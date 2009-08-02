@@ -171,6 +171,8 @@ public class EntityTablePanel extends JPanel {
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
                           final boolean rowColoring, final boolean allowQueryConfiguration) {
+    if (tableModel == null)
+      throw new IllegalArgumentException("EntityTablePanel can not be constructed without a EntityTableModel instance");
     this.tableModel = tableModel;
     this.entityTable = initializeJTable(rowColoring);
     this.tableScrollPane = new JScrollPane(entityTable);

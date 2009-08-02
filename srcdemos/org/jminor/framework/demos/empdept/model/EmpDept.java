@@ -83,7 +83,8 @@ public class EmpDept {
                     EntityRepository.get().getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION), 100));
 
-    /*Set a EntityProxy implementation which provides toString values for the entities*/
+    /*Set a EntityProxy implementation to provide toString values for the entities
+    * and custom background color for managers*/
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
       @Override
       public String toString(final Entity entity) {

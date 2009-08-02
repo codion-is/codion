@@ -308,6 +308,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons,
                      final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactLayout) {
+    if (model == null)
+      throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
     if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_PANELS_ENABLED))
       activeStateGroup.addState(stActive);
     this.model = model;
@@ -1440,7 +1442,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes the table panel
+   * Initializes the EntityTablePanel instance using the EntityTableModel instance
+   * provided by the getTableModel() method in the underlying EntityModel
    * @param rowColoring true if the a table row should be colored according to the underlying entity
    * @return the table panel
    */
@@ -1494,7 +1497,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Sets up the controls used by this EntityPanel
+   * Sets up the default controls used by this EntityPanel by mapping them to their respective
+   * control codes (EntityPanel.INSERT, UPDATE etc), these can then be retrieved via the getControl method
    * @see org.jminor.common.ui.control.Control
    * @see #setControl(String, org.jminor.common.ui.control.Control)
    * @see #getControl(String)
@@ -1609,10 +1613,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
-      final EntityModel detailModel = detailPanel.getModel();
-      if (detailModel == null)
-        throw new RuntimeException("EntityPanel does not have a EntityModel associated with it");
-      ret.add(new Control(detailModel.getCaption()) {
+      ret.add(new Control(detailPanel.getModel().getCaption()) {
         @Override
         public void actionPerformed(ActionEvent event) {
           detailPanelTabbedPane.setSelectedComponent(detailPanel);

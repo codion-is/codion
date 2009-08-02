@@ -45,6 +45,8 @@ public abstract class AbstractSearchModel {
   private String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
 
   public AbstractSearchModel(final Property property) {
+    if (property == null)
+      throw new IllegalArgumentException("Search model requires a non-null property");
     this.property = property;
     bindEvents();
   }

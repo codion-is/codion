@@ -27,6 +27,10 @@ public class EntityResultPacker implements IResultPacker<Entity> {
   private ResultSet resultSet;
 
   public EntityResultPacker(final String entityID, final Collection<Property> properties) {
+    if (entityID == null)
+      throw new IllegalArgumentException("EntityResultPacker requires a non-null entityID");
+    if (properties == null)
+      throw new IllegalArgumentException("EntityResultPacker requires non-null properties");
     this.entityID = entityID;
     this.properties = properties;
   }
@@ -41,6 +45,8 @@ public class EntityResultPacker implements IResultPacker<Entity> {
    * @throws SQLException in case of an exception
    */
   public synchronized List<Entity> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    if (resultSet == null)
+      throw new IllegalArgumentException("Can not pack result from a null ResultSet");
     try {
       this.resultSet = resultSet;
       final List<Entity> ret = new ArrayList<Entity>();

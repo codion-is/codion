@@ -73,6 +73,8 @@ public class DbConnection {
    * @throws ClassNotFoundException in case the database driver was not found
    */
   public DbConnection(final User user) throws ClassNotFoundException, AuthenticationException {
+    if (user == null)
+      throw new IllegalArgumentException("DbConnection requires a non-null user instance");
     this.connectionUser = user;
     if (user.getUsername() == null)
       throw new IllegalArgumentException("Username must be provided");

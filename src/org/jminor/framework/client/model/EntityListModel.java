@@ -61,6 +61,10 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   }
 
   public EntityListModel(final String entityID, final IEntityDbProvider dbProvider, final boolean staticData) {
+    if (entityID == null)
+      throw new IllegalArgumentException("EntityListModel requires a non-null entityID");
+    if (dbProvider == null)
+      throw new IllegalArgumentException("EntityListModel requires a non-null dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.staticData = staticData;

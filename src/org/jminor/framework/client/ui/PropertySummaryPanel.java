@@ -78,6 +78,10 @@ public class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final Property property, final EntityTableModel tableModel,
                               final int maximumFractionDigits) {
+    if (property == null)
+      throw new IllegalArgumentException("PropertySummaryPanel requires a non-null Property instance");
+    if (tableModel == null)
+      throw new IllegalArgumentException("PropertySummaryPanel requires a non-null EntityTableModel instance");
     this.property = property;
     this.tableModel = tableModel;
     this.format.setMaximumFractionDigits(maximumFractionDigits);

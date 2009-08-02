@@ -143,6 +143,8 @@ public class Property implements Serializable {
                   final boolean selectOnly, final Integer preferredColumnWidth, final boolean isUpdatable) {
     if (propertyID == null)
       throw new IllegalArgumentException("Property ID must be specified");
+    if (propertyType == null)
+      throw new IllegalArgumentException("Property type must be specified");
     this.propertyID = propertyID;
     this.propertyType = propertyType;
     this.caption = caption;

@@ -99,6 +99,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
                              final boolean staticData, final String nullValueItem, final boolean sortContents) {
     super(sortContents, nullValueItem);
+    if (entityID == null)
+      throw new IllegalArgumentException("EntityComboBoxModel requires a non-null entityID");
+    if (dbProvider == null)
+      throw new IllegalArgumentException("EntityComboBoxModel requires a non-null dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.staticData = staticData;

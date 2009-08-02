@@ -37,6 +37,8 @@ public class EntityPanelProvider implements Comparable {
   public EntityPanelProvider(final String caption,
                              final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
+    if (entityModelClass == null || entityPanelClass == null)
+      throw new IllegalArgumentException("EntityPanelProvider constructor requires non-null entityModelClass and entityPanelClass parameters");
     this.caption = caption == null ? "" : caption;
     this.entityModelClass = entityModelClass;
     this.entityPanelClass = entityPanelClass;

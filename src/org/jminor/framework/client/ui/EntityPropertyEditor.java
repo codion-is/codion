@@ -88,6 +88,8 @@ public class EntityPropertyEditor extends JPanel {
    */
   public EntityPropertyEditor(final Property property, final List<Entity> entities,
                               final EntityModel entityModel, final InputManager inputManager) throws UserException {
+    if (property == null)
+      throw new IllegalArgumentException("Null property provided for EntityPropertyEditor");
     if (property instanceof Property.EntityProperty && entityModel == null)
       throw new IllegalArgumentException("No EntityModel instance provided for entity property editor");
 

@@ -70,6 +70,12 @@ public class EntityLookupModel {
   public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
                            final List<Property> lookupProperties) {
+    if (dbProvider == null)
+      throw new IllegalArgumentException("EntityLookupModel requires a non-null IEntityDbProvider instance");
+    if (entityID == null)
+      throw new IllegalArgumentException("EntityLookupModel requires a non-null entityID");
+    if (lookupProperties == null)
+      throw new IllegalArgumentException("EntityLookupModel requires non-null lookupProperties");
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;

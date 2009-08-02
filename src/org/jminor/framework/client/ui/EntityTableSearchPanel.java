@@ -30,6 +30,8 @@ public class EntityTableSearchPanel extends JPanel {
   private final List<JPanel> searchPanels;
 
   public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final List<Property> tableColumnProperties) {
+    if (searchModel == null)
+      throw new IllegalArgumentException("EntityTableSearchPanel requires a non-null EntityTableSearchModel instance");
     this.searchModel = searchModel;
     this.tableColumnProperties = tableColumnProperties;
     this.searchPanels = initializeSearchPanels();

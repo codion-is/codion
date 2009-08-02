@@ -44,6 +44,8 @@ public class ProfilingPanel extends JPanel {
    * @param profilingModel the profiling model
    */
   public ProfilingPanel(final ProfilingModel profilingModel) {
+    if (profilingModel == null)
+      throw new IllegalArgumentException("ProfilingPanel requires a non-null ProfilingModel instance");
     this.profilingModel = profilingModel;
     initUI();
     showFrame();

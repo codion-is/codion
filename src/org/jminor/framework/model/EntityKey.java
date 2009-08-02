@@ -56,6 +56,8 @@ public class EntityKey implements Serializable {
    * @param entityID the entity ID
    */
   public EntityKey(final String entityID) {
+    if (entityID == null)
+      throw new IllegalArgumentException("EntityKey can not be instantiated without an entityID");
     this.entityID = entityID;
     this.properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
     this.propertyCount = properties.size();

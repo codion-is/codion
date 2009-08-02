@@ -17,6 +17,8 @@ public class EntityJRDataSource implements JRDataSource {
   private Entity currentEntity;
 
   public EntityJRDataSource(final Iterator<Entity> reportIterator) {
+    if (reportIterator == null)
+      throw new IllegalArgumentException("EntityJRDataSource requires a non-null reportIterator");
     this.reportIterator = reportIterator;
   }
 

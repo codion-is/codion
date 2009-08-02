@@ -78,6 +78,8 @@ public class EntityCriteria implements Serializable {
    */
   public EntityCriteria(final String entityID, final ICriteria criteria, final String orderByClause,
                         final int fetchCount) {
+    if (entityID == null)
+      throw new IllegalArgumentException("Can not instantiate EntityCriteria without entityID");
     this.entityID = entityID;
     this.criteria = criteria;
     this.fetchCount = fetchCount;

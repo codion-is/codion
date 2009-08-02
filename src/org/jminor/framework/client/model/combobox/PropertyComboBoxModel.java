@@ -39,6 +39,10 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
   public PropertyComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
                                final Property property, final Object nullValue) {
     super(true, nullValue);
+    if (entityID == null)
+      throw new IllegalArgumentException("PropertyComboBoxModel requires a non-null entityID");
+    if (dbProvider == null)
+      throw new IllegalArgumentException("PropertyComboBoxModel requires a non-null dbProvider");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.property = property;

@@ -241,7 +241,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * @param showAllWhenNotFiltered if set to true then all underlying entities are shown
-   * when no filters are applied, this can be problematic in the case of huge datasets.
+   * when no filters are applied, which can be problematic in the case of huge datasets.
    */
   public void setShowAllWhenNotFiltered(final boolean showAllWhenNotFiltered) {
     this.showAllWhenNotFiltered = showAllWhenNotFiltered;
@@ -917,10 +917,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   protected List<Property> getSearchableProperties() {
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : EntityRepository.get().getProperties(getEntityID(), false)) {
+    for (final Property property : EntityRepository.get().getProperties(getEntityID(), false))
       if (property.isDatabaseProperty())
         ret.add(property);
-    }
 
     return ret;
   }
@@ -972,26 +971,22 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
         filterTable();
       }
     });
-
     evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         tableSearchModel.setSearchModelState();
       }
     });
-
     addTableModelListener(new TableModelListener() {
       public void tableChanged(TableModelEvent event) {
         evtTableDataChanged.fire();
       }
     });
-
     tableSorter.evtBeforeSort.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         isSorting = true;
         selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       }
     });
-
     tableSorter.evtAfterSort.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         setSelectedByPrimaryKeys(selectedPrimaryKeys);
