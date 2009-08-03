@@ -3,8 +3,6 @@
  */
 package org.jminor.common.model;
 
-import org.jminor.common.model.formats.ShortDotDateFormat;
-
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -48,16 +46,5 @@ public class UtilTest extends TestCase {
     assertEquals("getLong should work with a digit string", new Long(4), Util.getLong("4"));
     assertEquals("getLong should work with single minus sign", new Long(-1), Util.getLong("-"));
     assertNull("getLong should work with an empty string", Util.getLong(""));
-  }
-
-  public void testIsDateOk() throws Exception {
-    assertTrue("isDateValid should work", Util.isDateValid("03-10-1975"));
-    assertFalse("isDateValid should work with an invalid date", Util.isDateValid("033-102-975"));
-
-    assertTrue("isDateValid should work with an empty string", Util.isDateValid("", true));
-
-    assertTrue("isDateValid should work with long date", Util.isDateValid("03-10-1975 10:45", false, true));
-
-    assertTrue("isDateValid should work with a date format specified", Util.isDateValid("03.10.1975", false, new ShortDotDateFormat()));
   }
 }

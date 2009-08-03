@@ -96,8 +96,7 @@
 
     <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/FrameworkSettings*,
-                org/jminor/framework/FrameworkConstants*,
+         includes="org/jminor/framework/Configuration*
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/**,
                 org/jminor/framework/i18n/**,
@@ -112,8 +111,7 @@
 
     <jar jarfile="${dist}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/FrameworkSettings*,
-                org/jminor/framework/FrameworkConstants*,
+         includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/criteria/**,
                 org/jminor/framework/db/EntityDbProviderFactory*,
@@ -130,8 +128,7 @@
 
     <jar jarfile="${dist}/${ant.project.name}-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/FrameworkSettings*,
-                org/jminor/framework/FrameworkConstants*,
+         includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/**,
                 org/jminor/framework/model/*,
                 org/jminor/framework/server/*.class"
@@ -139,8 +136,7 @@
 
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/FrameworkSettings*,
-                org/jminor/framework/FrameworkConstants*,
+         includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/DbException.class,
                 org/jminor/framework/db/IEntityDb.class,
                 org/jminor/framework/model/EntityRepository.class,
@@ -215,6 +211,8 @@
     <copy file="${lib.derby}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib" />
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}" />
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
@@ -364,6 +362,8 @@
         <pathelement path="${build.base}"/>
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
+        <pathelement location="${lib.jasperreports.logging}"/>
+        <pathelement location="${lib.jasperreports.collections}"/>
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.h2}"/>
@@ -440,6 +440,8 @@
         <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jasperreports.base}"/>
+        <pathelement location="${lib.jasperreports.logging}"/>
+        <pathelement location="${lib.jasperreports.collections}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${run.db.type}"/>
       <jvmarg value="-Djminor.db.host=${run.db.host}"/>

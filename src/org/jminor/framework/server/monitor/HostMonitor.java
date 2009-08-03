@@ -6,7 +6,7 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 
 import org.apache.log4j.Logger;
 
@@ -113,7 +113,7 @@ public class HostMonitor {
     final ArrayList<String> ret = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames)
-      if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
+      if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
               && name.endsWith("-admin"))
         ret.add(name);
 

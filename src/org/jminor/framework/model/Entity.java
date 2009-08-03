@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.PropertyChangeEvent;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -73,7 +73,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   private transient Map<Property.EntityProperty, EntityKey> referencedKeysCache;
 
-  private static boolean propertyDebug = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT);
+  private static boolean propertyDebug = (Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT);
 
   /**
    * Instantiates a new Entity

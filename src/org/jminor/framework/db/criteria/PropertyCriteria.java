@@ -6,7 +6,7 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
@@ -46,7 +46,7 @@ public class PropertyCriteria implements ICriteria, Serializable {
   /**
    * The wildcard being used
    */
-  private final String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
+  private final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
 
   /**
    * True if this criteria should be case sensitive, only applies for criterias based on string properties

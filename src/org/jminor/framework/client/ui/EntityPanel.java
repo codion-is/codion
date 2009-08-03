@@ -23,7 +23,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.printing.JPrinter;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -109,7 +109,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Indicates whether the panel is active and ready to receive input
    */
   protected final State stActive = new State("EntityPanel.stActive",
-          (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_PANELS_ENABLED));
+          (Boolean) Configuration.getValue(Configuration.ALL_PANELS_ENABLED));
 
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
 
@@ -310,7 +310,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                      final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactLayout) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
-    if (!(Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.ALL_PANELS_ENABLED))
+    if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ENABLED))
       activeStateGroup.addState(stActive);
     this.model = model;
     this.refreshOnInit = refreshOnInit;
@@ -1224,7 +1224,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     setDetailPanelState(detailPanelState);
     setEditPanelState(editPanelState);
     setupKeyboardActions();
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_FOCUS_ACTIVATION))
+    if ((Boolean) Configuration.getValue(Configuration.USE_FOCUS_ACTIVATION))
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
               new WeakPropertyChangeListener(focusPropertyListener));
   }
@@ -1301,10 +1301,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     editPanel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     propertyBase.add(propertyPanel);
     editPanel.add(propertyBase, BorderLayout.CENTER);
-    final JComponent actionPanel = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLBAR_BUTTONS) ?
+    final JComponent actionPanel = (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
             initializeActionToolBar() : initializeActionPanel();
     if (actionPanel != null)
-      editPanel.add(actionPanel, (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLBAR_BUTTONS) ?
+      editPanel.add(actionPanel, (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 

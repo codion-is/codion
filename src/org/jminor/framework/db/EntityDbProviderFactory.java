@@ -4,8 +4,7 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.User;
-import org.jminor.framework.FrameworkConstants;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
@@ -16,9 +15,9 @@ import java.util.Random;
 public class EntityDbProviderFactory {
 
   private static String remoteConnectionProviderClassName =
-          (String) FrameworkSettings.get().getProperty(FrameworkSettings.REMOTE_CONNECTION_PROVIDER);
+          (String) Configuration.getValue(Configuration.REMOTE_CONNECTION_PROVIDER);
   private static String localConnectionProviderClassName =
-          (String) FrameworkSettings.get().getProperty(FrameworkSettings.LOCAL_CONNECTION_PROVIDER);
+          (String) Configuration.getValue(Configuration.LOCAL_CONNECTION_PROVIDER);
 
   /**
    * Returns a IEntityDbProvider according to system properties
@@ -37,17 +36,17 @@ public class EntityDbProviderFactory {
    * @param clientKey a unique client key
    * @param clientTypeID the client type id
    * @return a IEntityDbProvider
-   * @see FrameworkConstants#CLIENT_CONNECTION_TYPE
-   * @see FrameworkSettings#REMOTE_CONNECTION_PROVIDER
-   * @see FrameworkSettings#LOCAL_CONNECTION_PROVIDER
+   * @see org.jminor.framework.Configuration#CLIENT_CONNECTION_TYPE
+   * @see org.jminor.framework.Configuration#REMOTE_CONNECTION_PROVIDER
+   * @see org.jminor.framework.Configuration#LOCAL_CONNECTION_PROVIDER
    * @see EntityDbLocalProvider
    * @see org.jminor.framework.server.provider.EntityDbRemoteProvider
    */
   public static IEntityDbProvider createEntityDbProvider(final User user, final String clientKey,
                                                          final String clientTypeID) {
     try {
-      if (System.getProperty(FrameworkConstants.CLIENT_CONNECTION_TYPE,
-              FrameworkConstants.CONNECTION_TYPE_LOCAL).equals(FrameworkConstants.CONNECTION_TYPE_REMOTE))
+      if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
+              Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE))
         return (IEntityDbProvider) Class.forName(remoteConnectionProviderClassName).getConstructor(
                 User.class, String.class, String.class).newInstance(user, clientKey, clientTypeID);
       else

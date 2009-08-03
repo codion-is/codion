@@ -59,6 +59,7 @@ public class Messages {
   public static final String VIEW_HAS_ERRORS_ERROR = "view_has_errors_error";
   public static final String DATABASE_EXCEPTION = "database_exception";
   public static final String VALUE_MISSING = "value_missing";
+  public static final String SELECT_DATE = "select_date";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

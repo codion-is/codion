@@ -8,7 +8,7 @@ import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
@@ -50,7 +50,7 @@ public class EntityLookupModel {
   private boolean caseSensitive;
   private boolean wildcardPrefix;
   private boolean wildcardPostfix;
-  private String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
+  private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String multiValueSeperator = ",";
 
   public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final List<Property> lookupProperties) {

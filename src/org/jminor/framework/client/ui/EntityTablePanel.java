@@ -15,7 +15,7 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.client.model.PropertySearchModel;
@@ -589,7 +589,7 @@ public class EntityTablePanel extends JPanel {
       southBase.add(southPanel, BorderLayout.CENTER);
       add(southBase, BorderLayout.SOUTH);
     }
-    setSearchPanelVisible((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.INITIAL_SEARCH_PANEL_STATE));
+    setSearchPanelVisible((Boolean) Configuration.getValue(Configuration.INITIAL_SEARCH_PANEL_STATE));
   }
 
   /**
@@ -698,7 +698,7 @@ public class EntityTablePanel extends JPanel {
         try {
           getTableModel().getSearchModel().clearPropertySearchModels();
           if (txtField.getText().length() > 0) {
-            final String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
+            final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
             final String searchText = wildcard + txtField.getText() + wildcard;
             for (final Property searchProperty : searchableProperties) {
               final PropertySearchModel searchModel = getTableModel().getSearchModel().getPropertySearchModel(searchProperty.propertyID);
@@ -842,7 +842,7 @@ public class EntityTablePanel extends JPanel {
     header.setReorderingAllowed(false);
 
     ret.setColumnSelectionAllowed(false);
-    ret.setAutoResizeMode((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE));
+    ret.setAutoResizeMode((Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE));
     getTableModel().getTableSorter().setTableHeader(header);
 
     return ret;

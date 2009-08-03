@@ -3,14 +3,13 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
-import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.model.EntityRepository;
 
 import org.apache.log4j.Logger;
@@ -47,23 +46,23 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean loggingEnabled =
-          System.getProperty(FrameworkConstants.SERVER_LOGGING_ON, "1").equalsIgnoreCase("1");
+          System.getProperty(Configuration.SERVER_LOGGING_ON, "1").equalsIgnoreCase("1");
 
   private static final int SERVER_PORT;
   private static final int SERVER_ADMIN_PORT;
   private static final int SERVER_DB_PORT;
 
   static {
-    final String serverPortProperty = System.getProperty(FrameworkConstants.SERVER_PORT_PROPERTY);
-    final String serverAdminPortProperty = System.getProperty(FrameworkConstants.SERVER_ADMIN_PORT_PROPERTY);
-    final String serverDbPortProperty = System.getProperty(FrameworkConstants.SERVER_DB_PORT_PROPERTY);
+    final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT_PROPERTY);
+    final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT_PROPERTY);
+    final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT_PROPERTY);
 
     if (serverPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + FrameworkConstants.SERVER_PORT_PROPERTY);
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_PORT_PROPERTY);
     if (serverAdminPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + FrameworkConstants.SERVER_ADMIN_PORT_PROPERTY);
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT_PROPERTY);
     if (serverDbPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + FrameworkConstants.SERVER_DB_PORT_PROPERTY);
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_DB_PORT_PROPERTY);
 
     SERVER_PORT = Integer.parseInt(serverPortProperty);
     SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
@@ -81,7 +80,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private final String serverName;
   private int connectionTimeout = 120000;
   private static boolean useSecureConnection =
-          Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_SECURE_CONNECTION, "1")) == 1;
+          Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
 
   /**
    * Constructs a new EntityDbRemoteServer.
@@ -100,7 +99,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     if (!Database.get().isEmbedded() && (port == null || port.length() == 0))
       throw new RuntimeException("Database port must be specified (" + IDatabase.DATABASE_PORT_PROPERTY +")");
 
-    serverName = FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX)
+    serverName = Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
     serverAdmin = new EntityDbRemoteServerAdmin(this, SERVER_ADMIN_PORT, useSecureConnection);

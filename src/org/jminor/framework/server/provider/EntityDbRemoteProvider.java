@@ -6,8 +6,7 @@ package org.jminor.framework.server.provider;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.model.EntityRepository;
@@ -41,7 +40,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     System.setSecurityManager(new RMISecurityManager());
   }
 
-  private final String serverHostName = System.getProperty(FrameworkConstants.SERVER_HOST_NAME_PROPERTY);
+  private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME_PROPERTY);
   private final User user;
   private final String clientID;
   private final String clientTypeID;
@@ -146,7 +145,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
 
   private static IEntityDbRemoteServer checkServer(final IEntityDbRemoteServer server) throws RemoteException {
     final int port = server.getServerPort();
-    final String requestedPort = System.getProperty(FrameworkConstants.SERVER_PORT_PROPERTY);
+    final String requestedPort = System.getProperty(Configuration.SERVER_PORT_PROPERTY);
     if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))
       return server;
 
@@ -160,7 +159,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
       final String version = Util.getVersion();
       final String[] boundNames = registry.list();
       for (final String name : boundNames) {
-        if (name.startsWith((String) FrameworkSettings.get().getProperty(FrameworkSettings.SERVER_NAME_PREFIX))
+        if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
                 && name.contains(version) && !name.contains(IEntityDbRemoteServer.SERVER_ADMIN_SUFFIX)) {
           try {
             final IEntityDbRemoteServer server = checkServer((IEntityDbRemoteServer) registry.lookup(name));

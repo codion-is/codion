@@ -612,3 +612,10 @@
   PropertySearchModelTest added
   Improved JasperReports integration, added client.model.reporting.EntityReportUtil, moved EntityJRDataSource from EntityTableModel to there
   Added rowColoring to EmpDept demo
+  FrameworkSettings renamed to Configuration, removed get(), renamed get/setProperty to get/setValue
+  All constants from FrameworkConstants move to configuration
+  FrameworkConstants removed
+  DateUtil created, moved date related stuff from Util, DateUtilTest created
+  ClientInfo moved from common.model to common.db
+  Added runtime permission to server policy file to handle some evaluation expression thing in jasper reports
+  Added missing jasper collections/logging libs to server run files

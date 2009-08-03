@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.model.Type;
 
@@ -102,7 +102,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     public NumberRenderer(final boolean formatValue) {
       super();
       this.formatter = NumberFormat.getInstance();
-      this.formatter.setGroupingUsed((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_NUMBER_FORMAT_GROUPING));
+      this.formatter.setGroupingUsed((Boolean) Configuration.getValue(Configuration.USE_NUMBER_FORMAT_GROUPING));
       this.formatValue = formatValue;
       setHorizontalAlignment(JLabel.RIGHT);
     }
@@ -118,7 +118,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
   public static class ShortDateRenderer extends DefaultTableCellRenderer {
     final SimpleDateFormat format = new SimpleDateFormat((String)
-            FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT));
+            Configuration.getValue(Configuration.DEFAULT_SHORT_DATE_FORMAT));
 
     public ShortDateRenderer() {
       super();
@@ -140,7 +140,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
   public static class LongDateRenderer extends DefaultTableCellRenderer {
     final SimpleDateFormat format = new SimpleDateFormat((String)
-            FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_LONG_DATE_FORMAT));
+            Configuration.getValue(Configuration.DEFAULT_LONG_DATE_FORMAT));
 
     public LongDateRenderer() {
       super();

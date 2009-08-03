@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
 
@@ -42,7 +42,7 @@ public abstract class AbstractSearchModel {
   private boolean caseSensitive = true;
   private Object upperBound = null;
   private Object lowerBound = null;
-  private String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
+  private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
 
   public AbstractSearchModel(final Property property) {
     if (property == null)

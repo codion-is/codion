@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.AuthenticationException;
+import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DbException;
@@ -11,11 +12,10 @@ import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
-import org.jminor.common.model.ClientInfo;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.IEntityDb;
@@ -71,8 +71,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   private String lastAccessMessage;
   private String lastExitedMethod;
 
-  private static final int logSize = Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_CONNECTION_LOG_SIZE, "40"));
-  private static final boolean useSecureConnection = Integer.parseInt(System.getProperty(FrameworkConstants.SERVER_SECURE_CONNECTION, "1")) == 1;
+  private static final int logSize = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
+  private static final boolean useSecureConnection = Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
   private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
   private static final Map<User, EntityDbConnectionPool> connectionPools =
           Collections.synchronizedMap(new HashMap<User, EntityDbConnectionPool>());
@@ -89,7 +89,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
 
   static {
-    final String initialPoolUsers = System.getProperty(FrameworkConstants.SERVER_POOLING_INITIAL);
+    final String initialPoolUsers = System.getProperty(Configuration.SERVER_POOLING_INITIAL);
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
         final User user = new User(username, null);

@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.User;
-import org.jminor.common.model.ClientInfo;
 
 import org.apache.log4j.Level;
 

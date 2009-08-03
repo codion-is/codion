@@ -1,7 +1,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.model.EmpDept;
 import org.jminor.framework.model.EntityRepository;
 import org.jminor.framework.model.Property;
@@ -40,7 +40,7 @@ public class PropertySearchModelTest extends TestCase {
 
     model.setSearchType(SearchType.LIKE);
     model.setAutomaticWildcard(true);
-    final String wildcard = (String) FrameworkSettings.get().getProperty(FrameworkSettings.WILDCARD_CHARACTER);
+    final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
     assertEquals(property.propertyID + " like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().toString());
     model.setSearchType(SearchType.NOT_LIKE);
     assertEquals(property.propertyID + " not like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().toString());

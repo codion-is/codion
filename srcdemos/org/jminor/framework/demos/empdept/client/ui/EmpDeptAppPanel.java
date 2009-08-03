@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.client.ui;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
@@ -31,8 +31,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   @Override
   protected void initializeSettings() {
     Locale.setDefault(new Locale("en"));
-    FrameworkSettings.get().setProperty(FrameworkSettings.TOOLBAR_BUTTONS, true);
-    FrameworkSettings.get().setProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT, true);
+    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     Util.setLoggingLevel(Level.DEBUG);
   }
 

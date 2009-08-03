@@ -8,7 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
@@ -36,13 +36,10 @@ public abstract class ProfilingModel {
 
   protected static final Random random = new Random();
 
-  private int maximumThinkTime =
-          Integer.parseInt(System.getProperty(FrameworkConstants.PROFILING_THINKTIME_PROPERTY, "20000"));
+  private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME_PROPERTY, "20000"));
   private int minimumThinkTime = maximumThinkTime/2;
-  private int loginWaitFactor =
-          Integer.parseInt(System.getProperty(FrameworkConstants.PROFILING_LOGIN_WAIT_PROPERTY, "2"));
-  private int batchSize =
-          Integer.parseInt(System.getProperty(FrameworkConstants.PROFILING_BATCH_SIZE_PROPERTY, "10"));
+  private int loginWaitFactor = Integer.parseInt(System.getProperty(Configuration.PROFILING_LOGIN_WAIT_PROPERTY, "2"));
+  private int batchSize = Integer.parseInt(System.getProperty(Configuration.PROFILING_BATCH_SIZE_PROPERTY, "10"));
 
   private boolean pause = false;
   private boolean stopped = false;

@@ -8,7 +8,7 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
@@ -35,7 +35,7 @@ public class DepartmentPanel extends EntityPanel {
     if (getModel().getTableModel().getSelectionModel().isSelectionEmpty())
       return;
 
-    final String reportPath = System.getProperty(FrameworkConstants.REPORT_PATH_PROPERTY) + "/empdept_employees.jasper";
+    final String reportPath = System.getProperty(Configuration.REPORT_PATH_PROPERTY) + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
             EntityUtil.getPropertyValues(getModel().getTableModel().getSelectedEntities(), EmpDept.DEPARTMENT_ID);
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();

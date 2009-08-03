@@ -17,7 +17,92 @@ import java.util.Map;
  * EntityApplicationPanel.initializeSettings is a convenience method for this purpose,
  * override and use it to set settings properties.
  */
-public class FrameworkSettings {
+public class Configuration {
+
+  /**
+   * Indicates a local database connection
+   * @see #CLIENT_CONNECTION_TYPE
+   */
+  public static final String CONNECTION_TYPE_LOCAL = "local";
+
+  /**
+   * Indicates a remote database connection
+   * @see #CLIENT_CONNECTION_TYPE
+   */
+  public static final String CONNECTION_TYPE_REMOTE = "remote";
+
+  /**
+   * Specifies whether the client should connect locally or remotely
+   * @see #CONNECTION_TYPE_LOCAL
+   * @see #CONNECTION_TYPE_REMOTE
+   */
+  public static final String CLIENT_CONNECTION_TYPE = "jminor.client.connection.type";
+
+  /**
+   * The report path used for the default report generation
+   */
+  public static final String REPORT_PATH_PROPERTY = "jminor.report.path";
+
+  /**
+   * Default username for the login panel
+   */
+  public static final String DEFAULT_USERNAME_PROPERTY = "jminor.client.defaultuser";
+
+  /**
+   * The host on which to locate the server
+   */
+  public static final String SERVER_HOST_NAME_PROPERTY = "jminor.server.hostname";
+
+  /**
+   * If specified, the client will look for a server running on this port
+   */
+  public static final String SERVER_PORT_PROPERTY = "jminor.server.port";
+
+  /**
+   * The port on which the server should export the remote admin interface
+   */
+  public static final String SERVER_ADMIN_PORT_PROPERTY = "jminor.server.admin.port";
+
+  /**
+   * The port on which the server should export the remote database connections
+   */
+  public static final String SERVER_DB_PORT_PROPERTY = "jminor.server.db.port";
+
+  /**
+   * The initial logging status on the server, either 1 (on) or (0) off
+   */
+  public static final String SERVER_LOGGING_ON = "jminor.server.logging.status";
+
+  /**
+   * Specifies the size of the (circular) log the server keeps in memory for each connected client
+   */
+  public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.logging.clientlogsize";
+
+  /**
+   * Specifies whether the server should establish connections using a secure sockets layer, 1 (on) or 0 (off)
+   */
+  public static final String SERVER_SECURE_CONNECTION = "jminor.server.connection.secure";
+
+  /**
+   * Specifies a comma seperated list of usernames for which to create connection pools on startup
+   */
+  public static final String SERVER_POOLING_INITIAL = "jminor.server.pooling.initial";
+
+  /**
+   * Specifies the initial think time setting for the profiling client
+   * (max think time = thinktime, min think time = max think time / 2)
+   */
+  public static final String PROFILING_THINKTIME_PROPERTY = "jminor.profiling.thinktime";
+
+  /**
+   * Specifies the number time which the max think time is multiplied with when initializing the clients
+   */
+  public static final String PROFILING_LOGIN_WAIT_PROPERTY = "jminor.profiling.loginwait";
+
+  /**
+   * Specifies the initial client batch size
+   */
+  public static final String PROFILING_BATCH_SIZE_PROPERTY = "jminor.profiling.batchsize";
 
   /**
    * The date format pattern to use when showing long dates in tables
@@ -216,50 +301,44 @@ public class FrameworkSettings {
    */
   public static final String LOCAL_CONNECTION_PROVIDER = "local_connection_provider";
 
-  private Map<String, Object> settings = new HashMap<String, Object>();
+  private static Map<String, Object> settings = new HashMap<String, Object>();
 
-  private final static FrameworkSettings instance = new FrameworkSettings();
-
-  private FrameworkSettings() {
+  static {
     //default settings
-    setProperty(DEFAULT_LONG_DATE_FORMAT, "dd-MM-yyyy HH:mm");
-    setProperty(DEFAULT_SHORT_DATE_FORMAT, "dd-MM-yyyy");
-    setProperty(ALL_PANELS_ENABLED, false);
-    setProperty(USE_KEYBOARD_NAVIGATION, true);
-    setProperty(USE_FOCUS_ACTIVATION, true);
-    setProperty(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);
-    setProperty(CONFIRM_EXIT, false);
-    setProperty(PROPERTY_DEBUG_OUTPUT, false);
-    setProperty(TAB_PLACEMENT, JTabbedPane.TOP);
-    setProperty(TOOLBAR_BUTTONS, false);
-    setProperty(PERSIST_ENTITY_REFERENCE_VALUES, true);
-    setProperty(DEFAULT_USERNAME_PREFIX, "");
-    setProperty(AUTHENTICATION_REQUIRED, true);
-    setProperty(TRANSFER_FOCUS_ON_ENTER, true);
-    setProperty(USE_STRICT_EDIT_MODE, false);
-    setProperty(TOOLTIP_DELAY, 500);
-    setProperty(SQL_BOOLEAN_VALUE_FALSE, 0);
-    setProperty(SQL_BOOLEAN_VALUE_TRUE, 1);
-    setProperty(SQL_BOOLEAN_VALUE_NULL, null);
-    setProperty(FILTER_QUERY_BY_MASTER, true);
-    setProperty(PERSIST_ENTITY_PANELS, false);
-    setProperty(INITIAL_SEARCH_PANEL_STATE, false);
-    setProperty(SERVER_NAME_PREFIX, "JMinor Server");
-    setProperty(WILDCARD_CHARACTER, "%");
-    setProperty(USE_NUMBER_FORMAT_GROUPING, true);
-    setProperty(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
-    setProperty(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.EntityDbLocalProvider");
+    setValue(DEFAULT_LONG_DATE_FORMAT, "dd-MM-yyyy HH:mm");
+    setValue(DEFAULT_SHORT_DATE_FORMAT, "dd-MM-yyyy");
+    setValue(ALL_PANELS_ENABLED, false);
+    setValue(USE_KEYBOARD_NAVIGATION, true);
+    setValue(USE_FOCUS_ACTIVATION, true);
+    setValue(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);
+    setValue(CONFIRM_EXIT, false);
+    setValue(PROPERTY_DEBUG_OUTPUT, false);
+    setValue(TAB_PLACEMENT, JTabbedPane.TOP);
+    setValue(TOOLBAR_BUTTONS, false);
+    setValue(PERSIST_ENTITY_REFERENCE_VALUES, true);
+    setValue(DEFAULT_USERNAME_PREFIX, "");
+    setValue(AUTHENTICATION_REQUIRED, true);
+    setValue(TRANSFER_FOCUS_ON_ENTER, true);
+    setValue(USE_STRICT_EDIT_MODE, false);
+    setValue(TOOLTIP_DELAY, 500);
+    setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
+    setValue(SQL_BOOLEAN_VALUE_TRUE, 1);
+    setValue(SQL_BOOLEAN_VALUE_NULL, null);
+    setValue(FILTER_QUERY_BY_MASTER, true);
+    setValue(PERSIST_ENTITY_PANELS, false);
+    setValue(INITIAL_SEARCH_PANEL_STATE, false);
+    setValue(SERVER_NAME_PREFIX, "JMinor Server");
+    setValue(WILDCARD_CHARACTER, "%");
+    setValue(USE_NUMBER_FORMAT_GROUPING, true);
+    setValue(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
+    setValue(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.EntityDbLocalProvider");
   }
 
-  public static FrameworkSettings get() {
-    return instance;
-  }
-
-  public void setProperty(final String key, final Object value) {
+  public static void setValue(final String key, final Object value) {
     settings.put(key, value);
   }
 
-  public Object getProperty(final String key) {
+  public static Object getValue(final String key) {
     return settings.get(key);
   }
 
@@ -269,7 +348,7 @@ public class FrameworkSettings {
    */
   public static String getDefaultUsername(final String applicationIdentifier) {
     final String preferredUserName = Util.getDefaultUserName(applicationIdentifier,
-            instance.getProperty(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
-    return System.getProperty(FrameworkConstants.DEFAULT_USERNAME_PROPERTY, preferredUserName);
+            getValue(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
+    return System.getProperty(DEFAULT_USERNAME_PROPERTY, preferredUserName);
   }
 }

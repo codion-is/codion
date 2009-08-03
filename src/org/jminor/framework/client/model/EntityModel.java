@@ -13,7 +13,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -225,7 +225,7 @@ public class EntityModel implements IRefreshable {
   /**
    * If true, then the modification of a record triggers a select for update
    */
-  private boolean strictEditingEnabled = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_STRICT_EDIT_MODE);
+  private boolean strictEditingEnabled = (Boolean) Configuration.getValue(Configuration.USE_STRICT_EDIT_MODE);
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -276,7 +276,7 @@ public class EntityModel implements IRefreshable {
     this.activeEntity.setAs(getDefaultEntity());
     this.detailModels = initializeDetailModels();
     this.activeEntity.setFirePropertyChangeEvents(true);
-    final boolean filterQueryByMaster = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.FILTER_QUERY_BY_MASTER);
+    final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
     for (final EntityModel detailModel : this.detailModels) {
       detailModel.setMasterModel(this);
       if (detailModel.getTableModel() != null)
@@ -671,7 +671,7 @@ public class EntityModel implements IRefreshable {
   public final void setActiveEntity(final Entity entity) {
     if (entity != null && activeEntity.propertyValuesEqual(entity))
       return;
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT) && entity != null)
+    if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT) && entity != null)
       Entity.printPropertyValues(entity);
 
     evtActiveEntityChanging.fire();
@@ -1352,14 +1352,14 @@ public class EntityModel implements IRefreshable {
    * a default entity for this EntityModel.
    * Override for selective reset of field values when the model is cleared.
    * For Property.EntityProperty values this method by default returns the value of the
-   * property <code>FrameworkSettings.PERSIST_ENTITY_REFERENCE_VALUES</code>.
+   * property <code>Configuration.PERSIST_ENTITY_REFERENCE_VALUES</code>.
    * @param property the property
    * @return true if the given entity field value should be reset when the model is cleared
-   * @see FrameworkSettings#PERSIST_ENTITY_REFERENCE_VALUES
+   * @see org.jminor.framework.Configuration#PERSIST_ENTITY_REFERENCE_VALUES
    */
   protected boolean persistValueOnClear(final Property property) {
     return property instanceof Property.EntityProperty
-            && (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PERSIST_ENTITY_REFERENCE_VALUES);
+            && (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_REFERENCE_VALUES);
   }
 
   /**
@@ -1679,7 +1679,7 @@ public class EntityModel implements IRefreshable {
 
   private void notifyPropertyChanged(final Property property, final Object newValue, final Object oldValue,
                                      final boolean isModelChange) {
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PROPERTY_DEBUG_OUTPUT)) {
+    if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
       final String msg = getPropertyChangeDebugString(property, oldValue, newValue, isModelChange);
       System.out.println(msg);
       log.trace(msg);

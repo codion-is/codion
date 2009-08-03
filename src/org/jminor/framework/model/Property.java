@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -626,8 +626,8 @@ public class Property implements Serializable {
      * @param caption the caption of this property
      */
     public BooleanProperty(final String propertyID, final Type columnType, final String caption) {
-      this(propertyID, columnType, caption, FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_TRUE),
-              FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_FALSE));
+      this(propertyID, columnType, caption, Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE),
+              Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
     }
 
     /**
@@ -640,7 +640,7 @@ public class Property implements Serializable {
     public BooleanProperty(final String propertyID, final Type columnType, final String caption,
                            final Object trueValue, final Object falseValue) {
       this(propertyID, columnType, caption, trueValue, falseValue,
-              FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_NULL));
+              Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL));
     }
 
     /**

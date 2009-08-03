@@ -4,6 +4,8 @@ grant {
   //the following two lines are for an embedded derby database residing in the server directory
   permission java.io.FilePermission "-", "read,write,delete";
   permission java.lang.RuntimePermission "createClassLoader";
+  //for the JasperReports report generation
+  permission java.lang.RuntimePermission "getProtectionDomain";
 
   //permission java.io.FilePermission "<<ALL FILES>>", "read";
 

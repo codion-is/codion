@@ -15,7 +15,7 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -70,8 +70,8 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       case LONG_DATE:
       case SHORT_DATE:
         final DateMaskFormat format =
-                new DateMaskFormat((String) FrameworkSettings.get().getProperty(model.getPropertyType() == Type.LONG_DATE
-                        ? FrameworkSettings.DEFAULT_LONG_DATE_FORMAT : FrameworkSettings.DEFAULT_SHORT_DATE_FORMAT));
+                new DateMaskFormat((String) Configuration.getValue(model.getPropertyType() == Type.LONG_DATE
+                        ? Configuration.DEFAULT_LONG_DATE_FORMAT : Configuration.DEFAULT_SHORT_DATE_FORMAT));
         field = UiUtil.createFormattedField(format.getDateMask());
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,

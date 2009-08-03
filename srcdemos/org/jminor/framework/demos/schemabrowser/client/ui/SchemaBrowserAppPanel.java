@@ -5,7 +5,7 @@ package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
@@ -30,7 +30,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   @Override
   protected void initializeSettings() {
     Util.setDefaultLoggingLevel(Level.DEBUG);
-    FrameworkSettings.get().setProperty(FrameworkSettings.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
+    Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
 
   public static void main(final String[] args) {

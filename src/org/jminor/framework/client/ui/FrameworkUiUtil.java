@@ -24,7 +24,7 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
@@ -222,7 +222,7 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new BooleanPropertyLink(entityModel, property, ret.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
+    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
 
     return ret;
@@ -258,7 +258,7 @@ public class FrameworkUiUtil {
       new ComboBoxPropertyLink(entityModel, property, ret);
       MaximumMatch.enable(ret);
       setPropertyToolTip(entityModel.getEntityID(), property, ret);
-      if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
+      if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
         UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
       return ret;
@@ -330,7 +330,7 @@ public class FrameworkUiUtil {
 
     final EntityLookupField lookupField = new EntityLookupField(entityModel.createEntityLookupModel(property.referenceEntityID,
             additionalSearchCriteria, searchProperties),
-            (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER));
+            (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
     new LookupModelPropertyLink(entityModel, property.propertyID, lookupField.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, lookupField);
@@ -351,7 +351,7 @@ public class FrameworkUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     new ComboBoxPropertyLink(entityModel, property, ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER)) {
+    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(ret);
     }
@@ -366,7 +366,7 @@ public class FrameworkUiUtil {
     txtField.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(FrameworkMessages.SELECT_DATE), parent);
+        final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(Messages.SELECT_DATE), parent);
         txtField.setText(ShortDashDateFormat.get().format(d));
       }
     });
@@ -474,7 +474,7 @@ public class FrameworkUiUtil {
         throw new IllegalArgumentException("Not a text based property: " + property);
     }
     UiUtil.linkToEnabledState(enabledState, ret);
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.TRANSFER_FOCUS_ON_ENTER))
+    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
     if (property.isDatabaseProperty())

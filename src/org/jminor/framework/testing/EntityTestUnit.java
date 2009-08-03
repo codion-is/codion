@@ -10,7 +10,7 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.model.Entity;
@@ -70,7 +70,7 @@ public abstract class EntityTestUnit extends TestCase {
    * @throws org.jminor.common.model.UserCancelException in case the user cancels the login
    */
   protected User getTestUser() throws UserCancelException {
-    return LoginPanel.getUser(null, new User(FrameworkSettings.getDefaultUsername(getClass().getName()), null));
+    return LoginPanel.getUser(null, new User(Configuration.getDefaultUsername(getClass().getName()), null));
   }
 
   protected IEntityDb getDbConnection() {

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.model.ClientInfo;
+import org.jminor.common.db.ClientInfo;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
 import java.rmi.RemoteException;

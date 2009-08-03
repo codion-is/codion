@@ -21,7 +21,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
@@ -90,9 +90,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
     initializeSettings();
-    persistEntityPanels = (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.PERSIST_ENTITY_PANELS);
+    persistEntityPanels = (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_PANELS);
     ToolTipManager.sharedInstance().setInitialDelay(
-            (Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TOOLTIP_DELAY));
+            (Integer) Configuration.getValue(Configuration.TOOLTIP_DELAY));
   }
 
   /** {@inheritDoc} */
@@ -235,7 +235,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   public static String getUsername(final String username) {
-    final String usernamePrefix = (String) FrameworkSettings.get().getProperty(FrameworkSettings.DEFAULT_USERNAME_PREFIX);
+    final String usernamePrefix = (String) Configuration.getValue(Configuration.DEFAULT_USERNAME_PREFIX);
     if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase()))
       return username.substring(usernamePrefix.length(), username.length());
 
@@ -247,7 +247,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   public void exit() throws UserCancelException {
-    if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.CONFIRM_EXIT)) {
+    if ((Boolean) Configuration.getValue(Configuration.CONFIRM_EXIT)) {
       if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
               FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
         throw new UserCancelException();
@@ -446,7 +446,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /**
    * A convenience method for overriding, so that system wide settings paramters can be set
    * before the application is initialized
-   * @see FrameworkSettings
+   * @see org.jminor.framework.Configuration
    */
   protected void initializeSettings() {}
 
@@ -528,7 +528,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    */
   protected void initializeUI() throws UserException {
     setLayout(new BorderLayout());
-    applicationTabPane = new JTabbedPane((Integer) FrameworkSettings.get().getProperty(FrameworkSettings.TAB_PLACEMENT));
+    applicationTabPane = new JTabbedPane((Integer) Configuration.getValue(Configuration.TAB_PLACEMENT));
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(new BorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
@@ -553,7 +553,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   protected boolean isLoginRequired() {
-    return (Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.AUTHENTICATION_REQUIRED);
+    return (Boolean) Configuration.getValue(Configuration.AUTHENTICATION_REQUIRED);
   }
 
   protected JPanel initializeSouthPanel() {
@@ -588,7 +588,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       final EntityPanel panel = (EntityPanel) ((DefaultMutableTreeNode) enumeration.nextElement()).getUserObject();
       if (panel != null) {
         initializeResizing(panel);
-        if ((Boolean) FrameworkSettings.get().getProperty(FrameworkSettings.USE_KEYBOARD_NAVIGATION))
+        if ((Boolean) Configuration.getValue(Configuration.USE_KEYBOARD_NAVIGATION))
           initializeNavigation(panel);
       }
     }
@@ -892,7 +892,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
                               final String applicationIdentifier, final ImageIcon applicationIcon)
           throws UserCancelException, UserException {
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-            new User(FrameworkSettings.getDefaultUsername(applicationIdentifier), null) : defaultUser,
+            new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
     if (user.getUsername() == null || user.getUsername().length() == 0)
       throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));

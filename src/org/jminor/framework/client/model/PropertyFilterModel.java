@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Util;
+import org.jminor.framework.DateUtil;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.Property;
 import org.jminor.framework.model.Type;
@@ -41,7 +41,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
     Comparable toCompare = comparable;
     if (comparable instanceof Timestamp)//ignore seconds and milliseconds
-      toCompare = Util.floorLongDate((Timestamp) toCompare);
+      toCompare = DateUtil.floorLongDate((Timestamp) toCompare);
 
     switch (getSearchType()) {
       case LIKE:

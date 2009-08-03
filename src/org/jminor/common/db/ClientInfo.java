@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
-
-import org.jminor.common.db.User;
+package org.jminor.common.db;
 
 import java.io.Serializable;
 

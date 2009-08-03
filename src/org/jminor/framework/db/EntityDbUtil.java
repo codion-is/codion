@@ -6,7 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.model.Util;
-import org.jminor.framework.FrameworkSettings;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.model.Entity;
 import org.jminor.framework.model.EntityKey;
 import org.jminor.framework.model.EntityRepository;
@@ -69,9 +69,9 @@ public class EntityDbUtil {
       return ((Property.BooleanProperty) property).toSQLString(value);
     else {
       switch(value) {
-        case FALSE : return FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_FALSE) + "";
-        case TRUE: return FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_TRUE) + "";
-        case NULL: return FrameworkSettings.get().getProperty(FrameworkSettings.SQL_BOOLEAN_VALUE_NULL) + "";
+        case FALSE : return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE) + "";
+        case TRUE: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE) + "";
+        case NULL: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL) + "";
         default : throw new RuntimeException("Unknown boolean value: " + value);
       }
     }

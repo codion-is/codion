@@ -13,7 +13,7 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
-import org.jminor.framework.FrameworkConstants;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
 
@@ -37,7 +37,7 @@ public class MonitorPanel extends JPanel {
   private JFrame monitorFrame;
 
   public MonitorPanel() throws RemoteException {
-    this(new MonitorModel(System.getProperty(FrameworkConstants.SERVER_HOST_NAME_PROPERTY)));
+    this(new MonitorModel(System.getProperty(Configuration.SERVER_HOST_NAME_PROPERTY)));
   }
 
   public MonitorPanel(final MonitorModel model) throws RemoteException {

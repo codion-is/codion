@@ -3,9 +3,9 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.State;
 import org.jminor.common.model.formats.DateMaskFormat;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -36,7 +36,7 @@ public class DateInputPanel extends JPanel {
           }
           catch (ParseException ex) {/**/}
           final Date newValue = UiUtil.getDateFromUser(currentValue,
-                  FrameworkMessages.get(FrameworkMessages.SELECT_DATE), inputField);
+                  Messages.get(Messages.SELECT_DATE), inputField);
           inputField.setText(maskFormat.format(newValue));
         }
       };
