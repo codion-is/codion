@@ -1606,7 +1606,7 @@ public class EntityModel implements IRefreshable {
       detailModel.refresh();
   }
 
-  protected final void updateDetailModelsByActiveEntity() throws UserException {
+  protected void updateDetailModelsByActiveEntity() throws UserException {
     for (final EntityModel detailModel : linkedDetailModels) {
       if (getTableModel() != null)
         detailModel.masterSelectionChanged(getTableModel().stSelectionEmpty.isActive()
