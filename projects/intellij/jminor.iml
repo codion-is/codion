@@ -23,11 +23,13 @@
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../lib" />
           <root url="file://$MODULE_DIR$/../../lib/derby" />
+          <root url="file://$MODULE_DIR$/../../lib/jasperreports" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/../../lib" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/../../lib/derby" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../lib/jasperreports" recursive="false" />
       </library>
     </orderEntry>
   </component>
