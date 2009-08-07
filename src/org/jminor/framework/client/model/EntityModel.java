@@ -770,7 +770,7 @@ public class EntityModel implements IRefreshable {
    * @param property the property for which to retrieve the value
    * @return the value associated with <code>property</code>
    */
-  public final Entity getEntityValue(final Property.EntityProperty property) {
+  public final Entity getEntityValue(final Property.ForeignKeyProperty property) {
     return getEntityValue(property.propertyID);
   }
 
@@ -1031,7 +1031,7 @@ public class EntityModel implements IRefreshable {
     if (stSelectionFiltersDetail.isActive() && tableModel != null)
       tableModel.filterByReference(masterValues, masterEntityID);
 
-    for (final Property.EntityProperty property : EntityRepository.get().getEntityProperties(getEntityID(), masterEntityID))
+    for (final Property.ForeignKeyProperty property : EntityRepository.get().getForeignKeyProperties(getEntityID(), masterEntityID))
       setValue(property, masterValues != null && masterValues.size() > 0 ? masterValues.get(0) : null);
   }
 
@@ -1066,7 +1066,7 @@ public class EntityModel implements IRefreshable {
     try {
       if (property == null)
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
-      if (property instanceof Property.EntityProperty)
+      if (property instanceof Property.ForeignKeyProperty)
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
                 + property.propertyID + ",\nuse an EntityComboBoxModel instead!");
       final PropertyComboBoxModel comboBoxModel = new PropertyComboBoxModel(getEntityID(), getDbProvider(), property, nullValue);
@@ -1102,10 +1102,10 @@ public class EntityModel implements IRefreshable {
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.get().getProperty(getEntityID(), propertyID);
-    if (!(property instanceof Property.EntityProperty))
-      throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.EntityProperty");
+    if (!(property instanceof Property.ForeignKeyProperty))
+      throw new IllegalArgumentException("EntityComboBoxModels are only available for Property.ForeignKeyProperty");
 
-    return getEntityComboBoxModel((Property.EntityProperty) property);
+    return getEntityComboBoxModel((Property.ForeignKeyProperty) property);
   }
 
   /**
@@ -1115,7 +1115,7 @@ public class EntityModel implements IRefreshable {
    * with the given property
    * @see #initializeEntityComboBoxModels()
    */
-  public EntityComboBoxModel getEntityComboBoxModel(final Property.EntityProperty property) {
+  public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty property) {
     EntityComboBoxModel ret = (EntityComboBoxModel) propertyComboBoxModels.get(property);
     if (ret == null)
       setComboBoxModel(property, ret = createEntityComboBoxModel(property));
@@ -1133,7 +1133,7 @@ public class EntityModel implements IRefreshable {
    * @param property the property for which to create a EntityComboBoxModel
    * @return a EntityComboBoxModel for the given property
    */
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
     return createEntityComboBoxModel(property, "-", true);
   }
 
@@ -1148,7 +1148,7 @@ public class EntityModel implements IRefreshable {
    * @param sortContents if true the contents are sorted
    * @return a EntityComboBoxModel for the given property
    */
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property,
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property,
                                                        final String nullValueItem, final boolean sortContents) {
     return new EntityComboBoxModel(property.referenceEntityID, getDbProvider(), false, nullValueItem, sortContents);
   }
@@ -1199,7 +1199,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Returns a Map, mapping the provided EntityComboBoxModels to their respective properties according to the entityID.
-   * This implementation maps the EntityComboBoxModel to the Property.EntityProperty with the same entityID.
+   * This implementation maps the EntityComboBoxModel to the Property.ForeignKeyProperty with the same entityID.
    * If the underlying Entity references the same Entity via more than one property, this method throws a RuntimeException.
    * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
    * @return a Map of EntityComboBoxModels mapped to their respective properties
@@ -1210,8 +1210,8 @@ public class EntityModel implements IRefreshable {
       return ret;
 
     for (final EntityComboBoxModel comboBoxModel : comboBoxModels) {
-      final List<Property.EntityProperty > properties =
-              EntityRepository.get().getEntityProperties(getEntityID(), comboBoxModel.getEntityID());
+      final List<Property.ForeignKeyProperty> properties =
+              EntityRepository.get().getForeignKeyProperties(getEntityID(), comboBoxModel.getEntityID());
       if (properties.size() > 1)
         throw new RuntimeException("Multiple possible properties found for EntityComboBoxModel: " + comboBoxModel);
       else if (properties.size() == 1)
@@ -1336,7 +1336,7 @@ public class EntityModel implements IRefreshable {
    * Returns the default value for the given property, used when initializing a new
    * default entity for this model. This does not apply to denormalized properties
    * (Property.DenormalizedProperty) nor properties that are a part of reference properties
-   * (Property.EntityProperty)
+   * (Property.ForeignKeyProperty)
    * If the default value of a property should be the last value used <code>persistValueOnClear</code>
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
@@ -1351,14 +1351,14 @@ public class EntityModel implements IRefreshable {
    * Returns true if the last available value for this property should be used when initializing
    * a default entity for this EntityModel.
    * Override for selective reset of field values when the model is cleared.
-   * For Property.EntityProperty values this method by default returns the value of the
+   * For Property.ForeignKeyProperty values this method by default returns the value of the
    * property <code>Configuration.PERSIST_ENTITY_REFERENCE_VALUES</code>.
    * @param property the property
    * @return true if the given entity field value should be reset when the model is cleared
    * @see org.jminor.framework.Configuration#PERSIST_ENTITY_REFERENCE_VALUES
    */
   protected boolean persistValueOnClear(final Property property) {
-    return property instanceof Property.EntityProperty
+    return property instanceof Property.ForeignKeyProperty
             && (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_REFERENCE_VALUES);
   }
 
@@ -1530,8 +1530,8 @@ public class EntityModel implements IRefreshable {
   protected void refreshDetailModelsAfterDelete(final List<Entity> deletedEntities) {
     if (deletedEntities.size() > 0) {
       for (final EntityModel detailModel : detailModels) {
-        for (final Property.EntityProperty property :
-                EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
+        for (final Property.ForeignKeyProperty property :
+                EntityRepository.get().getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
           final EntityComboBoxModel comboModel =
                   (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
           if (comboModel != null) {
@@ -1561,8 +1561,8 @@ public class EntityModel implements IRefreshable {
     try {
       final Entity insertedEntity = getEntityDb().selectSingle(primaryKeys.get(0));
       for (final EntityModel detailModel : detailModels) {
-        for (final Property.EntityProperty property :
-                EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
+        for (final Property.ForeignKeyProperty property :
+                EntityRepository.get().getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
           final EntityComboBoxModel entityComboBoxModel =
                   (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
           if (entityComboBoxModel != null)
@@ -1582,8 +1582,8 @@ public class EntityModel implements IRefreshable {
   @SuppressWarnings({"UnusedDeclaration"})
   protected void refreshDetailModelsAfterUpdate(final List<Entity> entities) throws UserException {
     for (final EntityModel detailModel : detailModels) {
-      for (final Property.EntityProperty property :
-              EntityRepository.get().getEntityProperties(detailModel.getEntityID(), getEntityID())) {
+      for (final Property.ForeignKeyProperty property :
+              EntityRepository.get().getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
         final EntityComboBoxModel entityComboBoxModel =
                 (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(property);
         if (entityComboBoxModel != null)

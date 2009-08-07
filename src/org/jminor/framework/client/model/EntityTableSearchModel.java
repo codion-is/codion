@@ -189,7 +189,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * Finds the PropertySearchModel associated with the EntityProperty representing
+   * Finds the PropertySearchModel associated with the ForeignKeyProperty representing
    * the entity identified by <code>referencedEntityID</code>, sets <code>referenceEntities</code>
    * as the search criteria value and enables the PropertySearchModel
    * @param referencedEntityID the ID of the entity
@@ -200,7 +200,7 @@ public class EntityTableSearchModel {
   public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
     final String searchState = getSearchModelState();
     for (final Property property : visibleProperties) {
-      if (property instanceof Property.EntityProperty && ((Property.EntityProperty)property).referenceEntityID.equals(referencedEntityID)) {
+      if (property instanceof Property.ForeignKeyProperty && ((Property.ForeignKeyProperty)property).referenceEntityID.equals(referencedEntityID)) {
         final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
         if (searchModel != null) {
           searchModel.initialize();
@@ -269,15 +269,15 @@ public class EntityTableSearchModel {
     final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
     for (final Property property : properties) {
       PropertySearchModel searchModel;
-      if (property instanceof Property.EntityProperty) {
-        if (EntityRepository.get().isLargeDataset(((Property.EntityProperty) property).referenceEntityID)) {
-          final EntityLookupModel lookupModel = new EntityLookupModel(((Property.EntityProperty) property).referenceEntityID,
-                  dbProvider, getSearchProperties(((Property.EntityProperty) property).referenceEntityID));
+      if (property instanceof Property.ForeignKeyProperty) {
+        if (EntityRepository.get().isLargeDataset(((Property.ForeignKeyProperty) property).referenceEntityID)) {
+          final EntityLookupModel lookupModel = new EntityLookupModel(((Property.ForeignKeyProperty) property).referenceEntityID,
+                  dbProvider, getSearchProperties(((Property.ForeignKeyProperty) property).referenceEntityID));
           lookupModel.setMultipleSelectionAllowed(true);
           searchModel = new PropertySearchModel(property, lookupModel);
         }
         else {
-          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.EntityProperty) property).referenceEntityID,
+          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.ForeignKeyProperty) property).referenceEntityID,
                   dbProvider, false, "", true));
           searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
         }

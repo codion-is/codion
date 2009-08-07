@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class for linking an EntityLookupModel to a EntityModel entity property value
+ * A class for linking an EntityLookupModel to a EntityModel foreign key property value
  */
 public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
 
@@ -30,7 +30,7 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
    */
   public LookupModelPropertyLink(final EntityModel entityModel, final String propertyID,
                                  final EntityLookupModel lookupModel) {
-    this(entityModel, EntityRepository.get().getEntityProperty(entityModel.getEntityID(), propertyID), lookupModel);
+    this(entityModel, EntityRepository.get().getForeignKeyProperty(entityModel.getEntityID(), propertyID), lookupModel);
   }
 
   /**
@@ -39,7 +39,7 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
    * @param property the property to link
    * @param lookupModel the lookup model to link
    */
-  public LookupModelPropertyLink(final EntityModel entityModel, final Property.EntityProperty property,
+  public LookupModelPropertyLink(final EntityModel entityModel, final Property.ForeignKeyProperty property,
                                  final EntityLookupModel lookupModel) {
     super(entityModel, property, LinkType.READ_WRITE);
     this.lookupModel = lookupModel;

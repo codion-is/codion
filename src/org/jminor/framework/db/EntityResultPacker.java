@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Handles packing Entity query results.
- * Loads all database property values except for reference properties (Property.EntityProperty).
+ * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
  */
 public class EntityResultPacker implements IResultPacker<Entity> {
 
@@ -37,7 +37,7 @@ public class EntityResultPacker implements IResultPacker<Entity> {
 
   /**
    * Packs the contents of <code>resultSet</code> into a List of Entity objects.
-   * The resulting entities do not contain values for reference properties (Property.EntityProperty).
+   * The resulting entities do not contain values for foreign key properties (Property.ForeignKeyProperty).
    * This method does not close the ResultSet object.
    * @param resultSet the ResultSet object
    * @param recordCount the maximum number of records to retrieve from the result set
@@ -64,7 +64,7 @@ public class EntityResultPacker implements IResultPacker<Entity> {
   private Entity loadEntity() throws SQLException {
     final Entity entity = new Entity(entityID);
     for (final Property property : properties)
-      if (!(property instanceof Property.EntityProperty)) {
+      if (!(property instanceof Property.ForeignKeyProperty)) {
         try {
           entity.initializeValue(property, getValue(property));
         }

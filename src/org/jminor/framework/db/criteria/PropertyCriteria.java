@@ -105,8 +105,8 @@ public class PropertyCriteria implements ICriteria, Serializable {
    * @return the SQL condition string this criteria represents, i.e. propertyName = 'value'
    */
   public String getConditionString() {
-    if (property instanceof Property.EntityProperty)
-      return getReferenceCriteriaString();
+    if (property instanceof Property.ForeignKeyProperty)
+      return getForeignKeyCriteriaString();
 
     String columnName;
     if (property instanceof Property.SubqueryProperty)
@@ -173,32 +173,32 @@ public class PropertyCriteria implements ICriteria, Serializable {
     return caseSensitive;
   }
 
-  private String getReferenceCriteriaString() {
+  private String getForeignKeyCriteriaString() {
     if (values.size() > 1)
-      return getMultiReferenceCriteriaString();
+      return getMultiColumnForeignKeyCriteriaString();
 
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
     final EntityKey entityKey = (EntityKey) values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.get().getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
+            EntityRepository.get().getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
       set.addCriteria(new PropertyCriteria(
-              ((Property.EntityProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
+              ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
               searchType, entityKey == null ? null : entityKey.getValue(keyProperty.propertyID)));
 
     return set.toString();
   }
 
-  private String getMultiReferenceCriteriaString() {
+  private String getMultiColumnForeignKeyCriteriaString() {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.get().getPrimaryKeyProperties(((Property.EntityProperty) property).referenceEntityID);
+            EntityRepository.get().getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
     if (primaryKeyProperties.size() > 1) {
       final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
       for (final Object entityKey : values) {
         final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
         for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
           pkSet.addCriteria(new PropertyCriteria(
-                  ((Property.EntityProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
+                  ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
                   searchType, ((EntityKey) entityKey).getValue(keyProperty.propertyID)));
 
         set.addCriteria(pkSet);
@@ -207,7 +207,7 @@ public class PropertyCriteria implements ICriteria, Serializable {
       return set.toString();
     }
     else
-      return getInList(((Property.EntityProperty) property).referenceProperties.get(0).propertyID,
+      return getInList(((Property.ForeignKeyProperty) property).referenceProperties.get(0).propertyID,
               searchType == SearchType.NOT_LIKE);
   }
 

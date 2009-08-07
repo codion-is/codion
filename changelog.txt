@@ -619,3 +619,4 @@
   ClientInfo moved from common.model to common.db
   Added runtime permission to server policy file to handle some evaluation expression thing in jasper reports
   Added missing jasper collections/logging libs to server run files
+  Property.EntityProperty renamed to ForeignKeyProperty

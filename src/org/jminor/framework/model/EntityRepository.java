@@ -67,7 +67,7 @@ public class EntityRepository implements Serializable {
   private transient Map<String, Map<Integer, Property>> visiblePropertyIndexes;
   private transient Map<String, LinkedHashMap<String, Property>> databaseProperties;
 
-  private transient Map<String, Map<String, Property.EntityProperty>> entityProperties;
+  private transient Map<String, Map<String, Property.ForeignKeyProperty>> foreignKeyProperties;
   private transient Map<String, Map<String, Collection<Property.DenormalizedProperty>>> denormalizedProperties;
   private transient Map<String, List<Property.PrimaryKeyProperty>> primaryKeyProperties;
 
@@ -97,7 +97,7 @@ public class EntityRepository implements Serializable {
     instance.databaseProperties.putAll(repository.databaseProperties);
     instance.idSources.putAll(repository.idSources);
     instance.entityOrderByColumns.putAll(repository.entityOrderByColumns);
-    instance.entityProperties.putAll(repository.entityProperties);
+    instance.foreignKeyProperties.putAll(repository.foreignKeyProperties);
     instance.entitySelectStrings.putAll(repository.entitySelectStrings);
     instance.entityTableNames.putAll(repository.entityTableNames);
     instance.entitySelectTableNames.putAll(repository.entitySelectTableNames);
@@ -418,12 +418,12 @@ public class EntityRepository implements Serializable {
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing all the reference properties (entity properties) found in the entity
+   * @return a collection containing all the foreign key properties found in the entity
    * identified by <code>entityID</code>
    */
-  public Collection<Property.EntityProperty> getEntityProperties(final String entityID) {
-    return entityProperties.containsKey(entityID) ?
-            entityProperties.get(entityID).values() : new ArrayList<Property.EntityProperty>(0);
+  public Collection<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
+    return foreignKeyProperties.containsKey(entityID) ?
+            foreignKeyProperties.get(entityID).values() : new ArrayList<Property.ForeignKeyProperty>(0);
   }
 
   /**
@@ -449,14 +449,14 @@ public class EntityRepository implements Serializable {
   }
 
   /**
-   * Returns the properties referencing entities of the given type
-   * @param entityID the ID of the entity from which to retrieve the reference properties
+   * Returns the foreign key properties referencing entities of the given type
+   * @param entityID the ID of the entity from which to retrieve the foreign key properties
    * @param referenceEntityID the ID of the reference entity
    * @return a List containing the properties, an empty list is returned in case no properties fit the criteria
    */
-  public List<Property.EntityProperty> getEntityProperties(final String entityID, final String referenceEntityID) {
-    final List<Property.EntityProperty > ret = new ArrayList<Property.EntityProperty>();
-    for (final Property.EntityProperty property : getEntityProperties(entityID))
+  public List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
+    final List<Property.ForeignKeyProperty> ret = new ArrayList<Property.ForeignKeyProperty>();
+    for (final Property.ForeignKeyProperty property : getForeignKeyProperties(entityID))
       if (property.referenceEntityID.equals(referenceEntityID))
         ret.add(property);
 
@@ -466,13 +466,13 @@ public class EntityRepository implements Serializable {
   /**
    * @param entityID the entity ID
    * @param propertyID the property ID
-   * @return the Property.EntityProperty with the given propertyID
+   * @return the Property.ForeignKeyProperty with the given propertyID
    * @throws RuntimeException in case no such property exists
    */
-  public Property.EntityProperty getEntityProperty(final String entityID, final String propertyID) {
-    for (final Property.EntityProperty entityProperty : getEntityProperties(entityID))
-      if (entityProperty.propertyID.equals(propertyID))
-        return entityProperty;
+  public Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
+      if (foreignKeyProperty.propertyID.equals(propertyID))
+        return foreignKeyProperty;
 
     throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);
   }
@@ -698,8 +698,8 @@ public class EntityRepository implements Serializable {
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
                 + " has already been defined as: " + properties.get(property.propertyID) + " in entity: " + entityID);
       properties.put(property.propertyID, property);
-      if (property instanceof Property.EntityProperty) {
-        for (final Property referenceProperty : ((Property.EntityProperty) property).referenceProperties) {
+      if (property instanceof Property.ForeignKeyProperty) {
+        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).referenceProperties) {
           if (!(referenceProperty instanceof Property.MirrorProperty)) {
             if (properties.containsKey(referenceProperty.propertyID))
               throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
@@ -747,8 +747,8 @@ public class EntityRepository implements Serializable {
             new HashMap<Integer, Property>(initialPropertyDefinitions.size());
     final LinkedHashMap<String, Property> databaseProperties =
             new LinkedHashMap<String, Property>(initialPropertyDefinitions.size());
-    final Map<String, Property.EntityProperty> entityProperties =
-            new HashMap<String, Property.EntityProperty>(initialPropertyDefinitions.size());
+    final Map<String, Property.ForeignKeyProperty> foreignKeyProperties =
+            new HashMap<String, Property.ForeignKeyProperty>(initialPropertyDefinitions.size());
     final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties =
             new HashMap<String, Collection<Property.DenormalizedProperty>>(initialPropertyDefinitions.size());
     final List<Property.PrimaryKeyProperty > primaryKeyProperties =
@@ -757,14 +757,14 @@ public class EntityRepository implements Serializable {
 
     for (final Property property : initialPropertyDefinitions.values())
       addProperty(visibleProperties, visiblePropertyIndexes, databaseProperties,
-              entityProperties, denormalizedProperties, primaryKeyProperties, primaryKeyColumnNames, property);
+              foreignKeyProperties, denormalizedProperties, primaryKeyProperties, primaryKeyColumnNames, property);
 
     initContainers();
 
     this.databaseProperties.put(entityID, databaseProperties);
     this.visibleProperties.put(entityID, visibleProperties);
     this.visiblePropertyIndexes.put(entityID, visiblePropertyIndexes);
-    this.entityProperties.put(entityID, entityProperties);
+    this.foreignKeyProperties.put(entityID, foreignKeyProperties);
     if (denormalizedProperties.size() > 0)
       this.denormalizedProperties.put(entityID, denormalizedProperties);
     this.primaryKeyProperties.put(entityID, primaryKeyProperties);
@@ -780,7 +780,7 @@ public class EntityRepository implements Serializable {
   private void addProperty(final Map<String, Property> visibleProperties,
                            final Map<Integer, Property> visiblePropertyIndexes,
                            final Map<String, Property> databaseProperties,
-                           final Map<String, Property.EntityProperty> entityProperties,
+                           final Map<String, Property.ForeignKeyProperty> foreignKeyProperties,
                            final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties,
                            final List<Property.PrimaryKeyProperty> primaryKeyProperties,
                            final List<String> primaryKeyColumnNames, final Property property) {
@@ -788,8 +788,8 @@ public class EntityRepository implements Serializable {
       primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
       primaryKeyColumnNames.add(property.propertyID);
     }
-    if (property instanceof Property.EntityProperty)
-      entityProperties.put(property.propertyID, (Property.EntityProperty) property);
+    if (property instanceof Property.ForeignKeyProperty)
+      foreignKeyProperties.put(property.propertyID, (Property.ForeignKeyProperty) property);
     if (property.isDatabaseProperty())
       databaseProperties.put(property.propertyID, property);
     if (property instanceof Property.DenormalizedProperty) {
@@ -813,7 +813,7 @@ public class EntityRepository implements Serializable {
     final Collection<Property> dbProperties = getDatabaseProperties(entityID);
     final List<String> ret = new ArrayList<String>(dbProperties.size());
     for (final Property property : dbProperties)
-      if (!(property instanceof Property.EntityProperty))
+      if (!(property instanceof Property.ForeignKeyProperty))
         ret.add(property.propertyID);
 
     return ret.toArray(new String[ret.size()]);
@@ -823,7 +823,7 @@ public class EntityRepository implements Serializable {
     final Collection<Property> dbProperties = getDatabaseProperties(entityID);
     final List<Property> selectProperties = new ArrayList<Property>(dbProperties.size());
     for (final Property property : dbProperties)
-      if (!(property instanceof Property.EntityProperty))
+      if (!(property instanceof Property.ForeignKeyProperty))
         selectProperties.add(property);
 
     final StringBuilder ret = new StringBuilder();
@@ -849,8 +849,8 @@ public class EntityRepository implements Serializable {
       this.visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
     if (this.visiblePropertyIndexes == null)
       this.visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
-    if (this.entityProperties == null)
-      this.entityProperties = new HashMap<String, Map<String, Property.EntityProperty>>();
+    if (this.foreignKeyProperties == null)
+      this.foreignKeyProperties = new HashMap<String, Map<String, Property.ForeignKeyProperty>>();
     if (this.denormalizedProperties == null)
       this.denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
     if (this.primaryKeyProperties == null)

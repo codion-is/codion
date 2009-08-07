@@ -44,7 +44,7 @@ public class EmpDeptTest extends EntityTestUnit {
     if (entityIDs.contains(EmpDept.T_EMPLOYEE)) {
       final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
       final Entity emp = new Entity(EmpDept.T_EMPLOYEE);
-      emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
+      emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
       emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department.getValue(EmpDept.DEPARTMENT_ID));
       emp.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       emp.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
@@ -70,11 +70,11 @@ public class EmpDeptTest extends EntityTestUnit {
       final Entity ret = new Entity(EmpDept.T_EMPLOYEE);
       final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
       final Entity manager = getReferenceEntity(EmpDept.T_EMPLOYEE);
-      ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
+      ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
       ret.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       ret.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
       ret.setValue(EmpDept.EMPLOYEE_JOB, "Slacker");
-      ret.setValue(EmpDept.EMPLOYEE_MGR_REF, manager);
+      ret.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
       ret.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
       ret.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 

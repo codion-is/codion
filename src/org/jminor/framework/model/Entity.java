@@ -69,9 +69,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private transient boolean hasDenormalizedProperties;
 
   /**
-   * Caches the result of <code>getReferencedKey</code> method
+   * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
-  private transient Map<Property.EntityProperty, EntityKey> referencedKeysCache;
+  private transient Map<Property.ForeignKeyProperty, EntityKey> referencedPrimaryKeysCache;
 
   private static boolean propertyDebug = (Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT);
 
@@ -184,7 +184,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * Sets the value of the given property.
-   * If <code>property</code> is an instance of Property.EntityProperty, denormalized values and
+   * If <code>property</code> is an instance of Property.ForeignKeyProperty, denormalized values and
    * values comprising the foreign key are also set.
    * @param property the property
    * @param value the new value
@@ -201,7 +201,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Initializing a value has the same effect as using <code>setValue()</code> except for Property.EntityPropertys
+   * Initializing a value has the same effect as using <code>setValue()</code> except for Property.ForeignKeyPropertys
    * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set.
    * It is also assumed that the Entity does not contain a value for the property, so the modified state is
    * ignored during the value setting
@@ -531,31 +531,31 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Returns the primary key of the entity referenced by the given EntityProperty
-   * @param property the entity reference property for which to retrieve the underlying EntityKey
+   * Returns the primary key of the entity referenced by the given ForeignKeyProperty
+   * @param foreignKeyProperty the foreign key property for which to retrieve the underlying EntityKey
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  public EntityKey getReferencedKey(final Property.EntityProperty property) {
-    EntityKey key = referencedKeysCache == null ? null : referencedKeysCache.get(property);
-    if (key != null)
-      return key;
+  public EntityKey getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    EntityKey primaryKey = referencedPrimaryKeysCache == null ? null : referencedPrimaryKeysCache.get(foreignKeyProperty);
+    if (primaryKey != null)
+      return primaryKey;
 
-    for (int i = 0; i < property.referenceProperties.size(); i++) {
-      final Property referenceKeyProperty = property.referenceProperties.get(i);
+    for (int i = 0; i < foreignKeyProperty.referenceProperties.size(); i++) {
+      final Property referenceKeyProperty = foreignKeyProperty.referenceProperties.get(i);
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
-              ? primaryKey.getValue(referenceKeyProperty.propertyID)
+              ? this.primaryKey.getValue(referenceKeyProperty.propertyID)
               : values.get(referenceKeyProperty.propertyID);
       if (!isValueNull(referenceKeyProperty.propertyType, value)) {
-        if (key == null)
-          (referencedKeysCache == null ? referencedKeysCache = new HashMap<Property.EntityProperty, EntityKey>()
-                  : referencedKeysCache).put(property, key = new EntityKey(property.referenceEntityID));
-        key.setValue(key.getProperties().get(i).propertyID, value);//check the index thing set EntityResultPacker.getReferenceEntity
+        if (primaryKey == null)
+          (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, EntityKey>()
+                  : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new EntityKey(foreignKeyProperty.referenceEntityID));
+        primaryKey.setValue(primaryKey.getProperties().get(i).propertyID, value);
       }
       else
         break;
     }
 
-    return key;
+    return primaryKey;
   }
 
   /**
@@ -655,7 +655,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * that this Entity instance does not contain a value for the property, thus the modified state
    * can be safely disregarded during the value setting
    * @param propagateReferenceValues if set to true then both reference key values and
-   * denormalized values are set in case <code>property</code> is a Property.EntityProperty.
+   * denormalized values are set in case <code>property</code> is a Property.ForeignKeyProperty.
    * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preventing circular references
    */
   private void doSetValue(final Property property, final Object newValue, final boolean primaryKeyProperty,
@@ -668,8 +668,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
     //invalidate the toString cache
     toString = null;
 
-    if (propagateReferenceValues && property instanceof Property.EntityProperty && (newValue == null || newValue instanceof Entity))
-      propagateReferenceValues((Property.EntityProperty) property, (Entity) newValue);
+    if (propagateReferenceValues && property instanceof Property.ForeignKeyProperty && (newValue == null || newValue instanceof Entity))
+      propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
             primaryKeyProperty ? primaryKey.getValue(property.propertyID) : values.get(property.propertyID);
@@ -685,13 +685,13 @@ public final class Entity implements Serializable, Comparable<Entity> {
       firePropertyChangeEvent(property, newValue, oldValue, initialization);
   }
 
-  private void propagateReferenceValues(final Property.EntityProperty property, final Entity newValue) {
-    referencedKeysCache = null;
-    setReferenceKeyValues(property, newValue);
+  private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
+    referencedPrimaryKeysCache = null;
+    setForeignKeyValues(foreignKeyProperty, newValue);
     if (hasDenormalizedProperties) {
-      final Collection<Property.DenormalizedProperty> properties =
-              repository.getDenormalizedProperties(getEntityID(), property.referenceEntityID);
-      setDenormalizedValues(property, newValue, properties);
+      final Collection<Property.DenormalizedProperty> denormalizedProperties =
+              repository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.referenceEntityID);
+      setDenormalizedValues(foreignKeyProperty, newValue, denormalizedProperties);
     }
   }
 
@@ -703,7 +703,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param property the entity reference property
    * @param referencedEntity the referenced entity
    */
-  private void setReferenceKeyValues(final Property.EntityProperty property, final Entity referencedEntity) {
+  private void setForeignKeyValues(final Property.ForeignKeyProperty property, final Entity referencedEntity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             referencedEntity != null ? referencedEntity.primaryKey.getProperties()
                     : repository.getPrimaryKeyProperties(property.referenceEntityID);
@@ -721,17 +721,17 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * Sets the denormalized property values
-   * @param property the entity reference property
+   * @param foreignKeyProperty the foreign key property
    * @param entity the entity value
    * @param denormalizedProperties the denormalized properties
    */
-  private void setDenormalizedValues(final Property.EntityProperty property, final Entity entity,
+  private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity entity,
                                      final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         doSetValue(denormalizedProperty,
                 entity == null ? null : entity.getRawValue(denormalizedProperty.valueSourceProperty.propertyID),
-                false, !values.containsKey(property.propertyID), true);
+                false, !values.containsKey(foreignKeyProperty.propertyID), true);
       }
     }
   }

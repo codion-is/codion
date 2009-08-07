@@ -79,19 +79,19 @@ public class PetstoreTest extends EntityTestUnit {
     }
     if (entityID.equals(Petstore.T_ITEM)) {
       final Entity item = new Entity(Petstore.T_ITEM);
-      item.setValue(Petstore.ITEM_ADDRESS_REF, getReferenceEntity(Petstore.T_ADDRESS));
-      item.setValue(Petstore.ITEM_C0NTACT_INFO_REF, getReferenceEntity(Petstore.T_SELLER_CONTACT_INFO));
+      item.setValue(Petstore.ITEM_ADDRESS_FK, getReferenceEntity(Petstore.T_ADDRESS));
+      item.setValue(Petstore.ITEM_C0NTACT_INFO_FK, getReferenceEntity(Petstore.T_SELLER_CONTACT_INFO));
       item.setValue(Petstore.ITEM_DESCRIPTION, "description");
       item.setValue(Petstore.ITEM_NAME, "item");
       item.setValue(Petstore.ITEM_PRICE, 34.2);
-      item.setValue(Petstore.ITEM_PRODUCT_REF, getReferenceEntity(Petstore.T_PRODUCT));
+      item.setValue(Petstore.ITEM_PRODUCT_FK, getReferenceEntity(Petstore.T_PRODUCT));
       item.setValue(Petstore.ITEM_DISABLED, Type.Boolean.FALSE);
 
       return item;
     }
     if (entityID.equals(Petstore.T_PRODUCT)) {
       final Entity product = new Entity(Petstore.T_PRODUCT);
-      product.setValue(Petstore.PRODUCT_CATEGORY_REF, getReferenceEntity(Petstore.T_CATEGORY));
+      product.setValue(Petstore.PRODUCT_CATEGORY_FK, getReferenceEntity(Petstore.T_CATEGORY));
       product.setValue(Petstore.PRODUCT_DESCRIPTION, "description");
       product.setValue(Petstore.PRODUCT_IMAGE_URL, "imageurl");
       product.setValue(Petstore.PRODUCT_NAME, "product name");
@@ -114,8 +114,8 @@ public class PetstoreTest extends EntityTestUnit {
     }
     if (entityID.equals(Petstore.T_TAG_ITEM)) {
       final Entity tagItem = new Entity(Petstore.T_TAG_ITEM);
-      tagItem.setValue(Petstore.TAG_ITEM_ITEM_REF, getReferenceEntity(Petstore.T_ITEM));
-      tagItem.setValue(Petstore.TAG_ITEM_TAG_REF, getReferenceEntity(Petstore.T_TAG));
+      tagItem.setValue(Petstore.TAG_ITEM_ITEM_FK, getReferenceEntity(Petstore.T_ITEM));
+      tagItem.setValue(Petstore.TAG_ITEM_TAG_FK, getReferenceEntity(Petstore.T_TAG));
 
       return tagItem;
     }
@@ -181,7 +181,7 @@ public class PetstoreTest extends EntityTestUnit {
     }
     if (referenceEntityIDs.contains(Petstore.T_PRODUCT)) {
       final Entity product = new Entity(Petstore.T_PRODUCT);
-      product.setValue(Petstore.PRODUCT_CATEGORY_REF, getReferenceEntity(Petstore.T_CATEGORY));
+      product.setValue(Petstore.PRODUCT_CATEGORY_FK, getReferenceEntity(Petstore.T_CATEGORY));
       product.setValue(Petstore.PRODUCT_DESCRIPTION, "description");
       product.setValue(Petstore.PRODUCT_IMAGE_URL, "imageurl");
       product.setValue(Petstore.PRODUCT_NAME, "ref product name");
@@ -190,7 +190,7 @@ public class PetstoreTest extends EntityTestUnit {
     }
     if (referenceEntityIDs.contains(Petstore.T_PRODUCT)) {
       final Entity product = new Entity(Petstore.T_PRODUCT);
-      product.setValue(Petstore.PRODUCT_CATEGORY_REF, getReferenceEntity(Petstore.T_CATEGORY));
+      product.setValue(Petstore.PRODUCT_CATEGORY_FK, getReferenceEntity(Petstore.T_CATEGORY));
       product.setValue(Petstore.PRODUCT_DESCRIPTION, "description");
       product.setValue(Petstore.PRODUCT_IMAGE_URL, "imageurl");
       product.setValue(Petstore.PRODUCT_NAME, "ref product name");
@@ -205,12 +205,12 @@ public class PetstoreTest extends EntityTestUnit {
     }
     if (referenceEntityIDs.contains(Petstore.T_ITEM)) {
       final Entity item = new Entity(Petstore.T_ITEM);
-      item.setValue(Petstore.ITEM_ADDRESS_REF, getReferenceEntity(Petstore.T_ADDRESS));
-      item.setValue(Petstore.ITEM_C0NTACT_INFO_REF, getReferenceEntity(Petstore.T_SELLER_CONTACT_INFO));
+      item.setValue(Petstore.ITEM_ADDRESS_FK, getReferenceEntity(Petstore.T_ADDRESS));
+      item.setValue(Petstore.ITEM_C0NTACT_INFO_FK, getReferenceEntity(Petstore.T_SELLER_CONTACT_INFO));
       item.setValue(Petstore.ITEM_DESCRIPTION, "description");
       item.setValue(Petstore.ITEM_NAME, "refitem");
       item.setValue(Petstore.ITEM_PRICE, 34.2);
-      item.setValue(Petstore.ITEM_PRODUCT_REF, getReferenceEntity(Petstore.T_PRODUCT));
+      item.setValue(Petstore.ITEM_PRODUCT_FK, getReferenceEntity(Petstore.T_PRODUCT));
       item.setValue(Petstore.ITEM_DISABLED, Type.Boolean.TRUE);
 
       setReferenceEntity(Petstore.T_ITEM, item);

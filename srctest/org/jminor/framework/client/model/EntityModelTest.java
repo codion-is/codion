@@ -43,7 +43,7 @@ public class EntityModelTest extends TestCase {
     final IEntityDb db = departmentModel.getDbProvider().getEntityDb();
     final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     final List<Entity> employees = db.selectMany(new EntityCriteria(EmpDept.T_EMPLOYEE,
-            new PropertyCriteria(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_REF),
+            new PropertyCriteria(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK),
                     SearchType.LIKE, department)));
     assertTrue("Number of employees for department should not be 0", employees.size() > 0);
     departmentModel.getTableModel().setFilterQueryByMaster(true);

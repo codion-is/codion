@@ -167,11 +167,11 @@ public class EmpDeptProfiling extends ProfilingModel {
     ret.setValue(EmpDept.EMPLOYEE_ID, id);
     ret.setValue(EmpDept.EMPLOYEE_NAME, name);
     ret.setValue(EmpDept.EMPLOYEE_JOB, job);
-    ret.setValue(EmpDept.EMPLOYEE_MGR_REF, manager);
+    ret.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
     ret.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
     ret.setValue(EmpDept.EMPLOYEE_SALARY, salary);
     ret.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, department);
+    ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
     return ret;
   }

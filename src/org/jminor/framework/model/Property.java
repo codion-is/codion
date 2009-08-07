@@ -56,9 +56,9 @@ public class Property implements Serializable {
   private final boolean updatable;
 
   /**
-   * A reference to a parent property, if one exists
+   * A reference to a parent foreign key property, if one exists
    */
-  private EntityProperty parentProperty;
+  private ForeignKeyProperty parentProperty;
 
   /**
    * A default value for this property in new Entity instances
@@ -212,7 +212,7 @@ public class Property implements Serializable {
    * Sets the parent property
    * @param parentProperty the property to set as parent property
    */
-  public void setParentProperty(final EntityProperty parentProperty) {
+  public void setParentProperty(final ForeignKeyProperty parentProperty) {
     this.parentProperty = parentProperty;
   }
 
@@ -315,10 +315,10 @@ public class Property implements Serializable {
   /**
    * A meta property that represents a reference to another entity, typically but not necessarily based on a foreign key.
    * These do not map directly to a underlying table column, but wrap the actual column properties involved in the relation.
-   * e.g.: new Property.EntityProperty("reference_property", new Property("reference_id")), where "reference_id" is the
-   * actual name of the column involved in the reference, but "reference_property" is simply a descriptive property ID
+   * e.g.: new Property.ForeignKeyProperty("reference_fk", new Property("reference_id")), where "reference_id" is the
+   * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property ID
    */
-  public static class EntityProperty extends Property {
+  public static class ForeignKeyProperty extends Property {
 
     /**
      * the ID of the referenced entity
@@ -343,8 +343,8 @@ public class Property implements Serializable {
      * @param referenceEntityID the ID of the referenced entity type
      * @param referenceProperties the actual column properties involved in the reference
      */
-    public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
-                          final Property... referenceProperties) {
+    public ForeignKeyProperty(final String propertyID, final String caption, final String referenceEntityID,
+                              final Property... referenceProperties) {
       this(propertyID, caption, referenceEntityID, -1, referenceProperties);
     }
 
@@ -356,8 +356,8 @@ public class Property implements Serializable {
      * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
      * @param referenceProperties the actual column properties involved in the reference
      */
-    public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
-                          final int preferredColumnWidth, final Property... referenceProperties) {
+    public ForeignKeyProperty(final String propertyID, final String caption, final String referenceEntityID,
+                              final int preferredColumnWidth, final Property... referenceProperties) {
       this(propertyID, caption, referenceEntityID, preferredColumnWidth, false, referenceProperties);
     }
 
@@ -370,9 +370,9 @@ public class Property implements Serializable {
      * @param isWeakReference if true then the actual values of this reference property are not automatically loaded
      * @param referenceProperties the actual column properties involved in the reference
      */
-    public EntityProperty(final String propertyID, final String caption, final String referenceEntityID,
-                          final int preferredColumnWidth, final boolean isWeakReference,
-                          final Property... referenceProperties) {
+    public ForeignKeyProperty(final String propertyID, final String caption, final String referenceEntityID,
+                              final int preferredColumnWidth, final boolean isWeakReference,
+                              final Property... referenceProperties) {
       super(propertyID, Type.ENTITY, caption, caption == null, false, preferredColumnWidth);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
@@ -396,7 +396,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * Represents a child entity property that is already included as part of another reference entity property,
+   * Represents a child foreign key property that is already included as part of another reference foreign key property,
    * and should not handle updating the underlying property
    */
   //todo better explanation

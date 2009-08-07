@@ -68,7 +68,7 @@ public class EntityPropertyEditor extends JPanel {
    * Instantiates a new EntityPropertyEditor
    * @param property the property to edit
    * @param entities the entities
-   * @param entityModel an EntityModel instance used in case of an Property.EntityProperty being edited,
+   * @param entityModel an EntityModel instance used in case of an Property.ForeignKeyProperty being edited,
    * it provides both the IEntityDbProvider as well as the EntityComboBoxModel used in that case
    * @throws UserException in case of an exception
    */
@@ -81,7 +81,7 @@ public class EntityPropertyEditor extends JPanel {
    * Instantiates a new EntityPropertyEditor
    * @param property the property to edit
    * @param entities the entities
-   * @param entityModel an EntityModel instance used in case of an Property.EntityProperty being edited,
+   * @param entityModel an EntityModel instance used in case of an Property.ForeignKeyProperty being edited,
    * it provides both the IEntityDbProvider as well as the EntityComboBoxModel used in that case
    * @param inputManager the InputManager to use
    * @throws UserException in case of an exception
@@ -90,8 +90,8 @@ public class EntityPropertyEditor extends JPanel {
                               final EntityModel entityModel, final InputManager inputManager) throws UserException {
     if (property == null)
       throw new IllegalArgumentException("Null property provided for EntityPropertyEditor");
-    if (property instanceof Property.EntityProperty && entityModel == null)
-      throw new IllegalArgumentException("No EntityModel instance provided for entity property editor");
+    if (property instanceof Property.ForeignKeyProperty && entityModel == null)
+      throw new IllegalArgumentException("No EntityModel instance provided for foreign key property editor");
 
     this.inputManager = inputManager;
     this.property = property;
@@ -208,9 +208,9 @@ public class EntityPropertyEditor extends JPanel {
   }
 
   private JComponent createEntityField(final EntityModel entityModel, final Object currentValue) throws UserException {
-    final Property.EntityProperty entityProperty = (Property.EntityProperty) property;
-    if (!EntityRepository.get().isLargeDataset(entityProperty.referenceEntityID)) {
-      final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(entityProperty);
+    final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
+    if (!EntityRepository.get().isLargeDataset(foreignKeyProperty.referenceEntityID)) {
+      final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(foreignKeyProperty);
       model.refresh();
       if (currentValue != null)
         model.setSelectedItem(currentValue);
@@ -218,24 +218,24 @@ public class EntityPropertyEditor extends JPanel {
       return new JComboBox(model);
     }
     else {
-      final String[] searchPropertyIds = EntityRepository.get().getEntitySearchPropertyIDs(entityProperty.referenceEntityID);
+      final String[] searchPropertyIds = EntityRepository.get().getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
       List<Property> searchProperties;
       if (searchPropertyIds != null) {
-        searchProperties = EntityRepository.get().getProperties(entityProperty.referenceEntityID, searchPropertyIds);
+        searchProperties = EntityRepository.get().getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIds);
       }
       else {//use all string properties
         final Collection<Property> properties =
-                EntityRepository.get().getDatabaseProperties(entityProperty.referenceEntityID);
+                EntityRepository.get().getDatabaseProperties(foreignKeyProperty.referenceEntityID);
         searchProperties = new ArrayList<Property>();
         for (final Property property : properties)
           if (property.getPropertyType() == Type.STRING)
             searchProperties.add(property);
       }
       if (searchProperties.size() == 0)
-        throw new RuntimeException("No searchable properties found for entity: " + entityProperty.referenceEntityID);
+        throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.referenceEntityID);
 
       final EntityLookupField field = new EntityLookupField(entityModel.createEntityLookupModel(
-              ((Property.EntityProperty) property).referenceEntityID, null, searchProperties));
+              ((Property.ForeignKeyProperty) property).referenceEntityID, null, searchProperties));
       if (currentValue != null)
         field.getModel().setSelectedEntity((Entity) currentValue);
 

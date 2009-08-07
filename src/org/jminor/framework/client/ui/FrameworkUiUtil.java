@@ -240,13 +240,13 @@ public class FrameworkUiUtil {
     return box;
   }
 
-  public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
+  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty property, final EntityModel entityModel,
                                                     final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable) {
     return createEntityComboBox(property, entityModel, newRecordPanelProvider, newButtonFocusable, null);
   }
 
-  public static EntityComboBox createEntityComboBox(final Property.EntityProperty property, final EntityModel entityModel,
+  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty property, final EntityModel entityModel,
                                                     final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable, final State enabledState) {
     try {
@@ -268,7 +268,7 @@ public class FrameworkUiUtil {
     }
   }
 
-  public static JPanel createEntityFieldPanel(final Property.EntityProperty property, final EntityModel entityModel,
+  public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty property, final EntityModel entityModel,
                                               final EntityTableModel lookupModel) {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
     final JTextField txt = createEntityField(property, entityModel);
@@ -290,7 +290,7 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static JTextField createEntityField(final Property.EntityProperty property, final EntityModel entityModel) {
+  public static JTextField createEntityField(final Property.ForeignKeyProperty property, final EntityModel entityModel) {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
     setPropertyToolTip(entityModel.getEntityID(), property, txt);
@@ -304,7 +304,7 @@ public class FrameworkUiUtil {
     return txt;
   }
 
-  public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel                                                          ) {
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty property, final EntityModel entityModel                                                          ) {
     final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(property.referenceEntityID);
     if (searchPropertyIDs == null)
       throw new RuntimeException("No default search properties specified for entity: " + property.referenceEntityID
@@ -313,12 +313,12 @@ public class FrameworkUiUtil {
     return createEntityLookupField(property, entityModel, searchPropertyIDs);
   }
 
-  public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel,
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty property, final EntityModel entityModel,
                                                           final String... searchPropertyIDs) {
     return createEntityLookupField(property, entityModel, null, searchPropertyIDs);
   }
 
-  public static EntityLookupField createEntityLookupField(final Property.EntityProperty property, final EntityModel entityModel,
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty property, final EntityModel entityModel,
                                                           final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)

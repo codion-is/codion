@@ -216,7 +216,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
       if (!lastQueryResultCached())
-        setReferencedEntities(result);
+        setForeignKeyValues(result);
 
       return result;
     }
@@ -270,7 +270,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       }
 
       if (!lastQueryResultCached())
-        setReferencedEntities(result);
+        setForeignKeyValues(result);
 
       return result;
     }
@@ -545,7 +545,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
 
         if (!lastQueryResultCached())
-          setReferencedEntities(result);
+          setForeignKeyValues(result);
 
         return result;
       }
@@ -564,18 +564,18 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
    * @param entities the entities for which to set the reference entities
    * @throws DbException in case of a database exception
    */
-  private void setReferencedEntities(final List<Entity> entities) throws DbException {
+  private void setForeignKeyValues(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0)
       return;
 
-    for (final Property.EntityProperty entityProperty :
-            EntityRepository.get().getEntityProperties(entities.get(0).getEntityID())) {
-      final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, entityProperty);
-      final Map<EntityKey, Entity> referencedEntitiesHashed = entityProperty.isWeakReference
+    for (final Property.ForeignKeyProperty foreignKeyProperty :
+            EntityRepository.get().getForeignKeyProperties(entities.get(0).getEntityID())) {
+      final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
+      final Map<EntityKey, Entity> referencedEntitiesHashed = foreignKeyProperty.isWeakReference
               ? initWeakReferences(referencedPrimaryKeys)
               : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
       for (final Entity entity : entities)
-        entity.initializeValue(entityProperty, referencedEntitiesHashed.get(entity.getReferencedKey(entityProperty)));
+        entity.initializeValue(foreignKeyProperty, referencedEntitiesHashed.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
     }
   }
 
@@ -588,10 +588,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   private static List<EntityKey> getPrimaryKeysOfEntityValues(final List<Entity> entities,
-                                                              final Property.EntityProperty property) {
+                                                              final Property.ForeignKeyProperty property) {
     final Set<EntityKey> ret = new HashSet<EntityKey>(entities.size());
     for (final Entity entity : entities) {
-      final EntityKey key = entity.getReferencedKey(property);
+      final EntityKey key = entity.getReferencedPrimaryKey(property);
       if (key != null)
         ret.add(key);
     }
@@ -656,9 +656,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final String[] entityIDs = EntityRepository.get().getInitializedEntities();
     final Set<Dependency> dependencies = new HashSet<Dependency>();
     for (final String entityCheckClass : entityIDs) {
-      for (final Property.EntityProperty entityProperty : EntityRepository.get().getEntityProperties(entityCheckClass))
-        if (entityProperty.referenceEntityID.equals(entityID))
-          dependencies.add(new Dependency(entityCheckClass, entityProperty.referenceProperties));
+      for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.get().getForeignKeyProperties(entityCheckClass))
+        if (foreignKeyProperty.referenceEntityID.equals(entityID))
+          dependencies.add(new Dependency(entityCheckClass, foreignKeyProperty.referenceProperties));
     }
 
     return dependencies;

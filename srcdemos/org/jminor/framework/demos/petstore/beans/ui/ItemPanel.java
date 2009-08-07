@@ -40,9 +40,9 @@ public class ItemPanel extends EntityPanel {
   @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,3,5,5));
-    EntityComboBox box = createEntityComboBox(Petstore.ITEM_PRODUCT_REF);
+    EntityComboBox box = createEntityComboBox(Petstore.ITEM_PRODUCT_FK);
     setDefaultFocusComponent(box);
-    ret.add(createControlPanel(Petstore.ITEM_PRODUCT_REF, box));
+    ret.add(createControlPanel(Petstore.ITEM_PRODUCT_FK, box));
     JTextField txt = createTextField(Petstore.ITEM_NAME);
     txt.setColumns(12);
     ret.add(createControlPanel(Petstore.ITEM_NAME, txt));
@@ -50,16 +50,16 @@ public class ItemPanel extends EntityPanel {
     txt.setColumns(16);
     ret.add(createControlPanel(Petstore.ITEM_DESCRIPTION, txt));
     ret.add(createControlPanel(Petstore.ITEM_PRICE, createTextField(Petstore.ITEM_PRICE)));
-    box = createEntityComboBox(Petstore.ITEM_C0NTACT_INFO_REF,
+    box = createEntityComboBox(Petstore.ITEM_C0NTACT_INFO_FK,
             new EntityPanelProvider(ContactInfoModel.class, ContactInfoPanel.class), false);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    ret.add(createControlPanel(Petstore.ITEM_C0NTACT_INFO_REF, box.createPanel()));
-    box = createEntityComboBox(Petstore.ITEM_ADDRESS_REF,
+    ret.add(createControlPanel(Petstore.ITEM_C0NTACT_INFO_FK, box.createPanel()));
+    box = createEntityComboBox(Petstore.ITEM_ADDRESS_FK,
             new EntityPanelProvider(AddressModel.class, AddressPanel.class), false);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    ret.add(createControlPanel(Petstore.ITEM_ADDRESS_REF, box.createPanel()));
+    ret.add(createControlPanel(Petstore.ITEM_ADDRESS_FK, box.createPanel()));
     ret.add(createControlPanel(Petstore.ITEM_IMAGE_URL, createTextField(Petstore.ITEM_IMAGE_URL)));
     ret.add(createControlPanel(Petstore.ITEM_IMAGE_THUMB_URL, createTextField(Petstore.ITEM_IMAGE_THUMB_URL)));
     ret.add(createControlPanel(Petstore.ITEM_DISABLED, createCheckBox(Petstore.ITEM_DISABLED, null, false)));

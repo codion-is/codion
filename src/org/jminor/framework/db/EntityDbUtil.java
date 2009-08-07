@@ -114,7 +114,7 @@ public class EntityDbUtil {
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : EntityRepository.get().getDatabaseProperties(entity.getEntityID(),
             EntityRepository.get().getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
-      if (!(property instanceof Property.EntityProperty) && !entity.isValueNull(property.propertyID))
+      if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.propertyID))
         ret.add(property);
     }
 
@@ -128,7 +128,7 @@ public class EntityDbUtil {
   public static Collection<Property> getUpdateProperties(final Entity entity) {
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : EntityRepository.get().getDatabaseProperties(entity.getEntityID(), true, false, false))
-      if (entity.isModified(property.propertyID) && !(property instanceof Property.EntityProperty))
+      if (entity.isModified(property.propertyID) && !(property instanceof Property.ForeignKeyProperty))
         ret.add(property);
 
     return ret;

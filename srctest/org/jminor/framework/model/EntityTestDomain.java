@@ -21,7 +21,7 @@ public class EntityTestDomain {
   public static final String DETAIL_LONG_DATE = "long_date";
   public static final String DETAIL_BOOLEAN = "boolean";
   public static final String DETAIL_ENTITY_ID = "entity_id";
-  public static final String DETAIL_ENTITY_REF = "entity_ref";
+  public static final String DETAIL_ENTITY_FK = "entity_ref";
   public static final String DETAIL_MASTER_NAME = "master_name";
   public static final String DETAIL_MASTER_CODE = "master_code";
 
@@ -42,11 +42,11 @@ public class EntityTestDomain {
             new Property(DETAIL_SHORT_DATE, Type.SHORT_DATE, DETAIL_SHORT_DATE),
             new Property(DETAIL_LONG_DATE, Type.LONG_DATE, DETAIL_LONG_DATE),
             new Property(DETAIL_BOOLEAN, Type.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(Type.Boolean.TRUE),
-            new Property.EntityProperty(DETAIL_ENTITY_REF, DETAIL_ENTITY_REF, T_MASTER,
+            new Property.ForeignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     new Property(DETAIL_ENTITY_ID)),
-            new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_REF,
+            new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
                     EntityRepository.get().getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
-            new Property.DenormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_REF,
+            new Property.DenormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     EntityRepository.get().getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE));
   }
 }

@@ -59,7 +59,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
-    return !(model.getProperty() instanceof Property.EntityProperty || model.getPropertyType() == Type.BOOLEAN)
+    return !(model.getProperty() instanceof Property.ForeignKeyProperty || model.getPropertyType() == Type.BOOLEAN)
             || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
   }
 

@@ -246,8 +246,8 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {
-    final Collection<Property.EntityProperty> properties = EntityRepository.get().getEntityProperties(entityID);
-    for (final Property.EntityProperty property : properties) {
+    final Collection<Property.ForeignKeyProperty> properties = EntityRepository.get().getForeignKeyProperties(entityID);
+    for (final Property.ForeignKeyProperty property : properties) {
       final String entityValueClass = property.referenceEntityID;
       if (entityValueClass != null) {
         if (!container.contains(entityValueClass)) {

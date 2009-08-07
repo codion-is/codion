@@ -125,7 +125,7 @@ public class EntityLookupModelTest extends TestCase {
     dept.setValue(EmpDept.DEPARTMENT_NAME, "TestDept");
 
     final Entity emp = new Entity(EmpDept.T_EMPLOYEE);
-    emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, dept);
+    emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp.setValue(EmpDept.EMPLOYEE_JOB, "nojob");
@@ -133,7 +133,7 @@ public class EntityLookupModelTest extends TestCase {
     emp.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     final Entity emp2 = new Entity(EmpDept.T_EMPLOYEE);
-    emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, dept);
+    emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp2.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp2.setValue(EmpDept.EMPLOYEE_JOB, "ajob");
@@ -141,7 +141,7 @@ public class EntityLookupModelTest extends TestCase {
     emp2.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     final Entity emp3 = new Entity(EmpDept.T_EMPLOYEE);
-    emp3.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, dept);
+    emp3.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp3.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp3.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp3.setValue(EmpDept.EMPLOYEE_JOB, "nojob");
@@ -149,7 +149,7 @@ public class EntityLookupModelTest extends TestCase {
     emp3.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
     final Entity emp4 = new Entity(EmpDept.T_EMPLOYEE);
-    emp4.setValue(EmpDept.EMPLOYEE_DEPARTMENT_REF, dept);
+    emp4.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
     emp4.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
     emp4.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
     emp4.setValue(EmpDept.EMPLOYEE_JOB, "ajob");

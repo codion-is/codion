@@ -22,7 +22,7 @@ public class EntityTest extends TestCase {
     ret.setValue(EntityTestDomain.DETAIL_SHORT_DATE, shortDateValue);
     ret.setValue(EntityTestDomain.DETAIL_LONG_DATE, longDateValue);
     ret.setValue(EntityTestDomain.DETAIL_BOOLEAN, booleanValue);
-    ret.setValue(EntityTestDomain.DETAIL_ENTITY_REF, entityValue);
+    ret.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entityValue);
 
     return ret;
   }
@@ -63,7 +63,7 @@ public class EntityTest extends TestCase {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_SHORT_DATE).getPropertyType(), Type.SHORT_DATE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_LONG_DATE).getPropertyType(), Type.LONG_DATE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getPropertyType(), Type.BOOLEAN);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_REF).getPropertyType(), Type.ENTITY);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).getPropertyType(), Type.ENTITY);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).getPropertyType(), Type.INT);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getPropertyType(), Type.STRING);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getPropertyType(), Type.INT);
@@ -88,7 +88,7 @@ public class EntityTest extends TestCase {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_SHORT_DATE).getCaption(), EntityTestDomain.DETAIL_SHORT_DATE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_LONG_DATE).getCaption(), EntityTestDomain.DETAIL_LONG_DATE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getCaption(), EntityTestDomain.DETAIL_BOOLEAN);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_REF).getCaption(), EntityTestDomain.DETAIL_ENTITY_REF);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).getCaption(), EntityTestDomain.DETAIL_ENTITY_FK);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getCaption(), EntityTestDomain.DETAIL_MASTER_NAME);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getCaption(), EntityTestDomain.DETAIL_MASTER_CODE);
 
@@ -100,7 +100,7 @@ public class EntityTest extends TestCase {
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_SHORT_DATE).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_LONG_DATE).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).isHidden());
-    assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_REF).isHidden());
+    assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).isHidden());
 
@@ -112,7 +112,7 @@ public class EntityTest extends TestCase {
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_SHORT_DATE), detailShortDate);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_LONG_DATE), detailLongDate);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_BOOLEAN), detailBoolean);
-    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_REF), referencedEntityValue);
+    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK), referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_NAME), masterName);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE), masterCode);
     assertFalse(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
@@ -148,12 +148,12 @@ public class EntityTest extends TestCase {
     assertTrue("Entity property values should be equal after .getCopy()", test2.propertyValuesEqual(testEntity));
 
     //test propogate entity reference/denormalized values
-    testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_REF, null);
+    testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);
     assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
     assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_MASTER_NAME));
     assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_MASTER_CODE));
 
-    testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_REF, referencedEntityValue);
+    testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
     assertFalse(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_ID),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_ID));
@@ -163,7 +163,7 @@ public class EntityTest extends TestCase {
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
 
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, 20);
-    testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_REF, referencedEntityValue);
+    testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
   }

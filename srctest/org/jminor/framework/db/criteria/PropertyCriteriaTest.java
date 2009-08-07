@@ -23,7 +23,7 @@ public class PropertyCriteriaTest extends TestCase {
   }
 
   public void testConditionEntity() {
-    final Property property = new Property.EntityProperty("colName", "entity", EmpDept.T_DEPARTMENT,
+    final Property property = new Property.ForeignKeyProperty("colName", "entity", EmpDept.T_DEPARTMENT,
             new Property("entityId", Type.INT));
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "entityId is null", testCrit.toString());

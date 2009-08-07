@@ -30,14 +30,14 @@ public class TagItemPanel extends EntityPanel {
   @Override
   protected JPanel initializePropertyPanel() {
     final JPanel ret = new JPanel(new FlexibleGridLayout(2,1,5,5));
-    EntityComboBox box = createEntityComboBox(Petstore.TAG_ITEM_ITEM_REF);
+    EntityComboBox box = createEntityComboBox(Petstore.TAG_ITEM_ITEM_FK);
     setDefaultFocusComponent(box);
     box.setPopupWidth(240);
     box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
-    ret.add(createControlPanel(Petstore.TAG_ITEM_ITEM_REF, box));
-    box = createEntityComboBox(Petstore.TAG_ITEM_TAG_REF,
+    ret.add(createControlPanel(Petstore.TAG_ITEM_ITEM_FK, box));
+    box = createEntityComboBox(Petstore.TAG_ITEM_TAG_FK,
             new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false);
-    ret.add(createControlPanel(Petstore.TAG_ITEM_TAG_REF, box.createPanel()));
+    ret.add(createControlPanel(Petstore.TAG_ITEM_TAG_FK, box.createPanel()));
 
     return ret;
   }

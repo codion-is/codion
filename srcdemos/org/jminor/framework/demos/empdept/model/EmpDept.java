@@ -47,7 +47,7 @@ public class EmpDept {
   /**Property identifier for the MGR column in the table scott.emp*/
   public static final String EMPLOYEE_MGR = "mgr";
   /**Foreign key (reference) identifier for the MGR column in the table scott.emp*/
-  public static final String EMPLOYEE_MGR_REF = "mgr_ref";
+  public static final String EMPLOYEE_MGR_FK = "mgr_fk";
   /**Property identifier for the HIREDATE column in the table scott.emp*/
   public static final String EMPLOYEE_HIREDATE = "hiredate";
   /**Property identifier for the SAL column in the table scott.emp*/
@@ -57,7 +57,7 @@ public class EmpDept {
   /**Property identifier for the DEPTNO column in the table scott.emp*/
   public static final String EMPLOYEE_DEPARTMENT = "deptno";
   /**Foreign key (reference) identifier for the DEPT column in the table scott.emp*/
-  public static final String EMPLOYEE_DEPARTMENT_REF = "dept_ref";
+  public static final String EMPLOYEE_DEPARTMENT_FK = "dept_fk";
 
   static {
     /*Initalizing the entity type T_DEPARTMENT*/
@@ -71,15 +71,15 @@ public class EmpDept {
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME)),
-            new Property.EntityProperty(EMPLOYEE_DEPARTMENT_REF, getString(EMPLOYEE_DEPARTMENT_REF), T_DEPARTMENT,
+            new Property.ForeignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
                     new Property(EMPLOYEE_DEPARTMENT)),
             new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB)),
             new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY)),
             new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION)),
-            new Property.EntityProperty(EMPLOYEE_MGR_REF, getString(EMPLOYEE_MGR_REF), T_EMPLOYEE,
+            new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.SHORT_DATE, getString(EMPLOYEE_HIREDATE)),
-            new Property.DenormalizedViewProperty(DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_REF,
+            new Property.DenormalizedViewProperty(DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.get().getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION), 100));
 
@@ -93,7 +93,7 @@ public class EmpDept {
         else if (entity.is(T_EMPLOYEE))
           return entity.getStringValue(EMPLOYEE_NAME)
                   + ", " + entity.getStringValue(EMPLOYEE_JOB)
-                  + ", " + entity.getEntityValue(EMPLOYEE_DEPARTMENT_REF);
+                  + ", " + entity.getEntityValue(EMPLOYEE_DEPARTMENT_FK);
 
         return super.toString(entity);
       }

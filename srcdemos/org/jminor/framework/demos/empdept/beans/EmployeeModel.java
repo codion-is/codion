@@ -31,8 +31,8 @@ public class EmployeeModel extends EntityModel {
 
   /** {@inheritDoc} */
   @Override
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.EntityProperty property) {
-    if (property.propertyID.equals(EmpDept.EMPLOYEE_MGR_REF)) {
+  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
+    if (property.propertyID.equals(EmpDept.EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
               getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
       //Only show the president and managers
@@ -53,22 +53,22 @@ public class EmployeeModel extends EntityModel {
     evtEntitiesChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).refresh();
+          getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
         }
         catch (UserException ex) {
           throw ex.getRuntimeException();
         }
       }
     });
-    getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_REF).addListener(new PropertyListener() {
+    getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(final PropertyChangeEvent e) {
         //only show managers in the same department as the active entity
-        getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_REF).setFilterCriteria(new IFilterCriteria() {
+        getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new IFilterCriteria() {
           public boolean include(final Object item) {
             return item instanceof String //the item representing null
                     || (Entity.isEqual(Type.ENTITY,
-                    ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_REF), e.getNewValue())
+                    ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), e.getNewValue())
                     && !Entity.isEqual(Type.ENTITY, item, getActiveEntityCopy()));
           }
         });

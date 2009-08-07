@@ -42,16 +42,16 @@ public class EmployeePanel extends EntityPanel {
     final JTextField txtJob = UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_JOB));
     txtJob.setColumns(8);
 
-    final SteppedComboBox boxMgr = createEntityComboBox(EmpDept.EMPLOYEE_MGR_REF);
+    final SteppedComboBox boxMgr = createEntityComboBox(EmpDept.EMPLOYEE_MGR_FK);
     boxMgr.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     boxMgr.setPopupWidth(200);
 
     final JPanel ret = new JPanel(new FlexibleGridLayout(3,3,5,5,true,false));
     ret.add(createControlPanel(EmpDept.EMPLOYEE_NAME, txtName));
     ret.add(createControlPanel(EmpDept.EMPLOYEE_JOB, txtJob));
-    ret.add(createControlPanel(EmpDept.EMPLOYEE_DEPARTMENT_REF, createEntityComboBox(EmpDept.EMPLOYEE_DEPARTMENT_REF)));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_DEPARTMENT_FK, createEntityComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK)));
 
-    ret.add(createControlPanel(EmpDept.EMPLOYEE_MGR_REF, boxMgr));
+    ret.add(createControlPanel(EmpDept.EMPLOYEE_MGR_FK, boxMgr));
     ret.add(createControlPanel(EmpDept.EMPLOYEE_SALARY, createTextField(EmpDept.EMPLOYEE_SALARY)));
     ret.add(createControlPanel(EmpDept.EMPLOYEE_COMMISSION, createTextField(EmpDept.EMPLOYEE_COMMISSION)));
 

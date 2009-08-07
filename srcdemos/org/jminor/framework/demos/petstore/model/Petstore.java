@@ -24,7 +24,7 @@ public class Petstore {
   public static final String ADDRESS_CITY = "city";
   public static final String ADDRESS_STATE = "state";
   public static final String ADDRESS_ZIP = "zip";
-  public static final String ADDRESS_ZIP_REF = "zip_ref";
+  public static final String ADDRESS_ZIP_FK = "zip_fk";
   public static final String ADDRESS_LATITUDE = "latitude";
   public static final String ADDRESS_LONGITUDE = "longitude";
 
@@ -37,22 +37,22 @@ public class Petstore {
   public static final String T_ITEM = "petstore.item";
   public static final String ITEM_ID = "itemid";
   public static final String ITEM_PRODUCT_ID = "productid";
-  public static final String ITEM_PRODUCT_REF = "product_ref";
+  public static final String ITEM_PRODUCT_FK = "product_fk";
   public static final String ITEM_NAME = "name";
   public static final String ITEM_DESCRIPTION = "description";
   public static final String ITEM_IMAGE_URL = "imageurl";
   public static final String ITEM_IMAGE_THUMB_URL = "imagethumburl";
   public static final String ITEM_PRICE = "price";
   public static final String ITEM_ADDRESS_ID = "address_addressid";
-  public static final String ITEM_ADDRESS_REF = "address_ref";
+  public static final String ITEM_ADDRESS_FK = "address_fk";
   public static final String ITEM_C0NTACT_INFO_ID = "contactinfo_contactinfoid";
-  public static final String ITEM_C0NTACT_INFO_REF = "contactinfo_ref";
+  public static final String ITEM_C0NTACT_INFO_FK = "contactinfo_fk";
   public static final String ITEM_DISABLED = "disabled";
 
   public static final String T_PRODUCT = "petstore.product";
   public static final String PRODUCT_ID = "productid";
   public static final String PRODUCT_CATEGORY_ID = "categoryid";
-  public static final String PRODUCT_CATEGORY_REF = "category_ref";
+  public static final String PRODUCT_CATEGORY_FK = "category_fk";
   public static final String PRODUCT_NAME = "name";
   public static final String PRODUCT_DESCRIPTION = "description";
   public static final String PRODUCT_IMAGE_URL = "imageurl";
@@ -70,9 +70,9 @@ public class Petstore {
 
   public static final String T_TAG_ITEM = "petstore.tag_item";
   public static final String TAG_ITEM_TAG_ID = "tagid";
-  public static final String TAG_ITEM_TAG_REF = "tag_ref";
+  public static final String TAG_ITEM_TAG_FK = "tag_fk";
   public static final String TAG_ITEM_ITEM_ID = "itemid";
-  public static final String TAG_ITEM_ITEM_REF = "item_ref";
+  public static final String TAG_ITEM_ITEM_FK = "item_fk";
 
   static {
     EntityRepository.get().initialize(T_ADDRESS, IdSource.MAX_PLUS_ONE,
@@ -94,22 +94,22 @@ public class Petstore {
 
     EntityRepository.get().initialize(T_ITEM, IdSource.MAX_PLUS_ONE, ITEM_NAME,
             new Property.PrimaryKeyProperty(ITEM_ID),
-            new Property.EntityProperty(ITEM_PRODUCT_REF, "Product", T_PRODUCT,
+            new Property.ForeignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
                     new Property(ITEM_PRODUCT_ID)),
             new Property(ITEM_NAME, Type.STRING, "Name"),
             new Property(ITEM_DESCRIPTION, Type.STRING, "Description"),
             new Property(ITEM_IMAGE_URL, Type.STRING, "Image URL", true),
             new Property(ITEM_IMAGE_THUMB_URL, Type.STRING, "Image thumbnail URL", true),
             new Property(ITEM_PRICE, Type.DOUBLE, "Price"),
-            new Property.EntityProperty(ITEM_C0NTACT_INFO_REF, "Contact info", T_SELLER_CONTACT_INFO,
+            new Property.ForeignKeyProperty(ITEM_C0NTACT_INFO_FK, "Contact info", T_SELLER_CONTACT_INFO,
                     new Property(ITEM_C0NTACT_INFO_ID)),
-            new Property.EntityProperty(ITEM_ADDRESS_REF, "Address", T_ADDRESS,
+            new Property.ForeignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
                     new Property(ITEM_ADDRESS_ID)),
             new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled"));
 
     EntityRepository.get().initialize(T_PRODUCT, IdSource.MAX_PLUS_ONE, PRODUCT_NAME,
             new Property.PrimaryKeyProperty(PRODUCT_ID),
-            new Property.EntityProperty(PRODUCT_CATEGORY_REF, "Category", T_CATEGORY,
+            new Property.ForeignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
                     new Property(PRODUCT_CATEGORY_ID)),
             new Property(PRODUCT_NAME, Type.STRING, "Name"),
             new Property(PRODUCT_DESCRIPTION, Type.STRING, "Description"),
@@ -129,9 +129,9 @@ public class Petstore {
                     "select count(*) from " + T_TAG_ITEM + "  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID));
 
     EntityRepository.get().initialize(T_TAG_ITEM, IdSource.NONE,
-            new Property.EntityProperty(TAG_ITEM_ITEM_REF, "Item", T_ITEM,
+            new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT, null, 0)),
-            new Property.EntityProperty(TAG_ITEM_TAG_REF, "Tag", T_TAG,
+            new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT, null, 1)));
 
     EntityProxy.setDefaultEntityProxy(new EntityProxy() {
@@ -144,15 +144,15 @@ public class Petstore {
         else if (entity.is(T_CATEGORY))
           return entity.getStringValue(CATEGORY_NAME);
         else if (entity.is(T_ITEM))
-          return entity.getValueAsString(ITEM_PRODUCT_REF) + " - " + entity.getStringValue(ITEM_NAME);
+          return entity.getValueAsString(ITEM_PRODUCT_FK) + " - " + entity.getStringValue(ITEM_NAME);
         else if (entity.is(T_PRODUCT))
-          return entity.getValueAsString(PRODUCT_CATEGORY_REF) + " - " + entity.getStringValue(PRODUCT_NAME);
+          return entity.getValueAsString(PRODUCT_CATEGORY_FK) + " - " + entity.getStringValue(PRODUCT_NAME);
         else if (entity.is(T_SELLER_CONTACT_INFO))
           return entity.getStringValue(SELLER_CONTACT_INFO_LAST_NAME) + ", " + entity.getStringValue(SELLER_CONTACT_INFO_FIRST_NAME);
         else if (entity.is(T_TAG))
           return entity.getStringValue(TAG_TAG);
         else if (entity.is(T_TAG_ITEM))
-          return entity.getEntityValue(TAG_ITEM_ITEM_REF) + " - " + entity.getEntityValue(TAG_ITEM_TAG_REF);
+          return entity.getEntityValue(TAG_ITEM_ITEM_FK) + " - " + entity.getEntityValue(TAG_ITEM_TAG_FK);
 
         return super.toString(entity);
       }
