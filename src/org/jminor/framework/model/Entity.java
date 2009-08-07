@@ -176,10 +176,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Sets the value of the given property
    * @param propertyID the ID of the property
    * @param value the new value
-   * @param validate set to true if basic type validation should be performed on the value
+   * @param validateType set to true if basic type validation should be performed on the value
    */
-  public void setValue(final String propertyID, final Object value, final boolean validate) {
-    setValue(getProperty(propertyID), value, validate);
+  public void setValue(final String propertyID, final Object value, final boolean validateType) {
+    setValue(getProperty(propertyID), value, validateType);
   }
 
   /**
@@ -188,10 +188,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * values comprising the foreign key are also set.
    * @param property the property
    * @param value the new value
-   * @param validate set to true if basic type validation should be performed on the value
+   * @param validateType set to true if basic type validation should be performed on the value
    */
-  public void setValue(final Property property, final Object value, final boolean validate) {
-    if (validate)
+  public void setValue(final Property property, final Object value, final boolean validateType) {
+    if (validateType)
       validateType(property, value);
 
     final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
@@ -679,7 +679,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       values.put(property.propertyID, newValue);
 
     if (!initialization)
-      updateModifiedState(property.propertyID, property.propertyType, newValue, oldValue);
+      handleValueChange(property.propertyID, property.propertyType, newValue, oldValue);
 
     if (evtPropertyChanged != null && !isEqual(property.propertyType, newValue, oldValue))
       firePropertyChangeEvent(property, newValue, oldValue, initialization);
@@ -743,7 +743,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param newValue the new value
    * @param oldValue the previous value
    */
-  private void updateModifiedState(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
+  private void handleValueChange(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
     if (originalValues != null && originalValues.containsKey(propertyID)) {
       if (isEqual(type, originalValues.get(propertyID), newValue)) {
         originalValues.remove(propertyID);//we're back to the original value

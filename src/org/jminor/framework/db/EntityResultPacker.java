@@ -24,8 +24,6 @@ public class EntityResultPacker implements IResultPacker<Entity> {
   private final String entityID;
   private final Collection<Property> properties;
 
-  private ResultSet resultSet;
-
   public EntityResultPacker(final String entityID, final Collection<Property> properties) {
     if (entityID == null)
       throw new IllegalArgumentException("EntityResultPacker requires a non-null entityID");
@@ -47,26 +45,20 @@ public class EntityResultPacker implements IResultPacker<Entity> {
   public synchronized List<Entity> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
     if (resultSet == null)
       throw new IllegalArgumentException("Can not pack result from a null ResultSet");
-    try {
-      this.resultSet = resultSet;
-      final List<Entity> ret = new ArrayList<Entity>();
-      int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
-        ret.add(loadEntity());
+    final List<Entity> ret = new ArrayList<Entity>();
+    int counter = 0;
+    while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+      ret.add(loadEntity(resultSet));
 
-      return ret;
-    }
-    finally {
-      this.resultSet = null;
-    }
+    return ret;
   }
 
-  private Entity loadEntity() throws SQLException {
+  private Entity loadEntity(final ResultSet resultSet) throws SQLException {
     final Entity entity = new Entity(entityID);
     for (final Property property : properties)
       if (!(property instanceof Property.ForeignKeyProperty)) {
         try {
-          entity.initializeValue(property, getValue(property));
+          entity.initializeValue(property, getValue(resultSet, property));
         }
         catch (Exception e) {
           throw new SQLException("Unable to load property: " + property, e);
@@ -76,23 +68,23 @@ public class EntityResultPacker implements IResultPacker<Entity> {
     return entity;
   }
 
-  private Object getValue(final Property property) throws SQLException {
+  private Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
     switch (property.propertyType) {
       case ENTITY :
         throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
       case BOOLEAN :
-        return getBoolean(property);
+        return getBoolean(resultSet, property);
       default:
-        return getValue(property.propertyType, property.selectIndex);
+        return getValue(resultSet, property.propertyType, property.selectIndex);
     }
   }
 
-  private Type.Boolean getBoolean(final Property property) throws SQLException {
+  private Type.Boolean getBoolean(final ResultSet resultSet, final Property property) throws SQLException {
     if (property instanceof Property.BooleanProperty)
       return ((Property.BooleanProperty) property).toBoolean(
-              getValue(((Property.BooleanProperty) property).columnType, property.selectIndex));
+              getValue(resultSet, ((Property.BooleanProperty) property).columnType, property.selectIndex));
     else {
-      final Integer result = getInteger(property.selectIndex);
+      final Integer result = getInteger(resultSet, property.selectIndex);
       if (result == null)
         return null;
 
@@ -104,19 +96,19 @@ public class EntityResultPacker implements IResultPacker<Entity> {
     }
   }
 
-  private Object getValue(final Type propertyType, final int selectIndex) throws SQLException {
+  private Object getValue(final ResultSet resultSet, final Type propertyType, final int selectIndex) throws SQLException {
     switch (propertyType) {
       case INT :
-        return getInteger(selectIndex);
+        return getInteger(resultSet, selectIndex);
       case DOUBLE :
-        return getDouble(selectIndex);
+        return getDouble(resultSet, selectIndex);
       case SHORT_DATE :
       case LONG_DATE :
-        return getTimestamp(selectIndex);
+        return getTimestamp(resultSet, selectIndex);
       case STRING :
-        return getString(selectIndex);
+        return getString(resultSet, selectIndex);
       case CHAR :
-        final String val = getString(selectIndex);
+        final String val = getString(resultSet, selectIndex);
         if (val != null && val.length() > 0)
           return val.charAt(0);
         else
@@ -126,25 +118,25 @@ public class EntityResultPacker implements IResultPacker<Entity> {
     }
   }
 
-  private Integer getInteger(final int columnIndex) throws SQLException {
+  private Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final int value = resultSet.getInt(columnIndex);
 
     return resultSet.wasNull() ? null : value;
   }
 
-  private Double getDouble(final int columnIndex) throws SQLException {
+  private Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final double value = resultSet.getDouble(columnIndex);
 
     return resultSet.wasNull() ? null : value;
   }
 
-  private String getString(final int columnIndex) throws SQLException {
+  private String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final String ret = resultSet.getString(columnIndex);
 
     return ret == null ? "" : ret;
   }
 
-  private Timestamp getTimestamp(final int columnIndex) throws SQLException {
+  private Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
     return resultSet.getTimestamp(columnIndex);
   }
 }

@@ -158,8 +158,7 @@ public class EntityKey implements Serializable {
     final StringBuilder ret = new StringBuilder();
     int i = 0;
     for (final Property.PrimaryKeyProperty property : getProperties()) {
-      ret.append(property.propertyID).append("=");
-      ret.append(getValue(property.propertyID));
+      ret.append(property.propertyID).append("=").append(getValue(property.propertyID));
       if (i++ < propertyCount -1)
         ret.append(", ");
     }
@@ -235,15 +234,6 @@ public class EntityKey implements Serializable {
     return false;
   }
 
-  /**
-   * Clears all values from this key
-   */
-  public void clear() {
-    values.clear();
-    hashCode = -Integer.MAX_VALUE;
-    hashCodeDirty = true;
-  }
-
   public static List<EntityKey> copyEntityKeys(final List<EntityKey> entityKeys) {
     final ArrayList<EntityKey> ret = new ArrayList<EntityKey>(entityKeys.size());
     for (final EntityKey key : entityKeys)
@@ -257,13 +247,12 @@ public class EntityKey implements Serializable {
    * @param key the key to copy
    */
   void setValue(final EntityKey key) {
-    clear();
+    values.clear();
+    hashCode = -Integer.MAX_VALUE;
+    hashCodeDirty = true;
     if (key != null) {
-      for (final Property.PrimaryKeyProperty property : getProperties()) {
-        final String propertyID = property.propertyID;
-        final Object newValue = key.getValue(propertyID);
-        values.put(propertyID, Entity.copyPropertyValue(newValue));
-      }
+      for (final Property.PrimaryKeyProperty property : getProperties())
+        values.put(property.propertyID, Entity.copyPropertyValue(key.getValue(property.propertyID)));
 
       hashCode = key.hashCode;
       hashCodeDirty = key.hashCodeDirty;

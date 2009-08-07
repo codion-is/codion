@@ -49,7 +49,7 @@ public class PropertyCriteria implements ICriteria, Serializable {
   private final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
 
   /**
-   * True if this criteria should be case sensitive, only applies for criterias based on string properties
+   * True if this criteria should be case sensitive, only applies to criterias based on string properties
    */
   private boolean caseSensitive = true;
 
