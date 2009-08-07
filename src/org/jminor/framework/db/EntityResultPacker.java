@@ -42,7 +42,7 @@ public class EntityResultPacker implements IResultPacker<Entity> {
    * @return a List of Entity objects representing the contents of <code>resultSet</code>
    * @throws SQLException in case of an exception
    */
-  public synchronized List<Entity> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+  public List<Entity> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
     if (resultSet == null)
       throw new IllegalArgumentException("Can not pack result from a null ResultSet");
     final List<Entity> ret = new ArrayList<Entity>();
