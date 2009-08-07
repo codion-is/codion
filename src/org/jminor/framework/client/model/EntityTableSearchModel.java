@@ -49,7 +49,7 @@ public class EntityTableSearchModel {
   public final State stSearchStateChanged = new State("EntityTableSearchModel.stSearchStateChanged");
 
   private final String entityID;
-  private final List<Property> visibleProperties;
+  private final List<Property> tableColumnProperties;
   private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
   private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
@@ -57,13 +57,12 @@ public class EntityTableSearchModel {
   private String searchStateOnRefresh;
 
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
-                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
-                                final List<Property> visibleProperties) {
+                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider) {
     if (entityID == null)
       throw new IllegalArgumentException("EntityTableSearchModel requires a non-null entityID");
     this.entityID = entityID;
-    this.visibleProperties = visibleProperties;
-    this.propertyFilterModels = initPropertyFilterModels(tableColumnProperties);
+    this.tableColumnProperties = tableColumnProperties;
+    this.propertyFilterModels = initPropertyFilterModels();
     this.propertySearchModels = initPropertySearchModels(searchableProperties, dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
   }
@@ -82,12 +81,12 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * Returns the property filter at index <code>idx</code>
-   * @param idx the property index
+   * Returns the property filter at <code>index</code>
+   * @param index the property index
    * @return the property filter
    */
-  public PropertyFilterModel getPropertyFilterModel(final int idx) {
-    return propertyFilterModels.get(idx);
+  public PropertyFilterModel getPropertyFilterModel(final int index) {
+    return propertyFilterModels.get(index);
   }
 
   /**
@@ -171,18 +170,18 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @param columnIdx the column index
-   * @return true if the PropertySearchModel behind column with index <code>columnIdx</code> is enabled
+   * @param columnIndex the column index
+   * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled
    */
-  public boolean isSearchEnabled(final int columnIdx) {
-    final PropertySearchModel model = getPropertySearchModel(visibleProperties.get(columnIdx).propertyID);
+  public boolean isSearchEnabled(final int columnIndex) {
+    final PropertySearchModel model = getPropertySearchModel(tableColumnProperties.get(columnIndex).propertyID);
 
     return model != null && model.isSearchEnabled();
   }
 
   /**
    * @param columnIndex the column index
-   * @return true if the PropertyFilterModel behind column with index <code>columnIdx</code> is enabled
+   * @return true if the PropertyFilterModel behind column with index <code>columnIndex</code> is enabled
    */
   public boolean isFilterEnabled(final int columnIndex) {
     return getPropertyFilterModel(columnIndex).isSearchEnabled();
@@ -199,7 +198,7 @@ public class EntityTableSearchModel {
    */
   public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
     final String searchState = getSearchModelState();
-    for (final Property property : visibleProperties) {
+    for (final Property property : tableColumnProperties) {
       if (property instanceof Property.ForeignKeyProperty && ((Property.ForeignKeyProperty)property).referenceEntityID.equals(referencedEntityID)) {
         final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
         if (searchModel != null) {
@@ -297,10 +296,9 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @param tableColumnProperties the properties for which to initialize PropertyFilterModels
    * @return a list of PropertyFilterModels initialized according to the model
    */
-  private List<PropertyFilterModel> initPropertyFilterModels(final List<Property> tableColumnProperties) {
+  private List<PropertyFilterModel> initPropertyFilterModels() {
     final List<PropertyFilterModel> filters = new ArrayList<PropertyFilterModel>(tableColumnProperties.size());
     int i = 0;
     for (final Property property : tableColumnProperties) {

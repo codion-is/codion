@@ -70,11 +70,11 @@ public class EntityTableModelTest extends TestCase {
     testModel.setSelectedEntity(testEntities[0]);
     assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
-    testModel.addSelectedItemIdx(1);
+    testModel.addSelectedItemIndex(1);
     assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
     assertEquals("selected indexes should fit", new IntArray(new int[]{0, 1}), new IntArray(testModel.getSelectedViewIndexes()));
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
-    testModel.addSelectedItemIdx(4);
+    testModel.addSelectedItemIndex(4);
     assertEquals("selected indexes should fit", new IntArray(new int[]{0, 1, 4}), new IntArray(testModel.getSelectedViewIndexes()));
     testModel.getSelectionModel().removeIndexInterval(1, 4);
     assertEquals("selected indexes should fit", new IntArray(new int[]{0}), new IntArray(testModel.getSelectedViewIndexes()));

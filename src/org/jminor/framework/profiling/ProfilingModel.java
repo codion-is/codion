@@ -230,7 +230,7 @@ public abstract class ProfilingModel {
     if (model.getRowCount() == 0)
       return;
 
-    model.setSelectedItemIdx(random.nextInt(model.getRowCount()));
+    model.setSelectedItemIndex(random.nextInt(model.getRowCount()));
   }
 
   protected void selectRandomRows(final EntityTableModel model, final int count) {
@@ -239,7 +239,7 @@ public abstract class ProfilingModel {
 
     final IntArray indexes = new IntArray();
     for (int i = 0; i < count; i++)
-      indexes.addInt(random.nextInt(model.getRowCount()));
+      indexes.add(random.nextInt(model.getRowCount()));
 
     model.setSelectedItemIndexes(indexes.toIntArray());
   }
@@ -251,7 +251,7 @@ public abstract class ProfilingModel {
     final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount()/ratio) : 1;
     final IntArray indexes = new IntArray();
     for (int i = 0; i < toSelect; i++)
-      indexes.addInt(i);
+      indexes.add(i);
 
     model.setSelectedItemIndexes(indexes.toIntArray());
   }

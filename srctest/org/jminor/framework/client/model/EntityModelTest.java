@@ -57,7 +57,7 @@ public class EntityModelTest extends TestCase {
     employeeModel.refresh();
     assertTrue(employeeModel.isActiveEntityNull());
     assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.getTableModel().setSelectedItemIdx(0);
+    employeeModel.getTableModel().setSelectedItemIndex(0);
     assertFalse("Active entity is null after an entity is selected", employeeModel.isActiveEntityNull());
     assertTrue("Active entity is not equal to the selected entity",
             employeeModel.getActiveEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getEntityAtViewIndex(0)));
@@ -70,7 +70,7 @@ public class EntityModelTest extends TestCase {
   public void testEdit() throws Exception {
     //changes to property values in a selected entity should be reverted when it's deselected
     employeeModel.getTableModel().refresh();
-    employeeModel.getTableModel().setSelectedItemIdx(0);
+    employeeModel.getTableModel().setSelectedItemIndex(0);
     assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
     final Double originalCommission = (Double) employeeModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 66.7;
@@ -97,7 +97,7 @@ public class EntityModelTest extends TestCase {
 
     employeeModel.getTableModel().getSelectionModel().clearSelection();
     assertTrue("Active entity is not null after selection is cleared", employeeModel.getActiveEntityCopy().isNull());
-    employeeModel.getTableModel().setSelectedItemIdx(0);
+    employeeModel.getTableModel().setSelectedItemIndex(0);
     assertTrue("Active entity is null after selection is made", !employeeModel.getActiveEntityCopy().isNull());
     employeeModel.clear();
     assertTrue("Active entity is not null after model is cleared", employeeModel.getActiveEntityCopy().isNull());
@@ -117,7 +117,7 @@ public class EntityModelTest extends TestCase {
     departmentModel.setStrictEditMode(true);
 
     //select entity and change a value
-    departmentModel.getTableModel().setSelectedItemIdx(0);
+    departmentModel.getTableModel().setSelectedItemIndex(0);
     final EntityKey primaryKey = departmentModel.getActiveEntityCopy().getPrimaryKey();
     final Object originalValue = departmentModel.getValue(EmpDept.DEPARTMENT_LOCATION);
     departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
@@ -167,7 +167,7 @@ public class EntityModelTest extends TestCase {
     }
     catch (Exception e) {}
 
-    departmentModel.getTableModel().setSelectedItemIdx(1);
+    departmentModel.getTableModel().setSelectedItemIndex(1);
 
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -178,7 +178,7 @@ public class EntityModelTest extends TestCase {
     }
 
     //clean up by resetting the value
-    departmentModel.getTableModel().setSelectedItemIdx(0);
+    departmentModel.getTableModel().setSelectedItemIndex(0);
     departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
     departmentModel.update();
   }
