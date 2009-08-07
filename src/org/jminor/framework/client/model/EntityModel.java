@@ -939,8 +939,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Takes a JasperReport object which uses a JDBC datasource and returns an initialized JasperPrint object
-   * @param reportPath the path to the report to fill
+   * Takes a path to a report which uses a JDBC datasource and returns an initialized JasperPrint object
+   * @param reportPath the path to the report file
    * @param reportParameters the report parameters
    * @return an initialized JasperPrint object
    * @throws net.sf.jasperreports.engine.JRException in case of a report exception
