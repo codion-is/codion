@@ -26,8 +26,8 @@
     <delete dir="${build.demos}" includeEmptyDirs="true" />
     <delete dir="${build.test}" includeEmptyDirs="true" />
     <delete dir="${build.root}" includeEmptyDirs="true" />
-    <delete dir="${reports}" includeEmptyDirs="true" />
-    <delete dir="${htmlreports}" includeEmptyDirs="true" />
+    <delete dir="${test.reports}" includeEmptyDirs="true" />
+    <delete dir="${test.htmlreports}" includeEmptyDirs="true" />
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
@@ -83,6 +83,15 @@
     </tstamp>
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
+
+  <target name="compile_reports" description="Compile the demo jasper reports">
+		<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+			<classpath>
+				<fileset dir="${lib}" includes="**/*.jar"/>
+      </classpath>
+		</taskdef>
+		<jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
+	</target>
 
   <target name="dist" depends="build, manifest"
           description="Creates all distribution jar files in the dist directory">
@@ -245,7 +254,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="create_derby_db, create_h2_db"
+  <target name="deploy_demos" depends="create_derby_db, create_h2_db, compile_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
@@ -325,16 +334,16 @@
 
   <target name="report" depends="run_unit_tests"
           description="Creates a unit test html report">
-    <mkdir dir="${htmlreports}" />
-    <junitreport todir="${reports}">
-      <fileset dir="${reports}" includes="TEST-*.xml" />
-      <report format="frames" todir="${htmlreports}" />
+    <mkdir dir="${test.htmlreports}" />
+    <junitreport todir="${test.reports}">
+      <fileset dir="${test.reports}" includes="TEST-*.xml" />
+      <report format="frames" todir="${test.htmlreports}" />
     </junitreport>
   </target>
 
   <target name="run_unit_tests" depends="build, create_derby_db"
           description="Runs the framework unit tests">
-    <mkdir dir="${reports}" />
+    <mkdir dir="${test.reports}" />
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
       <formatter type="xml" usefile="true" />
       <classpath>
@@ -348,7 +357,7 @@
       <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
-      <batchtest todir="${reports}">
+      <batchtest todir="${test.reports}">
         <fileset dir="${srctest}" includes="**/*Test.java" />
         <fileset dir="${srcdemos}" includes="**/*Test.java" />
       </batchtest>

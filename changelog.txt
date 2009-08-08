@@ -620,3 +620,4 @@
   Added runtime permission to server policy file to handle some evaluation expression thing in jasper reports
   Added missing jasper collections/logging libs to server run files
   Property.EntityProperty renamed to ForeignKeyProperty
+  Added compile_reports target to ant build file, along with the required libraries
