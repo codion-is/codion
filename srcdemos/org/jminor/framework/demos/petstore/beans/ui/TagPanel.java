@@ -23,7 +23,7 @@ import java.util.List;
 public class TagPanel extends EntityPanel {
 
   public TagPanel(final EntityModel model) {
-    super(model);
+    super(model, "Tags");
   }
 
   /** {@inheritDoc} */

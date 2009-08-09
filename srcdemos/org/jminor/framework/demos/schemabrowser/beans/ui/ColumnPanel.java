@@ -11,16 +11,12 @@ import javax.swing.JPanel;
 public class ColumnPanel extends EntityPanel {
 
   public ColumnPanel(final EntityModel model) {
-    super(model, false, false);
+    super(model, "Columns", false, false);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void initialize() {
-    if (isInitialized())
-      return;
-
-    super.initialize();
+  protected void postInitialization() {
     getTablePanel().setSearchPanelVisible(true);
   }
 

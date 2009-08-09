@@ -19,7 +19,7 @@ import java.util.List;
 public class ContactInfoModel extends EntityModel {
 
   public ContactInfoModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Seller Contact Info", Petstore.T_SELLER_CONTACT_INFO, dbProvider);
+    super(Petstore.T_SELLER_CONTACT_INFO, dbProvider);
   }
 
   /** {@inheritDoc} */

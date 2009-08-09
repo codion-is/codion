@@ -19,7 +19,7 @@ import java.util.List;
 public class TagModel extends EntityModel {
 
   public TagModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Tags", Petstore.T_TAG, dbProvider);
+    super(Petstore.T_TAG, dbProvider);
   }
 
   /** {@inheritDoc} */

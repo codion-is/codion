@@ -621,3 +621,5 @@
   Added missing jasper collections/logging libs to server run files
   Property.EntityProperty renamed to ForeignKeyProperty
   Added compile_reports target to ant build file, along with the required libraries
+  EntityModel.caption moved to EntityPanel
+  EntityPanel.initialize() now calls the protected postInitialization() method, which should be overridden instead of initialize()

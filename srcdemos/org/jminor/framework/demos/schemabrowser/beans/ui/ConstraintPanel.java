@@ -15,16 +15,12 @@ import java.util.List;
 public class ConstraintPanel extends EntityPanel {
 
   public ConstraintPanel(final EntityModel model) {
-    super(model, false, false);
+    super(model, "Constraints", false, false);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void initialize() {
-    if (isInitialized())
-      return;
-
-    super.initialize();
+  protected void postInitialization() {
     getTablePanel().setSearchPanelVisible(true);
   }
 

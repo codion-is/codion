@@ -18,16 +18,12 @@ import javax.swing.JTextField;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model, true, true);
+    super(model, EmpDept.getString(EmpDept.T_EMPLOYEE), true, true);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void initialize() {
-    if (isInitialized())
-      return;
-
-    super.initialize();
+  protected void postInitialization() {
     getTablePanel().getSummaryPanel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryPanel.SummaryType.AVERAGE);
     getTablePanel().setSummaryPanelVisible(true);
   }

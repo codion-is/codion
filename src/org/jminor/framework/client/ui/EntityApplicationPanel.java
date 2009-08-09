@@ -542,7 +542,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       final EntityPanel entityPanel = provider.createInstance(entityModel);
       mainApplicationPanels.add(entityPanel);
       final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
-              ? entityModel.getCaption() : provider.getCaption();
+              ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
     }
     add(applicationTabPane, BorderLayout.CENTER);

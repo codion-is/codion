@@ -181,11 +181,6 @@ public class EntityModel implements IRefreshable {
   private final Entity activeEntity;
 
   /**
-   * A caption describing this EntityModel
-   */
-  private final String caption;
-
-  /**
    * The ID of the Entity this EntityModel represents
    */
   private final String entityID;
@@ -244,30 +239,27 @@ public class EntityModel implements IRefreshable {
 
   /**
    * Initiates a new EntityModel
-   * @param caption a caption describing this EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a IEntityDbProvider
    * @throws UserException in case of an exception
    */
-  public EntityModel(final String caption, final String entityID, final IEntityDbProvider dbProvider) throws UserException {
-    this(caption, entityID, dbProvider, true);
+  public EntityModel(final String entityID, final IEntityDbProvider dbProvider) throws UserException {
+    this(entityID, dbProvider, true);
   }
 
   /**
    * Initiates a new EntityModel
-   * @param caption a caption describing this EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a IEntityDbProvider
    * @param includeTableModel true if this EntityModel should include a table model
    * @throws UserException in case of an exception
    */
-  public EntityModel(final String caption, final String entityID, final IEntityDbProvider dbProvider,
+  public EntityModel(final String entityID, final IEntityDbProvider dbProvider,
                      final boolean includeTableModel) throws UserException {
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider can not be null");
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
-    this.caption = caption;
     this.dbProvider = dbProvider;
     this.entityID = entityID;
     this.propertyComboBoxModels = initializeEntityComboBoxModels();
@@ -308,11 +300,11 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return a String represention of this EntityModel,
-   * returns the model caption by default
+   * returns the model class name by default
    */
   @Override
   public String toString() {
-    return getCaption();
+    return getClass().getSimpleName();
   }
 
   /**
@@ -331,13 +323,6 @@ public class EntityModel implements IRefreshable {
    */
   public IEntityDb getEntityDb() throws UserException {
     return getDbProvider().getEntityDb();
-  }
-
-  /**
-   * @return the caption
-   */
-  public String getCaption() {
-    return caption;
   }
 
   /**
@@ -800,7 +785,7 @@ public class EntityModel implements IRefreshable {
     if (!isInsertAllowed())
       throw new UserException("This model does not allow inserting!");
 
-    log.debug(caption + " - insert "+ Util.getListContentsAsString(entities, false));
+    log.debug(toString() + " - insert "+ Util.getListContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     validateData(entities, INSERT);
@@ -846,7 +831,7 @@ public class EntityModel implements IRefreshable {
     if (strictEditingEnabled)
       requestWriteLock(entities);
 
-    log.debug(caption + " - update " + Util.getListContentsAsString(entities, false));
+    log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
     if (modifiedEntities.size() == 0)
@@ -890,7 +875,7 @@ public class EntityModel implements IRefreshable {
       throw new UserException("This model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
-    log.debug(caption + " - delete " + Util.getListContentsAsString(entities, false));
+    log.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
     if (tableModel != null)

@@ -16,16 +16,12 @@ import java.util.List;
 public class SchemaPanel extends EntityPanel {
 
   public SchemaPanel(final EntityModel model) throws UserException {
-    super(model, true, false);
+    super(model, "Schema Users", true, false);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void initialize() {
-    if (isInitialized())
-      return;
-
-    super.initialize();
+  protected void postInitialization() {
     getTablePanel().setSearchPanelVisible(true);
   }
 

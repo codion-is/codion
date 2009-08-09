@@ -27,7 +27,7 @@ import java.util.List;
 public class ItemPanel extends EntityPanel {
 
   public ItemPanel(final EntityModel model) {
-    super(model, true, false, false, HIDDEN);
+    super(model, "Item", true, false, false, HIDDEN);
   }
 
   /** {@inheritDoc} */

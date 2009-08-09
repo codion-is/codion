@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 public class AddressPanel extends EntityPanel {
 
   public AddressPanel(final EntityModel model) {
-    super(model);
+    super(model, "Address");
   }
 
   /** {@inheritDoc} */

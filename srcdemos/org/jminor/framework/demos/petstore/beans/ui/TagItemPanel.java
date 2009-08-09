@@ -23,7 +23,7 @@ import java.awt.Dimension;
 public class TagItemPanel extends EntityPanel {
 
   public TagItemPanel(final EntityModel model) {
-    super(model);
+    super(model, "Item Tags");
   }
 
   /** {@inheritDoc} */

@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 public class EmployeeModel extends EntityModel {
 
   public EmployeeModel(final IEntityDbProvider dbProvider) throws UserException {
-    super(EmpDept.getString(EmpDept.T_EMPLOYEE), EmpDept.T_EMPLOYEE, dbProvider);
+    super(EmpDept.T_EMPLOYEE, dbProvider);
     getTableModel().setShowAllWhenNotFiltered(true);
   }
 

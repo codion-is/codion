@@ -16,6 +16,6 @@ import org.jminor.framework.demos.petstore.model.Petstore;
 public class TagItemModel extends EntityModel {
 
   public TagItemModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Item Tags", Petstore.T_TAG_ITEM, dbProvider);
+    super(Petstore.T_TAG_ITEM, dbProvider);
   }
 }

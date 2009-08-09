@@ -16,6 +16,6 @@ import org.jminor.framework.demos.petstore.model.Petstore;
 public class AddressModel extends EntityModel {
 
   public AddressModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Address", Petstore.T_ADDRESS, dbProvider);
+    super(Petstore.T_ADDRESS, dbProvider);
   }
 }

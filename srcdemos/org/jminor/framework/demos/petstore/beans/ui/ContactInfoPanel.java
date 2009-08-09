@@ -23,7 +23,7 @@ import java.util.List;
 public class ContactInfoPanel extends EntityPanel {
 
   public ContactInfoPanel(final EntityModel model) {
-    super(model);
+    super(model, "Seller Contact Info");
   }
 
   /** {@inheritDoc} */

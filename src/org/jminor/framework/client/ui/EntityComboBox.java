@@ -108,7 +108,7 @@ public class EntityComboBox extends SteppedComboBox {
           });
           final Window parentWindow = UiUtil.getParentWindow(EntityComboBox.this);
           final String caption = newRecordPanelProvider.getCaption() == null || newRecordPanelProvider.getCaption().equals("") ?
-                  entityPanel.getModel().getCaption() : newRecordPanelProvider.getCaption();
+                  entityPanel.getCaption() : newRecordPanelProvider.getCaption();
           final JDialog dialog = new JDialog(parentWindow, caption);
           dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
           dialog.setLayout(new BorderLayout());

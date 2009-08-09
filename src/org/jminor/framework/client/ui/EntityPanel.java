@@ -149,6 +149,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final EntityModel model;
 
   /**
+   * The caption to use when presenting this entity panel
+   */
+  private final String caption;
+
+  /**
    * The EntityTablePanel instance used by this EntityPanel
    */
   private EntityTablePanel entityTablePanel;
@@ -229,59 +234,66 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    */
-  public EntityPanel(final EntityModel model) {
-    this(model, true);
+  public EntityPanel(final EntityModel model, final String caption) {
+    this(model, caption, true);
   }
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    */
-  public EntityPanel(final EntityModel model, final boolean refreshOnInit) {
-    this(model, refreshOnInit, true);
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit) {
+    this(model, caption, refreshOnInit, true);
   }
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any)
    */
-  public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean rowColoring) {
-    this(model, refreshOnInit, rowColoring, false);
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit, final boolean rowColoring) {
+    this(model, caption, refreshOnInit, rowColoring, false);
   }
 
   /**
    * Initializes a new EntityPanel instance.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any)
    * is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
    */
-  public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons) {
-    this(model, refreshOnInit, rowColoring, horizontalButtons, EMBEDDED);//embedded perhaps not default?
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
+                     final boolean rowColoring, final boolean horizontalButtons) {
+    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, EMBEDDED);//embedded perhaps not default?
   }
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    */
-  public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons,
-                     final int detailPanelState) {
-    this(model, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, true);
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
+                     final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState) {
+    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, true);
   }
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
@@ -289,15 +301,16 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
    */
-  public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons,
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons,
                      final int detailPanelState, final boolean queryConfigurationAllowed) {
-    this(model, refreshOnInit, rowColoring, horizontalButtons, detailPanelState,
+    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState,
             queryConfigurationAllowed, false);
   }
 
   /**
    * Instantiates a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
    * @param model the EntityModel
+   * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
@@ -306,17 +319,19 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
    * @param compactLayout true if this panel should be laid out in a compact state
    */
-  public EntityPanel(final EntityModel model, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons,
-                     final int detailPanelState, final boolean queryConfigurationAllowed, final boolean compactLayout) {
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
+                     final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState,
+                     final boolean queryConfigurationAllowed, final boolean compactLayout) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
     if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ENABLED))
       activeStateGroup.addState(stActive);
     this.model = model;
+    this.caption = caption;
     this.refreshOnInit = refreshOnInit;
-    this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.rowColoring = rowColoring;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
+    this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.detailPanelState = detailPanelState;
     this.compactLayout = compactLayout;
     this.detailEntityPanelProviders = initializeDetailPanels();
@@ -366,6 +381,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       bindTableModelEvents();
       initializeUI();
       bindTablePanelEvents();
+      postInitialization();
 
       if (refreshOnInit)
         getModel().refresh();//refreshes combo models
@@ -469,7 +485,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getModel().getCaption();
+    return getCaption();
+  }
+
+  /**
+   * @return the caption to use when presenting this entity panel
+   */
+  public String getCaption() {
+    return caption;
   }
 
   /**
@@ -1117,7 +1140,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) throws UserException {
-    final EntityModel entityModel = new EntityModel(entityID, entityID, dbProvider) {
+    final EntityModel entityModel = new EntityModel(entityID, dbProvider) {
       @Override
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider) {
@@ -1128,7 +1151,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         };
       }
     };
-    final EntityPanel ret = new EntityPanel(entityModel, true, false, false, EMBEDDED, false) {
+    final EntityPanel ret = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED, false) {
       @Override
       protected EntityTablePanel initializeEntityTablePanel(final boolean rowColoring) {
         return new EntityTablePanel(entityModel.getTableModel(), getTablePopupControlSet(), false, false) {
@@ -1369,7 +1392,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     ret.setFocusable(false);
     ret.setUI(new BorderlessTabbedPaneUI());
     for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
-      ret.addTab(detailPanel.getModel().getCaption(), detailPanel);
+      ret.addTab(detailPanel.getCaption(), detailPanel);
 
     ret.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent event) {
@@ -1613,7 +1636,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
-      ret.add(new Control(detailPanel.getModel().getCaption()) {
+      ret.add(new Control(detailPanel.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent event) {
           detailPanelTabbedPane.setSelectedComponent(detailPanel);
@@ -1651,6 +1674,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       }
     });
   }
+
+  /**
+   * Override to add code that should be called during the initialization routine
+   */
+  protected void postInitialization() {}
 
   /**
    * Override to keep table model event bindings in one place,
@@ -1795,7 +1823,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)-29);
     detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
-            getModel().getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
+            getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
                 setDetailPanelState(HIDDEN);
@@ -1819,8 +1847,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final Point location = getLocationOnScreen();
     location.setLocation(location.x+1, location.y + getSize().height-editPanel.getSize().height-98);
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
-            getModel().getCaption(), false, true,
-            null, null, location, new AbstractAction() {
+            getCaption(), false, true, null, null, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
                 setEditPanelState(HIDDEN);
               }

@@ -17,16 +17,12 @@ import java.util.List;
 public class DbObjectPanel extends EntityPanel {
 
   public DbObjectPanel(final EntityModel model) {
-    super(model, false, false, false, EMBEDDED);
+    super(model, "Tables", false, false, false, EMBEDDED);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void initialize() {
-    if (isInitialized())
-      return;
-
-    super.initialize();
+  protected void postInitialization() {
     getTablePanel().setSearchPanelVisible(true);
   }
 

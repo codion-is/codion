@@ -19,7 +19,7 @@ import java.util.List;
 public class CategoryModel extends EntityModel {
 
   public CategoryModel(final IEntityDbProvider dbProvider) throws UserException {
-    super("Category", Petstore.T_CATEGORY, dbProvider);
+    super(Petstore.T_CATEGORY, dbProvider);
   }
 
   /** {@inheritDoc} */

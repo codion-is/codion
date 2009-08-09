@@ -23,7 +23,7 @@ import java.util.List;
 public class CategoryPanel extends EntityPanel {
 
   public CategoryPanel(final EntityModel model) {
-    super(model);
+    super(model, "Category");
   }
 
   /** {@inheritDoc} */
