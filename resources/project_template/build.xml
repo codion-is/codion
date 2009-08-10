@@ -150,7 +150,7 @@
         <path refid="libraries" />
       </classpath>
       <batchtest todir="${reports}">
-        <fileset dir="${build.test}" includes="**/Test*.class" />
+        <fileset dir="${build.test}" includes="**/*Test.class" />
       </batchtest>
     </junit>
   </target>
