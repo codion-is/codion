@@ -98,7 +98,7 @@ public class EntityComboBox extends SteppedComboBox {
       public void actionPerformed(ActionEvent e) {
         try {
           final EntityPanel entityPanel = newRecordPanelProvider.createInstance(getModel().getDbProvider());
-          entityPanel.initialize();
+          entityPanel.initializePanel();
           final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
           entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {

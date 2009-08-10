@@ -2,6 +2,8 @@ package org.jminor.framework.client.model.reporting;
 
 import org.jminor.framework.db.IEntityDb;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -19,7 +21,7 @@ public class EntityReportUtil {
   private EntityReportUtil() {}
 
   /**
-   * Takes a JasperReport object which uses a JDBC datasource and returns an initialized JasperPrint object
+   * Takes a path to a JasperReport which uses a JDBC datasource and returns an initialized JasperPrint object
    * @param entityDb the IEntityDb instance to use when filling the report
    * @param reportPath the path to the report to fill
    * @param reportParameters the report parameters
@@ -32,6 +34,26 @@ public class EntityReportUtil {
     return entityDb.fillReport(loadJasperReport(reportPath), reportParameters);
   }
 
+  /**
+   * Takes a path to a JasperReport file and returns an initialized JasperPrint object
+   * @param reportPath the path to the report to fill
+   * @param reportParameters the report paramaters
+   * @param dataSource the JRDataSource to use
+   * @return an initialized JasperPrint object
+   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
+   * @throws Exception in case of exception
+   */
+  public static JasperPrint fillReport(final String reportPath, final Map reportParameters,
+                                       final JRDataSource dataSource) throws Exception {
+    return JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, dataSource);
+  }
+
+  /**
+   * Loads a JasperReport file from the path given, it can be a URL or a file path
+   * @param reportPath the path to the report file to load
+   * @return a loaded JasperReport file
+   * @throws Exception in case of an exception
+   */
   public static JasperReport loadJasperReport(final String reportPath) throws Exception {
     if (reportPath.toUpperCase().startsWith("HTTP"))
       return (JasperReport) JRLoader.loadObject(new URL(reportPath));

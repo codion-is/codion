@@ -16,7 +16,7 @@ public class ColumnPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected void postInitialization() {
+  protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
   }
 

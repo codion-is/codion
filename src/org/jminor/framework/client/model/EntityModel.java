@@ -29,7 +29,6 @@ import org.jminor.framework.model.EntityUtil;
 import org.jminor.framework.model.Property;
 
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.log4j.Logger;
 
@@ -960,7 +959,7 @@ public class EntityModel implements IRefreshable {
    */
   public JasperPrint fillReport(final String reportPath, final Map reportParameters,
                                 final JRDataSource dataSource) throws Exception {
-    return JasperFillManager.fillReport(EntityReportUtil.loadJasperReport(reportPath), reportParameters, dataSource);
+    return EntityReportUtil.fillReport(reportPath, reportParameters, dataSource);
   }
 
   /**

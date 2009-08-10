@@ -23,7 +23,7 @@ public class EmployeePanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected void postInitialization() {
+  protected void initialize() {
     getTablePanel().getSummaryPanel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryPanel.SummaryType.AVERAGE);
     getTablePanel().setSummaryPanelVisible(true);
   }

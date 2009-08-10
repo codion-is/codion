@@ -36,7 +36,23 @@ import org.jminor.framework.model.Property;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -211,9 +227,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private int detailPanelState = HIDDEN;
 
   /**
-   * True after <code>initialize()</code> has been called
+   * True after <code>initializePanel()</code> has been called
    */
-  private boolean initialized = false;
+  private boolean panelInitialized = false;
 
   /**
    * The mechanism for restricting a single active EntityPanel at a time
@@ -338,7 +354,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     this.stActive.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         if (isActive()) {
-          initialize();
+          initializePanel();
           showPanelTab();
           //do not try to grab the default focus when a child component already has the focus, for example the table
           prepareUI(!isParentPanel(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()), false);
@@ -362,14 +378,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Initializes this EntityPanel, override to add any specific initialization
-   * functionality, to show the search panel for example.
-   * Remember to return right away if isInitialized() returns true and to call super.initialize()
-   * After this method has finished isInitialized() returns true
-   * @see #isInitialized()
+   * Initializes this EntityPanel, in case of some specific initialization code, to show the search panel for example,
+   * you can override the <code>initialize</code> method and add your code there.
+   * @see #initialize()
+   * @see #isPanelInitialized()
    */
-  public void initialize() {
-    if (isInitialized())
+  public void initializePanel() {
+    if (isPanelInitialized())
       return;
 
     try {
@@ -381,7 +396,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       bindTableModelEvents();
       initializeUI();
       bindTablePanelEvents();
-      postInitialization();
+      initialize();
 
       if (refreshOnInit)
         getModel().refresh();//refreshes combo models
@@ -392,7 +407,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       throw e.getRuntimeException();
     }
     finally {
-      initialized = true;
+      panelInitialized = true;
       UiUtil.setWaitCursor(false, this);
     }
   }
@@ -400,8 +415,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * @return true if the method initialize() has been called on this EntityPanel instance
    */
-  public boolean isInitialized() {
-    return initialized;
+  public boolean isPanelInitialized() {
+    return panelInitialized;
   }
 
   /**
@@ -557,7 +572,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       return;
 
     if (state != HIDDEN)
-      getSelectedDetailPanel().initialize();
+      getSelectedDetailPanel().initializePanel();
 
     if (detailPanelState == DIALOG)//if we are leaving the DIALOG state, hide all child detail dialogs
       for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
@@ -616,7 +631,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param value true if the active panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(final boolean value) {
-    if (!isInitialized())
+    if (!isPanelInitialized())
       return;
 
     if (getModel().getTableModel() != null)
@@ -1174,7 +1189,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         return null;
       }
     };
-    ret.initialize();
+    ret.initializePanel();
 
     return ret;
   }
@@ -1397,7 +1412,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     ret.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent event) {
         getModel().setLinkedDetailModel(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
-        getSelectedDetailPanel().initialize();
+        getSelectedDetailPanel().initializePanel();
       }
     });
     ret.addMouseListener(new MouseAdapter() {
@@ -1437,6 +1452,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @see #setupControls()
    */
   protected void initializeControlPanels() {}
+
+  /**
+   * Override to add code that should be called during the initialization routine
+   */
+  protected void initialize() {}
 
   /**
    * Instantiates the detail panels and associates them with their respective
@@ -1676,11 +1696,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Override to add code that should be called during the initialization routine
-   */
-  protected void postInitialization() {}
-
-  /**
    * Override to keep table model event bindings in one place,
    * this method is called during initialization
    */
@@ -1865,10 +1880,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void viewJdbcReport(final String reportPath, final Map<String, Object> reportParameters,
                                 final String frameTitle) throws UserException {
     try {
+      UiUtil.setWaitCursor(true, this);
       FrameworkUiUtil.viewReport(getModel().fillJdbcReport(reportPath, reportParameters), frameTitle);
     }
     catch (Exception e) {
       throw new UserException(e);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, this);
     }
   }
 
@@ -1897,10 +1916,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
                             final JRDataSource dataSource, final String frameTitle) throws UserException {
     try {
+      UiUtil.setWaitCursor(true, this);
       FrameworkUiUtil.viewReport(getModel().fillReport(reportPath, reportParameters, dataSource), frameTitle);
     }
     catch (Exception e) {
       throw new UserException(e);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, this);
     }
   }
 

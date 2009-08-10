@@ -669,7 +669,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   private void initializeActiveEntityPanel() {
-    ((EntityPanel) applicationTabPane.getSelectedComponent()).initialize();
+    ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
   }
 
   private void initializeResizing(final EntityPanel panel) {
@@ -918,7 +918,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
       }
       else {
         entityPanel = panelProvider.createInstance(dbProvider);
-        entityPanel.initialize();
+        entityPanel.initializePanel();
         if (persistEntityPanels)
           persistentEntityPanels.put(panelProvider, entityPanel);
       }

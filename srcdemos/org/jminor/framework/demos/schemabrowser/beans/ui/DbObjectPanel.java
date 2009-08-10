@@ -22,7 +22,7 @@ public class DbObjectPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected void postInitialization() {
+  protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
   }
 
