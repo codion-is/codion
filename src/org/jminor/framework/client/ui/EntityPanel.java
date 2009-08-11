@@ -413,7 +413,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * @return true if the method initialize() has been called on this EntityPanel instance
+   * @return true if the method initializePanel() has been called on this EntityPanel instance
+   * @see #initializePanel()
    */
   public boolean isPanelInitialized() {
     return panelInitialized;
@@ -1454,7 +1455,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void initializeControlPanels() {}
 
   /**
-   * Override to add code that should be called during the initialization routine
+   * Override to add code that should be called during the initialization routine after the UI has been initialized
    */
   protected void initialize() {}
 
@@ -1680,7 +1681,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Override to keep event bindings in one place,
    * remember to call super.bindEvents()
-   * this method is called during initialization
+   * this method is called during initialization before the UI is initialized
    */
   protected void bindEvents() {
     addComponentListener(new ComponentAdapter() {
@@ -1697,12 +1698,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   /**
    * Override to keep table model event bindings in one place,
-   * this method is called during initialization
+   * this method is called during initialization before the UI is initialized
    */
   protected void bindTableModelEvents() {}
 
   /**
    * Binds events associated to the EntityTablePanel
+   * this method is called during initialization after the UI is initialized
    */
   protected void bindTablePanelEvents() {
     if (entityTablePanel == null)

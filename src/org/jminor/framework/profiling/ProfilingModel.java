@@ -36,10 +36,10 @@ public abstract class ProfilingModel {
 
   protected static final Random random = new Random();
 
-  private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME_PROPERTY, "20000"));
+  private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME, "20000"));
   private int minimumThinkTime = maximumThinkTime/2;
-  private int loginWaitFactor = Integer.parseInt(System.getProperty(Configuration.PROFILING_LOGIN_WAIT_PROPERTY, "2"));
-  private int batchSize = Integer.parseInt(System.getProperty(Configuration.PROFILING_BATCH_SIZE_PROPERTY, "10"));
+  private int loginWaitFactor = Integer.parseInt(System.getProperty(Configuration.PROFILING_LOGIN_WAIT, "2"));
+  private int batchSize = Integer.parseInt(System.getProperty(Configuration.PROFILING_BATCH_SIZE, "10"));
 
   private boolean pause = false;
   private boolean stopped = false;

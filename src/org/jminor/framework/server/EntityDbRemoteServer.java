@@ -53,16 +53,16 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private static final int SERVER_DB_PORT;
 
   static {
-    final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT_PROPERTY);
-    final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT_PROPERTY);
-    final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT_PROPERTY);
+    final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT);
+    final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT);
+    final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT);
 
     if (serverPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_PORT_PROPERTY);
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_PORT);
     if (serverAdminPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT_PROPERTY);
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT);
     if (serverDbPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_DB_PORT_PROPERTY);
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_DB_PORT);
 
     SERVER_PORT = Integer.parseInt(serverPortProperty);
     SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
@@ -89,15 +89,15 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private EntityDbRemoteServer() throws RemoteException {
     super(SERVER_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    final String host = System.getProperty(IDatabase.DATABASE_HOST_PROPERTY);
-    final String port = System.getProperty(IDatabase.DATABASE_PORT_PROPERTY);
-    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
+    final String host = System.getProperty(IDatabase.DATABASE_HOST);
+    final String port = System.getProperty(IDatabase.DATABASE_PORT);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID);
     if (host == null || host.length() == 0)
-      throw new RuntimeException("Database host must be specified (" + IDatabase.DATABASE_HOST_PROPERTY +")");
+      throw new RuntimeException("Database host must be specified (" + IDatabase.DATABASE_HOST +")");
     if (!Database.get().isEmbedded() && (sid == null || sid.length() == 0))
-      throw new RuntimeException("Database sid must be specified (" + IDatabase.DATABASE_SID_PROPERTY +")");
+      throw new RuntimeException("Database sid must be specified (" + IDatabase.DATABASE_SID +")");
     if (!Database.get().isEmbedded() && (port == null || port.length() == 0))
-      throw new RuntimeException("Database port must be specified (" + IDatabase.DATABASE_PORT_PROPERTY +")");
+      throw new RuntimeException("Database port must be specified (" + IDatabase.DATABASE_PORT +")");
 
     serverName = Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())

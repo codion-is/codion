@@ -111,9 +111,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     if (connectionPools.containsKey(client.getUser()))
       connectionPools.get(client.getUser()).setPassword(client.getUser().getPassword());
     this.client = client;
-    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID);
     if (sid != null && sid.length() != 0)
-      this.client.getUser().setProperty(IDatabase.DATABASE_SID_PROPERTY, sid);
+      this.client.getUser().setProperty(IDatabase.DATABASE_SID, sid);
     this.loggingEntityDbProxy = initializeProxy();
     this.loggingEnabled = loggingEnabled;
   }

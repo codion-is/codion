@@ -41,32 +41,32 @@ public class Configuration {
   /**
    * The report path used for the default report generation
    */
-  public static final String REPORT_PATH_PROPERTY = "jminor.report.path";
+  public static final String REPORT_PATH = "jminor.report.path";
 
   /**
    * Default username for the login panel
    */
-  public static final String DEFAULT_USERNAME_PROPERTY = "jminor.client.defaultuser";
+  public static final String DEFAULT_USERNAME = "jminor.client.defaultuser";
 
   /**
    * The host on which to locate the server
    */
-  public static final String SERVER_HOST_NAME_PROPERTY = "jminor.server.hostname";
+  public static final String SERVER_HOST_NAME = "jminor.server.hostname";
 
   /**
    * If specified, the client will look for a server running on this port
    */
-  public static final String SERVER_PORT_PROPERTY = "jminor.server.port";
+  public static final String SERVER_PORT = "jminor.server.port";
 
   /**
    * The port on which the server should export the remote admin interface
    */
-  public static final String SERVER_ADMIN_PORT_PROPERTY = "jminor.server.admin.port";
+  public static final String SERVER_ADMIN_PORT = "jminor.server.admin.port";
 
   /**
    * The port on which the server should export the remote database connections
    */
-  public static final String SERVER_DB_PORT_PROPERTY = "jminor.server.db.port";
+  public static final String SERVER_DB_PORT = "jminor.server.db.port";
 
   /**
    * The initial logging status on the server, either 1 (on) or (0) off
@@ -92,17 +92,17 @@ public class Configuration {
    * Specifies the initial think time setting for the profiling client
    * (max think time = thinktime, min think time = max think time / 2)
    */
-  public static final String PROFILING_THINKTIME_PROPERTY = "jminor.profiling.thinktime";
+  public static final String PROFILING_THINKTIME = "jminor.profiling.thinktime";
 
   /**
    * Specifies the number time which the max think time is multiplied with when initializing the clients
    */
-  public static final String PROFILING_LOGIN_WAIT_PROPERTY = "jminor.profiling.loginwait";
+  public static final String PROFILING_LOGIN_WAIT = "jminor.profiling.loginwait";
 
   /**
    * Specifies the initial client batch size
    */
-  public static final String PROFILING_BATCH_SIZE_PROPERTY = "jminor.profiling.batchsize";
+  public static final String PROFILING_BATCH_SIZE = "jminor.profiling.batchsize";
 
   /**
    * The date format pattern to use when showing long dates in tables
@@ -349,6 +349,6 @@ public class Configuration {
   public static String getDefaultUsername(final String applicationIdentifier) {
     final String preferredUserName = Util.getDefaultUserName(applicationIdentifier,
             getValue(DEFAULT_USERNAME_PREFIX) + System.getProperty("user.name"));
-    return System.getProperty(DEFAULT_USERNAME_PROPERTY, preferredUserName);
+    return System.getProperty(DEFAULT_USERNAME, preferredUserName);
   }
 }

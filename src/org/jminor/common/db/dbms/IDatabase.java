@@ -23,30 +23,30 @@ public interface IDatabase {
    * @see IDatabase#DATABASE_TYPE_POSTGRESQL
    * @see IDatabase#DATABASE_TYPE_SQLSERVER
    */
-  public static final String DATABASE_TYPE_PROPERTY = "jminor.db.type";
+  public static final String DATABASE_TYPE = "jminor.db.type";
 
   /**
    * Specifies the machine hosting the database, in the case of embedded databases
    * this specifies the name of the database
    */
-  public static final String DATABASE_HOST_PROPERTY = "jminor.db.host";
+  public static final String DATABASE_HOST = "jminor.db.host";
 
   /**
    * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
    */
-  public static final String DATABASE_SID_PROPERTY = "jminor.db.sid";
+  public static final String DATABASE_SID = "jminor.db.sid";
 
   /**
    * Specifies the database port
    */
-  public static final String DATABASE_PORT_PROPERTY = "jminor.db.port";
+  public static final String DATABASE_PORT = "jminor.db.port";
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable
    * Values: true/false
    * Default: false
    */
-  public static final String DATABASE_EMBEDDED_PROPERTY = "jminor.db.embedded";
+  public static final String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
    * Specifies the IDatabase implementation class to use in case of a dbms that is not directly supported
@@ -56,37 +56,37 @@ public interface IDatabase {
 
   /**
    * Oracle database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
   public static final String DATABASE_TYPE_ORACLE = "oracle";
 
   /**
    * MySQL database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
   public static final String DATABASE_TYPE_MYSQL = "mysql";
 
   /**
    * PostgreSQL database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
   public static final String DATABASE_TYPE_POSTGRESQL = "postgresql";
 
   /**
    * Microsoft SQL Server database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
   public static final String DATABASE_TYPE_SQLSERVER = "sqlserver";
 
   /**
    * Derby database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
   public static final String DATABASE_TYPE_DERBY = "derby";
 
   /**
    * H2 database type
-   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE_PROPERTY
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
   public static final String DATABASE_TYPE_H2 = "h2";
 

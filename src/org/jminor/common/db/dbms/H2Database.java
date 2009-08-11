@@ -21,7 +21,7 @@ public class H2Database implements IDatabase {
    */
   private DateFormat LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED_PROPERTY, "false").toUpperCase().equals("TRUE");
+  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
@@ -54,22 +54,22 @@ public class H2Database implements IDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      final String host = System.getProperty(DATABASE_HOST);
       if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
+        throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
 
       return "jdbc:h2:" + host + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+      final String host = System.getProperty(DATABASE_HOST);
       if (host == null || host.length() == 0)
-        throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
-      final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+        throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
+      final String port = System.getProperty(DATABASE_PORT);
       if (port == null || port.length() == 0)
-        throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getDatabaseType());
-      final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+        throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
+      final String sid = System.getProperty(DATABASE_SID);
       if (sid == null || sid.length() == 0)
-        throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getDatabaseType());
+        throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
       return "jdbc:h2://" + host + ":" + port + "/" + sid + (authentication == null ? "" : ";" + authentication);
     }

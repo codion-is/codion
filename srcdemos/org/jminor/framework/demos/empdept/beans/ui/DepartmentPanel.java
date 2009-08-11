@@ -35,7 +35,7 @@ public class DepartmentPanel extends EntityPanel {
     if (getModel().getTableModel().getSelectionModel().isSelectionEmpty())
       return;
 
-    final String reportPath = System.getProperty(Configuration.REPORT_PATH_PROPERTY) + "/empdept_employees.jasper";
+    final String reportPath = System.getProperty(Configuration.REPORT_PATH) + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
             EntityUtil.getPropertyValues(getModel().getTableModel().getSelectedEntities(), EmpDept.DEPARTMENT_ID);
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();

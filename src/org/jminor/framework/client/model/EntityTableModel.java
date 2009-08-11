@@ -899,7 +899,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return new ArrayList<Entity>();
 
     try {
-      return criteria == null? getEntityDb().selectAll(getEntityID(), true) :
+      return criteria == null ? getEntityDb().selectAll(getEntityID(), true) :
               getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
                       EntityRepository.get().getOrderByColumnNames(getEntityID())));
     }
@@ -931,7 +931,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
 
   /**
    * @return a ICriteria object used to filter the result when this
-   * table models data is queried
+   * table models data is queried, the default implementation returns
+   * the result retrieved via the <code>getSearchCriteria()</code> method
+   * found in the underlying EntityTableSearchModel
+   * @see org.jminor.framework.client.model.EntityTableSearchModel#getSearchCriteria()
    */
   protected ICriteria getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();

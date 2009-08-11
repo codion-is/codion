@@ -40,7 +40,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     System.setSecurityManager(new RMISecurityManager());
   }
 
-  private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME_PROPERTY);
+  private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
   private final User user;
   private final String clientID;
   private final String clientTypeID;
@@ -145,7 +145,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
 
   private static IEntityDbRemoteServer checkServer(final IEntityDbRemoteServer server) throws RemoteException {
     final int port = server.getServerPort();
-    final String requestedPort = System.getProperty(Configuration.SERVER_PORT_PROPERTY);
+    final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
     if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))
       return server;
 

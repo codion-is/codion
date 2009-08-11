@@ -564,7 +564,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final Properties properties =
             getModel().getDbProvider().getEntityDb().getUser().getProperties();
     return frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(IDatabase.DATABASE_SID_PROPERTY) : null);
+            properties != null ? properties.getProperty(IDatabase.DATABASE_SID) : null);
   }
 
   protected JPanel initializeStartupProgressPane(final Icon icon) {

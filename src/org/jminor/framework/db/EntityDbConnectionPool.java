@@ -59,9 +59,9 @@ public class EntityDbConnectionPool {
 
   public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
     this.user = user;
-    final String sid = System.getProperty(IDatabase.DATABASE_SID_PROPERTY);
+    final String sid = System.getProperty(IDatabase.DATABASE_SID);
     if (sid != null && sid.length() != 0)
-      this.user.setProperty(IDatabase.DATABASE_SID_PROPERTY, sid);
+      this.user.setProperty(IDatabase.DATABASE_SID, sid);
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       @Override

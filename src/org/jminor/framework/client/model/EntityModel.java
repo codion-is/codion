@@ -204,17 +204,17 @@ public class EntityModel implements IRefreshable {
   /**
    * Holds events signaling changes made to the active entity via the ui
    */
-  private final Map<Property, Event> uiChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyUiChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling changes made to the active entity via the model
    */
-  private final Map<Property, Event> modelChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyModelChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling changes made to the active entity, via the model or ui
    */
-  private final Map<Property, Event> changeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * If true, then the modification of a record triggers a select for update
@@ -259,20 +259,20 @@ public class EntityModel implements IRefreshable {
       throw new IllegalArgumentException("dbProvider can not be null");
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
-    this.dbProvider = dbProvider;
     this.entityID = entityID;
-    this.propertyComboBoxModels = initializeEntityComboBoxModels();
+    this.dbProvider = dbProvider;
     this.tableModel = includeTableModel ? initializeTableModel() : null;
-    this.activeEntity = new Entity(entityID);
-    this.activeEntity.setAs(getDefaultEntity());
+    this.propertyComboBoxModels = initializeEntityComboBoxModels();
     this.detailModels = initializeDetailModels();
-    this.activeEntity.setFirePropertyChangeEvents(true);
     final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
     for (final EntityModel detailModel : this.detailModels) {
       detailModel.setMasterModel(this);
       if (detailModel.getTableModel() != null)
         detailModel.getTableModel().setFilterQueryByMaster(filterQueryByMaster);
     }
+    this.activeEntity = new Entity(entityID);
+    this.activeEntity.setAs(getDefaultEntity());
+    this.activeEntity.setFirePropertyChangeEvents(true);
     initializeAssociatedModels();
     bindEvents();
     bindTableModelEvents();
@@ -586,11 +586,11 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of <code>property</code> is changed by the UI
    */
   public Event getPropertyUIChangeEvent(final Property property) {
-    if (uiChangeEventMap.containsKey(property))
-      return uiChangeEventMap.get(property);
+    if (propertyUiChangeEventMap.containsKey(property))
+      return propertyUiChangeEventMap.get(property);
 
     final Event ret = new Event();
-    uiChangeEventMap.put(property, ret);
+    propertyUiChangeEventMap.put(property, ret);
 
     return ret;
   }
@@ -608,11 +608,11 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of <code>property</code> is changed by the model
    */
   public Event getPropertyModelChangeEvent(final Property property) {
-    if (modelChangeEventMap.containsKey(property))
-      return modelChangeEventMap.get(property);
+    if (propertyModelChangeEventMap.containsKey(property))
+      return propertyModelChangeEventMap.get(property);
 
     final Event ret = new Event();
-    modelChangeEventMap.put(property, ret);
+    propertyModelChangeEventMap.put(property, ret);
 
     return ret;
   }
@@ -630,8 +630,8 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of <code>property</code> is changed
    */
   public Event getPropertyChangeEvent(final Property property) {
-    if (changeEventMap.containsKey(property))
-      return changeEventMap.get(property);
+    if (propertyChangeEventMap.containsKey(property))
+      return propertyChangeEventMap.get(property);
 
     final Event ret = new Event();
     activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
@@ -641,7 +641,7 @@ public class EntityModel implements IRefreshable {
           ret.fire(event);
       }
     });
-    changeEventMap.put(property, ret);
+    propertyChangeEventMap.put(property, ret);
 
     return ret;
   }

@@ -37,7 +37,7 @@ public class MonitorPanel extends JPanel {
   private JFrame monitorFrame;
 
   public MonitorPanel() throws RemoteException {
-    this(new MonitorModel(System.getProperty(Configuration.SERVER_HOST_NAME_PROPERTY)));
+    this(new MonitorModel(System.getProperty(Configuration.SERVER_HOST_NAME)));
   }
 
   public MonitorPanel(final MonitorModel model) throws RemoteException {

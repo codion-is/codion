@@ -113,6 +113,7 @@ public class EntityModelTest extends TestCase {
     if (Database.get() instanceof H2Database)
       dbProvider.getEntityDb().executeStatement("SET LOCK_TIMEOUT 100");
 
+    departmentModel.getTableModel().setFilterQueryByMaster(false);
     departmentModel.refresh();
     departmentModel.setStrictEditMode(true);
 

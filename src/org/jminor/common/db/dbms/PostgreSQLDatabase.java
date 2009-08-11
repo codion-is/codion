@@ -41,15 +41,15 @@ public class PostgreSQLDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = System.getProperty(DATABASE_HOST_PROPERTY);
+    final String host = System.getProperty(DATABASE_HOST);
     if (host == null || host.length() == 0)
-      throw new RuntimeException(DATABASE_HOST_PROPERTY + " is required for database type " + getDatabaseType());
-    final String port = System.getProperty(DATABASE_PORT_PROPERTY);
+      throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
+    final String port = System.getProperty(DATABASE_PORT);
     if (port == null || port.length() == 0)
-      throw new RuntimeException(DATABASE_PORT_PROPERTY + " is required for database type " + getDatabaseType());
-    final String sid = System.getProperty(DATABASE_SID_PROPERTY);
+      throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
+    final String sid = System.getProperty(DATABASE_SID);
     if (sid == null || sid.length() == 0)
-      throw new RuntimeException(DATABASE_SID_PROPERTY + " is required for database type " + getDatabaseType());
+      throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
     return "jdbc:postgresql://" + host + ":" + port + "/" + sid;
   }

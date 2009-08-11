@@ -14,9 +14,9 @@ public class Database {
       try {
         String dbImplementationClass = System.getProperty(IDatabase.DATABASE_IMPLEMENTATION_CLASS);
         if (dbImplementationClass == null) {
-          final String dbType = System.getProperty(IDatabase.DATABASE_TYPE_PROPERTY);
+          final String dbType = System.getProperty(IDatabase.DATABASE_TYPE);
           if (dbType == null)
-            throw new IllegalArgumentException("Required system property missing: " + IDatabase.DATABASE_TYPE_PROPERTY);
+            throw new IllegalArgumentException("Required system property missing: " + IDatabase.DATABASE_TYPE);
 
           if (dbType.equals(IDatabase.DATABASE_TYPE_POSTGRESQL))
             dbImplementationClass = "org.jminor.common.db.dbms.PostgreSQLDatabase";
