@@ -77,10 +77,10 @@ is limited to Oracle, MySQL and H2 databases. Apache Derby or H2 databases conta
 generated via respective ant targets.
 
 In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
-builds can be found at ant.apache.org), which deployes the demo applications into the folder dist along with the
-required databases.
+builds can be found at ant.apache.org), which deployes the demo applications into the folder dist/deployment along
+with the required databases.
 
-dist
+dist/deployment
   '-jminor_demos          - application jar files, Derby and H2 databases, files to run the demo applications
   '-jminor_server         - server jar files, Derby and H2 databases, files to run the server
   '-jminor_server_monitor - server monitor jar files, files to run the server monitor

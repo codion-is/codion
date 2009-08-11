@@ -32,14 +32,16 @@ public class Configuration {
   public static final String CONNECTION_TYPE_REMOTE = "remote";
 
   /**
-   * Specifies whether the client should connect locally or remotely
+   * Specifies whether the client should connect locally or remotely,
+   * accepted values: local, remote
    * @see #CONNECTION_TYPE_LOCAL
    * @see #CONNECTION_TYPE_REMOTE
    */
   public static final String CLIENT_CONNECTION_TYPE = "jminor.client.connection.type";
 
   /**
-   * The report path used for the default report generation
+   * The report path used for the default report generation,
+   * either file or http based
    */
   public static final String REPORT_PATH = "jminor.report.path";
 
