@@ -163,6 +163,22 @@ public class Property implements Serializable {
   }
 
   /**
+   * @param property the property
+   * @return true if this property is of the given type
+   */
+  public boolean is(final Property property) {
+    return is(property.propertyID);
+  }
+
+  /**
+   * @param propertyID the property ID
+   * @return true if this property is of the given type
+   */
+  public boolean is(final String propertyID) {
+    return this.propertyID.equals(propertyID);
+  }
+
+  /**
    * @return the columnName/property identifier of this property
    */
   public String getColumnName() {
@@ -413,47 +429,50 @@ public class Property implements Serializable {
   public static class DenormalizedProperty extends Property {
 
     /**
-     * The ID of the reference entity which owns the property, from which this property gets its value
+     * the id of the foreign key property (entity) from which this property should retrieve its value
      */
-    public final String ownerEntityID;
+    public final String foreignKeyPropertyID;
     /**
      * the property from which this property gets its value
      */
-    public final Property valueSourceProperty;
+    public final Property denormalizedProperty;
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param ownerEntityID the ID of the referenced entity which owns the value source property
-     * @param valueSourceProperty the property from which this property should get its value
+     * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
+     * the denormalized property
+     * @param denormalizedProperty the property from which this property should get its value
      */
-    public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final Property valueSourceProperty) {
-      this(propertyID, ownerEntityID, valueSourceProperty, null);
+    public DenormalizedProperty(final String propertyID, final String foreignKeyPropertyID,
+                                final Property denormalizedProperty) {
+      this(propertyID, foreignKeyPropertyID, denormalizedProperty, null);
     }
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param ownerEntityID the ID of the referenced entity which owns the value source property
-     * @param valueSourceProperty the property from which this property should get its value
+     * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
+     * the denormalized property
+     * @param denormalizedProperty the property from which this property should get its value
      * @param caption the caption if this property
      */
-    public DenormalizedProperty(final String propertyID, final String ownerEntityID,
-                                final Property valueSourceProperty, final String caption) {
-      this(propertyID, ownerEntityID, valueSourceProperty, caption, -1);
+    public DenormalizedProperty(final String propertyID, final String foreignKeyPropertyID,
+                                final Property denormalizedProperty, final String caption) {
+      this(propertyID, foreignKeyPropertyID, denormalizedProperty, caption, -1);
     }
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param ownerEntityID the ID of the referenced entity which owns the value source property
-     * @param valueSourceProperty the property from which this property should get its value
+     * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
+     * the denormalized property
+     * @param denormalizedProperty the property from which this property should get its value
      * @param caption the caption if this property
      * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
      */
-    public DenormalizedProperty(final String propertyID, final String ownerEntityID, final Property valueSourceProperty,
+    public DenormalizedProperty(final String propertyID, final String foreignKeyPropertyID, final Property denormalizedProperty,
                                 final String caption, final int preferredColumnWidth) {
-      super(propertyID, valueSourceProperty.propertyType, caption, caption == null, false, preferredColumnWidth, true);
-      this.ownerEntityID = ownerEntityID;
-      this.valueSourceProperty = valueSourceProperty;
+      super(propertyID, denormalizedProperty.propertyType, caption, caption == null, false, preferredColumnWidth, true);
+      this.foreignKeyPropertyID = foreignKeyPropertyID;
+      this.denormalizedProperty = denormalizedProperty;
     }
   }
 
@@ -499,14 +518,14 @@ public class Property implements Serializable {
   }
 
   /**
-   * A property that gets its value from a reference entity, but is for
+   * A property that gets its value from a entity referenced by a foreign key, but is for
    * display only, and does not map to a database column
    */
   public static class DenormalizedViewProperty extends TransientProperty {
     /**
-     * the reference property (entity) from which this property should retrieve its value
+     * the id of the foreign key property (entity) from which this property should retrieve its value
      */
-    public final String referencePropertyID;
+    public final String foreignKeyPropertyID;
     /**
      * the property from which this property should get its value
      */
@@ -515,37 +534,37 @@ public class Property implements Serializable {
     /**
      * @param propertyID the ID of the property, this should not be a column name since this property does not
      * map to a table column
-     * @param referencePropertyID the ID of the reference property from which entity value this property gets its value
+     * @param foreignKeyPropertyID the ID of the foreign key property from which entity value this property gets its value
      * @param property the property from which this property gets its value
      */
-    public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property) {
-      this(propertyID, referencePropertyID, property, null);
+    public DenormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID, final Property property) {
+      this(propertyID, foreignKeyPropertyID, property, null);
     }
 
     /**
      * @param propertyID the ID of the property, this should not be a column name since this property does not
      * map to a table column
-     * @param referencePropertyID the ID of the reference property from which entity value this property gets its value
+     * @param foreignKeyPropertyID the ID of the foreign key property from which entity value this property gets its value
      * @param property the property from which this property gets its value
      * @param caption the caption of this property
      */
-    public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property,
+    public DenormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID, final Property property,
                                     final String caption) {
-      this(propertyID, referencePropertyID, property, caption, -1);
+      this(propertyID, foreignKeyPropertyID, property, caption, -1);
     }
 
     /**
      * @param propertyID the ID of the property, this should not be a column name since this property does not
      * map to a table column
-     * @param referencePropertyID the ID of the reference property from which entity value this property gets its value
+     * @param foreignKeyPropertyID the ID of the foreign key property from which entity value this property gets its value
      * @param property the property from which this property gets its value
      * @param caption the caption of this property
      * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
      */
-    public DenormalizedViewProperty(final String propertyID, final String referencePropertyID, final Property property,
+    public DenormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID, final Property property,
                                     final String caption, final int preferredColumnWidth) {
       super(propertyID, property.propertyType, caption, preferredColumnWidth);
-      this.referencePropertyID = referencePropertyID;
+      this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = property;
     }
   }

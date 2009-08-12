@@ -58,6 +58,8 @@ public class EmpDept {
   public static final String EMPLOYEE_DEPARTMENT = "deptno";
   /**Foreign key (reference) identifier for the DEPT column in the table scott.emp*/
   public static final String EMPLOYEE_DEPARTMENT_FK = "dept_fk";
+  /**Property identifier for the denormalized department location property*/
+  public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
   static {
     /*Initalizing the entity type T_DEPARTMENT*/
@@ -79,7 +81,7 @@ public class EmpDept {
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.SHORT_DATE, getString(EMPLOYEE_HIREDATE)),
-            new Property.DenormalizedViewProperty(DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
+            new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.get().getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION), 100));
 

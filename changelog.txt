@@ -626,3 +626,6 @@
   Wait cursor now used while preparing reports for viewing via the EntityPanel
   EntityReportUtil.fillReport() added, called from EntityModel.fillReport()
   EntityPanel.initialize() renamed to initializePanel, initialized renamed to panelInitialized, postInitialization() renamed to initialize
+  Property.is() added
+  Property.DenormalizedViewProperty.referencePropertyID renamed to foreignKeyPropertyID
+  Property.DenormalizedProperty.ownerEntityID renamed to foreignKeyPropertyID, changed relevant code in EntityRepository and Entity

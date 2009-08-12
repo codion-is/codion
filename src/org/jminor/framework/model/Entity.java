@@ -690,7 +690,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     setForeignKeyValues(foreignKeyProperty, newValue);
     if (hasDenormalizedProperties) {
       final Collection<Property.DenormalizedProperty> denormalizedProperties =
-              repository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.referenceEntityID);
+              repository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.propertyID);
       setDenormalizedValues(foreignKeyProperty, newValue, denormalizedProperties);
     }
   }
@@ -730,7 +730,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         doSetValue(denormalizedProperty,
-                entity == null ? null : entity.getRawValue(denormalizedProperty.valueSourceProperty.propertyID),
+                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.propertyID),
                 false, !values.containsKey(foreignKeyProperty.propertyID), true);
       }
     }
@@ -774,13 +774,13 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
+    final Entity valueOwner = getEntityValue(denormalizedViewProperty.foreignKeyPropertyID);
 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedProperty) : null;
   }
 
   private String getDenormalizedViewValueAsString(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = getEntityValue(denormalizedViewProperty.referencePropertyID);
+    final Entity valueOwner = getEntityValue(denormalizedViewProperty.foreignKeyPropertyID);
 
     return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.denormalizedProperty) : null;
   }

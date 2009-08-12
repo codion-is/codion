@@ -794,9 +794,9 @@ public class EntityRepository implements Serializable {
       databaseProperties.put(property.propertyID, property);
     if (property instanceof Property.DenormalizedProperty) {
       final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-      Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.ownerEntityID);
+      Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.foreignKeyPropertyID);
       if (denormProps == null)
-        denormalizedProperties.put(denormalizedProperty.ownerEntityID, denormProps = new ArrayList<Property.DenormalizedProperty>());
+        denormalizedProperties.put(denormalizedProperty.foreignKeyPropertyID, denormProps = new ArrayList<Property.DenormalizedProperty>());
       denormProps.add(denormalizedProperty);
     }
     if (!property.isHidden()) {
