@@ -240,24 +240,26 @@ public class FrameworkUiUtil {
     return box;
   }
 
-  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty property, final EntityModel entityModel,
+  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                    final EntityModel entityModel,
                                                     final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable) {
-    return createEntityComboBox(property, entityModel, newRecordPanelProvider, newButtonFocusable, null);
+    return createEntityComboBox(foreignKeyProperty, entityModel, newRecordPanelProvider, newButtonFocusable, null);
   }
 
-  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty property, final EntityModel entityModel,
+  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                    final EntityModel entityModel,
                                                     final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable, final State enabledState) {
     try {
-      final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(property);
+      final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(foreignKeyProperty);
       if (!boxModel.isDataInitialized())
         boxModel.refresh();
       final EntityComboBox ret = new EntityComboBox(boxModel, newRecordPanelProvider, newButtonFocusable);
       UiUtil.linkToEnabledState(enabledState, ret);
-      new ComboBoxPropertyLink(entityModel, property, ret);
+      new ComboBoxPropertyLink(entityModel, foreignKeyProperty, ret);
       MaximumMatch.enable(ret);
-      setPropertyToolTip(entityModel.getEntityID(), property, ret);
+      setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, ret);
       if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
         UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
@@ -268,16 +270,16 @@ public class FrameworkUiUtil {
     }
   }
 
-  public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty property, final EntityModel entityModel,
-                                              final EntityTableModel lookupModel) {
+  public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
+                                              final EntityModel entityModel, final EntityTableModel lookupModel) {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
-    final JTextField txt = createEntityField(property, entityModel);
+    final JTextField txt = createEntityField(foreignKeyProperty, entityModel);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
           final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(ret),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          entityModel.uiSetValue(property, selected.size() > 0 ? selected.get(0) : null);
+          entityModel.uiSetValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
         }
         catch (UserCancelException ex) {/**/}
       }
@@ -290,11 +292,12 @@ public class FrameworkUiUtil {
     return ret;
   }
 
-  public static JTextField createEntityField(final Property.ForeignKeyProperty property, final EntityModel entityModel) {
+  public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                             final EntityModel entityModel) {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
-    setPropertyToolTip(entityModel.getEntityID(), property, txt);
-    entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
+    setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, txt);
+    entityModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(final PropertyChangeEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
@@ -304,36 +307,39 @@ public class FrameworkUiUtil {
     return txt;
   }
 
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty property, final EntityModel entityModel                                                          ) {
-    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(property.referenceEntityID);
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final EntityModel entityModel                                                          ) {
+    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
     if (searchPropertyIDs == null)
-      throw new RuntimeException("No default search properties specified for entity: " + property.referenceEntityID
+      throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.referenceEntityID
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
 
-    return createEntityLookupField(property, entityModel, searchPropertyIDs);
+    return createEntityLookupField(foreignKeyProperty, entityModel, searchPropertyIDs);
   }
 
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty property, final EntityModel entityModel,
-                                                          final String... searchPropertyIDs) {
-    return createEntityLookupField(property, entityModel, null, searchPropertyIDs);
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final EntityModel entityModel, final String... searchPropertyIDs) {
+    return createEntityLookupField(foreignKeyProperty, entityModel, null, searchPropertyIDs);
   }
 
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty property, final EntityModel entityModel,
+  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final EntityModel entityModel,
                                                           final ICriteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)
-      throw new RuntimeException("No search properties specified for entity lookup field: " + property.referenceEntityID);
-    final List<Property> searchProperties = EntityRepository.get().getProperties(property.referenceEntityID, searchPropertyIDs);
+      throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.referenceEntityID);
+    final List<Property> searchProperties = EntityRepository.get().getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
-    final EntityLookupField lookupField = new EntityLookupField(entityModel.createEntityLookupModel(property.referenceEntityID,
-            additionalSearchCriteria, searchProperties),
-            (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
+    final EntityLookupField lookupField =
+            new EntityLookupField(entityModel.createEntityLookupModel(foreignKeyProperty.referenceEntityID,
+                    additionalSearchCriteria, searchProperties),
+                    (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
-    new LookupModelPropertyLink(entityModel, property.propertyID, lookupField.getModel());
-    setPropertyToolTip(entityModel.getEntityID(), property, lookupField);
+    new LookupModelPropertyLink(entityModel, foreignKeyProperty.propertyID, lookupField.getModel());
+    setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, lookupField);
 
     return lookupField;
   }

@@ -588,10 +588,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   private static List<EntityKey> getPrimaryKeysOfEntityValues(final List<Entity> entities,
-                                                              final Property.ForeignKeyProperty property) {
+                                                              final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<EntityKey> ret = new HashSet<EntityKey>(entities.size());
     for (final Entity entity : entities) {
-      final EntityKey key = entity.getReferencedPrimaryKey(property);
+      final EntityKey key = entity.getReferencedPrimaryKey(foreignKeyProperty);
       if (key != null)
         ret.add(key);
     }

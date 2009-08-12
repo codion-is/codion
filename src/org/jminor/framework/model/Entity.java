@@ -700,15 +700,15 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Example: EntityOne references EntityTwo via entityTwoID, after a call to this method the EntityOne.entityTwoID
    * property has the value of EntityTwo's primary key property. If <code>referencedEntity</code> is null then
    * the corresponding reference values are set to null.
-   * @param property the entity reference property
+   * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
    */
-  private void setForeignKeyValues(final Property.ForeignKeyProperty property, final Entity referencedEntity) {
+  private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             referencedEntity != null ? referencedEntity.primaryKey.getProperties()
-                    : repository.getPrimaryKeyProperties(property.referenceEntityID);
+                    : repository.getPrimaryKeyProperties(foreignKeyProperty.referenceEntityID);
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
-      final Property referenceProperty = property.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
+      final Property referenceProperty = foreignKeyProperty.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.propertyID)

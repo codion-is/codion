@@ -36,12 +36,12 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
   /**
    * Instantiates a new LookupModelPropertyLink
    * @param entityModel the EntityModel instance
-   * @param property the property to link
+   * @param foreignKeyProperty the foreign key property to link
    * @param lookupModel the lookup model to link
    */
-  public LookupModelPropertyLink(final EntityModel entityModel, final Property.ForeignKeyProperty property,
+  public LookupModelPropertyLink(final EntityModel entityModel, final Property.ForeignKeyProperty foreignKeyProperty,
                                  final EntityLookupModel lookupModel) {
-    super(entityModel, property, LinkType.READ_WRITE);
+    super(entityModel, foreignKeyProperty, LinkType.READ_WRITE);
     this.lookupModel = lookupModel;
     updateUI();
     lookupModel.evtSelectedEntitiesChanged.addListener(new ActionListener() {
