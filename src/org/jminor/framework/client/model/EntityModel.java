@@ -841,7 +841,7 @@ public class EntityModel implements IRefreshable {
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     if (tableModel != null) {
-      if (EntityUtil.isPrimaryKeyModified(modifiedEntities)) {
+      if (Entity.isPrimaryKeyModified(modifiedEntities)) {
         tableModel.refresh();//best we can do under the circumstances
       }
       else {//replace and select the updated entities

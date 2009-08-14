@@ -647,6 +647,24 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
+   * @param entities the entities to check, assumes they are all of the same type
+   * @return true if any of the given entities has a modified primary key property
+   */
+  public static boolean isPrimaryKeyModified(final Collection<Entity> entities) {
+    if (entities == null || entities.size() == 0)
+      return false;
+
+    for (final Property.PrimaryKeyProperty property :
+            EntityRepository.get().getPrimaryKeyProperties(entities.iterator().next().getEntityID())) {
+      for (final Entity entity : entities)
+        if (entity.isModified(property.propertyID))
+          return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Performs the actual value setting, minding all the stuff that needs minding here
    * @param property the property
    * @param newValue the new value

@@ -21,58 +21,7 @@ public class EntityRepository implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final Map<String, Map<String, Property>> properties = new HashMap<String, Map<String, Property>>();
-
-  /**
-   * Maps the name of the table each entity type is based on to its entityID
-   */
-  private final Map<String, String> entityTableNames = new HashMap<String, String>();
-
-  /**
-   * Maps the table (view, query) from which to select the entity to its entityID.
-   * Used if it differs from the one used for inserts/updates
-   */
-  private final Map<String, String> entitySelectTableNames = new HashMap<String, String>();
-
-  /**
-   * Holds the order by string for each entity type
-   */
-  private final Map<String, String> entityOrderByColumns = new HashMap<String, String>();
-
-  /**
-   * Maps the source of the entities ids (primary key) to each entity type, i.e. sequence names
-   */
-  private final Map<String, String> entityIdSources = new HashMap<String, String>();
-
-  /**
-   * Maps the IdSource to each entities entityID
-   * @see IdSource
-   */
-  private final Map<String, IdSource> idSources = new HashMap<String, IdSource>();
-
-  /**
-   * Maps the readOnly value to each entities entityID
-   */
-  private final Map<String, Boolean> readOnly = new HashMap<String, Boolean>();
-
-  /**
-   * Maps the largeDataset value to each entities entityID
-   */
-  private final Map<String, Boolean> largeDataset = new HashMap<String, Boolean>();
-
-  private final Map<String, Map<String, String>> propertyDescriptions = new HashMap<String, Map<String, String>>();
-  private final Map<String, String[]> entitySearchPropertyIDs = new HashMap<String, String[]>();
-
-  private transient Map<String, LinkedHashMap<String, Property>> visibleProperties;
-  private transient Map<String, Map<Integer, Property>> visiblePropertyIndexes;
-  private transient Map<String, LinkedHashMap<String, Property>> databaseProperties;
-
-  private transient Map<String, Map<String, Property.ForeignKeyProperty>> foreignKeyProperties;
-  private transient Map<String, Map<String, Collection<Property.DenormalizedProperty>>> denormalizedProperties;
-  private transient Map<String, List<Property.PrimaryKeyProperty>> primaryKeyProperties;
-
-  private transient Map<String, String> entitySelectStrings;
-  private transient Map<String, String[]> primaryKeyColumnNames;
+  private Map<String, EntityInfo> entityInfo = new HashMap<String, EntityInfo>();
 
   private static EntityRepository instance;
 
@@ -86,22 +35,7 @@ public class EntityRepository implements Serializable {
   }
 
   public void add(final EntityRepository repository) {
-    initContainers();
-    instance.largeDataset.putAll(repository.largeDataset);
-    instance.readOnly.putAll(repository.readOnly);
-    instance.properties.putAll(repository.properties);
-    instance.visibleProperties.putAll(repository.visibleProperties);
-    instance.visiblePropertyIndexes.putAll(repository.visiblePropertyIndexes);
-    instance.primaryKeyProperties.putAll(repository.primaryKeyProperties);
-    instance.primaryKeyColumnNames.putAll(repository.primaryKeyColumnNames);
-    instance.databaseProperties.putAll(repository.databaseProperties);
-    instance.idSources.putAll(repository.idSources);
-    instance.entityOrderByColumns.putAll(repository.entityOrderByColumns);
-    instance.foreignKeyProperties.putAll(repository.foreignKeyProperties);
-    instance.entitySelectStrings.putAll(repository.entitySelectStrings);
-    instance.entityTableNames.putAll(repository.entityTableNames);
-    instance.entitySelectTableNames.putAll(repository.entitySelectTableNames);
-    instance.entityIdSources.putAll(repository.entityIdSources);
+    entityInfo.putAll(repository.entityInfo);
   }
 
   /**
@@ -110,10 +44,12 @@ public class EntityRepository implements Serializable {
    * @param description a string describing the property
    */
   public void setPropertyDescription(final String entityID, final String propertyID, final String description) {
-    if (!propertyDescriptions.containsKey(entityID))
-      propertyDescriptions.put(entityID, new HashMap<String, String>());
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+    if (entityInfo.get(entityID).propertyDescriptions == null)
+      entityInfo.get(entityID).propertyDescriptions = new HashMap<String, String>();
 
-    propertyDescriptions.get(entityID).put(propertyID, description);
+    entityInfo.get(entityID).propertyDescriptions.put(propertyID, description);
   }
 
   /**
@@ -131,10 +67,10 @@ public class EntityRepository implements Serializable {
    * @return the description string for the given property, null if none is defined
    */
   public String getPropertyDescription(final String entityID, final String propertyID) {
-    if (!propertyDescriptions.containsKey(entityID) || !propertyDescriptions.get(entityID).containsKey(propertyID))
-      return null;
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return propertyDescriptions.get(entityID).get(propertyID);
+    return entityInfo.get(entityID).propertyDescriptions != null ? entityInfo.get(entityID).propertyDescriptions.get(propertyID) : null;
   }
 
   /**
@@ -144,11 +80,13 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException in case of a non-string property ID
    */
   public void setEntitySearchProperties(final String entityID, final String... searchPropertyIDs) {
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
     for (final String propertyID : searchPropertyIDs)
       if (getProperty(entityID, propertyID).propertyType != Type.STRING)
         throw new RuntimeException("Entity search property must be of type String: " + getProperty(entityID, propertyID));
 
-    entitySearchPropertyIDs.put(entityID, searchPropertyIDs);
+    entityInfo.get(entityID).entitySearchPropertyIDs = searchPropertyIDs;
   }
 
   /**
@@ -157,7 +95,10 @@ public class EntityRepository implements Serializable {
    * for entities identified by <code>entityID</code>
    */
   public String[] getEntitySearchPropertyIDs(final String entityID) {
-    return entitySearchPropertyIDs.get(entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+
+    return entityInfo.get(entityID).entitySearchPropertyIDs;
   }
 
   /**
@@ -165,11 +106,10 @@ public class EntityRepository implements Serializable {
    * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
    */
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final String entityID) {
-    final List<Property.PrimaryKeyProperty> ret = primaryKeyProperties.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No primary key properties defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).getPrimaryKeyProperties();
   }
 
   /**
@@ -177,26 +117,24 @@ public class EntityRepository implements Serializable {
    * @return a String array containing the primary column names of the entity identified by <code>entityID</code>
    */
   public String[] getPrimaryKeyColumnNames(final String entityID) {
-    final String[] ret = primaryKeyColumnNames.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No primary key column names defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).getPrimaryKeyColumnNames();
   }
 
   /**
    * @param entityID the entity ID
-   * @param idx the index of the property to retrieve
+   * @param index the index of the property to retrieve
    * @return the property found at index <code>idx</code> in the entity identified by <code>entityID</code>,
    * null if no property is at the given index
    * @throws RuntimeException if property indexes are not defined for the given entity
    */
-  public Property getPropertyAtViewIndex(final String entityID, final int idx) {
-    final Map<Integer, Property> indexes = visiblePropertyIndexes.get(entityID);
-    if (indexes == null)
-      throw new RuntimeException("No property indexes defined for entity: " + entityID);
+  public Property getPropertyAtViewIndex(final String entityID, final int index) {
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return indexes.get(idx);
+    return entityInfo.get(entityID).getPropertyAtViewIndex(index);
   }
 
   /**
@@ -205,11 +143,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if the read only value is undefined
    */
   public boolean isReadOnly(final String entityID) {
-    final Boolean ret = readOnly.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("Read only value not defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).isReadOnly();
   }
 
   /**
@@ -218,11 +155,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if the large dataset value is undefined
    */
   public boolean isLargeDataset(final String entityID) {
-    final Boolean ret = largeDataset.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("Large dataset value not defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).isLargeDataset();
   }
 
   /**
@@ -230,7 +166,10 @@ public class EntityRepository implements Serializable {
    * @param value true if the entity identified by <code>entityID</code> is based on a large dataset
    */
   public void setIsLargeDataset(final String entityID, final boolean value) {
-    largeDataset.put(entityID, value);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+
+    entityInfo.get(entityID).setLargeDataset(value);
   }
 
   /**
@@ -238,11 +177,10 @@ public class EntityRepository implements Serializable {
    * @return a comma seperated list of columns to use in the order by clause
    */
   public String getOrderByColumnNames(final String entityID) {
-    final String ret = entityOrderByColumns.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No order by columns defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).orderByClause;
   }
 
   /**
@@ -251,11 +189,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if none is defined
    */
   public String getSelectTableName(final String entityID) {
-    final String ret = entitySelectTableNames.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No select table name defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).selectTableName;
   }
 
   /**
@@ -264,11 +201,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if none is defined
    */
   public String getTableName(final String entityID) {
-    final String ret = entityTableNames.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No table name defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).tableName;
   }
 
   /**
@@ -277,11 +213,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if none is defined
    */
   public String getSelectString(final String entityID) {
-    final String ret = entitySelectStrings.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No select string defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).getSelectString();
   }
 
   /**
@@ -290,11 +225,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if none is defined
    */
   public IdSource getIdSource(final String entityID) {
-    final IdSource ret = idSources.get(entityID);
-    if (ret == null)
+    if (!entityInfo.containsKey(entityID))
       throw new RuntimeException("No id source defined for entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).idSource;
   }
 
   /**
@@ -332,11 +266,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public Collection<Property> getVisibleProperties(final String entityID) {
-    final Collection<Property> ret = visibleProperties.get(entityID).values();
-    if (ret == null)
-      throw new RuntimeException("No visible properties defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).getVisibleProperties();
   }
 
   /**
@@ -346,11 +279,8 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public List<Property> getVisiblePropertyList(final String entityID) {
-    if (!visibleProperties.containsKey(entityID))
-      throw new RuntimeException("No visible properties defined for entity: " + entityID);
-
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : visibleProperties.get(entityID).values())
+    for (final Property property : getVisibleProperties(entityID))
       ret.add(property);
 
     return ret;
@@ -409,11 +339,10 @@ public class EntityRepository implements Serializable {
    * that is, properties that map to database columns
    */
   public Collection<Property> getDatabaseProperties(final String entityID) {
-    final Collection<Property> ret = databaseProperties.get(entityID).values();
-    if (ret == null)
-      throw new RuntimeException("No database properties defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).getDatabaseProperties();
   }
 
   /**
@@ -422,8 +351,10 @@ public class EntityRepository implements Serializable {
    * identified by <code>entityID</code>
    */
   public Collection<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
-    return foreignKeyProperties.containsKey(entityID) ?
-            foreignKeyProperties.get(entityID).values() : new ArrayList<Property.ForeignKeyProperty>(0);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+
+    return entityInfo.get(entityID).getForeignKeyProperties();
   }
 
   /**
@@ -431,7 +362,10 @@ public class EntityRepository implements Serializable {
    * @return true if the given entity contains denormalized properties
    */
   public boolean hasDenormalizedProperties(final String entityID) {
-    return denormalizedProperties.size() > 0 && denormalizedProperties.containsKey(entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+
+    return entityInfo.get(entityID).hasDenormalizedProperties();
   }
 
   /**
@@ -442,10 +376,10 @@ public class EntityRepository implements Serializable {
    */
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
                                                                              final String propertyOwnerEntityID) {
-    if (denormalizedProperties.containsKey(entityID))
-      return denormalizedProperties.get(entityID).get(propertyOwnerEntityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return null;
+    return entityInfo.get(entityID).getDenormalizedProperties(propertyOwnerEntityID);
   }
 
   /**
@@ -482,11 +416,10 @@ public class EntityRepository implements Serializable {
    * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
    */
   public Map<String, Property> getProperties(final String entityID) {
-    final Map<String, Property> ret = properties.get(entityID);
-    if (ret == null)
-      throw new RuntimeException("No properties defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityInfo.get(entityID).properties;
   }
 
   /**
@@ -495,11 +428,10 @@ public class EntityRepository implements Serializable {
    * @throws RuntimeException in case no id source name is specified
    */
   public String getEntityIdSource(final String entityID) {
-    final String idSource = entityIdSources.get(entityID);
-    if (idSource == null)
-      throw new RuntimeException("No ID source defined for entity: " + entityID);
+    if (!entityInfo.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return idSource;
+    return entityInfo.get(entityID).idValueSource;
   }
 
   /**
@@ -508,11 +440,7 @@ public class EntityRepository implements Serializable {
    * @return true if any one of the entities in the group have already initialized, hmm?
    */
   public boolean contains(final Collection<String> entityGroup) {
-    for (final String entityID : entityGroup)
-      if (readOnly.containsKey(entityID))
-        return true;
-
-    return false;
+    return entityInfo.containsKey(entityGroup.iterator().next());
   }
 
   /**
@@ -678,186 +606,240 @@ public class EntityRepository implements Serializable {
                          final String entityIdSource, final String orderByColumns,
                          final String dbSelectTableName, final boolean isReadOnly,
                          final boolean largeDataset, final Property... initialPropertyDefinitions) {
-    if (this.readOnly.containsKey(entityID))
+    if (entityInfo.containsKey(entityID))
       throw new IllegalArgumentException("Entity with ID '" + entityID + "' has already been initialized!");
-    this.readOnly.put(entityID, isReadOnly);
-    this.largeDataset.put(entityID, largeDataset);
-    this.entityTableNames.put(entityID, dbTableName == null ? entityID : dbTableName.toLowerCase());
-    this.entitySelectTableNames.put(entityID,
-            dbSelectTableName == null ? this.entityTableNames.get(entityID) : dbSelectTableName.toLowerCase());
-    this.idSources.put(entityID, idSource);
-    this.entityOrderByColumns.put(entityID, orderByColumns == null ? "" : orderByColumns);
-    this.entityIdSources.put(entityID,
-            (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
-                    (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null);
 
-    final HashMap<String, Property> properties = new LinkedHashMap<String, Property>(initialPropertyDefinitions.length);
-    for (final Property property : initialPropertyDefinitions) {
-      if (properties.containsKey(property.propertyID))
-        throw new IllegalArgumentException("Property with ID " + property.propertyID
-                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + properties.get(property.propertyID) + " in entity: " + entityID);
-      properties.put(property.propertyID, property);
-      if (property instanceof Property.ForeignKeyProperty) {
-        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).referenceProperties) {
-          if (!(referenceProperty instanceof Property.MirrorProperty)) {
-            if (properties.containsKey(referenceProperty.propertyID))
-              throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
-                      + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                      + " has already been defined as: " + properties.get(referenceProperty.propertyID) + " in entity: " + entityID);
-            properties.put(referenceProperty.propertyID, referenceProperty);
-          }
-        }
-      }
-    }
+    final EntityInfo info = new EntityInfo(entityID, initialPropertyDefinitions, dbTableName == null ? entityID : dbTableName.toLowerCase(),
+            dbSelectTableName == null ? (dbTableName == null ? entityID : dbTableName.toLowerCase()) : dbSelectTableName.toLowerCase(),
+            orderByColumns, idSource, (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
+                    (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null,
+            isReadOnly, largeDataset);
 
-    this.properties.put(entityID, properties);
-
-    initialize(entityID);
+    info.initialize();
+    this.entityInfo.put(entityID, info);
   }
 
   /**
    * @return the IDs of all the entities defined in this repository
    */
   public Collection<String> getEntityIDs() {
-    return properties.keySet();
-  }
-
-  /**
-   * Initializes all the entities specified in this repository
-   * @return this EntityRepository instance
-   */
-  public EntityRepository initializeAll() {
-    for (final String entityID : properties.keySet())
-      initialize(entityID);
-
-    return this;
+    return entityInfo.keySet();
   }
 
   public String[] getInitializedEntities() {
-    return properties.keySet().toArray(new String[properties.keySet().size()]);
+    return entityInfo.keySet().toArray(new String[entityInfo.keySet().size()]);
   }
 
-  private void initialize(final String entityID) {
-    final Map<String, Property> initialPropertyDefinitions = properties.get(entityID);
+  static class EntityInfo implements Serializable {
 
-    final LinkedHashMap<String, Property> visibleProperties =
-            new LinkedHashMap<String, Property>(initialPropertyDefinitions.size());
-    final Map<Integer, Property> visiblePropertyIndexes =
-            new HashMap<Integer, Property>(initialPropertyDefinitions.size());
-    final LinkedHashMap<String, Property> databaseProperties =
-            new LinkedHashMap<String, Property>(initialPropertyDefinitions.size());
-    final Map<String, Property.ForeignKeyProperty> foreignKeyProperties =
-            new HashMap<String, Property.ForeignKeyProperty>(initialPropertyDefinitions.size());
-    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties =
-            new HashMap<String, Collection<Property.DenormalizedProperty>>(initialPropertyDefinitions.size());
-    final List<Property.PrimaryKeyProperty > primaryKeyProperties =
-            new ArrayList<Property.PrimaryKeyProperty>(initialPropertyDefinitions.size());
-    final List<String> primaryKeyColumnNames = new ArrayList<String>();
+    /**
+     * The entityID
+     */
+    private final String entityID;
+    /**
+     * The properties
+     */
+    private final Map<String, Property> properties;
+    /**
+     * The name of the underlygin table
+     */
+    private final String tableName;
+    /**
+     * The table (view, query) from which to select the entity
+     * Used if it differs from the one used for inserts/updates
+     */
+    private final String selectTableName;
+    /**
+     * Holds the order by clause
+     */
+    private final String orderByClause;
+    /**
+     * The source of the entitys id (primary key), i.e. sequence name
+     */
+    private final String idValueSource;
+    /**
+     * The IdSource
+     */
+    private final IdSource idSource;
+    /**
+     * The readOnly value
+     */
+    private final boolean readOnly;
+    /**
+     * The largeDataset value
+     */
+    private boolean largeDataset;
+    private Map<String, String> propertyDescriptions;
+    private String[] entitySearchPropertyIDs;
 
-    for (final Property property : initialPropertyDefinitions.values())
-      addProperty(visibleProperties, visiblePropertyIndexes, databaseProperties,
-              foreignKeyProperties, denormalizedProperties, primaryKeyProperties, primaryKeyColumnNames, property);
+    private LinkedHashMap<String, Property> visibleProperties;
+    private Map<Integer, Property> visiblePropertyIndexes;
+    private LinkedHashMap<String, Property> databaseProperties;
 
-    initContainers();
+    private Map<String, Property.ForeignKeyProperty> foreignKeyProperties;
+    private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
+    private List<Property.PrimaryKeyProperty> primaryKeyProperties;
 
-    this.databaseProperties.put(entityID, databaseProperties);
-    this.visibleProperties.put(entityID, visibleProperties);
-    this.visiblePropertyIndexes.put(entityID, visiblePropertyIndexes);
-    this.foreignKeyProperties.put(entityID, foreignKeyProperties);
-    if (denormalizedProperties.size() > 0)
-      this.denormalizedProperties.put(entityID, denormalizedProperties);
-    this.primaryKeyProperties.put(entityID, primaryKeyProperties);
-    this.primaryKeyColumnNames.put(entityID, primaryKeyColumnNames.toArray(new String[primaryKeyColumnNames.size()]));
+    private String entitySelectString;
+    private List<String> primaryKeyColumnNames;
 
-    final String[] selectColumnNames = initSelectColumnNames(entityID);
-    for (int idx = 0; idx < selectColumnNames.length; idx++)
-      initialPropertyDefinitions.get(selectColumnNames[idx]).setSelectIndex(idx+1);
+    public EntityInfo(final String entityID, final Property[] propertyDefinitions, final String tableName,
+                      final String selectTableName, final String orderByClause, final IdSource idSource,
+                      final String idValueSource, final boolean readOnly, final boolean largeDataset) {
+      this.entityID = entityID;
+      this.tableName = tableName;
+      this.selectTableName = selectTableName;
+      this.orderByClause = orderByClause;
+      this.idSource = idSource;
+      this.idValueSource = idValueSource;
+      this.readOnly = readOnly;
+      this.largeDataset = largeDataset;
 
-    this.entitySelectStrings.put(entityID, getSelectColumnsString(entityID));
-  }
-
-  private void addProperty(final Map<String, Property> visibleProperties,
-                           final Map<Integer, Property> visiblePropertyIndexes,
-                           final Map<String, Property> databaseProperties,
-                           final Map<String, Property.ForeignKeyProperty> foreignKeyProperties,
-                           final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties,
-                           final List<Property.PrimaryKeyProperty> primaryKeyProperties,
-                           final List<String> primaryKeyColumnNames, final Property property) {
-    if (property instanceof Property.PrimaryKeyProperty) {
-      primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
-      primaryKeyColumnNames.add(property.propertyID);
-    }
-    if (property instanceof Property.ForeignKeyProperty)
-      foreignKeyProperties.put(property.propertyID, (Property.ForeignKeyProperty) property);
-    if (property.isDatabaseProperty())
-      databaseProperties.put(property.propertyID, property);
-    if (property instanceof Property.DenormalizedProperty) {
-      final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-      Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.foreignKeyPropertyID);
-      if (denormProps == null)
-        denormalizedProperties.put(denormalizedProperty.foreignKeyPropertyID, denormProps = new ArrayList<Property.DenormalizedProperty>());
-      denormProps.add(denormalizedProperty);
-    }
-    if (!property.isHidden()) {
-      visibleProperties.put(property.propertyID, property);
-      visiblePropertyIndexes.put(visiblePropertyIndexes.size(), property);
-    }
-  }
-
-  /**
-   * @param entityID the entity class
-   * @return the column names used to select an entity of this type from the database
-   */
-  private String[] initSelectColumnNames(final String entityID) {
-    final Collection<Property> dbProperties = getDatabaseProperties(entityID);
-    final List<String> ret = new ArrayList<String>(dbProperties.size());
-    for (final Property property : dbProperties)
-      if (!(property instanceof Property.ForeignKeyProperty))
-        ret.add(property.propertyID);
-
-    return ret.toArray(new String[ret.size()]);
-  }
-
-  private String getSelectColumnsString(final String entityID) {
-    final Collection<Property> dbProperties = getDatabaseProperties(entityID);
-    final List<Property> selectProperties = new ArrayList<Property>(dbProperties.size());
-    for (final Property property : dbProperties)
-      if (!(property instanceof Property.ForeignKeyProperty))
-        selectProperties.add(property);
-
-    final StringBuilder ret = new StringBuilder();
-    int i = 0;
-    for (final Property property : selectProperties) {
-      if (property instanceof Property.SubqueryProperty)
-        ret.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
-                ") ").append(property.propertyID);
-      else
-        ret.append(property.propertyID);
-
-      if (i++ < selectProperties.size() - 1)
-        ret.append(", ");
+      this.properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
+      for (final Property property : propertyDefinitions) {
+        if (properties.containsKey(property.propertyID))
+          throw new IllegalArgumentException("Property with ID " + property.propertyID
+                  + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
+                  + " has already been defined as: " + properties.get(property.propertyID) + " in entity: " + entityID);
+        properties.put(property.propertyID, property);
+        if (property instanceof Property.ForeignKeyProperty) {
+          for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).referenceProperties) {
+            if (!(referenceProperty instanceof Property.MirrorProperty)) {
+              if (properties.containsKey(referenceProperty.propertyID))
+                throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
+                        + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
+                        + " has already been defined as: " + properties.get(referenceProperty.propertyID) + " in entity: " + entityID);
+              properties.put(referenceProperty.propertyID, referenceProperty);
+            }
+          }
+        }
+      }
+      initialize();
     }
 
-    return ret.toString();
-  }
+    public String getEntityID() {
+      return entityID;
+    }
 
-  private void initContainers() {
-    if (this.databaseProperties == null)
-      this.databaseProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-    if (this.visibleProperties == null)
-      this.visibleProperties = new HashMap<String, LinkedHashMap<String, Property>>();
-    if (this.visiblePropertyIndexes == null)
-      this.visiblePropertyIndexes = new HashMap<String, Map<Integer, Property>>();
-    if (this.foreignKeyProperties == null)
-      this.foreignKeyProperties = new HashMap<String, Map<String, Property.ForeignKeyProperty>>();
-    if (this.denormalizedProperties == null)
-      this.denormalizedProperties = new HashMap<String, Map<String, Collection<Property.DenormalizedProperty>>>();
-    if (this.primaryKeyProperties == null)
-      this.primaryKeyProperties = new HashMap<String, List<Property.PrimaryKeyProperty>>();
-    if (this.primaryKeyColumnNames == null)
-      this.primaryKeyColumnNames = new HashMap<String, String[]>();
-    if (this.entitySelectStrings == null)
-      this.entitySelectStrings = new HashMap<String, String>();
+    public void setLargeDataset(final boolean largeDataset) {
+      this.largeDataset = largeDataset;
+    }
+
+    public boolean isLargeDataset() {
+      return largeDataset;
+    }
+
+    public boolean isReadOnly() {
+      return readOnly;
+    }
+
+    public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
+      return primaryKeyProperties;
+    }
+
+    public String[] getPrimaryKeyColumnNames() {
+      return primaryKeyColumnNames.toArray(new String[primaryKeyColumnNames.size()]);
+    }
+
+    public Property getPropertyAtViewIndex(final int idx) {
+      return visiblePropertyIndexes.get(idx);
+    }
+
+    public String getSelectString() {
+      return entitySelectString;
+    }
+
+    public Collection<Property> getVisibleProperties() {
+      return visibleProperties.values();
+    }
+
+    public Collection<Property> getDatabaseProperties() {
+      return databaseProperties.values();
+    }
+
+    public Collection<Property.ForeignKeyProperty> getForeignKeyProperties() {
+      return foreignKeyProperties != null ? foreignKeyProperties.values() : new ArrayList<Property.ForeignKeyProperty>(0);
+    }
+
+    public boolean hasDenormalizedProperties() {
+      return denormalizedProperties.size() > 0 && denormalizedProperties.containsKey(entityID);
+    }
+
+    public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String propertyOwnerEntityID) {
+      return denormalizedProperties != null ? denormalizedProperties.get(propertyOwnerEntityID) : null;
+    }
+
+    public void initialize() {
+      visibleProperties = new LinkedHashMap<String, Property>(properties.size());
+      visiblePropertyIndexes = new HashMap<Integer, Property>(properties.size());
+      databaseProperties = new LinkedHashMap<String, Property>(properties.size());
+      foreignKeyProperties = new HashMap<String, Property.ForeignKeyProperty>(properties.size());
+      denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
+      primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
+      primaryKeyColumnNames = new ArrayList<String>();
+
+      for (final Property property : properties.values()) {
+        if (property instanceof Property.PrimaryKeyProperty) {
+          primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
+          primaryKeyColumnNames.add(property.propertyID);
+        }
+        if (property instanceof Property.ForeignKeyProperty)
+          foreignKeyProperties.put(property.propertyID, (Property.ForeignKeyProperty) property);
+        if (property.isDatabaseProperty())
+          databaseProperties.put(property.propertyID, property);
+        if (property instanceof Property.DenormalizedProperty) {
+          final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
+          Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.foreignKeyPropertyID);
+          if (denormProps == null)
+            denormalizedProperties.put(denormalizedProperty.foreignKeyPropertyID, denormProps = new ArrayList<Property.DenormalizedProperty>());
+          denormProps.add(denormalizedProperty);
+        }
+        if (!property.isHidden()) {
+          visibleProperties.put(property.propertyID, property);
+          visiblePropertyIndexes.put(visiblePropertyIndexes.size(), property);
+        }
+      }
+
+      final String[] selectColumnNames = initSelectColumnNames();
+      for (int idx = 0; idx < selectColumnNames.length; idx++)
+        properties.get(selectColumnNames[idx]).setSelectIndex(idx+1);
+
+      this.entitySelectString = getSelectColumnsString();
+    }
+
+    /**
+     * @return the column names used to select an entity of this type from the database
+     */
+    private String[] initSelectColumnNames() {
+      final List<String> ret = new ArrayList<String>();
+      for (final Property property : getDatabaseProperties())
+        if (!(property instanceof Property.ForeignKeyProperty))
+          ret.add(property.propertyID);
+
+      return ret.toArray(new String[ret.size()]);
+    }
+
+    private String getSelectColumnsString() {
+      final Collection<Property> dbProperties = getDatabaseProperties();
+      final List<Property> selectProperties = new ArrayList<Property>(dbProperties.size());
+      for (final Property property : dbProperties)
+        if (!(property instanceof Property.ForeignKeyProperty))
+          selectProperties.add(property);
+
+      final StringBuilder ret = new StringBuilder();
+      int i = 0;
+      for (final Property property : selectProperties) {
+        if (property instanceof Property.SubqueryProperty)
+          ret.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
+                  ") ").append(property.propertyID);
+        else
+          ret.append(property.propertyID);
+
+        if (i++ < selectProperties.size() - 1)
+          ret.append(", ");
+      }
+
+      return ret.toString();
+    }
   }
 }

@@ -629,3 +629,6 @@
   Property.is() added
   Property.DenormalizedViewProperty.referencePropertyID renamed to foreignKeyPropertyID
   Property.DenormalizedProperty.ownerEntityID renamed to foreignKeyPropertyID, changed relevant code in EntityRepository and Entity
+  EntityUtil.isPrimaryKeyModified() moved to Entity
+  EntityRepository.EntityInfo created
+  EntityRepository refactored, transient fields removed, temporarily?

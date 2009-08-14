@@ -128,7 +128,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       return null;
 
     if (!EntityRepository.get().contains(repository.getEntityIDs()))
-      EntityRepository.get().add(repository.initializeAll());
+      EntityRepository.get().add(repository);
 
     final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
     if (connections.containsKey(client))
