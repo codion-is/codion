@@ -21,7 +21,7 @@ public class EntityRepository implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private Map<String, EntityInfo> entityInfo = new HashMap<String, EntityInfo>();
+  private Map<String, EntityDefinition> entityInfo = new HashMap<String, EntityDefinition>();
 
   private static EntityRepository instance;
 
@@ -609,7 +609,7 @@ public class EntityRepository implements Serializable {
     if (entityInfo.containsKey(entityID))
       throw new IllegalArgumentException("Entity with ID '" + entityID + "' has already been initialized!");
 
-    final EntityInfo info = new EntityInfo(entityID, initialPropertyDefinitions, dbTableName == null ? entityID : dbTableName.toLowerCase(),
+    final EntityDefinition info = new EntityDefinition(entityID, initialPropertyDefinitions, dbTableName == null ? entityID : dbTableName.toLowerCase(),
             dbSelectTableName == null ? (dbTableName == null ? entityID : dbTableName.toLowerCase()) : dbSelectTableName.toLowerCase(),
             orderByColumns, idSource, (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
                     (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null,
@@ -630,7 +630,7 @@ public class EntityRepository implements Serializable {
     return entityInfo.keySet().toArray(new String[entityInfo.keySet().size()]);
   }
 
-  static class EntityInfo implements Serializable {
+  public static class EntityDefinition implements Serializable {
 
     /**
      * The entityID
@@ -683,7 +683,7 @@ public class EntityRepository implements Serializable {
     private String entitySelectString;
     private List<String> primaryKeyColumnNames;
 
-    public EntityInfo(final String entityID, final Property[] propertyDefinitions, final String tableName,
+    public EntityDefinition(final String entityID, final Property[] propertyDefinitions, final String tableName,
                       final String selectTableName, final String orderByClause, final IdSource idSource,
                       final String idValueSource, final boolean readOnly, final boolean largeDataset) {
       this.entityID = entityID;
