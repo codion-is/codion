@@ -28,12 +28,12 @@ public class EntityTestDomain {
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
-    EntityRepository.get().initialize(T_MASTER,
+    EntityRepository.initialize(T_MASTER,
             new Property.PrimaryKeyProperty(MASTER_ID),
             new Property(MASTER_NAME, Type.STRING),
             new Property(MASTER_CODE, Type.INT));
 
-    EntityRepository.get().initialize(T_DETAIL, IdSource.NONE, null,
+    EntityRepository.initialize(T_DETAIL, IdSource.NONE, null,
             DETAIL_STRING, DETAIL_SELECT_TABLE_NAME, false,
             new Property.PrimaryKeyProperty(DETAIL_ID).setDefaultValue(42),
             new Property(DETAIL_INT, Type.INT, DETAIL_INT),
@@ -45,8 +45,8 @@ public class EntityTestDomain {
             new Property.ForeignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     new Property(DETAIL_ENTITY_ID)),
             new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
-                    EntityRepository.get().getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
+                    EntityRepository.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             new Property.DenormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
-                    EntityRepository.get().getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE));
+                    EntityRepository.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE));
   }
 }

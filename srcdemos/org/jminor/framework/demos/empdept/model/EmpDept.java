@@ -63,13 +63,13 @@ public class EmpDept {
 
   static {
     /*Initalizing the entity type T_DEPARTMENT*/
-    EntityRepository.get().initialize(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
+    EntityRepository.initialize(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID)),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME), false, false, 120),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION), false, false, 150));
 
     /*Initalizing the entity type T_EMPLOYEE*/
-    EntityRepository.get().initialize(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
+    EntityRepository.initialize(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME)),
@@ -82,7 +82,7 @@ public class EmpDept {
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.SHORT_DATE, getString(EMPLOYEE_HIREDATE)),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
-                    EntityRepository.get().getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION), 100));
 
     /*Set a EntityProxy implementation to provide toString values for the entities

@@ -86,10 +86,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     try {
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
-        if (EntityRepository.get().isReadOnly(entityID))
+        if (EntityRepository.isReadOnly(entityID))
           throw new DbException("Can not insert a read only entity");
 
-        final IdSource idSource = EntityRepository.get().getIdSource(entityID);
+        final IdSource idSource = EntityRepository.getIdSource(entityID);
         if (idSource == IdSource.MAX_PLUS_ONE || idSource == IdSource.SEQUENCE || idSource == IdSource.QUERY)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), getNextIdValue(entityID, idSource), false);
 
@@ -98,7 +98,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
         if (idSource == IdSource.AUTO_INCREMENT)
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
                   queryInteger(Database.get().getAutoIncrementValueSQL(
-                          EntityRepository.get().getEntityIdSource(entityID))), false);
+                          EntityRepository.getEntityIdSource(entityID))), false);
 
         ret.add(entity.getPrimaryKey());
       }
@@ -127,7 +127,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
-      if (EntityRepository.get().isReadOnly(entity.getEntityID()))
+      if (EntityRepository.isReadOnly(entity.getEntityID()))
         throw new DbException("Can not update a read only entity");
       if (!entity.isModified())
         throw new DbException("Trying to update non-modified entity: " + entity);
@@ -154,7 +154,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {
-      if (EntityRepository.get().isReadOnly(entity.getEntityID()))
+      if (EntityRepository.isReadOnly(entity.getEntityID()))
         throw new DbException("Can not delete a read only entity");
       statements.add(0, getDeleteSQL(entity));
     }
@@ -165,7 +165,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
     return selectSingle(new EntityCriteria(entityID,
-            new PropertyCriteria(EntityRepository.get().getProperty(entityID, propertyID), SearchType.LIKE, value)));
+            new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID), SearchType.LIKE, value)));
   }
 
   /** {@inheritDoc} */
@@ -193,7 +193,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException {
     return selectMany(new EntityCriteria(entityID,
-            new PropertyCriteria(EntityRepository.get().getProperty(entityID, propertyID),
+            new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
                     values != null && values.length > 1 ? SearchType.IN : SearchType.LIKE, values)));
   }
 
@@ -208,8 +208,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     String sql = null;
     try {
-      final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
-      String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
+      final String selectString = EntityRepository.getSelectString(criteria.getEntityID());
+      String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
       sql = DbUtil.generateSelectSql(datasource, selectString,
               criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
 
@@ -238,7 +238,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID, final boolean order) throws DbException {
     return selectMany(new EntityCriteria(entityID, null,
-            order ? EntityRepository.get().getOrderByColumnNames(entityID) : null));
+            order ? EntityRepository.getOrderByColumnNames(entityID) : null));
   }
 
   /** {@inheritDoc} */
@@ -252,8 +252,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql = null;
     try {
       final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
-      final String selectString = EntityRepository.get().getSelectString(criteria.getEntityID());
-      String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
+      final String selectString = EntityRepository.getSelectString(criteria.getEntityID());
+      String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
       sql += " for update" + (Database.get().supportsNoWait() ? " nowait" : "");
@@ -286,11 +286,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
                                       final boolean distinct, final boolean order) throws DbException {
     String sql = null;
     try {
-      sql = DbUtil.generateSelectSql(EntityRepository.get().getSelectTableName(entityID),
+      sql = DbUtil.generateSelectSql(EntityRepository.getSelectTableName(entityID),
               (distinct ? "distinct " : "") + columnName,
               "where " + columnName + " is not null", order ? columnName : null);
 
-      return query(sql, getPacker(EntityRepository.get().getProperty(entityID, columnName).propertyType), -1);
+      return query(sql, getPacker(EntityRepository.getProperty(entityID, columnName).propertyType), -1);
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, sql);
@@ -312,7 +312,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql = "";
     try {
       return queryInteger(sql = DbUtil.generateSelectSql(
-              EntityRepository.get().getSelectTableName(criteria.getEntityID()), "count(*)",
+              EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
               criteria.getWhereClause(), null));
     }
     catch (SQLException sqle) {
@@ -413,7 +413,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       execute("update " + entity.getEntityID() + " set " + property.propertyID
               + " = '" + entity.getStringValue(propertyID) + "' " + whereCondition);
 
-      writeBlobField(blobData, EntityRepository.get().getTableName(entity.getEntityID()),
+      writeBlobField(blobData, EntityRepository.getTableName(entity.getEntityID()),
               property.getBlobColumnName(), whereCondition);
       success = true;
 
@@ -432,7 +432,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     try {
       final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
-      return readBlobField(EntityRepository.get().getTableName(entity.getEntityID()), property.getBlobColumnName(),
+      return readBlobField(EntityRepository.getTableName(entity.getEntityID()), property.getBlobColumnName(),
               EntityDbUtil.getWhereCondition(entity));
     }
     catch (SQLException sqle) {
@@ -454,7 +454,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
    */
   static String getInsertSQL(final Entity entity) {
     final StringBuilder sql = new StringBuilder("insert into ");
-    sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append("(");
+    sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     final List<Property> insertProperties = EntityDbUtil.getInsertProperties(entity);
     int columnIndex = 0;
@@ -480,7 +480,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       throw new RuntimeException("Can not get update sql for an unmodified entity");
 
     final StringBuilder sql = new StringBuilder("update ");
-    sql.append(EntityRepository.get().getTableName(entity.getEntityID())).append(" set ");
+    sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = EntityDbUtil.getUpdateProperties(entity);
     if (properties.size() == 0)
       throw new RuntimeException("No modified updateable properties found in entity: " + entity);
@@ -499,7 +499,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
    * @return a query for deleting this entity instance
    */
   static String getDeleteSQL(final Entity entity) {
-    return "delete from " + EntityRepository.get().getTableName(entity.getEntityID()) + EntityDbUtil.getWhereCondition(entity);
+    return "delete from " + EntityRepository.getTableName(entity.getEntityID()) + EntityDbUtil.getWhereCondition(entity);
   }
 
   private void execute(final List<String> statements) throws DbException {
@@ -538,8 +538,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       try {
         final EntityCriteria criteria = new EntityCriteria(entityID,
                 new EntityKeyCriteria(properties, primaryKeyList.toArray(new EntityKey[primaryKeyList.size()])));
-        final String datasource = EntityRepository.get().getSelectTableName(criteria.getEntityID());
-        sql = DbUtil.generateSelectSql(datasource, EntityRepository.get().getSelectString(criteria.getEntityID()),
+        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+        sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectString(criteria.getEntityID()),
                 criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
 
         final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
@@ -569,7 +569,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       return;
 
     for (final Property.ForeignKeyProperty foreignKeyProperty :
-            EntityRepository.get().getForeignKeyProperties(entities.get(0).getEntityID())) {
+            EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
       final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
       final Map<EntityKey, Entity> referencedEntitiesHashed = foreignKeyProperty.isWeakReference
               ? initWeakReferences(referencedPrimaryKeys)
@@ -602,7 +602,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private EntityResultPacker getResultPacker(final String entityID) {
     EntityResultPacker packer = resultPackers.get(entityID);
     if (packer == null)
-      resultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.get().getDatabaseProperties(entityID)));
+      resultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
 
     return packer;
   }
@@ -611,13 +611,13 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
-        sql = "select max(" + EntityRepository.get().getPrimaryKeyColumnNames(entityID)[0] + ") + 1 from " + entityID;
+        sql = "select max(" + EntityRepository.getPrimaryKeyColumnNames(entityID)[0] + ") + 1 from " + entityID;
         break;
       case QUERY:
-        sql = EntityRepository.get().getEntityIdSource(entityID);
+        sql = EntityRepository.getEntityIdSource(entityID);
         break;
       case SEQUENCE:
-        sql = Database.get().getSequenceSQL(EntityRepository.get().getEntityIdSource(entityID));
+        sql = Database.get().getSequenceSQL(EntityRepository.getEntityIdSource(entityID));
         break;
       default:
         throw new IllegalArgumentException(idSource + " is not a valid auto-increment ID source constant");
@@ -653,10 +653,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   private Set<Dependency> resolveEntityDependencies(final String entityID) {
-    final String[] entityIDs = EntityRepository.get().getInitializedEntities();
+    final String[] entityIDs = EntityRepository.getInitializedEntities();
     final Set<Dependency> dependencies = new HashSet<Dependency>();
     for (final String entityCheckClass : entityIDs) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.get().getForeignKeyProperties(entityCheckClass))
+      for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityCheckClass))
         if (foreignKeyProperty.referenceEntityID.equals(entityID))
           dependencies.add(new Dependency(entityCheckClass, foreignKeyProperty.referenceProperties));
     }

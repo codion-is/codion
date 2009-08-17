@@ -75,7 +75,7 @@ public class Petstore {
   public static final String TAG_ITEM_ITEM_FK = "item_fk";
 
   static {
-    EntityRepository.get().initialize(T_ADDRESS, IdSource.MAX_PLUS_ONE,
+    EntityRepository.initialize(T_ADDRESS, IdSource.MAX_PLUS_ONE,
             ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2,
             new Property.PrimaryKeyProperty(ADDRESS_ID),
             new Property(ADDRESS_STREET_1, Type.STRING, "Street 1"),
@@ -86,13 +86,13 @@ public class Petstore {
             new Property(ADDRESS_LATITUDE, Type.DOUBLE, "Latitude"),
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude"));
 
-    EntityRepository.get().initialize(T_CATEGORY, IdSource.MAX_PLUS_ONE, CATEGORY_NAME,
+    EntityRepository.initialize(T_CATEGORY, IdSource.MAX_PLUS_ONE, CATEGORY_NAME,
             new Property.PrimaryKeyProperty(CATEGORY_ID),
             new Property(CATEGORY_NAME, Type.STRING, "Name"),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description"),
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL", true));
 
-    EntityRepository.get().initialize(T_ITEM, IdSource.MAX_PLUS_ONE, ITEM_NAME,
+    EntityRepository.initialize(T_ITEM, IdSource.MAX_PLUS_ONE, ITEM_NAME,
             new Property.PrimaryKeyProperty(ITEM_ID),
             new Property.ForeignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
                     new Property(ITEM_PRODUCT_ID)),
@@ -107,7 +107,7 @@ public class Petstore {
                     new Property(ITEM_ADDRESS_ID)),
             new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled"));
 
-    EntityRepository.get().initialize(T_PRODUCT, IdSource.MAX_PLUS_ONE, PRODUCT_NAME,
+    EntityRepository.initialize(T_PRODUCT, IdSource.MAX_PLUS_ONE, PRODUCT_NAME,
             new Property.PrimaryKeyProperty(PRODUCT_ID),
             new Property.ForeignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
                     new Property(PRODUCT_CATEGORY_ID)),
@@ -115,20 +115,20 @@ public class Petstore {
             new Property(PRODUCT_DESCRIPTION, Type.STRING, "Description"),
             new Property(PRODUCT_IMAGE_URL, Type.STRING, "Image URL", true));
 
-    EntityRepository.get().initialize(T_SELLER_CONTACT_INFO, IdSource.MAX_PLUS_ONE,
+    EntityRepository.initialize(T_SELLER_CONTACT_INFO, IdSource.MAX_PLUS_ONE,
             SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME,
             new Property.PrimaryKeyProperty(SELLER_CONTACT_INFO_ID),
             new Property(SELLER_CONTACT_INFO_FIRST_NAME, Type.STRING, "First name"),
             new Property(SELLER_CONTACT_INFO_LAST_NAME, Type.STRING, "Last name"),
             new Property(SELLER_CONTACT_INFO_EMAIL, Type.STRING, "Email"));
 
-    EntityRepository.get().initialize(T_TAG, IdSource.MAX_PLUS_ONE, TAG_TAG, null, "petstore.tag tag",
+    EntityRepository.initialize(T_TAG, IdSource.MAX_PLUS_ONE, TAG_TAG, null, "petstore.tag tag",
             new Property.PrimaryKeyProperty(TAG_ID),
             new Property(TAG_TAG, Type.STRING, "Tag"),
             new Property.SubqueryProperty(TAG_REFCOUNT, Type.INT, false, "Reference count",
                     "select count(*) from " + T_TAG_ITEM + "  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID));
 
-    EntityRepository.get().initialize(T_TAG_ITEM, IdSource.NONE,
+    EntityRepository.initialize(T_TAG_ITEM, IdSource.NONE,
             new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT, null, 0)),
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,

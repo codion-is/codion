@@ -209,7 +209,7 @@ public class EntityPropertyEditor extends JPanel {
 
   private JComponent createEntityField(final EntityModel entityModel, final Object currentValue) throws UserException {
     final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
-    if (!EntityRepository.get().isLargeDataset(foreignKeyProperty.referenceEntityID)) {
+    if (!EntityRepository.isLargeDataset(foreignKeyProperty.referenceEntityID)) {
       final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(foreignKeyProperty);
       model.refresh();
       if (currentValue != null)
@@ -218,14 +218,14 @@ public class EntityPropertyEditor extends JPanel {
       return new JComboBox(model);
     }
     else {
-      final String[] searchPropertyIds = EntityRepository.get().getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
+      final String[] searchPropertyIds = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
       List<Property> searchProperties;
       if (searchPropertyIds != null) {
-        searchProperties = EntityRepository.get().getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIds);
+        searchProperties = EntityRepository.getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIds);
       }
       else {//use all string properties
         final Collection<Property> properties =
-                EntityRepository.get().getDatabaseProperties(foreignKeyProperty.referenceEntityID);
+                EntityRepository.getDatabaseProperties(foreignKeyProperty.referenceEntityID);
         searchProperties = new ArrayList<Property>();
         for (final Property property : properties)
           if (property.getPropertyType() == Type.STRING)

@@ -59,7 +59,7 @@ public class EntityKey implements Serializable {
     if (entityID == null)
       throw new IllegalArgumentException("EntityKey can not be instantiated without an entityID");
     this.entityID = entityID;
-    this.properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
+    this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
     this.propertyCount = properties.size();
     this.singleIntegerKey = propertyCount == 1 && properties.get(0).propertyType == Type.INT;
     this.values = new HashMap<String, Object>(propertyCount);
@@ -77,7 +77,7 @@ public class EntityKey implements Serializable {
    */
   public List<Property.PrimaryKeyProperty> getProperties() {
     if (properties == null)
-      properties = EntityRepository.get().getPrimaryKeyProperties(entityID);
+      properties = EntityRepository.getPrimaryKeyProperties(entityID);
 
     return properties;
   }
@@ -105,7 +105,7 @@ public class EntityKey implements Serializable {
    * @return the column names of the properties comprising this key
    */
   public String[] getKeyColumnNames() {
-    return EntityRepository.get().getPrimaryKeyColumnNames(entityID);
+    return EntityRepository.getPrimaryKeyColumnNames(entityID);
   }
 
   /**

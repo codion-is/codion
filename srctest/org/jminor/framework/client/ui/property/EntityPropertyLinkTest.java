@@ -39,7 +39,7 @@ public class EntityPropertyLinkTest extends TestCase {
   @SuppressWarnings({"UnnecessaryBoxing"})
   public void testIntegerPropertyLink() {
     final IntField txt = new IntField();
-    new IntTextPropertyLink(model, EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
+    new IntTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
             txt, true, LinkType.READ_WRITE);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setInt(42);
@@ -51,7 +51,7 @@ public class EntityPropertyLinkTest extends TestCase {
   @SuppressWarnings({"UnnecessaryBoxing"})
   public void testDoublePropertyLink() {
     final DoubleField txt = new DoubleField();
-    new DoubleTextPropertyLink(model, EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
+    new DoubleTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
             txt, true, LinkType.READ_WRITE);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(42.2);
@@ -62,7 +62,7 @@ public class EntityPropertyLinkTest extends TestCase {
 
   public void testStringPropertyLink() {
     final JTextField txt = new JTextField();
-    new TextPropertyLink(model, EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+    new TextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
             txt, true, LinkType.READ_WRITE);
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
@@ -74,7 +74,7 @@ public class EntityPropertyLinkTest extends TestCase {
   public void testDatePropertyLink() {
     final ShortDashDateFormat format = new ShortDashDateFormat();
     final JFormattedTextField txtDate = UiUtil.createFormattedField(format.getDateMask());
-    new DateTextPropertyLink(model, EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
+    new DateTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
             txtDate, LinkType.READ_WRITE, format, format.getDateMask());
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date now = new Date();

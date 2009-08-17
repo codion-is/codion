@@ -123,12 +123,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   /** {@inheritDoc} */
   public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                 final EntityRepository repository) throws RemoteException {
+                                 final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException {
     if (connectionKey == null)
       return null;
 
-    if (!EntityRepository.get().contains(repository.getEntityIDs()))
-      EntityRepository.get().add(repository);
+    if (!EntityRepository.contains(repository))
+      EntityRepository.putAll(repository);
 
     final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
     if (connections.containsKey(client))

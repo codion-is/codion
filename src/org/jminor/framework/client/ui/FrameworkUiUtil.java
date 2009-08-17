@@ -309,7 +309,7 @@ public class FrameworkUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityModel entityModel                                                          ) {
-    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
+    final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
     if (searchPropertyIDs == null)
       throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.referenceEntityID
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
@@ -328,7 +328,7 @@ public class FrameworkUiUtil {
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.referenceEntityID);
-    final List<Property> searchProperties = EntityRepository.get().getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIDs);
+    final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
@@ -506,7 +506,7 @@ public class FrameworkUiUtil {
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state,
                                                        final Object nullValue) {
-    return createPropertyComboBox(EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID),
+    return createPropertyComboBox(EntityRepository.getProperty(entityModel.getEntityID(), propertyID),
             entityModel, refreshEvent, state, nullValue);
   }
 
@@ -543,7 +543,7 @@ public class FrameworkUiUtil {
   }
 
   public static void setPropertyToolTip(final String entityID, final Property property, final JComponent component) {
-    final String propertyDescription = EntityRepository.get().getPropertyDescription(entityID, property);
+    final String propertyDescription = EntityRepository.getPropertyDescription(entityID, property);
     if (propertyDescription != null)
       component.setToolTipText(propertyDescription);
   }

@@ -36,7 +36,7 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
    * @param comboBox the combo box to link
    */
   public ComboBoxPropertyLink(final EntityModel entityModel, final String propertyID, final JComboBox comboBox) {
-    this(entityModel, EntityRepository.get().getProperty(entityModel.getEntityID(), propertyID), comboBox);
+    this(entityModel, EntityRepository.getProperty(entityModel.getEntityID(), propertyID), comboBox);
   }
 
   /**

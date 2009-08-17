@@ -25,11 +25,6 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private static final long serialVersionUID = 1;
 
   /**
-   * A central repository containing information about loaded entity definitions
-   */
-  private static final EntityRepository repository = EntityRepository.get();
-
-  /**
    * The primary key of this entity
    */
   private final EntityKey primaryKey;
@@ -91,7 +86,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
-    hasDenormalizedProperties = repository.hasDenormalizedProperties(getEntityID());
+    hasDenormalizedProperties = EntityRepository.hasDenormalizedProperties(getEntityID());
   }
 
   /**
@@ -122,7 +117,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return the property identified by propertyID
    */
   public Property getProperty(final String propertyID) {
-    return repository.getProperty(getEntityID(), propertyID);
+    return EntityRepository.getProperty(getEntityID(), propertyID);
   }
 
   /**
@@ -510,7 +505,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       originalValues.putAll(sourceEntity.originalValues);
     }
     if (evtPropertyChanged != null)
-      for (final Property property : repository.getProperties(getEntityID(), true))
+      for (final Property property : EntityRepository.getProperties(getEntityID(), true))
         firePropertyChangeEvent(property, getRawValue(property.propertyID), null, true);
 
     toString = sourceEntity.toString;
@@ -623,7 +618,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param entity the entity
    */
   public static void printPropertyValues(final Entity entity) {
-    final Collection<Property> properties = EntityRepository.get().getProperties(entity.getEntityID(), true);
+    final Collection<Property> properties = EntityRepository.getProperties(entity.getEntityID(), true);
     System.out.println("*********************[" + entity + "]***********************");
     for (final Property property : properties) {
       final Object value = entity.getValue(property.propertyID);
@@ -655,7 +650,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       return false;
 
     for (final Property.PrimaryKeyProperty property :
-            EntityRepository.get().getPrimaryKeyProperties(entities.iterator().next().getEntityID())) {
+            EntityRepository.getPrimaryKeyProperties(entities.iterator().next().getEntityID())) {
       for (final Entity entity : entities)
         if (entity.isModified(property.propertyID))
           return true;
@@ -708,7 +703,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     setForeignKeyValues(foreignKeyProperty, newValue);
     if (hasDenormalizedProperties) {
       final Collection<Property.DenormalizedProperty> denormalizedProperties =
-              repository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.propertyID);
+              EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.propertyID);
       setDenormalizedValues(foreignKeyProperty, newValue, denormalizedProperties);
     }
   }
@@ -724,7 +719,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             referencedEntity != null ? referencedEntity.primaryKey.getProperties()
-                    : repository.getPrimaryKeyProperties(foreignKeyProperty.referenceEntityID);
+                    : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.referenceEntityID);
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
       if (!(referenceProperty instanceof Property.MirrorProperty)) {

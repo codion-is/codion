@@ -20,7 +20,7 @@ public class PropertySearchModelTest extends TestCase {
   }
 
   public void testPropertySearchModel() throws Exception {
-    final Property property = EntityRepository.get().getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
+    final Property property = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final PropertySearchModel model = new PropertySearchModel(property);
     assertEquals(property, model.getProperty());
     model.setSearchType(SearchType.LIKE);

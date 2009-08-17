@@ -269,7 +269,7 @@ public class EntityTableSearchModel {
     for (final Property property : properties) {
       PropertySearchModel searchModel;
       if (property instanceof Property.ForeignKeyProperty) {
-        if (EntityRepository.get().isLargeDataset(((Property.ForeignKeyProperty) property).referenceEntityID)) {
+        if (EntityRepository.isLargeDataset(((Property.ForeignKeyProperty) property).referenceEntityID)) {
           final EntityLookupModel lookupModel = new EntityLookupModel(((Property.ForeignKeyProperty) property).referenceEntityID,
                   dbProvider, getSearchProperties(((Property.ForeignKeyProperty) property).referenceEntityID));
           lookupModel.setMultipleSelectionAllowed(true);
@@ -322,13 +322,13 @@ public class EntityTableSearchModel {
   }
 
   private List<Property> getSearchProperties(final String entityID) {
-    final String[] searchPropertyIDs = EntityRepository.get().getEntitySearchPropertyIDs(entityID);
+    final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(entityID);
 
-    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.get().getProperties(entityID, searchPropertyIDs);
+    return searchPropertyIDs == null ? getStringProperties(entityID) : EntityRepository.getProperties(entityID, searchPropertyIDs);
   }
 
   private List<Property> getStringProperties(final String entityID) {
-    final Collection<Property> properties = EntityRepository.get().getDatabaseProperties(entityID);
+    final Collection<Property> properties = EntityRepository.getDatabaseProperties(entityID);
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : properties)
       if (property.propertyType == Type.STRING)

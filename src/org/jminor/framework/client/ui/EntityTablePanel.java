@@ -25,25 +25,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -214,7 +196,7 @@ public class EntityTablePanel extends JPanel {
    * @param renderer the renderer to use for presenting column values for the given property
    */
   public void setTableCellRenderer(final String propertyID, final TableCellRenderer renderer) {
-    getJTable().getColumn(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
+    getJTable().getColumn(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
   }
 
   /**
@@ -695,13 +677,13 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = new ArrayList<Property>();
-    final String[] defaultSearchProperties = EntityRepository.get().getEntitySearchPropertyIDs(getTableModel().getEntityID());
+    final String[] defaultSearchProperties = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
     if (defaultSearchProperties != null) {
       for (final String propertyID : defaultSearchProperties)
-        searchableProperties.add(EntityRepository.get().getProperty(getTableModel().getEntityID(), propertyID));
+        searchableProperties.add(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID));
     }
     else {
-      for (final Property property : EntityRepository.get().getDatabaseProperties(getTableModel().getEntityID())) {
+      for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
         if (property.propertyType == Type.STRING)
           searchableProperties.add(property);
       }

@@ -30,7 +30,7 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
    */
   public LookupModelPropertyLink(final EntityModel entityModel, final String propertyID,
                                  final EntityLookupModel lookupModel) {
-    this(entityModel, EntityRepository.get().getForeignKeyProperty(entityModel.getEntityID(), propertyID), lookupModel);
+    this(entityModel, EntityRepository.getForeignKeyProperty(entityModel.getEntityID(), propertyID), lookupModel);
   }
 
   /**

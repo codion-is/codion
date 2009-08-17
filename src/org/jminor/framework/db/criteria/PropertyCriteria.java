@@ -180,7 +180,7 @@ public class PropertyCriteria implements ICriteria, Serializable {
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
     final EntityKey entityKey = (EntityKey) values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.get().getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
       set.addCriteria(new PropertyCriteria(
               ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
@@ -191,7 +191,7 @@ public class PropertyCriteria implements ICriteria, Serializable {
 
   private String getMultiColumnForeignKeyCriteriaString() {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.get().getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
     if (primaryKeyProperties.size() > 1) {
       final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
       for (final Object entityKey : values) {

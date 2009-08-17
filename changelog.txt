@@ -633,3 +633,5 @@
   EntityRepository.EntityInfo created
   EntityRepository refactored, transient fields removed, temporarily?
   Package framework.model renamed to framework.domain
+  EntityRepository.get() removed, no longer singleton, all methods static
+  IEntityDbRemoteServer.connect() now takes a map instead of a EntityRepository parameter

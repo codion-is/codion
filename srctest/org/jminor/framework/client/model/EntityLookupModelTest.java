@@ -83,7 +83,7 @@ public class EntityLookupModelTest extends TestCase {
     lookupModel.setCaseSensitive(true);
     lookupModel.setWildcardPostfix(true);
     lookupModel.setAdditionalLookupCriteria(
-            new PropertyCriteria(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+            new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
@@ -96,8 +96,8 @@ public class EntityLookupModelTest extends TestCase {
     new EmpDept();
     dbProvider = new EntityDbLocalProvider(new User("scott", "tiger"));
     lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, dbProvider,
-            Arrays.asList(EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-                    EntityRepository.get().getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
+            Arrays.asList(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+                    EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
 
     setupData();
   }

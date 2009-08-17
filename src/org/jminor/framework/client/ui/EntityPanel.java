@@ -36,23 +36,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -2098,13 +2082,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private List<Property> getUpdateProperties() {
-    final List<Property> ret = EntityRepository.get().getDatabaseProperties(getModel().getEntityID(), true, false, false);
+    final List<Property> ret = EntityRepository.getDatabaseProperties(getModel().getEntityID(), true, false, false);
     final ListIterator<Property> iter = ret.listIterator();
     while(iter.hasNext()) {
       final Property property = iter.next();
       if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty ||
               (property instanceof Property.PrimaryKeyProperty &&
-                      EntityRepository.get().getIdSource(getModel().getEntityID()) != IdSource.NONE))
+                      EntityRepository.getIdSource(getModel().getEntityID()) != IdSource.NONE))
         iter.remove();
     }
     Collections.sort(ret, new Comparator<Property>() {

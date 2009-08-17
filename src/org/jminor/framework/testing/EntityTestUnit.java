@@ -159,7 +159,7 @@ public abstract class EntityTestUnit extends TestCase {
       final Entity tmp = getDbConnection().selectSingle(testEntity.getPrimaryKey());
       assertEquals("Primary keys of entity and its updated counterpart should be equal",
               testEntity.getPrimaryKey(), tmp.getPrimaryKey());
-      for (final Property property : EntityRepository.get().getProperties(testEntity.getEntityID()).values()) {
+      for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
         if (!property.isSelectOnly() && property.isUpdatable()) {
           final Object beforeUpdate = testEntity.getRawValue(property.propertyID);
           final Object afterUpdate = tmp.getRawValue(property.propertyID);
@@ -246,7 +246,7 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {
-    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.get().getForeignKeyProperties(entityID)) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
       final String referenceEntityID = foreignKeyProperty.referenceEntityID;
       if (referenceEntityID != null) {
         if (!container.contains(referenceEntityID)) {

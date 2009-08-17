@@ -275,7 +275,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   public void setSortingStatus(final String propertyID, final int status) {
     int idx = 0;
     int columnIndex = -1;
-    for (final Property property : EntityRepository.get().getVisibleProperties(getEntityID())) {
+    for (final Property property : EntityRepository.getVisibleProperties(getEntityID())) {
       if (property.propertyID.equals(propertyID)) {
         columnIndex = idx;
         break;
@@ -901,7 +901,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     try {
       return criteria == null ? getEntityDb().selectAll(getEntityID(), true) :
               getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
-                      EntityRepository.get().getOrderByColumnNames(getEntityID())));
+                      EntityRepository.getOrderByColumnNames(getEntityID())));
     }
     catch (DbException dbe) {
       throw dbe;
@@ -918,7 +918,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   protected List<Property> getSearchableProperties() {
     final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : EntityRepository.get().getProperties(getEntityID(), false))
+    for (final Property property : EntityRepository.getProperties(getEntityID(), false))
       if (property.isDatabaseProperty())
         ret.add(property);
 
@@ -956,7 +956,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return a list of Properties that should be used as basis for this table models column model
    */
   protected List<Property> initializeColumnProperties() {
-    return EntityRepository.get().getVisiblePropertyList(getEntityID());
+    return EntityRepository.getVisiblePropertyList(getEntityID());
   }
 
   /**
