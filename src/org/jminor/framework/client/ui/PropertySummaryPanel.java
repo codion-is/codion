@@ -6,9 +6,9 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;

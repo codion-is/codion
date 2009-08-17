@@ -7,7 +7,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Property;
 
 /**
  * A class for linking a DoubleField to a EntityModel double property value

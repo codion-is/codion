@@ -16,14 +16,14 @@ import org.jminor.framework.client.model.reporting.EntityJRDataSource;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.EntityProxy;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityProxy;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
@@ -428,7 +428,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.model.EntityProxy
+   * @see org.jminor.framework.domain.EntityProxy
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   public Color getRowBackgroundColor(final int row) {

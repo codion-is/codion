@@ -19,13 +19,31 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -673,7 +691,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes a simple search panel, with a single search field, which performes a search based on the default
    * search properties or if none are defined all string based properties
    * @return a simple search panel
-   * @see org.jminor.framework.model.EntityRepository#setEntitySearchProperties(String, String[])
+   * @see org.jminor.framework.domain.EntityRepository#setEntitySearchProperties(String, String[])
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = new ArrayList<Property>();
@@ -817,7 +835,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes the JTable instance
    * @param rowColoring if true then the JTable should paint each row according to the underlying entity
    * @return the JTable instance
-   * @see org.jminor.framework.model.EntityProxy#getBackgroundColor(org.jminor.framework.model.Entity)
+   * @see org.jminor.framework.domain.EntityProxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable(final boolean rowColoring) {
     final JTable ret = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),

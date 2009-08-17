@@ -7,11 +7,11 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import java.util.ArrayList;
 import java.util.Collection;

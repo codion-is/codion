@@ -10,9 +10,9 @@ import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;

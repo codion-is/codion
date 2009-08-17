@@ -4,13 +4,13 @@
 package org.jminor.framework.client.model.combobox;
 
 import org.jminor.common.model.Event;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Type;
 
 import javax.swing.DefaultComboBoxModel;
 
 /**
  * A ComboBoxModel for boolean values, true, false and null
- * @see org.jminor.framework.model.Type.Boolean
+ * @see org.jminor.framework.domain.Type.Boolean
  */
 public class BooleanComboBoxModel extends DefaultComboBoxModel {
 
@@ -31,7 +31,7 @@ public class BooleanComboBoxModel extends DefaultComboBoxModel {
   @Override
   public void setSelectedItem(final Object item) {
     if (item != null && !(item instanceof Type.Boolean))
-      throw new IllegalArgumentException("BooleanComboBoxModel only accepts org.jminor.framework.model.Type.Boolean values");
+      throw new IllegalArgumentException("BooleanComboBoxModel only accepts org.jminor.framework.domain.Type.Boolean values");
 
     super.setSelectedItem(item == null ? Type.Boolean.NULL : item);
 

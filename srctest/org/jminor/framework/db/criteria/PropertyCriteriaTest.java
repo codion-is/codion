@@ -8,9 +8,9 @@ import org.jminor.common.db.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.demos.empdept.model.EmpDept;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 

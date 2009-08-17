@@ -4,7 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.User;
-import org.jminor.framework.model.EntityRepository;
+import org.jminor.framework.domain.EntityRepository;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

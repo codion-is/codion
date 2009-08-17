@@ -5,8 +5,8 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;

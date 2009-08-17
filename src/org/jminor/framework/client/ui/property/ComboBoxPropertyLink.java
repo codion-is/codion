@@ -7,9 +7,9 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;

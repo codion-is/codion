@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model.event;
 
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.domain.Entity;
 
 import java.awt.event.ActionEvent;
 import java.util.List;

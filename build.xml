@@ -109,7 +109,7 @@
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/**,
                 org/jminor/framework/i18n/**,
-                org/jminor/framework/model/**,
+                org/jminor/framework/domain/**,
                 org/jminor/framework/profiling/**,
                 org/jminor/framework/testing/**,
                 org/jminor/framework/server/provider/EntityDbRemoteProvider*,
@@ -126,7 +126,7 @@
                 org/jminor/framework/db/EntityDbProviderFactory*,
                 org/jminor/framework/db/IEntityDb*,
                 org/jminor/framework/i18n/**,
-                org/jminor/framework/model/**,
+                org/jminor/framework/domain/**,
                 org/jminor/framework/profiling/**,
                 org/jminor/framework/testing/**,
                 org/jminor/framework/server/provider/EntityDbRemoteProvider*,
@@ -139,7 +139,7 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/**,
-                org/jminor/framework/model/*,
+                org/jminor/framework/domain/*,
                 org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
@@ -148,7 +148,7 @@
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/DbException.class,
                 org/jminor/framework/db/IEntityDb.class,
-                org/jminor/framework/model/EntityRepository.class,
+                org/jminor/framework/domain/EntityRepository.class,
                 org/jminor/framework/server/monitor/**,
                 org/jminor/framework/server/IEntityDbRemoteServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
@@ -191,7 +191,7 @@
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
                     Db org.jminor.framework.db*,
-                    Model org.jminor.framework.model*,
+                    Domain org.jminor.framework.domain*,
                     Demos org.jminor.framework.demos*">
       <classpath>
         <path refid="libraries" />
@@ -205,7 +205,7 @@
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
                     Db org.jminor.framework.db*,
-                    Model org.jminor.framework.model*,
+                    Domain org.jminor.framework.domain*,
                     Server org.jminor.framework.server*">
       <classpath refid="libraries"/>
     </javadoc>

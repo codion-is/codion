@@ -22,11 +22,11 @@ import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -543,7 +543,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return true if the active entity is null
-   * @see org.jminor.framework.model.Entity#isNull()
+   * @see org.jminor.framework.domain.Entity#isNull()
    */
   public boolean isActiveEntityNull() {
     return activeEntity.isNull();
@@ -551,7 +551,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return a deep copy of the active entity
-   * @see org.jminor.framework.model.Entity#getCopy()
+   * @see org.jminor.framework.domain.Entity#getCopy()
    */
   public Entity getActiveEntityCopy() {
     return activeEntity.getCopy();
@@ -559,7 +559,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return the state which indicates the modified state of the active entity
-   * @see org.jminor.framework.model.Entity#getModifiedState()
+   * @see org.jminor.framework.domain.Entity#getModifiedState()
    */
   public State getActiveEntityModifiedState() {
     return activeEntity.getModifiedState();
@@ -567,7 +567,7 @@ public class EntityModel implements IRefreshable {
 
   /**
    * @return true if the active entity has been modified
-   * @see org.jminor.framework.model.Entity#isModified()
+   * @see org.jminor.framework.domain.Entity#isModified()
    */
   public boolean isActiveEntityModified() {
     return getActiveEntityModifiedState().isActive();
@@ -1325,7 +1325,7 @@ public class EntityModel implements IRefreshable {
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
    * @return the default value for the property
-   * @see #persistValueOnClear(org.jminor.framework.model.Property)
+   * @see #persistValueOnClear(org.jminor.framework.domain.Property)
    */
   protected Object getDefaultValue(final Property property) {
     return persistValueOnClear(property) ? getValue(property) : property.getDefaultValue();

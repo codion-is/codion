@@ -13,10 +13,10 @@ import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import junit.framework.TestCase;
 
@@ -219,7 +219,7 @@ public abstract class EntityTestUnit extends TestCase {
    * <code>entityIDs</code> Collection and map them to their respective enitityIDs via the setReferenceEntity method
    * @param referenceEntityIDs the IDs of the entities that should be initialized
    * @throws Exception in case of an exception
-   * @see #setReferenceEntity(String, org.jminor.framework.model.Entity)
+   * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   protected abstract void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception;
 

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model.combobox;
 
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 

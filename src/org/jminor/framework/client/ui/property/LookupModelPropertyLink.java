@@ -6,9 +6,9 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

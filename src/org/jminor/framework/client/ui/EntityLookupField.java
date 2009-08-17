@@ -11,8 +11,8 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Entity;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

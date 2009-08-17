@@ -15,9 +15,9 @@ import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityRepository;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.EntityRepository;
 
 import junit.framework.TestCase;
 

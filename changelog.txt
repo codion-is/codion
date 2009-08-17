@@ -632,3 +632,4 @@
   EntityUtil.isPrimaryKeyModified() moved to Entity
   EntityRepository.EntityInfo created
   EntityRepository refactored, transient fields removed, temporarily?
+  Package framework.model renamed to framework.domain

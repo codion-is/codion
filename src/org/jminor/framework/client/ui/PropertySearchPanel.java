@@ -19,8 +19,8 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

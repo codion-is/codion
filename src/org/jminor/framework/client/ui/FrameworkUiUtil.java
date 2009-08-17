@@ -37,11 +37,11 @@ import org.jminor.framework.client.ui.property.IntTextPropertyLink;
 import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;

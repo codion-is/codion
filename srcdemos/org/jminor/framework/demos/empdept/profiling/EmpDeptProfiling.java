@@ -11,7 +11,7 @@ import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.model.EmpDept;
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.profiling.ProfilingModel;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;

@@ -10,7 +10,7 @@ import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.model.EntityRepository;
+import org.jminor.framework.domain.EntityRepository;
 
 import org.apache.log4j.Logger;
 

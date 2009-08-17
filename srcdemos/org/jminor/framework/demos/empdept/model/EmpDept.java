@@ -4,11 +4,11 @@
 package org.jminor.framework.demos.empdept.model;
 
 import org.jminor.common.db.IdSource;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityProxy;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityProxy;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import java.awt.Color;
 import java.util.Locale;

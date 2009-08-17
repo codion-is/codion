@@ -15,11 +15,11 @@ import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;

@@ -6,8 +6,8 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.criteria.PropertyCriteria;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

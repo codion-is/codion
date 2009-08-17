@@ -5,8 +5,8 @@ package org.jminor.framework.demos.petstore.model;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Type;
 import org.jminor.framework.testing.EntityTestUnit;
 
 import java.util.Collection;

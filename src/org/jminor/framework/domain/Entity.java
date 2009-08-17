@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.domain;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.PropertyChangeEvent;
@@ -298,7 +298,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return a String representation of the value of the property identified by <code>propertyID</code>
-   * @see org.jminor.framework.model.EntityProxy#getValueAsString(Entity, Property)
+   * @see org.jminor.framework.domain.EntityProxy#getValueAsString(Entity, Property)
    */
   public String getValueAsString(final String propertyID) {
     return getValueAsString(getProperty(propertyID));
@@ -307,7 +307,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * @param property the property for which to retrieve the value
    * @return a String representation of the value of <code>property</code>
-   * @see org.jminor.framework.model.EntityProxy#getValueAsString(Entity, Property)
+   * @see org.jminor.framework.domain.EntityProxy#getValueAsString(Entity, Property)
    */
   public String getValueAsString(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
@@ -320,7 +320,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Returns the value to use when the property is shown in a table
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the table representation of the value of the property identified by <code>propertyID</code>
-   * @see org.jminor.framework.model.EntityProxy#getTableValue(Entity, Property)
+   * @see org.jminor.framework.domain.EntityProxy#getTableValue(Entity, Property)
    */
   public Object getTableValue(final String propertyID) {
     return getTableValue(getProperty(propertyID));
@@ -330,7 +330,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Returns the value to use when the property is shown in a table
    * @param property the property for which to retrieve the value
    * @return the table representation of the value of <code>property</code>
-   * @see org.jminor.framework.model.EntityProxy#getTableValue(Entity, Property)
+   * @see org.jminor.framework.domain.EntityProxy#getTableValue(Entity, Property)
    */
   public Object getTableValue(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)

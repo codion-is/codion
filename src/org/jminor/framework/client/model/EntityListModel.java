@@ -11,7 +11,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.model.Entity;
+import org.jminor.framework.domain.Entity;
 
 import org.apache.log4j.Logger;
 

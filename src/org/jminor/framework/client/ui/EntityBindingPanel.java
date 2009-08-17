@@ -13,8 +13,8 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;

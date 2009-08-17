@@ -7,7 +7,7 @@ import org.jminor.common.model.PropertyChangeEvent;
 import org.jminor.common.model.PropertyListener;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Property;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;

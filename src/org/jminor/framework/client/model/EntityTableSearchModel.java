@@ -10,10 +10,10 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

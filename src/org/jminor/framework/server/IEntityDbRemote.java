@@ -8,8 +8,8 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;

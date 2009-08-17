@@ -10,8 +10,8 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Property;
 
 import javax.swing.JPanel;
 import javax.swing.JTable;

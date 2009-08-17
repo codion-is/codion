@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.ui.control.AbstractPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.model.Property;
+import org.jminor.framework.domain.Property;
 
 /**
  * An abstract class for linking a UI component to a EntityModel property value

@@ -27,11 +27,11 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
-import org.jminor.framework.model.Property;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
@@ -790,8 +790,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Queries the user on which property to update, after which it calls the
    * <code>updateSelectedEntities(property)</code> with that property
-   * @see #updateSelectedEntities(org.jminor.framework.model.Property)
-   * @see #getInputManager(org.jminor.framework.model.Property, java.util.List)
+   * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
+   * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities() {
     try {
@@ -803,7 +803,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see #getInputManager(org.jminor.framework.model.Property, java.util.List)
+   * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
     try {

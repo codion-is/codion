@@ -4,10 +4,10 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityTest;
-import org.jminor.framework.model.EntityTestDomain;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityTest;
+import org.jminor.framework.domain.EntityTestDomain;
+import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 

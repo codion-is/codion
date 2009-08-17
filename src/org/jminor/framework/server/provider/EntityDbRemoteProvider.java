@@ -9,7 +9,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.model.EntityRepository;
+import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.server.IEntityDbRemote;
 import org.jminor.framework.server.IEntityDbRemoteServer;
 

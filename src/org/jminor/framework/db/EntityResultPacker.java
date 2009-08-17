@@ -4,9 +4,9 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.IResultPacker;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

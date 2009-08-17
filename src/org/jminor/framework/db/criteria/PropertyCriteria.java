@@ -8,12 +8,12 @@ import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbUtil;
-import org.jminor.framework.model.Entity;
-import org.jminor.framework.model.EntityKey;
-import org.jminor.framework.model.EntityRepository;
-import org.jminor.framework.model.EntityUtil;
-import org.jminor.framework.model.Property;
-import org.jminor.framework.model.Type;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Type;
 
 import java.io.Serializable;
 import java.util.ArrayList;
