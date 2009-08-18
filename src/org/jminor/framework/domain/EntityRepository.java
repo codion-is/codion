@@ -103,31 +103,6 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
-   * @return a String array containing the primary column names of the entity identified by <code>entityID</code>
-   */
-  public static String[] getPrimaryKeyColumnNames(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
-
-    return entityInfo.get(entityID).getPrimaryKeyColumnNames();
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param index the index of the property to retrieve
-   * @return the property found at index <code>idx</code> in the entity identified by <code>entityID</code>,
-   * null if no property is at the given index
-   * @throws RuntimeException if property indexes are not defined for the given entity
-   */
-  public static Property getPropertyAtViewIndex(final String entityID, final int index) {
-    if (!entityInfo.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
-
-    return entityInfo.get(entityID).getPropertyAtViewIndex(index);
-  }
-
-  /**
-   * @param entityID the entity ID
    * @return true if the entity identified by <code>entityID</code> is read only
    * @throws RuntimeException if the read only value is undefined
    */
@@ -663,19 +638,19 @@ public class EntityRepository {
      * The largeDataset value
      */
     private boolean largeDataset;
+
+    private List<Property.PrimaryKeyProperty> primaryKeyProperties;
+    private List<Property.ForeignKeyProperty> foreignKeyProperties;
+
+    private List<Property> visibleProperties;
+    private List<Property> databaseProperties;
+
+    private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
+
     private Map<String, String> propertyDescriptions;
     private String[] entitySearchPropertyIDs;
 
-    private LinkedHashMap<String, Property> visibleProperties;
-    private Map<Integer, Property> visiblePropertyIndexes;
-    private LinkedHashMap<String, Property> databaseProperties;
-
-    private Map<String, Property.ForeignKeyProperty> foreignKeyProperties;
-    private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
-    private List<Property.PrimaryKeyProperty> primaryKeyProperties;
-
     private String entitySelectString;
-    private List<String> primaryKeyColumnNames;
 
     public EntityDefinition(final String entityID, final Property[] propertyDefinitions, final String tableName,
                             final String selectTableName, final String orderByClause, final IdSource idSource,
@@ -731,28 +706,20 @@ public class EntityRepository {
       return primaryKeyProperties;
     }
 
-    public String[] getPrimaryKeyColumnNames() {
-      return primaryKeyColumnNames.toArray(new String[primaryKeyColumnNames.size()]);
-    }
-
-    public Property getPropertyAtViewIndex(final int idx) {
-      return visiblePropertyIndexes.get(idx);
-    }
-
     public String getSelectString() {
       return entitySelectString;
     }
 
     public Collection<Property> getVisibleProperties() {
-      return visibleProperties.values();
+      return visibleProperties;
     }
 
     public Collection<Property> getDatabaseProperties() {
-      return databaseProperties.values();
+      return databaseProperties;
     }
 
     public Collection<Property.ForeignKeyProperty> getForeignKeyProperties() {
-      return foreignKeyProperties != null ? foreignKeyProperties.values() : new ArrayList<Property.ForeignKeyProperty>(0);
+      return foreignKeyProperties != null ? foreignKeyProperties : new ArrayList<Property.ForeignKeyProperty>(0);
     }
 
     public boolean hasDenormalizedProperties() {
@@ -764,23 +731,19 @@ public class EntityRepository {
     }
 
     public void initialize() {
-      visibleProperties = new LinkedHashMap<String, Property>(properties.size());
-      visiblePropertyIndexes = new HashMap<Integer, Property>(properties.size());
-      databaseProperties = new LinkedHashMap<String, Property>(properties.size());
-      foreignKeyProperties = new HashMap<String, Property.ForeignKeyProperty>(properties.size());
-      denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
+      visibleProperties = new ArrayList<Property>(properties.size());
+      databaseProperties = new ArrayList<Property>(properties.size());
+      foreignKeyProperties = new ArrayList<Property.ForeignKeyProperty>(properties.size());
       primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
-      primaryKeyColumnNames = new ArrayList<String>();
+      denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
 
       for (final Property property : properties.values()) {
-        if (property instanceof Property.PrimaryKeyProperty) {
+        if (property instanceof Property.PrimaryKeyProperty)
           primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
-          primaryKeyColumnNames.add(property.propertyID);
-        }
         if (property instanceof Property.ForeignKeyProperty)
-          foreignKeyProperties.put(property.propertyID, (Property.ForeignKeyProperty) property);
+          foreignKeyProperties.add((Property.ForeignKeyProperty) property);
         if (property.isDatabaseProperty())
-          databaseProperties.put(property.propertyID, property);
+          databaseProperties.add(property);
         if (property instanceof Property.DenormalizedProperty) {
           final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
           Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.foreignKeyPropertyID);
@@ -788,10 +751,8 @@ public class EntityRepository {
             denormalizedProperties.put(denormalizedProperty.foreignKeyPropertyID, denormProps = new ArrayList<Property.DenormalizedProperty>());
           denormProps.add(denormalizedProperty);
         }
-        if (!property.isHidden()) {
-          visibleProperties.put(property.propertyID, property);
-          visiblePropertyIndexes.put(visiblePropertyIndexes.size(), property);
-        }
+        if (!property.isHidden())
+          visibleProperties.add(property);
       }
 
       final String[] selectColumnNames = initSelectColumnNames();

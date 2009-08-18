@@ -109,7 +109,7 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
         ret.append(getQueryConditionString(keys.get(0), getColumnNames()));
       else //a in (c, v, d, s)
         appendInCondition(properties != null ? properties.get(0).propertyID
-                : keys.get(0).getKeyColumnNames()[0], ret, keys);
+                : keys.get(0).getFirstKeyProperty().propertyID, ret, keys);
     }
 
     return ret.toString();

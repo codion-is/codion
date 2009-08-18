@@ -611,7 +611,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
-        sql = "select max(" + EntityRepository.getPrimaryKeyColumnNames(entityID)[0] + ") + 1 from " + entityID;
+        sql = "select max(" + EntityRepository.getPrimaryKeyProperties(entityID).get(0).propertyID + ") + 1 from " + entityID;
         break;
       case QUERY:
         sql = EntityRepository.getEntityIdSource(entityID);

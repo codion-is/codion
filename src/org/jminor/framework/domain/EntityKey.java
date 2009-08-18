@@ -102,13 +102,6 @@ public class EntityKey implements Serializable {
   }
 
   /**
-   * @return the column names of the properties comprising this key
-   */
-  public String[] getKeyColumnNames() {
-    return EntityRepository.getPrimaryKeyColumnNames(entityID);
-  }
-
-  /**
    * @return true if this is a single integer column key
    */
   public boolean isSingleIntegerKey() {
