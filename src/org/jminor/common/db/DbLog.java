@@ -125,9 +125,9 @@ public class DbLog implements Serializable {
 
   /** {@inheritDoc} */
   @Override
-  public boolean equals(final Object obj) {
-    return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
-            && connectionKey.equals(((DbLog) obj).connectionKey);
+  public boolean equals(final Object object) {
+    return this == object || !((object == null) || (object.getClass() != this.getClass()))
+            && connectionKey.equals(((DbLog) object).connectionKey);
   }
 
   /** {@inheritDoc} */

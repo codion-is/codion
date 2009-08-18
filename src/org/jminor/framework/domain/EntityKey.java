@@ -182,7 +182,8 @@ public class EntityKey implements Serializable {
    */
   @Override
   public boolean equals(final Object object) {
-    return object instanceof EntityKey && equals((EntityKey) object);
+    return this == object || object instanceof EntityKey && ((EntityKey) object).entityID.equals(entityID)
+            && object.hashCode() == hashCode();
   }
 
   /**

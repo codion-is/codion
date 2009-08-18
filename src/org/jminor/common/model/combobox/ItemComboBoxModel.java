@@ -18,7 +18,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {
-    initItems(null);
+    initializeItems(null);
   }
 
   /**
@@ -26,7 +26,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
    * @param items the items
    */
   public ItemComboBoxModel(final IItem... items) {
-    initItems(items);
+    initializeItems(items);
   }
 
   /** {@inheritDoc} */
@@ -44,7 +44,7 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     return indexOf(item);
   }
 
-  protected void initItems(final IItem[] items) {
+  protected void initializeItems(final IItem[] items) {
     if (items != null) {
       for (final IItem item : items)
         super.addElement(item);

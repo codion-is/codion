@@ -57,8 +57,8 @@ public class User implements Serializable {
   }
 
   @Override
-  public boolean equals(final Object obj) {
-    return obj instanceof User && ((User) obj).hashCode == hashCode;
+  public boolean equals(final Object object) {
+    return this == object || object instanceof User && ((User) object).hashCode == hashCode;
   }
 
   @Override

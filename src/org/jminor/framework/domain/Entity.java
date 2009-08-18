@@ -409,15 +409,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   @Override
   public boolean equals(final Object object) {
-    return object instanceof Entity && equals((Entity) object);
-  }
-
-  /**
-   * @param entity the entity to compare with
-   * @return true if the primary keys of <code>entity</code> is identical to the primary key of this Entity
-   */
-  public boolean equals(final Entity entity) {
-    return entity.primaryKey.equals(primaryKey);
+    return this == object || object instanceof Entity && ((Entity) object).primaryKey.equals(primaryKey);
   }
 
   /**

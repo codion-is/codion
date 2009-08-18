@@ -46,8 +46,8 @@ public class ClientInfo implements Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return obj instanceof ClientInfo && clientID.equals(((ClientInfo) obj).clientID);
+  public boolean equals(final Object object) {
+    return this == object || object instanceof ClientInfo && clientID.equals(((ClientInfo) object).clientID);
   }
 
   @Override
