@@ -238,7 +238,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID, final boolean order) throws DbException {
     return selectMany(new EntityCriteria(entityID, null,
-            order ? EntityRepository.getOrderByColumnNames(entityID) : null));
+            order ? EntityRepository.getOrderByClause(entityID) : null));
   }
 
   /** {@inheritDoc} */

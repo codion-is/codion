@@ -140,7 +140,7 @@ public class EntityRepository {
    * @param entityID the entity ID
    * @return a comma seperated list of columns to use in the order by clause
    */
-  public static String getOrderByColumnNames(final String entityID) {
+  public static String getOrderByClause(final String entityID) {
     if (!entityInfo.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
@@ -262,16 +262,6 @@ public class EntityRepository {
       throw new RuntimeException("Property '" + propertyID + "' not found in entity: " + entityID);
 
     return ret;
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param propertyID the property ID
-   * @return true if the entity identified by <code>entityID</code> contains
-   * a property identified by <code>propertyId</code>
-   */
-  public static boolean hasProperty(final String entityID, final String propertyID) {
-    return getProperties(entityID).get(propertyID) != null;
   }
 
   /**
@@ -399,6 +389,21 @@ public class EntityRepository {
   }
 
   /**
+   * @return the IDs of all the entities defined in this repository
+   */
+  public static Collection<String> getEntityIDs() {
+    return entityInfo.keySet();
+  }
+
+  public static String[] getInitializedEntities() {
+    return entityInfo.keySet().toArray(new String[entityInfo.keySet().size()]);
+  }
+
+  public static Map<String, EntityDefinition> getRepository() {
+    return entityInfo;
+  }
+
+  /**
    * @param entityGroup a group of related entities (from the same domain fx), for which
    * we can deduce that if one has been initialized all have.
    * @return true if any one of the entities in the group have already initialized, hmm?
@@ -411,12 +416,12 @@ public class EntityRepository {
    * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final String orderByColumns,
+  public static void initialize(final String entityID, final String orderByClause,
                                 final Property... initialPropertyDefinitions) {
-    initialize(entityID, IdSource.AUTO_INCREMENT, null, orderByColumns, initialPropertyDefinitions);
+    initialize(entityID, IdSource.AUTO_INCREMENT, null, orderByClause, initialPropertyDefinitions);
   }
 
   /**
@@ -461,13 +466,13 @@ public class EntityRepository {
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param initialPropertyDefinitions the properties comprising this entity
    */
   public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByColumns,
+                                final String entityIdSource, final String orderByClause,
                                 final Property... initialPropertyDefinitions) {
-    initialize(entityID, null, idSource, entityIdSource, orderByColumns, null, false, initialPropertyDefinitions);
+    initialize(entityID, null, idSource, entityIdSource, orderByClause, null, false, initialPropertyDefinitions);
   }
 
   /**
@@ -476,15 +481,15 @@ public class EntityRepository {
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
    * in case it differs from the table used to insert/update/delete entities
    * @param initialPropertyDefinitions the properties comprising this entity
    */
   public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByColumns, final String dbSelectTableName,
+                                final String entityIdSource, final String orderByClause, final String dbSelectTableName,
                                 final Property... initialPropertyDefinitions) {
-    initialize(entityID, idSource, entityIdSource, orderByColumns, dbSelectTableName,
+    initialize(entityID, idSource, entityIdSource, orderByClause, dbSelectTableName,
             false, initialPropertyDefinitions);
   }
 
@@ -494,17 +499,17 @@ public class EntityRepository {
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
    * in case it differs from the table used to insert/update/delete entities
    * @param isReadOnly true if entities of this type should be regarded as read-only
    * @param initialPropertyDefinitions the properties comprising this entity
    */
   public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByColumns,
+                                final String entityIdSource, final String orderByClause,
                                 final String dbSelectTableName, final boolean isReadOnly,
                                 final Property... initialPropertyDefinitions) {
-    initialize(entityID, null, idSource, entityIdSource, orderByColumns, dbSelectTableName,
+    initialize(entityID, null, idSource, entityIdSource, orderByClause, dbSelectTableName,
             isReadOnly, false, initialPropertyDefinitions);
   }
 
@@ -514,7 +519,7 @@ public class EntityRepository {
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
    * in case it differs from the table used to insert/update/delete entities
    * @param isReadOnly true if entities of this type should be regarded as read-only
@@ -523,10 +528,10 @@ public class EntityRepository {
    * @param initialPropertyDefinitions the properties comprising this entity
    */
   public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByColumns,
+                                final String entityIdSource, final String orderByClause,
                                 final String dbSelectTableName, final boolean isReadOnly,
                                 final boolean largeDataset, final Property... initialPropertyDefinitions) {
-    initialize(entityID, null, idSource, entityIdSource, orderByColumns, dbSelectTableName,
+    initialize(entityID, null, idSource, entityIdSource, orderByClause, dbSelectTableName,
             isReadOnly, largeDataset, initialPropertyDefinitions);
   }
 
@@ -537,17 +542,17 @@ public class EntityRepository {
    * @param dbTableName the name of the table used to insert/update/delete entities of this type
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
    * in case it differs from the table used to insert/update/delete entities
    * @param isReadOnly true if entities of this type should be regarded as read-only
    * @param initialPropertyDefinitions the properties comprising this entity
    */
   public static void initialize(final String entityID, final String dbTableName, final IdSource idSource,
-                                final String entityIdSource, final String orderByColumns,
+                                final String entityIdSource, final String orderByClause,
                                 final String dbSelectTableName, final boolean isReadOnly,
                                 final Property... initialPropertyDefinitions) {
-    initialize(entityID, dbTableName, idSource, entityIdSource, orderByColumns, dbSelectTableName,
+    initialize(entityID, dbTableName, idSource, entityIdSource, orderByClause, dbSelectTableName,
             isReadOnly, false, initialPropertyDefinitions);
   }
 
@@ -558,7 +563,7 @@ public class EntityRepository {
    * @param dbTableName the name of the table used to insert/update/delete entities of this type
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
-   * @param orderByColumns the default order by clause used when selecting multiple entities of this type
+   * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param dbSelectTableName the name of the table or view from which entities of this type should be selected,
    * in case it differs from the table used to insert/update/delete entities
    * @param isReadOnly true if entities of this type should be regarded as read-only
@@ -567,7 +572,7 @@ public class EntityRepository {
    * @param initialPropertyDefinitions the properties comprising this entity
    */
   public static void initialize(final String entityID, final String dbTableName, final IdSource idSource,
-                                final String entityIdSource, final String orderByColumns,
+                                final String entityIdSource, final String orderByClause,
                                 final String dbSelectTableName, final boolean isReadOnly,
                                 final boolean largeDataset, final Property... initialPropertyDefinitions) {
     if (entityInfo.containsKey(entityID))
@@ -575,27 +580,11 @@ public class EntityRepository {
 
     final EntityDefinition info = new EntityDefinition(entityID, initialPropertyDefinitions, dbTableName == null ? entityID : dbTableName.toLowerCase(),
             dbSelectTableName == null ? (dbTableName == null ? entityID : dbTableName.toLowerCase()) : dbSelectTableName.toLowerCase(),
-            orderByColumns, idSource, (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
+            orderByClause, idSource, (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
                     (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null,
             isReadOnly, largeDataset);
 
-    info.initialize();
     entityInfo.put(entityID, info);
-  }
-
-  /**
-   * @return the IDs of all the entities defined in this repository
-   */
-  public static Collection<String> getEntityIDs() {
-    return entityInfo.keySet();
-  }
-
-  public static String[] getInitializedEntities() {
-    return entityInfo.keySet().toArray(new String[entityInfo.keySet().size()]);
-  }
-
-  public static Map<String, EntityDefinition> getRepository() {
-    return entityInfo;
   }
 
   public static class EntityDefinition implements Serializable {

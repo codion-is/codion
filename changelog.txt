@@ -635,4 +635,5 @@
   Package framework.model renamed to framework.domain
   EntityRepository.get() removed, no longer singleton, all methods static
   IEntityDbRemoteServer.connect() now takes a map instead of a EntityRepository parameter
-  EntityRepository.EntityInfo rename to EntityDefinition, refactored
+  EntityRepository.EntityInfo renamed to EntityDefinition, refactored
+  EntityRepository.getOrderByColumnNames renamed to getOrderByClause
