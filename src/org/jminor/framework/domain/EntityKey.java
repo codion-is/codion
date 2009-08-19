@@ -22,19 +22,9 @@ public class EntityKey implements Serializable {
   private final String entityID;
 
   /**
-   * Contains the values of this key
+   * Contains the values of this key mapped to their respective propertyIDs
    */
   private final Map<String, Object> values;
-
-  /**
-   * The number of properties comprising this key
-   */
-  private final int propertyCount;
-
-  /**
-   * True if this key consists of a single integer value
-   */
-  private final boolean singleIntegerKey;
 
   /**
    * Caching the hash code
@@ -60,9 +50,7 @@ public class EntityKey implements Serializable {
       throw new IllegalArgumentException("EntityKey can not be instantiated without an entityID");
     this.entityID = entityID;
     this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
-    this.propertyCount = properties.size();
-    this.singleIntegerKey = propertyCount == 1 && properties.get(0).propertyType == Type.INT;
-    this.values = new HashMap<String, Object>(propertyCount);
+    this.values = new HashMap<String, Object>(properties.size());
   }
 
   /**
@@ -102,10 +90,10 @@ public class EntityKey implements Serializable {
   }
 
   /**
-   * @return true if this is a single integer column key
+   * @return the first value contained in this key, useful for single property keys
    */
-  public boolean isSingleIntegerKey() {
-    return singleIntegerKey;
+  public Object getFirstKeyValue() {
+    return values.values().iterator().next();
   }
 
   /**
@@ -117,7 +105,7 @@ public class EntityKey implements Serializable {
   }
 
   /**
-   * @param propertyID the ID associated with the property
+   * @param propertyID the property identifier
    * @return true if this key contains a property with the given identifier
    */
   public boolean containsProperty(final String propertyID) {
@@ -126,13 +114,6 @@ public class EntityKey implements Serializable {
         return true;
 
     return false;
-  }
-
-  /**
-   * @return the first value contained in this key, useful for single property keys
-   */
-  public Object getFirstKeyValue() {
-    return values.values().iterator().next();
   }
 
   /**
@@ -152,7 +133,7 @@ public class EntityKey implements Serializable {
     int i = 0;
     for (final Property.PrimaryKeyProperty property : getProperties()) {
       ret.append(property.propertyID).append("=").append(getValue(property.propertyID));
-      if (i++ < propertyCount -1)
+      if (i++ < getPropertyCount()-1)
         ret.append(", ");
     }
 
@@ -173,7 +154,7 @@ public class EntityKey implements Serializable {
    * @return the number of properties comprising this key
    */
   public int getPropertyCount() {
-    return propertyCount;
+    return getProperties().size();
   }
 
   /**
@@ -215,7 +196,7 @@ public class EntityKey implements Serializable {
    * @return true if one of the properties has a null value
    */
   public boolean isNull() {
-    if (singleIntegerKey)
+    if (isSingleIntegerKey())
       return hashCode() == -Integer.MAX_VALUE;
 
     if (hashCode() == -Integer.MAX_VALUE)
@@ -261,12 +242,19 @@ public class EntityKey implements Serializable {
   void setValue(final String propertyID, final Object newValue) {
     values.put(propertyID, newValue);
     hashCodeDirty = true;
-    if (singleIntegerKey) {
+    if (isSingleIntegerKey()) {
       if (!(newValue == null || newValue instanceof Integer))
         throw new IllegalArgumentException("Expecting a Integer value for EntityKey: " + entityID + ", "
                 + propertyID + ", got " + newValue + "; " + newValue.getClass());
       hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
       hashCodeDirty = false;
     }
+  }
+
+  /**
+   * @return true if this is a single integer column key
+   */
+  private boolean isSingleIntegerKey() {
+    return getPropertyCount() == 1 && getFirstKeyProperty().propertyType == Type.INT;
   }
 }

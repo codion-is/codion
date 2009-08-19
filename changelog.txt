@@ -637,3 +637,4 @@
   IEntityDbRemoteServer.connect() now takes a map instead of a EntityRepository parameter
   EntityRepository.EntityInfo renamed to EntityDefinition, refactored
   EntityRepository.getOrderByColumnNames renamed to getOrderByClause
+  EntityKey.propertyCount, singleIntegerKey fields removed
