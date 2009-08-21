@@ -53,11 +53,11 @@ public interface IEntityDb {
   public boolean isTransactionOpen() throws Exception;
 
   /**
-   * Starts a transaction on this connection
+   * Begins a transaction on this connection
    * @throws Exception in case of exception
    * @throws IllegalStateException if a transaction is already open
    */
-  public void startTransaction() throws Exception;
+  public void beginTransaction() throws Exception;
 
   /**
    * Ends the transaction on this connection, if no transaction is open
@@ -89,8 +89,8 @@ public interface IEntityDb {
   public Object executeStatement(final String statement, final int outParamType) throws Exception;
 
   /**
-   * Inserts the given entities, returning a list containing the
-   * primary keys of the inserted records
+   * Inserts the given entities, returning a list containing the primary keys of the inserted entities
+   * in the same order as they were received
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities
    * @throws org.jminor.common.db.DbException in case of a db exception

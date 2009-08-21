@@ -49,7 +49,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws RemoteException in case of a remote exception
    * @throws IllegalStateException if a transaction is already open
    */
-  public void startTransaction() throws IllegalStateException, RemoteException;
+  public void beginTransaction() throws IllegalStateException, RemoteException;
 
   /**
    * Ends the transaction on this connection

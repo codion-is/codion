@@ -642,3 +642,4 @@
   Util.sqlEscapeString() moved to EntityDbUtil
   IEntityDb.set/isCheckDependencies() removed
   EntityTableModel.filterQueryByMaster field, setter and getter renamed to queryFilteredByMaster
+  IEntityDb.startTransaction() renamed to beginTransaction

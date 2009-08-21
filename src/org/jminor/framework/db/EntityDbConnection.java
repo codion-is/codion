@@ -391,7 +391,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     boolean success = false;
     try {
-      startTransaction();
+      beginTransaction();
       final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
       final String whereCondition = EntityDbUtil.getWhereCondition(entity);

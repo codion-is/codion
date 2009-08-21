@@ -135,7 +135,7 @@ public class EmpDeptProfiling extends ProfilingModel {
 
       final User user = new User("scott", "tiger");
       db = EntityDbProviderFactory.createEntityDbProvider(user, user.toString());
-      db.getEntityDb().startTransaction();
+      db.getEntityDb().beginTransaction();
       db.getEntityDb().insert(Arrays.asList(
               getEmployee(null, "One", "none", null, new Date(), 1234.123, 13, null),
               getEmployee(null, "Two", "none", null, new Date(), 1234.123, 13, null),

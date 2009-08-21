@@ -94,7 +94,7 @@ public abstract class EntityTestUnit extends TestCase {
 
   protected void testEntity(final String entityID) throws Exception {
     try {
-      getDbConnection().startTransaction();
+      getDbConnection().beginTransaction();
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new HashSet<String>()));
       final Entity initialEntity = initializeTestEntity(entityID);
       if (initialEntity == null)

@@ -132,7 +132,7 @@ public class DbConnection {
     return connected;
   }
 
-  public void startTransaction() throws IllegalStateException {
+  public void beginTransaction() throws IllegalStateException {
     if (isTransactionOpen())
       throw new IllegalStateException("Transaction already open");
 

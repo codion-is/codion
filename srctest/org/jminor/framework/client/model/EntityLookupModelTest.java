@@ -156,7 +156,7 @@ public class EntityLookupModelTest extends TestCase {
     emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
     emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    dbProvider.getEntityDb().startTransaction();
+    dbProvider.getEntityDb().beginTransaction();
     dbProvider.getEntityDb().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }
 }

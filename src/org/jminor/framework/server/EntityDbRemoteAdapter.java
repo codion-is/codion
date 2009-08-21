@@ -222,9 +222,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public void startTransaction() throws IllegalStateException, RemoteException {
+  public void beginTransaction() throws IllegalStateException, RemoteException {
     try {
-      loggingEntityDbProxy.startTransaction();
+      loggingEntityDbProxy.beginTransaction();
     }
     catch (IllegalStateException is) {
       throw is;
