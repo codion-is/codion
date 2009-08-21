@@ -49,7 +49,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
 
-  private boolean checkDependenciesOnDelete = false;
   private long poolTime = -1;
 
   public EntityDbConnection(final User user) throws AuthenticationException, ClassNotFoundException {
@@ -64,16 +63,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /** {@inheritDoc} */
   public void logout() throws Exception {
     disconnect();
-  }
-
-  /** {@inheritDoc} */
-  public void setCheckDependencies(final boolean checkDependencies) {
-    checkDependenciesOnDelete = checkDependencies;
-  }
-
-  /** {@inheritDoc} */
-  public boolean isCheckDependencies() {
-    return checkDependenciesOnDelete;
   }
 
   /** {@inheritDoc} */
@@ -148,9 +137,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   public void delete(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0)
       return;
-
-    if (isCheckDependencies() && EntityUtil.activeDependencies(getDependentEntities(entities)))
-      throw new DbException("Unable to perform delete, the entities have dependencies");
 
     final List<String> statements = new ArrayList<String>();
     for (final Entity entity : entities) {

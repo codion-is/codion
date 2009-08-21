@@ -315,7 +315,7 @@ public class EntityTableSearchModel {
    */
   private String getSearchModelState() {
     final StringBuilder ret = new StringBuilder();
-    for (final AbstractSearchModel model : getPropertySearchModels())
+    for (final PropertySearchModel model : getPropertySearchModels())
       ret.append(model.toString());
 
     return ret.toString();

@@ -140,7 +140,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * If true the underlying query should be filtered by the selected master record
    */
-  private boolean filterQueryByMaster = false;
+  private boolean queryFilteredByMaster = false;
 
   /**
    * If true then all underlying records should be shown if no master record is selected
@@ -220,16 +220,16 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return true if the underlying query is filtered instead of simply hiding filtered table items
    */
-  public boolean isFilterQueryByMaster() {
-    return filterQueryByMaster;
+  public boolean isQueryFilteredByMaster() {
+    return queryFilteredByMaster;
   }
 
   /**
-   * @param filterQueryByMaster if set to true then master selection changes affect the underlying query,
+   * @param queryFilteredByMaster if set to true then master selection changes affect the underlying query,
    * otherwise filtering is performed by simply hiding filtered items in the table without re-running the query
    */
-  public void setFilterQueryByMaster(final boolean filterQueryByMaster) {
-    this.filterQueryByMaster = filterQueryByMaster;
+  public void setQueryFilteredByMaster(final boolean queryFilteredByMaster) {
+    this.queryFilteredByMaster = queryFilteredByMaster;
   }
 
   /**
@@ -646,7 +646,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID) throws UserException {
-    if (filterQueryByMaster) {
+    if (isQueryFilteredByMaster()) {
       if (tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities))
         refresh();
     }
@@ -895,7 +895,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @throws DbException in case of a database exception
    */
   protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
-    if (filterQueryByMaster && criteria == null && !isShowAllWhenNotFiltered())
+    if (isQueryFilteredByMaster() && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
     try {

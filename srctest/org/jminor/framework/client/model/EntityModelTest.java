@@ -46,7 +46,7 @@ public class EntityModelTest extends TestCase {
             new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK),
                     SearchType.LIKE, department)));
     assertTrue("Number of employees for department should not be 0", employees.size() > 0);
-    departmentModel.getTableModel().setFilterQueryByMaster(true);
+    departmentModel.getTableModel().setQueryFilteredByMaster(true);
     departmentModel.getTableModel().setSelectedEntity(department);
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getAllEntities();
@@ -113,7 +113,7 @@ public class EntityModelTest extends TestCase {
     if (Database.get() instanceof H2Database)
       dbProvider.getEntityDb().executeStatement("SET LOCK_TIMEOUT 100");
 
-    departmentModel.getTableModel().setFilterQueryByMaster(false);
+    departmentModel.getTableModel().setQueryFilteredByMaster(false);
     departmentModel.refresh();
     departmentModel.setStrictEditMode(true);
 

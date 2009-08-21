@@ -61,18 +61,6 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
   public void endTransaction(final boolean rollback) throws IllegalStateException, SQLException, RemoteException;
 
   /**
-   * @param checkDependencies true if dependencies should be checked before a delete is performed
-   * @throws java.rmi.RemoteException
-   */
-  public void setCheckDependencies(final boolean checkDependencies) throws RemoteException;
-
-  /**
-   * @return true if dependencies should be checked before a delete is performed
-   * @throws java.rmi.RemoteException
-   */
-  public boolean isCheckDependencies() throws RemoteException;
-
-  /**
    * Executes the given statement
    * @param statement the statement to execute
    * @throws DbException in case of a database error

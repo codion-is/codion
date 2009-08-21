@@ -7,7 +7,6 @@
       <antReference projectDefault="true" />
       <customJdkName value="" />
       <maximumHeapSize value="128" />
-      <maximumStackSize value="32" />
       <properties />
     </buildFile>
   </component>
@@ -43,6 +42,166 @@
   </component>
   <component name="CopyrightManager" default="">
     <module2copyright />
+  </component>
+  <component name="DBNavigator.Project.CodeCompletionSettings">
+    <filters>
+      <basic-filter>
+        <filter-element type="RESERVED_WORD" id="keyword" selected="true" />
+        <filter-element type="RESERVED_WORD" id="function" selected="false" />
+        <filter-element type="RESERVED_WORD" id="parameter" selected="false" />
+        <filter-element type="OBJECT" id="schema" selected="true" />
+        <filter-element type="OBJECT" id="user" selected="true" />
+        <user-schema>
+          <filter-element type="OBJECT" id="table" selected="true" />
+          <filter-element type="OBJECT" id="view" selected="true" />
+          <filter-element type="OBJECT" id="materialized_view" selected="true" />
+          <filter-element type="OBJECT" id="index" selected="true" />
+          <filter-element type="OBJECT" id="constraint" selected="true" />
+          <filter-element type="OBJECT" id="trigger" selected="true" />
+          <filter-element type="OBJECT" id="synonym" selected="false" />
+          <filter-element type="OBJECT" id="sequence" selected="true" />
+          <filter-element type="OBJECT" id="procedure" selected="true" />
+          <filter-element type="OBJECT" id="function" selected="true" />
+          <filter-element type="OBJECT" id="package" selected="true" />
+          <filter-element type="OBJECT" id="type" selected="true" />
+          <filter-element type="OBJECT" id="dimension" selected="true" />
+          <filter-element type="OBJECT" id="cluster" selected="true" />
+          <filter-element type="OBJECT" id="dblink" selected="true" />
+        </user-schema>
+        <public-schema>
+          <filter-element type="OBJECT" id="table" selected="false" />
+          <filter-element type="OBJECT" id="view" selected="false" />
+          <filter-element type="OBJECT" id="materialized_view" selected="false" />
+          <filter-element type="OBJECT" id="index" selected="false" />
+          <filter-element type="OBJECT" id="constraint" selected="false" />
+          <filter-element type="OBJECT" id="trigger" selected="false" />
+          <filter-element type="OBJECT" id="synonym" selected="false" />
+          <filter-element type="OBJECT" id="sequence" selected="false" />
+          <filter-element type="OBJECT" id="procedure" selected="false" />
+          <filter-element type="OBJECT" id="function" selected="false" />
+          <filter-element type="OBJECT" id="package" selected="false" />
+          <filter-element type="OBJECT" id="type" selected="false" />
+          <filter-element type="OBJECT" id="dimension" selected="false" />
+          <filter-element type="OBJECT" id="cluster" selected="false" />
+          <filter-element type="OBJECT" id="dblink" selected="false" />
+        </public-schema>
+        <any-schema>
+          <filter-element type="OBJECT" id="table" selected="true" />
+          <filter-element type="OBJECT" id="view" selected="true" />
+          <filter-element type="OBJECT" id="materialized_view" selected="true" />
+          <filter-element type="OBJECT" id="index" selected="true" />
+          <filter-element type="OBJECT" id="constraint" selected="true" />
+          <filter-element type="OBJECT" id="trigger" selected="true" />
+          <filter-element type="OBJECT" id="synonym" selected="true" />
+          <filter-element type="OBJECT" id="sequence" selected="true" />
+          <filter-element type="OBJECT" id="procedure" selected="true" />
+          <filter-element type="OBJECT" id="function" selected="true" />
+          <filter-element type="OBJECT" id="package" selected="true" />
+          <filter-element type="OBJECT" id="type" selected="true" />
+          <filter-element type="OBJECT" id="dimension" selected="true" />
+          <filter-element type="OBJECT" id="cluster" selected="true" />
+          <filter-element type="OBJECT" id="dblink" selected="true" />
+        </any-schema>
+      </basic-filter>
+      <smart-filter>
+        <filter-element type="RESERVED_WORD" id="keyword" selected="true" />
+        <filter-element type="RESERVED_WORD" id="function" selected="true" />
+        <filter-element type="RESERVED_WORD" id="parameter" selected="true" />
+        <filter-element type="OBJECT" id="schema" selected="true" />
+        <filter-element type="OBJECT" id="user" selected="true" />
+        <user-schema>
+          <filter-element type="OBJECT" id="table" selected="true" />
+          <filter-element type="OBJECT" id="view" selected="true" />
+          <filter-element type="OBJECT" id="materialized_view" selected="true" />
+          <filter-element type="OBJECT" id="index" selected="true" />
+          <filter-element type="OBJECT" id="constraint" selected="true" />
+          <filter-element type="OBJECT" id="trigger" selected="true" />
+          <filter-element type="OBJECT" id="synonym" selected="true" />
+          <filter-element type="OBJECT" id="sequence" selected="true" />
+          <filter-element type="OBJECT" id="procedure" selected="true" />
+          <filter-element type="OBJECT" id="function" selected="true" />
+          <filter-element type="OBJECT" id="package" selected="true" />
+          <filter-element type="OBJECT" id="type" selected="true" />
+          <filter-element type="OBJECT" id="dimension" selected="true" />
+          <filter-element type="OBJECT" id="cluster" selected="true" />
+          <filter-element type="OBJECT" id="dblink" selected="true" />
+        </user-schema>
+        <public-schema>
+          <filter-element type="OBJECT" id="table" selected="true" />
+          <filter-element type="OBJECT" id="view" selected="true" />
+          <filter-element type="OBJECT" id="materialized_view" selected="true" />
+          <filter-element type="OBJECT" id="index" selected="true" />
+          <filter-element type="OBJECT" id="constraint" selected="true" />
+          <filter-element type="OBJECT" id="trigger" selected="true" />
+          <filter-element type="OBJECT" id="synonym" selected="true" />
+          <filter-element type="OBJECT" id="sequence" selected="true" />
+          <filter-element type="OBJECT" id="procedure" selected="true" />
+          <filter-element type="OBJECT" id="function" selected="true" />
+          <filter-element type="OBJECT" id="package" selected="true" />
+          <filter-element type="OBJECT" id="type" selected="true" />
+          <filter-element type="OBJECT" id="dimension" selected="true" />
+          <filter-element type="OBJECT" id="cluster" selected="true" />
+          <filter-element type="OBJECT" id="dblink" selected="true" />
+        </public-schema>
+        <any-schema>
+          <filter-element type="OBJECT" id="table" selected="true" />
+          <filter-element type="OBJECT" id="view" selected="true" />
+          <filter-element type="OBJECT" id="materialized_view" selected="true" />
+          <filter-element type="OBJECT" id="index" selected="true" />
+          <filter-element type="OBJECT" id="constraint" selected="true" />
+          <filter-element type="OBJECT" id="trigger" selected="true" />
+          <filter-element type="OBJECT" id="synonym" selected="true" />
+          <filter-element type="OBJECT" id="sequence" selected="true" />
+          <filter-element type="OBJECT" id="procedure" selected="true" />
+          <filter-element type="OBJECT" id="function" selected="true" />
+          <filter-element type="OBJECT" id="package" selected="true" />
+          <filter-element type="OBJECT" id="type" selected="true" />
+          <filter-element type="OBJECT" id="dimension" selected="true" />
+          <filter-element type="OBJECT" id="cluster" selected="true" />
+          <filter-element type="OBJECT" id="dblink" selected="true" />
+        </any-schema>
+      </smart-filter>
+    </filters>
+    <sorting enabled="false">
+      <sorting-element type="RESERVED_WORD" id="keyword" />
+      <sorting-element type="OBJECT" id="column" />
+      <sorting-element type="OBJECT" id="table" />
+      <sorting-element type="OBJECT" id="view" />
+      <sorting-element type="OBJECT" id="materialized_view" />
+      <sorting-element type="OBJECT" id="index" />
+      <sorting-element type="OBJECT" id="constraint" />
+      <sorting-element type="OBJECT" id="trigger" />
+      <sorting-element type="OBJECT" id="synonym" />
+      <sorting-element type="OBJECT" id="sequence" />
+      <sorting-element type="OBJECT" id="procedure" />
+      <sorting-element type="OBJECT" id="function" />
+      <sorting-element type="OBJECT" id="package" />
+      <sorting-element type="OBJECT" id="type" />
+      <sorting-element type="OBJECT" id="dimension" />
+      <sorting-element type="OBJECT" id="cluster" />
+      <sorting-element type="OBJECT" id="dblink" />
+      <sorting-element type="OBJECT" id="schema" />
+      <sorting-element type="RESERVED_WORD" id="function" />
+      <sorting-element type="RESERVED_WORD" id="parameter" />
+    </sorting>
+  </component>
+  <component name="DBNavigator.Project.ConnectionManager">
+    <connections />
+  </component>
+  <component name="DBNavigator.Project.DatabaseBrowserManager">
+    <autoscroll-to-editor value="false" />
+    <autoscroll-from-editor value="false" />
+  </component>
+  <component name="DBNavigator.Project.DatasetEditorSettings">
+    <autopopup-text-editor active="true" active-if-empty="false" data-length-threshold="100" delay="1000" />
+    <fetch-block-size value="100" />
+    <trim-whitespaces value="true" />
+    <convert-empty-strings-to-null value="true" />
+    <prompt-filter-dialog value="true" />
+    <default-filter-type value="BASIC" />
+  </component>
+  <component name="DBNavigator.Project.GenericSettings">
+    <settings />
   </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
@@ -273,7 +432,7 @@
       <module fileurl="file://$PROJECT_DIR$/jminor.iml" filepath="$PROJECT_DIR$/jminor.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../../classes" />
   </component>
   <component name="ResourceManagerContainer">
@@ -291,15 +450,14 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="SvnBranchConfigurationManager">
-    <option name="myVersion" value="124" />
-    <option name="mySupportsUserInfoFilter" value="true" />
+    <option name="myVersion" value="123" />
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../.." vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.sixrr.metrics.MetricsReloaded">
-    <option name="selectedProfile" value="Default" />
+    <option name="selectedProfile" value="Class count metrics" />
     <option name="autoscroll" value="false" />
     <option name="calculateMetrics" value="true" />
     <option name="includeTestClasses" value="false" />

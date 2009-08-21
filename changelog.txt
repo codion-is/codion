@@ -640,3 +640,5 @@
   EntityKey.propertyCount, singleIntegerKey fields removed
   Util.notNull() added along with test method in UtilTest
   Util.sqlEscapeString() moved to EntityDbUtil
+  IEntityDb.set/isCheckDependencies() removed
+  EntityTableModel.filterQueryByMaster field, setter and getter renamed to queryFilteredByMaster

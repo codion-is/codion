@@ -69,18 +69,6 @@ public interface IEntityDb {
   public void endTransaction(final boolean commit) throws Exception;
 
   /**
-   * @param checkDependencies true if dependencies should be checked before a delete is performed
-   * @throws Exception in case of exception
-   */
-  public void setCheckDependencies(final boolean checkDependencies) throws Exception;
-
-  /**
-   * @return true if dependencies should be checked before a delete is performed
-   * @throws Exception in case of exception
-   */
-  public boolean isCheckDependencies() throws Exception;
-
-  /**
    * Executes the given statement.
    * This method does not handle select statements.
    * @param statement the statement to execute
