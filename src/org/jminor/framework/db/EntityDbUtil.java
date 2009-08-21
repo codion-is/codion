@@ -5,7 +5,6 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
@@ -51,7 +50,7 @@ public class EntityDbUtil {
       case STRING :
         if (!(value instanceof String))
           throw new IllegalArgumentException("String value expected for property: " + property + ", got: " + value.getClass());
-        return "'" + Util.sqlEscapeString((String) value) + "'";
+        return "'" + sqlEscapeString((String) value) + "'";
       case BOOLEAN :
         if (!(value instanceof Type.Boolean))
           throw new IllegalArgumentException("Type.Boolean value expected for property: " + property + ", got: " + value.getClass());
@@ -62,6 +61,10 @@ public class EntityDbUtil {
       default :
         throw new IllegalArgumentException("Undefined property type: " + property.propertyType);
     }
+  }
+
+  public static String sqlEscapeString(final String val) {
+    return val.replaceAll("'", "''");
   }
 
   public static String getBooleanSQLString(final Property property, final Type.Boolean value) {

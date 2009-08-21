@@ -47,4 +47,12 @@ public class UtilTest extends TestCase {
     assertEquals("getLong should work with single minus sign", new Long(-1), Util.getLong("-"));
     assertNull("getLong should work with an empty string", Util.getLong(""));
   }
+
+  public void testNotNull() throws Exception {
+    assertTrue(Util.notNull(new Object(), new Object(), new Object()));
+    assertTrue(Util.notNull(new Object()));
+    assertFalse(Util.notNull(new Object(), null, new Object()));
+    Object ob = null;
+    assertFalse(Util.notNull(ob));
+  }
 }

@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Vector;
  */
 public class EntityCriteriaPanel extends JPanel {
 
-  private final HashMap<PropertySearchModel, PropertySearchPanel> panels = new HashMap<PropertySearchModel, PropertySearchPanel>();
+  private final Map<PropertySearchModel, PropertySearchPanel> panels = new HashMap<PropertySearchModel, PropertySearchPanel>();
 
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
     setLayout(new BorderLayout(5,5));
@@ -59,28 +60,22 @@ public class EntityCriteriaPanel extends JPanel {
 
     tableModel.getSearchModel().refreshSearchComboBoxModels();
 
-    final JPanel southPanel = initializeSouthPanel(tableModel);
-    if (southPanel != null)
-      add(southPanel, BorderLayout.SOUTH);
+    if (tableModel.isQueryFilteredByMaster())
+      add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
   }
 
-  private JPanel initializeSouthPanel(final EntityTableModel tableModel) {
-    if (tableModel.isFilterQueryByMaster()) {
-      final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-      panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
-      panel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(tableModel,
-              "showAllWhenNotFiltered", FrameworkMessages.get(FrameworkMessages.SHOW_ALL_WHEN_NO_FILTER), null)));
+  private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
+    panel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(tableModel,
+            "showAllWhenNotFiltered", FrameworkMessages.get(FrameworkMessages.SHOW_ALL_WHEN_NO_FILTER), null)));
 
-      return panel;
-    }
-
-    return null;
+    return panel;
   }
 
   private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel) {
     final List<PropertySearchModel> searchCriterias = getSortedCriterias(entityModel);
-    final Vector<AbstractSearchModel> models = new Vector<AbstractSearchModel>(searchCriterias);
-    final JList propertyList = new JList(models);
+    final JList propertyList = new JList(new Vector<AbstractSearchModel>(searchCriterias));
     for (final AbstractSearchModel model : searchCriterias) {
       model.evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -94,11 +89,7 @@ public class EntityCriteriaPanel extends JPanel {
         final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         final PropertySearchModel selected = (PropertySearchModel) value;
         ((JLabel)cellRenderer).setText(selected.getProperty().toString());
-
-        if (selected.isSearchEnabled())
-          cellRenderer.setForeground(Color.red);
-        else
-          cellRenderer.setForeground(Color.black);
+        cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
 
         return cellRenderer;
       }

@@ -638,3 +638,5 @@
   EntityRepository.EntityInfo renamed to EntityDefinition, refactored
   EntityRepository.getOrderByColumnNames renamed to getOrderByClause
   EntityKey.propertyCount, singleIntegerKey fields removed
+  Util.notNull() added along with test method in UtilTest
+  Util.sqlEscapeString() moved to EntityDbUtil

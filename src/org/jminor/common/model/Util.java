@@ -362,10 +362,6 @@ public class Util {
     return one == null && two == null || !(one == null ^ two == null) && one.equals(two);
   }
 
-  public static String sqlEscapeString(final String val) {
-    return val.replaceAll("'", "''");
-  }
-
   public static String getVersion() {
     final String ret = getVersionAndBuildNumber();
     if (ret.toLowerCase().contains("build"))
@@ -388,4 +384,18 @@ public class Util {
     return Math.round(d * Math.pow(10, (double) places)) / Math.pow(10, (double) places);
   }
 
+  /**
+   * Checks if any of the given objects is null
+   * @param objects the objects to check
+   * @return true if none of the given objects is null
+   */
+  public static boolean notNull(final Object... objects) {
+    if (objects == null)
+      return false;
+    for (final Object object : objects)
+      if (object == null)
+          return false;
+
+    return true;
+  }
 }
