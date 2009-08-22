@@ -643,3 +643,9 @@
   IEntityDb.set/isCheckDependencies() removed
   EntityTableModel.filterQueryByMaster field, setter and getter renamed to queryFilteredByMaster
   IEntityDb.startTransaction() renamed to beginTransaction
+  EntityModel.initializeEntityComboBoxModels return value changed from Map<Property, ComboBoxModel> to Map<Property.ForeignKeyProperty, EntityComboBoxModel>
+  EntityModel.containsTableModel() added
+  EntityModel.useStrictEditing renamed to useSelectForUpdate
+  EntityModel.stSelectionFiltersDetail State field changed to boolean selectionFiltersDetail
+  EntityModel.refreshEntityComboBoxModels() removed
+  Configuration.USE_STRICT_EDIT_MODE renamed to USE_SELECT_FOR_UPDATE

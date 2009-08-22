@@ -119,14 +119,9 @@ public class EntityModel implements IRefreshable {
   public final Event evtActiveEntityChanging = new Event();
 
   /**
-   * Fired when the active entity is changed
+   * Fired when the active entity has changed
    */
   public final Event evtActiveEntityChanged = new Event();
-
-  /**
-   * Active when a non-null entity is active
-   */
-  public final State stEntityActive = new State("EntityModel.stEntityActive");
 
   /**
    * Fired when detail models are linked or unlinked
@@ -134,9 +129,9 @@ public class EntityModel implements IRefreshable {
   public final Event evtLinkedDetailModelsChanged = new Event();
 
   /**
-   * If this state is active selection in this model triggers the filtering of all linked detail models
+   * Active when a non-null entity is active
    */
-  private final State stSelectionFiltersDetail = new State("EntityModel.stSelectionFiltersDetail", true);
+  public final State stEntityActive = new State("EntityModel.stEntityActive");
 
   /**
    * If this state is active a refresh of this model triggers a refresh in all detail models
@@ -217,9 +212,14 @@ public class EntityModel implements IRefreshable {
   private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
   /**
+   * Indicates whether selection in a master model triggers the filtering of this model
+   */
+  private boolean selectionFiltersDetail = true;
+
+  /**
    * If true, then the modification of a record triggers a select for update
    */
-  private boolean strictEditingEnabled = (Boolean) Configuration.getValue(Configuration.USE_STRICT_EDIT_MODE);
+  private boolean useSelectForUpdate = (Boolean) Configuration.getValue(Configuration.USE_SELECT_FOR_UPDATE);
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -255,19 +255,19 @@ public class EntityModel implements IRefreshable {
    */
   public EntityModel(final String entityID, final IEntityDbProvider dbProvider,
                      final boolean includeTableModel) throws UserException {
-    if (dbProvider == null)
-      throw new IllegalArgumentException("dbProvider can not be null");
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
+    if (dbProvider == null)
+      throw new IllegalArgumentException("dbProvider can not be null");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.tableModel = includeTableModel ? initializeTableModel() : null;
-    this.propertyComboBoxModels = initializeEntityComboBoxModels();
+    this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     this.detailModels = initializeDetailModels();
     final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
     for (final EntityModel detailModel : this.detailModels) {
       detailModel.setMasterModel(this);
-      if (detailModel.getTableModel() != null)
+      if (detailModel.containsTableModel())
         detailModel.getTableModel().setQueryFilteredByMaster(filterQueryByMaster);
     }
     this.activeEntity = new Entity(entityID);
@@ -286,15 +286,15 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Sets the strict editing mode, if true the model locks the active record while it is being edited
-   * @param strictEditMode the strict editing mode
+   * Sets the select for update mode, if true the model selects for update the active record when it is edited
+   * @param useSelectForUpdate the strict editing mode
    * @throws UserException in case of an exception
    */
-  public void setStrictEditMode(final boolean strictEditMode) throws UserException {
-    if (!strictEditMode)
+  public void setUseSelectForUpdate(final boolean useSelectForUpdate) throws UserException {
+    if (!useSelectForUpdate)
       releaseWriteLock();
 
-    this.strictEditingEnabled = strictEditMode;
+    this.useSelectForUpdate = useSelectForUpdate;
   }
 
   /**
@@ -352,8 +352,8 @@ public class EntityModel implements IRefreshable {
   /**
    * @return true if the selecting a record in this model should filter the detail models
    */
-  public boolean getSelectionFiltersDetail() {
-    return stSelectionFiltersDetail.isActive();
+  public boolean isSelectionFiltersDetail() {
+    return selectionFiltersDetail;
   }
 
   /**
@@ -367,7 +367,7 @@ public class EntityModel implements IRefreshable {
       detailModel.setSelectionFiltersDetail(value);
 
     getTableModel().getSelectionModel().clearSelection();
-    stSelectionFiltersDetail.setActive(value);
+    selectionFiltersDetail = value;
   }
 
   /**
@@ -458,6 +458,13 @@ public class EntityModel implements IRefreshable {
    */
   public EntityTableModel getTableModel() {
     return tableModel;
+  }
+
+  /**
+   * @return true if this EntityModel contains a EntityTableModel
+   */
+  public boolean containsTableModel() {
+    return getTableModel() != null;
   }
 
   /**
@@ -790,9 +797,9 @@ public class EntityModel implements IRefreshable {
     validateData(entities, INSERT);
 
     final List<EntityKey> primaryKeys = EntityKey.copyEntityKeys(doInsert(entities));
-    if (tableModel != null) {
-      tableModel.getSelectionModel().clearSelection();
-      tableModel.addEntitiesByPrimaryKeys(primaryKeys, true);
+    if (containsTableModel()) {
+      getTableModel().getSelectionModel().clearSelection();
+      getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
     }
 
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
@@ -827,7 +834,7 @@ public class EntityModel implements IRefreshable {
       throw new UserException("Update of multiple entities is not allowed!");
     if (!isUpdateAllowed())
       throw new UserException("This model does not allow updating!");
-    if (strictEditingEnabled)
+    if (useSelectForUpdate)
       requestWriteLock(entities);
 
     log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
@@ -840,17 +847,17 @@ public class EntityModel implements IRefreshable {
     validateData(modifiedEntities, UPDATE);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
-    if (tableModel != null) {
+    if (containsTableModel()) {
       if (Entity.isPrimaryKeyModified(modifiedEntities)) {
-        tableModel.refresh();//best we can do under the circumstances
+        getTableModel().refresh();//best we can do under the circumstances
       }
       else {//replace and select the updated entities
         final List<Entity> updated = new ArrayList<Entity>();
         for (final Entity entity : updatedEntities)
           if (entity.is(getEntityID()))
             updated.add(entity);
-        tableModel.replaceEntities(updated);
-        tableModel.setSelectedEntities(updated);
+        getTableModel().replaceEntities(updated);
+        getTableModel().setSelectedEntities(updated);
       }
     }
 
@@ -877,12 +884,12 @@ public class EntityModel implements IRefreshable {
     log.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
 
     evtBeforeDelete.fire();
-    if (tableModel != null)
-      tableModel.getSelectionModel().clearSelection();
+    if (containsTableModel())
+      getTableModel().getSelectionModel().clearSelection();
 
     doDelete(entities);
-    if (tableModel != null)
-      tableModel.removeEntities(entities);
+    if (containsTableModel())
+      getTableModel().removeEntities(entities);
 
     evtAfterDelete.fire(new DeleteEvent(this, entities));
     refreshDetailModelsAfterDelete(entities);
@@ -918,7 +925,7 @@ public class EntityModel implements IRefreshable {
    * @see #delete()
    */
   public List<Entity> getEntitiesForDelete() {
-    return getTableModel() != null ? getTableModel().getSelectedEntities() :
+    return containsTableModel() ? getTableModel().getSelectedEntities() :
             isActiveEntityNull() ? new ArrayList<Entity>() :  Arrays.asList(getActiveEntityCopy());
   }
 
@@ -980,7 +987,7 @@ public class EntityModel implements IRefreshable {
       if (tableModel != null)
         tableModel.refresh();
 
-      refreshEntityComboBoxModels();
+      refreshComboBoxModels();
       if (getCascadeRefresh())
         refreshDetailModels();
 
@@ -1012,8 +1019,8 @@ public class EntityModel implements IRefreshable {
    * @throws UserException in case of a problem
    */
   public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) throws UserException {
-    if (stSelectionFiltersDetail.isActive() && tableModel != null)
-      tableModel.filterByReference(masterValues, masterEntityID);
+    if (isSelectionFiltersDetail() && containsTableModel())
+      getTableModel().filterByReference(masterValues, masterEntityID);
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
       setValue(foreignKeyProperty, masterValues != null && masterValues.size() > 0 ? masterValues.get(0) : null);
@@ -1177,7 +1184,7 @@ public class EntityModel implements IRefreshable {
    * their respective properties.
    * Use this method to provide combo box models with specific functionality.
    */
-  protected Map<Property, ComboBoxModel> initializeEntityComboBoxModels() {
+  protected Map<Property.ForeignKeyProperty, EntityComboBoxModel> initializeEntityComboBoxModels() {
     return initializeEntityComboBoxModels(new EntityComboBoxModel[0]);
   }
 
@@ -1188,8 +1195,9 @@ public class EntityModel implements IRefreshable {
    * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
    * @return a Map of EntityComboBoxModels mapped to their respective properties
    */
-  protected final Map<Property, ComboBoxModel> initializeEntityComboBoxModels(final EntityComboBoxModel... comboBoxModels) {
-    final HashMap<Property, ComboBoxModel> ret = new HashMap<Property, ComboBoxModel>();
+  protected final Map<Property.ForeignKeyProperty, EntityComboBoxModel> initializeEntityComboBoxModels(final EntityComboBoxModel... comboBoxModels) {
+    final Map<Property.ForeignKeyProperty, EntityComboBoxModel> ret =
+            new HashMap<Property.ForeignKeyProperty, EntityComboBoxModel>();
     if (comboBoxModels == null || comboBoxModels.length == 0)
       return ret;
 
@@ -1433,7 +1441,7 @@ public class EntityModel implements IRefreshable {
     activeEntity.getModifiedState().evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         try {
-          if (strictEditingEnabled && !isActiveEntityNull()) {
+          if (useSelectForUpdate && !isActiveEntityNull()) {
             if (activeEntity.isModified())
               requestWriteLock(Arrays.asList(activeEntity));
             else
@@ -1449,7 +1457,7 @@ public class EntityModel implements IRefreshable {
     evtActiveEntityChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         try {
-          if (strictEditingEnabled)
+          if (useSelectForUpdate)
             releaseWriteLock();
         }
         catch (UserException ex) {
@@ -1457,7 +1465,7 @@ public class EntityModel implements IRefreshable {
         }
       }
     });
-    if (tableModel == null) {
+    if (!containsTableModel()) {
       evtActiveEntityChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent event) {
           try {
@@ -1476,10 +1484,10 @@ public class EntityModel implements IRefreshable {
    * remember to call super.bindTableModelEvents()
    */
   protected void bindTableModelEvents() {
-    if (tableModel == null)
+    if (!containsTableModel())
       return;
 
-    tableModel.evtSelectionChanged.addListener(new ActionListener() {
+    getTableModel().evtSelectionChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         try {
           updateDetailModelsByActiveEntity();
@@ -1490,18 +1498,18 @@ public class EntityModel implements IRefreshable {
       }
     });
 
-    tableModel.evtSelectedIndexChanged.addListener(new ActionListener() {
+    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        setActiveEntity(tableModel.getSelectionModel().isSelectionEmpty() ? null : tableModel.getSelectedEntity());
+        setActiveEntity(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedEntity());
       }
     });
 
-    tableModel.addTableModelListener(new TableModelListener() {
+    getTableModel().addTableModelListener(new TableModelListener() {
       public void tableChanged(TableModelEvent event) {
         //if the selected record is being updated via the table model refresh the one in the model
-        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == tableModel.getSelectedIndex()) {
+        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
           setActiveEntity(null);
-          setActiveEntity(tableModel.getSelectedEntity());
+          setActiveEntity(getTableModel().getSelectedEntity());
         }
       }
     });
@@ -1576,14 +1584,6 @@ public class EntityModel implements IRefreshable {
     }
   }
 
-  protected void refreshEntityComboBoxModels() throws UserException {
-    log.trace(this + " refreshing EntityComboBoxModels");
-    for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values()) {
-      if (comboBoxModel instanceof EntityComboBoxModel)
-        ((EntityComboBoxModel) comboBoxModel).refresh();
-    }
-  }
-
   protected void refreshDetailModels() throws UserException {
     log.trace(this + " refreshing detail models");
     for (final EntityModel detailModel : detailModels)
@@ -1591,13 +1591,11 @@ public class EntityModel implements IRefreshable {
   }
 
   protected void updateDetailModelsByActiveEntity() throws UserException {
-    for (final EntityModel detailModel : linkedDetailModels) {
-      if (getTableModel() != null)
-        detailModel.masterSelectionChanged(getTableModel().stSelectionEmpty.isActive()
-                ? null : getTableModel().getSelectedEntities(), getEntityID());
-      else
-        detailModel.masterSelectionChanged(isActiveEntityNull() ? null : Arrays.asList(getActiveEntityCopy()), getEntityID());
-    }
+    final List<Entity> activeEntities = containsTableModel() ?
+            (getTableModel().stSelectionEmpty.isActive() ? null : getTableModel().getSelectedEntities()) :
+            (isActiveEntityNull() ? null : Arrays.asList(getActiveEntityCopy()));
+    for (final EntityModel detailModel : linkedDetailModels)
+      detailModel.masterSelectionChanged(activeEntities, getEntityID());
   }
 
   protected Object doSetValue(final Property property, final Object value, final boolean validate) {
@@ -1624,7 +1622,7 @@ public class EntityModel implements IRefreshable {
   }
 
   private void requestWriteLock(final List<Entity> entities) throws UserException {
-    if (!strictEditingEnabled)
+    if (!useSelectForUpdate)
       throw new UserException("Strict editing mode must be enabled before requesting write lock");
 
     if (lockedEntities.containsAll(entities))
@@ -1644,7 +1642,7 @@ public class EntityModel implements IRefreshable {
   }
 
   private void releaseWriteLock() throws UserException {
-    if (!strictEditingEnabled)
+    if (!useSelectForUpdate)
       throw new UserException("Strict editing mode must be enabled before releasing write lock");
 
     if (lockedEntities.isEmpty())

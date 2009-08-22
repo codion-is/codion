@@ -83,7 +83,7 @@ public abstract class EntityApplicationModel {
    * @return true if selection filters detail is active
    */
   public boolean isSelectionFiltersDetail() {
-    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().getSelectionFiltersDetail();
+    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().isSelectionFiltersDetail();
   }
 
   /**

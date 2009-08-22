@@ -115,7 +115,7 @@ public class EntityModelTest extends TestCase {
 
     departmentModel.getTableModel().setQueryFilteredByMaster(false);
     departmentModel.refresh();
-    departmentModel.setStrictEditMode(true);
+    departmentModel.setUseSelectForUpdate(true);
 
     //select entity and change a value
     departmentModel.getTableModel().setSelectedItemIndex(0);

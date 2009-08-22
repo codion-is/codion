@@ -214,7 +214,7 @@ public class Configuration {
    * Value type: Boolean
    * Default value: false
    */
-  public static final String USE_STRICT_EDIT_MODE = "use_strict_edit_mode";
+  public static final String USE_SELECT_FOR_UPDATE = "use_select_for_update";
 
   /**
    * Specifies the global tooltip delay in milliseconds
@@ -321,7 +321,7 @@ public class Configuration {
     setValue(DEFAULT_USERNAME_PREFIX, "");
     setValue(AUTHENTICATION_REQUIRED, true);
     setValue(TRANSFER_FOCUS_ON_ENTER, true);
-    setValue(USE_STRICT_EDIT_MODE, false);
+    setValue(USE_SELECT_FOR_UPDATE, false);
     setValue(TOOLTIP_DELAY, 500);
     setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
     setValue(SQL_BOOLEAN_VALUE_TRUE, 1);

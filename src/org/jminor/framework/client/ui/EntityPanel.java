@@ -619,7 +619,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (!isPanelInitialized())
       return;
 
-    if (getModel().getTableModel() != null)
+    if (entityTablePanel != null)
       entityTablePanel.setFilterPanelsVisible(value);
     for (final EntityPanel detailEntityPanel : detailEntityPanelProviders.values())
       detailEntityPanel.setFilterPanelsVisible(value);
@@ -674,7 +674,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * is asked whether to update the selected record or insert a new one
    */
   public final void save() {
-    if ((getModel().getTableModel() != null && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
+    if ((getModel().containsTableModel() && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
             || !getModel().isActiveEntityModified() || !getModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
@@ -791,7 +791,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
     try {
-      if (getModel().getTableModel() == null || getModel().getTableModel().stSelectionEmpty.isActive())
+      if (!getModel().containsTableModel() || getModel().getTableModel().stSelectionEmpty.isActive())
         return;
 
       final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
@@ -852,7 +852,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void printTable() throws UserException {
     try {
-      if (getModel().getTableModel() != null)
+      if (entityTablePanel != null)
         JPrinter.print(entityTablePanel.getJTable());
 
       prepareUI(true, false);
@@ -1219,7 +1219,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected void initializeUI() {
     editPanel = initializeEditPanel();
-    entityTablePanel = getModel().getTableModel() != null ? initializeEntityTablePanel(rowColoring) : null;
+    entityTablePanel = getModel().containsTableModel() ? initializeEntityTablePanel(rowColoring) : null;
     if (entityTablePanel != null) {
       entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
@@ -1541,7 +1541,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         setControl(DELETE, getDeleteControl());
     }
     setControl(CLEAR, getClearControl());
-    if (getModel().getTableModel() != null) {
+    if (getModel().containsTableModel()) {
       if (!getModel().isReadOnly() && getModel().isUpdateAllowed()
               && getModel().isMultipleUpdateAllowed())
         setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
