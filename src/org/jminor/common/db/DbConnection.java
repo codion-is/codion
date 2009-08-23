@@ -444,7 +444,7 @@ public class DbConnection {
   /**
    * @return the underlying Connection object
    */
-  protected Connection getConnection() {
+  public Connection getConnection() {
     return connection;
   }
 

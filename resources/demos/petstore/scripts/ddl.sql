@@ -67,7 +67,7 @@ create table petstore.tag(
 create table petstore.tag_item(
  tagid INTEGER NOT NULL,
  itemid INTEGER NOT NULL,
- unique(tagid, itemid),
+ primary key (tagid, itemid),
  foreign key (itemid) references petstore.item(itemid),
  foreign key (tagid) references petstore.tag(tagid)
 );
