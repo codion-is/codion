@@ -224,7 +224,7 @@ public class DomainGenerator {
 
     final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
     List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-    List<Table> tables = new TablePacker().pack(metaData.getTables(null, "PETSTORE", null, null), -1);
+    List<Table> tables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
     for (final Table table : tables)
       foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
 
