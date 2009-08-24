@@ -94,7 +94,7 @@
 	</target>
 
   <target name="dist" depends="build, manifest"
-          description="Creates all distribution jar files in the dist directory">
+          description="Builds all distribution jar files in the dist directory">
     <mkdir dir="${dist}" />
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>

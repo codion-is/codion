@@ -2,7 +2,7 @@ package org.jminor.generator.domain;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.IResultPacker;
-import org.jminor.common.db.User;
+import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.domain.Type;
 
 import java.sql.DatabaseMetaData;
@@ -18,6 +18,98 @@ import java.util.List;
  * Time: 16:17:21
  */
 public class DomainGenerator {
+
+  public static void main(String[] args) {
+    try {
+      System.out.println(getDomainClass("BOTNDYR"));
+      System.exit(0);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static String getDomainClass(String schema) throws Exception {
+    if (schema == null || schema.length() == 0)
+      throw new IllegalArgumentException("Schema must be specified");
+
+    final DbConnection dbConnection = new DbConnection(LoginPanel.getUser(null, null));
+
+    final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
+    List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
+    List<Table> tables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
+    for (final Table table : tables)
+      foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
+
+    StringBuilder builder = new StringBuilder("public class ").append(schema.substring(0,1).
+            toUpperCase()).append(schema.substring(1).toLowerCase()).append(" {\n\n");
+    for (final Table table : tables) {
+      List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
+      builder.append(getConstants(table.schemaName, table.tableName, columns, foreignKeys));
+      builder.append("\n");
+    }
+    builder.append("  static {\n");
+    builder.append("  //initilize your entities here\n");
+    builder.append("  }\n");
+
+    builder.append("}");
+
+    dbConnection.disconnect();
+
+    return builder.toString();
+  }
+
+  public static String getConstants(String schemaName, String tableName, List<Column> columns, List<ForeignKey> foreignKeys) {
+    StringBuilder builder = new StringBuilder("  public static final String T_").append(tableName.toUpperCase()).append(
+            " = \"").append(schemaName.toLowerCase()).append(".").append(tableName.toLowerCase()).append("\";").append("\n");
+    for (Column column : columns) {
+      builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
+              column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append("\";").append("\n");
+      if (isForeignKeyColumn(column, foreignKeys))
+        builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
+                column.columnName.toUpperCase()).append("_FK").append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
+    }
+
+    return builder.toString();
+  }
+
+  private static boolean isForeignKeyColumn(Column column, List<ForeignKey> foreignKeys) {
+    for (ForeignKey foreignKey : foreignKeys)
+      if (foreignKey.fkTableName.equals(column.tableName) && foreignKey.fkColumnName.equals(column.columnName))
+        return true;
+
+    return false;
+  }
+
+  public static Type translate(final int sqlType) {
+    switch (sqlType) {
+      case Types.BIGINT:
+      case Types.INTEGER:
+      case Types.ROWID:
+      case Types.SMALLINT:
+        return Type.INT;
+      case Types.CHAR:
+        return Type.CHAR;
+      case Types.DATE:
+        return Type.SHORT_DATE;
+      case Types.DECIMAL:
+      case Types.DOUBLE:
+      case Types.FLOAT:
+      case Types.NUMERIC:
+      case Types.REAL:
+        return Type.DOUBLE;
+      case Types.TIME:
+      case Types.TIMESTAMP:
+        return Type.LONG_DATE;
+      case Types.VARCHAR:
+        return Type.STRING;
+      case Types.BLOB:
+        return Type.BLOB;
+      case Types.BOOLEAN:
+        return Type.BOOLEAN;
+    }
+
+    throw new IllegalArgumentException("Unsupported sql type: " + sqlType);
+  }
 
   static class Schema {
     final String schemaName;
@@ -150,6 +242,7 @@ public class DomainGenerator {
     final String pkTableName;
     final String pkColumnName;
     final short keySeq;
+
     public PrimaryKey(final String pkSchemaName, final String pkTableName, final String pkColumnName, final short keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
@@ -174,123 +267,5 @@ public class DomainGenerator {
 
       return ret;
     }
-  }
-
-  public static void main(String[] args) {
-    try {
-      System.out.println(getDomainClass("PETSTORE"));
-      /*System.setProperty("jminor.db.type", "h2");
-      System.setProperty("jminor.db.embedded", "true");
-      System.setProperty("jminor.db.host", "h2db/h2");
-
-      final DbConnection dbConnection = new DbConnection(new User("scott", "tiger"));
-
-      final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
-      System.out.println("Foreign keys:");
-      List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-      List<Table> tables = new TablePacker().pack(metaData.getTables(null, "PETSTORE", null, null), -1);
-      for (final Table table : tables) {
-        foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
-      }
-      Util.printListContents(foreignKeys);
-
-      for (final Table table : tables) {
-        List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
-        System.out.println("Columns:");
-        Util.printListContents(columns);
-        System.out.println("Primary keys:");
-        List<PrimaryKey> primaryKeys = new PrimaryKeyPacker().pack(metaData.getPrimaryKeys(null, table.schemaName, table.tableName), -1);
-        Util.printListContents(primaryKeys);
-
-        System.out.println("****************************************");
-        System.out.println(getConstants(table.schemaName, table.tableName, columns, foreignKeys));
-        System.out.println("****************************************");
-
-        System.out.println();
-      }
-
-      dbConnection.disconnect();*/
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  public static String getDomainClass(String schema) throws Exception {
-    System.setProperty("jminor.db.type", "h2");
-    System.setProperty("jminor.db.embedded", "true");
-    System.setProperty("jminor.db.host", "h2db/h2");
-
-    final DbConnection dbConnection = new DbConnection(new User("scott", "tiger"));
-
-    final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
-    List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-    List<Table> tables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
-    for (final Table table : tables)
-      foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
-
-    StringBuilder builder = new StringBuilder("public class Domain {\n");
-    for (final Table table : tables) {
-      List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
-      builder.append(getConstants(table.schemaName, table.tableName, columns, foreignKeys));
-      builder.append("\n");
-    }
-    builder.append("}");
-
-    dbConnection.disconnect();
-
-    return builder.toString();
-  }
-
-  public static String getConstants(String schemaName, String tableName, List<Column> columns, List<ForeignKey> foreignKeys) {
-    StringBuilder builder = new StringBuilder("  public static final String T_").append(tableName.toUpperCase()).append(
-            " = \"").append(schemaName.toLowerCase()).append(".").append(tableName.toLowerCase()).append("\";").append("\n");
-    for (Column column : columns) {
-      builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
-              column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append("\";").append("\n");
-      if (isForeignKeyColumn(column, foreignKeys))
-        builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
-                column.columnName.toUpperCase()).append("_FK").append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
-    }
-
-    return builder.toString();
-  }
-
-  private static boolean isForeignKeyColumn(Column column, List<ForeignKey> foreignKeys) {
-    for (ForeignKey foreignKey : foreignKeys)
-      if (foreignKey.fkTableName.equals(column.tableName) && foreignKey.fkColumnName.equals(column.columnName))
-        return true;
-
-    return false;
-  }
-
-  public static Type translate(final int sqlType) {
-    switch (sqlType) {
-      case Types.BIGINT:
-      case Types.INTEGER:
-      case Types.ROWID:
-      case Types.SMALLINT:
-        return Type.INT;
-      case Types.CHAR:
-        return Type.CHAR;
-      case Types.DATE:
-        return Type.SHORT_DATE;
-      case Types.DECIMAL:
-      case Types.DOUBLE:
-      case Types.FLOAT:
-      case Types.NUMERIC:
-      case Types.REAL:
-        return Type.DOUBLE;
-      case Types.TIME:
-      case Types.TIMESTAMP:
-        return Type.LONG_DATE;
-      case Types.VARCHAR:
-        return Type.STRING;
-      case Types.BLOB:
-        return Type.BLOB;
-      case Types.BOOLEAN:
-        return Type.BOOLEAN;
-    }
-
-    throw new IllegalArgumentException("Unsupported sql type: " + sqlType);
   }
 }
