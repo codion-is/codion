@@ -33,7 +33,7 @@ public class OracleDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
-    return DATABASE_TYPE_ORACLE;
+    return ORACLE;
   }
 
   /** {@inheritDoc} */

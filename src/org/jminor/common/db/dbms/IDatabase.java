@@ -16,12 +16,12 @@ public interface IDatabase {
 
   /**
    * Specifies the database type
-   * @see IDatabase#DATABASE_TYPE_DERBY
-   * @see IDatabase#DATABASE_TYPE_H2
-   * @see IDatabase#DATABASE_TYPE_MYSQL
-   * @see IDatabase#DATABASE_TYPE_ORACLE
-   * @see IDatabase#DATABASE_TYPE_POSTGRESQL
-   * @see IDatabase#DATABASE_TYPE_SQLSERVER
+   * @see IDatabase#DERBY
+   * @see IDatabase#H2
+   * @see IDatabase#MYSQL
+   * @see IDatabase#ORACLE
+   * @see IDatabase#POSTGRESQL
+   * @see IDatabase#SQLSERVER
    */
   public static final String DATABASE_TYPE = "jminor.db.type";
 
@@ -55,40 +55,40 @@ public interface IDatabase {
   public static final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
-   * Oracle database type
+   * The constant used to denote the Oracle database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
-  public static final String DATABASE_TYPE_ORACLE = "oracle";
+  public static final String ORACLE = "oracle";
 
   /**
-   * MySQL database type
+   * The constant used to denote the MySQL database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
-  public static final String DATABASE_TYPE_MYSQL = "mysql";
+  public static final String MYSQL = "mysql";
 
   /**
-   * PostgreSQL database type
+   * The constant used to denote the PostgreSQL database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
-  public static final String DATABASE_TYPE_POSTGRESQL = "postgresql";
+  public static final String POSTGRESQL = "postgresql";
 
   /**
-   * Microsoft SQL Server database type
+   * The constant used to denote the Microsoft SQL Server database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
-  public static final String DATABASE_TYPE_SQLSERVER = "sqlserver";
+  public static final String SQLSERVER = "sqlserver";
 
   /**
-   * Derby database type
+   * The constant used to denote the Derby database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
-  public static final String DATABASE_TYPE_DERBY = "derby";
+  public static final String DERBY = "derby";
 
   /**
-   * H2 database type
+   * The constant used to denote the H2 database type
    * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
    */
-  public static final String DATABASE_TYPE_H2 = "h2";
+  public static final String H2 = "h2";
 
   /**
    * Loads the database driver

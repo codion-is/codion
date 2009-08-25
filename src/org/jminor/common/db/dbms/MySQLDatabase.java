@@ -14,7 +14,7 @@ public class MySQLDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
-    return DATABASE_TYPE_MYSQL;
+    return MYSQL;
   }
 
   /** {@inheritDoc} */

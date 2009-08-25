@@ -14,7 +14,7 @@ public class PostgreSQLDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
-    return DATABASE_TYPE_POSTGRESQL;
+    return POSTGRESQL;
   }
 
   /** {@inheritDoc} */

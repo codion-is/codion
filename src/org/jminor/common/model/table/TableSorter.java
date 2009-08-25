@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 1995 - 2008 Sun Microsystems, Inc.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   - Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *
+ *   - Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *
+ *   - Neither the name of Sun Microsystems nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.jminor.common.model.table;
 
 import org.jminor.common.model.Event;
@@ -15,7 +46,6 @@ import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -72,8 +102,6 @@ import java.util.Map;
  * This is a long overdue rewrite of a class of the same name that
  * first appeared in the swing table demos in 1997.
  *
- * Slightly modified by Björn Darri, formatting and events
- *
  * @author Philip Milne
  * @author Brendon McLean
  * @author Dan van Enckevort
@@ -91,8 +119,6 @@ public class TableSorter extends AbstractTableModel {
 
   public final Event evtBeforeSort = new Event();
   public final Event evtAfterSort = new Event();
-
-  public final Event evtTableHeaderShiftClick = new Event();
 
   public static final Comparator COMPARABLE_COMPARATOR = new Comparator() {
     public int compare(Object o1, Object o2) {
@@ -179,8 +205,7 @@ public class TableSorter extends AbstractTableModel {
     this.tableHeader = tableHeader;
     if (this.tableHeader != null) {
       this.tableHeader.addMouseListener(mouseListener);
-      this.tableHeader.setDefaultRenderer(
-              new SortableHeaderRenderer(this.tableHeader.getDefaultRenderer()));
+      this.tableHeader.setDefaultRenderer(new SortableHeaderRenderer(this.tableHeader.getDefaultRenderer()));
     }
   }
 
@@ -464,20 +489,15 @@ public class TableSorter extends AbstractTableModel {
         return;
       }
       if (column != -1) {
-        if (e.isShiftDown()) {
-          evtTableHeaderShiftClick.fire(new ActionEvent(e.getPoint(),-1,null));
+        int status = getSortingStatus(column);
+        if (!e.isControlDown()) {
+          cancelSorting();
         }
-        else {
-          int status = getSortingStatus(column);
-          if (!e.isControlDown()) {
-            cancelSorting();
-          }
-          // Cycle the sorting states through {NOT_SORTED, ASCENDING, DESCENDING} or
-          // {NOT_SORTED, DESCENDING, ASCENDING} depending on whether shift is pressed.
-          status = status + (e.isShiftDown() ? -1 : 1);
-          status = (status + 4) % 3 - 1; // signed mod, returning {-1, 0, 1}
-          setSortingStatus(column, status);
-        }
+        // Cycle the sorting states through {NOT_SORTED, ASCENDING, DESCENDING} or
+        // {NOT_SORTED, DESCENDING, ASCENDING} depending on whether shift is pressed.
+        status = status + (e.isShiftDown() ? -1 : 1);
+        status = (status + 4) % 3 - 1; // signed mod, returning {-1, 0, 1}
+        setSortingStatus(column, status);
       }
     }
   }
@@ -542,12 +562,8 @@ public class TableSorter extends AbstractTableModel {
       this.tableCellRenderer = tableCellRenderer;
     }
 
-    public Component getTableCellRendererComponent(JTable table,
-                                                   Object value,
-                                                   boolean isSelected,
-                                                   boolean hasFocus,
-                                                   int row,
-                                                   int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
       Component c = tableCellRenderer.getTableCellRendererComponent(table,
               value, isSelected, hasFocus, row, column);
       if (c instanceof JLabel) {

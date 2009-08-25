@@ -658,3 +658,7 @@
   EntityDbConnection, StringBuilder used throughout
   EntityDbConnection.set/getPoolTime() made package protected
   FrameworkUiUtil.createDateInputField() removed, unused
+  TableSorter.evtTableHeaderShiftClick removed
+  EntityTablePanel changed according to the above, using a MouseAdapter
+  EntityTablePanel.toggleColumnFilterPanel() simplified according to the above
+  IDatebase.DATABASE_TYPE_* renamed to *

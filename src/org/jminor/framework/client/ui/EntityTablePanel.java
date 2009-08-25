@@ -499,8 +499,9 @@ public class EntityTablePanel extends JPanel {
     getTableModel().evtFilteringDone.addListener(statusListener);
     getTableModel().evtTableDataChanged.addListener(statusListener);
 
-    getTableModel().getTableSorter().evtTableHeaderShiftClick.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
+    getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent event) {
         toggleColumnFilterPanel(event);
       }
     });
@@ -820,13 +821,13 @@ public class EntityTablePanel extends JPanel {
    * @see org.jminor.framework.domain.EntityProxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable(final boolean rowColoring) {
-    final JTable ret = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),
+    final JTable table = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),
             getTableModel().getSelectionModel());
-    ret.addMouseListener(initializeTableMouseListener());
+    table.addMouseListener(initializeTableMouseListener());
 
-    final JTableHeader header = ret.getTableHeader();
+    final JTableHeader header = table.getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
-    final Font defaultFont = ret.getFont();
+    final Font defaultFont = table.getFont();
     final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
     header.setDefaultRenderer(new TableCellRenderer() {
       public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
@@ -841,11 +842,11 @@ public class EntityTablePanel extends JPanel {
     header.setFocusable(false);
     header.setReorderingAllowed(false);
 
-    ret.setColumnSelectionAllowed(false);
-    ret.setAutoResizeMode((Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE));
+    table.setColumnSelectionAllowed(false);
+    table.setAutoResizeMode((Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE));
     getTableModel().getTableSorter().setTableHeader(header);
 
-    return ret;
+    return table;
   }
 
   private Control getCopyCellControl() {
@@ -947,12 +948,9 @@ public class EntityTablePanel extends JPanel {
     return columnFilterPanels;
   }
 
-  private void toggleColumnFilterPanel(final ActionEvent event) {
-    final Point location = getJTable().getTableHeader().getLocationOnScreen();
-    final Point point = (Point) event.getSource();
-    final Point position = new Point((int) (location.getX() + point.getX()), (int) (location.getY() - point.getY()));
-    final int column = getJTable().getColumnModel().getColumnIndexAtX((int) point.getX());
-    toggleFilterPanel(position, propertyFilterPanels.get(column), getJTable());
+  private void toggleColumnFilterPanel(final MouseEvent event) {
+    toggleFilterPanel(event.getLocationOnScreen(),
+            propertyFilterPanels.get(getJTable().getColumnModel().getColumnIndexAtX(event.getX())), getJTable());
   }
 
   private void revalidateAndShowSearchPanel() {

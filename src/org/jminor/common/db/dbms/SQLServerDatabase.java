@@ -17,7 +17,7 @@ public class SQLServerDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
-    return DATABASE_TYPE_SQLSERVER;
+    return SQLSERVER;
   }
 
   /** {@inheritDoc} */

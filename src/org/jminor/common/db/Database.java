@@ -18,17 +18,17 @@ public class Database {
           if (dbType == null)
             throw new IllegalArgumentException("Required system property missing: " + IDatabase.DATABASE_TYPE);
 
-          if (dbType.equals(IDatabase.DATABASE_TYPE_POSTGRESQL))
+          if (dbType.equals(IDatabase.POSTGRESQL))
             dbImplementationClass = "org.jminor.common.db.dbms.PostgreSQLDatabase";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_MYSQL))
+          else if (dbType.equals(IDatabase.MYSQL))
             dbImplementationClass = "org.jminor.common.db.dbms.MySQLDatabase";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_ORACLE))
+          else if (dbType.equals(IDatabase.ORACLE))
             dbImplementationClass = "org.jminor.common.db.dbms.OracleDatabase";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_SQLSERVER))
+          else if (dbType.equals(IDatabase.SQLSERVER))
             dbImplementationClass = "org.jminor.common.db.dbms.SQLServerDatabase";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_DERBY))
+          else if (dbType.equals(IDatabase.DERBY))
             dbImplementationClass = "org.jminor.common.db.dbms.DerbyDatabase";
-          else if (dbType.equals(IDatabase.DATABASE_TYPE_H2))
+          else if (dbType.equals(IDatabase.H2))
             dbImplementationClass = "org.jminor.common.db.dbms.H2Database";
           else
             throw new IllegalArgumentException("Unknown database type: " + dbType);

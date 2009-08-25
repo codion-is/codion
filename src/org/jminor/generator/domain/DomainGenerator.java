@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.generator.domain;
 
 import org.jminor.common.db.DbConnection;
@@ -21,7 +24,7 @@ public class DomainGenerator {
 
   public static void main(String[] args) {
     try {
-      System.out.println(getDomainClass("BOTNDYR"));
+      System.out.println(getDomainClass("PETSTORE"));
       System.exit(0);
     } catch (Exception e) {
       e.printStackTrace();

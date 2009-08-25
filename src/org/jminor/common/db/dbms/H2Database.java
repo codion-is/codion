@@ -25,7 +25,7 @@ public class H2Database implements IDatabase {
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
-    return DATABASE_TYPE_H2;
+    return H2;
   }
 
   /** {@inheritDoc} */
