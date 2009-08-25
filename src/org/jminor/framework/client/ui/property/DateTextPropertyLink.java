@@ -10,7 +10,6 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
 import java.awt.Color;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -22,7 +21,7 @@ import java.util.Date;
 public class DateTextPropertyLink extends TextPropertyLink {
 
   private final String fieldMaskString;
-  private final Color defaultTextFieldBackground = new JTextField().getBackground();
+  private final Color defaultTextFieldBackground;
 
   /**
    * Instantiates a new DateTextPropertyLink
@@ -40,6 +39,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
       throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
 
     this.fieldMaskString = formatMaskString.replaceAll("#","_");
+    this.defaultTextFieldBackground = textField.getBackground();
     entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(PropertyChangeEvent e) {

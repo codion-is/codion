@@ -14,7 +14,6 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateMaskFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
@@ -363,21 +362,6 @@ public class FrameworkUiUtil {
     }
 
     return ret;
-  }
-
-  public static JTextField createDateInputField(final Date initialValue, final JComponent parent) {
-    final JTextField txtField =
-            new JTextField(ShortDashDateFormat.get().format(initialValue == null ? new Date() : initialValue));
-    txtField.setEditable(false);
-    txtField.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        final Date d = UiUtil.getDateFromUser(initialValue, FrameworkMessages.get(Messages.SELECT_DATE), parent);
-        txtField.setText(ShortDashDateFormat.get().format(d));
-      }
-    });
-
-    return txtField;
   }
 
   public static DateInputPanel createDateInputPanel(final Date initialValue, final DateMaskFormat maskFormat) {
