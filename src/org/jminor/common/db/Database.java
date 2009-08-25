@@ -30,6 +30,8 @@ public class Database {
             dbImplementationClass = "org.jminor.common.db.dbms.DerbyDatabase";
           else if (dbType.equals(IDatabase.H2))
             dbImplementationClass = "org.jminor.common.db.dbms.H2Database";
+          else if (dbType.equals(IDatabase.HSQL))
+            dbImplementationClass = "org.jminor.common.db.dbms.HSQLDatabase";
           else
             throw new IllegalArgumentException("Unknown database type: " + dbType);
         }

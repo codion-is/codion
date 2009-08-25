@@ -91,6 +91,12 @@ public interface IDatabase {
   public static final String H2 = "h2";
 
   /**
+   * The constant used to denote the HSQL database type
+   * @see org.jminor.common.db.dbms.IDatabase#DATABASE_TYPE
+   */
+  public static final String HSQL = "hsql";
+
+  /**
    * Loads the database driver
    * @throws ClassNotFoundException in case the driver class in not found
    */
