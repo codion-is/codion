@@ -107,14 +107,6 @@ public class EntityCriteria implements Serializable {
     return fetchCount;
   }
 
-  /**
-   * @return true if the criteria is an instance of EntityKeyCriteria and the entityID
-   * matches the entityID of said primary keys
-   */
-  public boolean isKeyCriteria() {
-    return criteria instanceof EntityKeyCriteria && ((EntityKeyCriteria) criteria).getEntityID().equals(entityID);
-  }
-
   /** {@inheritDoc} */
   @Override
   public String toString() {
@@ -129,15 +121,13 @@ public class EntityCriteria implements Serializable {
   }
 
   /**
-   * @param includeWhereKeyword if false AND is used instaed of the WHERE keyword
+   * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
   public String getWhereClause(final boolean includeWhereKeyword) {
     final String criteriaString = criteria == null ? "" : criteria.toString();
-    if (criteriaString.length() > 0)
-      return (includeWhereKeyword ? "where " : "and ") + criteriaString;
-    else
-      return "";
+
+    return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
   }
 
   /**

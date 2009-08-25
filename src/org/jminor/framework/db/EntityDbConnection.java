@@ -171,32 +171,58 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final List<EntityKey> primaryKeys) throws DbException {
-    return selectMany(null, primaryKeys);
+    if (primaryKeys == null || primaryKeys.size() == 0)
+      return new ArrayList<Entity>(0);
+
+    addCacheQueriesRequest();
+
+    final String entityID = primaryKeys.get(0).getEntityID();
+    final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
+    try {
+      String sql = null;
+      try {
+        final EntityCriteria criteria = new EntityCriteria(entityID,
+                new EntityKeyCriteria(null, primaryKeyList.toArray(new EntityKey[primaryKeyList.size()])));
+        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+        sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
+                criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
+
+        final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
+
+        if (!lastQueryResultCached())
+          setForeignKeyValues(result);
+
+        return result;
+      }
+      catch (SQLException sqle) {
+        log.info(sql);
+        log.error(this, sqle);
+        throw new DbException(sqle, sql);
+      }
+    }
+    finally {
+      removeCacheQueriesRequest();
+    }
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DbException {
-    return selectMany(new EntityCriteria(entityID,
-            new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
-                    values != null && values.length > 1 ? SearchType.IN : SearchType.LIKE, values)));
+    return selectMany(new EntityCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
+            values != null && values.length > 1 ? SearchType.IN : SearchType.LIKE, values)));
   }
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final EntityCriteria criteria) throws DbException {
-    if (criteria.isKeyCriteria())
-      return selectMany(((EntityKeyCriteria) criteria.getCriteria()).getProperties(),
-              ((EntityKeyCriteria) criteria.getCriteria()).getKeys());
-
     addCacheQueriesRequest();
 
     String sql = null;
     try {
-      final String selectString = EntityRepository.getSelectString(criteria.getEntityID());
-      String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-      sql = DbUtil.generateSelectSql(datasource, selectString,
+      final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+      sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
               criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getFetchCount());
@@ -238,8 +264,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql = null;
     try {
       final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
-      final String selectString = EntityRepository.getSelectString(criteria.getEntityID());
-      String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+      final String selectString = EntityRepository.getSelectColumnsString(criteria.getEntityID());
+      final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
       sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
       sql += " for update" + (Database.get().supportsNoWait() ? " nowait" : "");
@@ -507,42 +533,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       }
 
       throw new DbException(sqle, sql);
-    }
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private List<Entity> selectMany(final List<Property> properties, final List<EntityKey> primaryKeys) throws DbException {
-    if (primaryKeys == null || primaryKeys.size() == 0)
-      return new ArrayList<Entity>(0);
-
-    addCacheQueriesRequest();
-
-    final String entityID = primaryKeys.get(0).getEntityID();
-    final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
-    try {
-      String sql = null;
-      try {
-        final EntityCriteria criteria = new EntityCriteria(entityID,
-                new EntityKeyCriteria(properties, primaryKeyList.toArray(new EntityKey[primaryKeyList.size()])));
-        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectString(criteria.getEntityID()),
-                criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
-
-        final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
-
-        if (!lastQueryResultCached())
-          setForeignKeyValues(result);
-
-        return result;
-      }
-      catch (SQLException sqle) {
-        log.info(sql);
-        log.error(this, sqle);
-        throw new DbException(sqle, sql);
-      }
-    }
-    finally {
-      removeCacheQueriesRequest();
     }
   }
 

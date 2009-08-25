@@ -19,12 +19,12 @@ import java.util.Map;
  */
 public class EntityRepository {
 
-  private static Map<String, EntityDefinition> entityInfo = new HashMap<String, EntityDefinition>();
+  private static Map<String, EntityDefinition> entityDefinitions = new HashMap<String, EntityDefinition>();
 
   private EntityRepository() {}
 
   public static void putAll(final Map<String, EntityDefinition> repository) {
-    entityInfo.putAll(repository);
+    entityDefinitions.putAll(repository);
   }
 
   /**
@@ -33,12 +33,12 @@ public class EntityRepository {
    * @param description a string describing the property
    */
   public static void setPropertyDescription(final String entityID, final String propertyID, final String description) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
-    if (entityInfo.get(entityID).propertyDescriptions == null)
-      entityInfo.get(entityID).propertyDescriptions = new HashMap<String, String>();
+    if (entityDefinitions.get(entityID).propertyDescriptions == null)
+      entityDefinitions.get(entityID).propertyDescriptions = new HashMap<String, String>();
 
-    entityInfo.get(entityID).propertyDescriptions.put(propertyID, description);
+    entityDefinitions.get(entityID).propertyDescriptions.put(propertyID, description);
   }
 
   /**
@@ -56,10 +56,11 @@ public class EntityRepository {
    * @return the description string for the given property, null if none is defined
    */
   public static String getPropertyDescription(final String entityID, final String propertyID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).propertyDescriptions != null ? entityInfo.get(entityID).propertyDescriptions.get(propertyID) : null;
+    return entityDefinitions.get(entityID).propertyDescriptions != null ?
+            entityDefinitions.get(entityID).propertyDescriptions.get(propertyID) : null;
   }
 
   /**
@@ -69,13 +70,13 @@ public class EntityRepository {
    * @throws RuntimeException in case of a non-string property ID
    */
   public static void setEntitySearchProperties(final String entityID, final String... searchPropertyIDs) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
     for (final String propertyID : searchPropertyIDs)
       if (getProperty(entityID, propertyID).propertyType != Type.STRING)
         throw new RuntimeException("Entity search property must be of type String: " + getProperty(entityID, propertyID));
 
-    entityInfo.get(entityID).entitySearchPropertyIDs = searchPropertyIDs;
+    entityDefinitions.get(entityID).searchPropertyIDs = searchPropertyIDs;
   }
 
   /**
@@ -84,10 +85,10 @@ public class EntityRepository {
    * for entities identified by <code>entityID</code>
    */
   public static String[] getEntitySearchPropertyIDs(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).entitySearchPropertyIDs;
+    return entityDefinitions.get(entityID).searchPropertyIDs;
   }
 
   /**
@@ -95,10 +96,10 @@ public class EntityRepository {
    * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
    */
   public static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).getPrimaryKeyProperties();
+    return entityDefinitions.get(entityID).getPrimaryKeyProperties();
   }
 
   /**
@@ -107,10 +108,10 @@ public class EntityRepository {
    * @throws RuntimeException if the read only value is undefined
    */
   public static boolean isReadOnly(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).isReadOnly();
+    return entityDefinitions.get(entityID).isReadOnly();
   }
 
   /**
@@ -119,10 +120,10 @@ public class EntityRepository {
    * @throws RuntimeException if the large dataset value is undefined
    */
   public static boolean isLargeDataset(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).isLargeDataset();
+    return entityDefinitions.get(entityID).isLargeDataset();
   }
 
   /**
@@ -130,10 +131,10 @@ public class EntityRepository {
    * @param value true if the entity identified by <code>entityID</code> is based on a large dataset
    */
   public static void setIsLargeDataset(final String entityID, final boolean value) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    entityInfo.get(entityID).setLargeDataset(value);
+    entityDefinitions.get(entityID).setLargeDataset(value);
   }
 
   /**
@@ -141,10 +142,10 @@ public class EntityRepository {
    * @return a comma seperated list of columns to use in the order by clause
    */
   public static String getOrderByClause(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).orderByClause;
+    return entityDefinitions.get(entityID).orderByClause;
   }
 
   /**
@@ -153,10 +154,10 @@ public class EntityRepository {
    * @throws RuntimeException if none is defined
    */
   public static String getSelectTableName(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).selectTableName;
+    return entityDefinitions.get(entityID).selectTableName;
   }
 
   /**
@@ -165,10 +166,10 @@ public class EntityRepository {
    * @throws RuntimeException if none is defined
    */
   public static String getTableName(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).tableName;
+    return entityDefinitions.get(entityID).tableName;
   }
 
   /**
@@ -176,11 +177,11 @@ public class EntityRepository {
    * @return the query string used to select entities identified by <code>entityID</code>
    * @throws RuntimeException if none is defined
    */
-  public static String getSelectString(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+  public static String getSelectColumnsString(final String entityID) {
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).getSelectString();
+    return entityDefinitions.get(entityID).getSelectColumnsString();
   }
 
   /**
@@ -189,10 +190,10 @@ public class EntityRepository {
    * @throws RuntimeException if none is defined
    */
   public static IdSource getIdSource(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("No id source defined for entity: " + entityID);
 
-    return entityInfo.get(entityID).idSource;
+    return entityDefinitions.get(entityID).idSource;
   }
 
   /**
@@ -230,10 +231,10 @@ public class EntityRepository {
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
   public static Collection<Property> getVisibleProperties(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).getVisibleProperties();
+    return entityDefinitions.get(entityID).getVisibleProperties();
   }
 
   /**
@@ -293,10 +294,10 @@ public class EntityRepository {
    * that is, properties that map to database columns
    */
   public static Collection<Property> getDatabaseProperties(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).getDatabaseProperties();
+    return entityDefinitions.get(entityID).getDatabaseProperties();
   }
 
   /**
@@ -305,10 +306,10 @@ public class EntityRepository {
    * identified by <code>entityID</code>
    */
   public static Collection<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).getForeignKeyProperties();
+    return entityDefinitions.get(entityID).getForeignKeyProperties();
   }
 
   /**
@@ -316,10 +317,10 @@ public class EntityRepository {
    * @return true if the given entity contains denormalized properties
    */
   public static boolean hasDenormalizedProperties(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).hasDenormalizedProperties();
+    return entityDefinitions.get(entityID).hasDenormalizedProperties();
   }
 
   /**
@@ -330,10 +331,10 @@ public class EntityRepository {
    */
   public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
                                                                                     final String propertyOwnerEntityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).getDenormalizedProperties(propertyOwnerEntityID);
+    return entityDefinitions.get(entityID).getDenormalizedProperties(propertyOwnerEntityID);
   }
 
   /**
@@ -370,10 +371,10 @@ public class EntityRepository {
    * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
    */
   public static Map<String, Property> getProperties(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).properties;
+    return entityDefinitions.get(entityID).properties;
   }
 
   /**
@@ -382,25 +383,25 @@ public class EntityRepository {
    * @throws RuntimeException in case no id source name is specified
    */
   public static String getEntityIdSource(final String entityID) {
-    if (!entityInfo.containsKey(entityID))
+    if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
 
-    return entityInfo.get(entityID).idValueSource;
+    return entityDefinitions.get(entityID).idValueSource;
   }
 
   /**
    * @return the IDs of all the entities defined in this repository
    */
   public static Collection<String> getEntityIDs() {
-    return entityInfo.keySet();
+    return entityDefinitions.keySet();
   }
 
   public static String[] getInitializedEntities() {
-    return entityInfo.keySet().toArray(new String[entityInfo.keySet().size()]);
+    return entityDefinitions.keySet().toArray(new String[entityDefinitions.keySet().size()]);
   }
 
   public static Map<String, EntityDefinition> getRepository() {
-    return entityInfo;
+    return entityDefinitions;
   }
 
   /**
@@ -409,7 +410,7 @@ public class EntityRepository {
    * @return true if any one of the entities in the group have already initialized, hmm?
    */
   public static boolean contains(final Map<String, EntityDefinition> entityGroup) {
-    return entityInfo.containsKey(entityGroup.keySet().iterator().next());
+    return entityDefinitions.containsKey(entityGroup.keySet().iterator().next());
   }
 
   /**
@@ -575,16 +576,15 @@ public class EntityRepository {
                                 final String entityIdSource, final String orderByClause,
                                 final String dbSelectTableName, final boolean isReadOnly,
                                 final boolean largeDataset, final Property... initialPropertyDefinitions) {
-    if (entityInfo.containsKey(entityID))
+    if (entityDefinitions.containsKey(entityID))
       throw new IllegalArgumentException("Entity with ID '" + entityID + "' has already been initialized!");
 
-    final EntityDefinition info = new EntityDefinition(entityID, initialPropertyDefinitions, dbTableName == null ? entityID : dbTableName.toLowerCase(),
-            dbSelectTableName == null ? (dbTableName == null ? entityID : dbTableName.toLowerCase()) : dbSelectTableName.toLowerCase(),
+    entityDefinitions.put(entityID, new EntityDefinition(entityID, initialPropertyDefinitions,
+            dbTableName == null ? entityID : dbTableName.toLowerCase(), dbSelectTableName == null ?
+                    (dbTableName == null ? entityID : dbTableName.toLowerCase()) : dbSelectTableName.toLowerCase(),
             orderByClause, idSource, (idSource == IdSource.SEQUENCE || idSource == IdSource.AUTO_INCREMENT) ?
                     (entityIdSource == null || entityIdSource.length() == 0 ? (entityID + "_seq") : entityIdSource) : null,
-            isReadOnly, largeDataset);
-
-    entityInfo.put(entityID, info);
+            isReadOnly, largeDataset));
   }
 
   public static class EntityDefinition implements Serializable {
@@ -599,7 +599,7 @@ public class EntityRepository {
      */
     private final Map<String, Property> properties;
     /**
-     * The name of the underlygin table
+     * The name of the underlying table
      */
     private final String tableName;
     /**
@@ -637,9 +637,9 @@ public class EntityRepository {
     private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
 
     private Map<String, String> propertyDescriptions;
-    private String[] entitySearchPropertyIDs;
+    private String[] searchPropertyIDs;
 
-    private String entitySelectString;
+    private String selectColumnsString;
 
     public EntityDefinition(final String entityID, final Property[] propertyDefinitions, final String tableName,
                             final String selectTableName, final String orderByClause, final IdSource idSource,
@@ -695,8 +695,8 @@ public class EntityRepository {
       return primaryKeyProperties;
     }
 
-    public String getSelectString() {
-      return entitySelectString;
+    public String getSelectColumnsString() {
+      return selectColumnsString;
     }
 
     public Collection<Property> getVisibleProperties() {
@@ -748,7 +748,7 @@ public class EntityRepository {
       for (int idx = 0; idx < selectColumnNames.length; idx++)
         properties.get(selectColumnNames[idx]).setSelectIndex(idx+1);
 
-      this.entitySelectString = getSelectColumnsString();
+      this.selectColumnsString = initSelectColumnsString();
     }
 
     /**
@@ -763,7 +763,7 @@ public class EntityRepository {
       return ret.toArray(new String[ret.size()]);
     }
 
-    private String getSelectColumnsString() {
+    private String initSelectColumnsString() {
       final Collection<Property> dbProperties = getDatabaseProperties();
       final List<Property> selectProperties = new ArrayList<Property>(dbProperties.size());
       for (final Property property : dbProperties)
