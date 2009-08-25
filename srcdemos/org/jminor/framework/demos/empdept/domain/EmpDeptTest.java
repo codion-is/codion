@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.model;
+package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;

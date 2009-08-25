@@ -9,7 +9,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
-import org.jminor.framework.demos.petstore.model.Petstore;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.demos.empdept.model.EmpDept;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 

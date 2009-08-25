@@ -649,3 +649,4 @@
   EntityModel.stSelectionFiltersDetail State field changed to boolean selectionFiltersDetail
   EntityModel.refreshEntityComboBoxModels() removed
   Configuration.USE_STRICT_EDIT_MODE renamed to USE_SELECT_FOR_UPDATE
+  Demo package model renamed to domain

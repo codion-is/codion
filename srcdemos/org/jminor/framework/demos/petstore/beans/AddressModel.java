@@ -6,7 +6,7 @@ package org.jminor.framework.demos.petstore.beans;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
-import org.jminor.framework.demos.petstore.model.Petstore;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 
 /**
  * User: Björn Darri

@@ -9,7 +9,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
-import org.jminor.framework.demos.empdept.model.EmpDept;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import java.util.List;
 

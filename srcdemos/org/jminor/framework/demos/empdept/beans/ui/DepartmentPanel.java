@@ -13,7 +13,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
-import org.jminor.framework.demos.empdept.model.EmpDept;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityUtil;
 
 import javax.swing.JPanel;

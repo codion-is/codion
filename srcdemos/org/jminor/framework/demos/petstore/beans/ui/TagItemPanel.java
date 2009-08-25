@@ -10,7 +10,7 @@ import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagModel;
-import org.jminor.framework.demos.petstore.model.Petstore;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import javax.swing.JPanel;
 import java.awt.Dimension;

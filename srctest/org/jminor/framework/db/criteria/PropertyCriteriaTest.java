@@ -7,7 +7,7 @@ import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.framework.demos.empdept.model.EmpDept;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;

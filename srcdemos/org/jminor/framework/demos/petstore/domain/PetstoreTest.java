@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.model;
+package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;

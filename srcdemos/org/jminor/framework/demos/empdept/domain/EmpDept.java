@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.model;
+package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.domain.Entity;
@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 public class EmpDept {
 
   private static final ResourceBundle bundle =
-          ResourceBundle.getBundle("org.jminor.framework.demos.empdept.model.EmpDept", Locale.getDefault());
+          ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 
   /**Used for i18n*/
   public static final String NONE = "none";

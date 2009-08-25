@@ -6,7 +6,7 @@ package org.jminor.framework.demos.petstore.beans.ui;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.petstore.model.Petstore;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

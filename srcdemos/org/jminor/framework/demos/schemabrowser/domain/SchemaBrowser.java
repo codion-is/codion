@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.schemabrowser.model;
+package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;

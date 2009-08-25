@@ -12,7 +12,7 @@ import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
 import org.jminor.framework.demos.petstore.beans.ContactInfoModel;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
-import org.jminor.framework.demos.petstore.model.Petstore;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;

@@ -9,7 +9,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
-import org.jminor.framework.demos.schemabrowser.model.SchemaBrowser;
+import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.framework.profiling.ProfilingModel;
 import org.jminor.framework.profiling.ui.ProfilingPanel;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
