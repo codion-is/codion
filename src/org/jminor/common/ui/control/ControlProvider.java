@@ -138,20 +138,20 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void doSeparator() {}
+    public void handleSeparator() {}
 
     /** {@inheritDoc} */
-    public void doControl(final Control control) {
+    public void handleControl(final Control control) {
       btnPanel.add(createButton(control));
     }
 
     /** {@inheritDoc} */
-    public void doToggleControl(final ToggleBeanPropertyLink control) {
+    public void handleToggleControl(final ToggleBeanPropertyLink control) {
       btnPanel.add(createCheckBox(control));
     }
 
     /** {@inheritDoc} */
-    public void doControlSet(final ControlSet controlSet) {
+    public void handleControlSet(final ControlSet controlSet) {
       if (vertical)
         createVerticalButtonPanel(btnPanel, controlSet);
       else
@@ -159,7 +159,7 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void doAction(final Action action) {
+    public void handleAction(final Action action) {
       btnPanel.add(new JButton(action));
     }
   }
@@ -198,29 +198,29 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void doSeparator() {
+    public void handleSeparator() {
       menu.addSeparator();
     }
 
     /** {@inheritDoc} */
-    public void doControl(final Control control) {
+    public void handleControl(final Control control) {
       menu.add(control);
     }
 
     /** {@inheritDoc} */
-    public void doToggleControl(final ToggleBeanPropertyLink control) {
+    public void handleToggleControl(final ToggleBeanPropertyLink control) {
       menu.add(createCheckBoxMenuItem(control));
     }
 
     /** {@inheritDoc} */
-    public void doControlSet(final ControlSet controlSet) {
+    public void handleControlSet(final ControlSet controlSet) {
       final MenuControlIterator mv = new MenuControlIterator(controlSet);
       iterate(mv, controlSet);
       menu.add(mv.getMenu());
     }
 
     /** {@inheritDoc} */
-    public void doAction(final Action action) {
+    public void handleAction(final Action action) {
       menu.add(action);
     }
   }
@@ -240,27 +240,27 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void doSeparator() {
+    public void handleSeparator() {
       toolbar.addSeparator();
     }
 
     /** {@inheritDoc} */
-    public void doControl(final Control control) {
+    public void handleControl(final Control control) {
       toolbar.add(control);
     }
 
     /** {@inheritDoc} */
-    public void doToggleControl(final ToggleBeanPropertyLink control) {
+    public void handleToggleControl(final ToggleBeanPropertyLink control) {
       toolbar.add(createToggleButton(control, includeCaption));
     }
 
     /** {@inheritDoc} */
-    public void doControlSet(final ControlSet controlSet) {
+    public void handleControlSet(final ControlSet controlSet) {
       iterate(new ToolBarControlIterator(toolbar), controlSet);
     }
 
     /** {@inheritDoc} */
-    public void doAction(final Action action) {
+    public void handleAction(final Action action) {
       toolbar.add(action);
     }
   }
@@ -290,15 +290,15 @@ public class ControlProvider {
 
     for (final Action action : controlSet.getActions()) {
       if (action == null)
-        controlIterator.doSeparator();
+        controlIterator.handleSeparator();
       else if (action instanceof ToggleBeanPropertyLink)
-        controlIterator.doToggleControl((ToggleBeanPropertyLink) action);
+        controlIterator.handleToggleControl((ToggleBeanPropertyLink) action);
       else if (action instanceof ControlSet)
-        controlIterator.doControlSet((ControlSet) action);
+        controlIterator.handleControlSet((ControlSet) action);
       else if (action instanceof Control)
-        controlIterator.doControl((Control) action);
+        controlIterator.handleControl((Control) action);
       else
-        controlIterator.doAction(action);
+        controlIterator.handleAction(action);
     }
   }
 }

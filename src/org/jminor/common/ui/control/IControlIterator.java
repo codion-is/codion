@@ -10,13 +10,13 @@ import javax.swing.Action;
  */
 public interface IControlIterator {
 
-  public void doSeparator();
+  public void handleSeparator();
 
-  public void doControl(final Control control);
+  public void handleControl(final Control control);
 
-  public void doToggleControl(final ToggleBeanPropertyLink control);
+  public void handleToggleControl(final ToggleBeanPropertyLink control);
 
-  public void doControlSet(final ControlSet controlSet);
+  public void handleControlSet(final ControlSet controlSet);
 
-  public void doAction(final Action action);
+  public void handleAction(final Action action);
 }

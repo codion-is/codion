@@ -96,22 +96,33 @@ public class ControlSet extends Control {
     putValue(MNEMONIC_KEY, mnemonic);
   }
 
+  /**
+   * Adds the given action to this ControlSet,
+   * adding a null action has the same effect as addSeperator()
+   * @param action the action to add
+   */
   public void add(final Action action) {
     if (action != null)
       actions.add(action);
   }
 
-  public void addAt(final Action action, final int idx) {
+  /**
+   * Adds the given action to this ControlSet at the specified index,
+   * adding a null action has the same effect as addSeperator()
+   * @param action the action to add at the specified index
+   * @param index the index
+   */
+  public void addAt(final Action action, final int index) {
     if (action != null)
-      actions.add(idx, action);
+      actions.add(index, action);
   }
 
   public boolean remove(final Action action) {
     return action != null && actions.remove(action);
   }
 
-  public boolean remove(final ControlSet set) {
-    return set != null && actions.remove(set);
+  public boolean remove(final ControlSet controlSet) {
+    return controlSet != null && actions.remove(controlSet);
   }
 
   public void removeAll() {
@@ -131,16 +142,16 @@ public class ControlSet extends Control {
       actions.add(controlSet);
   }
 
-  public void addAt(final ControlSet controlSet, final int idx) {
+  public void addAt(final ControlSet controlSet, final int index) {
     if (controlSet != null)
-      actions.add(idx, controlSet);
+      actions.add(index, controlSet);
   }
 
   public void addSeparator() {
     actions.add(null);
   }
 
-  public void addSeparatorAt(final int idx) {
-    actions.add(idx, null);
+  public void addSeparatorAt(final int index) {
+    actions.add(index, null);
   }
 }
