@@ -105,7 +105,7 @@ public class HSQLDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public boolean supportsNoWait() {
-    return true;
+    return false;
   }
 
   /** {@inheritDoc} */
