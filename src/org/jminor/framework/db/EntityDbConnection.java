@@ -261,16 +261,16 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (isTransactionOpen())
       throw new IllegalStateException("Can not use select for update within an open transaction");
 
-    String sql = null;
+    final StringBuilder sql = new StringBuilder();
     try {
       final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
       final String selectString = EntityRepository.getSelectColumnsString(criteria.getEntityID());
       final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
       final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
-      sql = DbUtil.generateSelectSql(datasource, selectString, whereCondition, null);
-      sql += " for update" + (Database.get().supportsNoWait() ? " nowait" : "");
+      sql.append(DbUtil.generateSelectSql(datasource, selectString, whereCondition, null));
+      sql.append(" for update").append((Database.get().supportsNoWait() ? " nowait" : ""));
 
-      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
+      final List<Entity> result = (List<Entity>) query(sql.toString(), getResultPacker(criteria.getEntityID()), -1);
       if (result.size() == 0)
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
       if (result.size() != primaryKeys.size()) {
@@ -289,7 +289,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     catch (SQLException sqle) {
       log.info(sql);
       log.error(this, sqle);
-      throw new DbException(sqle, sql);
+      throw new DbException(sqle, sql.toString());
     }
   }
 
@@ -299,8 +299,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql = null;
     try {
       sql = DbUtil.generateSelectSql(EntityRepository.getSelectTableName(entityID),
-              (distinct ? "distinct " : "") + columnName,
-              "where " + columnName + " is not null", order ? columnName : null);
+              new StringBuilder(distinct ? "distinct " : "").append(columnName).toString(),
+              new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
       return query(sql, getPacker(EntityRepository.getProperty(entityID, columnName).propertyType), -1);
     }
@@ -422,8 +422,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
       final String whereCondition = EntityUtil.getWhereCondition(entity);
 
-      execute("update " + entity.getEntityID() + " set " + property.propertyID
-              + " = '" + entity.getStringValue(propertyID) + "' " + whereCondition);
+      execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.propertyID)
+              .append(" = '").append(entity.getStringValue(propertyID)).append("' ").append(whereCondition).toString());
 
       writeBlobField(blobData, EntityRepository.getTableName(entity.getEntityID()),
               property.getBlobColumnName(), whereCondition);
@@ -452,11 +452,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
   }
 
-  public void setPoolTime(final long poolTime) {
+  void setPoolTime(final long poolTime) {
     this.poolTime = poolTime;
   }
 
-  public long getPoolTime() {
+  long getPoolTime() {
     return poolTime;
   }
 
@@ -511,7 +511,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
    * @return a query for deleting this entity instance
    */
   static String getDeleteSQL(final Entity entity) {
-    return "delete from " + EntityRepository.getTableName(entity.getEntityID()) + EntityUtil.getWhereCondition(entity);
+    return new StringBuilder("delete from ").append(EntityRepository.getTableName(entity.getEntityID()))
+            .append(EntityUtil.getWhereCondition(entity)).toString();
   }
 
   private void execute(final List<String> statements) throws DbException {
@@ -587,7 +588,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
-        sql = "select max(" + EntityRepository.getPrimaryKeyProperties(entityID).get(0).propertyID + ") + 1 from " + entityID;
+        sql = new StringBuilder("select max(").append(EntityRepository.getPrimaryKeyProperties(entityID).get(0).propertyID)
+                .append(") + 1 from ").append(EntityRepository.getTableName(entityID)).toString();
         break;
       case QUERY:
         sql = EntityRepository.getEntityIdSource(entityID);

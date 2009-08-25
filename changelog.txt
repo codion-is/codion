@@ -655,3 +655,5 @@
   EntityRepository.EntityDefinition.entitySelectString renamed to selectColumnsString
   EntityRepository.entityInfo renamed to entityDefinitions
   EntityDbUtil.* moved to EntityUtil, EntitDbUtil removed, it introduced a dependency cycle between db.criteria and db
+  EntityDbConnection, StringBuilder used throughout
+  EntityDbConnection.set/getPoolTime() made package protected
