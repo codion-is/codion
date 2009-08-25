@@ -662,3 +662,5 @@
   EntityTablePanel changed according to the above, using a MouseAdapter
   EntityTablePanel.toggleColumnFilterPanel() simplified according to the above
   IDatebase.DATABASE_TYPE_* renamed to *
+  IEntityDb.selectAll(String entityID, boolean order) removed
+  IEntityDb.getDependentEntities() renamed to selectDependentEntities

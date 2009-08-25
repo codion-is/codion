@@ -213,16 +213,6 @@ public interface IEntityDb {
   public List<Entity> selectAll(final String entityID) throws Exception;
 
   /**
-   * Selects all the entities of the given type
-   * @param entityID the Class of the entities to select
-   * @param order if true the result is ordered by the ordering property of <code>entityID</code>
-   * @return all entities of the given type
-   * @throws org.jminor.common.db.DbException in case of a db exception
-   * @throws Exception in case of exception
-   */
-  public List<Entity> selectAll(final String entityID, final boolean order) throws Exception;
-
-  /**
    * Returns the entities that depend on the given entities via foreign keys
    * @param entities the entities for which to retrieve dependencies, mapped to corresponding entityIDs
    * @return the entities that depend on <code>entities</code>
@@ -230,7 +220,7 @@ public interface IEntityDb {
    * @throws org.jminor.common.model.UserException in case of a user exception
    * @throws Exception in case of exception
    */
-  public Map<String,List<Entity>> getDependentEntities(final List<Entity> entities) throws Exception;
+  public Map<String,List<Entity>> selectDependentEntities(final List<Entity> entities) throws Exception;
 
   /**
    * Selects the number of rows returned according to the given criteria

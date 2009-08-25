@@ -203,16 +203,6 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
   public List<Entity> selectAll(final String entityID) throws DbException, RemoteException;
 
   /**
-   * Selects all the entities of the given type
-   * @param entityID the Class of the entities to select
-   * @param order if true the result is ordered by the ordering column of <code>entityID</code>
-   * @return all entities of the given type
-   * @throws DbException in case of a db exception
-   * @throws RemoteException in case of a remote exception
-   */
-  public List<Entity> selectAll(final String entityID, final boolean order) throws DbException, RemoteException;
-
-  /**
    * Returns the entities that depend on the given entities via foreign keys
    * @param entities the entities for which to retrieve dependencies
    * @return the entities that depend on <code>entities</code>
@@ -220,7 +210,7 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * @throws org.jminor.common.model.UserException in case of a user exception
    * @throws RemoteException in case of a remote exception
    */
-  public Map<String,List<Entity>> getDependentEntities(final List<Entity> entities)
+  public Map<String,List<Entity>> selectDependentEntities(final List<Entity> entities)
           throws DbException, UserException, RemoteException;
 
   /**

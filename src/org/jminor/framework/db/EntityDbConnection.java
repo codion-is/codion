@@ -244,13 +244,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException {
-    return selectAll(entityID, false);
-  }
-
-  /** {@inheritDoc} */
-  public List<Entity> selectAll(final String entityID, final boolean order) throws DbException {
-    return selectMany(new EntityCriteria(entityID, null,
-            order ? EntityRepository.getOrderByClause(entityID) : null));
+    return selectMany(new EntityCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
   }
 
   /** {@inheritDoc} */
@@ -333,7 +327,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public Map<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException {
+  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException {
     final Map<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
     if (entities == null || entities.size() == 0)
       return ret;

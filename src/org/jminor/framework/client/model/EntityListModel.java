@@ -165,7 +165,7 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
       if (getEntityCriteria() != null)
         return dbProvider.getEntityDb().selectMany(getEntityCriteria());
       else
-        return dbProvider.getEntityDb().selectAll(getEntityID(), true);
+        return dbProvider.getEntityDb().selectAll(getEntityID());
     }
     catch (DbException dbe) {
       throw dbe;

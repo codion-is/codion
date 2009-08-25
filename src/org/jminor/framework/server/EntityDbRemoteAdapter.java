@@ -416,22 +416,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectAll(final String entityID, final boolean order) throws DbException, RemoteException {
+  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException, UserException, RemoteException {
     try {
-      return loggingEntityDbProxy.selectAll(entityID, order);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public Map<String, List<Entity>> getDependentEntities(final List<Entity> entities) throws DbException, UserException, RemoteException {
-    try {
-      return loggingEntityDbProxy.getDependentEntities(entities);
+      return loggingEntityDbProxy.selectDependentEntities(entities);
     }
     catch (UserException ue) {
       throw ue;

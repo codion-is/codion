@@ -831,7 +831,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public final Map<String, List<Entity>> getSelectionDependencies() throws DbException, UserException {
     try {
-      return getEntityDb().getDependentEntities(getSelectedEntities());
+      return getEntityDb().selectDependentEntities(getSelectedEntities());
     }
     catch (DbException dbe) {
       throw dbe;
@@ -899,9 +899,8 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return new ArrayList<Entity>();
 
     try {
-      return criteria == null ? getEntityDb().selectAll(getEntityID(), true) :
-              getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
-                      EntityRepository.getOrderByClause(getEntityID())));
+      return getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
+              EntityRepository.getOrderByClause(getEntityID())));
     }
     catch (DbException dbe) {
       throw dbe;
