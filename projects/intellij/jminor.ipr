@@ -204,6 +204,7 @@
   <component name="DBNavigator.Project.GenericSettings">
     <settings />
   </component>
+  <component name="DataSourceManagerImpl" compressed="false" />
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
