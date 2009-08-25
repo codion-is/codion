@@ -420,7 +420,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       beginTransaction();
       final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
-      final String whereCondition = EntityDbUtil.getWhereCondition(entity);
+      final String whereCondition = EntityUtil.getWhereCondition(entity);
 
       execute("update " + entity.getEntityID() + " set " + property.propertyID
               + " = '" + entity.getStringValue(propertyID) + "' " + whereCondition);
@@ -445,7 +445,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
       return readBlobField(EntityRepository.getTableName(entity.getEntityID()), property.getBlobColumnName(),
-              EntityDbUtil.getWhereCondition(entity));
+              EntityUtil.getWhereCondition(entity));
     }
     catch (SQLException sqle) {
       throw new DbException(sqle);
@@ -468,11 +468,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
-    final List<Property> insertProperties = EntityDbUtil.getInsertProperties(entity);
+    final List<Property> insertProperties = EntityUtil.getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.propertyID);
-      columnValues.append(EntityDbUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
+      columnValues.append(EntityUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
       if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -493,17 +493,17 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
-    final Collection<Property> properties = EntityDbUtil.getUpdateProperties(entity);
+    final Collection<Property> properties = EntityUtil.getUpdateProperties(entity);
     if (properties.size() == 0)
       throw new RuntimeException("No modified updateable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      sql.append(property.propertyID).append(" = ").append(EntityDbUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
+      sql.append(property.propertyID).append(" = ").append(EntityUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
 
-    return sql.append(EntityDbUtil.getWhereCondition(entity)).toString();
+    return sql.append(EntityUtil.getWhereCondition(entity)).toString();
   }
 
   /**
@@ -511,7 +511,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
    * @return a query for deleting this entity instance
    */
   static String getDeleteSQL(final Entity entity) {
-    return "delete from " + EntityRepository.getTableName(entity.getEntityID()) + EntityDbUtil.getWhereCondition(entity);
+    return "delete from " + EntityRepository.getTableName(entity.getEntityID()) + EntityUtil.getWhereCondition(entity);
   }
 
   private void execute(final List<String> statements) throws DbException {

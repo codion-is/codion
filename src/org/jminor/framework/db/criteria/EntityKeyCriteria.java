@@ -4,9 +4,9 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.ICriteria;
-import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.EntityUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -137,8 +137,8 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
     final StringBuilder ret = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
-      ret.append(EntityDbUtil.getQueryString(columnNames == null ? property.propertyID : columnNames.get(i),
-              EntityDbUtil.getSQLStringValue(property, key.getValue(property.propertyID))));
+      ret.append(EntityUtil.getQueryString(columnNames == null ? property.propertyID : columnNames.get(i),
+              EntityUtil.getSQLStringValue(property, key.getValue(property.propertyID))));
       if (i++ < key.getPropertyCount() -1)
         ret.append(" and ");
     }
@@ -150,7 +150,7 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
     ret.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {
-      ret.append(EntityDbUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
+      ret.append(EntityUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
       if (cnt == 1000 && i < keys.size()-1) {//Oracle limit
         ret.append(") or ").append(whereColumn).append(" in (");
         cnt = 1;
