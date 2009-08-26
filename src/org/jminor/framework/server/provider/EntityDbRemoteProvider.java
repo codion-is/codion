@@ -10,15 +10,10 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.server.IEntityDbRemote;
 import org.jminor.framework.server.IEntityDbRemoteServer;
 
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -45,8 +40,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   private final String clientID;
   private final String clientTypeID;
   private IEntityDbRemoteServer server;
-  private IEntityDbRemote entityDb;
-  private IEntityDb entityDbProxy;
+  private IEntityDb entityDb;
   private String serverName;
 
   public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
@@ -58,7 +52,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   public IEntityDb getEntityDb() throws UserException {
     initializeEntityDb();
 
-    return entityDbProxy;
+    return entityDb;
   }
 
   public void logout() throws UserException {
@@ -74,8 +68,6 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     try {
       if (entityDb == null || !connectionValid())
         entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.getRepository());
-      if (entityDbProxy == null)
-        entityDbProxy = initializeDbProxy();
     }
     catch (Exception e) {
       throw new UserException(e);
@@ -89,8 +81,8 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
 
       return true;
     }
-    catch (RemoteException e) {
-      log.debug("$$$$ connection invalid: " + e.getMessage());
+    catch (Exception e) {
+      log.debug("Remote connection invalid: " + e.getMessage());
       return false;
     }
   }
@@ -140,15 +132,6 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
       throw new NotBoundException("No reachable or suitable entity server found!");
   }
 
-  private static IEntityDbRemoteServer checkServer(final IEntityDbRemoteServer server) throws RemoteException {
-    final int port = server.getServerPort();
-    final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
-    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))
-      return server;
-
-    return null;
-  }
-
   private static List<IEntityDbRemoteServer> getEntityServers(final String hostNames) throws RemoteException {
     final List<IEntityDbRemoteServer> ret = new ArrayList<IEntityDbRemoteServer>();
     for (final String serverHostName : hostNames.split(",")) {
@@ -174,19 +157,12 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     return ret;
   }
 
-  private IEntityDb initializeDbProxy() {
-    return (IEntityDb) Proxy.newProxyInstance(EntityDbProxy.class.getClassLoader(),
-            new Class[] {IEntityDb.class}, new EntityDbProxy());
-  }
+  private static IEntityDbRemoteServer checkServer(final IEntityDbRemoteServer server) throws RemoteException {
+    final int port = server.getServerPort();
+    final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
+    if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))
+      return server;
 
-  private class EntityDbProxy implements InvocationHandler {
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-      try {
-        return method.invoke(entityDb, args);
-      }
-      catch (InvocationTargetException ie) {
-        throw ie.getTargetException();
-      }
-    }
+    return null;
   }
 }

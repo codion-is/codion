@@ -666,3 +666,4 @@
   IEntityDb.getDependentEntities() renamed to selectDependentEntities
   EntityDbRemoteProvider, moved dbProxy initialization from getEntityDb() to initializeEntityDb()
   Type.SHORT_DATE renamed to DATE and LONG_DATE to TIMESTAMP
+  EntityDbRemoteProvider, removed proxy since it wasn't used at all
