@@ -5,7 +5,9 @@ package org.jminor.framework.tools;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.IResultPacker;
-import org.jminor.common.ui.LoginPanel;
+import org.jminor.common.db.User;
+import org.jminor.common.model.Util;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.domain.Type;
 
 import java.sql.DatabaseMetaData;
@@ -23,29 +25,43 @@ import java.util.List;
 public class DomainGenerator {
 
   public static void main(String[] args) {
+    if (args.length != 4)
+      throw new IllegalArgumentException("Required arguments: schemaName packageName username password");
+
     try {
-      System.out.println(getDomainClass("PETSTORE"));
-      System.exit(0);
-    } catch (Exception e) {
+      String domainClassName = args[0].substring(0,1).toUpperCase() + args[0].substring(1).toLowerCase();
+      Util.writeFile(getDomainClass(domainClassName, args[0], args[1], args[2], args[3]),
+              UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
+    }
+    catch (Exception e) {
       e.printStackTrace();
     }
+    System.exit(0);
   }
 
-  public static String getDomainClass(String schema) throws Exception {
+  public static String getDomainClass(String domainClassName, String schema, String packageName,
+                                      String username, String password) throws Exception {
     if (schema == null || schema.length() == 0)
       throw new IllegalArgumentException("Schema must be specified");
 
-    final DbConnection dbConnection = new DbConnection(LoginPanel.getUser(null, null));
+    final DbConnection dbConnection = new DbConnection(new User(username, password));
 
     final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
     List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-    List<Table> tables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
-    for (final Table table : tables)
+    List<Table> schemaTables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
+    for (final Table table : schemaTables)
       foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
 
-    StringBuilder builder = new StringBuilder("public class ").append(schema.substring(0,1).
-            toUpperCase()).append(schema.substring(1).toLowerCase()).append(" {\n\n");
-    for (final Table table : tables) {
+    StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
+
+    builder.append("import org.jminor.framework.domain.Entity;\n");
+    builder.append("import org.jminor.framework.domain.EntityProxy;\n");
+    builder.append("import org.jminor.framework.domain.EntityRepository;\n");
+    builder.append("import org.jminor.framework.domain.Property;\n");
+    builder.append("import org.jminor.framework.domain.Type;\n\n");
+
+    builder.append("public class ").append(domainClassName).append(" {\n\n");
+    for (final Table table : schemaTables) {
       List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
       builder.append(getConstants(table.schemaName, table.tableName, columns, foreignKeys));
       builder.append("\n");
@@ -67,7 +83,7 @@ public class DomainGenerator {
     for (Column column : columns) {
       builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
               column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append(
-              "\"; //").append(translate(column.columnType)).append("\n");
+              "\"; //").append(translateType(column)).append("\n");
       if (isForeignKeyColumn(column, foreignKeys))
         builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
                 column.columnName.toUpperCase()).append("_FK").append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
@@ -84,8 +100,8 @@ public class DomainGenerator {
     return false;
   }
 
-  public static Type translate(final int sqlType) {
-    switch (sqlType) {
+  public static Type translateType(final Column column) {
+    switch (column.columnType) {
       case Types.BIGINT:
       case Types.INTEGER:
       case Types.ROWID:
@@ -104,6 +120,7 @@ public class DomainGenerator {
       case Types.TIME:
       case Types.TIMESTAMP:
         return Type.TIMESTAMP;
+      case Types.LONGVARCHAR:
       case Types.VARCHAR:
         return Type.STRING;
       case Types.BLOB:
@@ -112,7 +129,7 @@ public class DomainGenerator {
         return Type.BOOLEAN;
     }
 
-    throw new IllegalArgumentException("Unsupported sql type: " + sqlType);
+    throw new IllegalArgumentException("Unsupported sql type (" + column + "): " + column.columnType);
   }
 
   static class Schema {
@@ -182,7 +199,7 @@ public class DomainGenerator {
 
     @Override
     public String toString() {
-      return schemaName + "." + tableName + "." + columnName + "(" + translate(columnType) + ")";
+      return schemaName + "." + tableName + "." + columnName;
     }
   }
 
