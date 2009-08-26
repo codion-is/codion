@@ -36,7 +36,23 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -2130,6 +2146,21 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
   }
 
+  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
+                                             final IEntityDbProvider dbProvider,
+                                             final JComponent dialogParent) throws UserException {
+    JPanel dependenciesPanel;
+    try {
+      UiUtil.setWaitCursor(true, dialogParent);
+      dependenciesPanel = createDependenciesPanel(dependencies, dbProvider);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, dialogParent);
+    }
+    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
+            true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
+  }
+
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
                                                 final IEntityDbProvider dbProvider) throws UserException {
     try {
@@ -2148,21 +2179,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     catch (Exception e) {
       throw new UserException(e);
     }
-  }
-
-  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
-                                             final IEntityDbProvider dbProvider,
-                                             final JComponent dialogParent) throws UserException {
-    JPanel dependenciesPanel;
-    try {
-      UiUtil.setWaitCursor(true, dialogParent);
-      dependenciesPanel = createDependenciesPanel(dependencies, dbProvider);
-    }
-    finally {
-      UiUtil.setWaitCursor(false, dialogParent);
-    }
-    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
-            true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {
