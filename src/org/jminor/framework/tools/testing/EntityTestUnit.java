@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.testing;
+package org.jminor.framework.tools.testing;
 
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;

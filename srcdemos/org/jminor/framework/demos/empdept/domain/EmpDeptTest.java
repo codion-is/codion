@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.domain;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.testing.EntityTestUnit;
+import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import java.util.Collection;
 import java.util.Date;

@@ -668,3 +668,4 @@
   Type.SHORT_DATE renamed to DATE and LONG_DATE to TIMESTAMP
   EntityDbRemoteProvider, removed proxy since it wasn't used at all
   package framework.tools created, DomainGenerator moved there along with the profiling package
+  testing package moved to tools
