@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import java.util.Properties;
 
 /**
- * A class responsible for managing local db connections
+ * A class responsible for managing a local db connection
  */
 public class EntityDbLocalProvider implements IEntityDbProvider {
 

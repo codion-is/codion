@@ -102,8 +102,8 @@ public class EntityResultPacker implements IResultPacker<Entity> {
         return getInteger(resultSet, selectIndex);
       case DOUBLE :
         return getDouble(resultSet, selectIndex);
-      case SHORT_DATE :
-      case LONG_DATE :
+      case DATE:
+      case TIMESTAMP:
         return getTimestamp(resultSet, selectIndex);
       case STRING :
         return getString(resultSet, selectIndex);

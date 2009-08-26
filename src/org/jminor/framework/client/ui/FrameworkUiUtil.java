@@ -382,7 +382,7 @@ public class FrameworkUiUtil {
                                                     final DateMaskFormat dateMaskFormat,
                                                     final LinkType linkType, final boolean includeButton,
                                                     final State enabledState) {
-    if (property.getPropertyType() != Type.SHORT_DATE && property.getPropertyType() != Type.LONG_DATE)
+    if (property.getPropertyType() != Type.DATE && property.getPropertyType() != Type.TIMESTAMP)
       throw new IllegalArgumentException("Property " + property + " is not a date property");
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, entityModel, linkType,
@@ -454,8 +454,8 @@ public class FrameworkUiUtil {
         new DoubleTextPropertyLink(entityModel, property,
                 (DoubleField) (ret = new DoubleField(0)), immediateUpdate, linkType);
         break;
-      case SHORT_DATE:
-      case LONG_DATE:
+      case DATE:
+      case TIMESTAMP:
         new DateTextPropertyLink(entityModel, property,
                 (JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
                 linkType, dateFormat, formatMaskString);

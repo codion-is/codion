@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Represents the supported data types
  */
 public enum Type implements Serializable {
-  INT, DOUBLE, STRING, BOOLEAN, CHAR, SHORT_DATE, LONG_DATE, BLOB, ENTITY;
+  INT, DOUBLE, STRING, BOOLEAN, CHAR, DATE, TIMESTAMP, BLOB, ENTITY;
 
   /**
    * Represents a boolean data type, including a null value

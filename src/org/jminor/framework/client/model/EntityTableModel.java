@@ -1040,7 +1040,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       return Double.class;
     if (type == Type.BOOLEAN)
       return Type.Boolean.class;
-    if (type == Type.SHORT_DATE || type == Type.LONG_DATE)
+    if (type == Type.DATE || type == Type.TIMESTAMP)
       return Date.class;
     if (type == Type.CHAR)
       return Character.class;

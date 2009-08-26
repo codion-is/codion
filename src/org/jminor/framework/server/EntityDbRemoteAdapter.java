@@ -584,7 +584,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, UserException, AuthenticationException {
-    if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()){
+    if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()) {
       final EntityDbConnection ret = connectionPools.get(user).checkOutConnection();
       if (ret != null) {
         if (entityDbConnection != null) {//pool has been turned on since this one was created

@@ -51,7 +51,7 @@ public class DomainGenerator {
       builder.append("\n");
     }
     builder.append("  static {\n");
-    builder.append("  //initilize your entities here\n");
+    builder.append("  //initialize your entities here\n");
     builder.append("  }\n");
 
     builder.append("}");
@@ -66,7 +66,8 @@ public class DomainGenerator {
             " = \"").append(schemaName.toLowerCase()).append(".").append(tableName.toLowerCase()).append("\";").append("\n");
     for (Column column : columns) {
       builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
-              column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append("\";").append("\n");
+              column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append(
+              "\"; //").append(translate(column.columnType)).append("\n");
       if (isForeignKeyColumn(column, foreignKeys))
         builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
                 column.columnName.toUpperCase()).append("_FK").append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
@@ -93,7 +94,7 @@ public class DomainGenerator {
       case Types.CHAR:
         return Type.CHAR;
       case Types.DATE:
-        return Type.SHORT_DATE;
+        return Type.DATE;
       case Types.DECIMAL:
       case Types.DOUBLE:
       case Types.FLOAT:
@@ -102,7 +103,7 @@ public class DomainGenerator {
         return Type.DOUBLE;
       case Types.TIME:
       case Types.TIMESTAMP:
-        return Type.LONG_DATE;
+        return Type.TIMESTAMP;
       case Types.VARCHAR:
         return Type.STRING;
       case Types.BLOB:

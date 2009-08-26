@@ -17,8 +17,8 @@ public class EntityTestDomain {
   public static final String DETAIL_INT = "int";
   public static final String DETAIL_DOUBLE = "double";
   public static final String DETAIL_STRING = "string";
-  public static final String DETAIL_SHORT_DATE = "short_date";
-  public static final String DETAIL_LONG_DATE = "long_date";
+  public static final String DETAIL_DATE = "date";
+  public static final String DETAIL_TIMESTAMP = "timestamp";
   public static final String DETAIL_BOOLEAN = "boolean";
   public static final String DETAIL_ENTITY_ID = "entity_id";
   public static final String DETAIL_ENTITY_FK = "entity_ref";
@@ -39,8 +39,8 @@ public class EntityTestDomain {
             new Property(DETAIL_INT, Type.INT, DETAIL_INT),
             new Property(DETAIL_DOUBLE, Type.DOUBLE, DETAIL_DOUBLE),
             new Property(DETAIL_STRING, Type.STRING, DETAIL_STRING),
-            new Property(DETAIL_SHORT_DATE, Type.SHORT_DATE, DETAIL_SHORT_DATE),
-            new Property(DETAIL_LONG_DATE, Type.LONG_DATE, DETAIL_LONG_DATE),
+            new Property(DETAIL_DATE, Type.DATE, DETAIL_DATE),
+            new Property(DETAIL_TIMESTAMP, Type.TIMESTAMP, DETAIL_TIMESTAMP),
             new Property(DETAIL_BOOLEAN, Type.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(Type.Boolean.TRUE),
             new Property.ForeignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     new Property(DETAIL_ENTITY_ID)),

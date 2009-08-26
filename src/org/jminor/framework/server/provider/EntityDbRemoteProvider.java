@@ -30,7 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A class responisble for managing remote db connections
+ * A class responsible for managing a remote db connection
  */
 public class EntityDbRemoteProvider implements IEntityDbProvider {
 
@@ -57,8 +57,6 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
 
   public IEntityDb getEntityDb() throws UserException {
     initializeEntityDb();
-    if (entityDbProxy == null)
-      entityDbProxy = initializeDbProxy();
 
     return entityDbProxy;
   }
@@ -76,6 +74,8 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     try {
       if (entityDb == null || !connectionValid())
         entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.getRepository());
+      if (entityDbProxy == null)
+        entityDbProxy = initializeDbProxy();
     }
     catch (Exception e) {
       throw new UserException(e);
@@ -124,9 +124,9 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     final List<IEntityDbRemoteServer> servers = getEntityServers(serverHostName);
     if (servers.size() > 0) {
       Collections.sort(servers, new Comparator<IEntityDbRemoteServer>() {
-        public int compare(IEntityDbRemoteServer s1, IEntityDbRemoteServer s2) {
+        public int compare(final IEntityDbRemoteServer serverOne, final IEntityDbRemoteServer serverTwo) {
           try {
-            return s1.getServerLoad().compareTo(s2.getServerLoad());
+            return serverOne.getServerLoad().compareTo(serverTwo.getServerLoad());
           }
           catch (RemoteException e) {
             return 1;

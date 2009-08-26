@@ -53,7 +53,7 @@ public class EntityDbConnectionTest extends TestCase {
     final String longDateStringSql = Database.get().getSQLDateString(longDateValue, true);
     assertEquals(EntityDbConnection.getInsertSQL(testEntity),
             "insert into " + EntityTestDomain.T_DETAIL
-                    + "(int, double, string, short_date, long_date, boolean, entity_id, id)"
+                    + "(int, double, string, date, timestamp, boolean, entity_id, id)"
                     + " values(2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2, 1)");
     assertEquals(EntityDbConnection.getDeleteSQL(testEntity),
             "delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)");

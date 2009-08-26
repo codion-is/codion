@@ -126,8 +126,8 @@ public class EntityPropertyEditor extends JPanel {
       return inputManager.getValue();
 
     switch (property.getPropertyType()) {
-      case LONG_DATE:
-      case SHORT_DATE:
+      case TIMESTAMP:
+      case DATE:
         try {
           final String dateText = ((DateInputPanel)field).getInputField().getText();
           if (!dateText.contains("_"))
@@ -172,9 +172,9 @@ public class EntityPropertyEditor extends JPanel {
       return inputManager.getInputComponent();
 
     switch (property.getPropertyType()) {
-      case LONG_DATE:
+      case TIMESTAMP:
         return FrameworkUiUtil.createDateInputPanel((Date) currentValue, new LongMediumDateFormat());
-      case SHORT_DATE:
+      case DATE:
         return FrameworkUiUtil.createDateInputPanel((Date) currentValue, new ShortDashDateFormat());
       case DOUBLE:
         final DoubleField dfield = new DoubleField();

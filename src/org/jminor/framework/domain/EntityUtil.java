@@ -9,12 +9,12 @@ import org.jminor.framework.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date;
 
 /**
  * A static utility class
@@ -190,11 +190,11 @@ public class EntityUtil {
       case INT :
       case DOUBLE :
         return value.toString();//localize?
-      case LONG_DATE :
-      case SHORT_DATE :
+      case TIMESTAMP:
+      case DATE:
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + property + ", got: " + value.getClass());
-        return Database.get().getSQLDateString((Date) value, property.propertyType == Type.LONG_DATE);
+        return Database.get().getSQLDateString((Date) value, property.propertyType == Type.TIMESTAMP);
       case CHAR :
         return "'" + value + "'";
       case STRING :

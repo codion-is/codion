@@ -820,8 +820,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
           throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
-      case LONG_DATE :
-      case SHORT_DATE : {
+      case TIMESTAMP:
+      case DATE: {
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;

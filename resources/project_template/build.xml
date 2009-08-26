@@ -19,8 +19,8 @@
     <delete dir="${build.test}" includeEmptyDirs="true" />
     <delete dir="${docs}" includeEmptyDirs="true" />
     <delete dir="${docsapi}" includeEmptyDirs="true" />
-    <delete dir="${reports}" includeEmptyDirs="true" />
-    <delete dir="${htmlreports}" includeEmptyDirs="true" />
+    <delete dir="${test.reports}" includeEmptyDirs="true" />
+    <delete dir="${test.html.reports}" includeEmptyDirs="true" />
     <delete dir="${test}" includeEmptyDirs="true" />
   </target>
 
@@ -32,8 +32,8 @@
     <mkdir dir="${dist}/current" />
     <mkdir dir="${docs}" />
     <mkdir dir="${docsapi}" />
-    <mkdir dir="${reports}" />
-    <mkdir dir="${htmlreports}" />
+    <mkdir dir="${test.reports}" />
+    <mkdir dir="${test.html.reports}" />
   </target>
 
   <target name="build" depends="init">
@@ -149,16 +149,16 @@
         <dirset dir="${build.base}" />
         <path refid="libraries" />
       </classpath>
-      <batchtest todir="${reports}">
+      <batchtest todir="${test.reports}">
         <fileset dir="${build.test}" includes="**/*Test.class" />
       </batchtest>
     </junit>
   </target>
 
   <target name="report" depends="run_tests">
-    <junitreport todir="${reports}">
-      <fileset dir="${reports}" includes="TEST-*.xml" />
-      <report format="noframes" todir="${htmlreports}" />
+    <junitreport todir="${test.reports}">
+      <fileset dir="${test.reports}" includes="TEST-*.xml" />
+      <report format="noframes" todir="${test.html.reports}" />
     </junitreport>
   </target>
 

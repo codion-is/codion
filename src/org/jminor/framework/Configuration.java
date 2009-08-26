@@ -15,7 +15,7 @@ import java.util.Map;
  * These settings are used during initialization and should be set before
  * the application is initialized, before EntityApplicationPanel.startApplication is called.
  * EntityApplicationPanel.initializeSettings is a convenience method for this purpose,
- * override and use it to set settings properties.
+ * override and use it to set configuration properties.
  */
 public class Configuration {
 

@@ -664,3 +664,5 @@
   IDatebase.DATABASE_TYPE_* renamed to *
   IEntityDb.selectAll(String entityID, boolean order) removed
   IEntityDb.getDependentEntities() renamed to selectDependentEntities
+  EntityDbRemoteProvider, moved dbProxy initialization from getEntityDb() to initializeEntityDb()
+  Type.SHORT_DATE renamed to DATE and LONG_DATE to TIMESTAMP

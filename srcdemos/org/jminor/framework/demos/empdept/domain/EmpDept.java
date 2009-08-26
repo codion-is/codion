@@ -80,7 +80,7 @@ public class EmpDept {
             new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION)),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
-            new Property(EMPLOYEE_HIREDATE, Type.SHORT_DATE, getString(EMPLOYEE_HIREDATE)),
+            new Property(EMPLOYEE_HIREDATE, Type.DATE, getString(EMPLOYEE_HIREDATE)),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION), 100));

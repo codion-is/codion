@@ -240,7 +240,7 @@ public class PropertyCriteriaTest extends TestCase {
 
   public void testConditionDate() throws Exception {
     //string, =
-    final Property property = new Property("colName", Type.SHORT_DATE);
+    final Property property = new Property("colName", Type.DATE);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 

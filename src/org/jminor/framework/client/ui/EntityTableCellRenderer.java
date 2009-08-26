@@ -77,10 +77,10 @@ public class EntityTableCellRenderer implements TableCellRenderer {
         case INT:
           renderer = new NumberRenderer(true);
           break;
-        case SHORT_DATE:
+        case DATE:
           renderer = new ShortDateRenderer();
           break;
-        case LONG_DATE:
+        case TIMESTAMP:
           renderer = new LongDateRenderer();
           break;
         default:
