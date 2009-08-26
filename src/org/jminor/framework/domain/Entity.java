@@ -405,20 +405,11 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * @param object the object to compare with
-   * @return true if this entity is equal to object
+   * @return true if the given object is an Entity and it´s primary key is equal to this ones
    */
   @Override
   public boolean equals(final Object object) {
     return this == object || object instanceof Entity && ((Entity) object).primaryKey.equals(primaryKey);
-  }
-
-  /**
-   * @param propertyID the propertyID
-   * @param value the value
-   * @return true if <code>value</code> is equal to the value of the property identified by <code>propertyID</code>
-   */
-  public boolean isValueEqualTo(final String propertyID, final Object value) {
-    return Util.equal(getValue(propertyID), value);
   }
 
   /**

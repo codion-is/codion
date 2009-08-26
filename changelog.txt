@@ -670,3 +670,4 @@
   package framework.tools created, DomainGenerator moved there along with the profiling package
   testing package moved to tools
   DomainGenerator improved, uses arguments and actually writes a file
+  Entity.isValueEqualTo() removed, unused
