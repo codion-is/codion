@@ -9,8 +9,8 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.profiling.ProfilingModel;
-import org.jminor.framework.profiling.ui.ProfilingPanel;
+import org.jminor.framework.tools.profiling.ProfilingModel;
+import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import javax.swing.UIManager;
@@ -22,7 +22,6 @@ import javax.swing.UIManager;
  */
 public class PetstoreProfiling extends ProfilingModel {
 
-  /** Constructs a new PetstoreProfiling.*/
   public PetstoreProfiling() {
     super(new User("scott", "tiger"));
   }

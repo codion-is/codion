@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.profiling.ui;
+package org.jminor.framework.tools.profiling.ui;
 
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
@@ -15,7 +15,7 @@ import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.profiling.ProfilingModel;
+import org.jminor.framework.tools.profiling.ProfilingModel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -45,7 +45,7 @@ public class ProfilingPanel extends JPanel {
    */
   public ProfilingPanel(final ProfilingModel profilingModel) {
     if (profilingModel == null)
-      throw new IllegalArgumentException("ProfilingPanel requires a non-null ProfilingModel instance");
+      throw new IllegalArgumentException("ProfilingPanel requires a ProfilingModel instance");
     this.profilingModel = profilingModel;
     initUI();
     showFrame();

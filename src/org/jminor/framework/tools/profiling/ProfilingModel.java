@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.profiling;
+package org.jminor.framework.tools.profiling;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;

@@ -12,8 +12,8 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.profiling.ProfilingModel;
-import org.jminor.framework.profiling.ui.ProfilingPanel;
+import org.jminor.framework.tools.profiling.ProfilingModel;
+import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import javax.swing.JOptionPane;
@@ -29,7 +29,6 @@ import java.util.Date;
 @SuppressWarnings({"UnusedDeclaration"})
 public class EmpDeptProfiling extends ProfilingModel {
 
-  /** Constructs a new EmpDeptProfiling.*/
   public EmpDeptProfiling() {
     super(new User("scott", "tiger"));
   }
