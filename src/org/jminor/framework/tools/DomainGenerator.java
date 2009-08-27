@@ -29,7 +29,8 @@ public class DomainGenerator {
       throw new IllegalArgumentException("Required arguments: schemaName packageName username password");
 
     try {
-      String domainClassName = args[0].substring(0,1).toUpperCase() + args[0].substring(1).toLowerCase();
+      String schemaName = args[0];
+      String domainClassName = getDomainClassName(schemaName);
       Util.writeFile(getDomainClass(domainClassName, args[0], args[1], args[2], args[3]),
               UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
     }
@@ -37,6 +38,10 @@ public class DomainGenerator {
       e.printStackTrace();
     }
     System.exit(0);
+  }
+
+  public static String getDomainClassName(final String schemaName) {
+    return schemaName.substring(0,1).toUpperCase() + schemaName.substring(1).toLowerCase();
   }
 
   public static String getDomainClass(String domainClassName, String schema, String packageName,

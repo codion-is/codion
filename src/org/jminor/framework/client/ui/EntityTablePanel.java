@@ -25,7 +25,25 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -502,7 +520,8 @@ public class EntityTablePanel extends JPanel {
     getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent event) {
-        toggleColumnFilterPanel(event);
+        if (event.isShiftDown())
+          toggleColumnFilterPanel(event);
       }
     });
 
