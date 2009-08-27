@@ -503,7 +503,7 @@ public class EntityTablePanel extends JPanel {
     getJTable().addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent event) {
-        if(event.getClickCount() == 2){
+        if(event.getClickCount() == 2) {
           evtTableDoubleClick.fire();
         }
       }
