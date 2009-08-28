@@ -202,7 +202,7 @@ public class EntityKey implements Serializable {
     if (hashCode() == -Integer.MAX_VALUE)
       return true;
 
-    for (final Property property : properties)
+    for (final Property property : getProperties())
       if (Entity.isValueNull(property.propertyType, values.get(property.propertyID)))
         return true;
 

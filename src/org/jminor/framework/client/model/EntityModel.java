@@ -7,8 +7,6 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IRefreshable;
-import org.jminor.common.model.PropertyChangeEvent;
-import org.jminor.common.model.PropertyListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
@@ -27,6 +25,8 @@ import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.PropertyEvent;
+import org.jminor.framework.domain.PropertyListener;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -197,19 +197,19 @@ public class EntityModel implements IRefreshable {
   private final List<EntityModel> linkedDetailModels = new ArrayList<EntityModel>();
 
   /**
-   * Holds events signaling changes made to the active entity via the ui
+   * Holds events signaling property changes made to the active entity via the ui
    */
-  private final Map<Property, Event> propertyUiChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyUIEventMap = new HashMap<Property, Event>();
 
   /**
-   * Holds events signaling changes made to the active entity via the model
+   * Holds events signaling property changes made to the active entity via the model
    */
-  private final Map<Property, Event> propertyModelChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyModelEventMap = new HashMap<Property, Event>();
 
   /**
-   * Holds events signaling changes made to the active entity, via the model or ui
+   * Holds events signaling property changes made to the active entity, via the model or ui
    */
-  private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyEventMap = new HashMap<Property, Event>();
 
   /**
    * Indicates whether selection in a master model triggers the filtering of this model
@@ -584,20 +584,20 @@ public class EntityModel implements IRefreshable {
    * @param propertyID the ID of the property for which to retrieve the event
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the UI
    */
-  public Event getPropertyUIChangeEvent(final String propertyID) {
-    return getPropertyUIChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
+  public Event getPropertyUIEvent(final String propertyID) {
+    return getPropertyUIEvent(EntityRepository.getProperty(getEntityID(), propertyID));
   }
 
   /**
    * @param property the property for which to retrieve the event
    * @return an Event object which fires when the value of <code>property</code> is changed by the UI
    */
-  public Event getPropertyUIChangeEvent(final Property property) {
-    if (propertyUiChangeEventMap.containsKey(property))
-      return propertyUiChangeEventMap.get(property);
+  public Event getPropertyUIEvent(final Property property) {
+    if (propertyUIEventMap.containsKey(property))
+      return propertyUIEventMap.get(property);
 
     final Event ret = new Event();
-    propertyUiChangeEventMap.put(property, ret);
+    propertyUIEventMap.put(property, ret);
 
     return ret;
   }
@@ -607,19 +607,19 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the model
    */
   public Event getPropertyModelChangeEvent(final String propertyID) {
-    return getPropertyModelChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
+    return getPropertyModelEvent(EntityRepository.getProperty(getEntityID(), propertyID));
   }
 
   /**
    * @param property the property for which to retrieve the event
    * @return an Event object which fires when the value of <code>property</code> is changed by the model
    */
-  public Event getPropertyModelChangeEvent(final Property property) {
-    if (propertyModelChangeEventMap.containsKey(property))
-      return propertyModelChangeEventMap.get(property);
+  public Event getPropertyModelEvent(final Property property) {
+    if (propertyModelEventMap.containsKey(property))
+      return propertyModelEventMap.get(property);
 
     final Event ret = new Event();
-    propertyModelChangeEventMap.put(property, ret);
+    propertyModelEventMap.put(property, ret);
 
     return ret;
   }
@@ -628,27 +628,27 @@ public class EntityModel implements IRefreshable {
    * @param propertyID the ID of the property for which to retrieve the event
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed
    */
-  public Event getPropertyChangeEvent(final String propertyID) {
-    return getPropertyChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
+  public Event getPropertyEvent(final String propertyID) {
+    return getPropertyEvent(EntityRepository.getProperty(getEntityID(), propertyID));
   }
 
   /**
    * @param property the property for which to retrieve the event
    * @return an Event object which fires when the value of <code>property</code> is changed
    */
-  public Event getPropertyChangeEvent(final Property property) {
-    if (propertyChangeEventMap.containsKey(property))
-      return propertyChangeEventMap.get(property);
+  public Event getPropertyEvent(final Property property) {
+    if (propertyEventMap.containsKey(property))
+      return propertyEventMap.get(property);
 
     final Event ret = new Event();
     activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(final PropertyChangeEvent event) {
+      protected void propertyChanged(final PropertyEvent event) {
         if (event.getProperty().equals(property))
           ret.fire(event);
       }
     });
-    propertyChangeEventMap.put(property, ret);
+    propertyEventMap.put(property, ret);
 
     return ret;
   }
@@ -662,15 +662,10 @@ public class EntityModel implements IRefreshable {
   public final void setActiveEntity(final Entity entity) {
     if (entity != null && activeEntity.propertyValuesEqual(entity))
       return;
-    if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT) && entity != null)
-      Entity.printPropertyValues(entity);
 
     evtActiveEntityChanging.fire();
-
     activeEntity.setAs(entity == null ? getDefaultEntity() : entity);
-
     stEntityActive.setActive(!activeEntity.isNull());
-
     evtActiveEntityChanged.fire();
   }
 
@@ -1308,7 +1303,7 @@ public class EntityModel implements IRefreshable {
     final Object oldValue = getValue(property);
     final Object newValue = doSetValue(property, value, validate);
     if (notify && !Util.equal(newValue, oldValue))
-      notifyPropertyChanged(property, newValue, oldValue, isModelChange);
+      notifyPropertyChanged(new PropertyEvent(this, getEntityID(), property, newValue, oldValue, isModelChange, false));
   }
 
   /**
@@ -1474,6 +1469,16 @@ public class EntityModel implements IRefreshable {
           catch (UserException ex) {
             throw ex.getRuntimeException();
           }
+        }
+      });
+    }
+    if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
+      activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
+        @Override
+        protected void propertyChanged(final PropertyEvent event) {
+          final String msg = getPropertyChangeDebugString(event);
+          System.out.println(msg);
+          log.trace(msg);
         }
       });
     }
@@ -1659,34 +1664,50 @@ public class EntityModel implements IRefreshable {
     }
   }
 
-  private void notifyPropertyChanged(final Property property, final Object newValue, final Object oldValue,
-                                     final boolean isModelChange) {
+  private void notifyPropertyChanged(final PropertyEvent event) {
     if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      final String msg = getPropertyChangeDebugString(property, oldValue, newValue, isModelChange);
+      final String msg = getPropertyChangeDebugString(event);
       System.out.println(msg);
       log.trace(msg);
     }
-    final PropertyChangeEvent propEvent = new PropertyChangeEvent(property, newValue, oldValue,
-            isModelChange, false);
-    if (isModelChange)
-      getPropertyModelChangeEvent(property).fire(propEvent);
+    if (event.isModelChange())
+      getPropertyModelEvent(event.getProperty()).fire(event);
     else
-      getPropertyUIChangeEvent(property).fire(propEvent);
+      getPropertyUIEvent(event.getProperty()).fire(event);
   }
 
-  private String getPropertyChangeDebugString(final Property property, final Object oldValue,
-                                              final Object newValue, final boolean isModelChange) {
-    final String simpleClassName = getClass().getSimpleName();
-    final StringBuilder ret = new StringBuilder().append(simpleClassName.length() > 0 ? (simpleClassName + " ") : "");
-    ret.append(isModelChange ? "MODEL SET" : "UI SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
-    ret.append(getEntityID()).append(" -> ").append(property).append("; ");
-    if (oldValue != null)
-      ret.append(oldValue.getClass().getSimpleName()).append(" ");
-    ret.append(Entity.getValueString(property, oldValue));
-    ret.append(" : ");
-    if (newValue != null)
-      ret.append(newValue.getClass().getSimpleName()).append(" ");
-    ret.append(Entity.getValueString(property, newValue));
+  private static String getPropertyChangeDebugString(final PropertyEvent event) {
+    final StringBuilder ret = new StringBuilder();
+    if (event.getSource() instanceof Entity)
+      ret.append("[entity] ");
+    else
+      ret.append(event.isModelChange() ? "[model] " : "[ui] ");
+    ret.append(event.getEntityID()).append(" -> ").append(event.getProperty()).append(
+            event.getProperty().hasParentProperty() ? " [fk]" : "").append("; ");
+    if (!event.isInitialization()) {
+      if (event.getOldValue() != null)
+        ret.append(event.getOldValue().getClass().getSimpleName()).append(" ");
+      ret.append(getValueString(event.getProperty(), event.getOldValue()));
+    }
+    if (!event.isInitialization())
+      ret.append(" : ");
+    if (event.getNewValue() != null)
+      ret.append(event.getNewValue().getClass().getSimpleName()).append(" ");
+    ret.append(getValueString(event.getProperty(), event.getNewValue()));
+
+    return ret.toString();
+  }
+
+  /**
+   * @param property the property
+   * @param value the value
+   * @return a string representing the given property value for debug output
+   */
+  private static String getValueString(final Property property, final Object value) {
+    final boolean valueIsNull = Entity.isValueNull(property.propertyType, value);
+    final StringBuilder ret = new StringBuilder("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
+    if (value instanceof Entity)
+      ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
 
     return ret.toString();
   }

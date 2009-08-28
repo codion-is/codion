@@ -126,7 +126,7 @@ public class Configuration {
    * Default value: false
    * @see #USE_FOCUS_ACTIVATION
    */
-  public static final String ALL_PANELS_ENABLED = "all_panels_enabled";
+  public static final String ALL_PANELS_ACTIVE = "all_panels_active";
 
   /**
    * Indicates whether keyboard navigation will be enabled
@@ -139,7 +139,7 @@ public class Configuration {
    * Indicates whether entity panels should be activated when the panel recieves focus
    * Value type: Boolean
    * Default value: true
-   * @see #ALL_PANELS_ENABLED
+   * @see #ALL_PANELS_ACTIVE
    */
   public static final String USE_FOCUS_ACTIVATION = "use_focus_activation";
 
@@ -309,7 +309,7 @@ public class Configuration {
     //default settings
     setValue(DEFAULT_LONG_DATE_FORMAT, "dd-MM-yyyy HH:mm");
     setValue(DEFAULT_SHORT_DATE_FORMAT, "dd-MM-yyyy");
-    setValue(ALL_PANELS_ENABLED, false);
+    setValue(ALL_PANELS_ACTIVE, false);
     setValue(USE_KEYBOARD_NAVIGATION, true);
     setValue(USE_FOCUS_ACTIVATION, true);
     setValue(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);

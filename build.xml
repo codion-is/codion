@@ -97,7 +97,8 @@
           description="Builds all distribution jar files in the dist directory">
     <mkdir dir="${dist}" />
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         excludes="org/jminor/framework/demos/**"/>
 
     <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"

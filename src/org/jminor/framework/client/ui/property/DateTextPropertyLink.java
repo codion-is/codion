@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.PropertyChangeEvent;
-import org.jminor.common.model.PropertyListener;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.PropertyEvent;
+import org.jminor.framework.domain.PropertyListener;
 
 import javax.swing.JFormattedTextField;
 import java.awt.Color;
@@ -40,9 +40,9 @@ public class DateTextPropertyLink extends TextPropertyLink {
 
     this.fieldMaskString = formatMaskString.replaceAll("#","_");
     this.defaultTextFieldBackground = textField.getBackground();
-    entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
+    entityModel.getPropertyEvent(property).addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(PropertyChangeEvent e) {
+      protected void propertyChanged(PropertyEvent e) {
         updateFieldColor();
       }
     });

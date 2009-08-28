@@ -7,8 +7,6 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.PropertyChangeEvent;
-import org.jminor.common.model.PropertyListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
@@ -39,6 +37,8 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.PropertyEvent;
+import org.jminor.framework.domain.PropertyListener;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -296,9 +296,9 @@ public class FrameworkUiUtil {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
     setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, txt);
-    entityModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new PropertyListener() {
+    entityModel.getPropertyEvent(foreignKeyProperty).addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(final PropertyChangeEvent e) {
+      protected void propertyChanged(final PropertyEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
     });

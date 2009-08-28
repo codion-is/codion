@@ -5,8 +5,8 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.ICriteria;
 import org.jminor.framework.domain.EntityKey;
-import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;

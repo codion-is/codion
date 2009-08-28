@@ -1,14 +1,24 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.framework.domain;
 
 import java.awt.event.ActionEvent;
 
 /**
  * Used when property change events are fired
  */
-public class PropertyChangeEvent extends ActionEvent {
+public class PropertyEvent extends ActionEvent {
+
+  /**
+   * The ID of the entity owning the property
+   */
+  private final String entityID;
+
+  /**
+   * The property
+   */
+  private final Property property;
 
   /**
    * The new property value
@@ -31,9 +41,21 @@ public class PropertyChangeEvent extends ActionEvent {
    */
   private final boolean initialization;
 
-  public PropertyChangeEvent(final Object property, final Object newValue, final Object oldValue,
-                             final boolean isModelChange, final boolean initialization) {
-    super(property, 0, "propertyChange");
+  /**
+   * Instantiates a new PropertyEvent
+   * @param source the source of the property value change
+   * @param entityID the ID of the entity which owns the property
+   * @param property the property
+   * @param newValue the new value
+   * @param oldValue the old value
+   * @param isModelChange true if the value change originates from the model, false if it originates in the UI
+   * @param initialization true if the property value was being initialized
+   */
+  public PropertyEvent(final Object source, final String entityID, final Property property, final Object newValue,
+                       final Object oldValue, final boolean isModelChange, final boolean initialization) {
+    super(source, 0, property.propertyID);
+    this.entityID = entityID;
+    this.property = property;
     this.newValue = newValue;
     this.oldValue = oldValue;
     this.isModelChange = isModelChange;
@@ -41,10 +63,17 @@ public class PropertyChangeEvent extends ActionEvent {
   }
 
   /**
+   * @return the ID of the entity owning the property
+   */
+  public String getEntityID() {
+    return entityID;
+  }
+
+  /**
    * @return the property which value just changed
    */
-  public Object getProperty() {
-    return getSource();
+  public Property getProperty() {
+    return property;
   }
 
   /**

@@ -4,10 +4,8 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.PropertyChangeEvent;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -68,8 +66,6 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   private transient Map<Property.ForeignKeyProperty, EntityKey> referencedPrimaryKeysCache;
 
-  private static boolean propertyDebug = (Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT);
-
   /**
    * Instantiates a new Entity
    * @param entityID the ID of the entity type
@@ -122,7 +118,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * @return an Event which is fired each time a property value changes
-   * @see PropertyChangeEvent
+   * @see PropertyEvent
    */
   public Event getPropertyChangeEvent() {
     if (evtPropertyChanged == null)
@@ -489,7 +485,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
     if (evtPropertyChanged != null)
       for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-        firePropertyChangeEvent(property, getRawValue(property.propertyID), null, true);
+        evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, getRawValue(property.propertyID), null, true, true));
 
     toString = sourceEntity.toString;
     if (stModified != null)
@@ -597,34 +593,6 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Prints the property values of the given entity to the standard output
-   * @param entity the entity
-   */
-  public static void printPropertyValues(final Entity entity) {
-    final Collection<Property> properties = EntityRepository.getProperties(entity.getEntityID(), true);
-    System.out.println("*********************[" + entity + "]***********************");
-    for (final Property property : properties) {
-      final Object value = entity.getValue(property.propertyID);
-      System.out.println(property + " = " + getValueString(property, value));
-    }
-    System.out.println("********************************************");
-  }
-
-  /**
-   * @param property the property
-   * @param value the value
-   * @return a string representing the given property value for debug output
-   */
-  public static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = isValueNull(property.propertyType, value);
-    final StringBuilder ret = new StringBuilder("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
-    if (value instanceof Entity)
-      ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
-
-    return ret.toString();
-  }
-
-  /**
    * @param entities the entities to check, assumes they are all of the same type
    * @return true if any of the given entities has a modified primary key property
    */
@@ -646,7 +614,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Performs the actual value setting, minding all the stuff that needs minding here
    * @param property the property
    * @param newValue the new value
-   * @param primaryKeyProperty true if the property is part of the primary key
+   * @param isPrimaryKeyProperty true if the property is part of the primary key
    * @param initialization true if the property value is being initialized, if true it is assumed
    * that this Entity instance does not contain a value for the property, thus the modified state
    * can be safely disregarded during the value setting
@@ -654,7 +622,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * denormalized values are set in case <code>property</code> is a Property.ForeignKeyProperty.
    * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preventing circular references
    */
-  private void doSetValue(final Property property, final Object newValue, final boolean primaryKeyProperty,
+  private void doSetValue(final Property property, final Object newValue, final boolean isPrimaryKeyProperty,
                           final boolean initialization, boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
@@ -668,8 +636,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
       propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
-            primaryKeyProperty ? primaryKey.getValue(property.propertyID) : values.get(property.propertyID);
-    if (primaryKeyProperty)
+            isPrimaryKeyProperty ? primaryKey.getValue(property.propertyID) : values.get(property.propertyID);
+    if (isPrimaryKeyProperty)
       primaryKey.setValue(property.propertyID, newValue);
     else
       values.put(property.propertyID, newValue);
@@ -678,7 +646,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       handleValueChange(property.propertyID, property.propertyType, newValue, oldValue);
 
     if (evtPropertyChanged != null && !isEqual(property.propertyType, newValue, oldValue))
-      firePropertyChangeEvent(property, newValue, oldValue, initialization);
+      evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, newValue, oldValue, true, initialization));
   }
 
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
@@ -741,32 +709,14 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   private void handleValueChange(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
     if (originalValues != null && originalValues.containsKey(propertyID)) {
-      if (isEqual(type, originalValues.get(propertyID), newValue)) {
+      if (isEqual(type, originalValues.get(propertyID), newValue))
         originalValues.remove(propertyID);//we're back to the original value
-        if (propertyDebug)
-          System.out.println(propertyID + " reverted back to original value " + newValue);
-      }
     }
     else if (!isEqual(type, oldValue, newValue))
       (originalValues == null ? (originalValues = new HashMap<String, Object>()) : originalValues).put(propertyID, oldValue);
 
     if (stModified != null)
       stModified.setActive(isModified());
-  }
-
-  /**
-   * Fires evtPropertyChanged
-   * @param property the property
-   * @param newValue the new value
-   * @param oldValue the old value
-   * @param initialization true if the property is being set for the first time
-   */
-  private void firePropertyChangeEvent(final Property property, final Object newValue, final Object oldValue,
-                                       final boolean initialization) {
-    if (propertyDebug)
-      System.out.println(getPropertyChangeDebugString(getEntityID(), property, oldValue, newValue, initialization));
-
-    evtPropertyChanged.fire(new PropertyChangeEvent(property, newValue, oldValue, true, initialization));
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
@@ -835,28 +785,5 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     throw new IllegalArgumentException("Unknown type " + propertyType);
-  }
-
-  private static String getPropertyChangeDebugString(final String entityID, final Property property,
-                                                    final Object oldValue, final Object newValue,
-                                                    final boolean isInitialization) {
-    final StringBuilder ret = new StringBuilder();
-    if (isInitialization)
-      ret.append("INIT ");
-    else
-      ret.append("SET").append(Util.equal(oldValue, newValue) ? " == " : " <> ");
-    ret.append(entityID).append(" -> ").append(property).append("; ");
-    if (!isInitialization) {
-      if (oldValue != null)
-        ret.append(oldValue.getClass().getSimpleName()).append(" ");
-      ret.append(getValueString(property, oldValue));
-    }
-    if (!isInitialization)
-      ret.append(" : ");
-    if (newValue != null)
-      ret.append(newValue.getClass().getSimpleName()).append(" ");
-    ret.append(getValueString(property, newValue));
-
-    return ret.toString();
   }
 }

@@ -671,3 +671,10 @@
   testing package moved to tools
   DomainGenerator improved, uses arguments and actually writes a file
   Entity.isValueEqualTo() removed, unused
+  Entity, removed property debug code, moved relevant stuff to EntityModel
+  EntityModel, property change debug code refactored and improved
+  PropertyChangeEvent renamed to PropertyEvent and moved to framework.domain
+  PropertyListener moved to framework.domain
+  Excluded demos from jminor.jar
+  EntityModel.getPropertyUIChangeEvent/getPropertyModelChangeEvent renamed to getPropertyUIEvent/getPropertyModelEvent
+  Configuration.ALL_PANELS_ENABLED renamed to ALL_PANELS_ACTIVE

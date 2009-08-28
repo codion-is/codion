@@ -125,7 +125,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Indicates whether the panel is active and ready to receive input
    */
   protected final State stActive = new State("EntityPanel.stActive",
-          (Boolean) Configuration.getValue(Configuration.ALL_PANELS_ENABLED));
+          (Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE));
 
   private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
 
@@ -340,7 +340,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                      final boolean queryConfigurationAllowed, final boolean compactLayout) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
-    if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ENABLED))
+    if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE))
       activeStateGroup.addState(stActive);
     this.model = model;
     this.caption = caption;

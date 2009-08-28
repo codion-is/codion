@@ -4,8 +4,6 @@
 package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.IFilterCriteria;
-import org.jminor.common.model.PropertyChangeEvent;
-import org.jminor.common.model.PropertyListener;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
@@ -17,6 +15,8 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.PropertyEvent;
+import org.jminor.framework.domain.PropertyListener;
 import org.jminor.framework.domain.Type;
 
 import java.awt.event.ActionEvent;
@@ -60,9 +60,9 @@ public class EmployeeModel extends EntityModel {
         }
       }
     });
-    getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
+    getPropertyEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(final PropertyChangeEvent e) {
+      protected void propertyChanged(final PropertyEvent e) {
         //only show managers in the same department as the active entity
         getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new IFilterCriteria() {
           public boolean include(final Object item) {
