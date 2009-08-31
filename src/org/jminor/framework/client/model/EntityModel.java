@@ -189,7 +189,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final List<? extends EntityModel> detailModels;
+  private final List<EntityModel> detailModels = new ArrayList<EntityModel>();
 
   /**
    * Holds linked detail models that should be updated and filtered according to the selected entity/entities
@@ -263,16 +263,10 @@ public class EntityModel implements IRefreshable {
     this.dbProvider = dbProvider;
     this.tableModel = includeTableModel ? initializeTableModel() : null;
     this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
-    this.detailModels = initializeDetailModels();
-    final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
-    for (final EntityModel detailModel : this.detailModels) {
-      detailModel.setMasterModel(this);
-      if (detailModel.containsTableModel())
-        detailModel.getTableModel().setQueryFilteredByMaster(filterQueryByMaster);
-    }
     this.activeEntity = new Entity(entityID);
     this.activeEntity.setAs(getDefaultEntity());
     this.activeEntity.setFirePropertyChangeEvents(true);
+    addDetailModels();
     initializeAssociatedModels();
     bindEvents();
     bindTableModelEvents();
@@ -1168,8 +1162,8 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Override this method to initialize any associated EntityModel before bindEvents() is called.
-   * Associated models are EntityModels that are used by this model but are not detail models.
+   * Override this method to initialize any associated models before bindEvents() is called.
+   * An associated model could for example be an EntityModel that is used by this model but is not a detail model.
    * @throws UserException in case of an exception
    */
   protected void initializeAssociatedModels() throws UserException {}
@@ -1607,6 +1601,16 @@ public class EntityModel implements IRefreshable {
     activeEntity.setValue(property.propertyID, value, validate);
 
     return value;
+  }
+
+  private void addDetailModels() throws UserException {
+    final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
+    for (final EntityModel detailModel : initializeDetailModels()) {
+      detailModels.add(detailModel);
+      detailModel.setMasterModel(this);
+      if (detailModel.containsTableModel())
+        detailModel.getTableModel().setQueryFilteredByMaster(filterQueryByMaster);
+    }
   }
 
   private void setMasterModel(final EntityModel masterModel) {

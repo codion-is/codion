@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
@@ -704,7 +705,7 @@ public class EntityTablePanel extends JPanel {
     }
     else {
       for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
-        if (property.propertyType == Type.STRING)
+        if (property.propertyType == Type.STRING && !property.isHidden())
           searchableProperties.add(property);
       }
     }
@@ -715,8 +716,10 @@ public class EntityTablePanel extends JPanel {
     final JTextField txtField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent event) {
+        final CriteriaSet.Conjunction conjunction = getTableModel().getSearchModel().getSearchCriteriaConjunction();
         try {
           getTableModel().getSearchModel().clearPropertySearchModels();
+          getTableModel().getSearchModel().setSearchConjunction(CriteriaSet.Conjunction.OR);
           if (txtField.getText().length() > 0) {
             final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
             final String searchText = wildcard + txtField.getText() + wildcard;
@@ -733,6 +736,9 @@ public class EntityTablePanel extends JPanel {
         }
         catch (UserException ex) {
           throw ex.getRuntimeException();
+        }
+        finally {
+          getTableModel().getSearchModel().setSearchConjunction(conjunction);
         }
       }
     };

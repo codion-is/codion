@@ -913,7 +913,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @return a list containing the properties for which this EntityTableModel
    * should provide PropertySearchModels, the default implementation returns all
-   * table column based properties
+   * table column based properties which are visible in this table model
    */
   protected List<Property> getSearchableProperties() {
     final List<Property> ret = new ArrayList<Property>();
@@ -924,6 +924,10 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
     return ret;
   }
 
+  /**
+   * Initializes a EntityTableSearchModel based on the properties constituting this EntityTableModel
+   * @return a EntityTableSearchModel for this EntityTableModel
+   */
   protected EntityTableSearchModel initializeSearchModel() {
     return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(), getDbProvider());
   }

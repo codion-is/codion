@@ -22,7 +22,7 @@ public class State {
   public final Event evtSetActive = new Event();
   /** Fired each time <code>setActive(false)</code> is called */
   public final Event evtSetInactive = new Event();
-
+  /** Simply for debugging purposes */
   private final String name;
   private ReverseState reversedState = null;
   private boolean active = false;
@@ -36,7 +36,7 @@ public class State {
 
   /**
    * Constructs a new State instance
-   * @param name the name of the state
+   * @param name the name of the state, useful for debugging purposes
    */
   public State(final String name) {
     this.name = name;
@@ -44,7 +44,7 @@ public class State {
 
   /**
    * Constructs a new State instance
-   * @param name the name of the state
+   * @param name the name of the state, useful for debugging purposes
    * @param initialState the initial state
    */
   public State(final String name, final boolean initialState) {

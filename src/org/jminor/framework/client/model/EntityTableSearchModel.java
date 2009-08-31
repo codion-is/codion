@@ -28,12 +28,14 @@ import java.util.Map;
  * Date: 24.7.2008
  * Time: 21:29:55
  *
- * This class encapsulates both filtering and searching facilities
+ * This class encapsulates filtering functionality, which refers to showing/hiding entities already available
+ * in the a table model and searching functionality, which refers to configuring the underlying query,
+ * which then needs to be re-run
  */
 public class EntityTableSearchModel {
 
   /**
-   * Fired when the state of the filter models changes
+   * Fired when the state of a filter model changes
    */
   public final Event evtFilterStateChanged = new Event();
 
@@ -56,10 +58,24 @@ public class EntityTableSearchModel {
   private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
   private String searchStateOnRefresh;
 
+  /**
+   * Instantiates a new EntityTableSearchModel
+   * @param entityID the ID of the underlying entity
+   * @param tableColumnProperties the properties constituting the table columns,
+   * assumed to belong to the entity identified by <code>entityID</code>
+   * @param searchableProperties properties that are searchable via the database, that is,
+   * properties that map to database columns, assumed to belong to the entity identified by <code>entityID</code>
+   * @param dbProvider a IEntityDbProvider instance, required if <code>searchableProperties</code> include
+   * foreign key properties
+   */
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
                                 final List<Property> searchableProperties, final IEntityDbProvider dbProvider) {
     if (entityID == null)
-      throw new IllegalArgumentException("EntityTableSearchModel requires a non-null entityID");
+      throw new IllegalArgumentException("entityID must be specified");
+    if (tableColumnProperties == null)
+      throw new IllegalArgumentException("tableColumnProperties must be specified");
+    if (searchableProperties == null)
+      throw new IllegalArgumentException("searchableProperties must be specified");
     this.entityID = entityID;
     this.tableColumnProperties = tableColumnProperties;
     this.propertyFilterModels = initPropertyFilterModels();
@@ -103,7 +119,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return the property filters this table model uses
+   * @return the property filters configured in this table search model
    */
   public List<PropertyFilterModel> getPropertyFilterModels() {
     return propertyFilterModels;
@@ -111,7 +127,7 @@ public class EntityTableSearchModel {
 
   /**
    * @param entity the entity
-   * @return true if the entity should be included in this table model or filtered (hidden)
+   * @return true if the entity should be included or filtered (hidden)
    */
   public boolean include(final Entity entity) {
     for (final AbstractSearchModel columnFilter : propertyFilterModels)
@@ -151,7 +167,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return a list containing the PropertySearchModels found in this table model
+   * @return a list containing the PropertySearchModels configured in this table search model
    */
   public List<PropertySearchModel> getPropertySearchModels() {
     return propertySearchModels;
@@ -223,7 +239,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return the current criteria
+   * @return the current criteria based on the state of the search models
    */
   public ICriteria getSearchCriteria() {
     final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
@@ -235,7 +251,8 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return the conjuction to be used when more than one search criteria is specified
+   * @return the conjuction to be used when more than one column search criteria is active,
+   * the default is <code>CriteriaSet.Conjunction.AND</code>
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
   public CriteriaSet.Conjunction getSearchCriteriaConjunction() {
@@ -243,7 +260,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @param searchConjunction the conjuction to be used when more than one search criteria is specified
+   * @param searchConjunction the conjuction to be used when more than one column search criteria is active
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
   public void setSearchConjunction(final CriteriaSet.Conjunction searchConjunction) {
@@ -261,7 +278,7 @@ public class EntityTableSearchModel {
 
   /**
    * @param properties the properties for which to initialize PropertySearchModels
-   * @param dbProvider the IEntityDbProvider to use for entity based fields, such as combo boxes
+   * @param dbProvider the IEntityDbProvider to use for foreign key based fields, such as combo boxes
    * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
    */
   private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final IEntityDbProvider dbProvider) {

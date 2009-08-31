@@ -678,3 +678,6 @@
   Excluded demos from jminor.jar
   EntityModel.getPropertyUIChangeEvent/getPropertyModelChangeEvent renamed to getPropertyUIEvent/getPropertyModelEvent
   Configuration.ALL_PANELS_ENABLED renamed to ALL_PANELS_ACTIVE
+  EntityModel constructor refactored, addDetailModels() added
+  EntityTablePanel.initializeSimpleSearchPanel() now uses Conjuntion.OR and excludes hidden properties
+  EntityTableSearchModel javadoc improvements
