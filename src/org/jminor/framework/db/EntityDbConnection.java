@@ -208,8 +208,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final String entityID, final String propertyID,
-                                 final Object... values) throws DbException {
+  public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
     return selectMany(new EntityCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
             values != null && values.length > 1 ? SearchType.IN : SearchType.LIKE, values)));
   }
@@ -288,12 +287,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<?> selectPropertyValues(final String entityID, final String columnName,
-                                      final boolean distinct, final boolean order) throws DbException {
+  public List<?> selectPropertyValues(final String entityID, final String columnName, final boolean order) throws DbException {
     String sql = null;
     try {
       sql = DbUtil.generateSelectSql(EntityRepository.getSelectTableName(entityID),
-              new StringBuilder(distinct ? "distinct " : "").append(columnName).toString(),
+              new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
       return query(sql, getPacker(EntityRepository.getProperty(entityID, columnName).propertyType), -1);
@@ -304,9 +302,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<List> selectRows(final String statement, final int recordCount) throws Exception {
+  public List<List> selectRows(final String statement, final int fetchCount) throws Exception {
     try {
-      return queryObjects(statement, recordCount);
+      return queryObjects(statement, fetchCount);
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, statement);
@@ -542,15 +540,15 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
       final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
-      final Map<EntityKey, Entity> referencedEntitiesHashed = foreignKeyProperty.isWeakReference
-              ? initWeakReferences(referencedPrimaryKeys)
+      final Map<EntityKey, Entity> hashedReferencedEntities = foreignKeyProperty.lazyLoading
+              ? initLazyLoaded(referencedPrimaryKeys)
               : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
       for (final Entity entity : entities)
-        entity.initializeValue(foreignKeyProperty, referencedEntitiesHashed.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+        entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
     }
   }
 
-  private Map<EntityKey, Entity> initWeakReferences(final List<EntityKey> referencedPrimaryKeys) {
+  private Map<EntityKey, Entity> initLazyLoaded(final List<EntityKey> referencedPrimaryKeys) {
     final Map<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
     for (final EntityKey key : referencedPrimaryKeys)
       ret.put(key, new Entity(key));

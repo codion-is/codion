@@ -105,7 +105,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IE
   }
 
   /** {@inheritDoc} */
-  public synchronized void shutdown() throws RemoteException {
+  public void shutdown() throws RemoteException {
     server.shutdown();
   }
 

@@ -350,7 +350,7 @@ public class Property implements Serializable {
      * if true a shallow entity instance with only the primary key is loaded as opposed to
      * loading the referenced entity with all property values populated
      */
-    public final boolean isWeakReference;
+    public final boolean lazyLoading;
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
@@ -383,11 +383,11 @@ public class Property implements Serializable {
      * @param caption the property caption
      * @param referenceEntityID the ID of the referenced entity type
      * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
-     * @param isWeakReference if true then the actual values of this reference property are not automatically loaded
+     * @param lazyLoading if true then the actual values of this reference property are not automatically loaded
      * @param referenceProperties the actual column properties involved in the reference
      */
     public ForeignKeyProperty(final String propertyID, final String caption, final String referenceEntityID,
-                              final int preferredColumnWidth, final boolean isWeakReference,
+                              final int preferredColumnWidth, final boolean lazyLoading,
                               final Property... referenceProperties) {
       super(propertyID, Type.ENTITY, caption, caption == null, false, preferredColumnWidth);
       for (final Property referenceProperty : referenceProperties)
@@ -400,7 +400,7 @@ public class Property implements Serializable {
         referenceProperty.setParentProperty(this);
       this.referenceEntityID = referenceEntityID;
       this.referenceProperties = Arrays.asList(referenceProperties);
-      this.isWeakReference = isWeakReference;
+      this.lazyLoading = lazyLoading;
     }
 
     /**

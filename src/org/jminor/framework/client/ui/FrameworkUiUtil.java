@@ -535,7 +535,7 @@ public class FrameworkUiUtil {
   public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
                                            final Property property, final IEntityDbProvider dbProvider) {
     try {
-      final List<?> values = dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true, true);
+      final List<?> values = dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true);
       final DefaultListModel listModel = new DefaultListModel();
       for (final Object value : values)
         listModel.addElement(value);

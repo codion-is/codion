@@ -122,14 +122,13 @@ public interface IEntityDbRemote extends IEntityDb, Remote {
    * Selects the non-null values of the given property for the given entity, returning them distinct and/or ordered
    * @param entityID the class of the Entity
    * @param propertyID the ID of the property
-   * @param distinct if true then distinct values are returned
    * @param order if true then the result is ordered according to the entities ordering colomns
    * @return the values in the given column in the given table
    * @throws DbException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
   public List<?> selectPropertyValues(final String entityID, final String propertyID,
-                                      final boolean distinct, final boolean order) throws DbException, RemoteException;
+                                      final boolean order) throws DbException, RemoteException;
 
   /**
    * Selects a single entity

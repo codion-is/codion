@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,7 @@ public class DbConnection {
   public static final String OUT_PARAM_NAME = "procout";
 
   private final Properties connectionProperties = new Properties();
-  private final Map<String, List> queryCache = Collections.synchronizedMap(new HashMap<String, List>());
+  private final Map<String, List> queryCache = new HashMap<String, List>();
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -102,7 +101,7 @@ public class DbConnection {
     }
   }
 
-  public synchronized void disconnect() {
+  public void disconnect() {
     if (!isConnected())
       return;
 
@@ -211,7 +210,7 @@ public class DbConnection {
    * @return the query result in a List
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
-  public final synchronized List query(final String sql, final IResultPacker resultPacker, final int recordCount) throws SQLException {
+  public final List query(final String sql, final IResultPacker resultPacker, final int recordCount) throws SQLException {
     requestsPerSecondCounter++;
     if (cacheQueriesRequests > 0 && recordCount < 0) {
       if (queryCache.containsKey(sql)) {
@@ -293,13 +292,13 @@ public class DbConnection {
 
   /**
    * @param sql the query
-   * @param recordCount the maximum number of records to return, -1 for all
+   * @param fetchCount the maximum number of records to return, -1 for all
    * @return the result of this query, in a List of rows represented as Lists
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
   @SuppressWarnings({"unchecked"})
-  public final List<List> queryObjects(final String sql, final int recordCount) throws SQLException {
-    return (List<List>) query(sql, new MixedResultPacker(), recordCount);
+  public final List<List> queryObjects(final String sql, final int fetchCount) throws SQLException {
+    return (List<List>) query(sql, new MixedResultPacker(), fetchCount);
   }
 
   public final byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
@@ -375,8 +374,7 @@ public class DbConnection {
     connection.rollback();
   }
 
-  public synchronized Object executeCallableStatement(final String sqlStatement,
-                                                      final int outParamType) throws SQLException {
+  public Object executeCallableStatement(final String sqlStatement, final int outParamType) throws SQLException {
     requestsPerSecondCounter++;
     final long time = System.currentTimeMillis();
     log.debug(sqlStatement);
@@ -411,7 +409,7 @@ public class DbConnection {
    * @param sql the statement to execute
    * @throws SQLException thrown if anything goes wrong during execution
    */
-  public synchronized final void execute(final String sql) throws SQLException {
+  public final void execute(final String sql) throws SQLException {
     requestsPerSecondCounter++;
     final long time = System.currentTimeMillis();
     log.debug(sql);

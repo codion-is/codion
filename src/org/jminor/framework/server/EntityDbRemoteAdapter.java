@@ -298,9 +298,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
   /** {@inheritDoc} */
   public List<?> selectPropertyValues(final String entityID, final String propertyID,
-                                      final boolean distinct, final boolean order) throws DbException, RemoteException {
+                                      final boolean order) throws DbException, RemoteException {
     try {
-      return loggingEntityDbProxy.selectPropertyValues(entityID, propertyID, distinct, order);
+      return loggingEntityDbProxy.selectPropertyValues(entityID, propertyID, order);
     }
     catch (DbException dbe) {
       throw dbe;

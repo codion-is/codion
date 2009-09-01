@@ -119,14 +119,12 @@ public interface IEntityDb {
    * Selects the non-null values of the given property of the given entity, returning them distinct and/or ordered
    * @param entityID the class of the Entity
    * @param propertyID the ID of the property
-   * @param distinct if true then distinct values are returned
    * @param order if true then the result is ordered according to the entity's ordering columns
    * @return the values in the given column (Property) in the given table (Entity)
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of exception
    */
-  public List<?> selectPropertyValues(final String entityID, final String propertyID,
-                                      final boolean distinct, final boolean order) throws Exception;
+  public List<?> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws Exception;
 
   /**
    * Selects a single entity
@@ -245,11 +243,11 @@ public interface IEntityDb {
    * Executes the given statement and returns the result in a List of rows, where each row
    * is represented by a List of Objects
    * @param statement the sql statement to execute
-   * @param recordCount the maximum number of records to retrieve, -1 for all
+   * @param fetchCount the maximum number of records to retrieve, -1 for all
    * @return a List of rows represented by a List of Objects
    * @throws Exception in case of an exception
    */
-  public List<List> selectRows(final String statement, final int recordCount) throws Exception;
+  public List<List> selectRows(final String statement, final int fetchCount) throws Exception;
 
   /**
    * Writes <code>blobData</code> in the blob field specified by the property identified by <code>propertyID</code>

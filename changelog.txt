@@ -687,3 +687,6 @@
   DateUtil.floorLongDate() renamed to floorTimestamp
   EntityModel.getPropertyUIEvent/getPropertyModelEvent renamed back to getPropertyUIChangeEvent/getPropertyModelChangeEvent
   EntityTestUnit.initializeDbConnection changed to initializeDbConnectionProvider
+  Property.ForeignKeyProperty.isWeakReference renamed to lazyLoading
+  DbConnection, removed a couple of synchronized instances, these simply gave the illusion of some kind of thread safety
+  IEntityDb.selectPropertyValues(), removed distinct parameter

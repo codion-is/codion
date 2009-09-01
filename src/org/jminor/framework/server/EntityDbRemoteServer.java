@@ -226,7 +226,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     return startDate;
   }
 
-  public synchronized void shutdown() throws RemoteException {
+  public void shutdown() throws RemoteException {
     unexport(this);
     unexport(serverAdmin);
     removeConnections(false);
