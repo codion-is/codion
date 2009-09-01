@@ -68,8 +68,8 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   }
 
   /**
-   * This is a very strict implementation, formatted values are considered
-   * invalid (null) until all placeholder characters have been replaced
+   * This is a very strict implementation in case a formatter is being used, formatted values are considered
+   * invalid until all placeholder characters have been replaced and null is returned
    * @return the value, if a formatter is present, the formatted value is returned
    */
   @Override

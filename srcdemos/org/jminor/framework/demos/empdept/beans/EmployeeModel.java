@@ -60,9 +60,9 @@ public class EmployeeModel extends EntityModel {
         }
       }
     });
-    getPropertyEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
+    getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(final PropertyEvent e) {
+      public void propertyChanged(final PropertyEvent e) {
         //only show managers in the same department as the active entity
         getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new IFilterCriteria() {
           public boolean include(final Object item) {

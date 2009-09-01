@@ -40,7 +40,7 @@ public class DateTextPropertyLink extends TextPropertyLink {
 
     this.fieldMaskString = formatMaskString.replaceAll("#","_");
     this.defaultTextFieldBackground = textField.getBackground();
-    entityModel.getPropertyEvent(property).addListener(new PropertyListener() {
+    entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(PropertyEvent e) {
         updateFieldColor();

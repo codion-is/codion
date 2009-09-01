@@ -20,7 +20,6 @@ public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
     updateUI();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object getUIPropertyValue() {
     try {

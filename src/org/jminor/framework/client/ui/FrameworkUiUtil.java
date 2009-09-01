@@ -296,9 +296,9 @@ public class FrameworkUiUtil {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
     setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, txt);
-    entityModel.getPropertyEvent(foreignKeyProperty).addListener(new PropertyListener() {
+    entityModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new PropertyListener() {
       @Override
-      protected void propertyChanged(final PropertyEvent e) {
+      public void propertyChanged(final PropertyEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
     });

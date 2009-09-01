@@ -685,3 +685,5 @@
   EntityApplicationPanel.initializeSettings() renamed to configureApplication
   Renamed classes in common.model.formats to include Timestamp in classname where applicable
   DateUtil.floorLongDate() renamed to floorTimestamp
+  EntityModel.getPropertyUIEvent/getPropertyModelEvent renamed back to getPropertyUIChangeEvent/getPropertyModelChangeEvent
+  EntityTestUnit.initializeDbConnection changed to initializeDbConnectionProvider

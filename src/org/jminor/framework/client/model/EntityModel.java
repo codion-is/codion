@@ -199,17 +199,17 @@ public class EntityModel implements IRefreshable {
   /**
    * Holds events signaling property changes made to the active entity via the ui
    */
-  private final Map<Property, Event> propertyUIEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyUIChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling property changes made to the active entity via the model
    */
-  private final Map<Property, Event> propertyModelEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyModelChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Holds events signaling property changes made to the active entity, via the model or ui
    */
-  private final Map<Property, Event> propertyEventMap = new HashMap<Property, Event>();
+  private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
   /**
    * Indicates whether selection in a master model triggers the filtering of this model
@@ -578,20 +578,20 @@ public class EntityModel implements IRefreshable {
    * @param propertyID the ID of the property for which to retrieve the event
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the UI
    */
-  public Event getPropertyUIEvent(final String propertyID) {
-    return getPropertyUIEvent(EntityRepository.getProperty(getEntityID(), propertyID));
+  public Event getPropertyUIChangeEvent(final String propertyID) {
+    return getPropertyUIChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
   }
 
   /**
    * @param property the property for which to retrieve the event
    * @return an Event object which fires when the value of <code>property</code> is changed by the UI
    */
-  public Event getPropertyUIEvent(final Property property) {
-    if (propertyUIEventMap.containsKey(property))
-      return propertyUIEventMap.get(property);
+  public Event getPropertyUIChangeEvent(final Property property) {
+    if (propertyUIChangeEventMap.containsKey(property))
+      return propertyUIChangeEventMap.get(property);
 
     final Event ret = new Event();
-    propertyUIEventMap.put(property, ret);
+    propertyUIChangeEventMap.put(property, ret);
 
     return ret;
   }
@@ -601,19 +601,19 @@ public class EntityModel implements IRefreshable {
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed by the model
    */
   public Event getPropertyModelChangeEvent(final String propertyID) {
-    return getPropertyModelEvent(EntityRepository.getProperty(getEntityID(), propertyID));
+    return getPropertyModelChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
   }
 
   /**
    * @param property the property for which to retrieve the event
    * @return an Event object which fires when the value of <code>property</code> is changed by the model
    */
-  public Event getPropertyModelEvent(final Property property) {
-    if (propertyModelEventMap.containsKey(property))
-      return propertyModelEventMap.get(property);
+  public Event getPropertyModelChangeEvent(final Property property) {
+    if (propertyModelChangeEventMap.containsKey(property))
+      return propertyModelChangeEventMap.get(property);
 
     final Event ret = new Event();
-    propertyModelEventMap.put(property, ret);
+    propertyModelChangeEventMap.put(property, ret);
 
     return ret;
   }
@@ -622,17 +622,17 @@ public class EntityModel implements IRefreshable {
    * @param propertyID the ID of the property for which to retrieve the event
    * @return an Event object which fires when the value of property <code>propertyID</code> is changed
    */
-  public Event getPropertyEvent(final String propertyID) {
-    return getPropertyEvent(EntityRepository.getProperty(getEntityID(), propertyID));
+  public Event getPropertyChangeEvent(final String propertyID) {
+    return getPropertyChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
   }
 
   /**
    * @param property the property for which to retrieve the event
    * @return an Event object which fires when the value of <code>property</code> is changed
    */
-  public Event getPropertyEvent(final Property property) {
-    if (propertyEventMap.containsKey(property))
-      return propertyEventMap.get(property);
+  public Event getPropertyChangeEvent(final Property property) {
+    if (propertyChangeEventMap.containsKey(property))
+      return propertyChangeEventMap.get(property);
 
     final Event ret = new Event();
     activeEntity.getPropertyChangeEvent().addListener(new PropertyListener() {
@@ -642,7 +642,7 @@ public class EntityModel implements IRefreshable {
           ret.fire(event);
       }
     });
-    propertyEventMap.put(property, ret);
+    propertyChangeEventMap.put(property, ret);
 
     return ret;
   }
@@ -1673,9 +1673,9 @@ public class EntityModel implements IRefreshable {
       log.trace(msg);
     }
     if (event.isModelChange())
-      getPropertyModelEvent(event.getProperty()).fire(event);
+      getPropertyModelChangeEvent(event.getProperty()).fire(event);
     else
-      getPropertyUIEvent(event.getProperty()).fire(event);
+      getPropertyUIChangeEvent(event.getProperty()).fire(event);
   }
 
   private static String getPropertyChangeDebugString(final PropertyEvent event) {
