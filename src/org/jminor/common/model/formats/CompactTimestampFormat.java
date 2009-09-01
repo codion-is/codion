@@ -5,9 +5,9 @@ package org.jminor.common.model.formats;
 
 import java.text.SimpleDateFormat;
 
-public class FullDateFormat extends DateMaskFormat {
+public class CompactTimestampFormat extends DateMaskFormat {
 
-  public static final String PATTERN = "dd-MM-yyyy HH:mm:ss";
+  public static final String PATTERN = "ddMMyy HH:mm";
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
@@ -16,8 +16,8 @@ public class FullDateFormat extends DateMaskFormat {
     }
   };
 
-  /** Constructs a new FullDateFormat. */
-  public FullDateFormat() {
+  /** Constructs a new LongCompactDateFormat. */
+  public CompactTimestampFormat() {
     super(PATTERN);
   }
 

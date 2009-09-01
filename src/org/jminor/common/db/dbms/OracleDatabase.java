@@ -4,8 +4,8 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.common.model.formats.TimestampFormat;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -52,9 +52,9 @@ public class OracleDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean longDate) {
-    return longDate ?
-            "to_date('" + LongDateFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
+  public String getSQLDateString(final Date value, final boolean isTimestamp) {
+    return isTimestamp ?
+            "to_date('" + TimestampFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
             "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
   }
 

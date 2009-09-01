@@ -5,7 +5,7 @@ package org.jminor.common.model.formats;
 
 import java.text.SimpleDateFormat;
 
-public class ExactDateFormat extends DateMaskFormat {
+public class ExactTimestampFormat extends DateMaskFormat {
 
   public static final String PATTERN = "dd-MM-yyyy HH:mm:ss.SSS";
 
@@ -17,7 +17,7 @@ public class ExactDateFormat extends DateMaskFormat {
   };
 
   /** Constructs a new ExactDateFormat. */
-  public ExactDateFormat() {
+  public ExactTimestampFormat() {
     super(PATTERN);
   }
 

@@ -3,8 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.formats.LongDateFormat;
 import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.common.model.formats.TimestampFormat;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -36,9 +36,9 @@ public class SQLServerDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean longDate) {
-    return longDate ?
-            "convert(datetime, '" + LongDateFormat.get().format(value) + "')" :
+  public String getSQLDateString(final Date value, final boolean isTimestamp) {
+    return isTimestamp ?
+            "convert(datetime, '" + TimestampFormat.get().format(value) + "')" :
             "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
   }
 

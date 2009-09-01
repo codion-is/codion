@@ -41,7 +41,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
     Comparable toCompare = comparable;
     if (comparable instanceof Timestamp)//ignore seconds and milliseconds
-      toCompare = DateUtil.floorLongDate((Timestamp) toCompare);
+      toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
 
     switch (getSearchType()) {
       case LIKE:

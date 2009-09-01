@@ -81,7 +81,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
           renderer = new ShortDateRenderer();
           break;
         case TIMESTAMP:
-          renderer = new LongDateRenderer();
+          renderer = new TimestampRenderer();
           break;
         default:
           renderer = new DefaultTableCellRenderer();
@@ -118,7 +118,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
   public static class ShortDateRenderer extends DefaultTableCellRenderer {
     final SimpleDateFormat format = new SimpleDateFormat((String)
-            Configuration.getValue(Configuration.DEFAULT_SHORT_DATE_FORMAT));
+            Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
 
     public ShortDateRenderer() {
       super();
@@ -138,11 +138,11 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
-  public static class LongDateRenderer extends DefaultTableCellRenderer {
+  public static class TimestampRenderer extends DefaultTableCellRenderer {
     final SimpleDateFormat format = new SimpleDateFormat((String)
-            Configuration.getValue(Configuration.DEFAULT_LONG_DATE_FORMAT));
+            Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
 
-    public LongDateRenderer() {
+    public TimestampRenderer() {
       super();
       setHorizontalAlignment(JLabel.RIGHT);
     }

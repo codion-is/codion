@@ -217,7 +217,7 @@ public abstract class EntityBindingPanel extends JPanel {
    * identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
    * @return a DateInputPanel using the default short date format
-   * @see org.jminor.framework.Configuration#DEFAULT_SHORT_DATE_FORMAT
+   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID) {
     return createDateInputPanel(propertyID, true);
@@ -238,11 +238,11 @@ public abstract class EntityBindingPanel extends JPanel {
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel using the default short date format
-   * @see org.jminor.framework.Configuration#DEFAULT_SHORT_DATE_FORMAT
+   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
     return createDateInputPanel(propertyID,
-            new DateMaskFormat((String) Configuration.getValue(Configuration.DEFAULT_SHORT_DATE_FORMAT)),
+            new DateMaskFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT)),
             includeButton, null);
   }
 

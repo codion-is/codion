@@ -122,10 +122,10 @@ public interface IDatabase {
 
   /**
    * @param value the date value
-   * @param longDate if true then a long date including time is expected
+   * @param isTimestamp if true then a timestamp is expected
    * @return a sql string for inserting the given date
    */
-  public String getSQLDateString(final Date value, final boolean longDate);
+  public String getSQLDateString(final Date value, final boolean isTimestamp);
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide

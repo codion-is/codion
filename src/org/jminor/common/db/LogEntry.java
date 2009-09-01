@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.model.formats.ExactDateFormat;
+import org.jminor.common.model.formats.ExactTimestampFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -94,13 +94,13 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
    * @return a formatted entry time
    */
   public String getEntryTimeFormatted() {
-    return ExactDateFormat.get().format(entryTime);
+    return ExactTimestampFormat.get().format(entryTime);
   }
 
   /**
    * @return a formatted exit time
    */
   public String getExitTimeFormatted() {
-    return ExactDateFormat.get().format(new Date(exitTime));
+    return ExactTimestampFormat.get().format(new Date(exitTime));
   }
 }

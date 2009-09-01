@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.formats.FullDateFormat;
+import org.jminor.common.model.formats.FullTimestampFormat;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -98,7 +98,7 @@ public class ServerMonitorPanel extends JPanel {
     final IEntityDbRemoteServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(
-            FullDateFormat.get().format(server.getStartDate())).append(")").append(
+            FullTimestampFormat.get().format(server.getStartDate())).append(")").append(
             " server/db port: ").append(server.getServerPort()).append("/").append(
             server.getServerDbPort()).append("\n").append("\n");
     contents.append("Database URL:").append("\n");

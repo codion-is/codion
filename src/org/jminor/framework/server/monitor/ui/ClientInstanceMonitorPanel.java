@@ -5,7 +5,7 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.DbLog;
 import org.jminor.common.db.LogEntry;
-import org.jminor.common.model.formats.FullDateFormat;
+import org.jminor.common.model.formats.FullTimestampFormat;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -61,7 +61,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
       else
         log.append("Disconnected!");
 
-      txtCreationDate.setText(FullDateFormat.get().format(new Date(model.getCreationDate())));
+      txtCreationDate.setText(FullTimestampFormat.get().format(new Date(model.getCreationDate())));
     }
     else {
       txtCreationDate.setText("");

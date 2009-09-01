@@ -15,12 +15,12 @@ public class HSQLDatabase implements IDatabase {
   /**
    * The date format used
    */
-  private DateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
-   * The date format for long dates (timestamps)
+   * The date format for timestamps
    */
-  private DateFormat LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
@@ -45,10 +45,10 @@ public class HSQLDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean longDate) {
-    return longDate ?
-            "'" + LONG_DATE_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss'" :
-            "'" + SHORT_DATE_FORMAT.format(value) + "','yyyy-MM-dd'";
+  public String getSQLDateString(final Date value, final boolean isTimestamp) {
+    return isTimestamp ?
+            "'" + TIMESTAMP_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss'" :
+            "'" + DATE_FORMAT.format(value) + "','yyyy-MM-dd'";
   }
 
   /** {@inheritDoc} */

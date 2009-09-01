@@ -29,7 +29,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected void initializeSettings() {
+  protected void configureApplication() {
     Locale.setDefault(new Locale("en"));
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);

@@ -89,7 +89,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
-    initializeSettings();
+    configureApplication();
     persistEntityPanels = (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_PANELS);
     ToolTipManager.sharedInstance().setInitialDelay(
             (Integer) Configuration.getValue(Configuration.TOOLTIP_DELAY));
@@ -444,11 +444,11 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   }
 
   /**
-   * A convenience method for overriding, so that system wide settings paramters can be set
+   * A convenience method for overriding, so that system wide configuration parameters can be set
    * before the application is initialized
    * @see org.jminor.framework.Configuration
    */
-  protected void initializeSettings() {}
+  protected void configureApplication() {}
 
   protected void bindEvents() {
     evtSelectedEntityPanelChanged.addListener(new ActionListener() {

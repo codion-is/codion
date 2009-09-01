@@ -1642,7 +1642,6 @@ public class EntityModel implements IRefreshable {
       final List<EntityKey> keys = EntityUtil.getPrimaryKeys(entities);
       getEntityDb().selectForUpdate(keys);
 
-      System.out.println("######################### " + "locked" + ": " + Util.getListContentsAsString(keys, false));
       lockedEntities.addAll(entities);
     }
     catch (Exception e) {
@@ -1652,7 +1651,7 @@ public class EntityModel implements IRefreshable {
 
   private void releaseWriteLock() throws UserException {
     if (!useSelectForUpdate)
-      throw new UserException("Strict editing mode must be enabled before releasing write lock");
+      throw new UserException("useSelectForUpdate must be enabled before releasing write lock");
 
     if (lockedEntities.isEmpty())
       return;
@@ -1660,7 +1659,6 @@ public class EntityModel implements IRefreshable {
     try {
       getEntityDb().endTransaction(false);
 
-      System.out.println("######################### " + "unlocked");
       lockedEntities.clear();
     }
     catch (Exception e) {

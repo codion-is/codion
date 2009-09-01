@@ -107,18 +107,20 @@ public class Configuration {
   public static final String PROFILING_BATCH_SIZE = "jminor.profiling.batchsize";
 
   /**
-   * The date format pattern to use when showing long dates in tables
+   * The date format pattern to use when showing timestamp values in tables and when
+   * creating default timestamp input fields
    * Value type: String
    * Default value: dd-MM-yyyy HH:mm
    */
-  public static final String DEFAULT_LONG_DATE_FORMAT = "default_long_date_format";
+  public static final String DEFAULT_TIMESTAMP_FORMAT = "default_timestamp_format";
 
   /**
-   * The date format pattern to use when shortlong dates in tables
+   * The date format pattern to use when showing date values in tables and when
+   * creating default date input fields
    * Value type: String
    * Default value: dd-MM-yyyy
    */
-  public static final String DEFAULT_SHORT_DATE_FORMAT = "default_short_date_format";
+  public static final String DEFAULT_DATE_FORMAT = "default_date_format";
 
   /**
    * Indicates whether all entity panels should be enabled and receiving input by default
@@ -307,8 +309,8 @@ public class Configuration {
 
   static {
     //default settings
-    setValue(DEFAULT_LONG_DATE_FORMAT, "dd-MM-yyyy HH:mm");
-    setValue(DEFAULT_SHORT_DATE_FORMAT, "dd-MM-yyyy");
+    setValue(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
+    setValue(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
     setValue(ALL_PANELS_ACTIVE, false);
     setValue(USE_KEYBOARD_NAVIGATION, true);
     setValue(USE_FOCUS_ACTIVATION, true);

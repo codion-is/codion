@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.model.formats.ExactDateFormat;
+import org.jminor.common.model.formats.ExactTimestampFormat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -113,14 +113,14 @@ public class DbLog implements Serializable {
    * @return a formatted last access date
    */
   public String getLastAccessDateFormatted() {
-    return ExactDateFormat.get().format(getLastAccessDate());
+    return ExactTimestampFormat.get().format(getLastAccessDate());
   }
 
   /**
    * @return a formatted last exit date
    */
   public String getLastExitDateFormatted() {
-    return ExactDateFormat.get().format(getLastExitDate());
+    return ExactTimestampFormat.get().format(getLastExitDate());
   }
 
   /** {@inheritDoc} */

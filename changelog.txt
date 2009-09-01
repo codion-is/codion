@@ -681,3 +681,7 @@
   EntityModel constructor refactored, addDetailModels() added
   EntityTablePanel.initializeSimpleSearchPanel() now uses Conjuntion.OR and excludes hidden properties
   EntityTableSearchModel javadoc improvements
+  Configuration.DEFAULT_SHORT_DATE_FORMAT and DEFAULT_LONG_DATE_FORMAT renamed to DEFAULT_DATE_FORMAT and DEFAULT_TIMESTAMP_FORMAT respectively
+  EntityApplicationPanel.initializeSettings() renamed to configureApplication
+  Renamed classes in common.model.formats to include Timestamp in classname where applicable
+  DateUtil.floorLongDate() renamed to floorTimestamp

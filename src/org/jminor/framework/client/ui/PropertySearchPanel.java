@@ -71,7 +71,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       case DATE:
         final DateMaskFormat format =
                 new DateMaskFormat((String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
-                        ? Configuration.DEFAULT_LONG_DATE_FORMAT : Configuration.DEFAULT_SHORT_DATE_FORMAT));
+                        ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT));
         field = UiUtil.createFormattedField(format.getDateMask());
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,

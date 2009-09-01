@@ -14,12 +14,12 @@ public class DerbyDatabase implements IDatabase {
   /**
    * The date format used for Derby
    */
-  private DateFormat DERBY_SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
-   * The date format for long dates (timestamps) used by Derby
+   * The format for timestamps used by Derby
    */
-  private DateFormat DERBY_LONG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
@@ -44,10 +44,10 @@ public class DerbyDatabase implements IDatabase {
   }
 
   /** {@inheritDoc} */
-  public String getSQLDateString(final Date value, final boolean longDate) {
-    return longDate ?
-            "DATE('" + DERBY_LONG_DATE_FORMAT.format(value) + "')" :
-            "DATE('" + DERBY_SHORT_DATE_FORMAT.format(value) + "')";
+  public String getSQLDateString(final Date value, final boolean isTimestamp) {
+    return isTimestamp ?
+            "DATE('" + TIMESTAMP_FORMAT.format(value) + "')" :
+            "DATE('" + DATE_FORMAT.format(value) + "')";
   }
 
   /** {@inheritDoc} */

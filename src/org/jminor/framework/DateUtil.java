@@ -14,16 +14,16 @@ import java.util.Date;
  */
 public class DateUtil {
 
-  public static final DateFormat DEFAULT_SHORT_DATE_FORMAT = new SimpleDateFormat((String)
-          Configuration.getValue(Configuration.DEFAULT_SHORT_DATE_FORMAT));
-  public static final DateFormat DEFAULT_LONG_DATE_FORMAT = new SimpleDateFormat((String)
-          Configuration.getValue(Configuration.DEFAULT_LONG_DATE_FORMAT));
+  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat((String)
+          Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
+  public static final DateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat((String)
+          Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
 
 
   /**
    * @param date the date to check for validity
    * @return true if the date is valid, using the default short date format
-   * @see Configuration#DEFAULT_SHORT_DATE_FORMAT
+   * @see Configuration#DEFAULT_DATE_FORMAT
    */
   public static boolean isDateValid(final String date) {
     return isDateValid(date, false);
@@ -33,7 +33,7 @@ public class DateUtil {
    * @param date the date to check for validity
    * @param emptyStringOk if true then an empty string is regarded as a valid date
    * @return true if the date is valid, using the default short date format
-   * @see Configuration#DEFAULT_SHORT_DATE_FORMAT
+   * @see Configuration#DEFAULT_DATE_FORMAT
    */
   public static boolean isDateValid(final String date, final boolean emptyStringOk) {
     return isDateValid(date, emptyStringOk, false);
@@ -42,18 +42,18 @@ public class DateUtil {
   /**
    * @param date the date to check for validity
    * @param emptyStringOk if true then an empty string is regarded as a valid date
-   * @param longFormat if true then the default long date format is used, otherwise
-   * the default short date format is used
+   * @param isTimestamp if true then the default timestamp format is used, otherwise
+   * the default date format is used
    * @return true if the date is valid, using the default date format
-   * @see Configuration#DEFAULT_SHORT_DATE_FORMAT
-   * @see Configuration#DEFAULT_LONG_DATE_FORMAT
+   * @see Configuration#DEFAULT_DATE_FORMAT
+   * @see Configuration#DEFAULT_TIMESTAMP_FORMAT
    */
   public static boolean isDateValid(final String date, final boolean emptyStringOk,
-                                    final boolean longFormat) {
-    if (longFormat)
-      return isDateValid(date, emptyStringOk, DEFAULT_LONG_DATE_FORMAT);
+                                    final boolean isTimestamp) {
+    if (isTimestamp)
+      return isDateValid(date, emptyStringOk, DEFAULT_TIMESTAMP_FORMAT);
     else
-      return isDateValid(date, emptyStringOk, DEFAULT_SHORT_DATE_FORMAT);
+      return isDateValid(date, emptyStringOk, DEFAULT_DATE_FORMAT);
   }
 
   /**
@@ -97,7 +97,7 @@ public class DateUtil {
    * @return a Timestamp object with the same time as <code>timestamp</code>
    * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
    */
-  public static Timestamp floorLongDate(final Timestamp timestamp) {
+  public static Timestamp floorTimestamp(final Timestamp timestamp) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(timestamp);
     cal.set(Calendar.SECOND, 0);

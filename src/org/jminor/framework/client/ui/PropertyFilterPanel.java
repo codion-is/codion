@@ -45,10 +45,10 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   private final State stIsDialogActive = new State("PropertyFilterPanel.stIsDialogActive");
   private final State stIsDialogShowing = new State("PropertyFilterPanel.stIsDialogShowing");
 
-  private final SimpleDateFormat longDateFormat =
-          new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_LONG_DATE_FORMAT));
+  private final SimpleDateFormat timestampFormat =
+          new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
   private final SimpleDateFormat shortDateFormat =
-          new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_SHORT_DATE_FORMAT));
+          new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
 
   private JDialog searchDlg;
   private Point lastPosition;
@@ -208,8 +208,8 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     });
   }
 
-  private JTextField createDateChooserField(final boolean isUpperBound, final boolean useLongDate) {
-    final String mask = useLongDate ? "##-##-#### ##:##" : "##-##-####";
+  private JTextField createDateChooserField(final boolean isUpperBound, final boolean isTimestamp) {
+    final String mask = isTimestamp ? "##-##-#### ##:##" : "##-##-####";
     final JFormattedTextField ret = UiUtil.createFormattedField(mask);
     model.evtSearchModelCleared.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -219,15 +219,15 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
     ret.getDocument().addDocumentListener(new DocumentListener() {
       public void changedUpdate(DocumentEvent e) {
-        refreshDateField(ret, useLongDate, isUpperBound);
+        refreshDateField(ret, isTimestamp, isUpperBound);
       }
 
       public void insertUpdate(DocumentEvent e) {
-        refreshDateField(ret, useLongDate, isUpperBound);
+        refreshDateField(ret, isTimestamp, isUpperBound);
       }
 
       public void removeUpdate(DocumentEvent e) {
-        refreshDateField(ret, useLongDate, isUpperBound);
+        refreshDateField(ret, isTimestamp, isUpperBound);
       }
     });
 
@@ -235,16 +235,16 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private void refreshDateField(final JFormattedTextField dateField,
-                                final boolean useLongDate, final boolean isUpperBound) {
+                                final boolean isTimestamp, final boolean isUpperBound) {
     try {
       final String txt = dateField.getText();
-      final SimpleDateFormat format = useLongDate ? longDateFormat : shortDateFormat;
+      final SimpleDateFormat format = isTimestamp ? timestampFormat : shortDateFormat;
       if (DateUtil.isDateValid(txt, false, format)) {
         final Date val = getDate(format, dateField);
         if (isUpperBound)
-          model.setUpperBound(useLongDate ? new Timestamp(val.getTime()) : val);
+          model.setUpperBound(isTimestamp ? new Timestamp(val.getTime()) : val);
         else
-          model.setLowerBound(useLongDate ? new Timestamp(val.getTime()) : val);
+          model.setLowerBound(isTimestamp ? new Timestamp(val.getTime()) : val);
       }
       else {
         if (isUpperBound)
@@ -303,7 +303,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                 Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
                 LinkType.READ_WRITE, new DateMaskFormat(
                         (String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
-                                ? Configuration.DEFAULT_LONG_DATE_FORMAT : Configuration.DEFAULT_SHORT_DATE_FORMAT)));
+                                ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT)));
       default :
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,

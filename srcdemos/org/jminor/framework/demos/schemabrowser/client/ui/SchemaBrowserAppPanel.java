@@ -28,7 +28,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected void initializeSettings() {
+  protected void configureApplication() {
     Util.setDefaultLoggingLevel(Level.DEBUG);
     Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
