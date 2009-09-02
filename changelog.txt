@@ -690,3 +690,7 @@
   Property.ForeignKeyProperty.isWeakReference renamed to lazyLoading
   DbConnection, removed a couple of synchronized instances, these simply gave the illusion of some kind of thread safety
   IEntityDb.selectPropertyValues(), removed distinct parameter
+  EntityModel.uiSetValue/setValue, removed unused notify parameter
+  DbLog renamed to ServerLog
+  LogEntry renamed to ServerLogEntry
+  Renamed a few methods according to the change above

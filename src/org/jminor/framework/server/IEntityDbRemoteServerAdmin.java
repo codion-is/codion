@@ -7,7 +7,7 @@ import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DatabaseStatistics;
-import org.jminor.common.db.DbLog;
+import org.jminor.common.db.ServerLog;
 import org.jminor.common.db.User;
 
 import org.apache.log4j.Level;
@@ -83,11 +83,11 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void setCheckMaintenanceInterval(final int interval) throws RemoteException;
 
   /**
-   * @param connectionKey the key of the connection for which to retrieve the log @return the log for the given connection
+   * @param connectionKey the key of the connection for which to retrieve the log
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  public DbLog getConnectionLog(final String connectionKey) throws RemoteException;
+  public ServerLog getServerLog(final String connectionKey) throws RemoteException;
 
   /**
    * @return the number of active connections
@@ -97,7 +97,7 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
 
   /**
    * Returns true if logging is enabled for the given connection
-   * @param connectionKey the key of the clint @return true if logging is enabled
+   * @param connectionKey the key of the clint
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
@@ -106,7 +106,7 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   /**
    * Sets the logging status for the given connection
    * @param connectionKey the key of the connection
-   * @param status the new logging status @throws RemoteException in case of a communication error
+   * @param status the new logging status
    * @throws RemoteException in case of a communication error
    */
   public void setLoggingOn(final String connectionKey, final boolean status) throws RemoteException;

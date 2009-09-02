@@ -428,7 +428,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.domain.EntityProxy
+   * @see org.jminor.framework.domain.EntityProxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   public Color getRowBackgroundColor(final int row) {

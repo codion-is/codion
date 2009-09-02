@@ -98,15 +98,15 @@ public class EntityModel implements IRefreshable {
   public final Event evtEntitiesChanged = new Event();
 
   /**
+   * Fired when the model is about to be refreshed
+   */
+  public final Event evtRefreshStarted = new Event();
+
+  /**
    * Fired when the model has been refreshed, N.B. this event
    * is fired even if the refresh results in an exception
    */
   public final Event evtRefreshDone = new Event();
-
-  /**
-   * Fired when the model is about to be refreshed
-   */
-  public final Event evtRefreshStarted = new Event();
 
   /**
    * Fired when the model has been cleared
@@ -136,7 +136,7 @@ public class EntityModel implements IRefreshable {
   /**
    * If this state is active a refresh of this model triggers a refresh in all detail models
    */
-  private final State stCascadeRefresh = new State("EntityModel.stCascadeRefresh", false);
+  private final State stCascadeRefresh = new State("EntityModel.stCascadeRefresh");
 
   /**
    * This state determines whether this model allowes records to be inserted
@@ -237,7 +237,7 @@ public class EntityModel implements IRefreshable {
   private boolean isRefreshing = false;
 
   /**
-   * Initiates a new EntityModel
+   * Instantiates a new EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a IEntityDbProvider
    * @throws UserException in case of an exception
@@ -247,7 +247,7 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Initiates a new EntityModel
+   * Instantiates a new EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a IEntityDbProvider
    * @param includeTableModel true if this EntityModel should include a table model
@@ -699,19 +699,7 @@ public class EntityModel implements IRefreshable {
    * @param validate if true basic type validation is performed
    */
   public final void uiSetValue(final Property property, final Object value, final boolean validate) {
-    uiSetValue(property, value, validate, true);
-  }
-
-  /**
-   * Sets the value of <code>property</code> in the active entity to <code>value</code>
-   * @param property the property to update
-   * @param value the new value
-   * @param validate if true basic type validation is performed
-   * @param notify if true then a property change event is fired
-   */
-  public final void uiSetValue(final Property property, final Object value, final boolean validate,
-                               final boolean notify) {
-    setValue(property, value, validate, false, notify);
+    setValue(property, value, validate, false);
   }
 
   /**
@@ -1180,7 +1168,7 @@ public class EntityModel implements IRefreshable {
   /**
    * Returns a Map, mapping the provided EntityComboBoxModels to their respective properties according to the entityID.
    * This implementation maps the EntityComboBoxModel to the Property.ForeignKeyProperty with the same entityID.
-   * If the underlying Entity references the same Entity via more than one property, this method throws a RuntimeException.
+   * If the underlying Entity references the same Entity via more than one foreign key, a RuntimeException is thrown.
    * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
    * @return a Map of EntityComboBoxModels mapped to their respective properties
    */
@@ -1208,8 +1196,8 @@ public class EntityModel implements IRefreshable {
    * Validates the given Entity objects
    * For overriding
    * @param entities the entities to validate
-   * @param action describes the action requiring validation, INSERT or UPDATE
-   * @throws UserException in case of a user exception
+   * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
+   * @throws UserException in case the validation fails
    * @see #INSERT
    * @see #UPDATE
    */
@@ -1280,23 +1268,9 @@ public class EntityModel implements IRefreshable {
    */
   protected final void setValue(final Property property, final Object value, final boolean validate,
                                 final boolean isModelChange) {
-    setValue(property, value, validate, isModelChange, true);
-  }
-
-  /**
-   * Sets the value of <code>property</code> in the active entity to <code>value</code>
-   * @param property the property to update
-   * @param value the new value
-   * @param validate if true basic type validation is performed
-   * @param isModelChange indicates whether the change is triggered by the model,
-   * if false then the UI is assumed to be responsible for the value change
-   * @param notify if true then a property change event is fired
-   */
-  protected final void setValue(final Property property, final Object value, final boolean validate,
-                                final boolean isModelChange, final boolean notify) {
     final Object oldValue = getValue(property);
     final Object newValue = doSetValue(property, value, validate);
-    if (notify && !Util.equal(newValue, oldValue))
+    if (!Util.equal(newValue, oldValue))
       notifyPropertyChanged(new PropertyEvent(this, getEntityID(), property, newValue, oldValue, isModelChange, false));
   }
 
@@ -1597,8 +1571,8 @@ public class EntityModel implements IRefreshable {
       detailModel.masterSelectionChanged(activeEntities, getEntityID());
   }
 
-  protected Object doSetValue(final Property property, final Object value, final boolean validate) {
-    activeEntity.setValue(property.propertyID, value, validate);
+  protected Object doSetValue(final Property property, final Object value, final boolean validateType) {
+    activeEntity.setValue(property.propertyID, value, validateType);
 
     return value;
   }

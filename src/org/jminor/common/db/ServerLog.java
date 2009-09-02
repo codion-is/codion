@@ -11,18 +11,18 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A class encapsulating a simple collection of db access log entries and basic connection access info
+ * A class encapsulating a simple collection of server access log entries and basic connection access info
  * User: Björn Darri
  * Date: 7.12.2007
  * Time: 12:07:44
  */
-public class DbLog implements Serializable {
+public class ServerLog implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   public final Date logCreationDate = new Date();
 
-  public final List<LogEntry> log;
+  public final List<ServerLogEntry> log;
 
   private final String connectionKey;
 
@@ -33,12 +33,12 @@ public class DbLog implements Serializable {
   public final String lastExitedMethod;
   public final long connectionCreationDate;
 
-  public DbLog(final String connectionKey, final long connectionCreationDate, final List<LogEntry> log,
+  public ServerLog(final String connectionKey, final long connectionCreationDate, final List<ServerLogEntry> log,
                final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
                final String lastAccessedMessage, final String lastExitedMethod) {
     this.connectionKey = connectionKey;
     this.connectionCreationDate = connectionCreationDate;
-    this.log = log == null ? new ArrayList<LogEntry>(0) : log;
+    this.log = log == null ? new ArrayList<ServerLogEntry>(0) : log;
     this.lastAccessDate = lastAccessDate;
     this.lastExitDate = lastExitDate;
     this.lastAccessedMethod = lastAccessedMethod;
@@ -127,7 +127,7 @@ public class DbLog implements Serializable {
   @Override
   public boolean equals(final Object object) {
     return this == object || !((object == null) || (object.getClass() != this.getClass()))
-            && connectionKey.equals(((DbLog) object).connectionKey);
+            && connectionKey.equals(((ServerLog) object).connectionKey);
   }
 
   /** {@inheritDoc} */

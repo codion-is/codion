@@ -11,7 +11,7 @@ import java.util.Date;
 /**
    * A class encapsulating a server log entry
  */
-public class LogEntry implements Serializable, Comparable<LogEntry> {
+public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> {
 
   private static final long serialVersionUID = 1;
 
@@ -22,11 +22,11 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   public long delta;
   public boolean done = false;
 
-  public LogEntry() {
+  public ServerLogEntry() {
     this("", "", 0);
   }
 
-  public LogEntry(final String method, final String message, final long time) {
+  public ServerLogEntry(final String method, final String message, final long time) {
     set(method, message, time);
   }
 
@@ -39,7 +39,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
     this.done = false;
   }
 
-  public int compareTo(final LogEntry entry) {
+  public int compareTo(final ServerLogEntry entry) {
     if (this.entryTime < entry.entryTime)
       return -1;
     else if (this.entryTime > entry.entryTime)

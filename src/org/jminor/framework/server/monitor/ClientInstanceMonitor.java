@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.ClientInfo;
-import org.jminor.common.db.DbLog;
+import org.jminor.common.db.ServerLog;
 import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
 
 import java.rmi.RemoteException;
@@ -25,11 +25,11 @@ public class ClientInstanceMonitor {
   }
 
   public long getCreationDate() throws RemoteException {
-    return server.getConnectionLog(client.getClientID()).getConnectionCreationDate();
+    return server.getServerLog(client.getClientID()).getConnectionCreationDate();
   }
 
-  public DbLog getLog() throws RemoteException {
-    return server.getConnectionLog(client.getClientID());
+  public ServerLog getLog() throws RemoteException {
+    return server.getServerLog(client.getClientID());
   }
 
   @Override

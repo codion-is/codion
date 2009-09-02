@@ -3,10 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.common.model.formats.TimestampFormat;
-
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -14,6 +13,10 @@ import java.util.Properties;
  * Works for SQL Server 2000 and higher
  */
 public class SQLServerDatabase implements IDatabase {
+
+  private final DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");//105
+
+  private final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//120
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
@@ -38,8 +41,8 @@ public class SQLServerDatabase implements IDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "convert(datetime, '" + TimestampFormat.get().format(value) + "')" :
-            "convert(datetime, '" + ShortDashDateFormat.get().format(value) + "')";
+            "convert(datetime, '" + TIMESTAMP_FORMAT.format(value) + "', 120)" :
+            "convert(datetime, '" + DATE_FORMAT.format(value) + "', 105)";
   }
 
   /** {@inheritDoc} */

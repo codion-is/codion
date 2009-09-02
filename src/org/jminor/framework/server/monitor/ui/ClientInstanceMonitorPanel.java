@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.db.DbLog;
-import org.jminor.common.db.LogEntry;
+import org.jminor.common.db.ServerLog;
+import org.jminor.common.db.ServerLogEntry;
 import org.jminor.common.model.formats.FullTimestampFormat;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -54,9 +54,9 @@ public class ClientInstanceMonitorPanel extends JPanel {
   public void updateView() throws RemoteException {
     final StringBuilder log = new StringBuilder();
     if (model != null) {
-      final DbLog dbLog = model.getLog();
-      if (dbLog != null)
-        for (final LogEntry logEntry : sortAndRemoveNullEntries(dbLog.log))
+      final ServerLog serverLog = model.getLog();
+      if (serverLog != null)
+        for (final ServerLogEntry logEntry : sortAndRemoveNullEntries(serverLog.log))
           log.append(logEntry.toString());
       else
         log.append("Disconnected!");
@@ -70,9 +70,9 @@ public class ClientInstanceMonitorPanel extends JPanel {
     txtLog.setText(log.toString());
   }
 
-  private List<LogEntry> sortAndRemoveNullEntries(List<LogEntry> log) {
+  private List<ServerLogEntry> sortAndRemoveNullEntries(final List<ServerLogEntry> log) {
     Collections.sort(log);
-    final ListIterator<LogEntry> iterator = log.listIterator();
+    final ListIterator<ServerLogEntry> iterator = log.listIterator();
     while (iterator.hasNext())
       if (iterator.next().entryTime == 0)
         iterator.remove();

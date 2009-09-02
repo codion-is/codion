@@ -45,9 +45,7 @@ public class DerbyDatabase implements IDatabase {
 
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return isTimestamp ?
-            "DATE('" + TIMESTAMP_FORMAT.format(value) + "')" :
-            "DATE('" + DATE_FORMAT.format(value) + "')";
+    return "DATE('" + (isTimestamp ? TIMESTAMP_FORMAT.format(value) : DATE_FORMAT.format(value)) + "')";
   }
 
   /** {@inheritDoc} */

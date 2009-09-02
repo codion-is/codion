@@ -185,10 +185,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (validateType)
       validateType(property, value);
 
-    final boolean primarKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization = primarKeyProperty ? !primaryKey.hasValue(property.propertyID)
+    final boolean isPrimarKeyProperty = property instanceof Property.PrimaryKeyProperty;
+    final boolean initialization = isPrimarKeyProperty ? !primaryKey.hasValue(property.propertyID)
             : !values.containsKey(property.propertyID);
-    doSetValue(property, value, primarKeyProperty, initialization, true);
+    doSetValue(property, value, isPrimarKeyProperty, initialization, true);
   }
 
   /**

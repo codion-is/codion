@@ -8,7 +8,7 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseStatistics;
-import org.jminor.common.db.DbLog;
+import org.jminor.common.db.ServerLog;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDbConnection;
@@ -195,8 +195,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IE
   }
 
   /** {@inheritDoc} */
-  public DbLog getConnectionLog(final String connectionKey) {
-    return server.getEntityDbLog(connectionKey);
+  public ServerLog getServerLog(final String connectionKey) {
+    return server.getServerLog(connectionKey);
   }
 
   /** {@inheritDoc} */

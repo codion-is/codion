@@ -8,8 +8,8 @@ import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.DbLog;
-import org.jminor.common.db.LogEntry;
+import org.jminor.common.db.ServerLog;
+import org.jminor.common.db.ServerLogEntry;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Event;
@@ -62,7 +62,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   private EntityDbConnection entityDbConnection;
   private boolean connected = true;
 
-  private List<LogEntry> logEntries;
+  private List<ServerLogEntry> logEntries;
   private int logEntryIndex = 0;
   private boolean loggingEnabled = false;
   private long lastAccessDate = System.currentTimeMillis();
@@ -461,8 +461,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     return client;
   }
 
-  public DbLog getEntityDbLog() {
-    return new DbLog(getClient().getClientID(), creationDate, logEntries, lastAccessDate, lastExitDate,
+  public ServerLog getServerLog() {
+    return new ServerLog(getClient().getClientID(), creationDate, logEntries, lastAccessDate, lastExitDate,
             lastAccessedMethod, lastAccessMessage, lastExitedMethod);
   }
 
@@ -632,7 +632,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       return -1;
     }
     else {//add to last log entry
-      final LogEntry lastEntry = logEntries.get(logEntryIndex);
+      final ServerLogEntry lastEntry = logEntries.get(logEntryIndex);
       assert lastEntry.method.equals(method);
       logEntryIndex++;
 
@@ -644,10 +644,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     return hashCode != IS_LOGGED_IN && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
   }
 
-  private static List<LogEntry> initializeLogEntryList() {
-    final List<LogEntry> logEntries = new ArrayList<LogEntry>(logSize);
+  private static List<ServerLogEntry> initializeLogEntryList() {
+    final List<ServerLogEntry> logEntries = new ArrayList<ServerLogEntry>(logSize);
     for (int i = 0; i < logSize; i++)
-      logEntries.add(new LogEntry());
+      logEntries.add(new ServerLogEntry());
 
     return logEntries;
   }

@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DbLog;
+import org.jminor.common.db.ServerLog;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Util;
@@ -178,12 +178,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
   }
 
-  public DbLog getEntityDbLog(final String connectionKey) {
+  public ServerLog getServerLog(final String connectionKey) {
     synchronized (connections) {
       final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter adapter : connections.values())
         if (adapter.getClient().equals(client))
-          return adapter.getEntityDbLog();
+          return adapter.getServerLog();
     }
 
     return null;
