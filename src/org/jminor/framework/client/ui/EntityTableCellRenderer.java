@@ -78,7 +78,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
           renderer = new NumberRenderer(true);
           break;
         case DATE:
-          renderer = new ShortDateRenderer();
+          renderer = new DateRenderer();
           break;
         case TIMESTAMP:
           renderer = new TimestampRenderer();
@@ -116,11 +116,11 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
-  public static class ShortDateRenderer extends DefaultTableCellRenderer {
+  public static class DateRenderer extends DefaultTableCellRenderer {
     final SimpleDateFormat format = new SimpleDateFormat((String)
             Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
 
-    public ShortDateRenderer() {
+    public DateRenderer() {
       super();
       setHorizontalAlignment(JLabel.RIGHT);
     }

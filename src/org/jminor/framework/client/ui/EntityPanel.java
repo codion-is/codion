@@ -127,7 +127,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected final State stActive = new State("EntityPanel.stActive",
           (Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE));
 
-  private final HashMap<String, Control> controlMap = new HashMap<String, Control>();
+  private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
    * true if this EntityPanel allows its underlying query to be configured
@@ -379,7 +379,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   /**
    * Initializes this EntityPanel, in case of some specific initialization code, to show the search panel for example,
-   * you can override the <code>initialize</code> method and add your code there.
+   * you can override the <code>initialize()</code> method and add your code there.
+   * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
    * @see #initialize()
    * @see #isPanelInitialized()
    */
@@ -1209,8 +1210,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   //#############################################################################################
 
   /**
-   * Initializes this EntityPanel's UI
-   *
+   * Initializes this EntityPanel's UI.
+   *<pre>
    * The default layout is as follows:
    * __________________________________
    * |     property           |action |
@@ -1232,6 +1233,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * |(EntityTablePanel)|             |
    * |                  |             |
    * |__________________|_____________|
+   * </pre>
    */
   protected void initializeUI() {
     editPanel = initializeEditPanel();
@@ -1309,7 +1311,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
   /**
    * Initializes the edit panel.
-   *
+   *<pre>
    * The default layout is as follows:
    * __________________________________
    * |     property           |action |
@@ -1323,7 +1325,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * |________________________| } edit panel
    * |     action panel       |
    * |________________________|
-   *
+   *</pre>
    * @return a panel used for editing entities, if <code>initializePropertyPanel()</code>
    * returns null then by default this method returns null as well
    */
@@ -1541,8 +1543,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   /**
-   * Sets up the default controls used by this EntityPanel by mapping them to their respective
-   * control codes (EntityPanel.INSERT, UPDATE etc), these can then be retrieved via the getControl method
+   * Initializes the controls available to this EntityPanel by mapping them to their respective
+   * control codes (EntityPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
+   * these can then be retrieved via the <code>getControl(String)</code> method.
    * @see org.jminor.common.ui.control.Control
    * @see #setControl(String, org.jminor.common.ui.control.Control)
    * @see #getControl(String)
