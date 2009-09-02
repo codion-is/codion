@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.server;
 
 import org.jminor.common.model.formats.ExactTimestampFormat;
 
@@ -20,7 +20,6 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   public long entryTime;
   public long exitTime;
   public long delta;
-  public boolean done = false;
 
   public ServerLogEntry() {
     this("", "", 0);
@@ -36,7 +35,6 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
     this.entryTime = time;
     this.exitTime = 0;
     this.delta = 0;
-    this.done = false;
   }
 
   public int compareTo(final ServerLogEntry entry) {
@@ -51,7 +49,7 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   @Override
   public String toString() {
     final StringBuilder ret = new StringBuilder();
-    if (done) {
+    if (exitTime > 0) {
       ret.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
       ret.append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
@@ -78,7 +76,6 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   public long setExitTime(final long exitTime) {
     this.exitTime = exitTime;
     this.delta = this.exitTime - this.entryTime;
-    this.done = true;
 
     return delta;
   }

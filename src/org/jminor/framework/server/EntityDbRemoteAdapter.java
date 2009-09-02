@@ -4,17 +4,17 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.AuthenticationException;
-import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.ServerLog;
-import org.jminor.common.db.ServerLogEntry;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
+import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;

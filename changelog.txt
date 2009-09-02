@@ -694,3 +694,5 @@
   DbLog renamed to ServerLog
   LogEntry renamed to ServerLogEntry
   Renamed a few methods according to the change above
+  ServerLog, ServerLogEntry and ClientInfo from common.db to new package common.server
+  FrameworkUiUtil renamed to EntityUiUtil

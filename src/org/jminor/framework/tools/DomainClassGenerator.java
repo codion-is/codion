@@ -22,15 +22,15 @@ import java.util.List;
  * Date: 22.8.2009
  * Time: 16:17:21
  */
-public class DomainGenerator {
+public class DomainClassGenerator {
 
   public static void main(String[] args) {
     if (args.length != 4)
       throw new IllegalArgumentException("Required arguments: schemaName packageName username password");
 
     try {
-      String schemaName = args[0];
-      String domainClassName = getDomainClassName(schemaName);
+      final String schemaName = args[0];
+      final String domainClassName = getDomainClassName(schemaName);
       Util.writeFile(getDomainClass(domainClassName, args[0], args[1], args[2], args[3]),
               UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
     }
@@ -44,20 +44,20 @@ public class DomainGenerator {
     return schemaName.substring(0,1).toUpperCase() + schemaName.substring(1).toLowerCase();
   }
 
-  public static String getDomainClass(String domainClassName, String schema, String packageName,
-                                      String username, String password) throws Exception {
+  public static String getDomainClass(final String domainClassName, final String schema, final String packageName,
+                                      final String username, final String password) throws Exception {
     if (schema == null || schema.length() == 0)
       throw new IllegalArgumentException("Schema must be specified");
 
     final DbConnection dbConnection = new DbConnection(new User(username, password));
 
     final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
-    List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-    List<Table> schemaTables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
+    final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
+    final List<Table> schemaTables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
     for (final Table table : schemaTables)
       foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
 
-    StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
+    final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
     builder.append("import org.jminor.framework.domain.Entity;\n");
     builder.append("import org.jminor.framework.domain.EntityProxy;\n");
@@ -82,10 +82,11 @@ public class DomainGenerator {
     return builder.toString();
   }
 
-  public static String getConstants(String schemaName, String tableName, List<Column> columns, List<ForeignKey> foreignKeys) {
-    StringBuilder builder = new StringBuilder("  public static final String T_").append(tableName.toUpperCase()).append(
+  public static String getConstants(final String schemaName, final String tableName, final List<Column> columns,
+                                    final List<ForeignKey> foreignKeys) {
+    final StringBuilder builder = new StringBuilder("  public static final String T_").append(tableName.toUpperCase()).append(
             " = \"").append(schemaName.toLowerCase()).append(".").append(tableName.toLowerCase()).append("\";").append("\n");
-    for (Column column : columns) {
+    for (final Column column : columns) {
       builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
               column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append(
               "\"; //").append(translateType(column)).append("\n");
@@ -97,8 +98,8 @@ public class DomainGenerator {
     return builder.toString();
   }
 
-  private static boolean isForeignKeyColumn(Column column, List<ForeignKey> foreignKeys) {
-    for (ForeignKey foreignKey : foreignKeys)
+  private static boolean isForeignKeyColumn(final Column column, final List<ForeignKey> foreignKeys) {
+    for (final ForeignKey foreignKey : foreignKeys)
       if (foreignKey.fkTableName.equals(column.tableName) && foreignKey.fkColumnName.equals(column.columnName))
         return true;
 
@@ -151,12 +152,11 @@ public class DomainGenerator {
   }
 
   static class SchemaPacker implements IResultPacker<Schema> {
-    public List<Schema> pack(ResultSet resultSet, int recordCount) throws SQLException {
+    public List<Schema> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
       final List<Schema> ret = new ArrayList<Schema>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(new Schema(resultSet.getString("TABLE_SCHEM")));
-      }
 
       return ret;
     }
@@ -178,12 +178,11 @@ public class DomainGenerator {
   }
 
   static class TablePacker implements IResultPacker<Table> {
-    public List<Table> pack(ResultSet resultSet, int recordCount) throws SQLException {
+    public List<Table> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
       final List<Table> ret = new ArrayList<Table>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(new Table(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME")));
-      }
 
       return ret;
     }
@@ -209,13 +208,12 @@ public class DomainGenerator {
   }
 
   static class ColumnPacker implements IResultPacker<Column> {
-    public List<Column> pack(ResultSet resultSet, int recordCount) throws SQLException {
+    public List<Column> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
       final List<Column> ret = new ArrayList<Column>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getInt("DATA_TYPE")));
-      }
 
       return ret;
     }
@@ -249,15 +247,14 @@ public class DomainGenerator {
   }
 
   static class ForeignKeyPacker implements IResultPacker<ForeignKey> {
-    public List<ForeignKey> pack(ResultSet resultSet, int recordCount) throws SQLException {
+    public List<ForeignKey> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
       final List<ForeignKey> ret = new ArrayList<ForeignKey>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
                 resultSet.getString("FKTABLE_NAME"),  resultSet.getString("FKCOLUMN_NAME"),
                 resultSet.getShort("KEY_SEQ")));
-      }
 
       return ret;
     }
@@ -283,13 +280,12 @@ public class DomainGenerator {
   }
 
   static class PrimaryKeyPacker implements IResultPacker<PrimaryKey> {
-    public List<PrimaryKey> pack(ResultSet resultSet, int recordCount) throws SQLException {
+    public List<PrimaryKey> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
       final List<PrimaryKey> ret = new ArrayList<PrimaryKey>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
         ret.add(new PrimaryKey(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
-      }
 
       return ret;
     }

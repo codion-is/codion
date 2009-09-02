@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.db.ServerLog;
-import org.jminor.common.db.ServerLogEntry;
 import org.jminor.common.model.formats.FullTimestampFormat;
+import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.ServerLogEntry;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;

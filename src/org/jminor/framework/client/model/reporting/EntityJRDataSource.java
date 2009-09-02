@@ -9,7 +9,7 @@ import net.sf.jasperreports.engine.JRField;
 import java.util.Iterator;
 
 /**
-   * A default JRDataSource implementation which iterates through the iterator received via the constructor
+ * A default JRDataSource implementation which iterates through the iterator received via the constructor
  */
 public class EntityJRDataSource implements JRDataSource {
 

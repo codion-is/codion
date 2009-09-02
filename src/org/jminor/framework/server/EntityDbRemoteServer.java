@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.ClientInfo;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.ServerLog;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Util;
+import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.EntityRepository;
 

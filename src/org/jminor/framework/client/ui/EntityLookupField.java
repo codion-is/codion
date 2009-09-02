@@ -129,7 +129,7 @@ public class EntityLookupField extends JTextField {
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          model.setSelectedEntities(FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(EntityLookupField.this),
+          model.setSelectedEntities(EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(EntityLookupField.this),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
         }
         catch (UserCancelException ex) {/**/}

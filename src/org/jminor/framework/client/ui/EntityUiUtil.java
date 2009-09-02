@@ -65,11 +65,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-public class FrameworkUiUtil {
+public class EntityUiUtil {
 
   private static IEntityExceptionHandler exceptionHandler = new DefaultEntityExceptionHandler();
 
-  private FrameworkUiUtil() {}
+  private EntityUiUtil() {}
 
   public static void setExceptionHandler(final IEntityExceptionHandler handler) {
     exceptionHandler = handler;
@@ -276,7 +276,7 @@ public class FrameworkUiUtil {
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          final List<Entity> selected = FrameworkUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(ret),
+          final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(ret),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           entityModel.uiSetValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
         }

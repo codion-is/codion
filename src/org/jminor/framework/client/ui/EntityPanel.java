@@ -679,7 +679,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public void handleException(final Throwable throwable, final JComponent dialogParent) {
     log.error(this, throwable);
-    FrameworkUiUtil.getExceptionHandler().handleException(throwable, dialogParent);
+    EntityUiUtil.getExceptionHandler().handleException(throwable, dialogParent);
   }
 
   //#############################################################################################
@@ -1886,7 +1886,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                                 final String frameTitle) throws UserException {
     try {
       UiUtil.setWaitCursor(true, this);
-      FrameworkUiUtil.viewReport(getModel().fillJdbcReport(reportPath, reportParameters), frameTitle);
+      EntityUiUtil.viewReport(getModel().fillJdbcReport(reportPath, reportParameters), frameTitle);
     }
     catch (Exception e) {
       throw new UserException(e);
@@ -1922,7 +1922,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
                             final JRDataSource dataSource, final String frameTitle) throws UserException {
     try {
       UiUtil.setWaitCursor(true, this);
-      FrameworkUiUtil.viewReport(getModel().fillReport(reportPath, reportParameters, dataSource), frameTitle);
+      EntityUiUtil.viewReport(getModel().fillReport(reportPath, reportParameters, dataSource), frameTitle);
     }
     catch (Exception e) {
       throw new UserException(e);

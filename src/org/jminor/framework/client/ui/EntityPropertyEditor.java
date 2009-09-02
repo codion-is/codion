@@ -98,7 +98,7 @@ public class EntityPropertyEditor extends JPanel {
     final Collection<Object> values = EntityUtil.getPropertyValues(entities, property.propertyID);
     this.field = getInputField(entityModel, values.size() == 1 ? values.iterator().next() : null);
     if (this.field instanceof JTextField)
-      FrameworkUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,
+      EntityUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,
               entityModel.getDbProvider());
     initUI(property.getCaption());
   }
@@ -173,9 +173,9 @@ public class EntityPropertyEditor extends JPanel {
 
     switch (property.getPropertyType()) {
       case TIMESTAMP:
-        return FrameworkUiUtil.createDateInputPanel((Date) currentValue, new LongMediumDateFormat());
+        return EntityUiUtil.createDateInputPanel((Date) currentValue, new LongMediumDateFormat());
       case DATE:
-        return FrameworkUiUtil.createDateInputPanel((Date) currentValue, new ShortDashDateFormat());
+        return EntityUiUtil.createDateInputPanel((Date) currentValue, new ShortDashDateFormat());
       case DOUBLE:
         final DoubleField dfield = new DoubleField();
         if (currentValue != null)
