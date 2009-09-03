@@ -11,6 +11,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class SchemaBrowserAppModel extends EntityApplicationModel {
@@ -23,10 +24,9 @@ public class SchemaBrowserAppModel extends EntityApplicationModel {
     super(user, SchemaBrowserAppModel.class.getSimpleName());
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
-    return EntityModel.asList(SchemaModel.class);
+  protected List<? extends EntityModel> initializeMainApplicationModels(final IEntityDbProvider dbProvider) throws UserException {
+    return Arrays.asList(new SchemaModel(dbProvider));
   }
 
   /** {@inheritDoc} */

@@ -467,10 +467,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
   /**
    * @return a List containing EntityPanelProvider objects specifying the entity panels
    * that should be accessible via the Support Tables menu bar item.
-   * The corresponding EntityModel class objects should be returned by the
-   * EntityApplicationModel.getMainEntityModelClasses() method
+   * The corresponding EntityModel objects should be returned by the
+   * EntityApplicationModel.initializeMainApplicationModels() method
    * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
-   * @see org.jminor.framework.client.model.EntityApplicationModel#getMainEntityModelClasses()
+   * @see org.jminor.framework.client.model.EntityApplicationModel#initializeMainApplicationModels(org.jminor.framework.db.IEntityDbProvider) ()
    */
   protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
     return new ArrayList<EntityPanelProvider>(0);

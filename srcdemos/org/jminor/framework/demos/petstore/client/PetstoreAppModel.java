@@ -11,6 +11,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,10 +29,9 @@ public class PetstoreAppModel extends EntityApplicationModel {
     super(user, PetstoreAppModel.class.getSimpleName());
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
-    return EntityModel.asList(CategoryModel.class);
+  protected List<? extends EntityModel> initializeMainApplicationModels(final IEntityDbProvider dbProvider) throws UserException {
+    return Arrays.asList(new CategoryModel(dbProvider));
   }
 
   /** {@inheritDoc} */

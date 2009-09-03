@@ -9,8 +9,6 @@ import org.jminor.common.model.UserException;
 import org.jminor.framework.db.EntityDbProviderFactory;
 import org.jminor.framework.db.IEntityDbProvider;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class EntityApplicationModel {
@@ -19,7 +17,7 @@ public abstract class EntityApplicationModel {
   public final Event evtCascadeRefreshChanged = new Event();
 
   private final IEntityDbProvider dbProvider;
-  private final List<EntityModel> mainApplicationModels;
+  private final List<? extends EntityModel> mainApplicationModels;
 
   public EntityApplicationModel(final User user, final String appID) throws UserException {
     this(EntityDbProviderFactory.createEntityDbProvider(user, createClientKey(appID, user)));
@@ -28,7 +26,7 @@ public abstract class EntityApplicationModel {
   public EntityApplicationModel(final IEntityDbProvider dbProvider) throws UserException {
     loadDomainModel();
     this.dbProvider = dbProvider;
-    this.mainApplicationModels = initializeMainApplicationModels();
+    this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
     bindEvents();
   }
 
@@ -55,7 +53,7 @@ public abstract class EntityApplicationModel {
   /**
    * @return a List containing the main application models
    */
-  public List<EntityModel> getMainApplicationModels() {
+  public List<? extends EntityModel> getMainApplicationModels() {
     return mainApplicationModels;
   }
 
@@ -135,41 +133,12 @@ public abstract class EntityApplicationModel {
   protected abstract void loadDomainModel();
 
   /**
-   * @return a List containing the classes of the main EntityModels
-   * @throws org.jminor.common.model.UserException in case of an exception
+   * Returns the main EntityModel instances
+   * @param dbProvider the IEntityDbProvider instance
+   * @return a list containing the main application models
+   * @throws UserException in case of an exception
    */
-  protected abstract List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException;
-
-  protected List<EntityModel> initializeMainApplicationModels() throws UserException {
-    try {
-      final List<Class<? extends EntityModel>> mainModelClasses = getMainEntityModelClasses();
-      final List<EntityModel> ret = new ArrayList<EntityModel>(mainModelClasses.size());
-      for (final Class<? extends EntityModel> mainModelClass : mainModelClasses)
-        ret.add(instantiateMainApplicationModel(mainModelClass));
-
-      return ret;
-    }
-    catch (InvocationTargetException e) {
-      if (e.getTargetException() instanceof UserException)
-        throw (UserException) e.getTargetException();
-
-      throw new UserException(e.getTargetException());
-    }
-    catch (NoSuchMethodException e) {
-      throw new UserException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new UserException(e);
-    }
-    catch (InstantiationException e) {
-      throw new UserException(e);
-    }
-  }
-
-  protected EntityModel instantiateMainApplicationModel(Class<? extends EntityModel> mainModelClass)
-          throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    return mainModelClass.getConstructor(IEntityDbProvider.class).newInstance(getDbProvider());
-  }
+  protected abstract List<? extends EntityModel> initializeMainApplicationModels(final IEntityDbProvider dbProvider) throws UserException;
 
   protected void bindEvents() {}
 }

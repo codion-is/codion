@@ -1134,14 +1134,6 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * @param classes the classes that should be returned in a List
-   * @return the classes in a List
-   */
-  public static List<Class<? extends EntityModel>> asList(final Class<? extends EntityModel>... classes) {
-    return new ArrayList<Class<? extends EntityModel>>(Arrays.asList(classes));
-  }
-
-  /**
    * @return a List of EntityModels serving as detail models
    * @throws UserException in case of an exception
    */

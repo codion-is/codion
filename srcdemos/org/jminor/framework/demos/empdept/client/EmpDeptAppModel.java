@@ -11,6 +11,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class EmpDeptAppModel extends EntityApplicationModel {
@@ -23,10 +24,9 @@ public class EmpDeptAppModel extends EntityApplicationModel {
     super(dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected List<Class<? extends EntityModel>> getMainEntityModelClasses() throws UserException {
-    return EntityModel.asList(DepartmentModel.class);
+  protected List<? extends EntityModel> initializeMainApplicationModels(final IEntityDbProvider dbProvider) throws UserException {
+    return Arrays.asList(new DepartmentModel(dbProvider));
   }
 
   /** {@inheritDoc} */

@@ -698,3 +698,6 @@
   FrameworkUiUtil renamed to EntityUiUtil
   Entity.getTimestampValue() added, some changes concerning Timestamp/Date in related classes
   EntityDbRemoteAdapter refactored and cleaned up a bit, inner classes MethodLogger and RequestCounter created
+  EntityApplicationModel.getMainEntityModelClasses() removed
+  EntityApplicationModel.initializeMainApplicationModels() return type changed from List<Class<? extends EntityModel>> to List<? extends EntityModel> and made abstract
+  EntityApplicationModel.instantiateMainApplicationModel() removed
