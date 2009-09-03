@@ -156,7 +156,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     synchronized (connections) {
       for (final EntityDbRemoteAdapter adapter : connections.values())
         if (user == null || adapter.getUser().equals(user))
-          ret.add(adapter.getClient());
+          ret.add(adapter.getClientInfo());
     }
 
     return ret;
@@ -182,7 +182,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     synchronized (connections) {
       final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter adapter : connections.values())
-        if (adapter.getClient().equals(client))
+        if (adapter.getClientInfo().equals(client))
           return adapter.getServerLog();
     }
 
@@ -197,8 +197,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     synchronized (connections) {
       final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter connection : connections.values()) {
-        if (connection.getClient().equals(client)) {
-          return connection.isLoggingEnabled();
+        if (connection.getClientInfo().equals(client)) {
+          return connection.getMethodLogger().isLoggingEnabled();
         }
       }
     }
@@ -210,8 +210,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
     synchronized (connections) {
       final ClientInfo client = new ClientInfo(connectionKey);
       for (final EntityDbRemoteAdapter connection : connections.values()) {
-        if (connection.getClient().equals(client)) {
-          connection.setLoggingEnabled(status);
+        if (connection.getClientInfo().equals(client)) {
+          connection.getMethodLogger().setLoggingEnabled(status);
           return;
         }
       }

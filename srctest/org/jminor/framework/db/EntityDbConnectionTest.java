@@ -58,14 +58,11 @@ public class EntityDbConnectionTest extends TestCase {
                     + " values(2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2, 1)");
     assertEquals(EntityDbConnection.getDeleteSQL(testEntity),
             "delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)");
-    boolean exception = false;
     try {
       EntityDbConnection.getUpdateSQL(testEntity);
+      fail("Should get an exception when trying to get update sql of a non-modified entity");
     }
-    catch (Exception e) {
-      exception = true;
-    }
-    assertTrue("Should get an exception when trying to get update sql of a non-modified entity", exception);
+    catch (Exception e) {}
 
     testEntity.setValue(EntityTestDomain.DETAIL_INT, 42);
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "newString");

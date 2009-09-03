@@ -117,25 +117,16 @@ public class EntityTest extends TestCase {
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_NAME), masterName);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE), masterCode);
     assertFalse(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
-
-    boolean exception = false;
     try {
       testEntity.setValue(EntityTestDomain.DETAIL_MASTER_NAME, "hello");
+      fail("Set value for a denormalized view property should cause an error");
     }
-    catch (Exception e) {
-      exception = true;
-    }
-    assertTrue("Set value for a denormalized view property should cause an error", exception);
-
-    exception = false;
+    catch (Exception e) {}
     try {
       testEntity.setValue(EntityTestDomain.DETAIL_MASTER_CODE, 2);
+      fail("Set value for a denormalized property should cause an error");
     }
-    catch (Exception e) {
-      exception = true;
-    }
-    assertTrue("Set value for a denormalized property should cause an error", exception);
-
+    catch (Exception e) {}
     //test setAs()
     test = new Entity(EntityTestDomain.T_DETAIL);
     test.setAs(testEntity);
