@@ -7,20 +7,21 @@ import org.jminor.common.model.Util;
 
 import junit.framework.TestCase;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class EntityTest extends TestCase {
 
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
-                                           final String stringValue, final Date shortDateValue, final Date longDateValue,
+                                           final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                            final Type.Boolean booleanValue, final Entity entityValue) {
     final Entity ret = new Entity(EntityTestDomain.T_DETAIL);
     ret.setValue(EntityTestDomain.DETAIL_ID, id);
     ret.setValue(EntityTestDomain.DETAIL_INT, intValue);
     ret.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
     ret.setValue(EntityTestDomain.DETAIL_STRING, stringValue);
-    ret.setValue(EntityTestDomain.DETAIL_DATE, shortDateValue);
-    ret.setValue(EntityTestDomain.DETAIL_TIMESTAMP, longDateValue);
+    ret.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
+    ret.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
     ret.setValue(EntityTestDomain.DETAIL_BOOLEAN, booleanValue);
     ret.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entityValue);
 
@@ -36,8 +37,8 @@ public class EntityTest extends TestCase {
     final int detailInt = 2;
     final double detailDouble = 1.2;
     final String detailString = "string";
-    final Date detailShortDate = new Date();
-    final Date detailLongDate = new Date();
+    final Date detailDate = new Date();
+    final Timestamp detailTimestamp = new Timestamp(new Date().getTime());
     final Type.Boolean detailBoolean = Type.Boolean.TRUE;
 
     final int masterId = 2;
@@ -54,7 +55,7 @@ public class EntityTest extends TestCase {
     assertFalse(test.isModified());
 
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
-            detailString, detailShortDate, detailLongDate, detailBoolean, referencedEntityValue);
+            detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     //assert types
     assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getPropertyType(), Type.INT);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getPropertyType(), Type.INT);
@@ -109,8 +110,8 @@ public class EntityTest extends TestCase {
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_INT), detailInt);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_DOUBLE), detailDouble);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_STRING), detailString);
-    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_DATE), detailShortDate);
-    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_TIMESTAMP), detailLongDate);
+    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_DATE), detailDate);
+    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_TIMESTAMP), detailTimestamp);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_BOOLEAN), detailBoolean);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK), referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_NAME), masterName);

@@ -11,6 +11,7 @@ import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -29,8 +30,8 @@ public class EntityDbConnectionTest extends TestCase {
     final int intValue = 2;
     final double doubleValue = 1.2;
     final String stringValue = "string";
-    final Date shortDateValue = new Date();
-    final Date longDateValue = new Date();
+    final Date dateValue = new Date();
+    final Timestamp timestampValue = new Timestamp(new Date().getTime());
     final Type.Boolean booleanValue = Type.Boolean.TRUE;
     final int referenceId = 2;
 
@@ -47,10 +48,10 @@ public class EntityDbConnectionTest extends TestCase {
                     + " values(2, 'string', 1, 2, 1)");
 
     final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, doubleValue,
-            stringValue, shortDateValue, longDateValue, booleanValue, referencedEntityValue);
+            stringValue, dateValue, timestampValue, booleanValue, referencedEntityValue);
     //assert dml
-    final String shortDateStringSql = Database.get().getSQLDateString(shortDateValue, false);
-    final String longDateStringSql = Database.get().getSQLDateString(longDateValue, true);
+    final String shortDateStringSql = Database.get().getSQLDateString(dateValue, false);
+    final String longDateStringSql = Database.get().getSQLDateString(timestampValue, true);
     assertEquals(EntityDbConnection.getInsertSQL(testEntity),
             "insert into " + EntityTestDomain.T_DETAIL
                     + "(int, double, string, date, timestamp, boolean, entity_id, id)"

@@ -235,9 +235,18 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * @param propertyID the ID of the date property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
+   * assuming it is a Date
+   */
+  public Date getDateValue(final String propertyID) {
+    return (Date) getValue(propertyID);
+  }
+
+  /**
+   * @param propertyID the ID of the date property for which to retrieve the value
+   * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Timestamp
    */
-  public Timestamp getDateValue(final String propertyID) {
+  public Timestamp getTimestampValue(final String propertyID) {
     return (Timestamp) getValue(propertyID);
   }
 
@@ -762,6 +771,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
         return value;
       }
       case TIMESTAMP:
+        if (!(value instanceof Timestamp))
+          throw new IllegalArgumentException("Timestamp value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        return value;
       case DATE: {
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");

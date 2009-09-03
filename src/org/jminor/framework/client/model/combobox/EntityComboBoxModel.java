@@ -202,6 +202,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param entityCriteria the criteria
    */
   public void setEntityCriteria(final EntityCriteria entityCriteria) {
+    if (entityCriteria != null && !entityCriteria.getEntityID().equals(getEntityID()))
+      throw new RuntimeException("EntityCriteria entityID mismatch, " + getEntityID()
+              + " expected, got " + entityCriteria.getEntityID());
     this.entityCriteria = entityCriteria;
   }
 

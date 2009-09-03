@@ -696,3 +696,4 @@
   Renamed a few methods according to the change above
   ServerLog, ServerLogEntry and ClientInfo from common.db to new package common.server
   FrameworkUiUtil renamed to EntityUiUtil
+  Entity.getTimestampValue() added, some changes concerning Timestamp/Date in related classes

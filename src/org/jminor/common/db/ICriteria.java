@@ -8,7 +8,7 @@ package org.jminor.common.db;
  */
 public interface ICriteria {
   /**
-   * @return a SQL where condition string
+   * @return a SQL where condition string without the 'where' keyword
    */
   @Override
   public String toString();

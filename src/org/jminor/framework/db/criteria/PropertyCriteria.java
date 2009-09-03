@@ -101,7 +101,8 @@ public class PropertyCriteria implements ICriteria, Serializable {
   }
 
   /**
-   * @return the SQL condition string this criteria represents, i.e. propertyName = 'value'
+   * @return the SQL condition string this criteria represents, i.e. propertyName = 'value',
+   * this string should not contain the 'where' keyword
    */
   public String getConditionString() {
     if (property instanceof Property.ForeignKeyProperty)
