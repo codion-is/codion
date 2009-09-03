@@ -35,13 +35,7 @@ public abstract class EntityTestUnit extends TestCase {
   private final HashMap<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   public EntityTestUnit() {
-    try {
-      loadDomainModel();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
+    loadDomainModel();
   }
 
   /** {@inheritDoc} */

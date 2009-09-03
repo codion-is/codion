@@ -701,3 +701,4 @@
   EntityApplicationModel.getMainEntityModelClasses() removed
   EntityApplicationModel.initializeMainApplicationModels() return type changed from List<Class<? extends EntityModel>> to List<? extends EntityModel> and made abstract
   EntityApplicationModel.instantiateMainApplicationModel() removed
+  EntityApplicationPanel refactored a little

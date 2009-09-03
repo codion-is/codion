@@ -60,14 +60,10 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
-  protected final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
+  private final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
 
-  protected EntityApplicationModel applicationModel;
-  protected JTabbedPane applicationTabPane;
-
-  protected Control ctrSetLoggingLevel;
-  protected ToggleBeanPropertyLink ctrSelectDetail;
-  protected ToggleBeanPropertyLink ctrCascadeRefresh;
+  private EntityApplicationModel applicationModel;
+  private JTabbedPane applicationTabPane;
 
   private final Event evtSelectedEntityPanelChanged = new Event();
   private final Event evtAlwaysOnTopChanged = new Event();
@@ -111,7 +107,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
 
     this.applicationModel = applicationModel;
     setUncaughtExceptionHandler();
-    setupControls();
     initializeUI();
     initializeActiveEntityPanel();
     initializeResizingAndNavigation();
@@ -320,7 +315,26 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * @return the ControlSet specifying the items in the 'Settings' menu
    */
   protected ControlSet getSettingsControlSet() {
+    final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
+    final Control ctrSelectDetail = ControlFactory.toggleControl(applicationModel, "selectionFiltersDetail",
+            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), applicationModel.evtSelectionFiltersDetailChanged);
+    ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
+    ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
+
+    final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
+    final Control ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
+            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.evtCascadeRefreshChanged);
+    ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
+    ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
+
+    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
+    final Control ctrSetLoggingLevel = ControlFactory.methodControl(this, "setLoggingLevel",
+            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
+    ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
+    ctrSetLoggingLevel.setIcon(setLoggingIcon);
+
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
+
     ret.add(ctrSelectDetail);
     ret.add(ctrCascadeRefresh);
     ret.addSeparator();
@@ -412,26 +426,6 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     ret.add(txtVersion, BorderLayout.CENTER);
 
     return ret;
-  }
-
-  protected void setupControls() {
-    final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
-    ctrSelectDetail = ControlFactory.toggleControl(applicationModel, "selectionFiltersDetail",
-            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), applicationModel.evtSelectionFiltersDetailChanged);
-    ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
-    ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
-
-    final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
-    ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.evtCascadeRefreshChanged);
-    ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
-    ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
-
-    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_PRINT_QUERIES);
-    ctrSetLoggingLevel = ControlFactory.methodControl(this, "setLoggingLevel",
-            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
-    ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
-    ctrSetLoggingLevel.setIcon(setLoggingIcon);
   }
 
   protected EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
