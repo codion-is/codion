@@ -421,9 +421,9 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final JPanel ret = new JPanel(new BorderLayout(5,5));
     final String versionString = Util.getVersionAndBuildNumber();
     ret.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
-    final JTextField txtVersion = new JTextField(versionString);
-    txtVersion.setEditable(false);
-    ret.add(txtVersion, BorderLayout.CENTER);
+    final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
+    txtVersionMemory.setEditable(false);
+    ret.add(txtVersionMemory, BorderLayout.CENTER);
 
     return ret;
   }

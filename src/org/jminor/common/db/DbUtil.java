@@ -52,10 +52,10 @@ public class DbUtil {
   }
 
   public static final IResultPacker<Integer> INT_PACKER = new IResultPacker<Integer>() {
-    public List<Integer> pack(final ResultSet rs, final int recordCount) throws SQLException {
+    public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final ArrayList<Integer> ret = new ArrayList<Integer>();
       int counter = 0;
-      while (rs.next() && (recordCount < 0 || counter++ < recordCount))
+      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(rs.getInt(1));
 
       return ret;
@@ -63,10 +63,10 @@ public class DbUtil {
   };
 
   public static final IResultPacker<String> STRING_PACKER = new IResultPacker<String>() {
-    public List<String> pack(final ResultSet rs, final int recordCount) throws SQLException {
+    public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final ArrayList<String> ret = new ArrayList<String>();
       int counter = 0;
-      while (rs.next() && (recordCount < 0 || counter++ < recordCount))
+      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(rs.getString(1));
 
       return ret;

@@ -38,16 +38,16 @@ public class EntityResultPacker implements IResultPacker<Entity> {
    * The resulting entities do not contain values for foreign key properties (Property.ForeignKeyProperty).
    * This method does not close the ResultSet object.
    * @param resultSet the ResultSet object
-   * @param recordCount the maximum number of records to retrieve from the result set
+   * @param fetchCount the maximum number of records to retrieve from the result set
    * @return a List of Entity objects representing the contents of <code>resultSet</code>
    * @throws SQLException in case of an exception
    */
-  public List<Entity> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+  public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
     if (resultSet == null)
       throw new IllegalArgumentException("Can not pack result from a null ResultSet");
     final List<Entity> ret = new ArrayList<Entity>();
     int counter = 0;
-    while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+    while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
       ret.add(loadEntity(resultSet));
 
     return ret;

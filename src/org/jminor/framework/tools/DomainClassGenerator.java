@@ -152,10 +152,10 @@ public class DomainClassGenerator {
   }
 
   static class SchemaPacker implements IResultPacker<Schema> {
-    public List<Schema> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    public List<Schema> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Schema> ret = new ArrayList<Schema>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(new Schema(resultSet.getString("TABLE_SCHEM")));
 
       return ret;
@@ -178,10 +178,10 @@ public class DomainClassGenerator {
   }
 
   static class TablePacker implements IResultPacker<Table> {
-    public List<Table> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> ret = new ArrayList<Table>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(new Table(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME")));
 
       return ret;
@@ -208,10 +208,10 @@ public class DomainClassGenerator {
   }
 
   static class ColumnPacker implements IResultPacker<Column> {
-    public List<Column> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> ret = new ArrayList<Column>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getInt("DATA_TYPE")));
 
@@ -247,10 +247,10 @@ public class DomainClassGenerator {
   }
 
   static class ForeignKeyPacker implements IResultPacker<ForeignKey> {
-    public List<ForeignKey> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    public List<ForeignKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKey> ret = new ArrayList<ForeignKey>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
                 resultSet.getString("FKTABLE_NAME"),  resultSet.getString("FKCOLUMN_NAME"),
@@ -280,10 +280,10 @@ public class DomainClassGenerator {
   }
 
   static class PrimaryKeyPacker implements IResultPacker<PrimaryKey> {
-    public List<PrimaryKey> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    public List<PrimaryKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKey> ret = new ArrayList<PrimaryKey>();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount))
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(new PrimaryKey(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
 

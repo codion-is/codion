@@ -602,10 +602,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static IResultPacker getPacker(final Type propertyType) {
     return new IResultPacker() {
-      public List pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+      public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<Object> ret = new ArrayList<Object>(50);
         int counter = 0;
-        while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+        while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
           switch(propertyType) {
             case INT:
               ret.add(resultSet.getInt(1));
@@ -625,10 +625,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   private Set<Dependency> resolveEntityDependencies(final String entityID) {
     final String[] entityIDs = EntityRepository.getInitializedEntities();
     final Set<Dependency> dependencies = new HashSet<Dependency>();
-    for (final String entityCheckClass : entityIDs) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityCheckClass))
+    for (final String entityIDToCheck : entityIDs) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityIDToCheck))
         if (foreignKeyProperty.referenceEntityID.equals(entityID))
-          dependencies.add(new Dependency(entityCheckClass, foreignKeyProperty.referenceProperties));
+          dependencies.add(new Dependency(entityIDToCheck, foreignKeyProperty.referenceProperties));
     }
 
     return dependencies;

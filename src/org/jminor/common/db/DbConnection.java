@@ -306,7 +306,7 @@ public class DbConnection {
     final String sql = "select " + columnName + " from " + tableName + " " + whereClause;
 
     final List result = query(sql, new IResultPacker() {
-      public List pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+      public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<Blob> ret = new ArrayList<Blob>();
         if (resultSet.next())
           ret.add(resultSet.getBlob(1));
@@ -498,11 +498,11 @@ public class DbConnection {
   }
 
   private static class MixedResultPacker implements IResultPacker<List> {
-    public List<List> pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+    public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<List> ret = new ArrayList<List>();
       final int columnCount = resultSet.getMetaData().getColumnCount();
       int counter = 0;
-      while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         final List<Object> row = new ArrayList<Object>(columnCount);
         for (int index = 1; index <= columnCount; index++)
           row.add(resultSet.getObject(index));

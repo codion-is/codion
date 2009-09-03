@@ -245,7 +245,7 @@ public class Util {
    * @param cls the resource class
    * @param resourceName the name of the resource to retrieve
    * @return the contents of the resource file
-   * @throws IOException if an IOException should occur
+   * @throws IOException in case an IOException occurs
    */
   public static String getContents(final Class cls, final String resourceName) throws IOException {
     final StringBuilder contents = new StringBuilder();

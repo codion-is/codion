@@ -67,10 +67,10 @@ public class DbConnectionTest extends TestCase {
     try {
       dbConnection = new DbConnection(new User("scott", "tiger"));
       final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new IResultPacker() {
-        public List pack(final ResultSet resultSet, final int recordCount) throws SQLException {
+        public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
           final List<List> ret = new ArrayList<List>();
           int counter = 0;
-          while (resultSet.next() && (recordCount < 0 || counter++ < recordCount)) {
+          while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
             final List<Object> row = new ArrayList<Object>();
             row.add(resultSet.getInt(1));
             row.add(resultSet.getString(2));

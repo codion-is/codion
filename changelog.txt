@@ -702,3 +702,5 @@
   EntityApplicationModel.initializeMainApplicationModels() return type changed from List<Class<? extends EntityModel>> to List<? extends EntityModel> and made abstract
   EntityApplicationModel.instantiateMainApplicationModel() removed
   EntityApplicationPanel refactored a little
+  EntityApplicationPanel.getAboutPanel() added memory usage
+  Entity.validateType() does not accept EntityKey values for type ENTITY anymore

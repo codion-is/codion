@@ -16,7 +16,8 @@ public interface IResultPacker<T> extends Serializable {
   /**
    * Iterates through the given ResultSet, packing its contents into a List
    * @param resultSet the object containing the query result to process
-   * @param fetchCount the number of records to retrieve from the result set, a value of -1 should retrieve all
+   * @param fetchCount the number of records to retrieve from the result set,
+   * a value of -1 means all should be retrieved
    * @return a List containing the data from the query result
    * @throws SQLException thrown if anyhing goes wrong during the packing
    */

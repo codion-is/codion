@@ -457,7 +457,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
     catch (Exception e) {
       e.printStackTrace();
-      throw new RuntimeException("Unable to copy entity: " + getEntityID() + ": " + e.getMessage());
+      throw new RuntimeException("Unable to copy entity: " + getEntityID() + ": " + e.getMessage(), e);
     }
   }
 
@@ -749,12 +749,11 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @throws IllegalArgumentException when the value is not of the same type as the propertyValue
    */
   private static Object validateType(final Property property, final Object value) throws IllegalArgumentException {
-    final Type propertyType = property.propertyType;
     if (value == null)
       return value;
 
     final String propertyID = property.propertyID;
-    switch (propertyType) {
+    switch (property.propertyType) {
       case INT : {
         if (!(value instanceof Integer))
           throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
@@ -780,22 +779,22 @@ public final class Entity implements Serializable, Comparable<Entity> {
         return value;
       }
       case ENTITY : {
-        if (!(value instanceof Entity) && !(value instanceof EntityKey))
-          throw new IllegalArgumentException("Entity or EntityKey value expected for property: " + propertyID + "(" + value.getClass() + ")");
+        if (!(value instanceof Entity))
+          throw new IllegalArgumentException("Entity value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
       case CHAR : {
         if (!(value instanceof Character))
-          throw new IllegalArgumentException("Character value expected for property: " + propertyID + "(" + value.getClass() + ")");
+          throw new IllegalArgumentException("Character value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
       case STRING : {
         if (!(value instanceof String))
-          throw new IllegalArgumentException("String value expected for propertyValue: " + propertyID + "(" + value.getClass() + ")");
+          throw new IllegalArgumentException("String value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
     }
 
-    throw new IllegalArgumentException("Unknown type " + propertyType);
+    throw new IllegalArgumentException("Unknown type " + property.propertyType);
   }
 }
