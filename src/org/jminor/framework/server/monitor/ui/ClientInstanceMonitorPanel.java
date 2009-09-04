@@ -61,7 +61,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
       else
         log.append("Disconnected!");
 
-      txtCreationDate.setText(FullTimestampFormat.get().format(new Date(model.getCreationDate())));
+      txtCreationDate.setText(new FullTimestampFormat().format(new Date(model.getCreationDate())));
     }
     else {
       txtCreationDate.setText("");

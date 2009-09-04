@@ -113,14 +113,14 @@ public class ServerLog implements Serializable {
    * @return a formatted last access date
    */
   public String getLastAccessDateFormatted() {
-    return ExactTimestampFormat.get().format(getLastAccessDate());
+    return new ExactTimestampFormat().format(getLastAccessDate());
   }
 
   /**
    * @return a formatted last exit date
    */
   public String getLastExitDateFormatted() {
-    return ExactTimestampFormat.get().format(getLastExitDate());
+    return new ExactTimestampFormat().format(getLastExitDate());
   }
 
   /** {@inheritDoc} */

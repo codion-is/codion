@@ -11,7 +11,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
@@ -22,6 +21,7 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
@@ -60,6 +60,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -364,8 +365,8 @@ public class EntityUiUtil {
     return ret;
   }
 
-  public static DateInputPanel createDateInputPanel(final Date initialValue, final DateMaskFormat maskFormat) {
-    final JFormattedTextField txtField = UiUtil.createFormattedField(maskFormat.getDateMask());
+  public static DateInputPanel createDateInputPanel(final Date initialValue, final SimpleDateFormat maskFormat) {
+    final JFormattedTextField txtField = UiUtil.createFormattedField(DateUtil.getDateMask(maskFormat));
     if (initialValue != null)
       txtField.setText(maskFormat.format(initialValue));
 
@@ -373,22 +374,21 @@ public class EntityUiUtil {
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
-                                                    final DateMaskFormat dateMaskFormat,
-                                                    final LinkType linkType, final boolean includeButton) {
-    return createDateInputPanel(property, entityModel, dateMaskFormat, linkType, includeButton, null);
+                                                    final SimpleDateFormat dateFormat, final LinkType linkType,
+                                                    final boolean includeButton) {
+    return createDateInputPanel(property, entityModel, dateFormat, linkType, includeButton, null);
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
-                                                    final DateMaskFormat dateMaskFormat,
-                                                    final LinkType linkType, final boolean includeButton,
-                                                    final State enabledState) {
+                                                    final SimpleDateFormat dateFormat, final LinkType linkType,
+                                                    final boolean includeButton, final State enabledState) {
     if (property.getPropertyType() != Type.DATE && property.getPropertyType() != Type.TIMESTAMP)
       throw new IllegalArgumentException("Property " + property + " is not a date property");
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, entityModel, linkType,
-            dateMaskFormat.getDateMask(), true, dateMaskFormat, enabledState);
+            DateUtil.getDateMask(dateFormat), true, dateFormat, enabledState);
 
-    return new DateInputPanel(field, dateMaskFormat, includeButton, enabledState);
+    return new DateInputPanel(field, dateFormat, includeButton, enabledState);
   }
 
   public static JTextArea createTextArea(final Property property, final EntityModel entityModel) {
@@ -428,7 +428,7 @@ public class EntityUiUtil {
 
   public static JTextField createTextField(final Property property, final EntityModel entityModel,
                                            final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final DateMaskFormat dateFormat,
+                                           final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState) {
     return createTextField(property, entityModel, linkType, formatMaskString, immediateUpdate, dateFormat,
             enabledState, false);
@@ -436,7 +436,7 @@ public class EntityUiUtil {
 
   public static JTextField createTextField(final Property property, final EntityModel entityModel,
                                            final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final DateMaskFormat dateFormat,
+                                           final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
     final JTextField ret;
     switch (property.getPropertyType()) {

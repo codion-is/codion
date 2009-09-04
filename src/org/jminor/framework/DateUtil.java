@@ -229,4 +229,19 @@ public class DateUtil {
 
     return numberOfDays;
   }
+
+  /**
+   * Parses the date pattern and returns mask string that can be used in JFormattedFields.
+   * This only works with plain numerical date formats.
+   * @param format the SimpleDateFormat for which to retrieve the date mask
+   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
+   */
+  public static String getDateMask(final SimpleDateFormat format) {
+    final String datePattern = format.toPattern();
+    final StringBuilder ret = new StringBuilder(datePattern.length());
+    for (final Character character : datePattern.toCharArray())
+      ret.append(Character.isLetter(character) ? "#" : character);
+
+    return ret.toString();
+  }
 }

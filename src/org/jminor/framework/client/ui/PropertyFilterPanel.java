@@ -5,7 +5,6 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
-import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -301,7 +300,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, new DateMaskFormat(
+                LinkType.READ_WRITE, new SimpleDateFormat(
                         (String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
                                 ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT)));
       default :

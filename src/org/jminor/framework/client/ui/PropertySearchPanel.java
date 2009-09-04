@@ -5,7 +5,6 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
-import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -16,6 +15,7 @@ import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -30,6 +30,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PropertySearchPanel extends AbstractSearchPanel {
@@ -69,10 +70,10 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     switch (model.getPropertyType()) {
       case TIMESTAMP:
       case DATE:
-        final DateMaskFormat format =
-                new DateMaskFormat((String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
+        final SimpleDateFormat format =
+                new SimpleDateFormat((String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
                         ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT));
-        field = UiUtil.createFormattedField(format.getDateMask());
+        field = UiUtil.createFormattedField(DateUtil.getDateMask(format));
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class,  isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, "",

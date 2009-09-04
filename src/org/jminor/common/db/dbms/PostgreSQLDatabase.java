@@ -7,10 +7,14 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.model.formats.TimestampFormat;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
 
 public class PostgreSQLDatabase implements IDatabase {
+
+  private static final DateFormat TIMESTAMP_FORMAT = new TimestampFormat();
+  private static final DateFormat DATE_FORMAT = new ShortDashDateFormat();
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
@@ -35,8 +39,8 @@ public class PostgreSQLDatabase implements IDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "to_date('" + TimestampFormat.get().format(value) + "', 'DD-MM-YYYY HH24:MI')" :
-            "to_date('" + ShortDashDateFormat.get().format(value) + "', 'DD-MM-YYYY')";
+            "to_date('" + TIMESTAMP_FORMAT.format(value) + "', 'DD-MM-YYYY HH24:MI')" :
+            "to_date('" + DATE_FORMAT.format(value) + "', 'DD-MM-YYYY')";
   }
 
   /** {@inheritDoc} */

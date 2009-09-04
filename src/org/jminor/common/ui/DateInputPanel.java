@@ -5,7 +5,6 @@ package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.State;
-import org.jminor.common.model.formats.DateMaskFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -14,30 +13,31 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateInputPanel extends JPanel {
 
   private final JFormattedTextField inputField;
-  private final DateMaskFormat maskFormat;
+  private final SimpleDateFormat dateFormat;
 
-  public DateInputPanel(final JFormattedTextField inputField, final DateMaskFormat maskFormat,
+  public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
                         final boolean includeButton, final State enabledState) {
     super(new BorderLayout());
     this.inputField = inputField;
-    this.maskFormat = maskFormat;
+    this.dateFormat = dateFormat;
     add(inputField, BorderLayout.CENTER);
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
         public void actionPerformed(ActionEvent e) {
           Date currentValue = null;
           try {
-            currentValue = maskFormat.parse(inputField.getText());
+            currentValue = dateFormat.parse(inputField.getText());
           }
           catch (ParseException ex) {/**/}
           final Date newValue = UiUtil.getDateFromUser(currentValue,
                   Messages.get(Messages.SELECT_DATE), inputField);
-          inputField.setText(maskFormat.format(newValue));
+          inputField.setText(dateFormat.format(newValue));
         }
       };
       final JButton btnChooser = new JButton(buttonAction);
@@ -52,7 +52,7 @@ public class DateInputPanel extends JPanel {
     return inputField;
   }
 
-  public DateMaskFormat getMaskFormat() {
-    return maskFormat;
+  public SimpleDateFormat getDateFormat() {
+    return dateFormat;
   }
 }

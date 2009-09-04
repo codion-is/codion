@@ -7,10 +7,14 @@ import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.model.formats.TimestampFormat;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
 
 public class MySQLDatabase implements IDatabase {
+
+  private static final DateFormat TIMESTAMP_FORMAT = new TimestampFormat();
+  private static final DateFormat DATE_FORMAT = new ShortDashDateFormat();
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
@@ -35,8 +39,8 @@ public class MySQLDatabase implements IDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "str_to_date('" + TimestampFormat.get().format(value) + "', '%d-%m-%Y %H:%i')" :
-            "str_to_date('" + ShortDashDateFormat.get().format(value) + "', '%d-%m-%Y')";
+            "str_to_date('" + TIMESTAMP_FORMAT.format(value) + "', '%d-%m-%Y %H:%i')" :
+            "str_to_date('" + DATE_FORMAT.format(value) + "', '%d-%m-%Y')";
   }
 
   /** {@inheritDoc} */

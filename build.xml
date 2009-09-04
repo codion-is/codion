@@ -85,13 +85,13 @@
   </target>
 
   <target name="compile_reports" description="Compile the demo jasper reports">
-		<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-			<classpath>
-				<fileset dir="${lib}" includes="**/*.jar"/>
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+	  <classpath>
+        <fileset dir="${lib}" includes="**/*.jar"/>
       </classpath>
-		</taskdef>
-		<jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
-	</target>
+    </taskdef>
+    <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
+  </target>
 
   <target name="dist" depends="build, manifest"
           description="Builds all distribution jar files in the dist directory">

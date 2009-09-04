@@ -10,6 +10,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
@@ -73,9 +74,9 @@ public class EntityPropertyLinkTest extends TestCase {
 
   public void testDatePropertyLink() {
     final ShortDashDateFormat format = new ShortDashDateFormat();
-    final JFormattedTextField txtDate = UiUtil.createFormattedField(format.getDateMask());
+    final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format));
     new DateTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
-            txtDate, LinkType.READ_WRITE, format, format.getDateMask());
+            txtDate, LinkType.READ_WRITE, format, DateUtil.getDateMask(format));
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date now = new Date();
     model.uiSetValue(EmpDept.EMPLOYEE_HIREDATE, now);//hmm, why didn't txtDate.setText(format.format(now)) work?

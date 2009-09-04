@@ -74,7 +74,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     txtPoolSize.setText(format.format(stats.getLiveConnectionCount()));
     txtCreated.setText(format.format(stats.getConnectionsCreated()));
     txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
-    txtCreatedDestroyedResetTime.setText(FullTimestampFormat.get().format(stats.getResetDate()));
+    txtCreatedDestroyedResetTime.setText(new FullTimestampFormat().format(stats.getResetDate()));
     txtRequested.setText(format.format(stats.getConnectionRequests()));
     final double prc = (double) stats.getConnectionRequestsDelayed()/(double) stats.getConnectionRequests()*100;
     txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())

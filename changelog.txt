@@ -704,3 +704,6 @@
   EntityApplicationPanel refactored a little
   EntityApplicationPanel.getAboutPanel() added memory usage
   Entity.validateType() does not accept EntityKey values for type ENTITY anymore
+  ThreadLocal functionality removed from date formats
+  DateUtil.getDateMask(SimpleDateFormat) added
+  DateMaskFormat removed, replaced by SimpleDateFormat throughout

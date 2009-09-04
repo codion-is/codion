@@ -98,7 +98,7 @@ public class ServerMonitorPanel extends JPanel {
     final IEntityDbRemoteServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(
-            FullTimestampFormat.get().format(server.getStartDate())).append(")").append(
+            new FullTimestampFormat().format(server.getStartDate())).append(")").append(
             " server/db port: ").append(server.getServerPort()).append("/").append(
             server.getServerDbPort()).append("\n").append("\n");
     contents.append("Database URL:").append("\n");

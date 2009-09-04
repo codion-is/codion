@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.State;
-import org.jminor.common.model.formats.DateMaskFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -26,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
 
 public abstract class EntityBindingPanel extends JPanel {
 
@@ -226,11 +226,11 @@ public abstract class EntityBindingPanel extends JPanel {
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat) {
-    return createDateInputPanel(propertyID, dateMaskFormat, true);
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat) {
+    return createDateInputPanel(propertyID, dateFormat, true);
   }
 
   /**
@@ -242,99 +242,99 @@ public abstract class EntityBindingPanel extends JPanel {
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
     return createDateInputPanel(propertyID,
-            new DateMaskFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT)),
+            new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT)),
             includeButton, null);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton) {
-    return createDateInputPanel(propertyID, dateMaskFormat, includeButton, null);
+    return createDateInputPanel(propertyID, dateFormat, includeButton, null);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final State enabledState) {
-    return createDateInputPanel(propertyID, dateMaskFormat, includeButton, enabledState, LinkType.READ_WRITE);
+    return createDateInputPanel(propertyID, dateFormat, includeButton, enabledState, LinkType.READ_WRITE);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param linkType the property link type
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final DateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final State enabledState,
                                                       final LinkType linkType) {
     return createDateInputPanel(EntityRepository.getProperty(getModel().getEntityID(), propertyID),
-            dateMaskFormat, includeButton, enabledState, linkType);
+            dateFormat, includeButton, enabledState, linkType);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat) {
-    return createDateInputPanel(property, dateMaskFormat, true);
+  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat) {
+    return createDateInputPanel(property, dateFormat, true);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton) {
-    return createDateInputPanel(property, dateMaskFormat, includeButton, null);
+    return createDateInputPanel(property, dateFormat, includeButton, null);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final State enabledState) {
-    return createDateInputPanel(property, dateMaskFormat, includeButton, enabledState, LinkType.READ_WRITE);
+    return createDateInputPanel(property, dateFormat, includeButton, enabledState, LinkType.READ_WRITE);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property for which to create the panel
-   * @param dateMaskFormat the format to use for masking the input field
+   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param linkType the property link type
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final DateMaskFormat dateMaskFormat,
+  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final State enabledState,
                                                       final LinkType linkType) {
-    return EntityUiUtil.createDateInputPanel(property, getModel(), dateMaskFormat, linkType, includeButton, enabledState);
+    return EntityUiUtil.createDateInputPanel(property, getModel(), dateFormat, linkType, includeButton, enabledState);
   }
 
   /**

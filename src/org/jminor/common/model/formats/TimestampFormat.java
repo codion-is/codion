@@ -5,23 +5,11 @@ package org.jminor.common.model.formats;
 
 import java.text.SimpleDateFormat;
 
-public class TimestampFormat extends DateMaskFormat {
+public class TimestampFormat extends SimpleDateFormat {
 
   public static final String PATTERN = "dd-MM-yyyy HH:mm";
 
-  private static final ThreadLocal dateFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat(PATTERN);
-    }
-  };
-
-  /** Constructs a new LongDateFormat. */
   public TimestampFormat() {
     super(PATTERN);
-  }
-
-  public static SimpleDateFormat get() {
-    return (SimpleDateFormat)(dateFormat.get());
   }
 }

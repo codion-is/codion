@@ -6,6 +6,7 @@ package org.jminor.common.server;
 import org.jminor.common.model.formats.ExactTimestampFormat;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.Date;
 
 /**
@@ -14,6 +15,7 @@ import java.util.Date;
 public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> {
 
   private static final long serialVersionUID = 1;
+  private static final DateFormat TIMESTAMP_FORMAT = new ExactTimestampFormat();
 
   public String method;
   public String message;
@@ -91,13 +93,13 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
    * @return a formatted entry time
    */
   public String getEntryTimeFormatted() {
-    return ExactTimestampFormat.get().format(entryTime);
+    return TIMESTAMP_FORMAT.format(entryTime);
   }
 
   /**
    * @return a formatted exit time
    */
   public String getExitTimeFormatted() {
-    return ExactTimestampFormat.get().format(new Date(exitTime));
+    return TIMESTAMP_FORMAT.format(new Date(exitTime));
   }
 }
