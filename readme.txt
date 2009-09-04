@@ -25,7 +25,7 @@ JMinor is a minimalistic Java rich client CRUD application framework based solel
 
 2. RELEASE INFO
 
-Release contents (~15 MB):
+Release contents (~18 MB):
 * "dist" contains the JMinor binary jar files
 * "docs" contains basic documentation as well as API javadocs
 * "lib" contains third-party libraries needed for building the framework and/or running the samples
