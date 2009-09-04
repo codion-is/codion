@@ -171,14 +171,14 @@
 
   <target name="manifest"
           description="Generates a MANIFEST.MF file for inclusion in jars">
-		<mkdir dir="${build.base}/META-INF"/>
-		<manifest file="${build.base}/META-INF/MANIFEST.MF">
-			<attribute name="Implementation-Title" value="JMinor Application Framework"/>
-			<attribute name="Implementation-Version" value="${version}"/>
-			<attribute name="Implementation-URL" value="http://jminor.org"/>
-			<attribute name="Build-Jdk" value="${java.specification.version}"/>
-		</manifest>
-	</target>
+    <mkdir dir="${build.base}/META-INF"/>
+      <manifest file="${build.base}/META-INF/MANIFEST.MF">
+        <attribute name="Implementation-Title" value="JMinor Application Framework"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+        <attribute name="Implementation-URL" value="http://jminor.org"/>
+        <attribute name="Build-Jdk" value="${java.specification.version}"/>
+      </manifest>
+  </target>
 
   <target name="javadoc" depends="build"
           description="Generates framework javadocs">
