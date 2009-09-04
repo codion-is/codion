@@ -72,6 +72,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param entityID the ID of the entity this combo box model should represent
    * @param dbProvider a IEntityDbProvider instance
    * @param staticData if true this combo box model is refreshed only on initialization
+   * and on subsequent calls to <code>forceRefresh</code>
    */
   public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
                              final boolean staticData) {
@@ -82,6 +83,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param entityID the ID of the entity this combo box model should represent
    * @param dbProvider a IEntityDbProvider instance
    * @param staticData if true this combo box model is refreshed only on initialization
+   * and on subsequent calls to <code>forceRefresh</code>
    * @param nullValueItem the item to used to represent a null value
    */
   public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
@@ -93,6 +95,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param entityID the ID of the entity this combo box model should represent
    * @param dbProvider a IEntityDbProvider instance
    * @param staticData if true this combo box model is refreshed only on initialization
+   * and on subsequent calls to <code>forceRefresh</code>
    * @param nullValueItem the item to used to represent a null value
    * @param sortContents if true, the contents are sorted
    */
@@ -145,7 +148,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * Selects the entity with the given primary key
+   * Selects the entity with the given primary key, if the entity is not available
+   * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
   public void setSelectedEntityByPrimaryKey(final EntityKey primaryKey) {
@@ -154,7 +158,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
       final Object item = getElementAt(i);
       if (item instanceof Entity) {
         if (((Entity) item).getPrimaryKey().equals(primaryKey)) {
-          setSelectedItem(item);
+          super.setSelectedItem(item);
           return;
         }
       }
@@ -181,7 +185,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
       throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
               + "] as selected item in a EntityComboBoxModel (" + this + ")");
 
-    super.setSelectedItem((item instanceof Entity && ((Entity) item).isNull()) ? null : item);
+    if (item == null || !(item instanceof Entity))
+      super.setSelectedItem(null);
+    else
+      setSelectedEntityByPrimaryKey(((Entity)toSelect).getPrimaryKey());
   }
 
   /** {@inheritDoc} */

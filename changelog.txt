@@ -707,3 +707,4 @@
   ThreadLocal functionality removed from date formats
   DateUtil.getDateMask(SimpleDateFormat) added
   DateMaskFormat removed, replaced by SimpleDateFormat throughout
+  EntityComboBoxModel now uses setSelectedItemByPrimaryKey when setSelectedItem is called, for better lazyLoading support
