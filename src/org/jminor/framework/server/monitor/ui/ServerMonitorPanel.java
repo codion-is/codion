@@ -7,7 +7,6 @@ import org.jminor.common.model.formats.FullTimestampFormat;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
@@ -71,6 +70,12 @@ public class ServerMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
     controlPanel.add(spnWarningThreshold);
+    controlPanel.add(new JLabel("Connection timeout (ms)"));
+    final JSpinner spnConnectionTimeout = new JSpinner(
+            new IntBeanSpinnerPropertyLink(model, "connectionTimeout", model.evtConnectionTimeoutChanged, null).getSpinnerModel());
+    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
+    controlPanel.add(spnConnectionTimeout);
 
     final JPanel performancePanel = new JPanel(new BorderLayout());
     performancePanel.add(controlPanel, BorderLayout.NORTH);
@@ -130,12 +135,5 @@ public class ServerMonitorPanel extends JPanel {
             null, LinkType.READ_ONLY, null);
 
     return txtMemory;
-  }
-
-  private ControlSet getPopupCommands() {
-    final ControlSet ret = new ControlSet();
-    ret.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
-
-    return ret;
   }
 }

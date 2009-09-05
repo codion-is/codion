@@ -135,7 +135,7 @@ public class EntityDbConnectionPool {
         catch (SQLException e) {
           log.error(this, e);
         }
-        connection.setPoolTime(System.currentTimeMillis());
+        connection.poolTime = System.currentTimeMillis();
         connectionPool.push(connection);
         connectionPool.notify();
       }
@@ -248,7 +248,7 @@ public class EntityDbConnectionPool {
       final ListIterator<EntityDbConnection> iterator = connectionPool.listIterator();
       while (iterator.hasNext() && connectionPool.size() > connectionPoolSettings.getMinimumPoolSize()) {
         final EntityDbConnection connection = iterator.next();
-        final long idleTime = currentTime - connection.getPoolTime();
+        final long idleTime = currentTime - connection.poolTime;
         if (disconnectAll || idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
           if (log.isDebugEnabled())

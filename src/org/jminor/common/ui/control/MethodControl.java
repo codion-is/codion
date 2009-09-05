@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * A Control class for binding an action to a method via reflection
+ * A Control class for binding an action to a parameterless method via reflection
  */
 public class MethodControl extends Control {
 

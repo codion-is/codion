@@ -49,8 +49,15 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
 
-  private long poolTime = -1;
+  /**Used by the EntityDbConnectionPool class*/
+  long poolTime = -1;
 
+  /**
+   * Constructs a new EntityDbConnection instance
+   * @param user the user used for connecting to the database
+   * @throws AuthenticationException in case the user credentials are not accepted
+   * @throws ClassNotFoundException in case the JDBC driver class is not found
+   */
   public EntityDbConnection(final User user) throws AuthenticationException, ClassNotFoundException {
     super(user);
   }
@@ -126,11 +133,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
     execute(statements);
 
-    final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
-    for (final Entity entity : entities)
-      primaryKeys.add(entity.getPrimaryKey());
-
-    return selectMany(primaryKeys);
+    return selectMany(EntityUtil.getPrimaryKeys(entities));
   }
 
   /** {@inheritDoc} */
@@ -176,35 +179,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (primaryKeys == null || primaryKeys.size() == 0)
       return new ArrayList<Entity>(0);
 
-    addCacheQueriesRequest();
-
-    final String entityID = primaryKeys.get(0).getEntityID();
-    final List<EntityKey> primaryKeyList = new ArrayList<EntityKey>(primaryKeys);
-    try {
-      String sql = null;
-      try {
-        final EntityCriteria criteria = new EntityCriteria(entityID,
-                new EntityKeyCriteria(null, primaryKeyList.toArray(new EntityKey[primaryKeyList.size()])));
-        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-                criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), null);
-
-        final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), -1);
-
-        if (!lastQueryResultCached())
-          setForeignKeyValues(result);
-
-        return result;
-      }
-      catch (SQLException sqle) {
-        log.info(sql);
-        log.error(this, sqle);
-        throw new DbException(sqle, sql);
-      }
-    }
-    finally {
-      removeCacheQueriesRequest();
-    }
+    return selectMany(new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys)));
   }
 
   /** {@inheritDoc} */
@@ -254,16 +229,16 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     if (isTransactionOpen())
       throw new IllegalStateException("Can not use select for update within an open transaction");
 
+    final String entityID = primaryKeys.get(0).getEntityID();
     final StringBuilder sql = new StringBuilder();
     try {
-      final EntityCriteria criteria = new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys));
-      final String selectString = EntityRepository.getSelectColumnsString(criteria.getEntityID());
-      final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-      final String whereCondition = criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE"));
-      sql.append(DbUtil.generateSelectSql(datasource, selectString, whereCondition, null));
+      final String datasource = EntityRepository.getSelectTableName(entityID);
+      sql.append(DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(entityID),
+              new EntityCriteria(entityID, new EntityKeyCriteria(primaryKeys)).getWhereClause(
+                      !datasource.toUpperCase().contains("WHERE")), null));
       sql.append(" for update").append((Database.get().supportsNoWait() ? " nowait" : ""));
 
-      final List<Entity> result = (List<Entity>) query(sql.toString(), getResultPacker(criteria.getEntityID()), -1);
+      final List<Entity> result = (List<Entity>) query(sql.toString(), getResultPacker(entityID), -1);
       if (result.size() == 0)
         throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
       if (result.size() != primaryKeys.size()) {
@@ -334,18 +309,10 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
       addCacheQueriesRequest();
       final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
       for (final Dependency dependency : dependencies) {
-        final String dependentEntityID = dependency.entityID;
-        if (dependentEntityID != null) {
-          final List<EntityKey> primaryKeys = new ArrayList<EntityKey>(entities.size());
-          for (final Entity entity : entities)
-            primaryKeys.add(entity.getPrimaryKey());
-
-          final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependentEntityID,
-                  new EntityKeyCriteria(dependency.dependingProperties,
-                          primaryKeys.toArray(new EntityKey[primaryKeys.size()]))));
-          if (dependentEntities.size() > 0)
-            ret.put(dependentEntityID, dependentEntities);
-        }
+        final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependency.entityID,
+                new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
+        if (dependentEntities.size() > 0)
+          ret.put(dependency.entityID, dependentEntities);
       }
 
       return ret;
@@ -442,14 +409,6 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     catch (SQLException sqle) {
       throw new DbException(sqle);
     }
-  }
-
-  void setPoolTime(final long poolTime) {
-    this.poolTime = poolTime;
-  }
-
-  long getPoolTime() {
-    return poolTime;
   }
 
   /**
@@ -636,11 +595,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
 
   private static class Dependency {
     final String entityID;
-    final List<Property> dependingProperties;
+    final List<Property> foreignKeyProperties;
 
-    public Dependency(final String entityID, final List<Property> dependingProperties) {
+    public Dependency(final String entityID, final List<Property> foreignKeyProperties) {
       this.entityID = entityID;
-      this.dependingProperties = dependingProperties;
+      this.foreignKeyProperties = foreignKeyProperties;
     }
   }
 }

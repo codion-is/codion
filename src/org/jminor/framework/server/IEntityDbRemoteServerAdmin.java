@@ -181,4 +181,8 @@ public interface IEntityDbRemoteServerAdmin extends Remote {
   public void resetConnectionPoolStatistics(final User user) throws RemoteException;
 
   public String getSystemProperties() throws RemoteException;
+
+  public int getConnectionTimeout() throws RemoteException;
+
+  public void setConnectionTimeout(final int timeout) throws RemoteException;
 }

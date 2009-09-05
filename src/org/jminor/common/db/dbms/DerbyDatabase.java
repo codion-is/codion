@@ -11,14 +11,8 @@ import java.util.Date;
 import java.util.Properties;
 
 public class DerbyDatabase implements IDatabase {
-  /**
-   * The date format used for Derby
-   */
-  private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-  /**
-   * The format for timestamps used by Derby
-   */
+  private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
   private DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");

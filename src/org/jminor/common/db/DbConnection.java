@@ -206,13 +206,13 @@ public class DbConnection {
    * Performs the given sql query and returns the result in a List
    * @param sql the query
    * @param resultPacker a IResultPacker instance for creating the return List
-   * @param recordCount the number of records to retrieve, use -1 to retrieve all
+   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
    * @return the query result in a List
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
-  public final List query(final String sql, final IResultPacker resultPacker, final int recordCount) throws SQLException {
+  public final List query(final String sql, final IResultPacker resultPacker, final int fetchCount) throws SQLException {
     requestsPerSecondCounter++;
-    if (cacheQueriesRequests > 0 && recordCount < 0) {
+    if (cacheQueriesRequests > 0 && fetchCount < 0) {
       if (queryCache.containsKey(sql)) {
         log.debug(connectionUser.getUsername() + " (cached): " + sql.toUpperCase()+";");
         lastResultCached = true;
@@ -225,8 +225,8 @@ public class DbConnection {
     Statement statement = null;
     try {
       statement = connection.createStatement();
-      final List ret = resultPacker.pack(statement.executeQuery(sql), recordCount);
-      if (cacheQueriesRequests > 0 && recordCount < 0)
+      final List ret = resultPacker.pack(statement.executeQuery(sql), fetchCount);
+      if (cacheQueriesRequests > 0 && fetchCount < 0)
         queryCache.put(sql, ret);
 
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
@@ -405,7 +405,7 @@ public class DbConnection {
   }
 
   /**
-   * Executes the given statment, which can be anything except a select query.
+   * Executes the given statement, which can be anything except a select query.
    * @param sql the statement to execute
    * @throws SQLException thrown if anything goes wrong during execution
    */

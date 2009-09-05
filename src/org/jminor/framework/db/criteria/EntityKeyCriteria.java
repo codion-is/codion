@@ -11,7 +11,6 @@ import org.jminor.framework.domain.Property;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,15 +35,15 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
    * @param keys the keys
    */
   public EntityKeyCriteria(final EntityKey... keys) {
-    this(null, keys);
+    this(Arrays.asList(keys));
   }
 
   /**
    * Instantiates a new EntityKeyCriteria comprised of the given keys
    * @param keys the keys
    */
-  public EntityKeyCriteria(final Collection<EntityKey> keys) {
-    this(null, keys.toArray(new EntityKey[keys.size()]));
+  public EntityKeyCriteria(final List<EntityKey> keys) {
+    this(null, keys);
   }
 
   /**
@@ -53,13 +52,13 @@ public class EntityKeyCriteria implements ICriteria, Serializable {
    * @param properties the properties to use for column names when constructing the criteria string
    * @param keys the keys
    */
-  public EntityKeyCriteria(final List<Property> properties, final EntityKey... keys) {
-    if (keys == null || keys.length == 0)
+  public EntityKeyCriteria(final List<Property> properties, final List<EntityKey> keys) {
+    if (keys == null || keys.size() == 0)
       throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
-    if (properties != null && properties.size() != keys[0].getPropertyCount())
+    if (properties != null && properties.size() != keys.get(0).getPropertyCount())
       throw new IllegalArgumentException("Reference property count mismatch");
 
-    this.keys = new ArrayList<EntityKey>(Arrays.asList(keys));
+    this.keys = keys;
     this.properties = properties;
   }
 

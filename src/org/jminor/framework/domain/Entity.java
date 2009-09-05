@@ -117,13 +117,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * @return an Event which is fired each time a property value changes
+   * @return an Event which is fired each time a property value changes,
+   * returns null unless setFirePropertyChangeEvent(true) has been called
+   * @see #setFirePropertyChangeEvents(boolean)
    * @see PropertyEvent
    */
   public Event getPropertyChangeEvent() {
-    if (evtPropertyChanged == null)
-      evtPropertyChanged = new Event();
-
     return evtPropertyChanged;
   }
 

@@ -208,4 +208,14 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IE
   public void setLoggingOn(final String connectionKey, final boolean status) {
     server.setLoggingOn(connectionKey, status);
   }
+
+  /** {@inheritDoc} */
+  public int getConnectionTimeout() throws RemoteException {
+    return server.getConnectionTimeout();
+  }
+
+  /** {@inheritDoc} */
+  public void setConnectionTimeout(final int timeout) throws RemoteException {
+    server.setConnectionTimeout(timeout);
+  }
 }

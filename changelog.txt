@@ -708,3 +708,7 @@
   DateUtil.getDateMask(SimpleDateFormat) added
   DateMaskFormat removed, replaced by SimpleDateFormat throughout
   EntityComboBoxModel now uses setSelectedItemByPrimaryKey when setSelectedItem is called, for better lazyLoading support
+  EntityKeyCriteria, changed parameter type from varargs to list
+  EntityDbConnection refactored (40 loc poof! gone)
+  IEntityDbRemoteServerAdmin.get/setConnectionTimeout() added
+  ServerMonitor/ServerMonitorPanel, added the above configuration setting

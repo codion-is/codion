@@ -71,7 +71,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   private final Date startDate = new Date();
   private Timer connectionMaintenanceTimer;
-  private transient int checkMaintenanceInterval = 30; //seconds
+  private int checkMaintenanceInterval = 30; //seconds
 
   private final EntityDbRemoteServerAdmin serverAdmin;
 
@@ -139,6 +139,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
 
   public int getConnectionTimeout() {
     return connectionTimeout;
+  }
+
+  public void setConnectionTimeout(final int timeout) {
+    this.connectionTimeout = timeout;
   }
 
   public Collection<User> getUsers() throws RemoteException {
@@ -250,7 +254,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       for (final ClientInfo client : clients) {
         final EntityDbRemoteAdapter adapter = connections.get(client);
         if (inactiveOnly) {
-          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
+          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout()))
             adapter.logout();
         }
         else
