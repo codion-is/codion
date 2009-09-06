@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -126,6 +127,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * The search model
    */
   private final EntityTableSearchModel tableSearchModel;
+
+  /**
+   * Maps PropertySummaryModels to their respective properties
+   */
+  private Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
 
   /**
    * The sorter model
@@ -321,7 +327,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * Moves all selected indexes up one index, wraps around
    * @see #evtSelectionChanged
    */
-  public void selectionUp() {
+  public void moveSelectionUp() {
     if (visibleEntities.size() > 0) {
       if (getSelectionModel().isSelectionEmpty())
         getSelectionModel().setSelectionInterval(visibleEntities.size()-1, visibleEntities.size()-1);
@@ -340,7 +346,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * Moves all selected indexes down one index, wraps around
    * @see #evtSelectionChanged
    */
-  public void selectionDown() {
+  public void moveSelectionDown() {
     if (visibleEntities.size() > 0) {
       if (getSelectionModel().isSelectionEmpty())
         getSelectionModel().setSelectionInterval(0,0);
@@ -888,6 +894,46 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
+   * Returns the PropertySummaryModel associated with the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property
+   * @return the PropertySummaryModel for the given property ID
+   */
+  public PropertySummaryModel getPropertySummaryModel(final String propertyID) {
+    return getPropertySummaryModel(EntityRepository.getProperty(getEntityID(), propertyID));
+  }
+
+  /**
+   * Returns the PropertySummaryModel associated with the given property
+   * @param property the property
+   * @return the PropertySummaryModel for the given property
+   */
+  public PropertySummaryModel getPropertySummaryModel(final Property property) {
+    if (!propertySummaryModels.containsKey(property.propertyID))
+      propertySummaryModels.put(property.propertyID, new PropertySummaryModel(new PropertySummaryModel.IPropertyValueProvider() {
+        public void bindValuesChangedEvent(final Event event) {
+          evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
+          evtRefreshDone.addListener(event);
+          evtSelectionChangedAdjusting.addListener(event);
+          evtSelectionChanged.addListener(event);
+        }
+
+        public Collection<Object> getValues() {
+          return EntityTableModel.this.getValues(property, isValueSubset());
+        }
+
+        public Type getValueType() {
+          return property.getPropertyType();
+        }
+
+        public boolean isValueSubset() {
+          return !stSelectionEmpty.isActive();
+        }
+      }));
+
+    return propertySummaryModels.get(property.propertyID);
+  }
+
+  /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
@@ -929,7 +975,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return a EntityTableSearchModel for this EntityTableModel
    */
   protected EntityTableSearchModel initializeSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(), getDbProvider());
+    return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(), getDbProvider(), false);
   }
 
   /**

@@ -317,10 +317,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
    */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit, final boolean rowColoring, final boolean horizontalButtons,
-                     final int detailPanelState, final boolean queryConfigurationAllowed) {
-    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState,
-            queryConfigurationAllowed, false);
+  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit, final boolean rowColoring,
+                     final boolean horizontalButtons, final int detailPanelState, final boolean queryConfigurationAllowed) {
+    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, queryConfigurationAllowed, false);
   }
 
   /**
@@ -1525,10 +1524,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     if (tmp != null)
       ret.add(tmp);
     ret.add(null);
-    tmp = getSelectionDownButton();
+    tmp = getMoveSelectionDownButton();
     if (tmp != null)
       ret.add(tmp);
-    tmp = getSelectionUpButton();
+    tmp = getMoveSelectionUpButton();
     if (tmp != null)
       ret.add(tmp);
     ret.add(null);
@@ -2001,8 +2000,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     return ret;
   }
 
-  private JButton getSelectionDownButton() {
-    final Control selectionDown = ControlFactory.methodControl(getModel().getTableModel(), "selectionDown",
+  private JButton getMoveSelectionDownButton() {
+    final Control selectionDown = ControlFactory.methodControl(getModel().getTableModel(), "moveSelectionDown",
             Images.loadImage("Down16.gif"));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
     final JButton ret = ControlProvider.createButton(selectionDown);
@@ -2011,8 +2010,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     return ret;
   }
 
-  private JButton getSelectionUpButton() {
-    final Control selectionUp = ControlFactory.methodControl(getModel().getTableModel(), "selectionUp",
+  private JButton getMoveSelectionUpButton() {
+    final Control selectionUp = ControlFactory.methodControl(getModel().getTableModel(), "moveSelectionUp",
             Images.loadImage("Up16.gif"));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
     final JButton ret = ControlProvider.createButton(selectionUp);

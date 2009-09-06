@@ -712,3 +712,8 @@
   EntityDbConnection refactored (40 loc poof! gone)
   IEntityDbRemoteServerAdmin.get/setConnectionTimeout() added
   ServerMonitor/ServerMonitorPanel, added the above configuration setting
+  PropertySummaryModel refactored out of PropertySummaryPanel
+  PropertySummaryModelTest added
+  EntityTableModel.getPropertySummaryModel(propertyID/Property) created
+  EntityTableModel.propertySummaryModels map field introduced
+  EntityTableSearchModel.stSimpleSearch converted to a simple boolean, with a getter, added to constructor as well

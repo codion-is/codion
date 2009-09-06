@@ -7,6 +7,7 @@ import org.jminor.common.model.IFilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
@@ -27,6 +28,7 @@ public class EmployeeModel extends EntityModel {
   public EmployeeModel(final IEntityDbProvider dbProvider) throws UserException {
     super(EmpDept.T_EMPLOYEE, dbProvider);
     getTableModel().setShowAllWhenNotFiltered(true);
+    getTableModel().getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
   }
 
   /** {@inheritDoc} */

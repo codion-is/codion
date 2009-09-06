@@ -40,11 +40,6 @@ public class EntityTableSearchModel {
   public final Event evtFilterStateChanged = new Event();
 
   /**
-   * When active the search should be simplified
-   */
-  public final State stSimpleSearch = new State("EntityTableSearchModel.stSimpleSearch");
-
-  /**
    * Activated each time the search state differs from the state at last reset
    * @see #setSearchModelState()
    */
@@ -55,6 +50,8 @@ public class EntityTableSearchModel {
   private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
   private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
+  /** When active the search should be simplified */
+  private final boolean simpleSearch;
   private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
   private String searchStateOnRefresh;
 
@@ -67,9 +64,11 @@ public class EntityTableSearchModel {
    * properties that map to database columns, assumed to belong to the entity identified by <code>entityID</code>
    * @param dbProvider a IEntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
+   * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
-                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider) {
+                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
+                                final boolean simpleSearch) {
     if (entityID == null)
       throw new IllegalArgumentException("entityID must be specified");
     if (tableColumnProperties == null)
@@ -81,10 +80,15 @@ public class EntityTableSearchModel {
     this.propertyFilterModels = initPropertyFilterModels();
     this.propertySearchModels = initPropertySearchModels(searchableProperties, dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
+    this.simpleSearch = simpleSearch;
   }
 
   public String getEntityID() {
     return entityID;
+  }
+
+  public boolean isSimpleSearch() {
+    return simpleSearch;
   }
 
   /**

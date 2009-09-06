@@ -226,6 +226,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is an Entity
+   * @throws ClassCastException if the value is not an Entity instance
    */
   public Entity getEntityValue(final String propertyID) {
     return (Entity) getValue(propertyID);
@@ -235,6 +236,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the date property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Date
+   * @throws ClassCastException if the value is not a Date instance
    */
   public Date getDateValue(final String propertyID) {
     return (Date) getValue(propertyID);
@@ -244,6 +246,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the date property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Timestamp
+   * @throws ClassCastException if the value is not a Timestamp instance
    */
   public Timestamp getTimestampValue(final String propertyID) {
     return (Timestamp) getValue(propertyID);
@@ -253,6 +256,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a String
+   * @throws ClassCastException if the value is not a String instance
    */
   public String getStringValue(final String propertyID) {
     return (String) getValue(propertyID);
@@ -262,6 +266,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is an Integer
+   * @throws ClassCastException if the value is not a Integer instance
    */
   public Integer getIntValue(final String propertyID) {
     return (Integer) getValue(propertyID);
@@ -271,6 +276,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Boolean
+   * @throws ClassCastException if the value is not a Type.Boolean instance
    */
   public Type.Boolean getBooleanValue(final String propertyID) {
     return (Type.Boolean) getValue(propertyID);
@@ -280,6 +286,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Character
+   * @throws ClassCastException if the value is not a Character instance
    */
   public Character getCharValue(final String propertyID) {
     return (Character) getValue(propertyID);
@@ -289,6 +296,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Double
+   * @throws ClassCastException if the value is not a Double instance
    */
   public Double getDoubleValue(final String propertyID) {
     return (Double) getValue(propertyID);

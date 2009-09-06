@@ -661,7 +661,7 @@ public class EntityTablePanel extends JPanel {
    * @return a PropertySummaryPanel for the given property
    */
   protected PropertySummaryPanel initializeSummaryPanel(final Property property) {
-    return new PropertySummaryPanel(property, getTableModel());
+    return new PropertySummaryPanel(getTableModel().getPropertySummaryModel(property));
   }
 
   /**
@@ -687,7 +687,7 @@ public class EntityTablePanel extends JPanel {
    * @return an initialized search panel
    */
   protected JPanel initializeSearchPanel() {
-    return getTableModel().getSearchModel().stSimpleSearch.isActive() ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
+    return getTableModel().getSearchModel().isSimpleSearch() ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
   }
 
   /**

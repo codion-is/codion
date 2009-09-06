@@ -8,7 +8,6 @@ import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.client.ui.PropertySummaryPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import javax.swing.JLabel;
@@ -24,7 +23,6 @@ public class EmployeePanel extends EntityPanel {
   /** {@inheritDoc} */
   @Override
   protected void initialize() {
-    getTablePanel().getSummaryPanel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryPanel.SummaryType.AVERAGE);
     getTablePanel().setSummaryPanelVisible(true);
   }
 
