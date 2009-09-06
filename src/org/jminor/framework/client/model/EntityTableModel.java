@@ -131,7 +131,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * Maps PropertySummaryModels to their respective properties
    */
-  private Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
+  private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
 
   /**
    * The sorter model
