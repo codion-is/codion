@@ -77,6 +77,7 @@ public class PropertySummaryPanel extends JPanel {
           item.setSelected(PropertySummaryPanel.this.getModel().getSummaryType() == summaryType);
         }
       });
+      item.setSelected(PropertySummaryPanel.this.getModel().getSummaryType() == summaryType);
       group.add(item);
       ret.add(item);
     }
