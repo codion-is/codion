@@ -404,8 +404,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * Clears all entities from this EntityTableModel
    */
-  public void clear() {
-    removeAll();
+  public void clear() {    
+    filteredEntities.clear();
+    final int size = getRowCount();
+    if (size > 0) {
+      visibleEntities.clear();
+      fireTableRowsDeleted(0, size - 1);
+    }
   }
 
   /**
@@ -545,7 +550,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
       isRefreshing = true;
       evtRefreshStarted.fire();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      removeAll();
+      clear();
       addEntities(performQuery(getQueryCriteria()), false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
@@ -1011,18 +1016,6 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   protected ICriteria getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
-  }
-
-  /**
-   * Removes all elements from this table model
-   */
-  protected void removeAll() {
-    filteredEntities.clear();
-    final int size = getRowCount();
-    if (size > 0) {
-      visibleEntities.clear();
-      fireTableRowsDeleted(0, size - 1);
-    }
   }
 
   /**

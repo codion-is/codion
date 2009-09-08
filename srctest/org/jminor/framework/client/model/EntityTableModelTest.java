@@ -163,7 +163,7 @@ public class EntityTableModelTest extends TestCase {
 
     @Override
     public void refresh() throws UserException {
-      removeAll();
+      clear();
       addEntities(performQuery(null), false);
     }
 
