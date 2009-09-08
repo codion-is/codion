@@ -68,7 +68,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -112,16 +111,6 @@ public class EntityTablePanel extends JPanel {
   private final JPanel searchPanel;
 
   /**
-   * a map mapping the summary panels to their respective properties
-   */
-  private final HashMap<String, PropertySummaryPanel> propertySummaryPanels = new HashMap<String, PropertySummaryPanel>();
-
-  /**
-   * the property filter panels
-   */
-  private final List<PropertyFilterPanel> propertyFilterPanels;
-
-  /**
    * the scroll pane used for the search panel
    */
   private JScrollPane searchScrollPane;
@@ -134,7 +123,12 @@ public class EntityTablePanel extends JPanel {
   /**
    * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
    */
-  private JPanel summaryScrollPaneBase;
+  private JPanel summaryPanelBase;
+
+  /**
+   * the property filter panels
+   */
+  private final List<PropertyFilterPanel> propertyFilterPanels;
 
   /**
    * the horizontal table scroll bar
@@ -234,9 +228,15 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Shows a dialog for configuring the underlying EntityTableModel query
+   * Shows a dialog for configuring the underlying EntityTableModel query.
+   * If the underlying table model does not allow query configuration this
+   * method returns silentry
+   * @see org.jminor.framework.client.model.EntityTableModel#isQueryConfigurationAllowed()
    */
   public void configureQuery() {
+    if (!getTableModel().isQueryConfigurationAllowed())
+      return;
+
     final EntityCriteriaPanel panel;
     try {
       UiUtil.setWaitCursor(true, this);
@@ -261,14 +261,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the summary panel
-   * @return the PropertySummaryPanel for the given property ID
-   */
-  public PropertySummaryPanel getSummaryPanel(final String propertyID) {
-    return propertySummaryPanels.get(propertyID);
-  }
-
-  /**
    * Hides or shows the column summary panel for this EntityTablePanel
    * @param visible if true then the summary panel is shown, if false it is hidden
    */
@@ -279,11 +271,11 @@ public class EntityTablePanel extends JPanel {
     if (summaryScrollPane != null) {
       summaryScrollPane.setVisible(visible);
       if (visible) {
-        summaryScrollPaneBase.add(summaryScrollPane, BorderLayout.NORTH);
-        summaryScrollPaneBase.add(horizontalTableScrollBar, BorderLayout.SOUTH);
+        summaryPanelBase.add(summaryScrollPane, BorderLayout.NORTH);
+        summaryPanelBase.add(horizontalTableScrollBar, BorderLayout.SOUTH);
       }
       else {
-        summaryScrollPaneBase.remove(horizontalTableScrollBar);
+        summaryPanelBase.remove(horizontalTableScrollBar);
         tableScrollPane.setHorizontalScrollBar(horizontalTableScrollBar);
       }
 
@@ -554,7 +546,7 @@ public class EntityTablePanel extends JPanel {
           }
         }
       });
-      if (tableModel.isQueryConfigurationAllowed()) {
+      if (getTableModel().isQueryConfigurationAllowed()) {
         final ControlSet searchControls = ((EntityTableSearchPanel)searchPanel).getControls();
         searchControls.addAt(ControlFactory.toggleControl(this, "searchPanelVisible",
                 FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibleChanged), 0);
@@ -564,7 +556,8 @@ public class EntityTablePanel extends JPanel {
         popupControls.add(searchControls);
       }
     }
-    popupControls.addSeparator();
+    if (popupControls.size() > 0)
+      popupControls.addSeparator();
     popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
     addJTablePopupMenu(getJTable(), popupControls);
 
@@ -583,11 +576,11 @@ public class EntityTablePanel extends JPanel {
       });
       summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
       summaryScrollPane.setVisible(false);
-      summaryScrollPaneBase = new JPanel(new BorderLayout());
-      base.add(summaryScrollPaneBase, BorderLayout.SOUTH);
+      summaryPanelBase = new JPanel(new BorderLayout());
+      base.add(summaryPanelBase, BorderLayout.SOUTH);
     }
 
-    final JPanel southPanel = initializeSouthPanel(tableModel.isQueryConfigurationAllowed());
+    final JPanel southPanel = initializeSouthPanel(getTableModel().isQueryConfigurationAllowed());
     if (southPanel != null) {
       final JPanel southBase = new JPanel(new BorderLayout(5,5));
       southBase.setBorder(BorderFactory.createEtchedBorder());
@@ -606,6 +599,9 @@ public class EntityTablePanel extends JPanel {
    * @param popupControls a ControlSet specifying the controls in the popup menu
    */
   protected void addJTablePopupMenu(final JTable table, final ControlSet popupControls) {
+    if (popupControls.size() == 0)
+      return;
+
     final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
@@ -616,39 +612,6 @@ public class EntityTablePanel extends JPanel {
         popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
       }
     });
-  }
-
-  /**
-   * Initializes the summary panel
-   * @return the summary panel
-   */
-  protected JPanel initializeSummaryPanel() {
-    final List<JPanel> panels = new ArrayList<JPanel>();
-    final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final Property property = (Property) columns.nextElement().getIdentifier();
-      final PropertySummaryPanel panel = initializeSummaryPanel(property);
-      propertySummaryPanels.put(property.propertyID, panel);
-      panels.add(panel);
-      ret.add(panel);
-    }
-    UiUtil.bindColumnAndPanelSizes(getJTable().getColumnModel(), panels);
-
-    final JLabel scrollBarBuffer = new JLabel();
-    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
-    ret.add(scrollBarBuffer);
-
-    return ret;
-  }
-
-  /**
-   * Initializes a PropertySummaryPanel for the given property
-   * @param property the property for which to create a summary panel
-   * @return a PropertySummaryPanel for the given property
-   */
-  protected PropertySummaryPanel initializeSummaryPanel(final Property property) {
-    return new PropertySummaryPanel(getTableModel().getPropertySummaryModel(property));
   }
 
   /**
@@ -668,6 +631,38 @@ public class EntityTablePanel extends JPanel {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
     return ControlFactory.methodControl(getTableModel(), "clear", clearCaption,
             null, null, clearCaption.charAt(0), null, null);
+  }
+
+  /**
+   * Initializes the panel containing the table column summary panels
+   * @return the summary panel
+   */
+  protected JPanel initializeSummaryPanel() {
+    final List<JPanel> panels = new ArrayList<JPanel>();
+    final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
+    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    while (columns.hasMoreElements()) {
+      final Property property = (Property) columns.nextElement().getIdentifier();
+      final PropertySummaryPanel panel = initializeSummaryPanel(property);
+      panels.add(panel);
+      ret.add(panel);
+    }
+    UiUtil.bindColumnAndPanelSizes(getJTable().getColumnModel(), panels);
+
+    final JLabel scrollBarBuffer = new JLabel();
+    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
+    ret.add(scrollBarBuffer);
+
+    return ret;
+  }
+
+  /**
+   * Initializes a PropertySummaryPanel for the given property
+   * @param property the property for which to create a summary panel
+   * @return a PropertySummaryPanel for the given property
+   */
+  protected PropertySummaryPanel initializeSummaryPanel(final Property property) {
+    return new PropertySummaryPanel(getTableModel().getPropertySummaryModel(property));
   }
 
   /**
@@ -700,16 +695,16 @@ public class EntityTablePanel extends JPanel {
       throw new RuntimeException("Unable to create a simple search panel for entity: "
               + getTableModel().getEntityID() + ", no STRING based properties found");
 
-    final JTextField txtField = new JTextField();
+    final JTextField searchField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent event) {
         final CriteriaSet.Conjunction conjunction = getTableModel().getSearchModel().getSearchCriteriaConjunction();
         try {
           getTableModel().getSearchModel().clearPropertySearchModels();
           getTableModel().getSearchModel().setSearchConjunction(CriteriaSet.Conjunction.OR);
-          if (txtField.getText().length() > 0) {
+          if (searchField.getText().length() > 0) {
             final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-            final String searchText = wildcard + txtField.getText() + wildcard;
+            final String searchText = wildcard + searchField.getText() + wildcard;
             for (final Property searchProperty : searchableProperties) {
               final PropertySearchModel searchModel = getTableModel().getSearchModel().getPropertySearchModel(searchProperty.propertyID);
               searchModel.setCaseSensitive(false);
@@ -730,10 +725,10 @@ public class EntityTablePanel extends JPanel {
       }
     };
 
-    txtField.addActionListener(action);
+    searchField.addActionListener(action);
     final JPanel searchPanel = new JPanel(new BorderLayout(5,5));
     searchPanel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
-    searchPanel.add(txtField, BorderLayout.CENTER);
+    searchPanel.add(searchField, BorderLayout.CENTER);
     searchPanel.add(new JButton(action), BorderLayout.EAST);
 
     return searchPanel;
@@ -936,28 +931,29 @@ public class EntityTablePanel extends JPanel {
   }
 
   private List<PropertyFilterPanel> initializeFilterPanels() {
-    final List<PropertyFilterPanel> columnFilterPanels =
+    final List<PropertyFilterPanel> propertyFilterPanels =
             new ArrayList<PropertyFilterPanel>(getTableModel().getSearchModel().getPropertyFilterModels().size());
-    for (final PropertyFilterModel searchModel : getTableModel().getSearchModel().getPropertyFilterModels()) {
-      final PropertyFilterPanel ret = new PropertyFilterPanel(searchModel, true, true);
-      final TableColumn tableColumn = getJTable().getColumnModel().getColumn(searchModel.getColumnIndex());
-      ret.getModel().evtSearchStateChanged.addListener(new ActionListener() {
+    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      final PropertyFilterModel model = getTableModel().getSearchModel().getPropertyFilterModel(((Property) column.getIdentifier()).propertyID);
+      model.evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
-          if (ret.getModel().isSearchEnabled())
-            addFilterIndicator(tableColumn);
+          if (model.isSearchEnabled())
+            addFilterIndicator(column);
           else
-            removeFilterIndicator(tableColumn);
+            removeFilterIndicator(column);
 
           getJTable().getTableHeader().repaint();
         }
       });
-      if (ret.getModel().isSearchEnabled())
-        addFilterIndicator(tableColumn);
+      if (model.isSearchEnabled())
+        addFilterIndicator(column);
 
-      columnFilterPanels.add(ret);
+      propertyFilterPanels.add(new PropertyFilterPanel(model, true, true));
     }
 
-    return columnFilterPanels;
+    return propertyFilterPanels;
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {

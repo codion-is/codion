@@ -722,3 +722,5 @@
   EntityPanel.rowColoring field removed due to the above
   EntityPanel.queryConfigurationAllowed moved to EntityTableModel
   EntityPanel.initializePanel() now returns the EntityPanel instance
+  EntityTablePanel.propertySummaryPanels map field removed, unused
+  common.ui.printing.* deleted

@@ -22,7 +22,6 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
-import org.jminor.common.ui.printing.JPrinter;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -835,7 +834,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   public void printTable() throws UserException {
     try {
       if (entityTablePanel != null)
-        JPrinter.print(entityTablePanel.getJTable());
+        entityTablePanel.getJTable().print();
 
       prepareUI(true, false);
     }

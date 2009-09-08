@@ -15,7 +15,6 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.common.ui.printing.JPrinter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,15 +32,13 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.PrintJob;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -170,23 +167,11 @@ public class ExceptionDialog extends JDialog {
   }
 
   public void printErrorReport() {
-    Graphics pg = null;
     try {
-      final PrintJob pjob = getToolkit().getPrintJob((Frame) ownerFrame, null, null);
-      if (pjob != null) {
-        pg = pjob.getGraphics();
-        if (pg != null) {
-          JPrinter.printLongString(pjob, pg, detailsArea.getText());
-        }
-        pjob.end();
-      }
+      detailsArea.print();
     }
-    catch (IOException e) {
+    catch (PrinterException e) {
       e.printStackTrace();
-    }
-    finally {
-      if (pg != null)
-        pg.dispose();
     }
   }
 
