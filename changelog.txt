@@ -717,3 +717,8 @@
   EntityTableModel.getPropertySummaryModel(propertyID/Property) created
   EntityTableModel.propertySummaryModels map field introduced
   EntityTableSearchModel.stSimpleSearch converted to a simple boolean, with a getter, added to constructor as well
+  EntityPanel.detailEntityPanelProviders Map renamed to detailEntityPanels and turned into a List
+  EntityPanel constructor now initializes the EntityTablePanel and calls setupControls()
+  EntityPanel.rowColoring field removed due to the above
+  EntityPanel.queryConfigurationAllowed moved to EntityTableModel
+  EntityPanel.initializePanel() now returns the EntityPanel instance

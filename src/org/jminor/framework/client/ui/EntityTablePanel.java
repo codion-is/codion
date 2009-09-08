@@ -167,7 +167,7 @@ public class EntityTablePanel extends JPanel {
    * @param popupControls a ControlSet on which the table popup menu is based
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls) {
-    this(tableModel, popupControls, false, true);
+    this(tableModel, popupControls, false);
   }
 
   /**
@@ -178,18 +178,6 @@ public class EntityTablePanel extends JPanel {
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
                           final boolean rowColoring) {
-    this(tableModel, popupControls, rowColoring, true);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param popupControls a ControlSet on which the table popup menu is based
-   * @param rowColoring true if each row should be colored according to the underlying entity
-   * @param allowQueryConfiguration true if the underlying query should be configurable
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
-                          final boolean rowColoring, final boolean allowQueryConfiguration) {
     if (tableModel == null)
       throw new IllegalArgumentException("EntityTablePanel can not be constructed without a EntityTableModel instance");
     this.tableModel = tableModel;
@@ -197,7 +185,7 @@ public class EntityTablePanel extends JPanel {
     this.tableScrollPane = new JScrollPane(entityTable);
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
-    initializeUI(allowQueryConfiguration, popupControls);
+    initializeUI(popupControls);
     bindEvents();
     updateStatusMessage();
   }
@@ -544,10 +532,9 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes the UI
-   * @param allowQueryConfiguration true if the underlying query should be configurable
    * @param tablePopupControls the ControlSet on which to base the table's popup menu
    */
-  protected void initializeUI(final boolean allowQueryConfiguration, final ControlSet tablePopupControls) {
+  protected void initializeUI(final ControlSet tablePopupControls) {
     final JPanel base = new JPanel(new BorderLayout());
     setLayout(new BorderLayout());
     if (searchPanel != null) {
@@ -567,7 +554,7 @@ public class EntityTablePanel extends JPanel {
           }
         }
       });
-      if (allowQueryConfiguration) {
+      if (tableModel.isQueryConfigurationAllowed()) {
         final ControlSet searchControls = ((EntityTableSearchPanel)searchPanel).getControls();
         searchControls.addAt(ControlFactory.toggleControl(this, "searchPanelVisible",
                 FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibleChanged), 0);
@@ -600,7 +587,7 @@ public class EntityTablePanel extends JPanel {
       base.add(summaryScrollPaneBase, BorderLayout.SOUTH);
     }
 
-    final JPanel southPanel = initializeSouthPanel(allowQueryConfiguration);
+    final JPanel southPanel = initializeSouthPanel(tableModel.isQueryConfigurationAllowed());
     if (southPanel != null) {
       final JPanel southBase = new JPanel(new BorderLayout(5,5));
       southBase.setBorder(BorderFactory.createEtchedBorder());

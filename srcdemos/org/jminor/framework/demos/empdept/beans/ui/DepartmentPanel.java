@@ -28,7 +28,7 @@ import java.util.List;
 public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
-    super(model, EmpDept.getString(EmpDept.T_DEPARTMENT), true, false, false, EMBEDDED, true, true);
+    super(model, EmpDept.getString(EmpDept.T_DEPARTMENT), true, false, false, EMBEDDED, true);
   }
 
   public void viewEmployeeReport() throws Exception {

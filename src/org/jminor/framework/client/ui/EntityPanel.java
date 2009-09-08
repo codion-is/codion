@@ -77,7 +77,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -130,19 +129,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
-   * true if this EntityPanel allows its underlying query to be configured
-   */
-  private final boolean queryConfigurationAllowed;
-
-  /**
    * true if this panel should be compact
    */
   private final boolean compactLayout;
-
-  /**
-   * true if the rows in the table (if any) should be colored according to the underlying entity
-   */
-  private final boolean rowColoring;
 
   /**
    * true if the data should be refreshed (fetched from the database) during initialization
@@ -155,9 +144,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final String buttonPlacement;
 
   /**
-   * A map containing the detail panels mapped to their respective provider, if any
+   * The caption to use when presenting this entity panel
    */
-  private final Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders;
+  private final String caption;
 
   /**
    * The EntityModel instance used by this EntityPanel
@@ -165,14 +154,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   private final EntityModel model;
 
   /**
-   * The caption to use when presenting this entity panel
-   */
-  private final String caption;
-
-  /**
    * The EntityTablePanel instance used by this EntityPanel
    */
-  private EntityTablePanel entityTablePanel;
+  private final EntityTablePanel entityTablePanel;
+
+  /**
+   * A List containing the detail panels, if any
+   */
+  private final List<EntityPanel> detailEntityPanels;
 
   /**
    * The edit panel which contains the controls required for editing a entity
@@ -303,23 +292,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState) {
-    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, true);
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
-   * @param model the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
-   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
-   * otherwise vertically on its right side
-   * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
-   * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
-   */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit, final boolean rowColoring,
-                     final boolean horizontalButtons, final int detailPanelState, final boolean queryConfigurationAllowed) {
-    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, queryConfigurationAllowed, false);
+    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, false);
   }
 
   /**
@@ -331,12 +304,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
-   * @param queryConfigurationAllowed true if this panel should allow it's underlying query to be configured
    * @param compactLayout true if this panel should be laid out in a compact state
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState,
-                     final boolean queryConfigurationAllowed, final boolean compactLayout) {
+                     final boolean compactLayout) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
     if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE))
@@ -344,12 +316,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     this.model = model;
     this.caption = caption;
     this.refreshOnInit = refreshOnInit;
-    this.rowColoring = rowColoring;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
-    this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.detailPanelState = detailPanelState;
     this.compactLayout = compactLayout;
-    this.detailEntityPanelProviders = initializeDetailPanels();
+    this.detailEntityPanels = initializeDetailPanels();
+    setupControls();
+    this.entityTablePanel = model.containsTableModel() ? initializeEntityTablePanel(rowColoring) : null;
     this.stActive.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         if (isActive()) {
@@ -380,36 +352,37 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * Initializes this EntityPanel, in case of some specific initialization code, to show the search panel for example,
    * you can override the <code>initialize()</code> method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
+   * @return this EntityPanel instance
    * @see #initialize()
    * @see #isPanelInitialized()
    */
-  public void initializePanel() {
-    if (isPanelInitialized())
-      return;
+  public EntityPanel initializePanel() {
+    if (!isPanelInitialized()) {
+      try {
+        UiUtil.setWaitCursor(true, this);
+        initializeAssociatedPanels();
+        initializeControlPanels();
+        bindEvents();
+        bindTableModelEvents();
+        initializeUI();
+        bindTablePanelEvents();
+        initialize();
 
-    try {
-      UiUtil.setWaitCursor(true, this);
-      initializeAssociatedPanels();
-      setupControls();
-      initializeControlPanels();
-      bindEvents();
-      bindTableModelEvents();
-      initializeUI();
-      bindTablePanelEvents();
-      initialize();
+        if (refreshOnInit)
+          getModel().refresh();//refreshes combo models
+        else
+          getModel().refreshComboBoxModels();
+      }
+      catch (UserException e) {
+        throw e.getRuntimeException();
+      }
+      finally {
+        panelInitialized = true;
+        UiUtil.setWaitCursor(false, this);
+      }
+    }
 
-      if (refreshOnInit)
-        getModel().refresh();//refreshes combo models
-      else
-        getModel().refreshComboBoxModels();
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
-    finally {
-      panelInitialized = true;
-      UiUtil.setWaitCursor(false, this);
-    }
+    return this;
   }
 
   /**
@@ -418,13 +391,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   public boolean isPanelInitialized() {
     return panelInitialized;
-  }
-
-  /**
-   * @return true if this EntityPanel allows the underlying EntityTableModel query to be configured
-   */
-  public boolean isQueryConfigurationAllowed() {
-    return queryConfigurationAllowed;
   }
 
   /**
@@ -463,7 +429,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return a List containing the detail EntityPanels, if any
    */
   public List<EntityPanel> getDetailPanels() {
-    return new ArrayList<EntityPanel>(detailEntityPanelProviders.values());
+    return detailEntityPanels;
   }
 
   /**
@@ -491,7 +457,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return the detail panel of the given type
    */
   public EntityPanel getDetailPanel(final Class<? extends EntityPanel> detailPanelClass) {
-    for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
+    for (final EntityPanel detailPanel : detailEntityPanels)
       if (detailPanel.getClass().equals(detailPanelClass))
         return detailPanel;
 
@@ -576,7 +542,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
       getSelectedDetailPanel().initializePanel();
 
     if (detailPanelState == DIALOG)//if we are leaving the DIALOG state, hide all child detail dialogs
-      for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
+      for (final EntityPanel detailPanel : detailEntityPanels)
         if (detailPanel.getDetailPanelState() == DIALOG)
           detailPanel.setDetailPanelState(HIDDEN);
 
@@ -637,7 +603,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
 
     if (entityTablePanel != null)
       entityTablePanel.setFilterPanelsVisible(value);
-    for (final EntityPanel detailEntityPanel : detailEntityPanelProviders.values())
+    for (final EntityPanel detailEntityPanel : detailEntityPanels)
       detailEntityPanel.setFilterPanelsVisible(value);
   }
 
@@ -1159,7 +1125,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final EntityModel entityModel = new EntityModel(entityID, dbProvider) {
       @Override
       protected EntityTableModel initializeTableModel() {
-        return new EntityTableModel(entityID, dbProvider) {
+        return new EntityTableModel(entityID, dbProvider, false) {
           @Override
           protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
             return entities;
@@ -1167,10 +1133,10 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         };
       }
     };
-    final EntityPanel ret = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED, false) {
+    final EntityPanel ret = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED) {
       @Override
       protected EntityTablePanel initializeEntityTablePanel(final boolean rowColoring) {
-        return new EntityTablePanel(entityModel.getTableModel(), getTablePopupControlSet(), false, false) {
+        return new EntityTablePanel(entityModel.getTableModel(), getTablePopupControlSet(), false) {
           @Override
           protected JPanel initializeSearchPanel() {
             return null;
@@ -1236,14 +1202,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    */
   protected void initializeUI() {
     editPanel = initializeEditPanel();
-    entityTablePanel = getModel().containsTableModel() ? initializeEntityTablePanel(rowColoring) : null;
     if (entityTablePanel != null) {
       entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
-    horizontalSplitPane = detailEntityPanelProviders.size() > 0 ? initializeHorizontalSplitPane() : null;
-    detailPanelTabbedPane = detailEntityPanelProviders.size() > 0 ? initializeDetailTabPane() : null;
+    horizontalSplitPane = detailEntityPanels.size() > 0 ? initializeHorizontalSplitPane() : null;
+    detailPanelTabbedPane = detailEntityPanels.size() > 0 ? initializeDetailTabPane() : null;
 
     setLayout(new BorderLayout(5,5));
     if (detailPanelTabbedPane == null) { //no left right split pane
@@ -1408,7 +1373,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
     final JTabbedPane ret = new JTabbedPane();
     ret.setFocusable(false);
     ret.setUI(new BorderlessTabbedPaneUI());
-    for (final EntityPanel detailPanel : detailEntityPanelProviders.values())
+    for (final EntityPanel detailPanel : detailEntityPanels)
       ret.addTab(detailPanel.getCaption(), detailPanel);
 
     ret.addChangeListener(new ChangeListener() {
@@ -1461,25 +1426,24 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected void initialize() {}
 
   /**
-   * Instantiates the detail panels and associates them with their respective
-   * EntityPanelProviders in the <code>detailEntityPanelProviders</code> map
-   * @return a Map mapping a EntityPanels to their respective EntityPanelProviders
+   * Instantiates the detail panels according to the result of <code>getDetailPanelProviders</code> method.
+   * This method should return an empty List instead of null if overridden.
+   * @return a List containing the detail EntityPanels
    */
-  protected Map<EntityPanelProvider, EntityPanel> initializeDetailPanels() {
+  protected List<EntityPanel> initializeDetailPanels() {
     try {
-      final Map<EntityPanelProvider, EntityPanel> detailEntityPanelProviders = new LinkedHashMap<EntityPanelProvider, EntityPanel>();
-      final List<EntityPanelProvider> detailPanelProviders = getDetailPanelProviders();
-      for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
+      final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
+      for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
         final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getEntityModelClass());
         if (detailModel == null)
           throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
                   + " not found in model of type " + getModel().getClass());
         final EntityPanel detailPanel = detailPanelProvider.createInstance(detailModel);
         detailPanel.setMasterPanel(this);
-        detailEntityPanelProviders.put(detailPanelProvider, detailPanel);
+        detailEntityPanels.add(detailPanel);
       }
 
-      return detailEntityPanelProviders;
+      return detailEntityPanels;
     }
     catch (UserException e) {
       throw e.getRuntimeException();
@@ -1493,8 +1457,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return the table panel
    */
   protected EntityTablePanel initializeEntityTablePanel(final boolean rowColoring) {
-    return new EntityTablePanel(getModel().getTableModel(), getTablePopupControlSet(),
-            rowColoring, isQueryConfigurationAllowed());
+    return new EntityTablePanel(getModel().getTableModel(), getTablePopupControlSet(),rowColoring);
   }
 
   /**
@@ -1568,7 +1531,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
         setControl(MENU_DELETE, getDeleteSelectedControl());
       setControl(PRINT, getPrintControl());
       setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-      if (isQueryConfigurationAllowed())
+      if (getModel().getTableModel().isQueryConfigurationAllowed())
         setControl(CONFIGURE_QUERY, getConfigureQueryControl());
       setControl(SELECT_COLUMNS, getSelectColumnsControl());
     }
@@ -1580,7 +1543,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected ControlSet getTablePopupControlSet() {
     boolean seperatorRequired = false;
     final ControlSet ret = new ControlSet("");
-    if (detailEntityPanelProviders.size() > 0) {
+    if (detailEntityPanels.size() > 0) {
       ret.add(getDetailPanelControls(EMBEDDED));
       seperatorRequired = true;
     }
@@ -1638,7 +1601,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   protected Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
       public void actionPerformed(final ActionEvent event) {
-        if (editPanel != null || detailEntityPanelProviders.size() > 0) {
+        if (editPanel != null || detailEntityPanels.size() > 0) {
           if (editPanel != null && getEditPanelState() == HIDDEN)
             setEditPanelState(DIALOG);
           else if (getDetailPanelState() == HIDDEN)
@@ -1654,11 +1617,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return a ControlSet for controlling the state of the detail panels
    */
   protected ControlSet getDetailPanelControls(final int status) {
-    if (detailEntityPanelProviders.size() == 0)
+    if (detailEntityPanels.size() == 0)
       return null;
 
     final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
-    for (final EntityPanel detailPanel : detailEntityPanelProviders.values()) {
+    for (final EntityPanel detailPanel : detailEntityPanels) {
       ret.add(new Control(detailPanel.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -1937,7 +1900,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
    * @return a search panel toggle button
    */
   private JButton getSearchButton(final EntityTablePanel tablePanel) {
-    if (!isQueryConfigurationAllowed())
+    if (!tablePanel.getTableModel().isQueryConfigurationAllowed())
       return null;
 
     final JButton ret = new JButton(new Control() {
@@ -2048,7 +2011,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private JButton getToggleDetaiPanelButton() {
-    if (detailEntityPanelProviders.size() == 0)
+    if (detailEntityPanels.size() == 0)
       return null;
 
     final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",

@@ -139,6 +139,11 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private final TableSorter tableSorter;
 
   /**
+   * True if the underlying query should be configurable by the user
+   */
+  private final boolean queryConfigurationAllowed;
+
+  /**
    * Holds the selected items while sorting
    */
   private List<EntityKey> selectedPrimaryKeys;
@@ -204,12 +209,24 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @param dbProvider a IEntityDbProvider instance
    */
   public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider) {
+    this(entityID, dbProvider, true);
+  }
+
+  /**
+   * Initializes a new EntityTableModel
+   * @param entityID the ID of the entity this table model should represent
+   * @param dbProvider a IEntityDbProvider instance
+   * @param queryConfigurationAllowed true if the underlying query should be configurable by the user
+   */
+  public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider,
+                          final boolean queryConfigurationAllowed) {
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider can not be null");
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.queryConfigurationAllowed = queryConfigurationAllowed;
     this.tableColumnProperties = initializeColumnProperties();
     this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);
@@ -228,6 +245,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public boolean isQueryFilteredByMaster() {
     return queryFilteredByMaster;
+  }
+
+  /**
+   * @return true if the underlying query should be configurable by the user
+   */
+  public boolean isQueryConfigurationAllowed() {
+    return queryConfigurationAllowed;
   }
 
   /**
