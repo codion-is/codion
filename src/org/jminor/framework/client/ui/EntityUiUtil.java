@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
@@ -33,7 +33,7 @@ import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
 import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -68,15 +68,15 @@ import java.util.Vector;
 
 public class EntityUiUtil {
 
-  private static IEntityExceptionHandler exceptionHandler = new DefaultEntityExceptionHandler();
+  private static EntityExceptionHandler exceptionHandler = new DefaultEntityExceptionHandler();
 
   private EntityUiUtil() {}
 
-  public static void setExceptionHandler(final IEntityExceptionHandler handler) {
+  public static void setExceptionHandler(final EntityExceptionHandler handler) {
     exceptionHandler = handler;
   }
 
-  public static IEntityExceptionHandler getExceptionHandler() {
+  public static EntityExceptionHandler getExceptionHandler() {
     return exceptionHandler;
   }
 
@@ -324,7 +324,7 @@ public class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityModel entityModel,
-                                                          final ICriteria additionalSearchCriteria,
+                                                          final Criteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.referenceEntityID);
@@ -533,7 +533,7 @@ public class EntityUiUtil {
   }
 
   public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
-                                           final Property property, final IEntityDbProvider dbProvider) {
+                                           final Property property, final EntityDbProvider dbProvider) {
     try {
       final List<?> values = dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true);
       final DefaultListModel listModel = new DefaultListModel();
@@ -605,7 +605,7 @@ public class EntityUiUtil {
   }
 
   public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
-                                     final IEntityDbProvider dbProvider) {
+                                     final EntityDbProvider dbProvider) {
     txtField.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
@@ -618,11 +618,11 @@ public class EntityUiUtil {
     });
   }
 
-  public static interface IEntityExceptionHandler {
+  public static interface EntityExceptionHandler {
     public void handleException(final Throwable exception, final JComponent dialogParent);
   }
 
-  public static class DefaultEntityExceptionHandler implements IEntityExceptionHandler {
+  public static class DefaultEntityExceptionHandler implements EntityExceptionHandler {
 
     public void handleException(final Throwable exception, final JComponent dialogParent) {
       if (exception instanceof UserCancelException)

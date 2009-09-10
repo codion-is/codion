@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDbLocalProvider;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class EntityLookupModelTest extends TestCase {
 
-  private IEntityDbProvider dbProvider;
+  private EntityDbProvider dbProvider;
   private EntityLookupModel lookupModel;
 
   public void testLookupModel() throws Exception {

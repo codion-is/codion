@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class encapsulating a set of ICriteria objects, that should be either AND'ed
+ * A class encapsulating a set of Criteria objects, that should be either AND'ed
  * or OR'ed together in a query context
  */
-public class CriteriaSet implements ICriteria, Serializable {
+public class CriteriaSet implements Criteria, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -43,7 +43,7 @@ public class CriteriaSet implements ICriteria, Serializable {
   /**
    * The criterias in this set
    */
-  private final List<ICriteria> criterias = new ArrayList<ICriteria>();
+  private final List<Criteria> criterias = new ArrayList<Criteria>();
 
   /**
    * Initializes a new CriteriaSet instance
@@ -56,19 +56,19 @@ public class CriteriaSet implements ICriteria, Serializable {
   /**
    * Initializes a new CriteriaSet instance
    * @param conjunction the conjunction to use
-   * @param criterias the ICriteria objects to be included in this set
+   * @param criterias the Criteria objects to be included in this set
    */
-  public CriteriaSet(final Conjunction conjunction, final ICriteria... criterias) {
+  public CriteriaSet(final Conjunction conjunction, final Criteria... criterias) {
     this.conjunction = conjunction;
-    for (final ICriteria criteria : criterias)
+    for (final Criteria criteria : criterias)
       addCriteria(criteria);
   }
 
   /**
-   * Adds a new ICriteria object to this set
-   * @param criteria the ICriteria to add
+   * Adds a new Criteria object to this set
+   * @param criteria the Criteria to add
    */
-  public void addCriteria(final ICriteria criteria) {
+  public void addCriteria(final Criteria criteria) {
     if (criteria != null)
       this.criterias.add(criteria);
   }
@@ -88,7 +88,7 @@ public class CriteriaSet implements ICriteria, Serializable {
 
     final StringBuilder ret = new StringBuilder(criterias.size() > 1 ? "(" : "");
     int i = 0;
-    for (final ICriteria criteria : criterias) {
+    for (final Criteria criteria : criterias) {
       ret.append(criteria.toString());
       if (i++ < criterias.size()-1)
         ret.append(conjunction.toString());

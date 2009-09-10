@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
@@ -14,7 +14,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
-import org.jminor.common.ui.IExceptionHandler;
+import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -25,7 +25,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -84,7 +84,7 @@ import java.util.Vector;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
  */
-public abstract class EntityPanel extends EntityBindingPanel implements IExceptionHandler {
+public abstract class EntityPanel extends EntityBindingPanel implements ExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
 
@@ -1084,12 +1084,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Creates a static entity panel showing the given entities
    * @param entities the entities to show in the panel
-   * @param dbProvider the IEntityDbProvider, in case the returned panel should require one
+   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
    * @return a static EntityPanel showing the given entities
    * @throws UserException in case of an exception
    */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
-                                                    final IEntityDbProvider dbProvider) throws UserException {
+                                                    final EntityDbProvider dbProvider) throws UserException {
     if (entities == null || entities.size() == 0)
       throw new UserException("Cannot create an EntityPanel without the entities");
 
@@ -1099,13 +1099,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Creates a static entity panel showing the given entities
    * @param entities the entities to show in the panel
-   * @param dbProvider the IEntityDbProvider, in case the returned panel should require one
+   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
    * @param entityID the entityID
    * @return a static EntityPanel showing the given entities
    * @throws UserException in case of an exception
    */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
-                                                    final IEntityDbProvider dbProvider,
+                                                    final EntityDbProvider dbProvider,
                                                     final String entityID) throws UserException {
     return createStaticEntityPanel(entities, dbProvider, entityID, true);
   }
@@ -1113,20 +1113,20 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   /**
    * Creates a static entity panel showing the given entities
    * @param entities the entities to show in the panel
-   * @param dbProvider the IEntityDbProvider, in case the returned panel should require one
+   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
    * @param entityID the entityID
    * @param includePopupMenu if true then the default popup menu is included in the table panel, otherwise it's hidden
    * @return a static EntityPanel showing the given entities
    * @throws UserException in case of an exception
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final IEntityDbProvider dbProvider,
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) throws UserException {
     final EntityModel entityModel = new EntityModel(entityID, dbProvider) {
       @Override
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider, false) {
           @Override
-          protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
+          protected List<Entity> performQuery(final Criteria criteria) throws DbException, UserException {
             return entities;
           }
         };
@@ -2111,7 +2111,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
-                                             final IEntityDbProvider dbProvider,
+                                             final EntityDbProvider dbProvider,
                                              final JComponent dialogParent) throws UserException {
     JPanel dependenciesPanel;
     try {
@@ -2126,7 +2126,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements IExcepti
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
-                                                final IEntityDbProvider dbProvider) throws UserException {
+                                                final EntityDbProvider dbProvider) throws UserException {
     try {
       final JPanel ret = new JPanel(new BorderLayout());
       final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);

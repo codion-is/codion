@@ -5,7 +5,7 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.User;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -18,11 +18,11 @@ import java.util.Collection;
  */
 public class ConnectionPoolMonitor {
 
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
 
   private Collection<ConnectionPoolInstanceMonitor> connectionPoolInstanceMonitors = new ArrayList<ConnectionPoolInstanceMonitor>();
 
-  public ConnectionPoolMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
+  public ConnectionPoolMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }

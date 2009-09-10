@@ -11,7 +11,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class MySQLDatabase implements IDatabase {
+public class MySQLDatabase implements Dbms {
 
   private static final DateFormat TIMESTAMP_FORMAT = new TimestampFormat();
   private static final DateFormat DATE_FORMAT = new ShortDashDateFormat();

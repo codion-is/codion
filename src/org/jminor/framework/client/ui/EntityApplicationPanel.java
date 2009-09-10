@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.IDatabase;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
@@ -12,7 +12,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.ExceptionDialog;
-import org.jminor.common.ui.IExceptionHandler;
+import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -24,7 +24,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public abstract class EntityApplicationPanel extends JPanel implements IExceptionHandler {
+public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityApplicationPanel.class);
 
@@ -464,7 +464,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
    * The corresponding EntityModel objects should be returned by the
    * EntityApplicationModel.initializeMainApplicationModels() method
    * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
-   * @see org.jminor.framework.client.model.EntityApplicationModel#initializeMainApplicationModels(org.jminor.framework.db.IEntityDbProvider) ()
+   * @see org.jminor.framework.client.model.EntityApplicationModel#initializeMainApplicationModels(org.jminor.framework.db.EntityDbProvider) ()
    */
   protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
     return new ArrayList<EntityPanelProvider>(0);
@@ -558,7 +558,7 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     final Properties properties =
             getModel().getDbProvider().getEntityDb().getUser().getProperties();
     return frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(IDatabase.DATABASE_SID) : null);
+            properties != null ? properties.getProperty(Dbms.DATABASE_SID) : null);
   }
 
   protected JPanel initializeStartupProgressPane(final Icon icon) {
@@ -894,12 +894,12 @@ public abstract class EntityApplicationPanel extends JPanel implements IExceptio
     return user;
   }
 
-  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final IEntityDbProvider dbProvider,
+  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
                                             final JPanel owner) throws UserException {
     showEntityPanelDialog(panelProvider, dbProvider, owner, false);
   }
 
-  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final IEntityDbProvider dbProvider,
+  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
                                             final JPanel owner, final boolean modalDialog) throws UserException {
     final JDialog dialog;
     try {

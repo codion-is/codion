@@ -25,14 +25,14 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
    * Constructs a new ItemComboBoxModel
    * @param items the items
    */
-  public ItemComboBoxModel(final IItem... items) {
+  public ItemComboBoxModel(final Item... items) {
     initializeItems(items);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Object item) {
-    if (!(item instanceof IItem))
+    if (!(item instanceof Item))
       super.setSelectedItem(getElementAt(indexOf(item)));
     else
       super.setSelectedItem(item);
@@ -44,9 +44,9 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     return indexOf(item);
   }
 
-  protected void initializeItems(final IItem[] items) {
+  protected void initializeItems(final Item[] items) {
     if (items != null) {
-      for (final IItem item : items)
+      for (final Item item : items)
         super.addElement(item);
     }
   }
@@ -54,25 +54,14 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
   private int indexOf(final Object item) {
     final int size = getSize();
     for (int i = 0; i < size; i++) {
-      if (Util.equal(((IItem)getElementAt(i)).getItem(), item))
+      if (Util.equal(((Item)getElementAt(i)).getItem(), item))
         return i;
     }
 
     return -1;
   }
 
-  public interface IItem<T> {
-    /**
-     * @return the actual item
-     */
-    public T getItem();
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString();
-  }
-
-  public static class Item<T> implements IItem<T> {
+  public static class Item<T> {
 
     private final T item;
     private final String caption;
@@ -101,16 +90,14 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     }
   }
 
-  public static class IconItem implements Icon, IItem<Object> {
+  public static class IconItem extends Item<Object> implements Icon {
 
-    private final Object item;
     private final ImageIcon icon;
 
     public IconItem(final Object item, final ImageIcon icon) {
+      super(item, null);
       if (icon == null)
         throw new IllegalArgumentException("ItemComboBoxModel.IconItem must have an icon");
-
-      this.item = item;
       this.icon = icon;
     }
 
@@ -130,14 +117,9 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     }
 
     /** {@inheritDoc} */
-    public Object getItem() {
-      return item;
-    }
-
-    /** {@inheritDoc} */
     @Override
     public String toString() {
-      return item.toString();
+      return getItem().toString();
     }
   }
 }

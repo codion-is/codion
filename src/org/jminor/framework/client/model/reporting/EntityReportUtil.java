@@ -1,6 +1,6 @@
 package org.jminor.framework.client.model.reporting;
 
-import org.jminor.framework.db.IEntityDb;
+import org.jminor.framework.db.EntityDb;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -22,14 +22,14 @@ public class EntityReportUtil {
 
   /**
    * Takes a path to a JasperReport which uses a JDBC datasource and returns an initialized JasperPrint object
-   * @param entityDb the IEntityDb instance to use when filling the report
+   * @param entityDb the EntityDb instance to use when filling the report
    * @param reportPath the path to the report to fill
    * @param reportParameters the report parameters
    * @return an initialized JasperPrint object
    * @throws net.sf.jasperreports.engine.JRException in case of a report exception
    * @throws Exception in case of exception
    */
-  public static JasperPrint fillJdbcReport(final IEntityDb entityDb, final String reportPath,
+  public static JasperPrint fillJdbcReport(final EntityDb entityDb, final String reportPath,
                                            final Map reportParameters) throws Exception {
     return entityDb.fillReport(loadJasperReport(reportPath), reportParameters);
   }

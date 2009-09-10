@@ -5,7 +5,7 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import java.rmi.RemoteException;
 
@@ -17,9 +17,9 @@ import java.rmi.RemoteException;
 public class ClientInstanceMonitor {
 
   private final ClientInfo client;
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
 
-  public ClientInstanceMonitor(final ClientInfo client, final IEntityDbRemoteServerAdmin server) {
+  public ClientInstanceMonitor(final ClientInfo client, final EntityDbServerAdmin server) {
     this.client = client;
     this.server = server;
   }

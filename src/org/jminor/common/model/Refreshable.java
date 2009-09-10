@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-public interface IRefreshable {
-
+public interface Refreshable {
   public void refresh() throws UserException;
 }

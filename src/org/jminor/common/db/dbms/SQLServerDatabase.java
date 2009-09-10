@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * Works for SQL Server 2000 and higher
  */
-public class SQLServerDatabase implements IDatabase {
+public class SQLServerDatabase implements Dbms {
 
   private final DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");//105
 

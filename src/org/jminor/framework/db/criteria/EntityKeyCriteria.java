@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.ICriteria;
+import org.jminor.common.db.Criteria;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * A class encapsulating a query criteria with EntityKey objects as values
  */
-public class EntityKeyCriteria implements ICriteria, Serializable {
+public class EntityKeyCriteria implements Criteria, Serializable {
 
   private static final long serialVersionUID = 1;
 

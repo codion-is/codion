@@ -6,21 +6,21 @@ package org.jminor.framework.db;
 import org.jminor.common.model.UserException;
 
 /**
- * Interface for a class responsible for providing IEntityDb objects
+ * Interface for a class responsible for providing EntityDb objects
  * User: darri
  * Date: 9.5.2005
  * Time: 11:39:13
  */
-public interface IEntityDbProvider {
+public interface EntityDbProvider {
 
   /**
-   * Provides a IEntityDb object, is responsible for returning a
-   * healthy IEntityDb object, that is, it must perform all
+   * Provides a EntityDb object, is responsible for returning a
+   * healthy EntityDb object, that is, it must perform all
    * reconnections whether remotely or locally
-   * @return IEntityDb
+   * @return EntityDb
    * @throws UserException in case of a problem
    */
-  public IEntityDb getEntityDb() throws UserException;
+  public EntityDb getEntityDb() throws UserException;
 
   /**
    * Logs out, disconnects and performs cleanup if required

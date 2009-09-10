@@ -8,7 +8,7 @@ import javax.swing.Action;
 /**
  * Used when handling sets of Controls
  */
-public interface IControlIterator {
+public interface ControlIterator {
 
   public void handleSeparator();
 

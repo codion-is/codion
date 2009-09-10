@@ -11,8 +11,8 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.EntityDbProviderFactory;
-import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 public abstract class EntityTestUnit extends TestCase {
 
-  private IEntityDbProvider dbConnectionProvider;
+  private EntityDbProvider dbConnectionProvider;
   private final HashMap<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   public EntityTestUnit() {
@@ -53,11 +53,11 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /**
-   * @return the IEntityDbProvider instance this test case should use
+   * @return the EntityDbProvider instance this test case should use
    * @throws UserException in case of an exception
    * @throws UserCancelException in case the login was cancelled
    */
-  protected IEntityDbProvider initializeDbConnectionProvider() throws UserException, UserCancelException {
+  protected EntityDbProvider initializeDbConnectionProvider() throws UserException, UserCancelException {
     return EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName());
   }
 
@@ -72,9 +72,9 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /**
-   * @return the IEntityDb instance used by this EntityTestUnit
+   * @return the EntityDb instance used by this EntityTestUnit
    */
-  protected IEntityDbProvider getDbConnectionProvider() {
+  protected EntityDbProvider getDbConnectionProvider() {
     return dbConnectionProvider;
   }
 

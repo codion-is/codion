@@ -51,7 +51,7 @@ public class DbUtil {
     }
   }
 
-  public static final IResultPacker<Integer> INT_PACKER = new IResultPacker<Integer>() {
+  public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
     public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final ArrayList<Integer> ret = new ArrayList<Integer>();
       int counter = 0;
@@ -62,7 +62,7 @@ public class DbUtil {
     }
   };
 
-  public static final IResultPacker<String> STRING_PACKER = new IResultPacker<String>() {
+  public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
     public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
       final ArrayList<String> ret = new ArrayList<String>();
       int counter = 0;

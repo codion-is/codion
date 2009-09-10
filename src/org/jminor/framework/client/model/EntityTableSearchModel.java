@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -62,12 +62,12 @@ public class EntityTableSearchModel {
    * assumed to belong to the entity identified by <code>entityID</code>
    * @param searchableProperties properties that are searchable via the database, that is,
    * properties that map to database columns, assumed to belong to the entity identified by <code>entityID</code>
-   * @param dbProvider a IEntityDbProvider instance, required if <code>searchableProperties</code> include
+   * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
   public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
-                                final List<Property> searchableProperties, final IEntityDbProvider dbProvider,
+                                final List<Property> searchableProperties, final EntityDbProvider dbProvider,
                                 final boolean simpleSearch) {
     if (entityID == null)
       throw new IllegalArgumentException("entityID must be specified");
@@ -245,7 +245,7 @@ public class EntityTableSearchModel {
   /**
    * @return the current criteria based on the state of the search models
    */
-  public ICriteria getSearchCriteria() {
+  public Criteria getSearchCriteria() {
     final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
     for (final AbstractSearchModel criteria : propertySearchModels)
       if (criteria.isSearchEnabled())
@@ -282,10 +282,10 @@ public class EntityTableSearchModel {
 
   /**
    * @param properties the properties for which to initialize PropertySearchModels
-   * @param dbProvider the IEntityDbProvider to use for foreign key based fields, such as combo boxes
+   * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
    * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
    */
-  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final IEntityDbProvider dbProvider) {
+  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final EntityDbProvider dbProvider) {
     final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
     for (final Property property : properties) {
       PropertySearchModel searchModel;

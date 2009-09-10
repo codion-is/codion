@@ -16,12 +16,12 @@ import java.util.Map;
  * Date: 4.3.2005
  * Time: 10:59:16
  */
-public interface IEntityDbRemoteServer extends Remote {
+public interface EntityDbServer extends Remote {
 
   public final String SERVER_ADMIN_SUFFIX = "-admin";
 
-  public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                 final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException;
+  public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
+                                final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException;
 
   /**
    * @return the server name

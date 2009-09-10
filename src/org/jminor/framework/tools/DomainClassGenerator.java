@@ -4,7 +4,7 @@
 package org.jminor.framework.tools;
 
 import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.IResultPacker;
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
@@ -151,7 +151,7 @@ public class DomainClassGenerator {
     }
   }
 
-  static class SchemaPacker implements IResultPacker<Schema> {
+  static class SchemaPacker implements ResultPacker<Schema> {
     public List<Schema> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Schema> ret = new ArrayList<Schema>();
       int counter = 0;
@@ -177,7 +177,7 @@ public class DomainClassGenerator {
     }
   }
 
-  static class TablePacker implements IResultPacker<Table> {
+  static class TablePacker implements ResultPacker<Table> {
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> ret = new ArrayList<Table>();
       int counter = 0;
@@ -207,7 +207,7 @@ public class DomainClassGenerator {
     }
   }
 
-  static class ColumnPacker implements IResultPacker<Column> {
+  static class ColumnPacker implements ResultPacker<Column> {
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> ret = new ArrayList<Column>();
       int counter = 0;
@@ -246,7 +246,7 @@ public class DomainClassGenerator {
     }
   }
 
-  static class ForeignKeyPacker implements IResultPacker<ForeignKey> {
+  static class ForeignKeyPacker implements ResultPacker<ForeignKey> {
     public List<ForeignKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKey> ret = new ArrayList<ForeignKey>();
       int counter = 0;
@@ -279,7 +279,7 @@ public class DomainClassGenerator {
     }
   }
 
-  static class PrimaryKeyPacker implements IResultPacker<PrimaryKey> {
+  static class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
     public List<PrimaryKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKey> ret = new ArrayList<PrimaryKey>();
       int counter = 0;

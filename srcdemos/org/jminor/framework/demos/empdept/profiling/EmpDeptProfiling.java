@@ -7,8 +7,8 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.EntityDbProviderFactory;
-import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
@@ -117,7 +117,7 @@ public class EmpDeptProfiling extends ProfilingModel {
       JOptionPane.showMessageDialog(null, "Start");
 
       final User user = new User("scott", "tiger");
-      final IEntityDbProvider db = EntityDbProviderFactory.createEntityDbProvider(user, user.toString());
+      final EntityDbProvider db = EntityDbProviderFactory.createEntityDbProvider(user, user.toString());
       db.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
       db.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);
       JOptionPane.showMessageDialog(null, "Exit");
@@ -128,7 +128,7 @@ public class EmpDeptProfiling extends ProfilingModel {
   }
 
   private void testInsert() {
-    IEntityDbProvider db = null;
+    EntityDbProvider db = null;
     try {
       JOptionPane.showMessageDialog(null, "Start");
 

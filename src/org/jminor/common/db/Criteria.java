@@ -6,7 +6,7 @@ package org.jminor.common.db;
 /**
  * A generic interface for objects serving as where conditions in database queries
  */
-public interface ICriteria {
+public interface Criteria {
   /**
    * @return a SQL where condition string without the 'where' keyword
    */

@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.framework.db.IEntityDb;
+import org.jminor.framework.db.EntityDb;
 
 import java.rmi.Remote;
 
-public interface IEntityDbRemote extends IEntityDb, Remote {
+public interface EntityDbRemote extends EntityDb, Remote {
 
 }

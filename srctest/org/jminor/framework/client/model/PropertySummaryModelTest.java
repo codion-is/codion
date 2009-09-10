@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 public class PropertySummaryModelTest extends TestCase {
 
-  final PropertySummaryModel testIntModel = new PropertySummaryModel(new PropertySummaryModel.IPropertyValueProvider() {
+  final PropertySummaryModel testIntModel = new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
     public Collection<Object> getValues() {
       final Collection<Object> ret = new ArrayList<Object>();
       ret.add(1);
@@ -38,7 +38,7 @@ public class PropertySummaryModelTest extends TestCase {
     public void bindValuesChangedEvent(Event event) {}
   });
 
-  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new PropertySummaryModel.IPropertyValueProvider() {
+  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
     public Collection<Object> getValues() {
       final Collection<Object> ret = new ArrayList<Object>();
       ret.add(1.1);

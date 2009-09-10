@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.domain.Entity;
@@ -40,11 +40,11 @@ public class EntityLookupModel {
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 
   /**
-   * The IEntityDbProvider instance used by this EntityLookupModel
+   * The EntityDbProvider instance used by this EntityLookupModel
    */
-  private final IEntityDbProvider dbProvider;
+  private final EntityDbProvider dbProvider;
 
-  private ICriteria additionalLookupCriteria;
+  private Criteria additionalLookupCriteria;
   private String searchString;
   private boolean multipleSelectionAllowed;
   private boolean caseSensitive;
@@ -53,25 +53,25 @@ public class EntityLookupModel {
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String multiValueSeperator = ",";
 
-  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final List<Property> lookupProperties) {
+  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property> lookupProperties) {
     this(entityID, dbProvider, null, lookupProperties);
   }
 
-  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
+  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
                            final List<Property> lookupProperties) {
     this(entityID, dbProvider, additionalLookupCriteria, false, lookupProperties);
   }
 
-  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
+  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
                            final boolean caseSensitive, final List<Property> lookupProperties) {
     this(entityID, dbProvider, additionalLookupCriteria, caseSensitive, true, true, lookupProperties);
   }
 
-  public EntityLookupModel(final String entityID, final IEntityDbProvider dbProvider, final ICriteria additionalLookupCriteria,
+  public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final Criteria additionalLookupCriteria,
                            final boolean caseSensitive, final boolean wildcardPrefix, final boolean wildcardPostfix,
                            final List<Property> lookupProperties) {
     if (dbProvider == null)
-      throw new IllegalArgumentException("EntityLookupModel requires a non-null IEntityDbProvider instance");
+      throw new IllegalArgumentException("EntityLookupModel requires a non-null EntityDbProvider instance");
     if (entityID == null)
       throw new IllegalArgumentException("EntityLookupModel requires a non-null entityID");
     if (lookupProperties == null)
@@ -160,7 +160,7 @@ public class EntityLookupModel {
     refreshSearchText();
   }
 
-  public void setAdditionalLookupCriteria(final ICriteria additionalLookupCriteria) {
+  public void setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
     this.additionalLookupCriteria = additionalLookupCriteria;
     setSelectedEntities(null);
   }

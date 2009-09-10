@@ -66,7 +66,7 @@ public class DbConnectionTest extends TestCase {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(new User("scott", "tiger"));
-      final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new IResultPacker() {
+      final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
           final List<List> ret = new ArrayList<List>();
           int counter = 0;

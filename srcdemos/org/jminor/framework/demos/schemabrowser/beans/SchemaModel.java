@@ -5,7 +5,7 @@ package org.jminor.framework.demos.schemabrowser.beans;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class SchemaModel extends EntityModel {
 
-  public SchemaModel(final IEntityDbProvider dbProvider) throws UserException {
+  public SchemaModel(final EntityDbProvider dbProvider) throws UserException {
     super(SchemaBrowser.T_SCHEMA, dbProvider);
   }
 

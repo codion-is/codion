@@ -8,7 +8,7 @@ import org.jminor.common.db.ConnectionPoolState;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -33,7 +33,7 @@ public class ConnectionPoolInstanceMonitor {
   public final Event evtRefresh = new Event();
 
   private final User user;
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
   private ConnectionPoolSettings poolSettings;
   private ConnectionPoolStatistics poolStats;
 
@@ -52,7 +52,7 @@ public class ConnectionPoolInstanceMonitor {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
-  public ConnectionPoolInstanceMonitor(final User user, final IEntityDbRemoteServerAdmin server) throws RemoteException {
+  public ConnectionPoolInstanceMonitor(final User user, final EntityDbServerAdmin server) throws RemoteException {
     System.out.println("new ConnectionPoolInstanceMonitor for user: " + user);
     this.user = user;
     this.server = server;

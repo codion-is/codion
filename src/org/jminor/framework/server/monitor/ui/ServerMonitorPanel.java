@@ -10,7 +10,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -100,7 +100,7 @@ public class ServerMonitorPanel extends JPanel {
     infoArea.setEditable(false);
 
     final StringBuilder contents = new StringBuilder();
-    final IEntityDbRemoteServerAdmin server = model.getServer();
+    final EntityDbServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(
             new FullTimestampFormat().format(server.getStartDate())).append(")").append(

@@ -31,7 +31,7 @@ import java.util.Set;
  * Date: 28.6.2009
  * Time: 16:17:14
  */
-public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements IEntityDbRemoteServerAdmin {
+public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 
   private final EntityDbRemoteServer server;
 

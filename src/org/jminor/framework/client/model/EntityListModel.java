@@ -5,11 +5,11 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.IRefreshable;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.domain.Entity;
 
@@ -21,7 +21,7 @@ import javax.swing.ListSelectionModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityListModel extends AbstractListModel implements IRefreshable {
+public class EntityListModel extends AbstractListModel implements Refreshable {
 
   private static final Logger log = Util.getLogger(EntityListModel.class);
 
@@ -33,7 +33,7 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
   public final Event evtSelectionChanged = new Event();
 
   private final String entityID;
-  private final IEntityDbProvider dbProvider;
+  private final EntityDbProvider dbProvider;
   private final List<Entity> data = new ArrayList<Entity>();
   private final boolean staticData;
 
@@ -56,11 +56,11 @@ public class EntityListModel extends AbstractListModel implements IRefreshable {
     }
   };
 
-  public EntityListModel(final String entityID, final IEntityDbProvider dbProvider) {
+  public EntityListModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, false);
   }
 
-  public EntityListModel(final String entityID, final IEntityDbProvider dbProvider, final boolean staticData) {
+  public EntityListModel(final String entityID, final EntityDbProvider dbProvider, final boolean staticData) {
     if (entityID == null)
       throw new IllegalArgumentException("EntityListModel requires a non-null entityID");
     if (dbProvider == null)

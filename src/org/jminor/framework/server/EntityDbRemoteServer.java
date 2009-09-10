@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.IDatabase;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
@@ -41,7 +41,7 @@ import java.util.TimerTask;
 /**
  * The remote server class, responsible for handling remote db connection requests
  */
-public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntityDbRemoteServer {
+public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityDbServer {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
@@ -89,15 +89,15 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   private EntityDbRemoteServer() throws RemoteException {
     super(SERVER_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    final String host = System.getProperty(IDatabase.DATABASE_HOST);
-    final String port = System.getProperty(IDatabase.DATABASE_PORT);
-    final String sid = System.getProperty(IDatabase.DATABASE_SID);
+    final String host = System.getProperty(Dbms.DATABASE_HOST);
+    final String port = System.getProperty(Dbms.DATABASE_PORT);
+    final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (host == null || host.length() == 0)
-      throw new RuntimeException("Database host must be specified (" + IDatabase.DATABASE_HOST +")");
+      throw new RuntimeException("Database host must be specified (" + Dbms.DATABASE_HOST +")");
     if (!Database.get().isEmbedded() && (sid == null || sid.length() == 0))
-      throw new RuntimeException("Database sid must be specified (" + IDatabase.DATABASE_SID +")");
+      throw new RuntimeException("Database sid must be specified (" + Dbms.DATABASE_SID +")");
     if (!Database.get().isEmbedded() && (port == null || port.length() == 0))
-      throw new RuntimeException("Database port must be specified (" + IDatabase.DATABASE_PORT +")");
+      throw new RuntimeException("Database port must be specified (" + Dbms.DATABASE_PORT +")");
 
     serverName = Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
@@ -122,7 +122,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
   }
 
   /** {@inheritDoc} */
-  public IEntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
+  public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
                                  final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException {
     if (connectionKey == null)
       return null;
@@ -336,7 +336,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements IEntity
       final EntityDbRemoteServer server = new EntityDbRemoteServer();
 
       localRegistry.rebind(server.getServerName(), server);
-      localRegistry.rebind(server.getServerName() + IEntityDbRemoteServer.SERVER_ADMIN_SUFFIX, server.serverAdmin);
+      localRegistry.rebind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX, server.serverAdmin);
       final String connectInfo = server.getServerName() + " bound to registry";
       log.info(connectInfo);
       System.out.println(connectInfo);

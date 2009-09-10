@@ -7,10 +7,10 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.server.IEntityDbRemoteServer;
+import org.jminor.framework.server.EntityDbServer;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * A class responsible for managing a remote db connection
  */
-public class EntityDbRemoteProvider implements IEntityDbProvider {
+public class EntityDbRemoteProvider implements EntityDbProvider {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
 
@@ -39,8 +39,8 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   private final User user;
   private final String clientID;
   private final String clientTypeID;
-  private IEntityDbRemoteServer server;
-  private IEntityDb entityDb;
+  private EntityDbServer server;
+  private EntityDb entityDb;
   private String serverName;
 
   public EntityDbRemoteProvider(final User user, final String clientID, final String clientTypeID) {
@@ -49,7 +49,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     this.clientTypeID = clientTypeID;
   }
 
-  public IEntityDb getEntityDb() throws UserException {
+  public EntityDb getEntityDb() throws UserException {
     initializeEntityDb();
 
     return entityDb;
@@ -88,11 +88,11 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   }
 
   /**
-   * @return the IEntityDbRemoveServer instance, with an established connection
+   * @return the EntityDbRemoveServer instance, with an established connection
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private IEntityDbRemoteServer getRemoteEntityDbServer() throws RemoteException, NotBoundException {
+  private EntityDbServer getRemoteEntityDbServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null)
@@ -113,10 +113,10 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    final List<IEntityDbRemoteServer> servers = getEntityServers(serverHostName);
+    final List<EntityDbServer> servers = getEntityServers(serverHostName);
     if (servers.size() > 0) {
-      Collections.sort(servers, new Comparator<IEntityDbRemoteServer>() {
-        public int compare(final IEntityDbRemoteServer serverOne, final IEntityDbRemoteServer serverTwo) {
+      Collections.sort(servers, new Comparator<EntityDbServer>() {
+        public int compare(final EntityDbServer serverOne, final EntityDbServer serverTwo) {
           try {
             return serverOne.getServerLoad().compareTo(serverTwo.getServerLoad());
           }
@@ -132,17 +132,17 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
       throw new NotBoundException("No reachable or suitable entity server found!");
   }
 
-  private static List<IEntityDbRemoteServer> getEntityServers(final String hostNames) throws RemoteException {
-    final List<IEntityDbRemoteServer> ret = new ArrayList<IEntityDbRemoteServer>();
+  private static List<EntityDbServer> getEntityServers(final String hostNames) throws RemoteException {
+    final List<EntityDbServer> ret = new ArrayList<EntityDbServer>();
     for (final String serverHostName : hostNames.split(",")) {
       final Registry registry = LocateRegistry.getRegistry(serverHostName);
       final String version = Util.getVersion();
       final String[] boundNames = registry.list();
       for (final String name : boundNames) {
         if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
-                && name.contains(version) && !name.contains(IEntityDbRemoteServer.SERVER_ADMIN_SUFFIX)) {
+                && name.contains(version) && !name.contains(EntityDbServer.SERVER_ADMIN_SUFFIX)) {
           try {
-            final IEntityDbRemoteServer server = checkServer((IEntityDbRemoteServer) registry.lookup(name));
+            final EntityDbServer server = checkServer((EntityDbServer) registry.lookup(name));
             if (server != null)
               ret.add(server);
           }
@@ -157,7 +157,7 @@ public class EntityDbRemoteProvider implements IEntityDbProvider {
     return ret;
   }
 
-  private static IEntityDbRemoteServer checkServer(final IEntityDbRemoteServer server) throws RemoteException {
+  private static EntityDbServer checkServer(final EntityDbServer server) throws RemoteException {
     final int port = server.getServerPort();
     final String requestedPort = System.getProperty(Configuration.SERVER_PORT);
     if (requestedPort == null || (requestedPort.length() > 0 && port == Integer.parseInt(requestedPort)))

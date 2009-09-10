@@ -24,7 +24,7 @@ import java.util.List;
  * Date: 19.2.2007
  * Time: 09:41:35
  */
-public interface IEntityDbRemoteServerAdmin extends Remote {
+public interface EntityDbServerAdmin extends Remote {
 
   /**
    * Shuts down the server

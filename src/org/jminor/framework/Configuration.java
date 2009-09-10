@@ -293,14 +293,14 @@ public class Configuration {
 
   /**
    * Specifies the class providing remote db connections
-   * Value type: String (the name of a class implementing org.jminor.framework.db.IEntityDbProvider)
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityDbProvider)
    * Default value: org.jminor.framework.server.EntityDbRemoteProvider
    */
   public static final String REMOTE_CONNECTION_PROVIDER = "remote_connection_provider";
 
   /**
    * Specifies the class providing local db connections
-   * Value type: String (the name of a class implementing org.jminor.framework.db.IEntityDbProvider)
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityDbProvider)
    * Default value: org.jminor.framework.db.EntityDbLocalProvider
    */
   public static final String LOCAL_CONNECTION_PROVIDER = "local_connection_provider";

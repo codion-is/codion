@@ -40,7 +40,7 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
   @Override
   protected Object getUIPropertyValue() {
     if (comboBoxModel instanceof ItemComboBoxModel)
-      return ((ItemComboBoxModel.IItem) comboBoxModel.getSelectedItem()).getItem();
+      return ((ItemComboBoxModel.Item) comboBoxModel.getSelectedItem()).getItem();
     else
       return comboBoxModel.getSelectedItem();
   }

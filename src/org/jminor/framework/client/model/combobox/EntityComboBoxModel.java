@@ -8,7 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
@@ -36,9 +36,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   private final String entityID;
 
   /**
-   * the IEntityDbProvider instance used by this EntityComboBoxModel
+   * the EntityDbProvider instance used by this EntityComboBoxModel
    */
-  private final IEntityDbProvider dbProvider;
+  private final EntityDbProvider dbProvider;
 
   /**
    * true if the data should only be fetched once, unless <code>forceRefresh()</code> is called
@@ -62,44 +62,44 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a IEntityDbProvider instance
+   * @param dbProvider a EntityDbProvider instance
    */
-  public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider) {
+  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, false);
   }
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a IEntityDbProvider instance
+   * @param dbProvider a EntityDbProvider instance
    * @param staticData if true this combo box model is refreshed only on initialization
    * and on subsequent calls to <code>forceRefresh</code>
    */
-  public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
+  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
                              final boolean staticData) {
     this(entityID, dbProvider, staticData, null);
   }
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a IEntityDbProvider instance
+   * @param dbProvider a EntityDbProvider instance
    * @param staticData if true this combo box model is refreshed only on initialization
    * and on subsequent calls to <code>forceRefresh</code>
    * @param nullValueItem the item to used to represent a null value
    */
-  public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
+  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
                              final boolean staticData, final String nullValueItem) {
     this(entityID, dbProvider, staticData, nullValueItem, true);
   }
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
-   * @param dbProvider a IEntityDbProvider instance
+   * @param dbProvider a EntityDbProvider instance
    * @param staticData if true this combo box model is refreshed only on initialization
    * and on subsequent calls to <code>forceRefresh</code>
    * @param nullValueItem the item to used to represent a null value
    * @param sortContents if true, the contents are sorted
    */
-  public EntityComboBoxModel(final String entityID, final IEntityDbProvider dbProvider,
+  public EntityComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
                              final boolean staticData, final String nullValueItem, final boolean sortContents) {
     super(sortContents, nullValueItem);
     if (entityID == null)
@@ -112,9 +112,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @return the IEntityDbProvider instance used by this EntityComboBoxModel
+   * @return the EntityDbProvider instance used by this EntityComboBoxModel
    */
-  public IEntityDbProvider getDbProvider() {
+  public EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 

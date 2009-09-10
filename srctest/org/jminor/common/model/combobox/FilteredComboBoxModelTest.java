@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.combobox;
 
-import org.jminor.common.model.IFilterCriteria;
+import org.jminor.common.model.FilterCriteria;
 
 import junit.framework.TestCase;
 
@@ -29,26 +29,26 @@ public class FilteredComboBoxModelTest extends TestCase {
   }
 
   public void testFiltering() {
-    testModel.setFilterCriteria(new IFilterCriteria() {
+    testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
         return false;
       }
     });
     assertTrue("The model should be empty", testModel.getSize() == 0);
-    testModel.setFilterCriteria(new IFilterCriteria() {
+    testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
         return true;
       }
     });
     assertTrue("The model should be full", testModel.getSize() == 5);
-    testModel.setFilterCriteria(new IFilterCriteria() {
+    testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
         return !item.equals(ANNA);
       }
     });
     assertTrue("The model should contain 4 items", testModel.getSize() == 4);
     assertTrue("The model should not contain '" + ANNA + "'", !modelContains(ANNA));
-    testModel.setFilterCriteria(new IFilterCriteria() {
+    testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
         return item.equals(ANNA);
       }
@@ -59,7 +59,7 @@ public class FilteredComboBoxModelTest extends TestCase {
 
   public void testRemove() {
     //remove filtered item
-    testModel.setFilterCriteria(new IFilterCriteria() {
+    testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
         return !item.equals(BJORN);
       }

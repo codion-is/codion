@@ -5,7 +5,7 @@ package org.jminor.framework.demos.petstore.beans;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
 /**
@@ -15,7 +15,7 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
  */
 public class AddressModel extends EntityModel {
 
-  public AddressModel(final IEntityDbProvider dbProvider) throws UserException {
+  public AddressModel(final EntityDbProvider dbProvider) throws UserException {
     super(Petstore.T_ADDRESS, dbProvider);
   }
 }

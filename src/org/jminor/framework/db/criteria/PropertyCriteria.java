@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db.criteria;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * A object for encapsulating a query criteria with a single property and one or more values
  */
-public class PropertyCriteria implements ICriteria, Serializable {
+public class PropertyCriteria implements Criteria, Serializable {
 
   private static final long serialVersionUID = 1;
 

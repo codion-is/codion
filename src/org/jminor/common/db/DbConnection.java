@@ -205,12 +205,12 @@ public class DbConnection {
   /**
    * Performs the given sql query and returns the result in a List
    * @param sql the query
-   * @param resultPacker a IResultPacker instance for creating the return List
+   * @param resultPacker a ResultPacker instance for creating the return List
    * @param fetchCount the number of records to retrieve, use -1 to retrieve all
    * @return the query result in a List
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
-  public final List query(final String sql, final IResultPacker resultPacker, final int fetchCount) throws SQLException {
+  public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
     requestsPerSecondCounter++;
     if (cacheQueriesRequests > 0 && fetchCount < 0) {
       if (queryCache.containsKey(sql)) {
@@ -305,7 +305,7 @@ public class DbConnection {
     //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
     final String sql = "select " + columnName + " from " + tableName + " " + whereClause;
 
-    final List result = query(sql, new IResultPacker() {
+    final List result = query(sql, new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<Blob> ret = new ArrayList<Blob>();
         if (resultSet.next())
@@ -497,7 +497,7 @@ public class DbConnection {
     }
   }
 
-  private static class MixedResultPacker implements IResultPacker<List> {
+  private static class MixedResultPacker implements ResultPacker<List> {
     public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<List> ret = new ArrayList<List>();
       final int columnCount = resultSet.getMetaData().getColumnCount();

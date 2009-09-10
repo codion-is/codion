@@ -66,7 +66,7 @@ public class PropertySummaryPanel extends JPanel {
   private JPopupMenu createPopupMenu() {
     final JPopupMenu ret = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
-    for (final PropertySummaryModel.ISummary summaryType : model.getSummaryTypes()) {
+    for (final PropertySummaryModel.Summary summaryType : model.getSummaryTypes()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
         public void actionPerformed(ActionEvent e) {
           model.setSummaryType(summaryType);

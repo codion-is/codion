@@ -3,18 +3,18 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.IRefreshable;
 import org.jminor.common.model.IntArray;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.client.model.reporting.EntityJRDataSource;
-import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
@@ -48,7 +48,7 @@ import java.util.Map;
 /**
  * A TableModel implementation for showing entities
  */
-public class EntityTableModel extends AbstractTableModel implements IRefreshable {
+public class EntityTableModel extends AbstractTableModel implements Refreshable {
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
 
@@ -104,9 +104,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   private final String entityID;
 
   /**
-   * The IEntityDb connection provider
+   * The EntityDb connection provider
    */
-  private final IEntityDbProvider dbProvider;
+  private final EntityDbProvider dbProvider;
 
   /**
    * Holds visible entities
@@ -206,19 +206,19 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * Initializes a new EntityTableModel
    * @param entityID the ID of the entity this table model should represent
-   * @param dbProvider a IEntityDbProvider instance
+   * @param dbProvider a EntityDbProvider instance
    */
-  public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider) {
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, true);
   }
 
   /**
    * Initializes a new EntityTableModel
    * @param entityID the ID of the entity this table model should represent
-   * @param dbProvider a IEntityDbProvider instance
+   * @param dbProvider a EntityDbProvider instance
    * @param queryConfigurationAllowed true if the underlying query should be configurable by the user
    */
-  public EntityTableModel(final String entityID, final IEntityDbProvider dbProvider,
+  public EntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                           final boolean queryConfigurationAllowed) {
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider can not be null");
@@ -319,9 +319,9 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return the IEntityDbConnection provider
+   * @return the EntityDbConnection provider
    */
-  public IEntityDbProvider getDbProvider() {
+  public EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
@@ -329,7 +329,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @return the database connection
    * @throws UserException in case of an exception
    */
-  public IEntityDb getEntityDb() throws UserException {
+  public EntityDb getEntityDb() throws UserException {
     return getDbProvider().getEntityDb();
   }
 
@@ -404,7 +404,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   /**
    * Clears all entities from this EntityTableModel
    */
-  public void clear() {    
+  public void clear() {
     filteredEntities.clear();
     final int size = getRowCount();
     if (size > 0) {
@@ -938,7 +938,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    */
   public PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.propertyID))
-      propertySummaryModels.put(property.propertyID, new PropertySummaryModel(new PropertySummaryModel.IPropertyValueProvider() {
+      propertySummaryModels.put(property.propertyID, new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
         public void bindValuesChangedEvent(final Event event) {
           evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
           evtRefreshDone.addListener(event);
@@ -969,7 +969,7 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
    * @throws UserException in case of an exception
    * @throws DbException in case of a database exception
    */
-  protected List<Entity> performQuery(final ICriteria criteria) throws DbException, UserException {
+  protected List<Entity> performQuery(final Criteria criteria) throws DbException, UserException {
     if (isQueryFilteredByMaster() && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
@@ -1008,13 +1008,13 @@ public class EntityTableModel extends AbstractTableModel implements IRefreshable
   }
 
   /**
-   * @return a ICriteria object used to filter the result when this
+   * @return a Criteria object used to filter the result when this
    * table models data is queried, the default implementation returns
    * the result retrieved via the <code>getSearchCriteria()</code> method
    * found in the underlying EntityTableSearchModel
    * @see org.jminor.framework.client.model.EntityTableSearchModel#getSearchCriteria()
    */
-  protected ICriteria getQueryCriteria() {
+  protected Criteria getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
   }
 

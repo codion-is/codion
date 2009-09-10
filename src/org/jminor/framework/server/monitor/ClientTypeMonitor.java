@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.server.ClientInfo;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,12 +17,12 @@ import java.util.Collection;
  */
 public class ClientTypeMonitor {
 
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
   private final String clientTypeID;
 
   private final Collection<ClientInstanceMonitor> clientInstanceMonitors = new ArrayList<ClientInstanceMonitor>();
 
-  public ClientTypeMonitor(final IEntityDbRemoteServerAdmin server, final String clientTypeID) throws RemoteException {
+  public ClientTypeMonitor(final EntityDbServerAdmin server, final String clientTypeID) throws RemoteException {
     this.server = server;
     this.clientTypeID = clientTypeID;
     refresh();
@@ -38,7 +38,7 @@ public class ClientTypeMonitor {
     return clientTypeID;
   }
 
-  public IEntityDbRemoteServerAdmin getServer() {
+  public EntityDbServerAdmin getServer() {
     return server;
   }
 

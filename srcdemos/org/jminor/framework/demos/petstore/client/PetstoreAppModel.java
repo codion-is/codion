@@ -7,7 +7,7 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.demos.petstore.beans.CategoryModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class PetstoreAppModel extends EntityApplicationModel {
 
-  public PetstoreAppModel(final IEntityDbProvider dbProvider) throws UserException {
+  public PetstoreAppModel(final EntityDbProvider dbProvider) throws UserException {
     super(dbProvider);
   }
 
@@ -30,7 +30,7 @@ public class PetstoreAppModel extends EntityApplicationModel {
   }
 
   @Override
-  protected List<? extends EntityModel> initializeMainApplicationModels(final IEntityDbProvider dbProvider) throws UserException {
+  protected List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider) throws UserException {
     return Arrays.asList(new CategoryModel(dbProvider));
   }
 

@@ -19,26 +19,26 @@ import java.util.List;
  */
 public class PropertySummaryModel {
 
-  public static final ISummary NONE = new None();
-  public static final ISummary SUM = new Sum();
-  public static final ISummary AVERAGE = new Average();
-  public static final ISummary MINIMUM = new Minimum();
-  public static final ISummary MAXIMUM = new Maximum();
-  public static final ISummary MINIMUM_MAXIMUM = new MinimumMaximum();
+  public static final Summary NONE = new None();
+  public static final Summary SUM = new Sum();
+  public static final Summary AVERAGE = new Average();
+  public static final Summary MINIMUM = new Minimum();
+  public static final Summary MAXIMUM = new Maximum();
+  public static final Summary MINIMUM_MAXIMUM = new MinimumMaximum();
 
   public final Event evtSummaryTypeChanged = new Event();
   public final Event evtSummaryChanged = new Event();
 
-  private final IPropertyValueProvider valueProvider;
+  private final PropertyValueProvider valueProvider;
   private final NumberFormat numberFormat = NumberFormat.getInstance();
 
-  private ISummary summaryType = NONE;
+  private Summary summaryType = NONE;
 
-  public PropertySummaryModel(final IPropertyValueProvider valueProvider) {
+  public PropertySummaryModel(final PropertyValueProvider valueProvider) {
     this(valueProvider, 4);
   }
 
-  public PropertySummaryModel(final IPropertyValueProvider valueProvider, final int maximumFractionDigits) {
+  public PropertySummaryModel(final PropertyValueProvider valueProvider, final int maximumFractionDigits) {
     this.valueProvider = valueProvider;
     this.numberFormat.setMaximumFractionDigits(maximumFractionDigits);
     this.valueProvider.bindValuesChangedEvent(evtSummaryChanged);
@@ -48,7 +48,7 @@ public class PropertySummaryModel {
   /**
    * @param summaryType the type of summary to show
    */
-  public void setSummaryType(final ISummary summaryType) {
+  public void setSummaryType(final Summary summaryType) {
     if (summaryType == null)
       throw new IllegalArgumentException("Use PropertySummaryModel.NONE instead of null");
     if (!this.summaryType.equals(summaryType)) {
@@ -57,15 +57,15 @@ public class PropertySummaryModel {
     }
   }
 
-  public ISummary getSummaryType() {
+  public Summary getSummaryType() {
     return summaryType;
   }
 
-  public List<ISummary> getSummaryTypes() {
+  public List<Summary> getSummaryTypes() {
     if (valueProvider.getValueType() == Type.INT || valueProvider.getValueType() == Type.DOUBLE)
       return Arrays.asList(NONE, SUM, AVERAGE, MINIMUM, MAXIMUM, MINIMUM_MAXIMUM);
 
-    return new ArrayList<ISummary>();
+    return new ArrayList<Summary>();
   }
 
   public String getSummaryText() {
@@ -73,18 +73,18 @@ public class PropertySummaryModel {
     return summaryTxt.length() > 0 ? summaryTxt + (valueProvider.isValueSubset() ? "*" : "") : summaryTxt;
   }
 
-  public interface IPropertyValueProvider {
+  public interface PropertyValueProvider {
     public Collection<Object> getValues();
     public boolean isValueSubset();
     public Type getValueType();
     public void bindValuesChangedEvent(final Event event);
   }
 
-  public interface ISummary {
+  public interface Summary {
     public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format);
   }
 
-  private static class None implements ISummary {
+  private static class None implements Summary {
 
     @Override
     public String toString() {
@@ -96,7 +96,7 @@ public class PropertySummaryModel {
     }
   }
 
-  private static class Sum implements ISummary {
+  private static class Sum implements Summary {
 
     @Override
     public String toString() {
@@ -122,7 +122,7 @@ public class PropertySummaryModel {
     }
   }
 
-  private static class Average implements ISummary {
+  private static class Average implements Summary {
 
     @Override
     public String toString() {
@@ -156,7 +156,7 @@ public class PropertySummaryModel {
     }
   }
 
-  private static class Minimum implements ISummary {
+  private static class Minimum implements Summary {
 
     @Override
     public String toString() {
@@ -184,7 +184,7 @@ public class PropertySummaryModel {
     }
   }
 
-  private static class Maximum implements ISummary {
+  private static class Maximum implements Summary {
 
     @Override
     public String toString() {
@@ -212,7 +212,7 @@ public class PropertySummaryModel {
     }
   }
 
-  private static class MinimumMaximum implements ISummary {
+  private static class MinimumMaximum implements Summary {
 
     @Override
     public String toString() {

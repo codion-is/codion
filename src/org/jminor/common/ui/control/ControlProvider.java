@@ -127,7 +127,7 @@ public class ControlProvider {
     return menuBar;
   }
 
-  private static class ButtonControlIterator implements IControlIterator {
+  private static class ButtonControlIterator implements ControlIterator {
 
     private final JPanel btnPanel;
     private final boolean vertical;
@@ -164,7 +164,7 @@ public class ControlProvider {
     }
   }
 
-  private static class MenuControlIterator implements IControlIterator {
+  private static class MenuControlIterator implements ControlIterator {
 
     private final JMenu menu;
 
@@ -225,7 +225,7 @@ public class ControlProvider {
     }
   }
 
-  private static class ToolBarControlIterator implements IControlIterator {
+  private static class ToolBarControlIterator implements ControlIterator {
 
     private boolean includeCaption = true;
     private final JToolBar toolbar;
@@ -284,7 +284,7 @@ public class ControlProvider {
     return ret;
   }
 
-  public static void iterate(final IControlIterator controlIterator, final ControlSet controlSet) {
+  public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
     if (controlIterator == null)
       throw new IllegalArgumentException("Iterator can't be null");
 

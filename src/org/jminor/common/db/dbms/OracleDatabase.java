@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 
-public class OracleDatabase implements IDatabase {
+public class OracleDatabase implements Dbms {
 
   public static final HashMap<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
 

@@ -730,3 +730,4 @@
   EntityDbRemoteAdapter, minor changes in throws clauses
   IEntityDb.delete() argument is now List<EntityKey> instead of List<Entity>
   EntityUtil.getWhereCondition() overloaded, ValueProvider interface introduced
+  I prefix removed from interface names

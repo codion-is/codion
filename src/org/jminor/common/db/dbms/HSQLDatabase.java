@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class HSQLDatabase implements IDatabase {
+public class HSQLDatabase implements Dbms {
 
   /**
    * The date format used
@@ -22,7 +22,7 @@ public class HSQLDatabase implements IDatabase {
    */
   private final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
+  private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
   /** {@inheritDoc} */
   public String getDatabaseType() {

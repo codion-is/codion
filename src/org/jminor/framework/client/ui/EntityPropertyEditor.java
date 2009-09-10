@@ -69,7 +69,7 @@ public class EntityPropertyEditor extends JPanel {
    * @param property the property to edit
    * @param entities the entities
    * @param entityModel an EntityModel instance used in case of an Property.ForeignKeyProperty being edited,
-   * it provides both the IEntityDbProvider as well as the EntityComboBoxModel used in that case
+   * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
    * @throws UserException in case of an exception
    */
   public EntityPropertyEditor(final Property property, final List<Entity> entities,
@@ -82,7 +82,7 @@ public class EntityPropertyEditor extends JPanel {
    * @param property the property to edit
    * @param entities the entities
    * @param entityModel an EntityModel instance used in case of an Property.ForeignKeyProperty being edited,
-   * it provides both the IEntityDbProvider as well as the EntityComboBoxModel used in that case
+   * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
    * @param inputManager the InputManager to use
    * @throws UserException in case of an exception
    */

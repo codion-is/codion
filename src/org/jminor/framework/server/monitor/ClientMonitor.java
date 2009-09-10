@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -16,11 +16,11 @@ import java.util.Collection;
  */
 public class ClientMonitor {
 
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
 
   private Collection<ClientTypeMonitor> clientTypeMonitors = new ArrayList<ClientTypeMonitor>();
 
-  public ClientMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
+  public ClientMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }

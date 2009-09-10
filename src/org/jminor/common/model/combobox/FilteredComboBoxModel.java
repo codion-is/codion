@@ -4,8 +4,8 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.IFilterCriteria;
-import org.jminor.common.model.IRefreshable;
+import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.UserException;
 
 import javax.swing.ComboBoxModel;
@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * A ComboBoxModel implementation that allows filtering via IFilterCriteria objects
- * @see org.jminor.common.model.IFilterCriteria
- * @see #setFilterCriteria(org.jminor.common.model.IFilterCriteria)
+ * A ComboBoxModel implementation that allows filtering via FilterCriteria objects
+ * @see org.jminor.common.model.FilterCriteria
+ * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
  */
-public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
+public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   public final Event evtSelectionChanged = new Event();
 
@@ -33,7 +33,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   private final Object nullValueItem;
   private Object selectedItem;
 
-  private IFilterCriteria filterCriteria;
+  private FilterCriteria filterCriteria;
   private boolean sortContents = false;
 
   private final Comparator<? super Object> sortComparator;
@@ -114,9 +114,9 @@ public class FilteredComboBoxModel implements ComboBoxModel, IRefreshable {
   }
 
   /**
-   * @param criteria the IFilterCriteria to use
+   * @param criteria the FilterCriteria to use
    */
-  public void setFilterCriteria(final IFilterCriteria criteria) {
+  public void setFilterCriteria(final FilterCriteria criteria) {
     this.filterCriteria = criteria;
     resetContents();
   }

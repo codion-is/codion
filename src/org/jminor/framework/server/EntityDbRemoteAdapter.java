@@ -8,16 +8,16 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.IDatabase;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
-import org.jminor.framework.db.IEntityDb;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
@@ -49,7 +49,7 @@ import java.util.TimerTask;
 /**
  * An adapter for handling logging and database connection pooling
  */
-public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntityDbRemote {
+public class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteAdapter.class);
 
@@ -57,7 +57,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
 
   private final ClientInfo clientInfo;
   private final long creationDate = System.currentTimeMillis();
-  private final IEntityDb loggingEntityDbProxy;
+  private final EntityDb loggingEntityDbProxy;
   private EntityDbConnection entityDbConnection;
   private boolean connected = true;
 
@@ -90,9 +90,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     if (connectionPools.containsKey(clientInfo.getUser()))
       connectionPools.get(clientInfo.getUser()).setPassword(clientInfo.getUser().getPassword());
     this.clientInfo = clientInfo;
-    final String sid = System.getProperty(IDatabase.DATABASE_SID);
+    final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (sid != null && sid.length() != 0)
-      this.clientInfo.getUser().setProperty(IDatabase.DATABASE_SID, sid);
+      this.clientInfo.getUser().setProperty(Dbms.DATABASE_SID, sid);
     this.loggingEntityDbProxy = initializeProxy();
     this.methodLogger.setLoggingEnabled(loggingEnabled);
   }
@@ -516,8 +516,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     RequestCounter.warningThreshold = threshold;
   }
 
-  private IEntityDb initializeProxy() {
-    return (IEntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
+  private EntityDb initializeProxy() {
+    return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
             EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         RequestCounter.requestsPerSecondCounter++;

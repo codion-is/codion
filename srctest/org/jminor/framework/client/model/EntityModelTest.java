@@ -7,9 +7,9 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.EntityDbProviderFactory;
-import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
@@ -40,7 +40,7 @@ public class EntityModelTest extends TestCase {
     departmentModel.setLinkedDetailModel(departmentModel.getDetailModels().get(0));
     assertTrue("EmployeeModel should be the linked detail model in DepartmentModel",
             departmentModel.getLinkedDetailModel().getClass().equals(EmployeeModel.class));
-    final IEntityDb db = departmentModel.getDbProvider().getEntityDb();
+    final EntityDb db = departmentModel.getDbProvider().getEntityDb();
     final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     final List<Entity> employees = db.selectMany(new EntityCriteria(EmpDept.T_EMPLOYEE,
             new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK),
@@ -107,7 +107,7 @@ public class EntityModelTest extends TestCase {
     if (!Database.get().supportsNoWait())
       return;
 
-    final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
+    final EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), "EntityModelTest");
 
     if (Database.get() instanceof H2Database)
@@ -186,7 +186,7 @@ public class EntityModelTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    final IEntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
+    final EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), "EntityModelTest");
     departmentModel = new DepartmentModel(dbProvider);
     employeeModel = (EmployeeModel) departmentModel.getDetailModel(EmployeeModel.class);

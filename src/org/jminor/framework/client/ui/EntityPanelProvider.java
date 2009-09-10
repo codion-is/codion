@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -85,9 +85,9 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  public EntityPanel createInstance(final IEntityDbProvider dbProvider) throws UserException {
+  public EntityPanel createInstance(final EntityDbProvider dbProvider) throws UserException {
     try {
-      return createInstance(getEntityModelClass().getConstructor(IEntityDbProvider.class).newInstance(dbProvider));
+      return createInstance(getEntityModelClass().getConstructor(EntityDbProvider.class).newInstance(dbProvider));
     }
     catch (InvocationTargetException ite) {
       if (ite.getCause() instanceof UserException)

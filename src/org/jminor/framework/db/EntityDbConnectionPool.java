@@ -8,7 +8,7 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.IDatabase;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -59,9 +59,9 @@ public class EntityDbConnectionPool {
 
   public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
     this.user = user;
-    final String sid = System.getProperty(IDatabase.DATABASE_SID);
+    final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (sid != null && sid.length() != 0)
-      this.user.setProperty(IDatabase.DATABASE_SID, sid);
+      this.user.setProperty(Dbms.DATABASE_SID, sid);
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       @Override

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.ICriteria;
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.User;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
@@ -168,7 +168,7 @@ public class EntityTableModelTest extends TestCase {
     }
 
     @Override
-    protected List<Entity> performQuery(final ICriteria criteria) {
+    protected List<Entity> performQuery(final Criteria criteria) {
       return Arrays.asList(testEntities);
     }
 

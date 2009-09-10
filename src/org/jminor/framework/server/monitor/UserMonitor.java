@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.User;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
@@ -17,11 +17,11 @@ import java.util.Enumeration;
  */
 public class UserMonitor {
 
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
 
   private final DefaultListModel userInstanceMonitorsListModel = new DefaultListModel();
 
-  public UserMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
+  public UserMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
@@ -36,7 +36,7 @@ public class UserMonitor {
     return userInstanceMonitorsListModel;
   }
 
-  public IEntityDbRemoteServerAdmin getServer() {
+  public EntityDbServerAdmin getServer() {
     return server;
   }
 

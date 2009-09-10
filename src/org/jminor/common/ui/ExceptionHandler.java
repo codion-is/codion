@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui;
 
-public interface IExceptionHandler {
-
+public interface ExceptionHandler {
   public void handleException(final Throwable exception);
 }

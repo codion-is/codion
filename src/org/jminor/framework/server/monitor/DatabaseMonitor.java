@@ -5,7 +5,7 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.model.Event;
-import org.jminor.framework.server.IEntityDbRemoteServerAdmin;
+import org.jminor.framework.server.EntityDbServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -18,7 +18,7 @@ public class DatabaseMonitor {
 
   public final Event evtStatsUpdateIntervalChanged = new Event();
 
-  private final IEntityDbRemoteServerAdmin server;
+  private final EntityDbServerAdmin server;
   private final ConnectionPoolMonitor connectionPoolMonitor;
   private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
   private final XYSeries cachedQueriesPerSecond = new XYSeries("Cached queries per second");
@@ -27,7 +27,7 @@ public class DatabaseMonitor {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
-  public DatabaseMonitor(final IEntityDbRemoteServerAdmin server) throws RemoteException {
+  public DatabaseMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
     this.connectionPoolMonitor = new ConnectionPoolMonitor(server);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);

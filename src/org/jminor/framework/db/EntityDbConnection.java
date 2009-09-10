@@ -8,9 +8,9 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
-import org.jminor.common.db.IResultPacker;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
@@ -44,7 +44,7 @@ import java.util.Set;
 /**
  * Implements the database layer accessible to the client
  */
-public class EntityDbConnection extends DbConnection implements IEntityDb {
+public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
@@ -562,8 +562,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     }
   }
 
-  private static IResultPacker getPacker(final Type propertyType) {
-    return new IResultPacker() {
+  private static ResultPacker getPacker(final Type propertyType) {
+    return new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<Object> ret = new ArrayList<Object>(50);
         int counter = 0;

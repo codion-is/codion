@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.IResultPacker;
+import org.jminor.common.db.ResultPacker;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -19,7 +19,7 @@ import java.util.List;
  * Handles packing Entity query results.
  * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
  */
-public class EntityResultPacker implements IResultPacker<Entity> {
+public class EntityResultPacker implements ResultPacker<Entity> {
 
   private final String entityID;
   private final Collection<Property> properties;

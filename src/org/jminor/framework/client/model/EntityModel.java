@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.db.Criteria;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.ICriteria;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.IRefreshable;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
@@ -18,8 +18,8 @@ import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
-import org.jminor.framework.db.IEntityDb;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
@@ -48,7 +48,7 @@ import java.util.Set;
 /**
  * A model class with basic functionality for creating, editing and deleting objects from a database
  */
-public class EntityModel implements IRefreshable {
+public class EntityModel implements Refreshable {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
@@ -165,9 +165,9 @@ public class EntityModel implements IRefreshable {
   private final EntityTableModel tableModel;
 
   /**
-   * The IEntityDb connection provider
+   * The EntityDb connection provider
    */
-  private final IEntityDbProvider dbProvider;
+  private final EntityDbProvider dbProvider;
 
   /**
    * The currently selected entity
@@ -180,9 +180,9 @@ public class EntityModel implements IRefreshable {
   private final String entityID;
 
   /**
-   * Holds the ComboBoxModels used by this EntityModel, those that implement IRefreshable
+   * Holds the ComboBoxModels used by this EntityModel, those that implement Refreshable
    * are refreshed when refreshComboBoxModels() is called
-   * @see IRefreshable
+   * @see org.jminor.common.model.Refreshable
    */
   private final Map<Property, ComboBoxModel> propertyComboBoxModels;
 
@@ -239,21 +239,21 @@ public class EntityModel implements IRefreshable {
   /**
    * Instantiates a new EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
-   * @param dbProvider a IEntityDbProvider
+   * @param dbProvider a EntityDbProvider
    * @throws UserException in case of an exception
    */
-  public EntityModel(final String entityID, final IEntityDbProvider dbProvider) throws UserException {
+  public EntityModel(final String entityID, final EntityDbProvider dbProvider) throws UserException {
     this(entityID, dbProvider, true);
   }
 
   /**
    * Instantiates a new EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
-   * @param dbProvider a IEntityDbProvider
+   * @param dbProvider a EntityDbProvider
    * @param includeTableModel true if this EntityModel should include a table model
    * @throws UserException in case of an exception
    */
-  public EntityModel(final String entityID, final IEntityDbProvider dbProvider,
+  public EntityModel(final String entityID, final EntityDbProvider dbProvider,
                      final boolean includeTableModel) throws UserException {
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
@@ -303,18 +303,18 @@ public class EntityModel implements IRefreshable {
   /**
    * @return the database connection provider
    */
-  public IEntityDbProvider getDbProvider() {
+  public EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
   /**
-   * Returns the IEntityDb connection, the instance returned by this
+   * Returns the EntityDb connection, the instance returned by this
    * method should not be viewed as long lived since it does not survive
    * network connection outages for example
    * @return the database connection
    * @throws UserException in case of an exception
    */
-  public IEntityDb getEntityDb() throws UserException {
+  public EntityDb getEntityDb() throws UserException {
     return getDbProvider().getEntityDb();
   }
 
@@ -978,14 +978,14 @@ public class EntityModel implements IRefreshable {
   }
 
   /**
-   * Refreshes the IRefreshable ComboBoxModels associated with this EntityModel
+   * Refreshes the Refreshable ComboBoxModels associated with this EntityModel
    * @throws UserException in case of an exception
-   * @see IRefreshable
+   * @see org.jminor.common.model.Refreshable
    */
   public void refreshComboBoxModels() throws UserException {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
-      if (comboBoxModel instanceof IRefreshable)
-        ((IRefreshable) comboBoxModel).refresh();
+      if (comboBoxModel instanceof Refreshable)
+        ((Refreshable) comboBoxModel).refresh();
   }
 
   /**
@@ -1128,7 +1128,7 @@ public class EntityModel implements IRefreshable {
    * @param lookupProperties the properties involved in the lookup
    * @return a EntityLookupModel
    */
-  public EntityLookupModel createEntityLookupModel(final String entityID, final ICriteria additionalSearchCriteria,
+  public EntityLookupModel createEntityLookupModel(final String entityID, final Criteria additionalSearchCriteria,
                                                    final List<Property> lookupProperties) {
     return new EntityLookupModel(entityID, getDbProvider(), additionalSearchCriteria, lookupProperties);
   }

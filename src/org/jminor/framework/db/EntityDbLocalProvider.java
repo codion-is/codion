@@ -6,7 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.IDatabase;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 
@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * A class responsible for managing a local db connection
  */
-public class EntityDbLocalProvider implements IEntityDbProvider {
+public class EntityDbLocalProvider implements EntityDbProvider {
 
   private static final Logger log = Util.getLogger(EntityDbLocalProvider.class);
 
@@ -27,9 +27,9 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
   protected final User user;
 
   /**
-   * The IEntityDb instance used by this db provider
+   * The EntityDb instance used by this db provider
    */
-  protected IEntityDb entityDb;
+  protected EntityDb entityDb;
 
   private final Properties connectionProperties = new Properties();
 
@@ -37,13 +37,13 @@ public class EntityDbLocalProvider implements IEntityDbProvider {
     this.user = user;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
-    final String sid = System.getProperty(IDatabase.DATABASE_SID);
+    final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (sid != null)
-      user.setProperty(IDatabase.DATABASE_SID, sid);
+      user.setProperty(Dbms.DATABASE_SID, sid);
   }
 
   /** {@inheritDoc} */
-  public final IEntityDb getEntityDb() throws UserException {
+  public final EntityDb getEntityDb() throws UserException {
     validateDbConnection();
 
     return entityDb;

@@ -5,7 +5,7 @@ package org.jminor.framework.demos.petstore.beans;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.IEntityDbProvider;
+import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class CategoryModel extends EntityModel {
 
-  public CategoryModel(final IEntityDbProvider dbProvider) throws UserException {
+  public CategoryModel(final EntityDbProvider dbProvider) throws UserException {
     super(Petstore.T_CATEGORY, dbProvider);
   }
 

@@ -23,7 +23,7 @@ public class CriteriaSetTest extends TestCase {
     assertEquals("AND OR OR critera set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.toString());
   }
 
-  private static class Criteria implements ICriteria {
+  private static class Criteria implements org.jminor.common.db.Criteria {
     @Override
     public String toString() {
       return "criteria";

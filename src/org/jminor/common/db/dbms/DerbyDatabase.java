@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class DerbyDatabase implements IDatabase {
+public class DerbyDatabase implements Dbms {
 
   private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
   private DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-  private boolean embedded = System.getProperty(IDatabase.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
+  private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
