@@ -166,9 +166,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<List> selectRows(final String statement, final int recordCount) throws DbException, RemoteException {
+  public List<List> selectRows(final String statement, final int fetchCount) throws DbException, RemoteException {
     try {
-      return loggingEntityDbProxy.selectRows(statement, recordCount);
+      return loggingEntityDbProxy.selectRows(statement, fetchCount);
     }
     catch (DbException dbe) {
       throw dbe;
