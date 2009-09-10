@@ -1358,7 +1358,7 @@ public class EntityModel implements IRefreshable {
    */
   protected void doDelete(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
-      getEntityDb().delete(entities);
+      getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
     }
     catch (DbException dbe) {
       throw dbe;

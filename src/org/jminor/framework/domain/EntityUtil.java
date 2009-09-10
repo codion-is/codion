@@ -231,16 +231,48 @@ public class EntityUtil {
   }
 
   /**
+   * Constructs a where condition based on the given primary key
+   * @param entityKey the EntityKey instance
+   * @return a where clause using this EntityKey instance,
+   * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
+   */
+  public static String getWhereCondition(final EntityKey entityKey) {
+    return getWhereCondition(entityKey.getProperties(), new ValueProvider() {
+      public Object getValue(final String propertyID) {
+        return entityKey.getValue(propertyID);
+      }
+    });
+  }
+
+  /**
+   * Constructs a where condition based on the primary key of the given entity, using the
+   * original property values. This method should be used when updating an entity in case
+   * a primary key property value has changed, hence using the original value.
    * @param entity the Entity instance
    * @return a where clause specifying this entity instance,
-   * e.g. " where (idCol = 42)", " where (idCol1 = 42) and (idCol2 = 24)"
+   * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Entity entity) {
+    return getWhereCondition(entity.getPrimaryKey().getProperties(), new ValueProvider() {
+      public Object getValue(final String propertyID) {
+        return entity.getOriginalValue(propertyID);
+      }
+    });
+  }
+
+  /**
+   * Constructs a where condition based on the given primary key properties and the values provide by <code>valueProvider</code>
+   * @param properties the properties to use when constructing the condition
+   * @param valueProvider the value provider
+   * @return a where clause according to the given properties and the values provided by <code>valueProvider</code>,
+   * e.g. " where (idCol = 42)" or in case of multiple properties " where (idCol1 = 42) and (idCol2 = 24)"
+   */
+  public static String getWhereCondition(final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
     final StringBuilder ret = new StringBuilder(" where (");
     int i = 0;
-    for (final Property.PrimaryKeyProperty property : entity.getPrimaryKey().getProperties()) {
-      ret.append(getQueryString(property.propertyID, getSQLStringValue(property, entity.getOriginalValue(property.propertyID))));
-      if (i++ < entity.getPrimaryKey().getPropertyCount() - 1)
+    for (final Property.PrimaryKeyProperty property : properties) {
+      ret.append(getQueryString(property.propertyID, getSQLStringValue(property, valueProvider.getValue(property.propertyID))));
+      if (i++ < properties.size() - 1)
         ret.append(" and ");
     }
 
@@ -285,5 +317,9 @@ public class EntityUtil {
         ret.add(property);
 
     return ret;
+  }
+
+  public interface ValueProvider {
+    public Object getValue(final String propertyID);
   }
 }

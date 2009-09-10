@@ -108,12 +108,12 @@ public interface IEntityDb {
   public List<Entity> update(final List<Entity> entities) throws Exception;
 
   /**
-   * Deletes the given entities
-   * @param entities the entities to delete
+   * Deletes the entities according to the given primary keys
+   * @param entityKeys the primary keys of the entities to delete
    * @throws org.jminor.common.db.DbException in case of a db exception
    * @throws Exception in case of exception
    */
-  public void delete(final List<Entity> entities) throws Exception;
+  public void delete(final List<EntityKey> entityKeys) throws Exception;
 
   /**
    * Selects the non-null values of the given property of the given entity, returning them distinct and/or ordered

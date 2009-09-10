@@ -16,6 +16,7 @@ import org.jminor.framework.db.IEntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import junit.framework.TestCase;
@@ -213,7 +214,7 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected void testDelete(final Entity testEntity) throws Exception {
     try {
-      getDbConnectionProvider().getEntityDb().delete(Arrays.asList(testEntity));
+      getDbConnectionProvider().getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
 
       boolean caught = false;
       try {

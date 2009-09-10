@@ -725,3 +725,8 @@
   EntityTablePanel.propertySummaryPanels map field removed, unused
   common.ui.printing.* deleted
   EntityTableModel.removeAll() removed, code moved to clear()
+  IEntityDbRemote, all methods removed, apparently they were unnecessary
+  EntityDbConnection, minor changes in throws clauses
+  EntityDbRemoteAdapter, minor changes in throws clauses
+  IEntityDb.delete() argument is now List<EntityKey> instead of List<Entity>
+  EntityUtil.getWhereCondition() overloaded, ValueProvider interface introduced

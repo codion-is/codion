@@ -10,7 +10,6 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.IDatabase;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
@@ -166,7 +165,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
     }
   }
 
-  public List<List> selectRows(final String statement, final int recordCount) throws Exception {
+  /** {@inheritDoc} */
+  public List<List> selectRows(final String statement, final int recordCount) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectRows(statement, recordCount);
     }
@@ -264,9 +264,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public void delete(final List<Entity> entities) throws DbException, RemoteException {
+  public void delete(final List<EntityKey> entityKeys) throws DbException, RemoteException {
     try {
-      loggingEntityDbProxy.delete(entities);
+      loggingEntityDbProxy.delete(entityKeys);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -396,12 +396,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException, UserException, RemoteException {
+  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectDependentEntities(entities);
-    }
-    catch (UserException ue) {
-      throw ue;
     }
     catch (DbException dbe) {
       throw dbe;
@@ -412,7 +409,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws DbException, UserException, RemoteException{
+  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws DbException, RemoteException{
     try {
       return loggingEntityDbProxy.writeBlob(entity, propertyID, blobData);
     }
@@ -425,7 +422,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
   }
 
   /** {@inheritDoc} */
-  public byte[] readBlob(final Entity entity, final String propertyID) throws Exception {
+  public byte[] readBlob(final Entity entity, final String propertyID) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.readBlob(entity, propertyID);
     }
@@ -558,7 +555,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements IEntit
       connectionPools.get(user).checkInConnection(connection);
   }
 
-  private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, UserException, AuthenticationException {
+  private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, AuthenticationException {
     if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()) {
       final EntityDbConnection ret = connectionPools.get(user).checkOutConnection();
       if (ret != null) {

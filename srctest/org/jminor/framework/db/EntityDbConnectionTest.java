@@ -56,7 +56,7 @@ public class EntityDbConnectionTest extends TestCase {
             "insert into " + EntityTestDomain.T_DETAIL
                     + "(int, double, string, date, timestamp, boolean, entity_id, id)"
                     + " values(2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2, 1)");
-    assertEquals(EntityDbConnection.getDeleteSQL(testEntity),
+    assertEquals(EntityDbConnection.getDeleteSQL(testEntity.getPrimaryKey()),
             "delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)");
     try {
       EntityDbConnection.getUpdateSQL(testEntity);

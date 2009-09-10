@@ -25,6 +25,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -63,12 +64,12 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public User getUser() throws Exception {
+  public User getUser() {
     return super.getConnectionUser();
   }
 
   /** {@inheritDoc} */
-  public void logout() throws Exception {
+  public void logout() {
     disconnect();
   }
 
@@ -137,15 +138,15 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public void delete(final List<Entity> entities) throws DbException {
-    if (entities == null || entities.size() == 0)
+  public void delete(final List<EntityKey> entityKeys) throws DbException {
+    if (entityKeys == null || entityKeys.size() == 0)
       return;
 
     final List<String> statements = new ArrayList<String>();
-    for (final Entity entity : entities) {
-      if (EntityRepository.isReadOnly(entity.getEntityID()))
+    for (final EntityKey entityKey : entityKeys) {
+      if (EntityRepository.isReadOnly(entityKey.getEntityID()))
         throw new DbException("Can not delete a read only entity");
-      statements.add(0, getDeleteSQL(entity));
+      statements.add(0, getDeleteSQL(entityKey));
     }
 
     execute(statements);
@@ -189,6 +190,11 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
+  public List<Entity> selectAll(final String entityID) throws DbException {
+    return selectMany(new EntityCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
+  }
+
+  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final EntityCriteria criteria) throws DbException {
     addCacheQueriesRequest();
@@ -217,13 +223,8 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectAll(final String entityID) throws DbException {
-    return selectMany(new EntityCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
-  }
-
-  /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws Exception {
+  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws DbException {
     if (primaryKeys == null || primaryKeys.size() == 0)
       throw new IllegalArgumentException("Can not select for update without keys");
     if (isTransactionOpen())
@@ -277,7 +278,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<List> selectRows(final String statement, final int fetchCount) throws Exception {
+  public List<List> selectRows(final String statement, final int fetchCount) throws DbException {
     try {
       return queryObjects(statement, fetchCount);
     }
@@ -287,7 +288,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public int selectRowCount(final EntityCriteria criteria) throws Exception {
+  public int selectRowCount(final EntityCriteria criteria) throws DbException {
     String sql = "";
     try {
       return queryInteger(sql = DbUtil.generateSelectSql(
@@ -323,7 +324,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public void executeStatement(final String statement) throws Exception {
+  public void executeStatement(final String statement) throws DbException {
     try {
       execute(statement);
       if (!isTransactionOpen())
@@ -365,36 +366,38 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception {
+  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws JRException {
     return JasperFillManager.fillReport(report, reportParams, getConnection());
   }
 
   /** {@inheritDoc} */
-  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws Exception {
+  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws DbException {
     if (isTransactionOpen())
       throw new DbException("Can not save blob within an open transaction");
 
-    boolean success = false;
     try {
-      beginTransaction();
-      final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
+      boolean success = false;
+      try {
+        beginTransaction();
+        final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
-      final String whereCondition = EntityUtil.getWhereCondition(entity);
+        final String whereCondition = EntityUtil.getWhereCondition(entity);
 
-      execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.propertyID)
-              .append(" = '").append(entity.getStringValue(propertyID)).append("' ").append(whereCondition).toString());
+        execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.propertyID)
+                .append(" = '").append(entity.getStringValue(propertyID)).append("' ").append(whereCondition).toString());
 
-      writeBlobField(blobData, EntityRepository.getTableName(entity.getEntityID()),
-              property.getBlobColumnName(), whereCondition);
-      success = true;
+        writeBlobField(blobData, EntityRepository.getTableName(entity.getEntityID()),
+                property.getBlobColumnName(), whereCondition);
+        success = true;
 
-      return entity;
+        return entity;
+      }
+      finally {
+        endTransaction(success);
+      }
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle, "");
-    }
-    finally {
-      endTransaction(success);
+      throw new DbException(sqle);
     }
   }
 
@@ -436,9 +439,9 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   /**
    * @param entity the Entity instance
    * @return a query for updating this entity instance
-   * @throws RuntimeException in case the entity is unmodified
+   * @throws DbException in case the entity is unmodified
    */
-  static String getUpdateSQL(final Entity entity) {
+  static String getUpdateSQL(final Entity entity) throws DbException{
     if (!entity.isModified())
       throw new RuntimeException("Can not get update sql for an unmodified entity");
 
@@ -446,7 +449,7 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = EntityUtil.getUpdateProperties(entity);
     if (properties.size() == 0)
-      throw new RuntimeException("No modified updateable properties found in entity: " + entity);
+      throw new DbException("No modified updateable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.propertyID).append(" = ").append(EntityUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
@@ -458,12 +461,12 @@ public class EntityDbConnection extends DbConnection implements IEntityDb {
   }
 
   /**
-   * @param entity the Entity instance
-   * @return a query for deleting this entity instance
+   * @param entityKey the EntityKey instance
+   * @return a query for deleting the entity having the given primary key
    */
-  static String getDeleteSQL(final Entity entity) {
-    return new StringBuilder("delete from ").append(EntityRepository.getTableName(entity.getEntityID()))
-            .append(EntityUtil.getWhereCondition(entity)).toString();
+  static String getDeleteSQL(final EntityKey entityKey) {
+    return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
+            .append(EntityUtil.getWhereCondition(entityKey)).toString();
   }
 
   private void execute(final List<String> statements) throws DbException {
