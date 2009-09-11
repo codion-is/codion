@@ -169,7 +169,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @return the selected entity
    */
   public Entity getSelectedEntity() {
-    if (isNullValueSelected())
+    if (isNullValueItemSelected())
       return null;
 
     return (Entity) getSelectedItem();

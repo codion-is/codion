@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * A ComboBoxModel implementation that allows filtering via FilterCriteria objects
@@ -40,11 +39,18 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
-  /** Constructs a new FilteredComboBoxModel. */
+  /** Instantiates a new FilteredComboBoxModel that does not sort its contents and
+   * does not include a nullValueItem */
   public FilteredComboBoxModel() {
     this(false, null);
   }
 
+  /**
+   * Instantiates a new FilteredComboBoxModel
+   * @param sortContents if true then the contents of this model are sorted on refresh
+   * @param nullValueItem an object representing a null value, which is shown at the top of the item list
+   * @see #isNullValueItemSelected()
+   */
   public FilteredComboBoxModel(final boolean sortContents, final Object nullValueItem) {
     this(sortContents, nullValueItem, new Comparator<Object>() {
       @SuppressWarnings({"unchecked"})
@@ -108,9 +114,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   public void resetContents() {
-    visibleItems.remove(nullValueItem);
-    final Vector<Object> contents = new Vector<Object>(getContents());
-    setContents(contents);
+    setContents(getContents());
   }
 
   /**
@@ -122,8 +126,9 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   public void fireContentsChanged() {
-    for (final ListDataListener list : listDataListeners.toArray(new ListDataListener[listDataListeners.size()]))
-      list.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE));
+    final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
+    for (final ListDataListener dataListener : listDataListeners)
+      dataListener.contentsChanged(event);
   }
 
   public void removeItem(final Object item) {
@@ -133,13 +138,6 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
       filteredItems.remove(item);
 
     fireContentsChanged();
-  }
-
-  /**
-   * @return true if the first item represents a null value, false otherwise
-   */
-  public boolean isFirstNullValue() {
-    return nullValueItem != null;
   }
 
   /**
@@ -153,7 +151,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * @return true if the value representing null is selected, false if none has been specified
    * or it is not selected
    */
-  public boolean isNullValueSelected() {
+  public boolean isNullValueItemSelected() {
     return selectedItem != null && nullValueItem != null && selectedItem.equals(nullValueItem);
   }
 
@@ -192,6 +190,10 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     return visibleItems.size();
   }
 
+  /**
+   * @return a List containing the items to be shown in this combo box model,
+   * by default it simply returns a list containing the items currently contained in the model.
+   */
   protected List<?> getContents() {
     final List<Object> ret = new ArrayList<Object>(filteredItems);
     ret.addAll(visibleItems);
@@ -200,10 +202,10 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   protected List<Object> getFilteredItems() {
-    return filteredItems;
+    return new ArrayList<Object>(filteredItems);
   }
 
   protected List<Object> getVisibleItems() {
-    return visibleItems;
+    return new ArrayList<Object>(visibleItems);
   }
 }

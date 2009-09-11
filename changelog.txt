@@ -732,3 +732,4 @@
   EntityUtil.getWhereCondition() overloaded, ValueProvider interface introduced
   I prefix removed from interface names
   PropertyCriteria now adds paranthesis around in conditions, fixes bug due to 1000 item in list limit
+  ComboBoxPropertyLink now handles PropertyComboBoxModel.isNullValueSelected()

@@ -7,6 +7,7 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -91,11 +92,10 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
       ret = ((EntityComboBoxModel) boxModel).getSelectedEntity();
     else if (boxModel instanceof ItemComboBoxModel)
       ret = ((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem();
-    else {
+    else if (boxModel instanceof PropertyComboBoxModel)
+      ret = ((PropertyComboBoxModel) boxModel).isNullValueItemSelected() ? null : boxModel.getSelectedItem();
+    else
       ret = boxModel.getSelectedItem();
-      if (ret instanceof String && ((String) ret).length() == 0)
-        ret = null;
-    }
 
     return ret;
   }
