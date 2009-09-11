@@ -157,7 +157,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /**
-   * Sets whether this criteria should be case sensitive, only applies to criterias base on string properties
+   * Sets whether this criteria should be case sensitive, only applies to criterias based on string properties
    * @param value if true then this criteria is case sensitive, false otherwise
    * @return this PropertyCriteria instance
    */
@@ -216,13 +216,14 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   private String getInList(final String whereColumn, final boolean notIn) {
-    final StringBuilder ret = new StringBuilder(whereColumn + (notIn ? " not in (" : " in ("));
+    final StringBuilder ret = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
-      String sqlValue = EntityUtil.getSQLStringValue(property, values.get(i));
+      final String sqlValue = EntityUtil.getSQLStringValue(property, values.get(i));
       if (property.propertyType == Type.STRING && !caseSensitive)
-        sqlValue = "upper(" + sqlValue + ")";
-      ret.append(sqlValue);
+        ret.append("upper(").append(sqlValue).append(")");
+      else
+        ret.append(sqlValue);
       if (cnt++ == 1000 && i < values.size()-1) {//Oracle limit
         ret.append(notIn ? ") and " : ") or ").append(whereColumn).append(" in (");
         cnt = 1;
@@ -230,7 +231,7 @@ public class PropertyCriteria implements Criteria, Serializable {
       else if (i < values.size()-1)
         ret.append(", ");
     }
-    ret.append(")");
+    ret.append("))");
 
     return ret.toString();
   }
