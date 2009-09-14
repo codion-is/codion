@@ -85,26 +85,9 @@ public class EntityLookupField extends JTextField {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityLookupField without a EntityLookupModel");
     this.model = model;
-    this.enterAction = enterAction;
+    setEnterAction(enterAction);
     setComponentPopupMenu(initializePopupMenu());
-    addActionListener(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          if (model.getSearchString().length() == 0) {
-            model.setSelectedEntities(null);
-          }
-          else {
-            if (model.textRepresentsSelected() && getEnterAction() != null)
-              getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
-            else if (!model.textRepresentsSelected())
-              selectEntities(model.performQuery());
-          }
-        }
-        catch (UserException ex) {
-          ExceptionDialog.handleException(ex, EntityLookupField.this);
-        }
-      }
-    });
+    addActionListener(initializeLookupAction());
     new TextBeanPropertyLink(this, model, "searchString", String.class, model.evtSearchStringChanged, null);
     model.evtSearchStringChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
@@ -129,7 +112,7 @@ public class EntityLookupField extends JTextField {
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          model.setSelectedEntities(EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(EntityLookupField.this),
+          getModel().setSelectedEntities(EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(EntityLookupField.this),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
         }
         catch (UserCancelException ex) {/**/}
@@ -148,7 +131,7 @@ public class EntityLookupField extends JTextField {
     if (entities.size() == 0)
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
     else if (entities.size() == 1)
-      model.setSelectedEntities(entities);
+      getModel().setSelectedEntities(entities);
     else {
       Collections.sort(entities, new Comparator<Entity>() {
         public int compare(final Entity e1, final Entity e2) {
@@ -161,11 +144,7 @@ public class EntityLookupField extends JTextField {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
         public void actionPerformed(ActionEvent e) {
-          final Object[] selectedValues = list.getSelectedValues();
-          final List<Entity> entityList = new ArrayList<Entity>(selectedValues.length);
-          for (final Object object : selectedValues)
-            entityList.add((Entity) object);
-          model.setSelectedEntities(entityList);
+          getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
           dialog.dispose();
         }
       };
@@ -174,7 +153,8 @@ public class EntityLookupField extends JTextField {
           dialog.dispose();
         }
       };
-      list.setSelectionMode(model.isMultipleSelectionAllowed() ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+      list.setSelectionMode(getModel().isMultipleSelectionAllowed() ?
+              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       final JButton btnOk  = new JButton(okAction);
       final JButton btnCancel = new JButton(cancelAction);
       final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
@@ -211,22 +191,46 @@ public class EntityLookupField extends JTextField {
     }
   }
 
+  private AbstractAction initializeLookupAction() {
+    return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          if (getModel().getSearchString().length() == 0) {
+            getModel().setSelectedEntities(null);
+          }
+          else {
+            if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
+              getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
+            else if (!getModel().searchStringRepresentsSelected())
+              selectEntities(getModel().performQuery());
+          }
+        }
+        catch (UserException ex) {
+          ExceptionDialog.handleException(ex, EntityLookupField.this);
+        }
+      }
+    };
+  }
+
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu ret = new JPopupMenu();
     ret.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
       public void actionPerformed(ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
-        final JCheckBox boxCaseSensitive = new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), model.isCaseSensitive());
-        final JCheckBox boxPrefixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), model.isWildcardPrefix());
-        final JCheckBox boxPostfixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), model.isWildcardPostfix());
+        final JCheckBox boxCaseSensitive =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), getModel().isCaseSensitive());
+        final JCheckBox boxPrefixWildcard =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), getModel().isWildcardPrefix());
+        final JCheckBox boxPostfixWildcard =
+                new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), getModel().isWildcardPostfix());
         panel.add(boxCaseSensitive);
         panel.add(boxPrefixWildcard);
         panel.add(boxPostfixWildcard);
         final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
           public void actionPerformed(final ActionEvent ae) {
-            model.setCaseSensitive(boxCaseSensitive.isSelected());
-            model.setWildcardPrefix(boxPrefixWildcard.isSelected());
-            model.setWildcardPostfix(boxPostfixWildcard.isSelected());
+            getModel().setCaseSensitive(boxCaseSensitive.isSelected());
+            getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
+            getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
           }
         };
         action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
@@ -239,6 +243,14 @@ public class EntityLookupField extends JTextField {
   }
 
   private void updateBackgroundColor() {
-    setBackground(model.textRepresentsSelected() ? Color.WHITE : Color.LIGHT_GRAY);
+    setBackground(getModel().searchStringRepresentsSelected() ? Color.WHITE : Color.LIGHT_GRAY);
+  }
+
+  private List<Entity> toEntityList(final Object[] selectedValues) {
+    final List<Entity> entityList = new ArrayList<Entity>(selectedValues.length);
+    for (final Object object : selectedValues)
+      entityList.add((Entity) object);
+
+    return entityList;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.framework.db.provider;
 
 import org.jminor.common.db.User;
 import org.jminor.framework.Configuration;
@@ -43,7 +43,7 @@ public class EntityDbProviderFactory {
    * @see org.jminor.framework.server.provider.EntityDbRemoteProvider
    */
   public static EntityDbProvider createEntityDbProvider(final User user, final String clientKey,
-                                                         final String clientTypeID) {
+                                                        final String clientTypeID) {
     try {
       if (System.getProperty(Configuration.CLIENT_CONNECTION_TYPE,
               Configuration.CONNECTION_TYPE_LOCAL).equals(Configuration.CONNECTION_TYPE_REMOTE))

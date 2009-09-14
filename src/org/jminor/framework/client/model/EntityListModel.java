@@ -9,8 +9,8 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
-import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
 import org.apache.log4j.Logger;

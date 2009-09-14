@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import java.util.Arrays;

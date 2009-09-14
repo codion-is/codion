@@ -33,7 +33,7 @@ import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
 import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;

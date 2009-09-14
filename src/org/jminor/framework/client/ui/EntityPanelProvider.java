@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 
 import java.lang.reflect.InvocationTargetException;
 

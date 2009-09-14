@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.framework.db.provider;
 
 import org.jminor.common.model.UserException;
+import org.jminor.framework.db.EntityDb;
 
 /**
  * Interface for a class responsible for providing EntityDb objects

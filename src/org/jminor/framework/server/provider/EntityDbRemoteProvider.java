@@ -8,7 +8,7 @@ import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.server.EntityDbServer;
 

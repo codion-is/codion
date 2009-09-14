@@ -19,7 +19,7 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;

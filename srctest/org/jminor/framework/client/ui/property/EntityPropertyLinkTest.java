@@ -12,7 +12,7 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.EntityDbLocalProvider;
+import org.jminor.framework.db.provider.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;

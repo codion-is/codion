@@ -8,7 +8,7 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
-import org.jminor.framework.db.EntityDbLocalProvider;
+import org.jminor.framework.db.provider.EntityDbLocalProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 

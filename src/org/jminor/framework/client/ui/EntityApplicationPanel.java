@@ -24,7 +24,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
@@ -464,7 +464,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * The corresponding EntityModel objects should be returned by the
    * EntityApplicationModel.initializeMainApplicationModels() method
    * N.B. these EntityPanelProvider objects should be constructed with a <code>caption</code> parameter.
-   * @see org.jminor.framework.client.model.EntityApplicationModel#initializeMainApplicationModels(org.jminor.framework.db.EntityDbProvider) ()
+   * @see org.jminor.framework.client.model.EntityApplicationModel#initializeMainApplicationModels(org.jminor.framework.db.provider.EntityDbProvider) ()
    */
   protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
     return new ArrayList<EntityPanelProvider>(0);

@@ -5,7 +5,7 @@ package org.jminor.framework.client.model.combobox;
 
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
 
 import java.util.List;

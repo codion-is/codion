@@ -9,9 +9,9 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -83,6 +83,10 @@ public class EntityLookupModel {
     this.caseSensitive = caseSensitive;
     this.wildcardPrefix = wildcardPrefix;
     this.wildcardPostfix = wildcardPostfix;
+  }
+
+  public String getEntityID() {
+    return entityID;
   }
 
   public boolean isMultipleSelectionAllowed() {
@@ -169,8 +173,8 @@ public class EntityLookupModel {
     setSearchString(getSelectedEntities().size() == 0 ? "" : toString(getSelectedEntities()));
   }
 
-  public void setSearchString(final String text) {
-    this.searchString = text;
+  public void setSearchString(final String searchString) {
+    this.searchString = searchString == null ? "" : searchString;
     evtSearchStringChanged.fire();
   }
 
@@ -178,12 +182,15 @@ public class EntityLookupModel {
     return this.searchString;
   }
 
-  public boolean textRepresentsSelected() {
+  public boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
     return getSelectedEntities().size() > 0 && selectedAsString.equals(getSearchString());
   }
 
   public EntityCriteria getEntityCriteria() {
+    if (getSearchString().equals(getWildcard()))
+      return new EntityCriteria(getEntityID());
+
     final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
     final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultiValueSeperator()) : new String[] {getSearchString()};
     for (final Property lookupProperty : lookupProperties) {
@@ -194,7 +201,7 @@ public class EntityLookupModel {
       }
     }
 
-    return new EntityCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
+    return new EntityCriteria(getEntityID(), additionalLookupCriteria == null ? baseCriteria :
             new CriteriaSet(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 

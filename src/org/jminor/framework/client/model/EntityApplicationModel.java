@@ -6,8 +6,8 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
-import org.jminor.framework.db.EntityDbProvider;
-import org.jminor.framework.db.EntityDbProviderFactory;
+import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProviderFactory;
 
 import java.util.List;
 

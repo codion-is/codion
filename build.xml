@@ -124,8 +124,8 @@
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/criteria/**,
-                org/jminor/framework/db/EntityDbProviderFactory*,
                 org/jminor/framework/db/EntityDb*,
+                org/jminor/framework/db/provider/EntityDbProviderFactory*,
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/domain/**,
                 org/jminor/framework/tools/profiling/**,
@@ -149,7 +149,6 @@
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/DbException.class,
                 org/jminor/framework/db/EntityDb.class,
-                org/jminor/framework/domain/EntityRepository.class,
                 org/jminor/framework/server/monitor/**,
                 org/jminor/framework/server/EntityDbServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>

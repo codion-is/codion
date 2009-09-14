@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.framework.db.provider;
 
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
@@ -9,6 +9,8 @@ import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
+import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityDbConnection;
 
 import org.apache.log4j.Logger;
 

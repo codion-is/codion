@@ -8,8 +8,8 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.EntityDbProvider;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
 
