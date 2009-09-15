@@ -1572,6 +1572,8 @@ public class EntityModel implements Refreshable {
   private void addDetailModels() throws UserException {
     final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
     for (final EntityModel detailModel : initializeDetailModels()) {
+      if (EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID()).size() == 0)
+        throw new RuntimeException("Detail model " + detailModel.getClass().getSimpleName() + " entity does not reference " + getEntityID());
       detailModels.add(detailModel);
       detailModel.setMasterModel(this);
       if (detailModel.containsTableModel())

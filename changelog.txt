@@ -738,3 +738,4 @@
   EntityDbProvider, EntityDbLocalProvider and EntityDbProviderFactory moved to framework.db.provider
   EntityModel.uiSetValue() renamed to setValue()
   EntityModel.setValue() renamed to setPropertyValue()
+  EntityModel.addDetailModels() now checks if the detail models are based on valid foreign keys
