@@ -17,6 +17,7 @@ public interface Dbms {
   /**
    * Specifies the database type
    * @see Dbms#DERBY
+   * @see Dbms#HSQL
    * @see Dbms#H2
    * @see Dbms#MYSQL
    * @see Dbms#ORACLE

@@ -33,7 +33,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private final Map<String, Object> values = new HashMap<String, Object>();
 
   /**
-   * Holds the original value of properties which values have changed
+   * Holds the original value of properties which values have changed,
+   * including primary key properties
    */
   private Map<String, Object> originalValues;
 

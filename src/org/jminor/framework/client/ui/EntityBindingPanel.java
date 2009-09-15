@@ -27,6 +27,10 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
 
+/**
+ * An abstract JPanel subclass providing methods for creating UI components
+ * bound to property values in an underlying EntityModel.
+ */
 public abstract class EntityBindingPanel extends JPanel {
 
   /**

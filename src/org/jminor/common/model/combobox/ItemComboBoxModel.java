@@ -78,7 +78,6 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
       return caption;
     }
 
-    /** {@inheritDoc} */
     public T getItem() {
       return item;
     }
