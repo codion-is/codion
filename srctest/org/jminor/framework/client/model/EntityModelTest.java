@@ -79,20 +79,20 @@ public class EntityModelTest extends TestCase {
     final String originalName = (String) employeeModel.getValue(EmpDept.EMPLOYEE_NAME);
     final String name = "Mr. Mr";
 
-    employeeModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
+    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_COMMISSION, commission);
     assertTrue(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    employeeModel.setValue(EmpDept.EMPLOYEE_NAME, name);
+    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_NAME, name);
 
     assertEquals("Commission does not fit", employeeModel.getValue(EmpDept.EMPLOYEE_COMMISSION), commission);
     assertEquals("Hiredate does not fit", employeeModel.getValue(EmpDept.EMPLOYEE_HIREDATE), hiredate);
     assertEquals("Name does not fit", employeeModel.getValue(EmpDept.EMPLOYEE_NAME), name);
 
-    employeeModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
+    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
     assertTrue(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
+    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
     assertTrue(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
+    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_NAME, originalName);
     assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
 
     employeeModel.getTableModel().getSelectionModel().clearSelection();
@@ -121,7 +121,7 @@ public class EntityModelTest extends TestCase {
     departmentModel.getTableModel().setSelectedItemIndex(0);
     final EntityKey primaryKey = departmentModel.getActiveEntityCopy().getPrimaryKey();
     final Object originalValue = departmentModel.getValue(EmpDept.DEPARTMENT_LOCATION);
-    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
+    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -130,7 +130,7 @@ public class EntityModelTest extends TestCase {
     catch (Exception e) {}
 
     //revert value to original
-    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
+    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
     //assert row is not locked, and then unlock it
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -141,7 +141,7 @@ public class EntityModelTest extends TestCase {
     }
 
     //change value
-    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
+    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
     //assert row is locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -160,7 +160,7 @@ public class EntityModelTest extends TestCase {
       fail("Row should not be locked after update");
     }
 
-    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, "None really");
+    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -180,7 +180,7 @@ public class EntityModelTest extends TestCase {
 
     //clean up by resetting the value
     departmentModel.getTableModel().setSelectedItemIndex(0);
-    departmentModel.uiSetValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
+    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
     departmentModel.update();
   }
 

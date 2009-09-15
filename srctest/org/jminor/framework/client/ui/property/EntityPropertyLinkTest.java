@@ -79,7 +79,7 @@ public class EntityPropertyLinkTest extends TestCase {
             txtDate, LinkType.READ_WRITE, format, DateUtil.getDateMask(format));
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date now = new Date();
-    model.uiSetValue(EmpDept.EMPLOYEE_HIREDATE, now);//hmm, why didn't txtDate.setText(format.format(now)) work?
+    model.setValue(EmpDept.EMPLOYEE_HIREDATE, now);//hmm, why didn't txtDate.setText(format.format(now)) work?
     assertEquals("Date value should be now", now, model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     txtDate.setText("");
     assertNull("Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));

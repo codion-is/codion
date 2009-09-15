@@ -38,7 +38,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   /** {@inheritDoc} */
   @Override
   public void setModelPropertyValue(final Object value) {
-    getEntityModel().uiSetValue(property, value);
+    getEntityModel().setValue(property, value);
   }
 
   /**

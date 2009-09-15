@@ -669,8 +669,8 @@ public class EntityModel implements Refreshable {
    * @param propertyID the ID of the property to update
    * @param value the new value
    */
-  public final void uiSetValue(final String propertyID, final Object value) {
-    uiSetValue(propertyID, value, true);
+  public final void setValue(final String propertyID, final Object value) {
+    setValue(propertyID, value, true);
   }
 
   /**
@@ -679,8 +679,8 @@ public class EntityModel implements Refreshable {
    * @param value the new value
    * @param validate if true basic type validation is performed
    */
-  public final void uiSetValue(final String propertyID, final Object value, final boolean validate) {
-    uiSetValue(EntityRepository.getProperty(getEntityID(), propertyID), value, validate);
+  public final void setValue(final String propertyID, final Object value, final boolean validate) {
+    setValue(EntityRepository.getProperty(getEntityID(), propertyID), value, validate);
   }
 
   /**
@@ -688,8 +688,8 @@ public class EntityModel implements Refreshable {
    * @param property the property to update
    * @param value the new value
    */
-  public final void uiSetValue(final Property property, final Object value) {
-    uiSetValue(property, value, true);
+  public final void setValue(final Property property, final Object value) {
+    setValue(property, value, true);
   }
 
   /**
@@ -698,8 +698,8 @@ public class EntityModel implements Refreshable {
    * @param value the new value
    * @param validate if true basic type validation is performed
    */
-  public final void uiSetValue(final Property property, final Object value, final boolean validate) {
-    setValue(property, value, validate, false);
+  public final void setValue(final Property property, final Object value, final boolean validate) {
+    setPropertyValue(property, value, validate, false);
   }
 
   /**
@@ -1000,7 +1000,7 @@ public class EntityModel implements Refreshable {
       getTableModel().filterByReference(masterValues, masterEntityID);
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
-      setValue(foreignKeyProperty, masterValues != null && masterValues.size() > 0 ? masterValues.get(0) : null);
+      setPropertyValue(foreignKeyProperty, masterValues != null && masterValues.size() > 0 ? masterValues.get(0) : null);
   }
 
   /**
@@ -1202,8 +1202,8 @@ public class EntityModel implements Refreshable {
    * @param propertyID the ID of the property to update
    * @param value the new value
    */
-  protected final void setValue(final String propertyID, final Object value) {
-    setValue(propertyID, value, true);
+  protected final void setPropertyValue(final String propertyID, final Object value) {
+    setPropertyValue(propertyID, value, true);
   }
 
   /**
@@ -1213,8 +1213,8 @@ public class EntityModel implements Refreshable {
    * @param value the new value
    * @param validate if true basic type validation is performed
    */
-  protected final void setValue(final String propertyID, final Object value, final boolean validate) {
-    setValue(propertyID, value, validate, true);
+  protected final void setPropertyValue(final String propertyID, final Object value, final boolean validate) {
+    setPropertyValue(propertyID, value, validate, true);
   }
 
   /**
@@ -1225,9 +1225,9 @@ public class EntityModel implements Refreshable {
    * @param isModelChange indicates whether the change is triggered by the model,
    * if false then the UI is assumed to be responsible for the value change
    */
-  protected final void setValue(final String propertyID, final Object value, final boolean validate,
-                                final boolean isModelChange) {
-    setValue(EntityRepository.getProperty(getEntityID(), propertyID), value, validate, isModelChange);
+  protected final void setPropertyValue(final String propertyID, final Object value, final boolean validate,
+                                        final boolean isModelChange) {
+    setPropertyValue(EntityRepository.getProperty(getEntityID(), propertyID), value, validate, isModelChange);
   }
 
   /**
@@ -1235,8 +1235,8 @@ public class EntityModel implements Refreshable {
    * @param property the property to update
    * @param value the new value
    */
-  protected final void setValue(final Property property, final Object value) {
-    setValue(property, value, true);
+  protected final void setPropertyValue(final Property property, final Object value) {
+    setPropertyValue(property, value, true);
   }
 
   /**
@@ -1246,8 +1246,8 @@ public class EntityModel implements Refreshable {
    * @param value the new value
    * @param validate if true basic type validation is performed
    */
-  protected final void setValue(final Property property, final Object value, final boolean validate) {
-    setValue(property, value, validate, true);
+  protected final void setPropertyValue(final Property property, final Object value, final boolean validate) {
+    setPropertyValue(property, value, validate, true);
   }
 
   /**
@@ -1258,8 +1258,8 @@ public class EntityModel implements Refreshable {
    * @param isModelChange indicates whether the change is triggered by the model,
    * if false then the UI is assumed to be responsible for the value change
    */
-  protected final void setValue(final Property property, final Object value, final boolean validate,
-                                final boolean isModelChange) {
+  protected final void setPropertyValue(final Property property, final Object value, final boolean validate,
+                                        final boolean isModelChange) {
     final Object oldValue = getValue(property);
     final Object newValue = doSetValue(property, value, validate);
     if (!Util.equal(newValue, oldValue))
@@ -1524,7 +1524,7 @@ public class EntityModel implements Refreshable {
                   (EntityComboBoxModel) detailModel.propertyComboBoxModels.get(foreignKeyProperty);
           if (entityComboBoxModel != null)
             entityComboBoxModel.refresh();
-          detailModel.setValue(foreignKeyProperty, insertedEntity);
+          detailModel.setPropertyValue(foreignKeyProperty, insertedEntity);
         }
       }
     }

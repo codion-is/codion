@@ -736,3 +736,5 @@
   EntityLookupField refactored a bit
   EntityLookupModel.getEntityID() added and used
   EntityDbProvider, EntityDbLocalProvider and EntityDbProviderFactory moved to framework.db.provider
+  EntityModel.uiSetValue() renamed to setValue()
+  EntityModel.setValue() renamed to setPropertyValue()
