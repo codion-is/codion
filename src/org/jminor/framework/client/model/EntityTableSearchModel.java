@@ -116,7 +116,7 @@ public class EntityTableSearchModel {
    */
   public PropertyFilterModel getPropertyFilterModel(final String propertyID) {
     for (final AbstractSearchModel filter : propertyFilterModels)
-      if (filter.getPropertyName().equals(propertyID))
+      if (filter.getPropertyID().equals(propertyID))
         return (PropertyFilterModel) filter;
 
     return null;
@@ -183,7 +183,7 @@ public class EntityTableSearchModel {
    */
   public PropertySearchModel getPropertySearchModel(final String propertyID) {
     for (final PropertySearchModel searchModel : propertySearchModels)
-      if (searchModel.getProperty().propertyID.equals(propertyID))
+      if (searchModel.getProperty().getPropertyID().equals(propertyID))
         return searchModel;
 
     return null;
@@ -194,7 +194,7 @@ public class EntityTableSearchModel {
    * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled
    */
   public boolean isSearchEnabled(final int columnIndex) {
-    final PropertySearchModel model = getPropertySearchModel(tableColumnProperties.get(columnIndex).propertyID);
+    final PropertySearchModel model = getPropertySearchModel(tableColumnProperties.get(columnIndex).getPropertyID());
 
     return model != null && model.isSearchEnabled();
   }
@@ -220,7 +220,7 @@ public class EntityTableSearchModel {
     final String searchState = getSearchModelState();
     for (final Property property : tableColumnProperties) {
       if (property instanceof Property.ForeignKeyProperty && ((Property.ForeignKeyProperty)property).referenceEntityID.equals(referencedEntityID)) {
-        final PropertySearchModel searchModel = getPropertySearchModel(property.propertyID);
+        final PropertySearchModel searchModel = getPropertySearchModel(property.getPropertyID());
         if (searchModel != null) {
           searchModel.initialize();
           searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
@@ -352,7 +352,7 @@ public class EntityTableSearchModel {
     final Collection<Property> properties = EntityRepository.getDatabaseProperties(entityID);
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : properties)
-      if (property.propertyType == Type.STRING)
+      if (property.getPropertyType() == Type.STRING)
         ret.add(property);
 
     return ret;

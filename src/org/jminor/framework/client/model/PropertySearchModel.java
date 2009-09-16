@@ -81,7 +81,7 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   @Override
   public String toString() {
-    final StringBuilder ret = new StringBuilder(getProperty().propertyID);
+    final StringBuilder ret = new StringBuilder(getProperty().getPropertyID());
     if (isSearchEnabled()) {
       ret.append(getSearchType());
       ret.append(getUpperBound() != null ? toString(getUpperBound()) : "null");

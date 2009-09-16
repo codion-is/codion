@@ -51,7 +51,7 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
   @Override
   protected List<?> getContents() {
     try {
-      return dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true);
+      return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
     }
     catch (UserException ue) {
       throw ue.getRuntimeException();

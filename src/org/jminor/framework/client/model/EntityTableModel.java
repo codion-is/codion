@@ -306,7 +306,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     int idx = 0;
     int columnIndex = -1;
     for (final Property property : EntityRepository.getVisibleProperties(getEntityID())) {
-      if (property.propertyID.equals(propertyID)) {
+      if (property.getPropertyID().equals(propertyID)) {
         columnIndex = idx;
         break;
       }
@@ -442,7 +442,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   @Override
   public Class getColumnClass(final int columnIndex) {
     return getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
-            getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).propertyID));
+            getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).getPropertyID()));
   }
 
   /** {@inheritDoc} */
@@ -478,7 +478,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the values of <code>property</code> from the entities in the table model
    */
   public Collection<Object> getValues(final Property property, final boolean selectedOnly) {
-    return Arrays.asList(EntityUtil.getPropertyValues(property.propertyID,
+    return Arrays.asList(EntityUtil.getPropertyValues(property.getPropertyID(),
             selectedOnly ? getSelectedEntities() : visibleEntities, false));
   }
 
@@ -937,8 +937,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the PropertySummaryModel for the given property
    */
   public PropertySummaryModel getPropertySummaryModel(final Property property) {
-    if (!propertySummaryModels.containsKey(property.propertyID))
-      propertySummaryModels.put(property.propertyID, new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
+    if (!propertySummaryModels.containsKey(property.getPropertyID()))
+      propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
         public void bindValuesChangedEvent(final Event event) {
           evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
           evtRefreshDone.addListener(event);
@@ -959,7 +959,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         }
       }));
 
-    return propertySummaryModels.get(property.propertyID);
+    return propertySummaryModels.get(property.getPropertyID());
   }
 
   /**

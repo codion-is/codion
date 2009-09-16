@@ -95,7 +95,7 @@ public class EntityPropertyEditor extends JPanel {
 
     this.inputManager = inputManager;
     this.property = property;
-    final Collection<Object> values = EntityUtil.getPropertyValues(entities, property.propertyID);
+    final Collection<Object> values = EntityUtil.getPropertyValues(entities, property.getPropertyID());
     this.field = getInputField(entityModel, values.size() == 1 ? values.iterator().next() : null);
     if (this.field instanceof JTextField)
       EntityUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,

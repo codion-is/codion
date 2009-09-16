@@ -69,13 +69,13 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
-    switch (property.propertyType) {
-      case ENTITY :
+    switch (property.getPropertyType()) {
+      case ENTITY:
         throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
-      case BOOLEAN :
+      case BOOLEAN:
         return getBoolean(resultSet, property);
       default:
-        return getValue(resultSet, property.propertyType, property.getSelectIndex());
+        return getValue(resultSet, property.getPropertyType(), property.getSelectIndex());
     }
   }
 
@@ -89,31 +89,31 @@ public class EntityResultPacker implements ResultPacker<Entity> {
         return null;
 
       switch (result) {
-        case 0 : return Type.Boolean.FALSE;
-        case 1 : return Type.Boolean.TRUE;
-        default : return null;
+        case 0: return Type.Boolean.FALSE;
+        case 1: return Type.Boolean.TRUE;
+        default: return null;
       }
     }
   }
 
   private Object getValue(final ResultSet resultSet, final Type propertyType, final int selectIndex) throws SQLException {
     switch (propertyType) {
-      case INT :
+      case INT:
         return getInteger(resultSet, selectIndex);
-      case DOUBLE :
+      case DOUBLE:
         return getDouble(resultSet, selectIndex);
       case DATE:
       case TIMESTAMP:
         return getTimestamp(resultSet, selectIndex);
-      case STRING :
+      case STRING:
         return getString(resultSet, selectIndex);
-      case CHAR :
+      case CHAR:
         final String val = getString(resultSet, selectIndex);
         if (val != null && val.length() > 0)
           return val.charAt(0);
         else
           return null;
-      default :
+      default:
         throw new IllegalArgumentException("Unknown property type: " + propertyType);
     }
   }

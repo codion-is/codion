@@ -76,7 +76,7 @@ public class EntityKey implements Serializable {
    */
   public Property.PrimaryKeyProperty getProperty(final String propertyID) {
     for (final Property.PrimaryKeyProperty property : getProperties())
-      if (property.propertyID.equals(propertyID))
+      if (property.getPropertyID().equals(propertyID))
         return property;
 
     return null;
@@ -110,7 +110,7 @@ public class EntityKey implements Serializable {
    */
   public boolean containsProperty(final String propertyID) {
     for (final Property.PrimaryKeyProperty property : getProperties())
-      if (property.propertyID.equals(propertyID))
+      if (property.getPropertyID().equals(propertyID))
         return true;
 
     return false;
@@ -132,7 +132,7 @@ public class EntityKey implements Serializable {
     final StringBuilder ret = new StringBuilder();
     int i = 0;
     for (final Property.PrimaryKeyProperty property : getProperties()) {
-      ret.append(property.propertyID).append("=").append(getValue(property.propertyID));
+      ret.append(property.getPropertyID()).append("=").append(getValue(property.getPropertyID()));
       if (i++ < getPropertyCount()-1)
         ret.append(", ");
     }
@@ -203,7 +203,7 @@ public class EntityKey implements Serializable {
       return true;
 
     for (final Property property : getProperties())
-      if (Entity.isValueNull(property.propertyType, values.get(property.propertyID)))
+      if (Entity.isValueNull(property.getPropertyType(), values.get(property.getPropertyID())))
         return true;
 
     return false;
@@ -227,7 +227,7 @@ public class EntityKey implements Serializable {
     hashCodeDirty = true;
     if (key != null) {
       for (final Property.PrimaryKeyProperty property : getProperties())
-        values.put(property.propertyID, Entity.copyPropertyValue(key.getValue(property.propertyID)));
+        values.put(property.getPropertyID(), Entity.copyPropertyValue(key.getValue(property.getPropertyID())));
 
       hashCode = key.hashCode;
       hashCodeDirty = key.hashCodeDirty;
@@ -255,6 +255,6 @@ public class EntityKey implements Serializable {
    * @return true if this is a single integer column key
    */
   private boolean isSingleIntegerKey() {
-    return getPropertyCount() == 1 && getFirstKeyProperty().propertyType == Type.INT;
+    return getPropertyCount() == 1 && getFirstKeyProperty().getPropertyType() == Type.INT;
   }
 }

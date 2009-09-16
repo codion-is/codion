@@ -183,33 +183,33 @@ public class EntityUtil {
    * @return a SQL string version of value
    */
   public static String getSQLStringValue(final Property property, final Object value) {
-    if (Entity.isValueNull(property.propertyType, value))
+    if (Entity.isValueNull(property.getPropertyType(), value))
       return "null";
 
-    switch (property.propertyType) {
-      case INT :
-      case DOUBLE :
+    switch (property.getPropertyType()) {
+      case INT:
+      case DOUBLE:
         return value.toString();//localize?
       case TIMESTAMP:
       case DATE:
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + property + ", got: " + value.getClass());
-        return Database.get().getSQLDateString((Date) value, property.propertyType == Type.TIMESTAMP);
-      case CHAR :
+        return Database.get().getSQLDateString((Date) value, property.getPropertyType() == Type.TIMESTAMP);
+      case CHAR:
         return "'" + value + "'";
-      case STRING :
+      case STRING:
         if (!(value instanceof String))
           throw new IllegalArgumentException("String value expected for property: " + property + ", got: " + value.getClass());
         return "'" + sqlEscapeString((String) value) + "'";
-      case BOOLEAN :
+      case BOOLEAN:
         if (!(value instanceof Type.Boolean))
           throw new IllegalArgumentException("Type.Boolean value expected for property: " + property + ", got: " + value.getClass());
         return getBooleanSQLString(property, (Type.Boolean) value);
-      case ENTITY :
+      case ENTITY:
         return value instanceof Entity ? getSQLStringValue(property, ((Entity)value).getPrimaryKey().getFirstKeyValue())
                 : getSQLStringValue(((EntityKey)value).getFirstKeyProperty(), ((EntityKey)value).getFirstKeyValue());
-      default :
-        throw new IllegalArgumentException("Undefined property type: " + property.propertyType);
+      default:
+        throw new IllegalArgumentException("Undefined property type: " + property.getPropertyType());
     }
   }
 
@@ -222,10 +222,10 @@ public class EntityUtil {
       return ((Property.BooleanProperty) property).toSQLString(value);
     else {
       switch(value) {
-        case FALSE : return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE) + "";
+        case FALSE: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE) + "";
         case TRUE: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE) + "";
         case NULL: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL) + "";
-        default : throw new RuntimeException("Unknown boolean value: " + value);
+        default: throw new RuntimeException("Unknown boolean value: " + value);
       }
     }
   }
@@ -271,7 +271,7 @@ public class EntityUtil {
     final StringBuilder ret = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
-      ret.append(getQueryString(property.propertyID, getSQLStringValue(property, valueProvider.getValue(property.propertyID))));
+      ret.append(getQueryString(property.getPropertyID(), getSQLStringValue(property, valueProvider.getValue(property.getPropertyID()))));
       if (i++ < properties.size() - 1)
         ret.append(" and ");
     }
@@ -299,7 +299,7 @@ public class EntityUtil {
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
-      if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.propertyID))
+      if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.getPropertyID()))
         ret.add(property);
     }
 
@@ -313,7 +313,7 @@ public class EntityUtil {
   public static Collection<Property> getUpdateProperties(final Entity entity) {
     final List<Property> ret = new ArrayList<Property>();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false))
-      if (entity.isModified(property.propertyID) && !(property instanceof Property.ForeignKeyProperty))
+      if (entity.isModified(property.getPropertyID()) && !(property instanceof Property.ForeignKeyProperty))
         ret.add(property);
 
     return ret;

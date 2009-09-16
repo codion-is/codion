@@ -47,7 +47,7 @@ public class EntityRepository {
    * @return the description string for the given property, null if none is defined
    */
   public static String getPropertyDescription(final String entityID, final Property property) {
-    return getPropertyDescription(entityID, property.propertyID);
+    return getPropertyDescription(entityID, property.getPropertyID());
   }
 
   /**
@@ -73,7 +73,7 @@ public class EntityRepository {
     if (!entityDefinitions.containsKey(entityID))
       throw new RuntimeException("Undefined entity: " + entityID);
     for (final String propertyID : searchPropertyIDs)
-      if (getProperty(entityID, propertyID).propertyType != Type.STRING)
+      if (getProperty(entityID, propertyID).getPropertyType() != Type.STRING)
         throw new RuntimeException("Entity search property must be of type String: " + getProperty(entityID, propertyID));
 
     entityDefinitions.get(entityID).searchPropertyIDs = searchPropertyIDs;
@@ -358,7 +358,7 @@ public class EntityRepository {
    */
   public static Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
-      if (foreignKeyProperty.propertyID.equals(propertyID))
+      if (foreignKeyProperty.getPropertyID().equals(propertyID))
         return foreignKeyProperty;
 
     throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);
@@ -653,19 +653,19 @@ public class EntityRepository {
 
       this.properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
       for (final Property property : propertyDefinitions) {
-        if (properties.containsKey(property.propertyID))
-          throw new IllegalArgumentException("Property with ID " + property.propertyID
+        if (properties.containsKey(property.getPropertyID()))
+          throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
                   + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                  + " has already been defined as: " + properties.get(property.propertyID) + " in entity: " + entityID);
-        properties.put(property.propertyID, property);
+                  + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
+        properties.put(property.getPropertyID(), property);
         if (property instanceof Property.ForeignKeyProperty) {
           for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).referenceProperties) {
             if (!(referenceProperty instanceof Property.MirrorProperty)) {
-              if (properties.containsKey(referenceProperty.propertyID))
-                throw new IllegalArgumentException("Property with ID " + referenceProperty.propertyID
+              if (properties.containsKey(referenceProperty.getPropertyID()))
+                throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
                         + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                        + " has already been defined as: " + properties.get(referenceProperty.propertyID) + " in entity: " + entityID);
-              properties.put(referenceProperty.propertyID, referenceProperty);
+                        + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
+              properties.put(referenceProperty.getPropertyID(), referenceProperty);
             }
           }
         }
@@ -756,7 +756,7 @@ public class EntityRepository {
       final List<String> ret = new ArrayList<String>();
       for (final Property property : getDatabaseProperties())
         if (!(property instanceof Property.ForeignKeyProperty))
-          ret.add(property.propertyID);
+          ret.add(property.getPropertyID());
 
       return ret.toArray(new String[ret.size()]);
     }
@@ -773,9 +773,9 @@ public class EntityRepository {
       for (final Property property : selectProperties) {
         if (property instanceof Property.SubqueryProperty)
           ret.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
-                  ") ").append(property.propertyID);
+                  ") ").append(property.getPropertyID());
         else
-          ret.append(property.propertyID);
+          ret.append(property.getPropertyID());
 
         if (i++ < selectProperties.size() - 1)
           ret.append(", ");

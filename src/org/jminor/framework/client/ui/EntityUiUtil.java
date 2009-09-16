@@ -338,7 +338,7 @@ public class EntityUiUtil {
                     additionalSearchCriteria, searchProperties),
                     (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
-    new LookupModelPropertyLink(entityModel, foreignKeyProperty.propertyID, lookupField.getModel());
+    new LookupModelPropertyLink(entityModel, foreignKeyProperty.getPropertyID(), lookupField.getModel());
     setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, lookupField);
 
     return lookupField;
@@ -537,7 +537,7 @@ public class EntityUiUtil {
   public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
                                            final Property property, final EntityDbProvider dbProvider) {
     try {
-      final List<?> values = dbProvider.getEntityDb().selectPropertyValues(entityID, property.propertyID, true);
+      final List<?> values = dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
       final DefaultListModel listModel = new DefaultListModel();
       for (final Object value : values)
         listModel.addElement(value);

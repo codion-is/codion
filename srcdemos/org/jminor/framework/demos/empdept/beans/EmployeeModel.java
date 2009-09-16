@@ -34,7 +34,7 @@ public class EmployeeModel extends EntityModel {
   /** {@inheritDoc} */
   @Override
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
-    if (property.propertyID.equals(EmpDept.EMPLOYEE_MGR_FK)) {
+    if (property.getPropertyID().equals(EmpDept.EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
               getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
       //Only show the president and managers

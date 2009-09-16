@@ -25,14 +25,14 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
    * @param linkType the link type
    */
   public AbstractEntityPropertyLink(final EntityModel entityModel, final Property property, final LinkType linkType) {
-    super(entityModel, property.propertyID, entityModel.getPropertyChangeEvent(property), linkType);
+    super(entityModel, property.getPropertyID(), entityModel.getPropertyChangeEvent(property), linkType);
     this.property = property;
   }
 
   /** {@inheritDoc} */
   @Override
   public Object getModelPropertyValue() {
-    return isModelPropertyValueNull() ? null : getEntityModel().getValue(property.propertyID);
+    return isModelPropertyValueNull() ? null : getEntityModel().getValue(property.getPropertyID());
   }
 
   /** {@inheritDoc} */
@@ -45,7 +45,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
    * @return true if the underlying model value of this property is null
    */
   protected boolean isModelPropertyValueNull() {
-    return getEntityModel().isValueNull(property.propertyID);
+    return getEntityModel().isValueNull(property.getPropertyID());
   }
 
   /**

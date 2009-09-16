@@ -715,7 +715,7 @@ public class EntityModel implements Refreshable {
    * @return the value associated with <code>property</code>
    */
   public final Object getValue(final Property property) {
-    return getValue(property.propertyID);
+    return getValue(property.getPropertyID());
   }
 
   /**
@@ -739,7 +739,7 @@ public class EntityModel implements Refreshable {
    * @return the value associated with <code>property</code>
    */
   public final Entity getEntityValue(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return getEntityValue(foreignKeyProperty.propertyID);
+    return getEntityValue(foreignKeyProperty.getPropertyID());
   }
 
   /**
@@ -1036,7 +1036,7 @@ public class EntityModel implements Refreshable {
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
       if (property instanceof Property.ForeignKeyProperty)
         throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
-                + property.propertyID + ",\nuse an EntityComboBoxModel instead!");
+                + property.getPropertyID() + ",\nuse an EntityComboBoxModel instead!");
       final PropertyComboBoxModel comboBoxModel = new PropertyComboBoxModel(getEntityID(), getDbProvider(), property, nullValue);
 
       comboBoxModel.refresh();
@@ -1564,7 +1564,7 @@ public class EntityModel implements Refreshable {
   }
 
   protected Object doSetValue(final Property property, final Object value, final boolean validateType) {
-    activeEntity.setValue(property.propertyID, value, validateType);
+    activeEntity.setValue(property.getPropertyID(), value, validateType);
 
     return value;
   }
@@ -1672,7 +1672,7 @@ public class EntityModel implements Refreshable {
    * @return a string representing the given property value for debug output
    */
   private static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = Entity.isValueNull(property.propertyType, value);
+    final boolean valueIsNull = Entity.isValueNull(property.getPropertyType(), value);
     final StringBuilder ret = new StringBuilder("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)
       ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");

@@ -426,7 +426,7 @@ public class EntityTablePanel extends JPanel {
     else {
       if (isPropertyColumnVisible(property)) {
         //disable the search model for the column to be hidden, to prevent confusion
-        getTableModel().getSearchModel().setSearchEnabled(property.propertyID, false);
+        getTableModel().getSearchModel().setSearchEnabled(property.getPropertyID(), false);
         final TableColumn column = getJTable().getColumn(property);
         column.setMinWidth(0);
         column.setPreferredWidth(0);
@@ -684,7 +684,7 @@ public class EntityTablePanel extends JPanel {
     }
     else {
       for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
-        if (property.propertyType == Type.STRING && !property.isHidden())
+        if (property.getPropertyType() == Type.STRING && !property.isHidden())
           searchableProperties.add(property);
       }
     }
@@ -703,7 +703,7 @@ public class EntityTablePanel extends JPanel {
             final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
             final String searchText = wildcard + searchField.getText() + wildcard;
             for (final Property searchProperty : searchableProperties) {
-              final PropertySearchModel searchModel = getTableModel().getSearchModel().getPropertySearchModel(searchProperty.propertyID);
+              final PropertySearchModel searchModel = getTableModel().getSearchModel().getPropertySearchModel(searchProperty.getPropertyID());
               searchModel.setCaseSensitive(false);
               searchModel.setUpperBound(searchText);
               searchModel.setSearchType(SearchType.LIKE);
@@ -933,7 +933,7 @@ public class EntityTablePanel extends JPanel {
     final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
-      final PropertyFilterModel model = getTableModel().getSearchModel().getPropertyFilterModel(((Property) column.getIdentifier()).propertyID);
+      final PropertyFilterModel model = getTableModel().getSearchModel().getPropertyFilterModel(((Property) column.getIdentifier()).getPropertyID());
       model.evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
           if (model.isSearchEnabled())

@@ -748,4 +748,5 @@
   LoginPanel, initial focus bug in linux finally fixed
   EntityModel.addDetailModels() doesn't check if the detail models are based on valid foreign keys anymore
   EntityLookupModel.searchStringRepresentsSelected() now returns true for zero selected entities and an empty search string
-  EntityPropertyEditor.getValue(), didn't take into consideration that the input field could be a EntityLookupField 
+  EntityPropertyEditor.getValue(), didn't take into consideration that the input field could be a EntityLookupField
+  Property.propertyID, propertyType and caption fields privatized

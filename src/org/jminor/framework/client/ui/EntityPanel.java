@@ -608,20 +608,20 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
 
   public void resizePanel(final int direction, final int pixelAmount) {
     switch(direction) {
-      case UP :
+      case UP:
         setEditPanelState(HIDDEN);
         break;
-      case DOWN :
+      case DOWN:
         setEditPanelState(EMBEDDED);
         break;
-      case RIGHT :
+      case RIGHT:
         int newPos = horizontalSplitPane.getDividerLocation() + pixelAmount;
         if (newPos <= horizontalSplitPane.getMaximumDividerLocation())
           horizontalSplitPane.setDividerLocation(newPos);
         else
           horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
         break;
-      case LEFT :
+      case LEFT:
         newPos = horizontalSplitPane.getDividerLocation() - pixelAmount;
         if (newPos >= 0)
           horizontalSplitPane.setDividerLocation(newPos);
@@ -782,13 +782,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.isEditAccepted()) {
         final Object[] oldValues = EntityUtil.setPropertyValue(
-                propertyToUpdate.propertyID, editPanel.getValue(), selectedEntities);
+                propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
         try {
           UiUtil.setWaitCursor(true, this);
           getModel().update(selectedEntities);
         }
         catch (Exception e) {
-          EntityUtil.setPropertyValue(propertyToUpdate.propertyID, oldValues, selectedEntities);
+          EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
           throw e;
         }
         finally {
@@ -969,7 +969,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     ret.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     for (final Property property : getUpdateProperties()) {
-      final String caption = property.getCaption() == null ? property.propertyID : property.getCaption();
+      final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       ret.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent event) {
           updateSelectedEntities(property);
@@ -1779,13 +1779,13 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    */
   protected String[] getConfirmationMessages(final int type) {
     switch (type) {
-      case CONFIRM_TYPE_DELETE :
+      case CONFIRM_TYPE_DELETE:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
                 FrameworkMessages.get(FrameworkMessages.DELETE)};
-      case CONFIRM_TYPE_INSERT :
+      case CONFIRM_TYPE_INSERT:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
                 FrameworkMessages.get(FrameworkMessages.INSERT)};
-      case CONFIRM_TYPE_UPDATE :
+      case CONFIRM_TYPE_UPDATE:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
                 FrameworkMessages.get(FrameworkMessages.UPDATE)};
     }

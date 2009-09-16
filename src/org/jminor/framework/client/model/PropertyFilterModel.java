@@ -169,10 +169,10 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
   protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getPropertyName()))
+    if (entity.isValueNull(getPropertyID()))
       return null;
 
-    final Object value = entity.getValue(getPropertyName());
+    final Object value = entity.getValue(getPropertyID());
     if (getPropertyType() ==  Type.ENTITY)
       return value.toString();
     else if (getPropertyType() == Type.BOOLEAN)

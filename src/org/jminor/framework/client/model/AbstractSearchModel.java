@@ -59,8 +59,8 @@ public abstract class AbstractSearchModel {
     return property.getPropertyType();
   }
 
-  public String getPropertyName() {
-    return property.propertyID;
+  public String getPropertyID() {
+    return property.getPropertyID();
   }
 
   public String getCaption() {
@@ -316,8 +316,8 @@ public abstract class AbstractSearchModel {
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
       case LIKE:
-      case MAX :
-      case MIN :
+      case MAX:
+      case MIN:
       case NOT_LIKE:
       case IN:
         return 1;

@@ -112,7 +112,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (property instanceof Property.SubqueryProperty)
       columnName = "("+((Property.SubqueryProperty)property).getSubQuery()+")";
     else
-      columnName = property.propertyID;
+      columnName = property.getPropertyID();
 
     if (values.size() == 0)
       throw new RuntimeException("No values specified for PropertyCriteria: " + property);
@@ -141,9 +141,9 @@ public class PropertyCriteria implements Criteria, Serializable {
         else
           return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
                 ? " not like " + sqlValue : " <> " + sqlValue);
-      case MAX :
+      case MAX:
         return columnName + " <= " + sqlValue;
-      case MIN :
+      case MIN:
         return columnName + " >= " + sqlValue;
       case INSIDE:
         return "(" + columnName + " >= " + sqlValue + " and " + columnName +  " <= " + sqlValue2 + ")";
@@ -184,7 +184,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
       set.addCriteria(new PropertyCriteria(
               ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.getIndex()),
-              searchType, entityKey == null ? null : entityKey.getValue(keyProperty.propertyID)));
+              searchType, entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
 
     return set.toString();
   }
@@ -199,7 +199,7 @@ public class PropertyCriteria implements Criteria, Serializable {
         for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
           pkSet.addCriteria(new PropertyCriteria(
                   ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.getIndex()),
-                  searchType, ((EntityKey) entityKey).getValue(keyProperty.propertyID)));
+                  searchType, ((EntityKey) entityKey).getValue(keyProperty.getPropertyID())));
 
         set.addCriteria(pkSet);
       }
@@ -207,7 +207,7 @@ public class PropertyCriteria implements Criteria, Serializable {
       return set.toString();
     }
     else
-      return getInList(((Property.ForeignKeyProperty) property).referenceProperties.get(0).propertyID,
+      return getInList(((Property.ForeignKeyProperty) property).referenceProperties.get(0).getPropertyID(),
               searchType == SearchType.NOT_LIKE);
   }
 
@@ -220,7 +220,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
       final String sqlValue = EntityUtil.getSQLStringValue(property, values.get(i));
-      if (property.propertyType == Type.STRING && !caseSensitive)
+      if (property.getPropertyType() == Type.STRING && !caseSensitive)
         ret.append("upper(").append(sqlValue).append(")");
       else
         ret.append(sqlValue);

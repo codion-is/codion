@@ -103,7 +103,7 @@ public class EntityTableSearchPanel extends JPanel {
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
     for (final JPanel panel : searchPanels) {
-      if (panel instanceof PropertySearchPanel && ((PropertySearchPanel)panel).getModel().getProperty().propertyID.equals(propertyID))
+      if (panel instanceof PropertySearchPanel && ((PropertySearchPanel)panel).getModel().getProperty().getPropertyID().equals(propertyID))
         return (PropertySearchPanel) panel;
     }
 
@@ -117,9 +117,9 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   private List<JPanel> initializeSearchPanels() {
-    final ArrayList<JPanel> ret = new ArrayList<JPanel>(tableColumnProperties.size());
+    final List<JPanel> ret = new ArrayList<JPanel>(tableColumnProperties.size());
     for (final Property property : tableColumnProperties) {
-      final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.propertyID);
+      final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
       if (propertySearchModel != null)
         ret.add(new PropertySearchPanel(propertySearchModel, true, false));
       else {

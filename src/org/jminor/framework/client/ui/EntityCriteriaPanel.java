@@ -124,7 +124,7 @@ public class EntityCriteriaPanel extends JPanel {
         if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null)
           return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
         else
-          return propertyOne.propertyID.compareTo(propertyTwo.propertyID);
+          return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
       }
     });
 

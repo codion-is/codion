@@ -277,7 +277,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
     switch(model.getPropertyType()) {
-      case INT :
+      case INT:
         return new IntBeanPropertyLink((IntField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
@@ -286,7 +286,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
             super.setModelPropertyValue(obj instanceof String && obj.equals("") ? null : obj);
           }
         };
-      case DOUBLE :
+      case DOUBLE:
         return new DoubleBeanPropertyLink((DoubleField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null){
@@ -303,7 +303,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
                 LinkType.READ_WRITE, new SimpleDateFormat(
                         (String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
                                 ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT)));
-      default :
+      default:
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 String.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);

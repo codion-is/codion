@@ -38,13 +38,12 @@ public class EntityProxy {
   }
 
   public Object getValue(final Entity entity, final Property property) {
-    final String propertyID = property.propertyID;
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("EntityProxy.getValue does not handle denormalized view properties (Property.DenormalizedViewProperty)");
     else if (property instanceof Property.PrimaryKeyProperty)
-      return entity.getPrimaryKey().getValue(propertyID);
-    else if (entity.hasValue(propertyID))
-      return entity.getRawValue(propertyID);
+      return entity.getPrimaryKey().getValue(property.getPropertyID());
+    else if (entity.hasValue(property.getPropertyID()))
+      return entity.getRawValue(property.getPropertyID());
     else
       return property.getDefaultValue();
   }
@@ -58,7 +57,7 @@ public class EntityProxy {
   }
 
   public String getValueAsString(final Entity entity, final Property property) {
-    return entity.isValueNull(property.propertyID) ? "" : getValue(entity, property).toString();
+    return entity.isValueNull(property.getPropertyID()) ? "" : getValue(entity, property).toString();
   }
 
   public Object getTableValue(final Entity entity, final Property property) {

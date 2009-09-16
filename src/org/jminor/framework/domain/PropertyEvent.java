@@ -53,7 +53,7 @@ public class PropertyEvent extends ActionEvent {
    */
   public PropertyEvent(final Object source, final String entityID, final Property property, final Object newValue,
                        final Object oldValue, final boolean isModelChange, final boolean initialization) {
-    super(source, 0, property.propertyID);
+    super(source, 0, property.getPropertyID());
     this.entityID = entityID;
     this.property = property;
     this.newValue = newValue;

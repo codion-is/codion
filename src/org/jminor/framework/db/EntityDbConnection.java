@@ -270,7 +270,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
-      return query(sql, getPacker(EntityRepository.getProperty(entityID, columnName).propertyType), -1);
+      return query(sql, getPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, sql);
@@ -383,7 +383,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
         final String whereCondition = EntityUtil.getWhereCondition(entity);
 
-        execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.propertyID)
+        execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.getPropertyID())
                 .append(" = '").append(entity.getStringValue(propertyID)).append("' ").append(whereCondition).toString());
 
         writeBlobField(blobData, EntityRepository.getTableName(entity.getEntityID()),
@@ -425,8 +425,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final List<Property> insertProperties = EntityUtil.getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
-      sql.append(property.propertyID);
-      columnValues.append(EntityUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
+      sql.append(property.getPropertyID());
+      columnValues.append(EntityUtil.getSQLStringValue(property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -452,7 +452,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException("No modified updateable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      sql.append(property.propertyID).append(" = ").append(EntityUtil.getSQLStringValue(property, entity.getValue(property.propertyID)));
+      sql.append(property.getPropertyID()).append(" = ").append(EntityUtil.getSQLStringValue(property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
@@ -542,7 +542,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
-        sql = new StringBuilder("select max(").append(EntityRepository.getPrimaryKeyProperties(entityID).get(0).propertyID)
+        sql = new StringBuilder("select max(").append(EntityRepository.getPrimaryKeyProperties(entityID).get(0).getPropertyID())
                 .append(") + 1 from ").append(EntityRepository.getTableName(entityID)).toString();
         break;
       case QUERY:

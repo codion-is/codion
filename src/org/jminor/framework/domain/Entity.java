@@ -186,8 +186,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
       validateType(property, value);
 
     final boolean isPrimarKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization = isPrimarKeyProperty ? !primaryKey.hasValue(property.propertyID)
-            : !values.containsKey(property.propertyID);
+    final boolean initialization = isPrimarKeyProperty ? !primaryKey.hasValue(property.getPropertyID())
+            : !values.containsKey(property.getPropertyID());
     doSetValue(property, value, isPrimarKeyProperty, initialization, true);
   }
 
@@ -502,7 +502,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
     if (evtPropertyChanged != null)
       for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-        evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, getRawValue(property.propertyID), null, true, true));
+        evtPropertyChanged.fire(
+                new PropertyEvent(this, getEntityID(), property, getRawValue(property.getPropertyID()), null, true, true));
 
     toString = sourceEntity.toString;
     if (stModified != null)
@@ -534,13 +535,13 @@ public final class Entity implements Serializable, Comparable<Entity> {
     for (int i = 0; i < foreignKeyProperty.referenceProperties.size(); i++) {
       final Property referenceKeyProperty = foreignKeyProperty.referenceProperties.get(i);
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
-              ? this.primaryKey.getValue(referenceKeyProperty.propertyID)
-              : values.get(referenceKeyProperty.propertyID);
-      if (!isValueNull(referenceKeyProperty.propertyType, value)) {
+              ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
+              : values.get(referenceKeyProperty.getPropertyID());
+      if (!isValueNull(referenceKeyProperty.getPropertyType(), value)) {
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, EntityKey>()
                   : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new EntityKey(foreignKeyProperty.referenceEntityID));
-        primaryKey.setValue(primaryKey.getProperties().get(i).propertyID, value);
+        primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value);
       }
       else
         break;
@@ -557,7 +558,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     final Property property = getProperty(propertyID);
     final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
 
-    return isValueNull(property.propertyType, value);
+    return isValueNull(property.getPropertyType(), value);
   }
 
   /**
@@ -585,16 +586,16 @@ public final class Entity implements Serializable, Comparable<Entity> {
       return true;
 
     switch (propertyType) {
-      case CHAR :
+      case CHAR:
         if (value instanceof String)
           return ((String)value).length() == 0;
-      case BOOLEAN :
+      case BOOLEAN:
         return value == Type.Boolean.NULL;
-      case STRING :
+      case STRING:
         return value.equals("");
-      case ENTITY :
+      case ENTITY:
         return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
-      default :
+      default:
         return false;
     }
   }
@@ -620,7 +621,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     for (final Property.PrimaryKeyProperty property :
             EntityRepository.getPrimaryKeyProperties(entities.iterator().next().getEntityID())) {
       for (final Entity entity : entities)
-        if (entity.isModified(property.propertyID))
+        if (entity.isModified(property.getPropertyID()))
           return true;
     }
 
@@ -644,7 +645,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
     if (newValue != null && newValue instanceof Entity && newValue.equals(this))
-      throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.propertyID);
+      throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
 
     //invalidate the toString cache
     toString = null;
@@ -653,16 +654,16 @@ public final class Entity implements Serializable, Comparable<Entity> {
       propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) newValue);
 
     final Object oldValue = initialization ? null :
-            isPrimaryKeyProperty ? primaryKey.getValue(property.propertyID) : values.get(property.propertyID);
+            isPrimaryKeyProperty ? primaryKey.getValue(property.getPropertyID()) : values.get(property.getPropertyID());
     if (isPrimaryKeyProperty)
-      primaryKey.setValue(property.propertyID, newValue);
+      primaryKey.setValue(property.getPropertyID(), newValue);
     else
-      values.put(property.propertyID, newValue);
+      values.put(property.getPropertyID(), newValue);
 
     if (!initialization)
-      handleValueChange(property.propertyID, property.propertyType, newValue, oldValue);
+      handleValueChange(property.getPropertyID(), property.getPropertyType(), newValue, oldValue);
 
-    if (evtPropertyChanged != null && !isEqual(property.propertyType, newValue, oldValue))
+    if (evtPropertyChanged != null && !isEqual(property.getPropertyType(), newValue, oldValue))
       evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, newValue, oldValue, true, initialization));
   }
 
@@ -671,7 +672,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     setForeignKeyValues(foreignKeyProperty, newValue);
     if (hasDenormalizedProperties) {
       final Collection<Property.DenormalizedProperty> denormalizedProperties =
-              EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.propertyID);
+              EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
       setDenormalizedValues(foreignKeyProperty, newValue, denormalizedProperties);
     }
   }
@@ -692,9 +693,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
       final Property referenceProperty = foreignKeyProperty.referenceProperties.get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
-        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.propertyID)
-            : !values.containsKey(referenceProperty.propertyID);
-        doSetValue(referenceProperty, referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.propertyID) : null,
+        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.getPropertyID())
+            : !values.containsKey(referenceProperty.getPropertyID());
+        doSetValue(referenceProperty, referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.getPropertyID()) : null,
                 isPrimaryKeyProperty, initialization, true);
       }
     }
@@ -711,8 +712,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         doSetValue(denormalizedProperty,
-                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.propertyID),
-                false, !values.containsKey(foreignKeyProperty.propertyID), true);
+                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.getPropertyID()),
+                false, !values.containsKey(foreignKeyProperty.getPropertyID()), true);
       }
     }
   }
@@ -760,19 +761,19 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (value == null)
       return value;
 
-    final String propertyID = property.propertyID;
-    switch (property.propertyType) {
-      case INT : {
+    final String propertyID = property.getPropertyID();
+    switch (property.getPropertyType()) {
+      case INT: {
         if (!(value instanceof Integer))
           throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
-      case DOUBLE : {
+      case DOUBLE: {
         if (!(value instanceof Double))
           throw new IllegalArgumentException("Double value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
-      case BOOLEAN : {
+      case BOOLEAN: {
         if (!(value instanceof Type.Boolean))
           throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
@@ -786,23 +787,23 @@ public final class Entity implements Serializable, Comparable<Entity> {
           throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
-      case ENTITY : {
+      case ENTITY: {
         if (!(value instanceof Entity))
           throw new IllegalArgumentException("Entity value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
-      case CHAR : {
+      case CHAR: {
         if (!(value instanceof Character))
           throw new IllegalArgumentException("Character value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
-      case STRING : {
+      case STRING: {
         if (!(value instanceof String))
           throw new IllegalArgumentException("String value expected for property: " + propertyID + " (" + value.getClass() + ")");
         return value;
       }
     }
 
-    throw new IllegalArgumentException("Unknown type " + property.propertyType);
+    throw new IllegalArgumentException("Unknown type " + property.getPropertyType());
   }
 }

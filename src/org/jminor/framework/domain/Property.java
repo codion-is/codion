@@ -18,16 +18,16 @@ public class Property implements Serializable {
   private static final long serialVersionUID = 1;
 
   /**
-   * The property type
-   */
-  public final Type propertyType;
-
-  /**
    * The property identifier, should be unique within an Entity.
    * Serves as column name for database properties.
-   * @see #getColumnName
+   * @see #getPropertyID
    */
-  public final String propertyID;
+  private final String propertyID;
+
+  /**
+   * The property type
+   */
+  private final Type propertyType;
 
   /**
    * The caption to use when this property is presented
@@ -42,7 +42,7 @@ public class Property implements Serializable {
   /**
    * A default value for this property in new Entity instances
    */
-  private Object defaultValue = null;
+  private Object defaultValue;
 
   /**
    * The preferred column width when this property is presented in a table
@@ -134,8 +134,15 @@ public class Property implements Serializable {
   /**
    * @return the columnName/property identifier of this property
    */
-  public String getColumnName() {
+  public String getPropertyID() {
     return this.propertyID;
+  }
+
+  /**
+   * @return the data type of the value of this property
+   */
+  public Type getPropertyType() {
+    return propertyType;
   }
 
   /**
@@ -260,13 +267,6 @@ public class Property implements Serializable {
       return parentProperty.getCaption();
 
     return caption;
-  }
-
-  /**
-   * @return the data type of the value of this property
-   */
-  public Type getPropertyType() {
-    return propertyType;
   }
 
   /**
@@ -554,8 +554,7 @@ public class Property implements Serializable {
      * @param caption the caption of this property
      * @param subquery the sql query
      */
-    public SubqueryProperty(final String propertyID, final Type type,
-                            final String caption, final String subquery) {
+    public SubqueryProperty(final String propertyID, final Type type, final String caption, final String subquery) {
       super(propertyID, type, caption);
       super.setSelectOnly(true);
       super.setUpdatable(false);
