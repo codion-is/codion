@@ -70,16 +70,16 @@ public class EntityTest extends TestCase {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getPropertyType(), Type.INT);
 
     //assert column names
-    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).propertyID, EntityTestDomain.DETAIL_ID);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).propertyID, EntityTestDomain.DETAIL_INT);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).propertyID, EntityTestDomain.DETAIL_DOUBLE);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).propertyID, EntityTestDomain.DETAIL_STRING);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DATE).propertyID, EntityTestDomain.DETAIL_DATE);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_TIMESTAMP).propertyID, EntityTestDomain.DETAIL_TIMESTAMP);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).propertyID, EntityTestDomain.DETAIL_BOOLEAN);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).propertyID, EntityTestDomain.DETAIL_ENTITY_ID);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).propertyID, EntityTestDomain.DETAIL_MASTER_NAME);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).propertyID, EntityTestDomain.DETAIL_MASTER_CODE);
+    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getPropertyID(), EntityTestDomain.DETAIL_ID);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getPropertyID(), EntityTestDomain.DETAIL_INT);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getPropertyID(), EntityTestDomain.DETAIL_DOUBLE);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getPropertyID(), EntityTestDomain.DETAIL_STRING);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DATE).getPropertyID(), EntityTestDomain.DETAIL_DATE);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_TIMESTAMP).getPropertyID(), EntityTestDomain.DETAIL_TIMESTAMP);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getPropertyID(), EntityTestDomain.DETAIL_BOOLEAN);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).getPropertyID(), EntityTestDomain.DETAIL_ENTITY_ID);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getPropertyID(), EntityTestDomain.DETAIL_MASTER_NAME);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getPropertyID(), EntityTestDomain.DETAIL_MASTER_CODE);
 
     //assert captions
     assertNull(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getCaption());

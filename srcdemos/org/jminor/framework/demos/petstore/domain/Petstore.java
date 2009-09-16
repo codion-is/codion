@@ -75,7 +75,7 @@ public class Petstore {
   public static final String TAG_ITEM_ITEM_FK = "item_fk";
 
   static {
-    EntityRepository.initialize(T_ADDRESS, IdSource.MAX_PLUS_ONE,
+    EntityRepository.define(T_ADDRESS, IdSource.MAX_PLUS_ONE,
             ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2,
             new Property.PrimaryKeyProperty(ADDRESS_ID),
             new Property(ADDRESS_STREET_1, Type.STRING, "Street 1").setMaxLength(55),
@@ -86,13 +86,13 @@ public class Petstore {
             new Property(ADDRESS_LATITUDE, Type.DOUBLE, "Latitude"),
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude"));
 
-    EntityRepository.initialize(T_CATEGORY, IdSource.MAX_PLUS_ONE, CATEGORY_NAME,
+    EntityRepository.define(T_CATEGORY, IdSource.MAX_PLUS_ONE, CATEGORY_NAME,
             new Property.PrimaryKeyProperty(CATEGORY_ID),
             new Property(CATEGORY_NAME, Type.STRING, "Name").setMaxLength(25),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description").setMaxLength(255),
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL").setHidden(true));
 
-    EntityRepository.initialize(T_ITEM, IdSource.MAX_PLUS_ONE, ITEM_NAME,
+    EntityRepository.define(T_ITEM, IdSource.MAX_PLUS_ONE, ITEM_NAME,
             new Property.PrimaryKeyProperty(ITEM_ID),
             new Property.ForeignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
                     new Property(ITEM_PRODUCT_ID)),
@@ -107,7 +107,7 @@ public class Petstore {
                     new Property(ITEM_ADDRESS_ID)),
             new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled"));
 
-    EntityRepository.initialize(T_PRODUCT, IdSource.MAX_PLUS_ONE, PRODUCT_NAME,
+    EntityRepository.define(T_PRODUCT, IdSource.MAX_PLUS_ONE, PRODUCT_NAME,
             new Property.PrimaryKeyProperty(PRODUCT_ID),
             new Property.ForeignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
                     new Property(PRODUCT_CATEGORY_ID)),
@@ -115,20 +115,20 @@ public class Petstore {
             new Property(PRODUCT_DESCRIPTION, Type.STRING, "Description").setMaxLength(255),
             new Property(PRODUCT_IMAGE_URL, Type.STRING, "Image URL").setMaxLength(55).setHidden(true));
 
-    EntityRepository.initialize(T_SELLER_CONTACT_INFO, IdSource.MAX_PLUS_ONE,
+    EntityRepository.define(T_SELLER_CONTACT_INFO, IdSource.MAX_PLUS_ONE,
             SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME,
             new Property.PrimaryKeyProperty(SELLER_CONTACT_INFO_ID),
             new Property(SELLER_CONTACT_INFO_FIRST_NAME, Type.STRING, "First name").setMaxLength(24),
             new Property(SELLER_CONTACT_INFO_LAST_NAME, Type.STRING, "Last name").setMaxLength(24),
             new Property(SELLER_CONTACT_INFO_EMAIL, Type.STRING, "Email").setMaxLength(24));
 
-    EntityRepository.initialize(T_TAG, IdSource.MAX_PLUS_ONE, TAG_TAG, null, "petstore.tag tag",
+    EntityRepository.define(T_TAG, IdSource.MAX_PLUS_ONE, TAG_TAG, null, "petstore.tag tag",
             new Property.PrimaryKeyProperty(TAG_ID),
             new Property(TAG_TAG, Type.STRING, "Tag").setMaxLength(30),
             new Property.SubqueryProperty(TAG_REFCOUNT, Type.INT, "Reference count",
                     "select count(*) from " + T_TAG_ITEM + "  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID));
 
-    EntityRepository.initialize(T_TAG_ITEM, IdSource.NONE,
+    EntityRepository.define(T_TAG_ITEM, IdSource.NONE,
             new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT).setIndex(0)),
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,

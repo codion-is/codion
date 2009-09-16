@@ -585,7 +585,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private Set<Dependency> resolveEntityDependencies(final String entityID) {
-    final String[] entityIDs = EntityRepository.getInitializedEntities();
+    final String[] entityIDs = EntityRepository.getDefinedEntities();
     final Set<Dependency> dependencies = new HashSet<Dependency>();
     for (final String entityIDToCheck : entityIDs) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityIDToCheck))

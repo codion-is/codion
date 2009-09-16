@@ -63,13 +63,13 @@ public class EmpDept {
 
   static {
     /*Initalizing the entity type T_DEPARTMENT*/
-    EntityRepository.initialize(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
+    EntityRepository.define(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID)),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME)).setPreferredWidth(120).setMaxLength(14),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION)).setPreferredWidth(150).setMaxLength(13));
 
     /*Initalizing the entity type T_EMPLOYEE*/
-    EntityRepository.initialize(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
+    EntityRepository.define(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME)).setMaxLength(10),

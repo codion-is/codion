@@ -750,3 +750,4 @@
   EntityLookupModel.searchStringRepresentsSelected() now returns true for zero selected entities and an empty search string
   EntityPropertyEditor.getValue(), didn't take into consideration that the input field could be a EntityLookupField
   Property.propertyID, propertyType and caption fields privatized
+  EntityRepository.initialize() renamed to define()

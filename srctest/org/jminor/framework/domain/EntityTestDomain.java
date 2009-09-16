@@ -28,12 +28,12 @@ public class EntityTestDomain {
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
-    EntityRepository.initialize(T_MASTER,
+    EntityRepository.define(T_MASTER,
             new Property.PrimaryKeyProperty(MASTER_ID),
             new Property(MASTER_NAME, Type.STRING),
             new Property(MASTER_CODE, Type.INT));
 
-    EntityRepository.initialize(T_DETAIL, IdSource.NONE, null,
+    EntityRepository.define(T_DETAIL, IdSource.NONE, null,
             DETAIL_STRING, DETAIL_SELECT_TABLE_NAME, false,
             new Property.PrimaryKeyProperty(DETAIL_ID).setDefaultValue(42),
             new Property(DETAIL_INT, Type.INT, DETAIL_INT),

@@ -394,7 +394,7 @@ public class EntityRepository {
     return entityDefinitions.keySet();
   }
 
-  public static String[] getInitializedEntities() {
+  public static String[] getDefinedEntities() {
     return entityDefinitions.keySet().toArray(new String[entityDefinitions.keySet().size()]);
   }
 
@@ -412,55 +412,53 @@ public class EntityRepository {
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final String orderByClause,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, IdSource.AUTO_INCREMENT, null, orderByClause, initialPropertyDefinitions);
+  public static void define(final String entityID, final String orderByClause,
+                            final Property... initialPropertyDefinitions) {
+    define(entityID, IdSource.AUTO_INCREMENT, null, orderByClause, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, IdSource.AUTO_INCREMENT, initialPropertyDefinitions);
+  public static void define(final String entityID, final Property... initialPropertyDefinitions) {
+    define(entityID, IdSource.AUTO_INCREMENT, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final IdSource idSource,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, idSource, null, initialPropertyDefinitions);
+  public static void define(final String entityID, final IdSource idSource, final Property... initialPropertyDefinitions) {
+    define(entityID, idSource, null, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
    * @param entityIdSource the name of the primary key value source, such as a sequence name
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final Property... initialPropertyDefinitions) {
-    initialize(entityID, idSource, entityIdSource, null, initialPropertyDefinitions);
+  public static void define(final String entityID, final IdSource idSource, final String entityIdSource,
+                            final Property... initialPropertyDefinitions) {
+    define(entityID, idSource, entityIdSource, null, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
@@ -468,14 +466,13 @@ public class EntityRepository {
    * @param orderByClause the default order by clause used when selecting multiple entities of this type
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByClause,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, null, idSource, entityIdSource, orderByClause, null, false, initialPropertyDefinitions);
+  public static void define(final String entityID, final IdSource idSource, final String entityIdSource,
+                            final String orderByClause, final Property... initialPropertyDefinitions) {
+    define(entityID, null, idSource, entityIdSource, orderByClause, null, false, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
@@ -485,15 +482,14 @@ public class EntityRepository {
    * in case it differs from the table used to insert/update/delete entities
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByClause, final String dbSelectTableName,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, idSource, entityIdSource, orderByClause, dbSelectTableName,
-            false, initialPropertyDefinitions);
+  public static void define(final String entityID, final IdSource idSource, final String entityIdSource,
+                            final String orderByClause, final String dbSelectTableName,
+                            final Property... initialPropertyDefinitions) {
+    define(entityID, idSource, entityIdSource, orderByClause, dbSelectTableName, false, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
@@ -504,16 +500,15 @@ public class EntityRepository {
    * @param isReadOnly true if entities of this type should be regarded as read-only
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByClause,
-                                final String dbSelectTableName, final boolean isReadOnly,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, null, idSource, entityIdSource, orderByClause, dbSelectTableName,
-            isReadOnly, false, initialPropertyDefinitions);
+  public static void define(final String entityID, final IdSource idSource, final String entityIdSource,
+                            final String orderByClause, final String dbSelectTableName, final boolean isReadOnly,
+                            final Property... initialPropertyDefinitions) {
+    define(entityID, null, idSource, entityIdSource, orderByClause, dbSelectTableName, isReadOnly, false,
+            initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param idSource specifies the primary key value source for the table this entity is based on
@@ -526,16 +521,15 @@ public class EntityRepository {
    * to judge if the dataset can be shown in a combo box or list component
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final IdSource idSource,
-                                final String entityIdSource, final String orderByClause,
-                                final String dbSelectTableName, final boolean isReadOnly,
-                                final boolean largeDataset, final Property... initialPropertyDefinitions) {
-    initialize(entityID, null, idSource, entityIdSource, orderByClause, dbSelectTableName,
+  public static void define(final String entityID, final IdSource idSource, final String entityIdSource,
+                            final String orderByClause, final String dbSelectTableName, final boolean isReadOnly,
+                            final boolean largeDataset, final Property... initialPropertyDefinitions) {
+    define(entityID, null, idSource, entityIdSource, orderByClause, dbSelectTableName,
             isReadOnly, largeDataset, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param dbTableName the name of the table used to insert/update/delete entities of this type
@@ -547,16 +541,16 @@ public class EntityRepository {
    * @param isReadOnly true if entities of this type should be regarded as read-only
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final String dbTableName, final IdSource idSource,
-                                final String entityIdSource, final String orderByClause,
-                                final String dbSelectTableName, final boolean isReadOnly,
-                                final Property... initialPropertyDefinitions) {
-    initialize(entityID, dbTableName, idSource, entityIdSource, orderByClause, dbSelectTableName,
+  public static void define(final String entityID, final String dbTableName, final IdSource idSource,
+                            final String entityIdSource, final String orderByClause,
+                            final String dbSelectTableName, final boolean isReadOnly,
+                            final Property... initialPropertyDefinitions) {
+    define(entityID, dbTableName, idSource, entityIdSource, orderByClause, dbSelectTableName,
             isReadOnly, false, initialPropertyDefinitions);
   }
 
   /**
-   * Initializes a entity type, identified by the string <code>entityID</code> and based on the table
+   * Defines a entity type, identified by the string <code>entityID</code> and based on the table
    * specified by that same string
    * @param entityID the full table name of the entity being specified, serves as the entity ID
    * @param dbTableName the name of the table used to insert/update/delete entities of this type
@@ -570,10 +564,10 @@ public class EntityRepository {
    * to judge if the dataset can be shown in a combo box or list component
    * @param initialPropertyDefinitions the properties comprising this entity
    */
-  public static void initialize(final String entityID, final String dbTableName, final IdSource idSource,
-                                final String entityIdSource, final String orderByClause,
-                                final String dbSelectTableName, final boolean isReadOnly,
-                                final boolean largeDataset, final Property... initialPropertyDefinitions) {
+  public static void define(final String entityID, final String dbTableName, final IdSource idSource,
+                            final String entityIdSource, final String orderByClause,
+                            final String dbSelectTableName, final boolean isReadOnly,
+                            final boolean largeDataset, final Property... initialPropertyDefinitions) {
     if (entityDefinitions.containsKey(entityID))
       throw new IllegalArgumentException("Entity with ID '" + entityID + "' has already been initialized!");
 

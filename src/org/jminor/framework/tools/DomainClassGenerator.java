@@ -72,7 +72,7 @@ public class DomainClassGenerator {
       builder.append("\n");
     }
     builder.append("  static {\n");
-    builder.append("  //initialize your entities here\n");
+    builder.append("  //define your entities here\n");
     builder.append("  }\n");
 
     builder.append("}");
