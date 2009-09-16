@@ -184,7 +184,8 @@ public class EntityLookupModel {
 
   public boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return getSelectedEntities().size() > 0 && selectedAsString.equals(getSearchString());
+    return (getSelectedEntities().size() == 0 && getSearchString().length() == 0)
+            || getSelectedEntities().size() > 0 && selectedAsString.equals(getSearchString());
   }
 
   public EntityCriteria getEntityCriteria() {

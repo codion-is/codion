@@ -153,11 +153,19 @@ public class EntityPropertyEditor extends JPanel {
         return null;
       }
       case ENTITY:
-        final JComboBox box = (JComboBox)field;
-        if (box.getSelectedIndex() == 0)
-          return null;
+        if (field instanceof JComboBox) {
+          if (((JComboBox)field).getSelectedIndex() == 0)
+            return null;
 
-        return box.getSelectedItem();
+          return ((JComboBox)field).getSelectedItem();
+        }
+        else {//EntityLookupField
+          final EntityLookupField lookupField = (EntityLookupField) field;
+          if (lookupField.getModel().getSelectedEntities().size() == 0)
+            return null;
+
+          return lookupField.getModel().getSelectedEntities().get(0);
+        }
       default: {
         if (field instanceof JComboBox)
           return ((JComboBox)field).getSelectedItem();

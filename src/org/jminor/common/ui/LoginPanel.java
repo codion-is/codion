@@ -16,7 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -56,24 +59,12 @@ public class LoginPanel extends JPanel {
                                     final Icon icon, final String dialogTitle,
                                     final String usernameLabel, final String passwordLabel) throws UserCancelException {
     final LoginPanel panel = new LoginPanel(defaultUser, false, usernameLabel, passwordLabel);
-    final JOptionPane pane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.OK_CANCEL_OPTION, icon);
-    final JDialog dialog = pane.createDialog(parent, dialogTitle == null ?
-            Messages.get(Messages.LOGIN) : dialogTitle);
+    final JOptionPane pane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
+    final JDialog dialog = pane.createDialog(parent, dialogTitle == null ? Messages.get(Messages.LOGIN) : dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     UiUtil.centerWindow(dialog);
     dialog.setResizable(false);
-    dialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowOpened(WindowEvent e) {
-        panel.init();
-      }
-      @Override
-      public void windowClosed(WindowEvent e) {
-        dialog.dispose();
-      }
-    });
     dialog.setVisible(true);
 
     if (pane.getValue() != null && pane.getValue().equals(0))
@@ -116,17 +107,30 @@ public class LoginPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(retBase, BorderLayout.CENTER);
-    init();
+    if (usernameField.getText().length() == 0)
+      addInitialFocusHack(usernameField, usernameField.getText().length());
+    else
+      addInitialFocusHack(passwordField, passwordField.getPassword().length);
   }
 
-  private void init() {
-    if (usernameField.getText().length() == 0) {
-      usernameField.requestFocusInWindow();
-      usernameField.setCaretPosition(usernameField.getText().length());
-    }
-    else {
-      passwordField.requestFocusInWindow();
-      passwordField.setCaretPosition(passwordField.getPassword().length);
-    }
+  /**
+   * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
+   * @param textField the field
+   * @param caretPosition the caret position
+   */
+  private static void addInitialFocusHack(final JTextField textField, final int caretPosition) {
+    textField.addHierarchyListener(new HierarchyListener() {
+      public void hierarchyChanged(HierarchyEvent e) {
+        if (textField.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+          SwingUtilities.getWindowAncestor(textField).addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+              textField.requestFocusInWindow();
+              textField.setCaretPosition(caretPosition);
+            }
+          });
+        }
+      }
+    });
   }
 }
