@@ -49,7 +49,7 @@ public class EntityPropertyEditor extends JPanel {
 
   private final JComponent field;
   private final Property property;
-  private transient final InputManager inputManager;
+  private final InputManager inputManager;
 
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
