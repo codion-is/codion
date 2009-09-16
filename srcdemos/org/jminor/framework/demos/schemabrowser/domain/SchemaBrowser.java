@@ -58,32 +58,32 @@ public class SchemaBrowser {
     EntityRepository.initialize(T_TABLE,
             IdSource.NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true, true,
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
-                    new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING)),
-            new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name", 1));
+                    new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING).setIndex(0)),
+            new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name").setIndex(1));
 
     EntityRepository.initialize(T_COLUMN,
             IdSource.NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
-                    new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING, null, 0),
-                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING, null, 1)),
-            new Property.PrimaryKeyProperty(COLUMN_NAME, Type.STRING, "Column name", 2),
+                    new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING).setIndex(0),
+                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING).setIndex(1)),
+            new Property.PrimaryKeyProperty(COLUMN_NAME, Type.STRING, "Column name").setIndex(2),
             new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"));
 
     EntityRepository.initialize(T_CONSTRAINT,
             IdSource.NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true, true,
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
-                    new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING, null, 0),
-                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING, null, 1)),
-            new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Type.STRING, "Constraint name", 2),
+                    new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
+                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING).setIndex(1)),
+            new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Type.STRING, "Constraint name").setIndex(2),
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"));
 
     EntityRepository.initialize(T_COLUMN_CONSTRAINT,
             IdSource.NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
             null, true,
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING, null, 0),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Type.STRING, null, 1),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Type.STRING, null, 2)),
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Type.STRING).setIndex(1),
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Type.STRING).setIndex(2)),
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Type.STRING, "Column name"),
             new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"));
 

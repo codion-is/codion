@@ -89,7 +89,7 @@ public class DomainClassGenerator {
     for (final Column column : columns) {
       builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
               column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append(
-              "\"; //").append(translateType(column)).append("\n");
+              "\"; //").append(translateType(column)).append(", ").append(column.columnSize).append("\n");
       if (isForeignKeyColumn(column, foreignKeys))
         builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
                 column.columnName.toUpperCase()).append("_FK").append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
@@ -193,12 +193,15 @@ public class DomainClassGenerator {
     final String tableName;
     final String columnName;
     final int columnType;
+    final int columnSize;
 
-    public Column(final String schemaName, final String tableName, final String columnName, final int columnType) {
+    public Column(final String schemaName, final String tableName, final String columnName, final int columnType,
+                  final int columnSize) {
       this.schemaName = schemaName;
       this.tableName = tableName;
       this.columnName = columnName;
       this.columnType = columnType;
+      this.columnSize = columnSize;
     }
 
     @Override
@@ -213,7 +216,7 @@ public class DomainClassGenerator {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         ret.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME"), resultSet.getInt("DATA_TYPE")));
+                resultSet.getString("COLUMN_NAME"), resultSet.getInt("DATA_TYPE"), resultSet.getInt("COLUMN_SIZE")));
 
       return ret;
     }

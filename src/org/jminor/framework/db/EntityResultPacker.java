@@ -75,16 +75,16 @@ public class EntityResultPacker implements ResultPacker<Entity> {
       case BOOLEAN :
         return getBoolean(resultSet, property);
       default:
-        return getValue(resultSet, property.propertyType, property.selectIndex);
+        return getValue(resultSet, property.propertyType, property.getSelectIndex());
     }
   }
 
   private Type.Boolean getBoolean(final ResultSet resultSet, final Property property) throws SQLException {
     if (property instanceof Property.BooleanProperty)
       return ((Property.BooleanProperty) property).toBoolean(
-              getValue(resultSet, ((Property.BooleanProperty) property).columnType, property.selectIndex));
+              getValue(resultSet, ((Property.BooleanProperty) property).columnType, property.getSelectIndex()));
     else {
-      final Integer result = getInteger(resultSet, property.selectIndex);
+      final Integer result = getInteger(resultSet, property.getSelectIndex());
       if (result == null)
         return null;
 

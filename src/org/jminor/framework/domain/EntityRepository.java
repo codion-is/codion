@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -210,18 +210,16 @@ public class EntityRepository {
                                                      final boolean includeSelectOnly,
                                                      final boolean includeNonUpdatable) {
     final List<Property> properties = new ArrayList<Property>(getDatabaseProperties(entityID));
-    final LinkedHashSet<Property> propertyHashSet = new LinkedHashSet<Property>(properties);
-    for (final Property property: properties) {
-      if (!includeSelectOnly && property.isSelectOnly())
-        propertyHashSet.remove(property);
-      if (!includeNonUpdatable && !property.isUpdatable())
-        propertyHashSet.remove(property);
+    final ListIterator<Property> iterator = properties.listIterator();
+    while (iterator.hasNext()) {
+      final Property property = iterator.next();
+      if (!includeSelectOnly && property.isSelectOnly()
+              || !includeNonUpdatable && !property.isUpdatable()
+              || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty)
+        iterator.remove();
     }
-    if (includePrimaryKeyProperties)
-      for (final Property.PrimaryKeyProperty primaryKeyProperty : getPrimaryKeyProperties(entityID))
-        propertyHashSet.add(primaryKeyProperty);
 
-    return new ArrayList<Property>(propertyHashSet);
+    return properties;
   }
 
   /**

@@ -183,7 +183,7 @@ public class PropertyCriteria implements Criteria, Serializable {
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
       set.addCriteria(new PropertyCriteria(
-              ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
+              ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.getIndex()),
               searchType, entityKey == null ? null : entityKey.getValue(keyProperty.propertyID)));
 
     return set.toString();
@@ -198,7 +198,7 @@ public class PropertyCriteria implements Criteria, Serializable {
         final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
         for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
           pkSet.addCriteria(new PropertyCriteria(
-                  ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.primaryKeyIndex),
+                  ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.getIndex()),
                   searchType, ((EntityKey) entityKey).getValue(keyProperty.propertyID)));
 
         set.addCriteria(pkSet);

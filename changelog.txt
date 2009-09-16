@@ -739,3 +739,9 @@
   EntityModel.uiSetValue() renamed to setValue()
   EntityModel.setValue() renamed to setPropertyValue()
   EntityModel.addDetailModels() now checks if the detail models are based on valid foreign keys
+  Property.maxLength field added
+  EntityUiUtil.createTextField() now uses the above field to restrict the allowed number of characters in text fields
+  UiUtil.makeUpperCase() overloaded for TextFieldPlus
+  Property, replaced constructor arguments with chained method calls
+  EntityProxy.addEntityProxy() renamed to setEntityProxy()
+  EntityRepository.getDatabaseProperties() implemented with ListIterator instead of HashSet

@@ -420,10 +420,7 @@ public class EntityTablePanel extends JPanel {
         final TableColumn column = getJTable().getColumn(property);
         column.setMaxWidth(Integer.MAX_VALUE);
         column.setMinWidth(15);
-        Integer preferredColumnWidth = property.getPreferredColumnWidth();
-        if (preferredColumnWidth == null || preferredColumnWidth < 0)
-          preferredColumnWidth = 80;
-        column.setPreferredWidth(preferredColumnWidth);
+        column.setPreferredWidth(property.getPreferredWidth() < 0 ? 80 : property.getPreferredWidth());
       }
     }
     else {
@@ -999,9 +996,8 @@ public class EntityTablePanel extends JPanel {
       final TableColumn column = new TableColumn(i++);
       column.setIdentifier(property);
       column.setHeaderValue(property.getCaption());
-      final Integer preferredColumnWidth = property.getPreferredColumnWidth();
-      if (preferredColumnWidth != null && preferredColumnWidth > 0)
-        column.setPreferredWidth(preferredColumnWidth);
+      if (property.getPreferredWidth() > 0)
+        column.setPreferredWidth(property.getPreferredWidth());
       ret.add(column);
     }
 

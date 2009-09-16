@@ -467,6 +467,8 @@ public class EntityUiUtil {
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    if (ret instanceof TextFieldPlus && property.getMaxLength() > 0)
+      ((TextFieldPlus) ret).setMaxLength(property.getMaxLength());
     if (property.isDatabaseProperty())
       addLookupDialog(ret, property, entityModel);
 

@@ -689,7 +689,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
             referencedEntity != null ? referencedEntity.primaryKey.getProperties()
                     : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.referenceEntityID);
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
-      final Property referenceProperty = foreignKeyProperty.referenceProperties.get(primaryKeyProperty.primaryKeyIndex);
+      final Property referenceProperty = foreignKeyProperty.referenceProperties.get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.propertyID)

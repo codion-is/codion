@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
+import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
 
@@ -405,6 +406,9 @@ public class UiUtil {
    * @return the text field
    */
   public static JTextField makeUpperCase(final JTextField textField) {
+    if (textField instanceof TextFieldPlus)
+      return makeUpperCase((TextFieldPlus) textField);
+
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
       public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
@@ -420,6 +424,11 @@ public class UiUtil {
       }
     });
 
+    return textField;
+  }
+
+  public static JTextField makeUpperCase(final TextFieldPlus textField) {
+    textField.setUpperCase(true);
     return textField;
   }
 

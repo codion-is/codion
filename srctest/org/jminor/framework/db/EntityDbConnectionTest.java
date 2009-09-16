@@ -42,22 +42,21 @@ public class EntityDbConnectionTest extends TestCase {
     //test with null values
     final Entity testEntity2 = EntityTest.getDetailEntity(idValue, intValue, null,
             stringValue, null, null, booleanValue, referencedEntityValue);
-    assertEquals(EntityDbConnection.getInsertSQL(testEntity2),
-            "insert into " + EntityTestDomain.T_DETAIL
-                    + "(int, string, boolean, entity_id, id)"
-                    + " values(2, 'string', 1, 2, 1)");
+    assertEquals("insert into " + EntityTestDomain.T_DETAIL
+                    + "(id, int, string, boolean, entity_id)"
+                    + " values(1, 2, 'string', 1, 2)", EntityDbConnection.getInsertSQL(testEntity2));
 
     final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, doubleValue,
             stringValue, dateValue, timestampValue, booleanValue, referencedEntityValue);
     //assert dml
     final String shortDateStringSql = Database.get().getSQLDateString(dateValue, false);
     final String longDateStringSql = Database.get().getSQLDateString(timestampValue, true);
-    assertEquals(EntityDbConnection.getInsertSQL(testEntity),
-            "insert into " + EntityTestDomain.T_DETAIL
-                    + "(int, double, string, date, timestamp, boolean, entity_id, id)"
-                    + " values(2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2, 1)");
-    assertEquals(EntityDbConnection.getDeleteSQL(testEntity.getPrimaryKey()),
-            "delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)");
+    assertEquals("insert into " + EntityTestDomain.T_DETAIL
+                    + "(id, int, double, string, date, timestamp, boolean, entity_id)"
+                    + " values(1, 2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2)",
+            EntityDbConnection.getInsertSQL(testEntity));
+    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
+            EntityDbConnection.getDeleteSQL(testEntity.getPrimaryKey()));
     try {
       EntityDbConnection.getUpdateSQL(testEntity);
       fail("Should get an exception when trying to get update sql of a non-modified entity");
@@ -66,10 +65,10 @@ public class EntityDbConnectionTest extends TestCase {
 
     testEntity.setValue(EntityTestDomain.DETAIL_INT, 42);
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "newString");
-    assertEquals(EntityDbConnection.getUpdateSQL(testEntity), "update " + EntityTestDomain.T_DETAIL
-            + " set int = 42, string = 'newString' where (id = 1)");
+    assertEquals( "update " + EntityTestDomain.T_DETAIL
+            + " set int = 42, string = 'newString' where (id = 1)", EntityDbConnection.getUpdateSQL(testEntity));
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "string");
-    assertEquals(EntityDbConnection.getUpdateSQL(testEntity), "update " + EntityTestDomain.T_DETAIL
-            + " set int = 42 where (id = 1)");
+    assertEquals("update " + EntityTestDomain.T_DETAIL + " set int = 42 where (id = 1)",
+            EntityDbConnection.getUpdateSQL(testEntity));
   }
 }

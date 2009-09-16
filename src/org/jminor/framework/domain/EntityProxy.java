@@ -23,7 +23,7 @@ public class EntityProxy {
     defaultEntityProxy = proxy;
   }
 
-  public static void addEntityProxy(final String entityID, final EntityProxy entityProxy) {
+  public static void setEntityProxy(final String entityID, final EntityProxy entityProxy) {
     if (entityProxies == null)
       entityProxies = new HashMap<String, EntityProxy>();
 

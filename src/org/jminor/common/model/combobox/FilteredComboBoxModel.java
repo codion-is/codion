@@ -192,11 +192,14 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /**
    * @return a List containing the items to be shown in this combo box model,
-   * by default it simply returns a list containing the items currently contained in the model.
+   * by default it simply returns a list containing the items currently contained in the model,
+   * excluding the nullValueItem object if one is specified.
    */
   protected List<?> getContents() {
     final List<Object> ret = new ArrayList<Object>(filteredItems);
     ret.addAll(visibleItems);
+    if (nullValueItem != null)
+      ret.remove(nullValueItem);
 
     return ret;
   }
