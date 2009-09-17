@@ -62,13 +62,13 @@ public class EmpDept {
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
   static {
-    /*Initalizing the entity type T_DEPARTMENT*/
+    /*Defining the entity type T_DEPARTMENT*/
     EntityRepository.define(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID)),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME)).setPreferredWidth(120).setMaxLength(14),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION)).setPreferredWidth(150).setMaxLength(13));
 
-    /*Initalizing the entity type T_EMPLOYEE*/
+    /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.define(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
@@ -102,10 +102,8 @@ public class EmpDept {
 
       @Override
       public Color getBackgroundColor(final Entity entity) {
-        if (entity.is(T_EMPLOYEE)) {
-          if (entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
-            return Color.CYAN;
-        }
+        if (entity.is(T_EMPLOYEE) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
+          return Color.CYAN;
 
         return super.getBackgroundColor(entity);
       }
