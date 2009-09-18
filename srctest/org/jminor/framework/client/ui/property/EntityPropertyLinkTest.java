@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -37,26 +38,24 @@ public class EntityPropertyLinkTest extends TestCase {
     model = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
   }
 
-  @SuppressWarnings({"UnnecessaryBoxing"})
   public void testIntegerPropertyLink() {
     final IntField txt = new IntField();
     new IntTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
             true, LinkType.READ_WRITE);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setInt(42);
-    assertEquals("Integer value should be 42.2", new Integer(42), model.getValue(EmpDept.EMPLOYEE_ID));
+    assertEquals("Integer value should be 42", 42, model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setText("");
     assertNull("Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
   }
 
-  @SuppressWarnings({"UnnecessaryBoxing"})
   public void testDoublePropertyLink() {
     final DoubleField txt = new DoubleField();
     new DoubleTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
             true, LinkType.READ_WRITE);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(42.2);
-    assertEquals("Double value should be 42.2", new Double(42.2), model.getValue(EmpDept.EMPLOYEE_COMMISSION));
+    assertEquals("Double value should be 42.2", 42.2, model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setText("");
     assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
   }
@@ -72,15 +71,15 @@ public class EntityPropertyLinkTest extends TestCase {
     assertEquals("String value should be empty", "", model.getValue(EmpDept.EMPLOYEE_NAME));
   }
 
-  public void testDatePropertyLink() {
+  public void testDatePropertyLink() throws ParseException {
     final ShortDashDateFormat format = new ShortDashDateFormat();
-    final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format));
+    final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
     new DateTextPropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
             LinkType.READ_WRITE, format, DateUtil.getDateMask(format));
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
-    final Date now = new Date();
-    model.setValue(EmpDept.EMPLOYEE_HIREDATE, now);//hmm, why didn't txtDate.setText(format.format(now)) work?
-    assertEquals("Date value should be now", now, model.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    final Date dateValue = format.parse("03-10-1975");
+    txtDate.setText(format.format(dateValue));
+    assertEquals("Date value should be 'dateValue'", dateValue, model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     txtDate.setText("");
     assertNull("Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
   }

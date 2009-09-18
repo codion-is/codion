@@ -760,3 +760,4 @@
   ui.property.*PropertyLink constructor argument order changed, moved UI component up front
   BooleanPropertyLink, buttonModel argument removed from constructor, buttonModel field plus getter added
   EntityUiUtil.createCheckBox() changed according to the above
+  EntityPropertyLinkTest.testDatePropertyLink() improved
