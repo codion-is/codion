@@ -81,7 +81,7 @@ public class DoubleField extends IntField {
     public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
       if (getMaxLength() >= 0 && getLength() >= getMaxLength())
         return;
-      if (string.equals("")) {
+      if (string == null || string.equals("")) {
         super.insertString(offset, string, a);
         return;
       }

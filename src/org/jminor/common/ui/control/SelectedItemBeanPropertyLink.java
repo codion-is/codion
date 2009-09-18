@@ -11,7 +11,7 @@ import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements ItemListener {
+public class SelectedItemBeanPropertyLink extends BeanPropertyLink {
 
   private final ComboBoxModel comboBoxModel;
 
@@ -27,13 +27,12 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink implements It
     super(owner, propertyName, propertyClass, propertyChangeEvent, text, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();
-    box.addItemListener(this);
-  }
-
-  /** {@inheritDoc} */
-  public void itemStateChanged(final ItemEvent e) {
-    if (e.getStateChange() == ItemEvent.SELECTED)
-      updateModel();
+    box.addItemListener(new ItemListener() {
+      public void itemStateChanged(final ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED)
+          updateModel();
+      }
+    });
   }
 
   /** {@inheritDoc} */

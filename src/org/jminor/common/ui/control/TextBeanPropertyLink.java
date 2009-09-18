@@ -9,6 +9,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import java.text.Format;
@@ -16,7 +17,7 @@ import java.text.ParseException;
 
 public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentListener {
 
-  private final JTextComponent textComponent;
+  private final Document document;
   private final String placeholder;
   private final Format format;
 
@@ -29,7 +30,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
                               final Class<?> valueClass, final Event propertyChangeEvent, final String name,
                               final LinkType linkType, final Format format) {
     super(owner, propertyName, valueClass, propertyChangeEvent, name, linkType);
-    this.textComponent = textComponent;
+    this.document = textComponent.getDocument();
     this.format = format;
     this.placeholder = textComponent instanceof JFormattedTextField ?
             Character.toString(
@@ -38,7 +39,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
     if (linkType == LinkType.READ_ONLY)
       textComponent.setEditable(false);
     updateUI();
-    textComponent.getDocument().addDocumentListener(this);
+    this.document.addDocumentListener(this);
   }
 
   /** {@inheritDoc} */
@@ -64,7 +65,13 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   /** {@inheritDoc} */
   @Override
   protected void setUIPropertyValue(final Object propertyValue) {
-    textComponent.setText(getPropertyValueAsString(propertyValue));
+    try {
+      document.remove(0, document.getLength());
+      document.insertString(0, getPropertyValueAsString(propertyValue), null);
+    }
+    catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -101,7 +108,7 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
 
   protected String getText() {
     try {
-      return textComponent.getDocument().getText(0, textComponent.getDocument().getLength());
+      return document.getText(0, document.getLength());
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);

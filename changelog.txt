@@ -751,3 +751,9 @@
   EntityPropertyEditor.getValue(), didn't take into consideration that the input field could be a EntityLookupField
   Property.propertyID, propertyType and caption fields privatized
   EntityRepository.initialize() renamed to define()
+  DoubleFieldDocument and IntFieldDocument now handle null string values like their superclass
+  TextBeanPropertyLink.textComponent field replaced by document
+  ToggleBeanPropertyLink.button field replaced by buttonModel field
+  ToggleBeanPropertyLink.getButtonModel() added
+  ControlProvider toggle control methods changed to reflect the above change
+  SelectedItemBeanPropertyLink no longer implements ItemListener, uses an anonymous instance instead

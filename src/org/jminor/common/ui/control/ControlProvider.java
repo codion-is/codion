@@ -39,7 +39,7 @@ public class ControlProvider {
                                                  final String label, final Event changedEvent) {
     final ToggleBeanPropertyLink propertyLink = new ToggleBeanPropertyLink(owner, property, changedEvent,
             label, LinkType.READ_WRITE);
-    propertyLink.setButton(toggleButton);
+    toggleButton.setModel(propertyLink.getButtonModel());
     toggleButton.setText(label);
   }
 
@@ -82,14 +82,14 @@ public class ControlProvider {
 
   public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleBeanPropertyLink propertyLink) {
     final JCheckBoxMenuItem box = new JCheckBoxMenuItem(propertyLink);
-    propertyLink.setButton(box);
+    box.setModel(propertyLink.getButtonModel());
 
     return box;
   }
 
   public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleBeanPropertyLink propertyLink) {
     final JRadioButtonMenuItem box = new JRadioButtonMenuItem(propertyLink);
-    propertyLink.setButton(box);
+    box.setModel(propertyLink.getButtonModel());
 
     return box;
   }
@@ -267,7 +267,7 @@ public class ControlProvider {
 
   public static JCheckBox createCheckBox(final ToggleBeanPropertyLink propertyLink) {
     final JCheckBox ret = new JCheckBox(propertyLink);
-    propertyLink.setButton(ret);
+    ret.setModel(propertyLink.getButtonModel());
 
     return ret;
   }
@@ -277,8 +277,8 @@ public class ControlProvider {
   }
 
   public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink, final boolean includeCaption) {
-    final JToggleButton ret = new JToggleButton();
-    propertyLink.setButton(ret);
+    final JToggleButton ret = new JToggleButton(propertyLink);
+    ret.setModel(propertyLink.getButtonModel());
     ret.setText(includeCaption ? propertyLink.getName() : null);
 
     return ret;

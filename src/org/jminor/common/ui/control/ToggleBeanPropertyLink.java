@@ -5,27 +5,27 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
-import javax.swing.AbstractButton;
+import javax.swing.JToggleButton;
 import java.lang.reflect.Method;
 
 public class ToggleBeanPropertyLink extends BeanPropertyLink {
 
-  private AbstractButton button;
+  private final JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
 
-  public ToggleBeanPropertyLink(final Object owner, final String propertyName,
-                                final Event propertyChangeEvent, final String text) {
+  public ToggleBeanPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
+                                final String text) {
     this(owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
   }
 
-  public ToggleBeanPropertyLink(final Object owner, final String propertyName,
-                                final Event propertyChangeEvent, final String text, final LinkType linkType) {
+  public ToggleBeanPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
+                                final String text, final LinkType linkType) {
     super(owner, propertyName, boolean.class, propertyChangeEvent, text, linkType);
+    this.buttonModel.addActionListener(this);
+    updateUI();
   }
 
-  public void setButton(final AbstractButton toggleButton) {
-    this.button = toggleButton;
-    this.button.setAction(this);
-    updateUI();
+  public JToggleButton.ToggleButtonModel getButtonModel() {
+    return buttonModel;
   }
 
   /** {@inheritDoc} */
@@ -42,13 +42,13 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   /** {@inheritDoc} */
   @Override
   protected Object getUIPropertyValue() {
-    return button.isSelected();
+    return buttonModel.isSelected();
   }
 
   /** {@inheritDoc} */
   @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     final Boolean value = (Boolean) propertyValue;
-    button.setSelected(value != null && value);
+    buttonModel.setSelected(value != null && value);
   }
 }
