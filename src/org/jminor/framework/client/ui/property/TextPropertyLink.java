@@ -35,42 +35,41 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
 
   /**
    * Instantiates a new TextPropertyLink
+   * @param textComponent the text component to link
    * @param entityModel the EntityModel instance
    * @param property the property to link
-   * @param textComponent the text component to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
-   * otherwise it is updated on actionPerformed or focusLost
    */
-  public TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
+  public TextPropertyLink(final JTextComponent textComponent, final EntityModel entityModel, final Property property,
                           final boolean immediateUpdate) {
-    this(entityModel, property, textComponent, immediateUpdate, LinkType.READ_WRITE);
+    this(textComponent, entityModel, property, immediateUpdate, LinkType.READ_WRITE);
   }
 
   /**
    * Instantiates a new TextPropertyLink
+   * @param textComponent the text component to link
    * @param entityModel the EntityModel instance
    * @param property the property to link
-   * @param textComponent the text component to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    */
-  public TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
+  public TextPropertyLink(final JTextComponent textComponent, final EntityModel entityModel, final Property property,
                           final boolean immediateUpdate, final LinkType linkType) {
-    this(entityModel, property, textComponent, immediateUpdate, linkType, null);
+    this(textComponent, entityModel, property, immediateUpdate, linkType, null);
   }
 
   /**
    * Instantiates a new TextPropertyLink
+   * @param textComponent the text component to link
    * @param entityModel the EntityModel instance
    * @param property the property to link
-   * @param textComponent the text component to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    * @param format the format object to use when presenting the value in the text field
    */
-  protected TextPropertyLink(final EntityModel entityModel, final Property property, final JTextComponent textComponent,
+  protected TextPropertyLink(final JTextComponent textComponent, final EntityModel entityModel, final Property property,
                              final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(entityModel, property, linkType);
     this.textComponent = textComponent;

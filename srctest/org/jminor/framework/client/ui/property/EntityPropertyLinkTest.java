@@ -40,8 +40,8 @@ public class EntityPropertyLinkTest extends TestCase {
   @SuppressWarnings({"UnnecessaryBoxing"})
   public void testIntegerPropertyLink() {
     final IntField txt = new IntField();
-    new IntTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
-            txt, true, LinkType.READ_WRITE);
+    new IntTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
+            true, LinkType.READ_WRITE);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setInt(42);
     assertEquals("Integer value should be 42.2", new Integer(42), model.getValue(EmpDept.EMPLOYEE_ID));
@@ -52,8 +52,8 @@ public class EntityPropertyLinkTest extends TestCase {
   @SuppressWarnings({"UnnecessaryBoxing"})
   public void testDoublePropertyLink() {
     final DoubleField txt = new DoubleField();
-    new DoubleTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
-            txt, true, LinkType.READ_WRITE);
+    new DoubleTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
+            true, LinkType.READ_WRITE);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(42.2);
     assertEquals("Double value should be 42.2", new Double(42.2), model.getValue(EmpDept.EMPLOYEE_COMMISSION));
@@ -63,8 +63,8 @@ public class EntityPropertyLinkTest extends TestCase {
 
   public void testStringPropertyLink() {
     final JTextField txt = new JTextField();
-    new TextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-            txt, true, LinkType.READ_WRITE);
+    new TextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
+            true, LinkType.READ_WRITE);
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
     assertEquals("String value should be 'darri", "darri", model.getValue(EmpDept.EMPLOYEE_NAME));
@@ -75,8 +75,8 @@ public class EntityPropertyLinkTest extends TestCase {
   public void testDatePropertyLink() {
     final ShortDashDateFormat format = new ShortDashDateFormat();
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    new DateTextPropertyLink(model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
-            txtDate, LinkType.READ_WRITE, format, DateUtil.getDateMask(format));
+    new DateTextPropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
+            LinkType.READ_WRITE, format, DateUtil.getDateMask(format));
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date now = new Date();
     model.setValue(EmpDept.EMPLOYEE_HIREDATE, now);//hmm, why didn't txtDate.setText(format.format(now)) work?

@@ -25,16 +25,16 @@ public class DateTextPropertyLink extends TextPropertyLink {
 
   /**
    * Instantiates a new DateTextPropertyLink
+   * @param textField the text field to link
    * @param entityModel the EntityModel instance
    * @param property the property to link
-   * @param textField the text field to link
    * @param linkType the link type
    * @param dateFormat the date format to use
    * @param formatMaskString the date format mask string used by the formatted text field
    */
-  public DateTextPropertyLink(final EntityModel entityModel, final Property property, final JFormattedTextField textField,
+  public DateTextPropertyLink(final JFormattedTextField textField, final EntityModel entityModel, final Property property,
                               final LinkType linkType, final DateFormat dateFormat, final String formatMaskString) {
-    super(entityModel, property, textField, true, linkType, dateFormat);
+    super(textField, entityModel, property, true, linkType, dateFormat);
     if (dateFormat == null)
       throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
 

@@ -8,7 +8,6 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
@@ -32,32 +31,22 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
 
   /**
    * Instantiate a new ComboBoxPropertyLink
-   * @param entityModel the EntityModel instance
-   * @param propertyID the ID of the property to link to
    * @param comboBox the combo box to link
+   * @param entityModel the EntityModel instance
+   * @param property the property to link to
    */
-  public ComboBoxPropertyLink(final EntityModel entityModel, final String propertyID, final JComboBox comboBox) {
-    this(entityModel, EntityRepository.getProperty(entityModel.getEntityID(), propertyID), comboBox);
+  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityModel entityModel, final Property property) {
+    this(comboBox, entityModel, property, LinkType.READ_WRITE);
   }
 
   /**
    * Instantiate a new ComboBoxPropertyLink
+   * @param comboBox the combo box to link
    * @param entityModel the EntityModel instance
    * @param property the property to link to
-   * @param comboBox the combo box to link
-   */
-  public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox) {
-    this(entityModel, property, comboBox, LinkType.READ_WRITE);
-  }
-
-  /**
-   * Instantiate a new ComboBoxPropertyLink
-   * @param entityModel the EntityModel instance
-   * @param property the property to link to
-   * @param comboBox the combo box to link
    * @param linkType the link type
    */
-  public ComboBoxPropertyLink(final EntityModel entityModel, final Property property, final JComboBox comboBox,
+  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityModel entityModel, final Property property,
                               final LinkType linkType) {
     super(entityModel, property, linkType);
     this.boxModel = comboBox.getModel();

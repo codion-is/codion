@@ -14,9 +14,9 @@ import org.jminor.framework.domain.Property;
  */
 public class IntTextPropertyLink extends TextPropertyLink {
 
-  public IntTextPropertyLink(final EntityModel entityModel, final Property property, final IntField textField,
+  public IntTextPropertyLink(final IntField textField, final EntityModel entityModel, final Property property,
                              final boolean immediateUpdate, final LinkType linkType) {
-    super(entityModel, property, textField, immediateUpdate, linkType, null);
+    super(textField, entityModel, property, immediateUpdate, linkType, null);
   }
 
   /** {@inheritDoc} */

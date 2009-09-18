@@ -7,7 +7,6 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
@@ -24,23 +23,12 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
 
   /**
    * Instantiates a new LookupModelPropertyLink
-   * @param entityModel the EntityModel instance
-   * @param propertyID the ID of the property to link
    * @param lookupModel the lookup model to link
-   */
-  public LookupModelPropertyLink(final EntityModel entityModel, final String propertyID,
-                                 final EntityLookupModel lookupModel) {
-    this(entityModel, EntityRepository.getForeignKeyProperty(entityModel.getEntityID(), propertyID), lookupModel);
-  }
-
-  /**
-   * Instantiates a new LookupModelPropertyLink
    * @param entityModel the EntityModel instance
    * @param foreignKeyProperty the foreign key property to link
-   * @param lookupModel the lookup model to link
    */
-  public LookupModelPropertyLink(final EntityModel entityModel, final Property.ForeignKeyProperty foreignKeyProperty,
-                                 final EntityLookupModel lookupModel) {
+  public LookupModelPropertyLink(final EntityLookupModel lookupModel, final EntityModel entityModel,
+                                 final Property.ForeignKeyProperty foreignKeyProperty) {
     super(entityModel, foreignKeyProperty, LinkType.READ_WRITE);
     this.lookupModel = lookupModel;
     updateUI();

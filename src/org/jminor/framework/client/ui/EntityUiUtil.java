@@ -219,8 +219,8 @@ public class EntityUiUtil {
     final JCheckBox ret = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
       ret.setToolTipText(property.getCaption());
+    ret.setModel(new BooleanPropertyLink(entityModel, property).getButtonModel());
     UiUtil.linkToEnabledState(enabledState, ret);
-    new BooleanPropertyLink(entityModel, property, ret.getModel());
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
@@ -256,8 +256,8 @@ public class EntityUiUtil {
       if (!boxModel.isDataInitialized())
         boxModel.refresh();
       final EntityComboBox ret = new EntityComboBox(boxModel, newRecordPanelProvider, newButtonFocusable);
+      new ComboBoxPropertyLink(ret, entityModel, foreignKeyProperty);
       UiUtil.linkToEnabledState(enabledState, ret);
-      new ComboBoxPropertyLink(entityModel, foreignKeyProperty, ret);
       MaximumMatch.enable(ret);
       setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, ret);
       if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
@@ -338,7 +338,7 @@ public class EntityUiUtil {
                     additionalSearchCriteria, searchProperties),
                     (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
-    new LookupModelPropertyLink(entityModel, foreignKeyProperty.getPropertyID(), lookupField.getModel());
+    new LookupModelPropertyLink(lookupField.getModel(), entityModel, foreignKeyProperty);
     setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, lookupField);
 
     return lookupField;
@@ -354,8 +354,8 @@ public class EntityUiUtil {
                                                final boolean editable) {
     final SteppedComboBox ret = new SteppedComboBox(model);
     ret.setEditable(editable);
+    new ComboBoxPropertyLink(ret, entityModel, property);
     UiUtil.linkToEnabledState(enabledState, ret);
-    new ComboBoxPropertyLink(entityModel, property, ret);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
@@ -404,7 +404,7 @@ public class EntityUiUtil {
     ret.setLineWrap(true);
     ret.setWrapStyleWord(true);
 
-    new TextPropertyLink(entityModel, property, ret, true, LinkType.READ_WRITE);
+    new TextPropertyLink(ret, entityModel, property, true, LinkType.READ_WRITE);
     setPropertyToolTip(entityModel.getEntityID(), property, ret);
 
     return ret;
@@ -441,24 +441,20 @@ public class EntityUiUtil {
     final JTextField ret;
     switch (property.getPropertyType()) {
       case STRING:
-        new TextPropertyLink(entityModel, property, ret = formatMaskString == null
-                ? new TextFieldPlus() :
+        new TextPropertyLink(ret = formatMaskString == null ? new TextFieldPlus() :
                 UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters, false),
-                immediateUpdate, linkType);
+                entityModel, property, immediateUpdate, linkType);
         break;
       case INT:
-        new IntTextPropertyLink(entityModel, property,
-                (IntField) (ret = new IntField(0)), immediateUpdate, linkType);
+        new IntTextPropertyLink((IntField) (ret = new IntField(0)), entityModel, property, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoubleTextPropertyLink(entityModel, property,
-                (DoubleField) (ret = new DoubleField(0)), immediateUpdate, linkType);
+        new DoubleTextPropertyLink((DoubleField) (ret = new DoubleField(0)), entityModel, property, immediateUpdate, linkType);
         break;
       case DATE:
       case TIMESTAMP:
-        new DateTextPropertyLink(entityModel, property,
-                (JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
-                linkType, dateFormat, formatMaskString);
+        new DateTextPropertyLink((JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
+                entityModel, property, linkType, dateFormat, formatMaskString);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);

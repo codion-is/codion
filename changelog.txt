@@ -755,5 +755,8 @@
   TextBeanPropertyLink.textComponent field replaced by document
   ToggleBeanPropertyLink.button field replaced by buttonModel field
   ToggleBeanPropertyLink.getButtonModel() added
-  ControlProvider toggle control methods changed to reflect the above change
+  ControlProvider toggle control methods changed according to the above
   SelectedItemBeanPropertyLink no longer implements ItemListener, uses an anonymous instance instead
+  ui.property.*PropertyLink constructor argument order changed, moved UI component up front
+  BooleanPropertyLink, buttonModel argument removed from constructor, buttonModel field plus getter added
+  EntityUiUtil.createCheckBox() changed according to the above
