@@ -114,9 +114,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   private final List<Entity> visibleEntities = new ArrayList<Entity>();
 
   /**
-   * Holds entities that are filtered and hidden
+   * Holds entities that are hidden
    */
-  private final List<Entity> filteredEntities = new ArrayList<Entity>();
+  private final List<Entity> hiddenEntities = new ArrayList<Entity>();
 
   /**
    * The properties on which to base the table columns
@@ -405,7 +405,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * Clears all entities from this EntityTableModel
    */
   public void clear() {
-    filteredEntities.clear();
+    hiddenEntities.clear();
     final int size = getRowCount();
     if (size > 0) {
       visibleEntities.clear();
@@ -502,12 +502,12 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a String describing the selected/filtered state of this table model
    */
   public String getStatusMessage() {
-    final int filteredCount = getFilteredCount();
+    final int hiddenCount = getHiddenCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
             Integer.toString(getSelectedModelIndexes().length)).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
-            filteredCount > 0 ? ", " + filteredCount + " "
+            hiddenCount > 0 ? ", " + hiddenCount + " "
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
@@ -607,7 +607,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         }
     }
 
-    for (final Entity entity : filteredEntities) {
+    for (final Entity entity : hiddenEntities) {
       for (final Entity newEntity : entities)
         if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey()))
           entity.setAs(newEntity);
@@ -634,9 +634,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       fireTableRowsDeleted(index, index);
     }
     else {
-      index = filteredEntities.indexOf(entity);
+      index = hiddenEntities.indexOf(entity);
       if (index >= 0)
-        filteredEntities.remove(index);
+        hiddenEntities.remove(index);
     }
   }
 
@@ -662,12 +662,12 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       isFiltering = true;
       evtFilteringStarted.fire();
       final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      visibleEntities.addAll(filteredEntities);
-      filteredEntities.clear();
+      visibleEntities.addAll(hiddenEntities);
+      hiddenEntities.clear();
       for (final ListIterator<Entity> iterator = visibleEntities.listIterator(); iterator.hasNext();) {
         final Entity entity = iterator.next();
         if (!tableSearchModel.include(entity)) {
-          filteredEntities.add(entity);
+          hiddenEntities.add(entity);
           iterator.remove();
         }
       }
@@ -819,9 +819,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public List<Entity> getEntitiesByPrimaryKeys(final List<EntityKey> keys) {
     final List<Entity> ret = new ArrayList<Entity>();
-    final List<Entity> allEntities = new ArrayList<Entity>(visibleEntities.size() + filteredEntities.size());
+    final List<Entity> allEntities = new ArrayList<Entity>(visibleEntities.size() + hiddenEntities.size());
     allEntities.addAll(visibleEntities);
-    allEntities.addAll(filteredEntities);
+    allEntities.addAll(hiddenEntities);
     for (final Entity entity : allEntities) {
       for (final EntityKey key : keys) {
         if (entity.getPrimaryKey().equals(key)) {
@@ -879,39 +879,38 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   /**
    * @return the number of currently filtered (hidden) items
    */
-  public int getFilteredCount() {
-    return filteredEntities.size();
+  public int getHiddenCount() {
+    return hiddenEntities.size();
   }
 
   /**
    * @param entity the object to search for
-   * @param includeFiltered set to true if the filtered objects should
-   * be included in the search
+   * @param includeHidden set to true if the search should include hidden entities
    * @return true if this table model contains the given object
    */
-  public boolean contains(final Entity entity, final boolean includeFiltered) {
+  public boolean contains(final Entity entity, final boolean includeHidden) {
     final boolean ret = viewIndexOf(entity) >= 0;
-    if (!ret && includeFiltered)
-      return filteredEntities.indexOf(entity) >= 0;
+    if (!ret && includeHidden)
+      return hiddenEntities.indexOf(entity) >= 0;
 
     return ret;
   }
 
   /**
-   * @return all filtered and non-filtered entities in this table model
+   * @return all visible and hidden entities in this table model
    */
   public List<Entity> getAllEntities() {
     return getAllEntities(true);
   }
 
   /**
-   * @param includeFiltered if true then filtered entities are included
+   * @param includeHidden if true then filtered entities are included
    * @return all entities in this table model
    */
-  public List<Entity> getAllEntities(final boolean includeFiltered) {
+  public List<Entity> getAllEntities(final boolean includeHidden) {
     final List<Entity> ret = new ArrayList<Entity>(visibleEntities);
-    if (includeFiltered)
-      ret.addAll(filteredEntities);
+    if (includeHidden)
+      ret.addAll(hiddenEntities);
 
     return ret;
   }
@@ -1078,7 +1077,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
           visibleEntities.add(entity);
       }
       else
-        filteredEntities.add(entity);
+        hiddenEntities.add(entity);
     }
     fireTableDataChanged();
   }

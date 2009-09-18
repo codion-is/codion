@@ -761,3 +761,4 @@
   BooleanPropertyLink, buttonModel argument removed from constructor, buttonModel field plus getter added
   EntityUiUtil.createCheckBox() changed according to the above
   EntityPropertyLinkTest.testDatePropertyLink() improved
+  EntityTableModel.filteredEntities renamed to hiddenEntities
