@@ -153,6 +153,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    */
   public void setNullValueItem(final String nullValueItem) {
     this.nullValueItem = nullValueItem;
+    if (selectedItem == null)
+      setSelectedItem(null);
   }
 
   /**

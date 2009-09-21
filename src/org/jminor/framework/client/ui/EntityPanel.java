@@ -318,7 +318,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.compactLayout = compactLayout;
-    this.detailEntityPanels = initializeDetailPanels();
+    this.detailEntityPanels = new ArrayList<EntityPanel>(initializeDetailPanels());
     setupControls();
     this.entityTablePanel = model.containsTableModel() ? initializeEntityTablePanel(rowColoring) : null;
     this.stActive.evtStateChanged.addListener(new ActionListener() {
@@ -1429,7 +1429,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    * This method should return an empty List instead of null if overridden.
    * @return a List containing the detail EntityPanels
    */
-  protected List<EntityPanel> initializeDetailPanels() {
+  protected List<? extends EntityPanel> initializeDetailPanels() {
     try {
       final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
       for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
