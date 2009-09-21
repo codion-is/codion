@@ -305,6 +305,14 @@ public class Configuration {
    */
   public static final String LOCAL_CONNECTION_PROVIDER = "local_connection_provider";
 
+  /**
+   * Specifies the value used by default to represent a null value in combo box models.
+   * Using the value null indicates that no null value item should be used (the default).
+   * Value type: String
+   * Default value: null
+   */
+  public static final String DEFAULT_COMBO_BOX_NULL_VALUE_ITEM = "default_combo_box_null_value_item";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -336,6 +344,7 @@ public class Configuration {
     setValue(USE_NUMBER_FORMAT_GROUPING, true);
     setValue(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
     setValue(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
+    setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, null);
   }
 
   public static void setValue(final String key, final Object value) {

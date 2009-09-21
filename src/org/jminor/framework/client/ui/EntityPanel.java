@@ -1731,10 +1731,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    * @param property the property for which to get the InputManager
    * @param toUpdate the entities that are about to be updated
    * @return the InputManager handling input for <code>property</code>
+   * @throws UserException in case of an exception
    * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected EntityPropertyEditor.InputManager getInputManager(final Property property, final List<Entity> toUpdate) {
+  protected EntityPropertyEditor.InputManager getInputManager(final Property property, final List<Entity> toUpdate) throws UserException {
     return null;
   }
 

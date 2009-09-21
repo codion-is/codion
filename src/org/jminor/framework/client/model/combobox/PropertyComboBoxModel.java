@@ -3,11 +3,14 @@
  */
 package org.jminor.framework.client.model.combobox;
 
+import org.jminor.common.model.Event;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -32,20 +35,38 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
 
   /**
    * @param entityID the ID of the underlying entity
-   * @param dbProvider a EntityDbProvider instance
    * @param property the underlying property
+   * @param dbProvider a EntityDbProvider instance
    * @param nullValue the value to use to represent a null value
+   * @param refreshEvent triggers a refresh
    */
-  public PropertyComboBoxModel(final String entityID, final EntityDbProvider dbProvider,
-                               final Property property, final Object nullValue) {
+  public PropertyComboBoxModel(final String entityID, final Property property, final EntityDbProvider dbProvider,
+                               final String nullValue, final Event refreshEvent) {
     super(true, nullValue);
     if (entityID == null)
       throw new IllegalArgumentException("PropertyComboBoxModel requires a non-null entityID");
     if (dbProvider == null)
       throw new IllegalArgumentException("PropertyComboBoxModel requires a non-null dbProvider");
+    if (property == null)
+      throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
+    if (property instanceof Property.ForeignKeyProperty)
+      throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
+              + property.getPropertyID() + ",\nuse an EntityComboBoxModel instead!");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.property = property;
+    if (refreshEvent != null) {
+      refreshEvent.addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent event) {
+          try {
+            refresh();
+          }
+          catch (UserException ex) {
+            throw ex.getRuntimeException();
+          }
+        }
+      });
+    }
   }
 
   @Override

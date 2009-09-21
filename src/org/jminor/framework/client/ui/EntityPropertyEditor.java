@@ -219,6 +219,8 @@ public class EntityPropertyEditor extends JPanel {
     final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
     if (!EntityRepository.isLargeDataset(foreignKeyProperty.referenceEntityID)) {
       final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(foreignKeyProperty);
+      if (model.getNullValueItem() == null)
+        model.setNullValueItem("-");
       model.refresh();
       if (currentValue != null)
         model.setSelectedItem(currentValue);

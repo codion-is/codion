@@ -762,3 +762,9 @@
   EntityUiUtil.createCheckBox() changed according to the above
   EntityPropertyLinkTest.testDatePropertyLink() improved
   EntityTableModel.filteredEntities renamed to hiddenEntities
+  Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM added
+  FilteredComboBoxModel.nullValueItem type changed from Object to String
+  EntityModel, EntityUiUtil, EntityBindingPanel and PropertyComboBoxModel changed according to the above
+  FilteredComboBoxModel.nullValueItem unfinalized, setter added
+  EntityPropertyEditor.InputManager.getInputManager() now throws UserException, useful when refreshing combo box models
+  EntityModel.getPropertyComboBoxModel(), moved code into PropertyComboBoxModel constructor

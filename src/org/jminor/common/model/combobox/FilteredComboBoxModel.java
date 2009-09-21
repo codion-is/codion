@@ -29,8 +29,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   private final List<Object> visibleItems = new ArrayList<Object>();
   private final List<Object> filteredItems = new ArrayList<Object>();
 
-  private final Object nullValueItem;
   private Object selectedItem;
+  private String nullValueItem;
 
   private FilterCriteria filterCriteria;
   private boolean sortContents = false;
@@ -51,7 +51,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * @param nullValueItem an object representing a null value, which is shown at the top of the item list
    * @see #isNullValueItemSelected()
    */
-  public FilteredComboBoxModel(final boolean sortContents, final Object nullValueItem) {
+  public FilteredComboBoxModel(final boolean sortContents, final String nullValueItem) {
     this(sortContents, nullValueItem, new Comparator<Object>() {
       @SuppressWarnings({"unchecked"})
       public int compare(final Object objectOne, final Object objectTwo) {
@@ -63,7 +63,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     });
   }
 
-  public FilteredComboBoxModel(final boolean sortContents, final Object nullValueItem,
+  public FilteredComboBoxModel(final boolean sortContents, final String nullValueItem,
                                final Comparator<? super Object> sortComparator) {
     this.sortContents = sortContents;
     this.nullValueItem = nullValueItem;
@@ -143,8 +143,16 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   /**
    * @return the Object representing the null value, null if none has been specified
    */
-  public Object getNullValueItem() {
+  public String getNullValueItem() {
     return nullValueItem;
+  }
+
+  /**
+   * Sets the nullValueItem, a refresh is required for it to show up
+   * @param nullValueItem the Object representing a null value
+   */
+  public void setNullValueItem(final String nullValueItem) {
+    this.nullValueItem = nullValueItem;
   }
 
   /**

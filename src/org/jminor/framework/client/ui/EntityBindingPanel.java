@@ -716,7 +716,7 @@ public abstract class EntityBindingPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
-                                                         final Object nullValue) {
+                                                         final String nullValue) {
     return createPropertyComboBox(propertyID, enabledState, nullValue, false);
   }
 
@@ -730,7 +730,7 @@ public abstract class EntityBindingPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
-                                                         final Object nullValue, final boolean editable) {
+                                                         final String nullValue, final boolean editable) {
     return createPropertyComboBox(EntityRepository.getProperty(getModel().getEntityID(), propertyID),
             enabledState, nullValue, editable);
   }
@@ -765,7 +765,7 @@ public abstract class EntityBindingPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
-                                                         final Object nullValue) {
+                                                         final String nullValue) {
     return createPropertyComboBox(property, enabledState, nullValue, false);
   }
 
@@ -779,7 +779,7 @@ public abstract class EntityBindingPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
-                                                         final Object nullValue, final boolean editable) {
+                                                         final String nullValue, final boolean editable) {
     return EntityUiUtil.createPropertyComboBox(property, getModel(), null, enabledState, nullValue, editable);
   }
 
@@ -801,30 +801,6 @@ public abstract class EntityBindingPanel extends JPanel {
   protected final EntityComboBox createEntityComboBox(final String propertyID, final State enabledState) {
     return createEntityComboBox((Property.ForeignKeyProperty)
             EntityRepository.getProperty(getModel().getEntityID(), propertyID), enabledState);
-  }
-
-  /**
-   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
-   * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyID the ID of the foreign key property to bind
-   * @param searchPropertyIDs the IDs of the properties to use in the lookup
-   * @return an EntityLookupField bound the property
-   */
-  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
-                                                            final String... searchPropertyIDs) {
-    return createEntityLookupField(EntityRepository.getForeignKeyProperty(getModel().getEntityID(),
-            foreignKeyPropertyID), searchPropertyIDs);
-  }
-
-  /**
-   * Creates an EntityLookupField bound to the given foreign key property
-   * @param foreignKeyProperty the foreign key property to bind
-   * @param searchPropertyIDs the IDs of the properties to use in the lookup
-   * @return an EntityLookupField bound the property
-   */
-  protected final EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                            final String... searchPropertyIDs) {
-    return EntityUiUtil.createEntityLookupField(foreignKeyProperty, getModel(), searchPropertyIDs);
   }
 
   /**
@@ -880,6 +856,30 @@ public abstract class EntityBindingPanel extends JPanel {
                                                       final boolean newButtonFocusable, final State enabledState) {
     return EntityUiUtil.createEntityComboBox(foreignKeyProperty, getModel(), newRecordPanelProvider,
             newButtonFocusable, enabledState);
+  }
+
+  /**
+   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
+   * must be an Property.ForeignKeyProperty
+   * @param foreignKeyPropertyID the ID of the foreign key property to bind
+   * @param searchPropertyIDs the IDs of the properties to use in the lookup
+   * @return an EntityLookupField bound the property
+   */
+  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
+                                                            final String... searchPropertyIDs) {
+    return createEntityLookupField(EntityRepository.getForeignKeyProperty(getModel().getEntityID(),
+            foreignKeyPropertyID), searchPropertyIDs);
+  }
+
+  /**
+   * Creates an EntityLookupField bound to the given foreign key property
+   * @param foreignKeyProperty the foreign key property to bind
+   * @param searchPropertyIDs the IDs of the properties to use in the lookup
+   * @return an EntityLookupField bound the property
+   */
+  protected final EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                            final String... searchPropertyIDs) {
+    return EntityUiUtil.createEntityLookupField(foreignKeyProperty, getModel(), searchPropertyIDs);
   }
 
   /**

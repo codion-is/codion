@@ -487,7 +487,7 @@ public class EntityUiUtil {
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state,
-                                                       final Object nullValue) {
+                                                       final String nullValue) {
     return createPropertyComboBox(EntityRepository.getProperty(entityModel.getEntityID(), propertyID),
             entityModel, refreshEvent, state, nullValue);
   }
@@ -508,14 +508,14 @@ public class EntityUiUtil {
 
   public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state,
-                                                       final Object nullValue) {
+                                                       final String nullValue) {
     return createPropertyComboBox(property, entityModel, refreshEvent, state, nullValue, false);
   }
 
 
   public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel,
                                                        final Event refreshEvent, final State state,
-                                                       final Object nullValue, final boolean editable) {
+                                                       final String nullValue, final boolean editable) {
     final SteppedComboBox ret = createComboBox(property, entityModel,
             entityModel.getPropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
     if (!editable)

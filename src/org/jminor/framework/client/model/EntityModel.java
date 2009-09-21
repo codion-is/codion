@@ -1009,56 +1009,38 @@ public class EntityModel implements Refreshable {
    * if none is specified EntityModel.evtEntitiesChanged is used
    * @param nullValue the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
-   * @return a ComboBoxModel representing <code>property</code>, if no combo box model
+   * @return a PropertyComboBoxModel representing <code>property</code>, if no combo box model
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  public ComboBoxModel getPropertyComboBoxModel(final Property property, final Event refreshEvent,
-                                                final Object nullValue) {
-    PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
-    if (ret == null)
-      setComboBoxModel(property, ret =
-              createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
-
-    return ret;
-  }
-
-  /**
-   * @param property the property for which to create the PropertyComboBoxModel
-   * @param refreshEvent the combo box model is refreshed when this event fires
-   * @param nullValue the value to appear at the top of the list, representing null
-   * @return a PropertyComboBoxModel containing the distinct values found for the given property
-   */
-  public PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
-                                                           final Object nullValue) {
+  public PropertyComboBoxModel getPropertyComboBoxModel(final Property property, final Event refreshEvent,
+                                                        final String nullValue) {
     try {
-      if (property == null)
-        throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel without a property");
-      if (property instanceof Property.ForeignKeyProperty)
-        throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
-                + property.getPropertyID() + ",\nuse an EntityComboBoxModel instead!");
-      final PropertyComboBoxModel comboBoxModel = new PropertyComboBoxModel(getEntityID(), getDbProvider(), property, nullValue);
-
-      comboBoxModel.refresh();
-
-      if (refreshEvent != null) {
-        refreshEvent.addListener(new ActionListener() {
-          public void actionPerformed(ActionEvent event) {
-            try {
-              comboBoxModel.refresh();
-            }
-            catch (UserException ex) {
-              throw ex.getRuntimeException();
-            }
-          }
-        });
+      PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+      if (ret == null) {
+        setComboBoxModel(property, ret = createPropertyComboBoxModel(property,
+                refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
+        ret.refresh();
       }
 
-      return comboBoxModel;
+      return ret;
     }
     catch (UserException e) {
       throw e.getRuntimeException();
     }
+  }
+
+  /**
+   * @param property the property for which to get the ComboBoxModel
+   * @param refreshEvent the combo box model is refreshed when this event fires,
+   * if none is specified EntityModel.evtEntitiesChanged is used
+   * @param nullValue the value to use for representing the null item at the top of the list,
+   * if this value is null then no such item is included
+   * @return a new PropertyComboBoxModel based on the given property
+   */
+  public PropertyComboBoxModel createPropertyComboBoxModel(final Property property, final Event refreshEvent,
+                                                           final String nullValue) {
+    return new PropertyComboBoxModel(getEntityID(), property, getDbProvider(), nullValue, refreshEvent);
   }
 
   /**
@@ -1097,28 +1079,13 @@ public class EntityModel implements Refreshable {
    * This method is called when creating a EntitComboBoxModel for entity properties, both
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.
-   * This default implementation returns a sorted EntityComboBoxModel with "-" as the nullValueItem
+   * This default implementation returns a sorted EntityComboBoxModel with  as the nullValueItem
    * @param foreignKeyProperty the foreign key property for which to create a EntityComboBoxModel
    * @return a EntityComboBoxModel for the given property
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return createEntityComboBoxModel(foreignKeyProperty, "-", true);
-  }
-
-  /**
-   * Creates a default EntityComboBoxModel for the given property, override to provide
-   * specific EntityComboBoxModels (filtered for example) for properties.
-   * This method is called when creating a EntitComboBoxModel for entity properties, both
-   * for the edit fields used when editing a single record and the edit field used
-   * when updating multiple records
-   * @param foreignKeyProperty the foreign key property for which to create a EntityComboBoxModel
-   * @param nullValueItem the item used to represent a null value
-   * @param sortContents if true the contents are sorted
-   * @return a EntityComboBoxModel for the given property
-   */
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                       final String nullValueItem, final boolean sortContents) {
-    return new EntityComboBoxModel(foreignKeyProperty.referenceEntityID, getDbProvider(), false, nullValueItem, sortContents);
+    return new EntityComboBoxModel(foreignKeyProperty.referenceEntityID, getDbProvider(), false,
+            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM), true);
   }
 
   /**
