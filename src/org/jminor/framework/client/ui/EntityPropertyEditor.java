@@ -12,7 +12,7 @@ import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.domain.Entity;
@@ -68,38 +68,38 @@ public class EntityPropertyEditor extends JPanel {
    * Instantiates a new EntityPropertyEditor
    * @param property the property to edit
    * @param entities the entities
-   * @param entityModel an EntityModel instance used in case of an Property.ForeignKeyProperty being edited,
+   * @param editModel an EntityEditModel instance used in case of an Property.ForeignKeyProperty being edited,
    * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
    * @throws UserException in case of an exception
    */
   public EntityPropertyEditor(final Property property, final List<Entity> entities,
-                              final EntityModel entityModel) throws UserException {
-    this(property, entities, entityModel, null);
+                              final EntityEditModel editModel) throws UserException {
+    this(property, entities, editModel, null);
   }
 
   /**
    * Instantiates a new EntityPropertyEditor
    * @param property the property to edit
    * @param entities the entities
-   * @param entityModel an EntityModel instance used in case of an Property.ForeignKeyProperty being edited,
+   * @param editModel an EntityEditModel instance used in case of an Property.ForeignKeyProperty being edited,
    * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
    * @param inputManager the InputManager to use
    * @throws UserException in case of an exception
    */
   public EntityPropertyEditor(final Property property, final List<Entity> entities,
-                              final EntityModel entityModel, final InputManager inputManager) throws UserException {
+                              final EntityEditModel editModel, final InputManager inputManager) throws UserException {
     if (property == null)
       throw new IllegalArgumentException("Null property provided for EntityPropertyEditor");
-    if (property instanceof Property.ForeignKeyProperty && entityModel == null)
+    if (property instanceof Property.ForeignKeyProperty && editModel == null)
       throw new IllegalArgumentException("No EntityModel instance provided for foreign key property editor");
 
     this.inputManager = inputManager;
     this.property = property;
     final Collection<Object> values = EntityUtil.getPropertyValues(entities, property.getPropertyID());
-    this.field = getInputField(entityModel, values.size() == 1 ? values.iterator().next() : null);
+    this.field = getInputField(editModel, values.size() == 1 ? values.iterator().next() : null);
     if (this.field instanceof JTextField)
-      EntityUiUtil.addLookupDialog((JTextField) this.field, entityModel.getEntityID(), property,
-              entityModel.getDbProvider());
+      EntityUiUtil.addLookupDialog((JTextField) this.field, editModel.getEntityID(), property,
+              editModel.getDbProvider());
     initUI(property.getCaption());
   }
 
@@ -175,7 +175,7 @@ public class EntityPropertyEditor extends JPanel {
     }
   }
 
-  protected JComponent getInputField(final EntityModel entityModel, final Object currentValue) throws UserException {
+  protected JComponent getInputField(final EntityEditModel editModel, final Object currentValue) throws UserException {
     if (inputManager != null)
       return inputManager.getInputComponent();
 
@@ -200,7 +200,7 @@ public class EntityPropertyEditor extends JPanel {
           ret.setSelectedItem(currentValue);
         return ret;
       case ENTITY:
-        return createEntityField(entityModel, currentValue);
+        return createEntityField(editModel, currentValue);
       default:
         return createTextInputPanel(currentValue);
     }
@@ -215,10 +215,10 @@ public class EntityPropertyEditor extends JPanel {
     add(btnBase, BorderLayout.SOUTH);
   }
 
-  private JComponent createEntityField(final EntityModel entityModel, final Object currentValue) throws UserException {
+  private JComponent createEntityField(final EntityEditModel editModel, final Object currentValue) throws UserException {
     final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
     if (!EntityRepository.isLargeDataset(foreignKeyProperty.referenceEntityID)) {
-      final EntityComboBoxModel model = entityModel.createEntityComboBoxModel(foreignKeyProperty);
+      final EntityComboBoxModel model = editModel.createEntityComboBoxModel(foreignKeyProperty);
       if (model.getNullValueItem() == null)
         model.setNullValueItem("-");
       model.refresh();
@@ -244,7 +244,7 @@ public class EntityPropertyEditor extends JPanel {
       if (searchProperties.size() == 0)
         throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.referenceEntityID);
 
-      final EntityLookupField field = new EntityLookupField(entityModel.createEntityLookupModel(
+      final EntityLookupField field = new EntityLookupField(editModel.createEntityLookupModel(
               ((Property.ForeignKeyProperty) property).referenceEntityID, null, searchProperties));
       if (currentValue != null)
         field.getModel().setSelectedEntity((Entity) currentValue);

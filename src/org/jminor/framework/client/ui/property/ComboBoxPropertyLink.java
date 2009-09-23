@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.domain.Property;
@@ -32,23 +32,23 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   /**
    * Instantiate a new ComboBoxPropertyLink
    * @param comboBox the combo box to link
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityEditModel instance
    * @param property the property to link to
    */
-  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityModel entityModel, final Property property) {
-    this(comboBox, entityModel, property, LinkType.READ_WRITE);
+  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityEditModel editModel, final Property property) {
+    this(comboBox, editModel, property, LinkType.READ_WRITE);
   }
 
   /**
    * Instantiate a new ComboBoxPropertyLink
    * @param comboBox the combo box to link
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityEditModel instance
    * @param property the property to link to
    * @param linkType the link type
    */
-  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityModel entityModel, final Property property,
+  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityEditModel editModel, final Property property,
                               final LinkType linkType) {
-    super(entityModel, property, linkType);
+    super(editModel, property, linkType);
     this.boxModel = comboBox.getModel();
     updateUI();
     comboBox.addItemListener(new ItemListener() {

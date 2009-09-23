@@ -23,6 +23,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -334,10 +335,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
     bindModelEvents();
   }
 
-  /** {@inheritDoc} */
-  @Override
   public EntityModel getModel() {
     return model;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EntityEditModel getEditModel() {
+    return getModel().getEditModel();
   }
 
   /**
@@ -370,7 +375,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
         if (refreshOnInit)
           getModel().refresh();//refreshes combo models
         else
-          getModel().refreshComboBoxModels();
+          getEditModel().refreshComboBoxModels();
       }
       catch (UserException e) {
         throw e.getRuntimeException();
@@ -656,7 +661,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    */
   public final void save() {
     if ((getModel().containsTableModel() && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
-            || !getModel().isActiveEntityModified() || !getModel().isUpdateAllowed()) {
+            || !getEditModel().isEntityModified() || !getModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
     }
@@ -777,7 +782,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
 
       final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
       final EntityPropertyEditor editPanel = new EntityPropertyEditor(propertyToUpdate,
-              selectedEntities, getModel(), getInputManager(propertyToUpdate, selectedEntities));
+              selectedEntities, getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
       UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.isEditAccepted()) {
@@ -989,7 +994,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
             new AggregateState(AggregateState.Type.AND,
                     stActive,
                     getModel().getDeleteAllowedState(),
-                    getModel().stEntityActive),//changed from stSelectionEmpty.getReversedState()
+                    getEditModel().getEntityNotNullState()),//changed from stSelectionEmpty.getReversedState()
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -1013,8 +1018,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
             new AggregateState(AggregateState.Type.AND,
                     stActive,
                     getModel().getUpdateAllowedState(),
-                    getModel().stEntityActive,
-                    getModel().getActiveEntityModifiedState()),
+                    getEditModel().getEntityNotNullState(),
+                    getEditModel().getEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -1037,7 +1042,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
     final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getInsertAllowedState(),
             new AggregateState(AggregateState.Type.AND, getModel().getUpdateAllowedState(),
-                    getModel().getActiveEntityModifiedState()));
+                    getEditModel().getEntityModifiedState()));
     return ControlFactory.methodControl(this, "save", insertCaption,
             new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),

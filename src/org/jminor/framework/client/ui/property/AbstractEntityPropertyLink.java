@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.ui.control.AbstractPropertyLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -20,32 +20,32 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
 
   /**
    * Instantiate a new AbstractEntityPropertyLink
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityModel instance
    * @param property the property to link
    * @param linkType the link type
    */
-  public AbstractEntityPropertyLink(final EntityModel entityModel, final Property property, final LinkType linkType) {
-    super(entityModel, property.getPropertyID(), entityModel.getPropertyChangeEvent(property), linkType);
+  public AbstractEntityPropertyLink(final EntityEditModel editModel, final Property property, final LinkType linkType) {
+    super(editModel, property.getPropertyID(), editModel.getPropertyChangeEvent(property), linkType);
     this.property = property;
   }
 
   /** {@inheritDoc} */
   @Override
   public Object getModelPropertyValue() {
-    return isModelPropertyValueNull() ? null : getEntityModel().getValue(property.getPropertyID());
+    return isModelPropertyValueNull() ? null : getEntityEditor().getValue(property.getPropertyID());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setModelPropertyValue(final Object value) {
-    getEntityModel().setValue(property, value);
+    getEntityEditor().setValue(property, value);
   }
 
   /**
    * @return true if the underlying model value of this property is null
    */
   protected boolean isModelPropertyValueNull() {
-    return getEntityModel().isValueNull(property.getPropertyID());
+    return getEntityEditor().isValueNull(property.getPropertyID());
   }
 
   /**
@@ -56,9 +56,9 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   }
 
   /**
-   * @return the property owner, in this case a EntityModel
+   * @return the property owner, in this case a EntityEditorModel
    */
-  private EntityModel getEntityModel() {
-    return (EntityModel) super.getPropertyOwner();
+  private EntityEditModel getEntityEditor() {
+    return (EntityEditModel) super.getPropertyOwner();
   }
 }

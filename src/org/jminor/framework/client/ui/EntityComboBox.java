@@ -140,9 +140,9 @@ public class EntityComboBox extends SteppedComboBox {
             getModel().setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
           }
           else {
-            final Entity selEntity = entityPanel.getModel().getTableModel().getSelectedEntity();
-            if (selEntity != null)
-              getModel().setSelectedItem(selEntity);
+            final Entity selectedEntity = entityPanel.getModel().getTableModel().getSelectedEntity();
+            if (selectedEntity != null)
+              getModel().setSelectedItem(selectedEntity);
           }
           pane.dispose();
         }

@@ -11,7 +11,7 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.DateUtil;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.provider.EntityDbLocalProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -31,11 +31,11 @@ import java.util.Date;
  */
 public class EntityPropertyLinkTest extends TestCase {
 
-  private EntityModel model;
+  private EntityEditModel model;
 
   public EntityPropertyLinkTest() throws UserException {
     new EmpDept();
-    model = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger")));
+    model = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger"))).getEditModel();
   }
 
   public void testIntegerPropertyLink() {

@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.beans;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserException;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -31,21 +32,25 @@ public class EmployeeModel extends EntityModel {
     getTableModel().getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
   }
 
-  /** {@inheritDoc} */
   @Override
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
-    if (property.getPropertyID().equals(EmpDept.EMPLOYEE_MGR_FK)) {
-      final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
-              getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
-      //Only show the president and managers
-      managerModel.setEntityCriteria(new EntityCriteria(EmpDept.T_EMPLOYEE,
-              new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
-                      SearchType.IN, "MANAGER", "PRESIDENT")));
+  protected EntityEditModel intializeEditModel() {
+    return new EntityEditModel(getEntityID(), getDbProvider(), evtEntitiesChanged) {
+      @Override
+      public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
+        if (property.getPropertyID().equals(EmpDept.EMPLOYEE_MGR_FK)) {
+          final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
+                  getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
+          //Only show the president and managers
+          managerModel.setEntityCriteria(new EntityCriteria(EmpDept.T_EMPLOYEE,
+                  new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+                          SearchType.IN, "MANAGER", "PRESIDENT")));
 
-      return managerModel;
-    }
+          return managerModel;
+        }
 
-    return super.createEntityComboBoxModel(property);
+        return super.createEntityComboBoxModel(property);
+      }
+    };
   }
 
   /** {@inheritDoc} */
@@ -55,23 +60,23 @@ public class EmployeeModel extends EntityModel {
     evtEntitiesChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
-          getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
+          getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
         }
         catch (UserException ex) {
           throw ex.getRuntimeException();
         }
       }
     });
-    getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
+    getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
       @Override
       public void propertyChanged(final PropertyEvent e) {
         //only show managers in the same department as the active entity
-        getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria() {
+        getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria() {
           public boolean include(final Object item) {
             return item instanceof String //the item representing null
                     || (Entity.isEqual(Type.ENTITY,
                     ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), e.getNewValue())
-                    && !Entity.isEqual(Type.ENTITY, item, getActiveEntityCopy()));
+                    && !Entity.isEqual(Type.ENTITY, item, getEditModel().getEntityCopy()));
           }
         });
       }

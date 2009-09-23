@@ -67,7 +67,7 @@ public class EmpDeptProfiling extends ProfilingModel {
 
   private void updateEmployeeSalary(EntityModel model) {
     try {
-      model.setValue(EmpDept.EMPLOYEE_SALARY, random.nextDouble()*3000);
+      model.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, random.nextDouble()*3000);
       model.update();
     }
     catch (Exception e) {
@@ -77,7 +77,7 @@ public class EmpDeptProfiling extends ProfilingModel {
 
   private void updateEmployeeCommission(EntityModel model) {
     try {
-      model.setValue(EmpDept.EMPLOYEE_SALARY, random.nextDouble()*1500);
+      model.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, random.nextDouble()*1500);
       model.update();
     }
     catch (Exception e) {
@@ -88,7 +88,7 @@ public class EmpDeptProfiling extends ProfilingModel {
   private void updateDepartmentName(EntityModel model) {
     try {
       final String objString = new Object().toString();
-      model.setValue(EmpDept.DEPARTMENT_NAME, objString.substring(objString.indexOf("@"), objString.length()-1));
+      model.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, objString.substring(objString.indexOf("@"), objString.length()-1));
       model.update();
     }
     catch (Exception e) {

@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -14,9 +14,9 @@ import org.jminor.framework.domain.Property;
  */
 public class IntTextPropertyLink extends TextPropertyLink {
 
-  public IntTextPropertyLink(final IntField textField, final EntityModel entityModel, final Property property,
+  public IntTextPropertyLink(final IntField textField, final EntityEditModel editModel, final Property property,
                              final boolean immediateUpdate, final LinkType linkType) {
-    super(textField, entityModel, property, immediateUpdate, linkType, null);
+    super(textField, editModel, property, immediateUpdate, linkType, null);
   }
 
   /** {@inheritDoc} */

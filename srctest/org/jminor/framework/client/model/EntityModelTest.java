@@ -7,6 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
@@ -55,58 +56,59 @@ public class EntityModelTest extends TestCase {
 
   public void testSelection() throws Exception {
     employeeModel.refresh();
-    assertTrue(employeeModel.isActiveEntityNull());
-    assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
+    assertTrue(employeeModel.getEditModel().isEntityNull());
+    assertFalse(employeeModel.getEditModel().getEntityModifiedState().isActive());
     employeeModel.getTableModel().setSelectedItemIndex(0);
-    assertFalse("Active entity is null after an entity is selected", employeeModel.isActiveEntityNull());
+    assertFalse("Active entity is null after an entity is selected", employeeModel.getEditModel().isEntityNull());
     assertTrue("Active entity is not equal to the selected entity",
-            employeeModel.getActiveEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getEntityAtViewIndex(0)));
-    assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
+            employeeModel.getEditModel().getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getEntityAtViewIndex(0)));
+    assertFalse(employeeModel.getEditModel().getEntityModifiedState().isActive());
     employeeModel.getTableModel().getSelectionModel().clearSelection();
-    assertTrue("Active entity is not null after selection is cleared", employeeModel.isActiveEntityNull());
-    assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
+    assertTrue("Active entity is not null after selection is cleared", employeeModel.getEditModel().isEntityNull());
+    assertFalse(employeeModel.getEditModel().getEntityModifiedState().isActive());
   }
 
   public void testEdit() throws Exception {
     //changes to property values in a selected entity should be reverted when it's deselected
     employeeModel.getTableModel().refresh();
     employeeModel.getTableModel().setSelectedItemIndex(0);
-    assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
-    final Double originalCommission = (Double) employeeModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
+    assertFalse(employeeModel.getEditModel().getEntityModifiedState().isActive());
+    final Double originalCommission = (Double) employeeModel.getEditModel().getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 66.7;
-    final Timestamp originalHiredate = (Timestamp) employeeModel.getValue(EmpDept.EMPLOYEE_HIREDATE);
+    final Timestamp originalHiredate = (Timestamp) employeeModel.getEditModel().getValue(EmpDept.EMPLOYEE_HIREDATE);
     final Timestamp hiredate = new Timestamp(System.currentTimeMillis());
-    final String originalName = (String) employeeModel.getValue(EmpDept.EMPLOYEE_NAME);
+    final String originalName = (String) employeeModel.getEditModel().getValue(EmpDept.EMPLOYEE_NAME);
     final String name = "Mr. Mr";
 
-    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    assertTrue(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_NAME, name);
+    employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
+    assertTrue(employeeModel.getEditModel().getEntityModifiedState().isActive());
+    employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+    employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_NAME, name);
 
-    assertEquals("Commission does not fit", employeeModel.getValue(EmpDept.EMPLOYEE_COMMISSION), commission);
-    assertEquals("Hiredate does not fit", employeeModel.getValue(EmpDept.EMPLOYEE_HIREDATE), hiredate);
-    assertEquals("Name does not fit", employeeModel.getValue(EmpDept.EMPLOYEE_NAME), name);
+    assertEquals("Commission does not fit", employeeModel.getEditModel().getValue(EmpDept.EMPLOYEE_COMMISSION), commission);
+    assertEquals("Hiredate does not fit", employeeModel.getEditModel().getValue(EmpDept.EMPLOYEE_HIREDATE), hiredate);
+    assertEquals("Name does not fit", employeeModel.getEditModel().getValue(EmpDept.EMPLOYEE_NAME), name);
 
-    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
-    assertTrue(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
-    assertTrue(employeeModel.getActiveEntityModifiedState().isActive());
-    employeeModel.setPropertyValue(EmpDept.EMPLOYEE_NAME, originalName);
-    assertFalse(employeeModel.getActiveEntityModifiedState().isActive());
+    employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
+    assertTrue(employeeModel.getEditModel().getEntityModifiedState().isActive());
+    employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
+    assertTrue(employeeModel.getEditModel().getEntityModifiedState().isActive());
+    employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_NAME, originalName);
+    assertFalse(employeeModel.getEditModel().getEntityModifiedState().isActive());
 
     employeeModel.getTableModel().getSelectionModel().clearSelection();
-    assertTrue("Active entity is not null after selection is cleared", employeeModel.getActiveEntityCopy().isNull());
+    assertTrue("Active entity is not null after selection is cleared", employeeModel.getEditModel().getEntityCopy().isNull());
     employeeModel.getTableModel().setSelectedItemIndex(0);
-    assertTrue("Active entity is null after selection is made", !employeeModel.getActiveEntityCopy().isNull());
+    assertTrue("Active entity is null after selection is made", !employeeModel.getEditModel().getEntityCopy().isNull());
     employeeModel.clear();
-    assertTrue("Active entity is not null after model is cleared", employeeModel.getActiveEntityCopy().isNull());
+    assertTrue("Active entity is not null after model is cleared", employeeModel.getEditModel().getEntityCopy().isNull());
   }
 
   public void testStrictEditMode() throws Exception {
     if (!Database.get().supportsNoWait())
       return;
 
+    Configuration.setValue(Configuration.USE_SELECT_FOR_UPDATE, true);
     final EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), "EntityModelTest");
 
@@ -115,13 +117,12 @@ public class EntityModelTest extends TestCase {
 
     departmentModel.getTableModel().setQueryFilteredByMaster(false);
     departmentModel.refresh();
-    departmentModel.setUseSelectForUpdate(true);
 
     //select entity and change a value
     departmentModel.getTableModel().setSelectedItemIndex(0);
-    final EntityKey primaryKey = departmentModel.getActiveEntityCopy().getPrimaryKey();
-    final Object originalValue = departmentModel.getValue(EmpDept.DEPARTMENT_LOCATION);
-    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, "None really");
+    final EntityKey primaryKey = departmentModel.getEditModel().getEntityCopy().getPrimaryKey();
+    final Object originalValue = departmentModel.getEditModel().getValue(EmpDept.DEPARTMENT_LOCATION);
+    departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -130,7 +131,7 @@ public class EntityModelTest extends TestCase {
     catch (Exception e) {}
 
     //revert value to original
-    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
+    departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
     //assert row is not locked, and then unlock it
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -141,7 +142,7 @@ public class EntityModelTest extends TestCase {
     }
 
     //change value
-    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
+    departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_LOCATION, "Hello world");
     //assert row is locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -160,7 +161,7 @@ public class EntityModelTest extends TestCase {
       fail("Row should not be locked after update");
     }
 
-    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, "None really");
+    departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_LOCATION, "None really");
     //assert row is locked
     try {
       dbProvider.getEntityDb().selectForUpdate(Arrays.asList(primaryKey));
@@ -180,8 +181,10 @@ public class EntityModelTest extends TestCase {
 
     //clean up by resetting the value
     departmentModel.getTableModel().setSelectedItemIndex(0);
-    departmentModel.setValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
+    departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_LOCATION, originalValue);
     departmentModel.update();
+
+    Configuration.setValue(Configuration.USE_SELECT_FOR_UPDATE, false);
   }
 
   @Override

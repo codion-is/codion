@@ -22,7 +22,7 @@ import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.DateUtil;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -205,61 +205,61 @@ public class EntityUiUtil {
       return selected;
   }
 
-  public static JCheckBox createCheckBox(final Property property, final EntityModel entityModel) {
-    return createCheckBox(property, entityModel, null);
+  public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel) {
+    return createCheckBox(property, editModel, null);
   }
 
-  public static JCheckBox createCheckBox(final Property property, final EntityModel entityModel,
+  public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState) {
-    return createCheckBox(property, entityModel, enabledState, true);
+    return createCheckBox(property, editModel, enabledState, true);
   }
 
-  public static JCheckBox createCheckBox(final Property property, final EntityModel entityModel,
+  public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
     final JCheckBox ret = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
       ret.setToolTipText(property.getCaption());
-    ret.setModel(new BooleanPropertyLink(entityModel, property).getButtonModel());
+    ret.setModel(new BooleanPropertyLink(editModel, property).getButtonModel());
     UiUtil.linkToEnabledState(enabledState, ret);
-    setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    setPropertyToolTip(editModel.getEntityID(), property, ret);
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
 
     return ret;
   }
 
-  public static SteppedComboBox createBooleanComboBox(final Property property, final EntityModel entityModel) {
-    return createBooleanComboBox(property, entityModel, null);
+  public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel) {
+    return createBooleanComboBox(property, editModel, null);
   }
 
-  public static SteppedComboBox createBooleanComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel,
                                                       final State enabledState) {
-    final SteppedComboBox box = createComboBox(property, entityModel, new BooleanComboBoxModel(), enabledState);
+    final SteppedComboBox box = createComboBox(property, editModel, new BooleanComboBoxModel(), enabledState);
     box.setPopupWidth(40);
 
     return box;
   }
 
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityModel entityModel,
+                                                    final EntityEditModel editModel,
                                                     final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable) {
-    return createEntityComboBox(foreignKeyProperty, entityModel, newRecordPanelProvider, newButtonFocusable, null);
+    return createEntityComboBox(foreignKeyProperty, editModel, newRecordPanelProvider, newButtonFocusable, null);
   }
 
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityModel entityModel,
+                                                    final EntityEditModel editModel,
                                                     final EntityPanelProvider newRecordPanelProvider,
                                                     final boolean newButtonFocusable, final State enabledState) {
     try {
-      final EntityComboBoxModel boxModel = entityModel.getEntityComboBoxModel(foreignKeyProperty);
+      final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
       if (!boxModel.isDataInitialized())
         boxModel.refresh();
       final EntityComboBox ret = new EntityComboBox(boxModel, newRecordPanelProvider, newButtonFocusable);
-      new ComboBoxPropertyLink(ret, entityModel, foreignKeyProperty);
+      new ComboBoxPropertyLink(ret, editModel, foreignKeyProperty);
       UiUtil.linkToEnabledState(enabledState, ret);
       MaximumMatch.enable(ret);
-      setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, ret);
+      setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, ret);
       if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
         UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
 
@@ -271,15 +271,15 @@ public class EntityUiUtil {
   }
 
   public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
-                                              final EntityModel entityModel, final EntityTableModel lookupModel) {
+                                              final EntityEditModel editModel, final EntityTableModel lookupModel) {
     final JPanel ret = new JPanel(new BorderLayout(5,5));
-    final JTextField txt = createEntityField(foreignKeyProperty, entityModel);
+    final JTextField txt = createEntityField(foreignKeyProperty, editModel);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
           final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(ret),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          entityModel.setValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
+          editModel.setValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
         }
         catch (UserCancelException ex) {/**/}
       }
@@ -293,11 +293,11 @@ public class EntityUiUtil {
   }
 
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                             final EntityModel entityModel) {
+                                             final EntityEditModel editModel) {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
-    setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, txt);
-    entityModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new PropertyListener() {
+    setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, txt);
+    editModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new PropertyListener() {
       @Override
       public void propertyChanged(final PropertyEvent e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
@@ -308,22 +308,22 @@ public class EntityUiUtil {
   }
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityModel entityModel                                                          ) {
+                                                          final EntityEditModel editModel) {
     final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
     if (searchPropertyIDs == null)
       throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.referenceEntityID
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
 
-    return createEntityLookupField(foreignKeyProperty, entityModel, searchPropertyIDs);
+    return createEntityLookupField(foreignKeyProperty, editModel, searchPropertyIDs);
   }
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityModel entityModel, final String... searchPropertyIDs) {
-    return createEntityLookupField(foreignKeyProperty, entityModel, null, searchPropertyIDs);
+                                                          final EntityEditModel editModel, final String... searchPropertyIDs) {
+    return createEntityLookupField(foreignKeyProperty, editModel, null, searchPropertyIDs);
   }
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityModel entityModel,
+                                                          final EntityEditModel editModel,
                                                           final Criteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)
@@ -334,29 +334,29 @@ public class EntityUiUtil {
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
     final EntityLookupField lookupField =
-            new EntityLookupField(entityModel.createEntityLookupModel(foreignKeyProperty.referenceEntityID,
+            new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.referenceEntityID,
                     additionalSearchCriteria, searchProperties),
                     (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
-    new LookupModelPropertyLink(lookupField.getModel(), entityModel, foreignKeyProperty);
-    setPropertyToolTip(entityModel.getEntityID(), foreignKeyProperty, lookupField);
+    new LookupModelPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
+    setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, lookupField);
 
     return lookupField;
   }
 
-  public static SteppedComboBox createComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final State enabledState) {
-    return createComboBox(property, entityModel, model, enabledState, false);
+    return createComboBox(property, editModel, model, enabledState, false);
   }
 
-  public static SteppedComboBox createComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final State enabledState,
                                                final boolean editable) {
     final SteppedComboBox ret = new SteppedComboBox(model);
     ret.setEditable(editable);
-    new ComboBoxPropertyLink(ret, entityModel, property);
+    new ComboBoxPropertyLink(ret, editModel, property);
     UiUtil.linkToEnabledState(enabledState, ret);
-    setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    setPropertyToolTip(editModel.getEntityID(), property, ret);
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(ret);
@@ -373,29 +373,29 @@ public class EntityUiUtil {
     return new DateInputPanel(txtField, maskFormat, true, null);
   }
 
-  public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
+  public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
                                                     final boolean includeButton) {
-    return createDateInputPanel(property, entityModel, dateFormat, linkType, includeButton, null);
+    return createDateInputPanel(property, editModel, dateFormat, linkType, includeButton, null);
   }
 
-  public static DateInputPanel createDateInputPanel(final Property property, final EntityModel entityModel,
+  public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
                                                     final boolean includeButton, final State enabledState) {
     if (property.getPropertyType() != Type.DATE && property.getPropertyType() != Type.TIMESTAMP)
       throw new IllegalArgumentException("Property " + property + " is not a date property");
 
-    final JFormattedTextField field = (JFormattedTextField) createTextField(property, entityModel, linkType,
+    final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, linkType,
             DateUtil.getDateMask(dateFormat), true, dateFormat, enabledState);
 
     return new DateInputPanel(field, dateFormat, includeButton, enabledState);
   }
 
-  public static JTextArea createTextArea(final Property property, final EntityModel entityModel) {
-    return createTextArea(property, entityModel, -1, -1);
+  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel) {
+    return createTextArea(property, editModel, -1, -1);
   }
 
-  public static JTextArea createTextArea(final Property property, final EntityModel entityModel,
+  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns) {
     if (property.getPropertyType() != Type.STRING)
       throw new RuntimeException("Cannot create a text area for a non-string property");
@@ -404,37 +404,37 @@ public class EntityUiUtil {
     ret.setLineWrap(true);
     ret.setWrapStyleWord(true);
 
-    new TextPropertyLink(ret, entityModel, property, true, LinkType.READ_WRITE);
-    setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    new TextPropertyLink(ret, editModel, property, true, LinkType.READ_WRITE);
+    setPropertyToolTip(editModel.getEntityID(), property, ret);
 
     return ret;
   }
 
-  public static JTextField createTextField(final Property property, final EntityModel entityModel) {
-    return createTextField(property, entityModel, LinkType.READ_WRITE, null, true);
+  public static JTextField createTextField(final Property property, final EntityEditModel editModel) {
+    return createTextField(property, editModel, LinkType.READ_WRITE, null, true);
   }
 
-  public static JTextField createTextField(final Property property, final EntityModel entityModel,
+  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate) {
-    return createTextField(property, entityModel, linkType, formatMaskString, immediateUpdate, null);
+    return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, null);
   }
 
-  public static JTextField createTextField(final Property property, final EntityModel entityModel,
+  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final State enabledState) {
-    return createTextField(property, entityModel, linkType, formatMaskString, immediateUpdate, null, enabledState);
+    return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, null, enabledState);
   }
 
-  public static JTextField createTextField(final Property property, final EntityModel entityModel,
+  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState) {
-    return createTextField(property, entityModel, linkType, formatMaskString, immediateUpdate, dateFormat,
+    return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, dateFormat,
             enabledState, false);
   }
 
-  public static JTextField createTextField(final Property property, final EntityModel entityModel,
+  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
@@ -443,18 +443,18 @@ public class EntityUiUtil {
       case STRING:
         new TextPropertyLink(ret = formatMaskString == null ? new TextFieldPlus() :
                 UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters, false),
-                entityModel, property, immediateUpdate, linkType);
+                editModel, property, immediateUpdate, linkType);
         break;
       case INT:
-        new IntTextPropertyLink((IntField) (ret = new IntField(0)), entityModel, property, immediateUpdate, linkType);
+        new IntTextPropertyLink((IntField) (ret = new IntField(0)), editModel, property, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoubleTextPropertyLink((DoubleField) (ret = new DoubleField(0)), entityModel, property, immediateUpdate, linkType);
+        new DoubleTextPropertyLink((DoubleField) (ret = new DoubleField(0)), editModel, property, immediateUpdate, linkType);
         break;
       case DATE:
       case TIMESTAMP:
         new DateTextPropertyLink((JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
-                entityModel, property, linkType, dateFormat, formatMaskString);
+                editModel, property, linkType, dateFormat, formatMaskString);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);
@@ -462,62 +462,62 @@ public class EntityUiUtil {
     UiUtil.linkToEnabledState(enabledState, ret);
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(ret);
-    setPropertyToolTip(entityModel.getEntityID(), property, ret);
+    setPropertyToolTip(editModel.getEntityID(), property, ret);
     if (ret instanceof TextFieldPlus && property.getMaxLength() > 0)
       ((TextFieldPlus) ret).setMaxLength(property.getMaxLength());
     if (property.isDatabaseProperty())
-      addLookupDialog(ret, property, entityModel);
+      addLookupDialog(ret, property, editModel);
 
     return ret;
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel) {
-    return createPropertyComboBox(propertyID, entityModel, null);
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel) {
+    return createPropertyComboBox(propertyID, editModel, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final Event refreshEvent) {
-    return createPropertyComboBox(propertyID, entityModel, refreshEvent, null);
+    return createPropertyComboBox(propertyID, editModel, refreshEvent, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state) {
-    return createPropertyComboBox(propertyID, entityModel, refreshEvent, state, null);
+    return createPropertyComboBox(propertyID, editModel, refreshEvent, state, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue) {
-    return createPropertyComboBox(EntityRepository.getProperty(entityModel.getEntityID(), propertyID),
-            entityModel, refreshEvent, state, nullValue);
+    return createPropertyComboBox(EntityRepository.getProperty(editModel.getEntityID(), propertyID),
+            editModel, refreshEvent, state, nullValue);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel) {
-    return createPropertyComboBox(property, entityModel, null);
+  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel) {
+    return createPropertyComboBox(property, editModel, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
                                                        final Event refreshEvent) {
-    return createPropertyComboBox(property, entityModel, refreshEvent, null);
+    return createPropertyComboBox(property, editModel, refreshEvent, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state) {
-    return createPropertyComboBox(property, entityModel, refreshEvent, state, null);
+    return createPropertyComboBox(property, editModel, refreshEvent, state, null);
   }
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue) {
-    return createPropertyComboBox(property, entityModel, refreshEvent, state, nullValue, false);
+    return createPropertyComboBox(property, editModel, refreshEvent, state, nullValue, false);
   }
 
 
-  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityModel entityModel,
+  public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue, final boolean editable) {
-    final SteppedComboBox ret = createComboBox(property, entityModel,
-            entityModel.getPropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
+    final SteppedComboBox ret = createComboBox(property, editModel,
+            editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
     if (!editable)
       MaximumMatch.enable(ret);
 
@@ -598,8 +598,8 @@ public class EntityUiUtil {
     }
   }
 
-  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityModel model) {
-    addLookupDialog(txtField, model.getEntityID(), property, model.getDbProvider());
+  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityEditModel editModel) {
+    addLookupDialog(txtField, editModel.getEntityID(), property, editModel.getDbProvider());
   }
 
   public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,

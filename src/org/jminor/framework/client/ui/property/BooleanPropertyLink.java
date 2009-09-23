@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
@@ -17,12 +17,12 @@ public class BooleanPropertyLink extends AbstractEntityPropertyLink {
 
   private final JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
 
-  public BooleanPropertyLink(final EntityModel entityModel, final Property property) {
-    this(entityModel, property, LinkType.READ_WRITE);
+  public BooleanPropertyLink(final EntityEditModel editModel, final Property property) {
+    this(editModel, property, LinkType.READ_WRITE);
   }
 
-  public BooleanPropertyLink(final EntityModel entityModel, final Property property, final LinkType linkType) {
-    super(entityModel, property, linkType);
+  public BooleanPropertyLink(final EntityEditModel editModel, final Property property, final LinkType linkType) {
+    super(editModel, property, linkType);
     this.buttonModel.addActionListener(this);
     updateUI();
   }

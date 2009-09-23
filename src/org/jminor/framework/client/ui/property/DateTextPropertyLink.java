@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.PropertyEvent;
 import org.jminor.framework.domain.PropertyListener;
@@ -26,21 +26,21 @@ public class DateTextPropertyLink extends TextPropertyLink {
   /**
    * Instantiates a new DateTextPropertyLink
    * @param textField the text field to link
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityEditModel instance
    * @param property the property to link
    * @param linkType the link type
    * @param dateFormat the date format to use
    * @param formatMaskString the date format mask string used by the formatted text field
    */
-  public DateTextPropertyLink(final JFormattedTextField textField, final EntityModel entityModel, final Property property,
+  public DateTextPropertyLink(final JFormattedTextField textField, final EntityEditModel editModel, final Property property,
                               final LinkType linkType, final DateFormat dateFormat, final String formatMaskString) {
-    super(textField, entityModel, property, true, linkType, dateFormat);
+    super(textField, editModel, property, true, linkType, dateFormat);
     if (dateFormat == null)
       throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
 
     this.fieldMaskString = formatMaskString.replaceAll("#","_");
     this.defaultTextFieldBackground = textField.getBackground();
-    entityModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
+    editModel.getPropertyChangeEvent(property).addListener(new PropertyListener() {
       @Override
       protected void propertyChanged(PropertyEvent e) {
         updateFieldColor();

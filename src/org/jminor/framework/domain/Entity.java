@@ -502,8 +502,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
     if (evtPropertyChanged != null)
       for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-        evtPropertyChanged.fire(
-                new PropertyEvent(this, getEntityID(), property, getRawValue(property.getPropertyID()), null, true, true));
+        evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, getRawValue(property.getPropertyID()),
+                null, true, true));
 
     toString = sourceEntity.toString;
     if (stModified != null)

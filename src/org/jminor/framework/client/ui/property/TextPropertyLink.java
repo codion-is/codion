@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -36,42 +36,42 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   /**
    * Instantiates a new TextPropertyLink
    * @param textComponent the text component to link
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityEditModel instance
    * @param property the property to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    */
-  public TextPropertyLink(final JTextComponent textComponent, final EntityModel entityModel, final Property property,
+  public TextPropertyLink(final JTextComponent textComponent, final EntityEditModel editModel, final Property property,
                           final boolean immediateUpdate) {
-    this(textComponent, entityModel, property, immediateUpdate, LinkType.READ_WRITE);
+    this(textComponent, editModel, property, immediateUpdate, LinkType.READ_WRITE);
   }
 
   /**
    * Instantiates a new TextPropertyLink
    * @param textComponent the text component to link
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityEditModel instance
    * @param property the property to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    */
-  public TextPropertyLink(final JTextComponent textComponent, final EntityModel entityModel, final Property property,
+  public TextPropertyLink(final JTextComponent textComponent, final EntityEditModel editModel, final Property property,
                           final boolean immediateUpdate, final LinkType linkType) {
-    this(textComponent, entityModel, property, immediateUpdate, linkType, null);
+    this(textComponent, editModel, property, immediateUpdate, linkType, null);
   }
 
   /**
    * Instantiates a new TextPropertyLink
    * @param textComponent the text component to link
-   * @param entityModel the EntityModel instance
+   * @param editModel the EntityEditModel instance
    * @param property the property to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    * @param format the format object to use when presenting the value in the text field
    */
-  protected TextPropertyLink(final JTextComponent textComponent, final EntityModel entityModel, final Property property,
+  protected TextPropertyLink(final JTextComponent textComponent, final EntityEditModel editModel, final Property property,
                              final boolean immediateUpdate, final LinkType linkType, final Format format) {
-    super(entityModel, property, linkType);
+    super(editModel, property, linkType);
     this.textComponent = textComponent;
     this.format = format;
     this.immediateUpdate = immediateUpdate;
