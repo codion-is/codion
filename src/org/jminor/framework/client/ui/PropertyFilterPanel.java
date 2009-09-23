@@ -41,8 +41,8 @@ import java.util.Date;
 
 public class PropertyFilterPanel extends AbstractSearchPanel {
 
-  private final State stIsDialogActive = new State("PropertyFilterPanel.stIsDialogActive");
-  private final State stIsDialogShowing = new State("PropertyFilterPanel.stIsDialogShowing");
+  private final State stIsDialogActive = new State();
+  private final State stIsDialogShowing = new State();
 
   private final SimpleDateFormat timestampFormat =
           new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));

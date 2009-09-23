@@ -32,9 +32,9 @@ public abstract class AbstractSearchModel {
   public final Event evtSearchStateChanged = new Event();
   public final Event evtSearchModelCleared = new Event();
 
-  public final State stLocked = new State("AbstractSearchModel.stLocked", false);
+  public final State stLocked = new State();
 
-  private final State stSearchEnabled = new State("AbstractSearchModel.stSearchEnabled");
+  private final State stSearchEnabled = new State();
   private final Property property;
 
   private SearchType searchType = SearchType.LIKE;

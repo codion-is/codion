@@ -12,44 +12,22 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A class encapsulting a simple boolean state, providing change events
+ * A class encapsulting a simple boolean state, providing a change event
  */
 public class State {
 
   /** Fired each time the state changes */
   public final Event evtStateChanged = new Event();
-  /** Fired each time <code>setActive(true)</code> is called */
-  public final Event evtSetActive = new Event();
-  /** Fired each time <code>setActive(false)</code> is called */
-  public final Event evtSetInactive = new Event();
-  /** Simply for debugging purposes */
-  private final String name;
+
+  private LinkedState linkedState = null;
   private ReverseState reversedState = null;
   private boolean active = false;
 
   /**
-   * Constructs a new anonymous State instance initialized as inactive
+   * Constructs a new State instance initialized as inactive
    */
   public State() {
-    this(null);
-  }
-
-  /**
-   * Constructs a new State instance
-   * @param name the name of the state, useful for debugging purposes
-   */
-  public State(final String name) {
-    this.name = name;
-  }
-
-  /**
-   * Constructs a new State instance
-   * @param name the name of the state, useful for debugging purposes
-   * @param initialState the initial state
-   */
-  public State(final String name, final boolean initialState) {
-    this(name);
-    setActive(initialState);
+    this(false);
   }
 
   /**
@@ -57,14 +35,13 @@ public class State {
    * @param initialState the initial state
    */
   public State(final boolean initialState) {
-    this();
-    setActive(initialState);
+    this.active = initialState;
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return (name != null ? (name + " ") : "") + (active ? "active" : "inactive");
+    return active ? "active" : "inactive";
   }
 
   public void addListeningAction(final Action action) {
@@ -82,11 +59,6 @@ public class State {
   public void setActive(final boolean value) {
     final boolean oldValue = active;
     active = value;
-    if (active)
-      evtSetActive.fire();
-    else
-      evtSetInactive.fire();
-
     if (oldValue != value)
       evtStateChanged.fire();
   }
@@ -99,6 +71,16 @@ public class State {
   }
 
   /**
+   * @return a State that is always the same as the parent state but can not be directly modified
+   */
+  public State getLinkedState() {
+    if (linkedState == null)
+      linkedState = new LinkedState(this);
+
+    return linkedState;
+  }
+
+  /**
    * @return A State object that is always the reverse of the parent state
    */
   public State getReversedState() {
@@ -108,17 +90,39 @@ public class State {
     return reversedState;
   }
 
-  private static class ReverseState extends State {
+  private static class LinkedState extends State {
 
-    private final State referenceState;
+    protected final State referenceState;
 
-    private ReverseState(final State referenceState) {
+    private LinkedState(final State referenceState) {
       this.referenceState = referenceState;
       this.referenceState.evtStateChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          ReverseState.this.evtStateChanged.fire();
+          LinkedState.this.evtStateChanged.fire();
         }
       });
+    }
+
+    @Override
+    public boolean isActive() {
+      return referenceState.isActive();
+    }
+
+    @Override
+    public void setActive(final boolean isActive) {
+      throw new RuntimeException("Cannot set the state of a linked state");
+    }
+
+    @Override
+    public String toString() {
+      return referenceState + " linked";
+    }
+  }
+
+  private static class ReverseState extends LinkedState {
+
+    private ReverseState(final State referenceState) {
+      super(referenceState);
     }
 
     @Override
@@ -165,13 +169,13 @@ public class State {
         if (reference.get() == state)
           return;//no duplicate states
 
-      state.evtSetActive.addListener(new ActionListener() {
+      state.evtStateChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
             final State referredState = iterator.next().get();
             if (referredState == null) //remove this dead weak reference
               iterator.remove();
-            else if (referredState != state)
+            else if (state.isActive() && referredState != state)
               referredState.setActive(false);
           }
         }

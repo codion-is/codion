@@ -96,7 +96,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   /**
    * Active when the selection is empty
    */
-  public final State stSelectionEmpty = new State("EntityTableModel.stSelectionEmpty", true);
+  public final State stSelectionEmpty = new State(true);
 
   /**
    * The entity ID

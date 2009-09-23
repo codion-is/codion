@@ -158,5 +158,11 @@ public class EntityTest extends TestCase {
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
+
+    try {
+      test2.getModifiedState().setActive(true);
+      fail("Should not be able to set the state of the modified state");
+    }
+    catch (Exception e) {}
   }
 }

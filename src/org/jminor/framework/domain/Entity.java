@@ -41,7 +41,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * An event fired when a property changes, is null until initialized with
    * a call to setFirePropertyChangeEvents
-   * @see #setFirePropertyChangeEvents
+   * @see #addPropertyListener(PropertyListener)
+   * @see #removePropertyListener(PropertyListener)
    */
   private transient Event evtPropertyChanged;
 
@@ -118,13 +119,22 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * @return an Event which is fired each time a property value changes,
-   * returns null unless setFirePropertyChangeEvent(true) has been called
-   * @see #setFirePropertyChangeEvents(boolean)
-   * @see PropertyEvent
+   * Adds a PropertyListener, this listener will be notified each time a property value changes
+   * @param propertyListener the PropertyListener
    */
-  public Event getPropertyChangeEvent() {
-    return evtPropertyChanged;
+  public void addPropertyListener(final PropertyListener propertyListener) {
+    if (evtPropertyChanged == null)
+      evtPropertyChanged = new Event();
+    evtPropertyChanged.addListener(propertyListener);
+  }
+
+  /**
+   * Removes the given PropertyListener
+   * @param propertyListener the PropertyListener to remove
+   */
+  public void removePropertyListener(final PropertyListener propertyListener) {
+    if (evtPropertyChanged != null)
+      evtPropertyChanged.removeListener(propertyListener);
   }
 
   /**
@@ -135,7 +145,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (stModified == null)
       stModified = new State(isModified());
 
-    return stModified;
+    return stModified.getLinkedState();
   }
 
   /**
@@ -508,18 +518,6 @@ public final class Entity implements Serializable, Comparable<Entity> {
     toString = sourceEntity.toString;
     if (stModified != null)
       stModified.setActive(isModified());
-  }
-
-  /**
-   * @param value if true this entity should start firing propertyChangeEvents, if false it should stop
-   */
-  public void setFirePropertyChangeEvents(final boolean value) {
-    if (value) {
-      if (evtPropertyChanged == null)
-        evtPropertyChanged = new Event();
-    }
-    else
-      evtPropertyChanged = null;
   }
 
   /**

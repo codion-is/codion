@@ -6,7 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.State;
+import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
@@ -69,8 +69,9 @@ public class ExceptionDialog extends JDialog {
   private Control ctrSave;
   private Control ctrCopy;
   private Control ctrEmail;
-  //states
-  private final State stShowDetails = new State("ExceptionDialog.stShowDetails", false);
+
+  private Event evtShowDetailsChanged = new Event();
+  private boolean showDetails = false;
 
   private static String errorReportEmailAddressTo;
   private static String errorReportEmailSubjectPrefix = "";
@@ -141,15 +142,16 @@ public class ExceptionDialog extends JDialog {
   /**
    * @return true if show details is active
    */
-  public boolean getShowDetails() {
-    return stShowDetails.isActive();
+  public boolean isShowDetails() {
+    return showDetails;
   }
 
   /**
    * @param show true if the exception details should be visible
    */
   public void setShowDetails(final boolean show) {
-    stShowDetails.setActive(show);
+    showDetails = show;
+    evtShowDetailsChanged.fire();
   }
 
   /**
@@ -269,20 +271,20 @@ public class ExceptionDialog extends JDialog {
   }
 
   private void bindEvents() {
-    stShowDetails.evtStateChanged.addListener(new ActionListener() {
+    evtShowDetailsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        initDetailView(stShowDetails.isActive());
+        initDetailView(isShowDetails());
       }
     });
   }
 
-  private void initDetailView(final boolean st) {
-    btnPrint.setVisible(st);
-    btnSave.setVisible(st);
-    btnCopy.setVisible(st);
-    btnEmail.setVisible(st);
-    detailPanel.setVisible(st);
-    centerPanel.setVisible(st);
+  private void initDetailView(final boolean show) {
+    btnPrint.setVisible(show);
+    btnSave.setVisible(show);
+    btnCopy.setVisible(show);
+    btnEmail.setVisible(show);
+    detailPanel.setVisible(show);
+    centerPanel.setVisible(show);
     pack();
     detailPanel.revalidate();
     if (ownerFrame != null && ownerFrame.isVisible())

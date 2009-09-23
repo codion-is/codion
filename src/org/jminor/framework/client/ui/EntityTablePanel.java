@@ -772,9 +772,10 @@ public class EntityTablePanel extends JPanel {
     final AbstractButton button = ControlProvider.createButton(refresh);
     button.setPreferredSize(new Dimension(20,20));
     button.setFocusable(false);
-    getTableModel().getSearchModel().stSearchStateChanged.evtSetActive.addListener(new ActionListener() {
+    getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        UiUtil.showToolTip(button);
+        if (getTableModel().getSearchModel().stSearchStateChanged.isActive())
+          UiUtil.showToolTip(button);
       }
     });
 

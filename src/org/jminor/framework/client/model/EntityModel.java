@@ -113,28 +113,28 @@ public class EntityModel implements Refreshable {
   /**
    * If this state is active a refresh of this model triggers a refresh in all detail models
    */
-  private final State stCascadeRefresh = new State("EntityModel.stCascadeRefresh");
+  private final State stCascadeRefresh = new State();
 
   /**
    * This state determines whether this model allowes records to be inserted
    * @see #setInsertAllowed(boolean)
    * @see #isInsertAllowed()
    */
-  private final State stAllowInsert = new State("EntityModel.stAllowInsert", true);
+  private final State stAllowInsert = new State(true);
 
   /**
    * This state determines whether this model allowes records to be udpated
    * @see #setUpdateAllowed(boolean)
    * @see #isUpdateAllowed()
    */
-  private final State stAllowUpdate = new State("EntityModel.stAllowUpdate", true);
+  private final State stAllowUpdate = new State(true);
 
   /**
    * This state determines whether this model allowes records to be deleted
    * @see #setDeleteAllowed(boolean)
    * @see #isDeleteAllowed()
    */
-  private final State stAllowDelete = new State("EntityModel.stAllowDelete", true);
+  private final State stAllowDelete = new State(true);
 
   /**
    * The ID of the Entity this EntityModel represents

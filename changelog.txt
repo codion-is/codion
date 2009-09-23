@@ -769,3 +769,11 @@
   EntityPropertyEditor.InputManager.getInputManager() now throws UserException, useful when refreshing combo box models
   EntityModel.getPropertyComboBoxModel(), moved code into PropertyComboBoxModel constructor
   EntityEditModel refactored from EntityModel
+  Entity.getPropertyChangeEvent() removed
+  Entity.setFirePropertyChangeEvent() removed
+  Entity.add/removePropertyListener() added
+  State.evtSetActive/evtSetInactive removed
+  State.LinkeState and getLinkedState() added
+  EntityEditModel.getPropertyChangeEvent() and getPropertyValueSetEvent() refactored
+  Entity.getModifiedState() now returns a linked state
+  State.name field removed along with a couple constructors

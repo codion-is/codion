@@ -33,9 +33,9 @@ import java.awt.event.ActionListener;
  */
 public abstract class AbstractSearchPanel extends JPanel {
 
-  public final State stAdvancedSearch = new State("AbstractSearchPanel.stAdvancedSearch");
+  public final State stAdvancedSearch = new State();
 
-  public final State stTwoSearchFields = new State("AbstractSearchPanel.stTwoSearchFields", false);
+  public final State stTwoSearchFields = new State();
 
   protected static final SearchType[] searchTypes = new SearchType[] {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.MAX,

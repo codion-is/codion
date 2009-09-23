@@ -43,7 +43,7 @@ public class EntityTableSearchModel {
    * Activated each time the search state differs from the state at last reset
    * @see #setSearchModelState()
    */
-  public final State stSearchStateChanged = new State("EntityTableSearchModel.stSearchStateChanged");
+  public final State stSearchStateChanged = new State();
 
   private final String entityID;
   private final List<Property> tableColumnProperties;

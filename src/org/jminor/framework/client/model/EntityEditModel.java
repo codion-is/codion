@@ -95,7 +95,6 @@ public class EntityEditModel {
     this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
-    this.entity.setFirePropertyChangeEvents(true);
     this.evtEntitiesChanged = evtEntitiesChanged;
     bindEvents();
   }
@@ -167,18 +166,15 @@ public class EntityEditModel {
    * @see #setValue(org.jminor.framework.domain.Property, Object)
    */
   public Event getPropertyValueSetEvent(final Property property) {
-    if (propertyValueSetEventMap.containsKey(property))
-      return propertyValueSetEventMap.get(property);
+    if (!propertyValueSetEventMap.containsKey(property))
+      propertyValueSetEventMap.put(property, new Event());
 
-    final Event ret = new Event();
-    propertyValueSetEventMap.put(property, ret);
-
-    return ret;
+    return propertyValueSetEventMap.get(property);
   }
 
   /**
    * @param propertyID the ID of the property for which to retrieve the event
-   * @return an Event object which fires when the value of property <code>propertyID</code> changes
+   * @return an Event object which fires when the value of the property identified by <code>propertyID</code> changes
    */
   public Event getPropertyChangeEvent(final String propertyID) {
     return getPropertyChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
@@ -189,20 +185,10 @@ public class EntityEditModel {
    * @return an Event object which fires when the value of <code>property</code> changes
    */
   public Event getPropertyChangeEvent(final Property property) {
-    if (propertyChangeEventMap.containsKey(property))
-      return propertyChangeEventMap.get(property);
+    if (!propertyChangeEventMap.containsKey(property))
+      propertyChangeEventMap.put(property, new Event());
 
-    final Event ret = new Event();
-    entity.getPropertyChangeEvent().addListener(new PropertyListener() {
-      @Override
-      protected void propertyChanged(final PropertyEvent event) {
-        if (event.getProperty().equals(property))
-          ret.fire(event);
-      }
-    });
-    propertyChangeEventMap.put(property, ret);
-
-    return ret;
+    return propertyChangeEventMap.get(property);
   }
 
   /**
@@ -536,7 +522,18 @@ public class EntityEditModel {
             && (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_REFERENCE_VALUES);
   }
 
+  /**
+   * You must call super.bindEvents() in case you override this method
+   */
   protected void bindEvents() {
+    entity.addPropertyListener(new PropertyListener() {
+      @Override
+      protected void propertyChanged(final PropertyEvent event) {
+        final Event propertyEvent = propertyChangeEventMap.get(event.getProperty());
+        if (propertyEvent != null)
+          propertyEvent.fire(event);
+      }
+    });
     getEntityModifiedState().evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         try {
@@ -565,7 +562,7 @@ public class EntityEditModel {
       }
     });
     if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      entity.getPropertyChangeEvent().addListener(new PropertyListener() {
+      entity.addPropertyListener(new PropertyListener() {
         @Override
         protected void propertyChanged(final PropertyEvent event) {
           final String msg = getPropertyChangeDebugString(event);

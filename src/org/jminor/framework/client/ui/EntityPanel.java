@@ -123,8 +123,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  protected final State stActive = new State("EntityPanel.stActive",
-          (Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE));
+  protected final State stActive = new State((Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE));
 
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
