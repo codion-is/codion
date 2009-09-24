@@ -32,20 +32,20 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   /** {@inheritDoc} */
   @Override
   public Object getModelPropertyValue() {
-    return isModelPropertyValueNull() ? null : getEntityEditor().getValue(property.getPropertyID());
+    return isModelPropertyValueNull() ? null : getEditModel().getValue(property.getPropertyID());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setModelPropertyValue(final Object value) {
-    getEntityEditor().setValue(property, value);
+    getEditModel().setValue(property, value);
   }
 
   /**
    * @return true if the underlying model value of this property is null
    */
   protected boolean isModelPropertyValueNull() {
-    return getEntityEditor().isValueNull(property.getPropertyID());
+    return getEditModel().isValueNull(property.getPropertyID());
   }
 
   /**
@@ -58,7 +58,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   /**
    * @return the property owner, in this case a EntityEditorModel
    */
-  private EntityEditModel getEntityEditor() {
+  private EntityEditModel getEditModel() {
     return (EntityEditModel) super.getPropertyOwner();
   }
 }
