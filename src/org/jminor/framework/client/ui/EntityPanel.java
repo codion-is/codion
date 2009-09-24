@@ -869,7 +869,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (clearUI)
       getModel().clear();
     if (requestDefaultFocus) {
-      if ((getEditControlPanel() == null || getEditPanelState() == HIDDEN) && getTablePanel() != null)
+      if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && getTablePanel() != null)
         getTablePanel().getJTable().requestFocus();
       else if (getEditPanel().getDefaultFocusComponent() != null)
         getEditPanel().getDefaultFocusComponent().requestFocusInWindow();
