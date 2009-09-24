@@ -781,3 +781,4 @@
   ResultPacker is no longer serializable
   EntityPanel.editPanel field renamed to editControlPanel
   EntityPanel.editPanel field added (EntityEditPanel)
+  EntityBindingPanel deleted, functionality merged into EntityEditPanel
