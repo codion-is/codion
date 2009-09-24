@@ -116,21 +116,21 @@ public class EntityModel implements Refreshable {
   private final State stCascadeRefresh = new State();
 
   /**
-   * This state determines whether this model allowes records to be inserted
+   * This state determines whether this model allows records to be inserted
    * @see #setInsertAllowed(boolean)
    * @see #isInsertAllowed()
    */
   private final State stAllowInsert = new State(true);
 
   /**
-   * This state determines whether this model allowes records to be udpated
+   * This state determines whether this model allows records to be updated
    * @see #setUpdateAllowed(boolean)
    * @see #isUpdateAllowed()
    */
   private final State stAllowUpdate = new State(true);
 
   /**
-   * This state determines whether this model allowes records to be deleted
+   * This state determines whether this model allows records to be deleted
    * @see #setDeleteAllowed(boolean)
    * @see #isDeleteAllowed()
    */
@@ -521,7 +521,7 @@ public class EntityModel implements Refreshable {
   }
 
   /**
-   * Performes a update, using the entities returned by getEntitiesForUpdate()
+   * Performs a update, using the entities returned by getEntitiesForUpdate()
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
@@ -609,7 +609,7 @@ public class EntityModel implements Refreshable {
   }
 
   /**
-   * Default behaviour is returning a List containing a copy of the active entity
+   * Default behavior is returning a List containing a copy of the active entity
    * This method should return an empty List instead of null.
    * @return the entities to use when insert is triggered
    * @see #insert()
@@ -619,7 +619,7 @@ public class EntityModel implements Refreshable {
   }
 
   /**
-   * Default behaviour is returning a List containing a copy of the active entity
+   * Default behavior is returning a List containing a copy of the active entity
    * This method should return an empty List instead of null.
    * @return the entities to use when update is triggered
    * @see #update()
@@ -630,7 +630,7 @@ public class EntityModel implements Refreshable {
 
   /**
    * Returns the entities to use when delete is triggered.
-   * Default behaviour is returning the selected entities
+   * Default behavior is returning the selected entities
    * from the table model or if no table model is available
    * a List containing a copy of the active entity.
    * This method should return an empty List instead of null.
@@ -761,7 +761,7 @@ public class EntityModel implements Refreshable {
    * @return a list containing the primary keys of the inserted entities
    * @throws DbException in case of a database exception
    * @throws UserException in case of a exception
-   * @throws UserCancelException in case the operation is cancelled
+   * @throws UserCancelException in case the operation is canceled
    */
   protected List<EntityKey> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
@@ -800,7 +800,7 @@ public class EntityModel implements Refreshable {
    * @param entities the entities to delete
    * @throws DbException in case of a database exception
    * @throws UserException in case of a exception
-   * @throws UserCancelException in case the operation is cancelled
+   * @throws UserCancelException in case the operation is canceled
    */
   protected void doDelete(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {

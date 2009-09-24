@@ -5,12 +5,12 @@ package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.util.Arrays;
 import java.util.List;
@@ -34,13 +34,16 @@ public class TagPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected JPanel initializePropertyPanel() {
-    final JPanel ret = new JPanel(new FlexibleGridLayout(1,1,5,5));
-    final JTextField txt = createTextField(Petstore.TAG_TAG);
-    setDefaultFocusComponent(txt);
-    txt.setColumns(16);
-    ret.add(createControlPanel(Petstore.TAG_TAG, txt));
-
-    return ret;
+  protected EntityEditPanel initializeEditPanel() {
+    return new EntityEditPanel(getEditModel()) {
+      @Override
+      protected void initializeUI() {
+        setLayout(new FlexibleGridLayout(1,1,5,5));
+        final JTextField txt = createTextField(Petstore.TAG_TAG);
+        setDefaultFocusComponent(txt);
+        txt.setColumns(16);
+        add(createControlPanel(Petstore.TAG_TAG, txt));
+      }
+    };
   }
 }

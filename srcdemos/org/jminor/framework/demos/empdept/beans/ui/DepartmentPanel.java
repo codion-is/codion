@@ -10,13 +10,13 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityUtil;
 
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,34 +60,37 @@ public class DepartmentPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected JPanel initializePropertyPanel() {
-    final JTextField txtDeptno =
-            createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
-    setDefaultFocusComponent(txtDeptno);
-    txtDeptno.setColumns(10);
+  protected EntityEditPanel initializeEditPanel() {
+    return new EntityEditPanel(getEditModel()) {
+      @Override
+      protected void initializeUI() {
+        final JTextField txtDeptno =
+                createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
+        setDefaultFocusComponent(txtDeptno);
+        txtDeptno.setColumns(10);
 
-    final JTextField txtName = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-    txtName.setColumns(10);
+        final JTextField txtName = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
+        txtName.setColumns(10);
 
-    //we don't allow editing of the department number since it's a primary key
-    getEditModel().stEntityNotNull.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (getEditModel().stEntityNotNull.isActive()) {
-          txtDeptno.setEnabled(false);
-          setDefaultFocusComponent(txtName);
-        }
-        else {
-          txtDeptno.setEnabled(true);
-          setDefaultFocusComponent(txtDeptno);
-        }
+        //we don't allow editing of the department number since it's a primary key
+        getEditModel().stEntityNotNull.evtStateChanged.addListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (getEditModel().stEntityNotNull.isActive()) {
+              txtDeptno.setEnabled(false);
+              setDefaultFocusComponent(txtName);
+            }
+            else {
+              txtDeptno.setEnabled(true);
+              setDefaultFocusComponent(txtDeptno);
+            }
+          }
+        });
+
+        setLayout(new FlexibleGridLayout(3,1,5,5,true,false));
+        add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDeptno));
+        add(createControlPanel(EmpDept.DEPARTMENT_NAME, txtName));
+        add(createControlPanel(EmpDept.DEPARTMENT_LOCATION, UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION))));
       }
-    });
-
-    final JPanel ret = new JPanel(new FlexibleGridLayout(3,1,5,5,true,false));
-    ret.add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDeptno));
-    ret.add(createControlPanel(EmpDept.DEPARTMENT_NAME, txtName));
-    ret.add(createControlPanel(EmpDept.DEPARTMENT_LOCATION, UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION))));
-
-    return ret;
+    };
   }
 }

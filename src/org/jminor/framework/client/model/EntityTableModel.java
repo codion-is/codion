@@ -440,7 +440,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   /** {@inheritDoc} */
   @Override
-  public Class getColumnClass(final int columnIndex) {
+  public Class<?> getColumnClass(final int columnIndex) {
     return getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
             getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).getPropertyID()));
   }
@@ -1099,7 +1099,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     return tableSorter.viewIndex(modelIndexOf(entity));
   }
 
-  private static Class getValueClass(final Type type, final Object value) {
+  private static Class<?> getValueClass(final Type type, final Object value) {
     if (type == Type.INT)
       return Integer.class;
     if (type == Type.DOUBLE)

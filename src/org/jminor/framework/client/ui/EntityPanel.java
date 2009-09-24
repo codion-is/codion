@@ -85,7 +85,7 @@ import java.util.Vector;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
  */
-public abstract class EntityPanel extends EntityBindingPanel implements ExceptionHandler {
+public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
 
@@ -165,7 +165,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   /**
    * The edit panel which contains the controls required for editing a entity
    */
-  private JPanel editPanel;
+  private JPanel editControlPanel;
+
+  /**
+   * The EntityEditPanen instance
+   */
+  private EntityEditPanel editPanel;
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -200,11 +205,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   private JDialog editPanelDialog;
 
   /**
-   * The component that should receive focus when the UI is prepared for a new record
-   */
-  private JComponent defaultFocusComponent;
-
-  /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
    */
   private int editPanelState = EMBEDDED;
@@ -236,7 +236,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   };
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    */
@@ -245,7 +245,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
@@ -255,7 +255,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
@@ -266,13 +266,14 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes a new EntityPanel instance.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any)
    * is colored according to the underlying entity
-   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
+   * otherwise vertically on its right side
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons) {
@@ -280,12 +281,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
+   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
-   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    */
@@ -295,12 +296,12 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not layed out and initalized until initialize() is called.
+   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
-   * @param horizontalButtons if true the action panel buttons are laid out horizontally below the property panel,
+   * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    * @param compactLayout true if this panel should be laid out in a compact state
@@ -339,7 +340,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /** {@inheritDoc} */
-  @Override
   public EntityEditModel getEditModel() {
     return getModel().getEditModel();
   }
@@ -397,24 +397,6 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Sets the component that should receive the focus when the ui is initialised after
-   * a new record has been inserted or the panel is activated
-   * @param defaultFocusComponent the component
-   * @return the component
-   */
-  public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
-    return this.defaultFocusComponent = defaultFocusComponent;
-  }
-
-  /**
-   * @return the component which sould receive focus after a record has been inserted
-   * or the panel is activated
-   */
-  public JComponent getDefaultFocusComponent() {
-    return defaultFocusComponent;
-  }
-
-  /**
    * @return the EntityTablePanel used by this EntityPanel
    */
   public EntityTablePanel getTablePanel() {
@@ -422,9 +404,16 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
+   * @return the edit control panel
+   */
+  public JPanel getEditControlPanel() {
+    return editControlPanel;
+  }
+
+  /**
    * @return the edit panel
    */
-  public JPanel getEditPanel() {
+  public EntityEditPanel getEditPanel() {
     return editPanel;
   }
 
@@ -569,7 +558,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public void setEditPanelState(final int state) {
-    if (editPanel == null)
+    if (editControlPanel == null)
       return;
 
     editPanelState = state;
@@ -578,16 +567,16 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
 
     if (state == EMBEDDED) {
       if (compactLayout)
-        compactBase.add(editPanel, BorderLayout.NORTH);
+        compactBase.add(editControlPanel, BorderLayout.NORTH);
       else
-        add(editPanel, BorderLayout.NORTH);
+        add(editControlPanel, BorderLayout.NORTH);
       prepareUI(true, false);
     }
     else if (state == HIDDEN) {
       if (compactLayout)
-        compactBase.remove(editPanel);
+        compactBase.remove(editControlPanel);
       else
-        remove(editPanel);
+        remove(editControlPanel);
     }
     else
       showEditDialog();
@@ -872,18 +861,18 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    * if both parameters are set to false then there is no effect
    * @param requestDefaultFocus if true the component defined as the defaultFocusComponent
    * gets the input focus, if none is defined the first child component of this EntityPanel is used,
-   * if no edit panel is available the table recieves the focus
+   * if no edit panel is available the table receives the focus
    * @param clearUI if true the the input components are cleared
-   * @see #setDefaultFocusComponent(javax.swing.JComponent)
+   * @see EntityEditPanel#setDefaultFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
     if (clearUI)
       getModel().clear();
     if (requestDefaultFocus) {
-      if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && getTablePanel() != null)
+      if ((getEditControlPanel() == null || getEditPanelState() == HIDDEN) && getTablePanel() != null)
         getTablePanel().getJTable().requestFocus();
-      else if (getDefaultFocusComponent() != null)
-        getDefaultFocusComponent().requestFocus();
+      else if (getEditPanel().getDefaultFocusComponent() != null)
+        getEditPanel().getDefaultFocusComponent().requestFocusInWindow();
       else if (getComponentCount() > 0)
         getComponents()[0].requestFocus();
     }
@@ -1155,7 +1144,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
         return includePopupMenu ? super.getTablePopupControlSet() : null;
       }
       @Override
-      protected JPanel initializePropertyPanel() {
+      protected EntityEditPanel initializeEditPanel() {
         return null;
       }
     };
@@ -1182,8 +1171,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    *<pre>
    * The default layout is as follows:
    * __________________________________
-   * |     property           |action |
-   * |      panel             | panel | } edit panel
+   * |      edit panel        |control|
+   * |   (EntityEditPanel)    | panel | } edit control panel
    * |________________________|_______|
    * |                  |             |
    * |   table panel    |   detail    |
@@ -1193,7 +1182,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    *
    * or in case of compact layout:
    * __________________________________
-   * | property |action |             |
+   * |  edit    |control|             |
    * |  panel   | panel |             |
    * |__________|_______|   detail    |
    * |                  |   panel     |
@@ -1204,7 +1193,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    * </pre>
    */
   protected void initializeUI() {
-    editPanel = initializeEditPanel();
+    editControlPanel = initializeEditControlPanel();
     if (entityTablePanel != null) {
       entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
@@ -1253,7 +1242,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
         }
       });
     }
-    if (getEditPanel() != null) {
+    if (getEditControlPanel() != null) {
       getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_E,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectEditPanel");
       getActionMap().put("selectEditPanel", new AbstractAction() {
@@ -1277,46 +1266,46 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes the edit panel.
+   * Initializes the edit control panel.
    *<pre>
    * The default layout is as follows:
    * __________________________________
-   * |     property           |action |
-   * |      panel             | panel | } edit panel
+   * |   edit panel           |control|
+   * |  (EntityEditPanel)     | panel | } edit control panel
    * |________________________|_______|
    *
    * or, if the <code>horizontalButtons</code> constructor parameter was true:
    * __________________________
-   * |       property         |
+   * |         edit           |
    * |        panel           |
-   * |________________________| } edit panel
-   * |     action panel       |
+   * |________________________| } edit control panel
+   * |     control panel      |
    * |________________________|
    *</pre>
-   * @return a panel used for editing entities, if <code>initializePropertyPanel()</code>
+   * @return a panel used for editing entities, if <code>initializeEditPanel()</code>
    * returns null then by default this method returns null as well
    */
-  protected JPanel initializeEditPanel() {
-    final JPanel propertyPanel = initializePropertyPanel();
-    if (propertyPanel == null)
+  protected JPanel initializeEditControlPanel() {
+    editPanel = initializeEditPanel();
+    if (editPanel == null)
       return null;
 
-    final JPanel editPanel = new JPanel(new BorderLayout(5,5));
-    editPanel.setMinimumSize(new Dimension(0,0));
-    editPanel.setBorder(BorderFactory.createEtchedBorder());
+    final JPanel ret = new JPanel(new BorderLayout(5,5));
+    ret.setMinimumSize(new Dimension(0,0));
+    ret.setBorder(BorderFactory.createEtchedBorder());
     final JPanel propertyBase =
             new JPanel(new FlowLayout(buttonPlacement.equals(BorderLayout.SOUTH) ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
-    editPanel.addMouseListener(new ActivationFocusAdapter(propertyBase));
-    propertyBase.add(propertyPanel);
-    editPanel.add(propertyBase, BorderLayout.CENTER);
-    final JComponent actionPanel = (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
-            initializeActionToolBar() : initializeActionPanel();
-    if (actionPanel != null)
-      editPanel.add(actionPanel, (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
+    ret.addMouseListener(new ActivationFocusAdapter(propertyBase));
+    propertyBase.add(editPanel);
+    ret.add(propertyBase, BorderLayout.CENTER);
+    final JComponent controlPanel = (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
+            initializeControlToolBar() : initializeControlPanel();
+    if (controlPanel != null)
+      ret.add(controlPanel, (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 
-    return editPanel;
+    return ret;
   }
 
   /**
@@ -1343,29 +1332,29 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes the action panel, that is, the panel containing action buttons for editing entities (Insert, Update...)
-   * @return the action panel
+   * Initializes the control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
+   * @return the control panel
    */
-  protected JPanel initializeActionPanel() {
+  protected JPanel initializeControlPanel() {
     JPanel ret;
     if (buttonPlacement.equals(BorderLayout.SOUTH)) {
       ret = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
-      ret.add(ControlProvider.createHorizontalButtonPanel(getActionPanelControlSet()));
+      ret.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
     }
     else {
       ret = new JPanel(new BorderLayout(5,5));
-      ret.add(ControlProvider.createVerticalButtonPanel(getActionPanelControlSet()), BorderLayout.NORTH);
+      ret.add(ControlProvider.createVerticalButtonPanel(getControlPanelControlSet()), BorderLayout.NORTH);
     }
 
     return ret;
   }
 
   /**
-   * Initializes the action toolbar, that is, the toolbar containing action buttons for editing entities (Insert, Update...)
-   * @return the action toolbar
+   * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
+   * @return the control toolbar
    */
-  protected JToolBar initializeActionToolBar() {
-    return ControlProvider.createToolbar(getActionPanelControlSet(), JToolBar.VERTICAL);
+  protected JToolBar initializeControlToolBar() {
+    return ControlProvider.createToolbar(getControlPanelControlSet(), JToolBar.VERTICAL);
   }
 
   /**
@@ -1399,10 +1388,11 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes the property panel, that is, the panel containing the UI controls for editing the active entity
-   * @return the property panel
+   * Initializes the EntityEditPanel, that is, the panel containing the UI controls for editing the active entity,
+   * this method should return null if editing is not required
+   * @return the EntityEditPanel panel
    */
-  protected abstract JPanel initializePropertyPanel();
+  protected abstract EntityEditPanel initializeEditPanel();
 
   /**
    * @return a list of EntityPanelProvider objects, specifying the detail panels this panel should contain
@@ -1465,7 +1455,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
 
   /**
    * @param tablePanel the EntityTablePanel
-   * @return an array containing the buttons to include on the south panel toolbar, a null item indicates a seperator
+   * @return an array containing the buttons to include on the south panel toolbar, a null item indicates a separator
    */
   protected AbstractButton[] getSouthPanelButtons(final EntityTablePanel tablePanel) {
     final List<AbstractButton> ret = new ArrayList<AbstractButton>();
@@ -1604,8 +1594,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   protected Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
       public void actionPerformed(final ActionEvent event) {
-        if (editPanel != null || detailEntityPanels.size() > 0) {
-          if (editPanel != null && getEditPanelState() == HIDDEN)
+        if (editControlPanel != null || detailEntityPanels.size() > 0) {
+          if (editControlPanel != null && getEditPanelState() == HIDDEN)
             setEditPanelState(DIALOG);
           else if (getDetailPanelState() == HIDDEN)
             setDetailPanelState(DIALOG);
@@ -1638,7 +1628,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Initializes the print control set, override to provide specific printing funtionality, i.e. report printing
+   * Initializes the print control set, override to provide specific printing functionality, i.e. report printing
    * @return the print control set
    */
   protected ControlSet getPrintControls() {
@@ -1695,9 +1685,9 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * @return the ControlSet on which the action panel is based
+   * @return the ControlSet on which the control panel is based
    */
-  protected ControlSet getActionPanelControlSet() {
+  protected ControlSet getControlPanelControlSet() {
     final ControlSet ret = new ControlSet("Actions");
     if (controlMap.containsKey(INSERT))
       ret.add(controlMap.get(INSERT));
@@ -1752,7 +1742,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   /**
-   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is cancelled
+   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
@@ -1823,7 +1813,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    */
   protected Dimension getDetailDialogSize(final Dimension parentSize) {
     return new Dimension((int) (parentSize.width/1.5),
-            (editPanel != null) ? (int) (parentSize.height/1.5) : parentSize.height-54);
+            (editControlPanel != null) ? (int) (parentSize.height/1.5) : parentSize.height-54);
   }
 
   /**
@@ -1831,8 +1821,8 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
    */
   protected void showEditDialog() {
     final Point location = getLocationOnScreen();
-    location.setLocation(location.x+1, location.y + getSize().height-editPanel.getSize().height-98);
-    editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editPanel, false,
+    location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height-98);
+    editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editControlPanel, false,
             getCaption(), false, true, null, null, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
                 setEditPanelState(HIDDEN);
@@ -2002,7 +1992,7 @@ public abstract class EntityPanel extends EntityBindingPanel implements Exceptio
   }
 
   private JButton getToggleEditPanelButton() {
-    if (editPanel == null)
+    if (editControlPanel == null)
       return null;
 
     final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",

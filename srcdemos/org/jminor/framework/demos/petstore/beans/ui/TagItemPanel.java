@@ -7,12 +7,12 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityComboBox;
+import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
-import javax.swing.JPanel;
 import java.awt.Dimension;
 
 /**
@@ -28,17 +28,20 @@ public class TagItemPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected JPanel initializePropertyPanel() {
-    final JPanel ret = new JPanel(new FlexibleGridLayout(2,1,5,5));
-    EntityComboBox box = createEntityComboBox(Petstore.TAG_ITEM_ITEM_FK);
-    setDefaultFocusComponent(box);
-    box.setPopupWidth(240);
-    box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
-    ret.add(createControlPanel(Petstore.TAG_ITEM_ITEM_FK, box));
-    box = createEntityComboBox(Petstore.TAG_ITEM_TAG_FK,
-            new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false);
-    ret.add(createControlPanel(Petstore.TAG_ITEM_TAG_FK, box.createPanel()));
-
-    return ret;
+  protected EntityEditPanel initializeEditPanel() {
+    return new EntityEditPanel(getEditModel()) {
+      @Override
+      protected void initializeUI() {
+        setLayout(new FlexibleGridLayout(2,1,5,5));
+        EntityComboBox box = createEntityComboBox(Petstore.TAG_ITEM_ITEM_FK);
+        setDefaultFocusComponent(box);
+        box.setPopupWidth(240);
+        box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
+        add(createControlPanel(Petstore.TAG_ITEM_ITEM_FK, box));
+        box = createEntityComboBox(Petstore.TAG_ITEM_TAG_FK,
+                new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false);
+        add(createControlPanel(Petstore.TAG_ITEM_TAG_FK, box.createPanel()));
+      }
+    };
   }
 }

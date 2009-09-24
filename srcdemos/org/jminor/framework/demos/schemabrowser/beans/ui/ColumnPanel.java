@@ -4,9 +4,8 @@
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-
-import javax.swing.JPanel;
 
 public class ColumnPanel extends EntityPanel {
 
@@ -22,7 +21,7 @@ public class ColumnPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected JPanel initializePropertyPanel() {
+  protected EntityEditPanel initializeEditPanel() {
     return null;
   }
 }

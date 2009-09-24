@@ -225,7 +225,7 @@ public class EntityTableSearchModel {
           searchModel.initialize();
           searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
           searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
-          searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then failes to register a changed upper bound
+          searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then fails to register a changed upper bound
         }
       }
     }
@@ -255,7 +255,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @return the conjuction to be used when more than one column search criteria is active,
+   * @return the conjunction to be used when more than one column search criteria is active,
    * the default is <code>CriteriaSet.Conjunction.AND</code>
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
@@ -264,7 +264,7 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @param searchConjunction the conjuction to be used when more than one column search criteria is active
+   * @param searchConjunction the conjunction to be used when more than one column search criteria is active
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
   public void setSearchConjunction(final CriteriaSet.Conjunction searchConjunction) {

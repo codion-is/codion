@@ -177,7 +177,7 @@ public class DbConnection {
   }
 
   /**
-   * @return true if this connection allowes query caching
+   * @return true if this connection allows query caching
    */
   public boolean getAllowCaching() {
     return allowCaching;

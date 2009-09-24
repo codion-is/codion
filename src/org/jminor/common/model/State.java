@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A class encapsulting a simple boolean state, providing a change event
+ * A class encapsulating a simple boolean state, providing a change event
  */
 public class State {
 

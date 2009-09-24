@@ -35,7 +35,7 @@ public class EntityLookupModel {
   private final List<Property> lookupProperties;
 
   /**
-   * The selected entitites
+   * The selected entities
    */
   private final List<Entity> selectedEntities = new ArrayList<Entity>();
 

@@ -74,7 +74,7 @@ public class CriteriaSet implements Criteria, Serializable {
   }
 
   /**
-   * @return the number of criterias in this set
+   * @return the number of criteria in this set
    */
   public int getCriteriaCount() {
     return criterias.size();

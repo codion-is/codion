@@ -777,3 +777,7 @@
   EntityEditModel.getPropertyChangeEvent() and getPropertyValueSetEvent() refactored
   Entity.getModifiedState() now returns a linked state
   State.name field removed along with a couple constructors
+  EntityEditPanel refactored out of EntityPanel
+  ResultPacker is no longer serializable
+  EntityPanel.editPanel field renamed to editControlPanel
+  EntityPanel.editPanel field added (EntityEditPanel)

@@ -133,7 +133,7 @@ public class EntityUiUtil {
       @Override
       protected void bindEvents() {
         super.bindEvents();
-        evtTableDoubleClick.addListener(new ActionListener() {
+        evtTableDoubleClicked.addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (!getTableModel().getSelectionModel().isSelectionEmpty())
               okAction.actionPerformed(e);

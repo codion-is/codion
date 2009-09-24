@@ -78,7 +78,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * fired when the table is double clicked
    */
-  public final Event evtTableDoubleClick = new Event();
+  public final Event evtTableDoubleClicked = new Event();
 
   /**
    * fired when the search panel state is changed
@@ -238,24 +238,25 @@ public class EntityTablePanel extends JPanel {
       return;
 
     final EntityCriteriaPanel panel;
+    AbstractAction action;
     try {
       UiUtil.setWaitCursor(true, this);
       panel = new EntityCriteriaPanel(getTableModel());
+      action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
+        public void actionPerformed(ActionEvent event) {
+          try {
+            getTableModel().refresh();
+          }
+          catch (UserException ex) {
+            throw ex.getRuntimeException();
+          }
+        }
+      };
+      action.putValue(Action.MNEMONIC_KEY, FrameworkMessages.get(FrameworkMessages.APPLY_MNEMONIC).charAt(0));
     }
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    final AbstractAction action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
-      public void actionPerformed(ActionEvent event) {
-        try {
-          getTableModel().refresh();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
-      }
-    };
-    action.putValue(Action.MNEMONIC_KEY, FrameworkMessages.get(FrameworkMessages.APPLY_MNEMONIC).charAt(0));
     UiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), true, false, action);
   }
@@ -482,7 +483,7 @@ public class EntityTablePanel extends JPanel {
       @Override
       public void mouseClicked(MouseEvent event) {
         if(event.getClickCount() == 2) {
-          evtTableDoubleClick.fire();
+          evtTableDoubleClicked.fire();
         }
       }
     });
@@ -556,7 +557,7 @@ public class EntityTablePanel extends JPanel {
     if (popupControls.size() > 0)
       popupControls.addSeparator();
     popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
-    addJTablePopupMenu(getJTable(), popupControls);
+    setTablePopupMenu(getJTable(), popupControls);
 
     base.add(tableScrollPane, BorderLayout.CENTER);
     add(base, BorderLayout.CENTER);
@@ -595,7 +596,7 @@ public class EntityTablePanel extends JPanel {
    * @param table the table
    * @param popupControls a ControlSet specifying the controls in the popup menu
    */
-  protected void addJTablePopupMenu(final JTable table, final ControlSet popupControls) {
+  protected void setTablePopupMenu(final JTable table, final ControlSet popupControls) {
     if (popupControls.size() == 0)
       return;
 
@@ -603,7 +604,7 @@ public class EntityTablePanel extends JPanel {
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     table.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_G,
-                KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "showPopupMenu");
+            KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "showPopupMenu");
     table.getActionMap().put("showPopupMenu", new AbstractAction() {
       public void actionPerformed(ActionEvent event) {
         popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
@@ -761,7 +762,7 @@ public class EntityTablePanel extends JPanel {
     final String keyName = stroke.toString().replace("pressed ", "");
     final Control refresh = ControlFactory.methodControl(getTableModel(), "refresh", null,
             getTableModel().getSearchModel().stSearchStateChanged, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
-            + " (" + keyName + ")", 0, null, Images.loadImage("Stop16.gif"));
+                    + " (" + keyName + ")", 0, null, Images.loadImage("Stop16.gif"));
 
     final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
     final ActionMap actionMap = getActionMap();

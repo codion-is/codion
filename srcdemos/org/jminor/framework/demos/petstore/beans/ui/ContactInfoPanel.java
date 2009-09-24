@@ -5,12 +5,12 @@ package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.util.Arrays;
 import java.util.List;
@@ -34,15 +34,18 @@ public class ContactInfoPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected JPanel initializePropertyPanel() {
-    final JPanel ret = new JPanel(new FlexibleGridLayout(3,1,5,5));
-    JTextField txt = createTextField(Petstore.SELLER_CONTACT_INFO_LAST_NAME);
-    setDefaultFocusComponent(txt);
-    txt.setColumns(10);
-    ret.add(createControlPanel(Petstore.SELLER_CONTACT_INFO_LAST_NAME, txt));
-    ret.add(createControlPanel(Petstore.SELLER_CONTACT_INFO_FIRST_NAME, createTextField(Petstore.SELLER_CONTACT_INFO_FIRST_NAME)));
-    ret.add(createControlPanel(Petstore.SELLER_CONTACT_INFO_EMAIL, createTextField(Petstore.SELLER_CONTACT_INFO_EMAIL)));
-
-    return ret;
+  protected EntityEditPanel initializeEditPanel() {
+    return new EntityEditPanel(getEditModel()) {
+      @Override
+      protected void initializeUI() {
+        setLayout(new FlexibleGridLayout(3,1,5,5));
+        final JTextField txt = createTextField(Petstore.SELLER_CONTACT_INFO_LAST_NAME);
+        setDefaultFocusComponent(txt);
+        txt.setColumns(10);
+        add(createControlPanel(Petstore.SELLER_CONTACT_INFO_LAST_NAME, txt));
+        add(createControlPanel(Petstore.SELLER_CONTACT_INFO_FIRST_NAME, createTextField(Petstore.SELLER_CONTACT_INFO_FIRST_NAME)));
+        add(createControlPanel(Petstore.SELLER_CONTACT_INFO_EMAIL, createTextField(Petstore.SELLER_CONTACT_INFO_EMAIL)));
+      }
+    };
   }
 }
