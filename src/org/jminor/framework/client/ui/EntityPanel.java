@@ -341,7 +341,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return model;
   }
 
-  /** {@inheritDoc} */
   public EntityEditModel getEditModel() {
     return getModel().getEditModel();
   }

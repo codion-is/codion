@@ -48,13 +48,13 @@ public class PropertyFilterModel extends AbstractSearchModel {
         return includeLike(toCompare);
       case NOT_LIKE:
         return includeNotLike(toCompare);
-      case MAX:
+      case AT_LEAST:
         return includeMax(toCompare);
-      case MIN:
+      case AT_MOST:
         return includeMin(toCompare);
-      case INSIDE:
+      case WITHIN_RANGE:
         return includeMinMaxInside(toCompare);
-      case OUTSIDE:
+      case OUTSIDE_RANGE:
         return includeMinMaxOutside(toCompare);
     }
 

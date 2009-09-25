@@ -2,7 +2,7 @@ package org.jminor.framework.client.ui;
 
 /**
  * A class providing EntityPanel instances
-   */
+ */
   public class EntityPanelProvider implements Comparable {//todo rename
 
     private final String caption;

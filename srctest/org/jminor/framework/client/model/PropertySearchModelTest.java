@@ -28,12 +28,12 @@ public class PropertySearchModelTest extends TestCase {
     assertEquals(property.getPropertyID() + " = '" + "upper'", model.getPropertyCriteria().toString());
     model.setSearchType(SearchType.NOT_LIKE);
     assertEquals(property.getPropertyID() + " <> '" + "upper'", model.getPropertyCriteria().toString());
-    model.setSearchType(SearchType.MIN);
+    model.setSearchType(SearchType.AT_MOST);
     assertEquals(property.getPropertyID() + " >= '" + "upper'", model.getPropertyCriteria().toString());
-    model.setSearchType(SearchType.MAX);
+    model.setSearchType(SearchType.AT_LEAST);
     assertEquals(property.getPropertyID() + " <= '" + "upper'", model.getPropertyCriteria().toString());
 
-    model.setSearchType(SearchType.INSIDE);
+    model.setSearchType(SearchType.WITHIN_RANGE);
     model.setLowerBound("lower");
     assertEquals("(" + property.getPropertyID() + " >= '" + "lower' and "
             + property.getPropertyID() + " <= '" + "upper')", model.getPropertyCriteria().toString());

@@ -316,13 +316,13 @@ public abstract class AbstractSearchModel {
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
       case LIKE:
-      case MAX:
-      case MIN:
+      case AT_LEAST:
+      case AT_MOST:
       case NOT_LIKE:
       case IN:
         return 1;
-      case INSIDE:
-      case OUTSIDE:
+      case WITHIN_RANGE:
+      case OUTSIDE_RANGE:
         return 2;
     }
 

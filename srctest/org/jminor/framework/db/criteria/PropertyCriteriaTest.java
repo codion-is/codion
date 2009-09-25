@@ -70,13 +70,13 @@ public class PropertyCriteriaTest extends TestCase {
     //string, between
     value = "min";
     String value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, value, value2);
     assertEquals("Condition should fit",  "(colName >= '" + value + "' and colName <= '"+value2+"')", testCrit.toString());
 
     //string, outside
     value = "min";
     value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE_RANGE, value, value2);
     assertEquals("Condition should fit",  "(colName <= '" + value + "' or colName >= '"+value2+"')", testCrit.toString());
 
     //string, in
@@ -120,14 +120,14 @@ public class PropertyCriteriaTest extends TestCase {
     //string, between
     value = "min";
     value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, value, value2).setCaseSensitive(false);
     assertEquals("Condition should fit",  "(upper(colName) >= upper('" + value
             + "') and upper(colName) <= upper('" +value2+ "'))", testCrit.toString());
 
     //string, outside
     value = "min";
     value2 = "max";
-    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE_RANGE, value, value2).setCaseSensitive(false);
     assertEquals("Condition should fit",  "(upper(colName) <= upper('" + value
             + "') or upper(colName) >= upper('"+value2+"'))", testCrit.toString());
 
@@ -155,11 +155,11 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "colName <> 124", testCrit.toString());
 
     //between
-    testCrit = new PropertyCriteria(property, SearchType.INSIDE, 2, 4);
+    testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, 2, 4);
     assertEquals("Condition should fit",  "(colName >= 2 and colName <= 4)", testCrit.toString());
 
     //outside
-    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, 2, 4);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE_RANGE, 2, 4);
     assertEquals("Condition should fit",  "(colName <= 2 or colName >= 4)", testCrit.toString());
 
     //in
@@ -184,11 +184,11 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "colName <> 124.2", testCrit.toString());
 
     //between
-    testCrit = new PropertyCriteria(property, SearchType.INSIDE, 2.2, 4.2);
+    testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, 2.2, 4.2);
     assertEquals("Condition should fit",  "(colName >= 2.2 and colName <= 4.2)", testCrit.toString());
 
     //outside
-    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, 2.2, 4.2);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE_RANGE, 2.2, 4.2);
     assertEquals("Condition should fit",  "(colName <= 2.2 or colName >= 4.2)", testCrit.toString());
 
     //in
@@ -211,11 +211,11 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "colName <> 'a'", testCrit.toString());
 
     //between
-    testCrit = new PropertyCriteria(property, SearchType.INSIDE, 'a', 'd');
+    testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, 'a', 'd');
     assertEquals("Condition should fit",  "(colName >= 'a' and colName <= 'd')", testCrit.toString());
 
     //outside
-    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, 'd', 'f');
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE_RANGE, 'd', 'f');
     assertEquals("Condition should fit",  "(colName <= 'd' or colName >= 'f')", testCrit.toString());
 
     //in
@@ -260,13 +260,13 @@ public class PropertyCriteriaTest extends TestCase {
 
     //string, between
     Date value2 = new ShortDashDateFormat().parse("10-09-2001");
-    testCrit = new PropertyCriteria(property, SearchType.INSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, value, value2);
     requiredValue =  "(colName >= " + Database.get().getSQLDateString(value, false) + " and " +
             "colName <= " + Database.get().getSQLDateString(value2, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
 
     //string, outside
-    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE, value, value2);
+    testCrit = new PropertyCriteria(property, SearchType.OUTSIDE_RANGE, value, value2);
     requiredValue =  "(colName <= " + Database.get().getSQLDateString(value, false) + " or " +
             "colName >= " + Database.get().getSQLDateString(value2, false) + ")";
     assertEquals("Condition should fit", requiredValue, testCrit.toString());
@@ -285,7 +285,7 @@ public class PropertyCriteriaTest extends TestCase {
     final Property property1 = new Property("colName1", Type.STRING);
     final Property property2 = new Property("colName2", Type.INT);
     final PropertyCriteria criteria1 = new PropertyCriteria(property1, SearchType.LIKE, "value");
-    final PropertyCriteria criteria2 = new PropertyCriteria(property2, SearchType.MAX, 10);
+    final PropertyCriteria criteria2 = new PropertyCriteria(property2, SearchType.AT_LEAST, 10);
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR, criteria1, criteria2);
     assertEquals("Set condition should fit", "(colName1 = 'value' or colName2 <= 10)", set.toString());
 

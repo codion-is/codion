@@ -141,13 +141,13 @@ public class PropertyCriteria implements Criteria, Serializable {
         else
           return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
                 ? " not like " + sqlValue : " <> " + sqlValue);
-      case MAX:
+      case AT_LEAST:
         return columnName + " <= " + sqlValue;
-      case MIN:
+      case AT_MOST:
         return columnName + " >= " + sqlValue;
-      case INSIDE:
+      case WITHIN_RANGE:
         return "(" + columnName + " >= " + sqlValue + " and " + columnName +  " <= " + sqlValue2 + ")";
-      case OUTSIDE:
+      case OUTSIDE_RANGE:
         return "(" + columnName + " <= "+ sqlValue + " or " + columnName + " >= " + sqlValue2 + ")";
       case IN:
         return getInList(columnName, false);

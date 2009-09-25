@@ -785,3 +785,4 @@
   framework.client.ui refactoring, removed dependency cycles
   framework.client.ui.reporting.EntityReportUiUtil added
   EntityUiUtil.createEntityComboBoxPanel() and createEntityLookupFieldPanel() added
+  SearchTypes renamed
