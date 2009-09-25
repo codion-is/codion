@@ -124,7 +124,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   private JComponent initEntityField() {
     final EntityComboBoxModel boxModel = ((PropertySearchModel) model).getEntityComboBoxModel();
     if (boxModel != null) {
-      final EntityComboBox field = new EntityComboBox(boxModel, null);
+      final EntityComboBox field = new EntityComboBox(boxModel);
       MaximumMatch.enable(field);
 
       return field;

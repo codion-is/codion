@@ -826,15 +826,6 @@ public abstract class EntityEditPanel extends JPanel {
   /**
    * Creates a EntityComboBox bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
-   * @return a EntityComboBox bound to the property
-   */
-  protected final EntityComboBox createEntityComboBox(final String propertyID) {
-    return createEntityComboBox(propertyID, null);
-  }
-
-  /**
-   * Creates a EntityComboBox bound to the property identified by <code>propertyID</code>
-   * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
@@ -846,18 +837,13 @@ public abstract class EntityEditPanel extends JPanel {
   /**
    * Creates an EntityComboBox bound to the property identified by <code>propertyID</code>
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
-   * @param newRecordPanelProvider an EntityPanelProvider specifying the EntityPanel/EntityModel
    * combination used to create new instances of the entity this EntityComboBox is based on
-   * @param newButtonFocusable if true then the button included on the panel provided by this
    * EntityComboBox is focusable
    * @return an EntityComboBox bound to the property
-   * @see org.jminor.framework.client.ui.EntityComboBox#createPanel()
    */
-  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID,
-                                                      final EntityPanelProvider newRecordPanelProvider,
-                                                      final boolean newButtonFocusable) {
+  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID) {
     return createEntityComboBox(EntityRepository.getForeignKeyProperty(getEditModel().getEntityID(),
-            foreignKeyPropertyID), newRecordPanelProvider, newButtonFocusable, null);
+            foreignKeyPropertyID), null);
   }
 
   /**
@@ -872,30 +858,14 @@ public abstract class EntityEditPanel extends JPanel {
   /**
    * Creates an EntityComboBox bound to the given foreign key property
    * @param foreignKeyProperty the foreign key property to bind
+   * combination used to create new instances of the entity this EntityComboBox is based on
+   * EntityComboBox is focusable
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityComboBox bound to the property
    */
   protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                       final State enabledState) {
-    return createEntityComboBox(foreignKeyProperty, null, false, enabledState);
-  }
-
-  /**
-   * Creates an EntityComboBox bound to the given foreign key property
-   * @param foreignKeyProperty the foreign key property to bind
-   * @param newRecordPanelProvider an EntityPanelProvider specifying the EntityPanel/EntityModel
-   * combination used to create new instances of the entity this EntityComboBox is based on
-   * @param newButtonFocusable if true then the button included on the panel provided by this
-   * EntityComboBox is focusable
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return an EntityComboBox bound to the property
-   * @see org.jminor.framework.client.ui.EntityComboBox#createPanel()
-   */
-  protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                      final EntityPanelProvider newRecordPanelProvider,
-                                                      final boolean newButtonFocusable, final State enabledState) {
-    return EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEditModel(), newRecordPanelProvider,
-            newButtonFocusable, enabledState);
+    return EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEditModel(), enabledState);
   }
 
   /**

@@ -96,7 +96,6 @@ public class FrameworkMessages {
   public static final String SEARCH = "search";
   public static final String SEARCH_MNEMONIC = "search_mnemonic";
 
-  public static final String UNABLE_TO_OPEN_FILE = "unable_to_open_file";
   public static final String RECORD_NOT_FOUND = "record_not_found";
   public static final String MANY_RECORDS_FOUND = "many_records_found";
   public static final String SELECT_RECORD = "select_record";

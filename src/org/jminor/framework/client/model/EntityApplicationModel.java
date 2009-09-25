@@ -118,7 +118,7 @@ public abstract class EntityApplicationModel {
             + "[" + user.getUsername() + "] " + Long.toHexString(System.currentTimeMillis());
   }
 
-  public EntityModel getMainApplicationModel(final Class<? extends EntityModel> modelClass) {
+  public EntityModel getMainApplicationModel(final Class modelClass) {
     for (final EntityModel model : mainApplicationModels)
       if (model.getClass().equals(modelClass))
         return model;

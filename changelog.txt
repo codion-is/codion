@@ -782,3 +782,6 @@
   EntityPanel.editPanel field renamed to editControlPanel
   EntityPanel.editPanel field added (EntityEditPanel)
   EntityBindingPanel deleted, functionality merged into EntityEditPanel
+  framework.client.ui refactoring, removed dependency cycles
+  framework.client.ui.reporting.EntityReportUiUtil added
+  EntityUiUtil.createEntityComboBoxPanel() and createEntityLookupFieldPanel() added

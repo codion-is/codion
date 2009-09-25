@@ -60,6 +60,7 @@ public class Messages {
   public static final String DATABASE_EXCEPTION = "database_exception";
   public static final String VALUE_MISSING = "value_missing";
   public static final String SELECT_DATE = "select_date";
+  public static final String UNABLE_TO_OPEN_FILE = "unable_to_open_file";
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

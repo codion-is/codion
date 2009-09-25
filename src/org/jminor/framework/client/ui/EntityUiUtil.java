@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
@@ -12,11 +11,11 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DateInputPanel;
-import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
@@ -26,6 +25,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.ui.property.BooleanPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
@@ -35,6 +35,7 @@ import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.PropertyEvent;
@@ -42,9 +43,6 @@ import org.jminor.framework.domain.PropertyListener;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
 import org.apache.log4j.Level;
 
 import javax.swing.*;
@@ -59,7 +57,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,31 +65,7 @@ import java.util.Vector;
 
 public class EntityUiUtil {
 
-  private static EntityExceptionHandler exceptionHandler = new DefaultEntityExceptionHandler();
-
   private EntityUiUtil() {}
-
-  public static void setExceptionHandler(final EntityExceptionHandler handler) {
-    exceptionHandler = handler;
-  }
-
-  public static EntityExceptionHandler getExceptionHandler() {
-    return exceptionHandler;
-  }
-
-  /**
-   * Shows a JRViewer for report printing
-   * @param jasperPrint the JasperPrint object to view
-   * @param frameTitle the title to display on the frame
-   */
-  public static void viewReport(final JasperPrint jasperPrint, final String frameTitle) {
-    final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.getContentPane().add(new JRViewer(jasperPrint));
-    UiUtil.resizeWindow(frame, 0.8, new Dimension(800, 600));
-    UiUtil.centerWindow(frame);
-    frame.setVisible(true);
-  }
 
   public static void setLoggingLevel(final JComponent dialogParent) {
     final DefaultComboBoxModel model = new DefaultComboBoxModel(
@@ -111,7 +84,7 @@ public class EntityUiUtil {
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
                                             final boolean singleSelection, final String dialogTitle,
                                             final Dimension preferredSize, final boolean simpleSearchPanel) throws UserCancelException {
-    final ArrayList<Entity> selected = new ArrayList<Entity>();
+    final List<Entity> selected = new ArrayList<Entity>();
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
@@ -241,21 +214,17 @@ public class EntityUiUtil {
   }
 
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityEditModel editModel,
-                                                    final EntityPanelProvider newRecordPanelProvider,
-                                                    final boolean newButtonFocusable) {
-    return createEntityComboBox(foreignKeyProperty, editModel, newRecordPanelProvider, newButtonFocusable, null);
+                                                    final EntityEditModel editModel) {
+    return createEntityComboBox(foreignKeyProperty, editModel, null);
   }
 
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityEditModel editModel,
-                                                    final EntityPanelProvider newRecordPanelProvider,
-                                                    final boolean newButtonFocusable, final State enabledState) {
+                                                    final EntityEditModel editModel, final State enabledState) {
     try {
       final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
       if (!boxModel.isDataInitialized())
         boxModel.refresh();
-      final EntityComboBox ret = new EntityComboBox(boxModel, newRecordPanelProvider, newButtonFocusable);
+      final EntityComboBox ret = new EntityComboBox(boxModel);
       new ComboBoxPropertyLink(ret, editModel, foreignKeyProperty);
       UiUtil.linkToEnabledState(enabledState, ret);
       MaximumMatch.enable(ret);
@@ -616,51 +585,105 @@ public class EntityUiUtil {
     });
   }
 
-  public static interface EntityExceptionHandler {
-    public void handleException(final Throwable exception, final JComponent dialogParent);
+  public static JPanel createLookupFieldPanel(final EntityLookupField lookupField, final EntityTableModel tableModel) {
+    final JButton btn = new JButton(new AbstractAction("...") {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          lookupField.getModel().setSelectedEntities(selectEntities(tableModel, UiUtil.getParentWindow(lookupField),
+                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
+        }
+        catch (UserCancelException ex) {/**/}
+      }
+    });
+    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+
+    final JPanel ret = new JPanel(new BorderLayout(5,0));
+    ret.add(lookupField, BorderLayout.CENTER);
+    ret.add(btn, BorderLayout.EAST);
+
+    return ret;
   }
 
-  public static class DefaultEntityExceptionHandler implements EntityExceptionHandler {
+  public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
+                                                 final boolean newRecordButtonTakesFocus) {
+    final JPanel ret = new JPanel(new BorderLayout());
+    ret.add(entityComboBox, BorderLayout.CENTER);
+    ret.add(initializeNewRecordButton(entityComboBox, panelProvider, newRecordButtonTakesFocus), BorderLayout.EAST);
 
-    public void handleException(final Throwable exception, final JComponent dialogParent) {
-      if (exception instanceof UserCancelException)
-        return;
-      if (exception instanceof DbException)
-        handleDbException((DbException) exception, dialogParent);
-      else if (exception instanceof JRException && exception.getCause() != null)
-        handleException(exception.getCause(), dialogParent);
-      else if (exception instanceof UserException && exception.getCause() instanceof DbException)
-        handleDbException((DbException) exception.getCause(), dialogParent);
-      else {
-        ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(exception), exception.getMessage(), exception);
+    return ret;
+  }
+
+  private static JButton initializeNewRecordButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider,
+                                                   final boolean newRecordButtonFocusable) {
+    final JButton ret = new JButton(initializeNewRecordAction(comboBox, panelProvider));
+    ret.setIcon(Images.loadImage(Images.IMG_ADD_16));
+    ret.setPreferredSize(new Dimension(18, UiUtil.getPreferredTextFieldHeight()));
+    ret.setFocusable(newRecordButtonFocusable);
+
+    return ret;
+  }
+
+  private static AbstractAction initializeNewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+    return new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          final EntityPanel entityPanel = EntityPanel.createInstance(panelProvider, comboBox.getModel().getDbProvider());
+          entityPanel.initializePanel();
+          final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
+          entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+              lastInsertedPrimaryKeys.clear();
+              lastInsertedPrimaryKeys.addAll(((InsertEvent) e).getInsertedKeys());
+            }
+          });
+          final Window parentWindow = UiUtil.getParentWindow(comboBox);
+          final String caption = panelProvider.getCaption() == null || panelProvider.getCaption().equals("") ?
+                  entityPanel.getCaption() : panelProvider.getCaption();
+          final JDialog dialog = new JDialog(parentWindow, caption);
+          dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+          dialog.setLayout(new BorderLayout());
+          dialog.add(entityPanel, BorderLayout.CENTER);
+          final JButton btnClose = initializeOkButton(comboBox.getModel(), entityPanel.getModel().getTableModel(),
+                  dialog, lastInsertedPrimaryKeys);
+          final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+          buttonPanel.add(btnClose);
+          dialog.add(buttonPanel, BorderLayout.SOUTH);
+          dialog.pack();
+          dialog.setLocationRelativeTo(parentWindow);
+          dialog.setModal(true);
+          dialog.setResizable(true);
+          dialog.setVisible(true);
+        }
+        catch (UserException ue) {
+          throw ue.getRuntimeException();
+        }
       }
-    }
+    };
+  }
 
-    public void handleDbException(final DbException dbException, final JComponent dialogParent) {
-      String errMsg = dbException.getMessage();
-      if (errMsg == null || errMsg.length() == 0) {
-        if (dbException.getCause() == null)
-          errMsg = trimMessage(dbException);
-        else
-          errMsg = trimMessage(dbException.getCause());
+  private static JButton initializeOkButton(final EntityComboBoxModel comboBoxModel, final EntityTableModel tableModel,
+                                            final JDialog dialog, final List<EntityKey> lastInsertedPrimaryKeys) {
+    final JButton ret = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          comboBoxModel.refresh();
+          if (lastInsertedPrimaryKeys != null && lastInsertedPrimaryKeys.size() > 0) {
+            comboBoxModel.setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
+          }
+          else {
+            final Entity selectedEntity = tableModel.getSelectedEntity();
+            if (selectedEntity != null)
+              comboBoxModel.setSelectedItem(selectedEntity);
+          }
+          dialog.dispose();
+        }
+        catch (UserException ex) {
+          throw ex.getRuntimeException();
+        }
       }
-      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
-              Messages.get(Messages.EXCEPTION), errMsg, dbException);
-    }
+    });
+    ret.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
 
-    private String getMessageTitle(final Throwable e) {
-      if (e instanceof FileNotFoundException)
-        return FrameworkMessages.get(FrameworkMessages.UNABLE_TO_OPEN_FILE);
-
-      return Messages.get(Messages.EXCEPTION);
-    }
-
-    private String trimMessage(final Throwable e) {
-      final String msg = e.getMessage();
-      if (msg.length() > 50)
-        return msg.substring(0, 50) + "...";
-
-      return msg;
-    }
+    return ret;
   }
 }

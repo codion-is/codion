@@ -4,13 +4,11 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.UserException;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.framework.client.model.EntityLookupModel;
-import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -106,25 +104,6 @@ public class EntityLookupField extends JTextField {
 
   public void setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
-  }
-
-  public JPanel createPanel(final EntityTableModel lookupModel) {
-    final JButton btn = new JButton(new AbstractAction("...") {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          getModel().setSelectedEntities(EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(EntityLookupField.this),
-                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
-        }
-        catch (UserCancelException ex) {/**/}
-      }
-    });
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-
-    final JPanel ret = new JPanel(new BorderLayout(5,0));
-    ret.add(this, BorderLayout.CENTER);
-    ret.add(btn, BorderLayout.EAST);
-
-    return ret;
   }
 
   private void selectEntities(final List<Entity> entities) {

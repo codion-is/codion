@@ -94,7 +94,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /** {@inheritDoc} */
   public void handleException(final Throwable e) {
     log.error(this, e);
-    EntityUiUtil.getExceptionHandler().handleException(e, this);
+    UiUtil.getExceptionHandler().handleException(e, this);
   }
 
   /**
@@ -533,7 +533,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final List<EntityPanelProvider> mainEntityPanelProviders = getMainEntityPanelProviders();
     for (final EntityPanelProvider provider : mainEntityPanelProviders) {
       final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getEntityModelClass());
-      final EntityPanel entityPanel = provider.createInstance(entityModel);
+      final EntityPanel entityPanel = EntityPanel.createInstance(provider, entityModel);
       mainApplicationPanels.add(entityPanel);
       final String caption = (provider.getCaption() == null || provider.getCaption().length() == 0)
               ? entityPanel.getCaption() : provider.getCaption();
@@ -594,7 +594,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(final Thread thread, final Throwable throwable) {
-        EntityUiUtil.getExceptionHandler().handleException(throwable, EntityApplicationPanel.this);
+        UiUtil.getExceptionHandler().handleException(throwable, EntityApplicationPanel.this);
       }
     });
   }
@@ -911,7 +911,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           return;
       }
       else {
-        entityPanel = panelProvider.createInstance(dbProvider);
+        entityPanel = EntityPanel.createInstance(panelProvider, dbProvider);
         entityPanel.initializePanel();
         if (persistEntityPanels)
           persistentEntityPanels.put(panelProvider, entityPanel);
