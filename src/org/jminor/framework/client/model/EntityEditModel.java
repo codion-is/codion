@@ -11,7 +11,6 @@ import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.PropertyEvent;
@@ -20,14 +19,9 @@ import org.jminor.framework.domain.PropertyListener;
 import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A class for editing a Entity instance, providing property change events and combobox models
@@ -83,11 +77,6 @@ public class EntityEditModel {
    * Holds events signaling property changes made to the active entity, via the model or ui
    */
   private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
-
-  /**
-   * Contains the primary keys of locked entities while the strict editing lock is in effect (select for update)
-   */
-  private Set<EntityKey> lockedEntityKeys = new HashSet<EntityKey>();
 
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Event evtEntitiesChanged) {
     this.entityID = entityID;
@@ -466,41 +455,6 @@ public class EntityEditModel {
     return persistValueOnClear(property) ? getValue(property) : property.getDefaultValue();
   }
 
-  public void requestWriteLock(final List<EntityKey> entityKeys) throws UserException {
-    if (!useSelectForUpdate())
-      return;
-
-    if (lockedEntityKeys.containsAll(entityKeys))
-      return;
-
-    try {
-      entityKeys.removeAll(lockedEntityKeys);
-      getDbProvider().getEntityDb().selectForUpdate(entityKeys);
-
-      lockedEntityKeys.addAll(entityKeys);
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
-  }
-
-  public void releaseWriteLock() throws UserException {
-    if (!useSelectForUpdate())
-      return;
-
-    if (lockedEntityKeys.isEmpty())
-      return;
-
-    try {
-      getDbProvider().getEntityDb().endTransaction(false);
-
-      lockedEntityKeys.clear();
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
-  }
-
   protected Object doSetValue(final Property property, final Object value, final boolean validateType) {
     entity.setValue(property.getPropertyID(), value, validateType);
 
@@ -532,33 +486,6 @@ public class EntityEditModel {
         final Event propertyEvent = propertyChangeEventMap.get(event.getProperty());
         if (propertyEvent != null)
           propertyEvent.fire(event);
-      }
-    });
-    getEntityModifiedState().evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        try {
-          if (useSelectForUpdate() && !isEntityNull()) {
-            if (isEntityModified())
-              requestWriteLock(Arrays.asList(getEntityCopy().getPrimaryKey()));
-            else
-              releaseWriteLock();
-          }
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
-      }
-    });
-    //always release the write lock if the entity being edited is de-selected
-    getEntityChangedEvent().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        try {
-          if (useSelectForUpdate())
-            releaseWriteLock();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
       }
     });
     if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
@@ -593,10 +520,6 @@ public class EntityEditModel {
       log.trace(msg);
     }
     getPropertyValueSetEvent(event.getProperty()).fire(event);
-  }
-
-  private boolean useSelectForUpdate() {
-    return (Boolean) Configuration.getValue(Configuration.USE_SELECT_FOR_UPDATE);
   }
 
   private static String getPropertyChangeDebugString(final PropertyEvent event) {

@@ -74,11 +74,6 @@ public class SQLServerDatabase implements Dbms {
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
   /** {@inheritDoc} */
-  public boolean supportsNoWait() {
-    return false;
-  }
-
-  /** {@inheritDoc} */
   public boolean supportsIsValid() {
     return true;
   }

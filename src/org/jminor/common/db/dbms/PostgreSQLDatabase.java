@@ -72,11 +72,6 @@ public class PostgreSQLDatabase implements Dbms {
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
   /** {@inheritDoc} */
-  public boolean supportsNoWait() {
-    return true;
-  }
-
-  /** {@inheritDoc} */
   public boolean supportsIsValid() {
     return false;
   }

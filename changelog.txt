@@ -786,3 +786,4 @@
   framework.client.ui.reporting.EntityReportUiUtil added
   EntityUiUtil.createEntityComboBoxPanel() and createEntityLookupFieldPanel() added
   SearchTypes renamed
+  EntityDb.selectForUpdate() removed, replaced with optimistic locking

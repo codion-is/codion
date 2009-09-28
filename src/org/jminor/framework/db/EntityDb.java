@@ -98,6 +98,7 @@ public interface EntityDb {
    * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.framework.db.exception.EntityModifiedException in case an entity has been modified by another user
    */
   public List<Entity> update(final List<Entity> entities) throws Exception;
 
@@ -138,16 +139,6 @@ public interface EntityDb {
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
   public Entity selectSingle(final EntityKey key) throws Exception;
-
-  /**
-   * Selects for update the entities with the given keys.
-   * The update lock is released when the entity is subsequently updated or via endTransaction(false)
-   * @param primaryKeys the keys of the entities to select for update
-   * @return the entities
-   * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.DbException in case the entity is already locked by another user
-   */
-  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws Exception;
 
   /**
    * Selects a single entity according to the specified criteria, throws a DbException

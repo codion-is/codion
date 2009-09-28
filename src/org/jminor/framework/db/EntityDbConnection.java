@@ -14,9 +14,11 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
+import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
@@ -49,6 +51,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
   private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
+  private boolean optimisticLockingEnabled = (Boolean) Configuration.getValue(Configuration.USE_OPTIMISTIC_LOCKING);
 
   /**Used by the EntityDbConnectionPool class*/
   long poolTime = -1;
@@ -78,7 +81,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (entities == null || entities.size() == 0)
       return new ArrayList<EntityKey>();
 
-    final List<EntityKey> ret = new ArrayList<EntityKey>();
+    final List<EntityKey> ret = new ArrayList<EntityKey>(entities.size());
     String sql = null;//so we can include it in the exception
     try {
       for (final Entity entity : entities) {
@@ -118,16 +121,18 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> update(final List<Entity> entities) throws DbException {
+  public List<Entity> update(final List<Entity> entities) throws DbException, EntityModifiedException {
     if (entities.size() == 0)
       return entities;
 
-    final List<String> statements = new ArrayList<String>();
+    final List<String> statements = new ArrayList<String>(entities.size());
     for (final Entity entity : entities) {
       if (EntityRepository.isReadOnly(entity.getEntityID()))
         throw new DbException("Can not update a read only entity");
       if (!entity.isModified())
         throw new DbException("Trying to update non-modified entity: " + entity);
+      if (optimisticLockingEnabled && hasChanged(entity))
+        throw new EntityModifiedException(entity);
       else
         statements.add(getUpdateSQL(entity));
     }
@@ -142,7 +147,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (entityKeys == null || entityKeys.size() == 0)
       return;
 
-    final List<String> statements = new ArrayList<String>();
+    final List<String> statements = new ArrayList<String>(entityKeys.size());
     for (final EntityKey entityKey : entityKeys) {
       if (EntityRepository.isReadOnly(entityKey.getEntityID()))
         throw new DbException("Can not delete a read only entity");
@@ -219,46 +224,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
     finally {
       removeCacheQueriesRequest();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
-  public List<Entity> selectForUpdate(final List<EntityKey> primaryKeys) throws DbException {
-    if (primaryKeys == null || primaryKeys.size() == 0)
-      throw new IllegalArgumentException("Can not select for update without keys");
-    if (isTransactionOpen())
-      throw new IllegalStateException("Can not use select for update within an open transaction");
-
-    final String entityID = primaryKeys.get(0).getEntityID();
-    final StringBuilder sql = new StringBuilder();
-    try {
-      final String datasource = EntityRepository.getSelectTableName(entityID);
-      sql.append(DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(entityID),
-              new EntityCriteria(entityID, new EntityKeyCriteria(primaryKeys)).getWhereClause(
-                      !datasource.toUpperCase().contains("WHERE")), null));
-      sql.append(" for update").append((Database.get().supportsNoWait() ? " nowait" : ""));
-
-      final List<Entity> result = (List<Entity>) query(sql.toString(), getResultPacker(entityID), -1);
-      if (result.size() == 0)
-        throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-      if (result.size() != primaryKeys.size()) {
-        try {//this means we got the lock, but for a different number of records than was intended, better release it right away
-          endTransaction(false);
-        }
-        catch (SQLException e) {/**/}
-        throw new DbException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
-      }
-
-      if (!lastQueryResultCached())
-        setForeignKeyValues(result);
-
-      return result;
-    }
-    catch (SQLException sqle) {
-      log.info(sql);
-      log.error(this, sqle);
-      throw new DbException(sqle, sql.toString());
     }
   }
 
@@ -489,6 +454,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       throw new DbException(sqle, sql);
     }
+  }
+
+  private boolean hasChanged(final Entity entity) throws DbException {
+    return !selectSingle(entity.getPrimaryKey()).propertyValuesEqual(entity.getOriginalCopy());
   }
 
   /**

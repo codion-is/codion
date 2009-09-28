@@ -160,11 +160,6 @@ public interface Dbms {
   public void shutdownEmbedded(final Properties connectionProperties);
 
   /**
-   * @return true if the dbms supports select for update with the nowait option
-   */
-  public boolean supportsNoWait();
-
-  /**
    * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
    */
   public boolean supportsIsValid();

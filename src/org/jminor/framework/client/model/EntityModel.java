@@ -17,6 +17,7 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
@@ -525,9 +526,10 @@ public class EntityModel implements Refreshable {
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
+   * @throws EntityModifiedException in case an entity was modified by another user
    * @see #getEntitiesForUpdate()
    */
-  public final void update() throws UserException, UserCancelException, DbException {
+  public final void update() throws UserException, UserCancelException, DbException, EntityModifiedException {
     update(getEntitiesForUpdate());
   }
 
@@ -538,17 +540,17 @@ public class EntityModel implements Refreshable {
    * @throws DbException in case of a database exception
    * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
+   * @throws EntityModifiedException in case an entity was modified by another user
    * @see #evtBeforeUpdate
    * @see #evtAfterUpdate
    */
-  public final void update(final List<Entity> entities) throws UserException, DbException, UserCancelException {
+  public final void update(final List<Entity> entities) throws UserException, DbException, EntityModifiedException, UserCancelException {
     if (isReadOnly())
       throw new UserException("This is a read-only model, updating is not allowed!");
     if (!isMultipleUpdateAllowed() && entities.size() > 1)
       throw new UserException("Update of multiple entities is not allowed!");
     if (!isUpdateAllowed())
       throw new UserException("This model does not allow updating!");
-    getEditModel().requestWriteLock(EntityUtil.getPrimaryKeys(entities));
 
     log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
 

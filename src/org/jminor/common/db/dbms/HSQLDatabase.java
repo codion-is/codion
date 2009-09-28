@@ -102,11 +102,6 @@ public class HSQLDatabase implements Dbms {
   }
 
   /** {@inheritDoc} */
-  public boolean supportsNoWait() {
-    return false;
-  }
-
-  /** {@inheritDoc} */
   public boolean supportsIsValid() {
     return true;
   }

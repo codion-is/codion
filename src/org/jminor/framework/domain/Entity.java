@@ -483,12 +483,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return a deep copy of this entity in its original state
    */
   public Entity getOriginalCopy() {
-    final Entity ret = getCopy();
+    final Entity copy = getCopy();
     if (originalValues != null)
       for (final Map.Entry<String, Object> entry : originalValues.entrySet())
-        values.put(entry.getKey(), copyPropertyValue(entry.getValue()));
+        copy.values.put(entry.getKey(), copyPropertyValue(entry.getValue()));
 
-    return ret;
+    return copy;
   }
 
   /**

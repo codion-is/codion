@@ -211,12 +211,12 @@ public class Configuration {
   public static final String TRANSFER_FOCUS_ON_ENTER = "transfer_focus_on_enter";
 
   /**
-   * Specifies whether strict editing should be enabled, this involves selecting a record for update
-   * when it is modified, thereby locking it for modification
+   * Specifies whether optimistic locking should be performed, that is, if entities should
+   * be checked for modification before being updated
    * Value type: Boolean
-   * Default value: false
+   * Default value: true
    */
-  public static final String USE_SELECT_FOR_UPDATE = "use_select_for_update";
+  public static final String USE_OPTIMISTIC_LOCKING = "use_optimistic_locking";
 
   /**
    * Specifies the global tooltip delay in milliseconds
@@ -331,7 +331,7 @@ public class Configuration {
     setValue(DEFAULT_USERNAME_PREFIX, "");
     setValue(AUTHENTICATION_REQUIRED, true);
     setValue(TRANSFER_FOCUS_ON_ENTER, true);
-    setValue(USE_SELECT_FOR_UPDATE, false);
+    setValue(USE_OPTIMISTIC_LOCKING, true);
     setValue(TOOLTIP_DELAY, 500);
     setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
     setValue(SQL_BOOLEAN_VALUE_TRUE, 1);

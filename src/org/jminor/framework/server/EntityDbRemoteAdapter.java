@@ -317,19 +317,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectForUpdate(final List<EntityKey> key) throws DbException, RemoteException {
-    try {
-      return loggingEntityDbProxy.selectForUpdate(key);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
   public Entity selectSingle(final EntityCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(criteria);
@@ -597,7 +584,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       dest.append(arg.toString());
   }
 
-  public static class MethodLogger {
+  static class MethodLogger {
 
     private static final int logSize = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
     private static final int IS_LOGGED_IN = "isLoggedIn".hashCode();
