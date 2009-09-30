@@ -326,7 +326,7 @@ public abstract class ProfilingModel {
     try {
       activeClients.remove(applicationModel);
       evtClientCountChanged.fire();
-      applicationModel.getDbProvider().getEntityDb().logout();
+      applicationModel.getDbProvider().getEntityDb().disconnect();
       System.out.println(applicationModel + " logged out and removed");
     }
     catch (Exception e) {

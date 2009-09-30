@@ -787,3 +787,7 @@
   EntityUiUtil.createEntityComboBoxPanel() and createEntityLookupFieldPanel() added
   SearchTypes renamed
   EntityDb.selectForUpdate() removed, replaced with optimistic locking
+  EntityDbProvider.logout() renamed to disconnect
+  EntityDb.logout() renamed to disconnect
+  DbConnection.getConnectionUser() renamed to getUser()
+  EntityDbRemoteServer and EntityDbRemoteServerAdmin refactored, removing cyclical dependency

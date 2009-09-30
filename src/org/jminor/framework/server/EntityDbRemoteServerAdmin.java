@@ -11,13 +11,20 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
@@ -33,6 +40,19 @@ import java.util.Set;
  */
 public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 
+  private static final Logger log = Util.getLogger(EntityDbRemoteServerAdmin.class);
+
+  private static final int SERVER_ADMIN_PORT;
+
+  static {
+    final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT);
+
+    if (serverAdminPortProperty == null)
+      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT);
+
+    SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
+  }
+
   private final EntityDbRemoteServer server;
 
   public EntityDbRemoteServerAdmin(final EntityDbRemoteServer server, final int adminPort,
@@ -40,6 +60,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     super(adminPort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
+    server.getRegistry().rebind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX, this);
   }
 
   /** {@inheritDoc} */
@@ -107,6 +128,14 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     server.shutdown();
+    try {
+      server.getRegistry().unbind(getServerName() + "-admin");
+    }
+    catch (NotBoundException e) {/**/}
+    try {
+      UnicastRemoteObject.unexportObject(this, true);
+    }
+    catch (NoSuchObjectException e) {/**/}
   }
 
   /** {@inheritDoc} */
@@ -217,5 +246,30 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   /** {@inheritDoc} */
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout);
+  }
+
+  private static Registry initializeRegistry() throws RemoteException {
+    Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+      try {
+        localRegistry.list();
+      }
+      catch (Exception e) {
+        log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
+        localRegistry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+      }
+
+    return localRegistry;
+  }
+
+  public static void main(String[] args) {
+    try {
+      System.setSecurityManager(new RMISecurityManager());
+      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(initializeRegistry()), SERVER_ADMIN_PORT,
+              EntityDbRemoteServer.SECURE_CONNECTION);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
   }
 }

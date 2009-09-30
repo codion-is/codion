@@ -106,7 +106,7 @@ public class EntityLookupModelTest extends TestCase {
   protected void tearDown() throws Exception {
     super.tearDown();
     dbProvider.getEntityDb().endTransaction(false);
-    dbProvider.getEntityDb().logout();
+    dbProvider.getEntityDb().disconnect();
   }
 
   private boolean contains(final List<Entity> result, final String employeeName) {

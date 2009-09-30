@@ -37,6 +37,7 @@ public class DbConnection {
 
   private final Properties connectionProperties = new Properties();
   private final Map<String, List> queryCache = new HashMap<String, List>();
+  private final User user;
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -46,9 +47,6 @@ public class DbConnection {
 
   private int cacheQueriesRequests = 0;
   private boolean lastResultCached = false;
-
-  //for logging purposes
-  private final User connectionUser;
 
   private static long requestsPerSecondTime = System.currentTimeMillis();
   private static int queriesPerSecond = 0;
@@ -74,18 +72,21 @@ public class DbConnection {
   public DbConnection(final User user) throws ClassNotFoundException, AuthenticationException {
     if (user == null)
       throw new IllegalArgumentException("DbConnection requires a non-null user instance");
-    this.connectionUser = user;
     if (user.getUsername() == null)
       throw new IllegalArgumentException("Username must be provided");
     if (user.getPassword() == null)
       throw new IllegalArgumentException("Password must be provided");
+    this.user = user;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
     revalidate();
   }
 
-  public User getConnectionUser() {
-    return connectionUser;
+  /**
+   * @return the connection user
+   */
+  public User getUser() {
+    return user;
   }
 
   /**
@@ -101,6 +102,9 @@ public class DbConnection {
     }
   }
 
+  /**
+   * Disconnects this DbConnection
+   */
   public void disconnect() {
     if (!isConnected())
       return;
@@ -214,7 +218,7 @@ public class DbConnection {
     requestsPerSecondCounter++;
     if (cacheQueriesRequests > 0 && fetchCount < 0) {
       if (queryCache.containsKey(sql)) {
-        log.debug(connectionUser.getUsername() + " (cached): " + sql.toUpperCase()+";");
+        log.debug(user.getUsername() + " (cached): " + sql.toUpperCase()+";");
         lastResultCached = true;
         cachedPerSecondCounter++;
         return queryCache.get(sql);
@@ -234,7 +238,7 @@ public class DbConnection {
       return ret;
     }
     catch (SQLException e) {
-      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
     finally {
@@ -337,7 +341,7 @@ public class DbConnection {
       statement.execute();
     }
     catch (SQLException e) {
-      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
     finally {
@@ -361,7 +365,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final void commit() throws SQLException {
-    log.debug(connectionUser.getUsername() + ": " + "commit;");
+    log.debug(user.getUsername() + ": " + "commit;");
     connection.commit();
   }
 
@@ -370,7 +374,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final void rollback() throws SQLException {
-    log.debug(connectionUser.getUsername() + ": " + "rollback;");
+    log.debug(user.getUsername() + ": " + "rollback;");
     connection.rollback();
   }
 
@@ -392,7 +396,7 @@ public class DbConnection {
       return hasOutParameter ? statement.getObject(1) : null;
     }
     catch (SQLException e) {
-      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sqlStatement+";", e);
+      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sqlStatement+";", e);
       throw e;
     }
     finally {
@@ -419,7 +423,7 @@ public class DbConnection {
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
     }
     catch (SQLException e) {
-      log.error(connectionUser.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
     finally {
@@ -449,7 +453,7 @@ public class DbConnection {
   private void revalidate() throws AuthenticationException, ClassNotFoundException {
     try {
       if (connection != null) {
-        log.info("Revalidating connection: " + connectionUser.getUsername());
+        log.info("Revalidating connection: " + user.getUsername());
         connection.rollback();
         connection.close();
       }

@@ -104,7 +104,7 @@ public class EmpDeptProfiling extends ProfilingModel {
       for (int i = 0; i < 100; i++)
         dbProvider.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);
 
-      dbProvider.getEntityDb().logout();
+      dbProvider.getEntityDb().disconnect();
     }
     catch (Exception e) {
       e.printStackTrace();

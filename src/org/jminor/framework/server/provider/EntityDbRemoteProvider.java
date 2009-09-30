@@ -55,9 +55,9 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     return entityDb;
   }
 
-  public void logout() throws UserException {
+  public void disconnect() throws UserException {
     try {
-      getEntityDb().logout();
+      getEntityDb().disconnect();
     }
     catch (Exception e) {
       throw new UserException(e);

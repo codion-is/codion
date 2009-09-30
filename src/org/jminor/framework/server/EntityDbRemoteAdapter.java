@@ -113,10 +113,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public void logout() throws RemoteException {
+  public void disconnect() throws RemoteException {
     try {
       if (entityDbConnection != null)
-        entityDbConnection.logout();
+        entityDbConnection.disconnect();
 
       entityDbConnection = null;
       connected = false;
@@ -587,7 +587,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   static class MethodLogger {
 
     private static final int logSize = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
-    private static final int IS_LOGGED_IN = "isLoggedIn".hashCode();
+    private static final int IS_CONNECTED = "isConnected".hashCode();
     private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
     private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
 
@@ -638,7 +638,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     private boolean shouldMethodBeLogged(final int hashCode) {
-      return hashCode != IS_LOGGED_IN && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
+      return hashCode != IS_CONNECTED && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
     }
 
     private long addLogEntry(final String method, final String message, final long time, final boolean isExit) {

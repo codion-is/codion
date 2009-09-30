@@ -67,16 +67,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public User getUser() {
-    return super.getConnectionUser();
-  }
-
-  /** {@inheritDoc} */
-  public void logout() {
-    disconnect();
-  }
-
-  /** {@inheritDoc} */
   public List<EntityKey> insert(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0)
       return new ArrayList<EntityKey>();

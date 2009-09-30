@@ -27,5 +27,5 @@ public interface EntityDbProvider {
    * Logs out, disconnects and performs cleanup if required
    * @throws UserException in case of an exception
    */
-  public void logout() throws UserException;
+  public void disconnect() throws UserException;
 }

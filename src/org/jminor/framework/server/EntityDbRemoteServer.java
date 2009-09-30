@@ -20,9 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
@@ -45,50 +43,44 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
-  private static final boolean loggingEnabled =
+  private static final boolean LOGGING_ENABLED =
           System.getProperty(Configuration.SERVER_LOGGING_ON, "1").equalsIgnoreCase("1");
+  static final boolean SECURE_CONNECTION =
+          Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
 
   private static final int SERVER_PORT;
-  private static final int SERVER_ADMIN_PORT;
   private static final int SERVER_DB_PORT;
 
   static {
     final String serverPortProperty = System.getProperty(Configuration.SERVER_PORT);
-    final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT);
     final String serverDbPortProperty = System.getProperty(Configuration.SERVER_DB_PORT);
 
     if (serverPortProperty == null)
       throw new RuntimeException("Required server property missing: " + Configuration.SERVER_PORT);
-    if (serverAdminPortProperty == null)
-      throw new RuntimeException("Required server property missing: " + Configuration.SERVER_ADMIN_PORT);
     if (serverDbPortProperty == null)
       throw new RuntimeException("Required server property missing: " + Configuration.SERVER_DB_PORT);
 
     SERVER_PORT = Integer.parseInt(serverPortProperty);
-    SERVER_ADMIN_PORT = Integer.parseInt(serverAdminPortProperty);
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
   }
 
-  private final Date startDate = new Date();
+  private final Registry registry;
+  private final String serverName;
+  private final Date startDate = new Date();private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
+          Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
+
   private Timer connectionMaintenanceTimer;
   private int checkMaintenanceInterval = 30; //seconds
-
-  private final EntityDbRemoteServerAdmin serverAdmin;
-
-  private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
-          Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
-  private final String serverName;
   private int connectionTimeout = 120000;
-  private static boolean useSecureConnection =
-          Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
 
   /**
    * Constructs a new EntityDbRemoteServer.
+   * @param registry the Registry to bind to
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  private EntityDbRemoteServer() throws RemoteException {
-    super(SERVER_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  EntityDbRemoteServer(final Registry registry) throws RemoteException {
+    super(SERVER_PORT, SECURE_CONNECTION ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            SECURE_CONNECTION ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     final String host = System.getProperty(Dbms.DATABASE_HOST);
     final String port = System.getProperty(Dbms.DATABASE_PORT);
     final String sid = System.getProperty(Dbms.DATABASE_SID);
@@ -102,8 +94,16 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     serverName = Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
-    serverAdmin = new EntityDbRemoteServerAdmin(this, SERVER_ADMIN_PORT, useSecureConnection);
     startConnectionCheckTimer();
+    this.registry = registry;
+    this.registry.rebind(getServerName(), this);
+    final String connectInfo = getServerName() + " bound to registry";
+    log.info(connectInfo);
+    System.out.println(connectInfo);
+  }
+
+  public Registry getRegistry() {
+    return registry;
   }
 
   /** {@inheritDoc} */
@@ -231,19 +231,18 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   public void shutdown() throws RemoteException {
-    unexport(this);
-    unexport(serverAdmin);
+    try {
+      UnicastRemoteObject.unexportObject(this, true);
+    }
+    catch (NoSuchObjectException e) {
+      log.warn(e);
+    }
     removeConnections(false);
-    final Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT );
-    if (localRegistry != null) {
-      try {
-        log.info("Shutting down server: " + serverName);
-        localRegistry.unbind(serverName);
-        localRegistry.unbind(serverName + "-admin");
-      }
-      catch (NotBoundException ex) {
-        log.error(this, ex);
-      }
+    try {
+      getRegistry().unbind(serverName);
+    }
+    catch (NotBoundException e) {
+      log.error(this, e);
     }
     Database.get().shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
   }
@@ -255,10 +254,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
         final EntityDbRemoteAdapter adapter = connections.get(client);
         if (inactiveOnly) {
           if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout()))
-            adapter.logout();
+            adapter.disconnect();
         }
         else
-          adapter.logout();
+          adapter.disconnect();
       }
     }
   }
@@ -290,12 +289,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       log.info("Connection removed: " + client);
       final EntityDbRemoteAdapter adapter = connections.remove(client);
       if (logout)
-        adapter.logout();
+        adapter.disconnect();
     }
   }
 
   private EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
-    final EntityDbRemoteAdapter ret = new EntityDbRemoteAdapter(client, SERVER_DB_PORT, loggingEnabled);
+    final EntityDbRemoteAdapter ret = new EntityDbRemoteAdapter(client, SERVER_DB_PORT, LOGGING_ENABLED);
     ret.evtLoggingOut.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
@@ -310,40 +309,5 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     log.info("Connection added: " + client);
 
     return ret;
-  }
-
-  private static void unexport(final UnicastRemoteObject connection) {
-    try {
-      UnicastRemoteObject.unexportObject(connection, true);
-    }
-    catch (NoSuchObjectException e) {
-      log.warn(e);
-    }
-  }
-
-  public static void main(String[] args) {
-    try {
-      System.setSecurityManager(new RMISecurityManager());
-      Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
-      try {
-        localRegistry.list();
-      }
-      catch (Exception e) {
-        log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
-        localRegistry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-      }
-
-      final EntityDbRemoteServer server = new EntityDbRemoteServer();
-
-      localRegistry.rebind(server.getServerName(), server);
-      localRegistry.rebind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX, server.serverAdmin);
-      final String connectInfo = server.getServerName() + " bound to registry";
-      log.info(connectInfo);
-      System.out.println(connectInfo);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
   }
 }

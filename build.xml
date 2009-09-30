@@ -42,9 +42,9 @@
       <classpath refid="libraries"/>
     </javac>
 
-    <rmic base="${build.base}" includes="org/jminor/framework/server/EntityDbRemoteServer.class,
-                                         org/jminor/framework/server/EntityDbRemoteServerAdmin.class,
-                                         org/jminor/framework/server/EntityDbRemoteAdapter.class">
+    <rmic base="${build.base}" includes="org/jminor/framework/server/EntityDbRemoteAdapter.class,
+                                         org/jminor/framework/server/EntityDbRemoteServer.class,
+                                         org/jminor/framework/server/EntityDbRemoteServerAdmin.class">
       <classpath refid="libraries"/>
     </rmic>
 
@@ -442,7 +442,7 @@
 
   <target name="run_rmi_server" depends="build, create_derby_db, create_h2_db"
           description="Runs the RMI server">
-    <java classname="org.jminor.framework.server.EntityDbRemoteServer" fork="yes">
+    <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
         <pathelement location="${lib.derby}"/>
@@ -487,7 +487,7 @@
   </target>
 
   <target name="run_rmi_registry" depends="build"
-          description="Runs the RMI registry with the classpath required for bootstrapping the framework rmi server">
+          description="Runs the RMI registry with the classpath required for bootstrapping the framework RMI server">
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>

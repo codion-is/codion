@@ -109,7 +109,7 @@ public class EntityModelTest extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    departmentModel.getDbProvider().logout();
+    departmentModel.getDbProvider().disconnect();
   }
 
   private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {

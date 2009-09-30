@@ -52,9 +52,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   /** {@inheritDoc} */
-  public void logout() throws UserException {
+  public void disconnect() throws UserException {
     try {
-      getEntityDb().logout();
+      getEntityDb().disconnect();
       Database.get().shutdownEmbedded(connectionProperties);
     }
     catch (Exception e) {

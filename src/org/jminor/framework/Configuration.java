@@ -214,7 +214,7 @@ public class Configuration {
    * Specifies whether optimistic locking should be performed, that is, if entities should
    * be checked for modification before being updated
    * Value type: Boolean
-   * Default value: true
+   * Default value: false
    */
   public static final String USE_OPTIMISTIC_LOCKING = "use_optimistic_locking";
 
@@ -331,7 +331,7 @@ public class Configuration {
     setValue(DEFAULT_USERNAME_PREFIX, "");
     setValue(AUTHENTICATION_REQUIRED, true);
     setValue(TRANSFER_FOCUS_ON_ENTER, true);
-    setValue(USE_OPTIMISTIC_LOCKING, true);
+    setValue(USE_OPTIMISTIC_LOCKING, false);
     setValue(TOOLTIP_DELAY, 500);
     setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
     setValue(SQL_BOOLEAN_VALUE_TRUE, 1);

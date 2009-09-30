@@ -248,7 +248,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         throw new UserCancelException();
     }
     try {
-      applicationModel.getDbProvider().logout();
+      applicationModel.getDbProvider().disconnect();
     }
     catch (Exception e) {
       log.debug("Unable to properly log out, no connection");

@@ -38,7 +38,7 @@ public interface EntityDb {
    * Logs out and disconnects
    * @throws Exception in case of an exception
    */
-  public void logout() throws Exception;
+  public void disconnect() throws Exception;
 
   /**
    * @throws Exception in case of exception

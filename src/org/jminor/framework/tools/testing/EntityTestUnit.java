@@ -49,7 +49,7 @@ public abstract class EntityTestUnit extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     if (dbConnectionProvider != null)
-      dbConnectionProvider.logout();
+      dbConnectionProvider.disconnect();
   }
 
   /**
