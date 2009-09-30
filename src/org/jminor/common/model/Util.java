@@ -77,28 +77,7 @@ public class Util {
     putUserPreference(applicationClassname + "." + PREF_DEFAULT_USERNAME, username);
   }
 
-  public static String formatLatitude(final String latitude) {
-    if (latitude == null || latitude.length() == 0)
-      return "";
-
-    final boolean minus = latitude.startsWith("-");
-    String padded = padString(latitude.replaceAll("-", ""), 6, '0', false);
-
-    return padded.substring(0, 2) + '\'' + padded.substring(2, 4) + ',' + padded.substring(4, 6) + (minus ? 'S' : 'N');
-  }
-
-  public static String formatLongitude(final String longitude) {
-    if (longitude == null || longitude.length() == 0)
-      return "";
-
-    final boolean minus = longitude.startsWith("-");
-    String padded = padString(longitude.replaceAll("-", ""), 6, '0', false);
-
-    return padded.substring(0, 2) + '\'' + padded.substring(2, 4) + ',' + padded.substring(4, 6) + (minus ? 'W' : 'E');
-  }
-
-  public static String padString(final String orig, final int length,
-                                 final char padChar, final boolean atFront) {
+  public static String padString(final String orig, final int length, final char padChar, final boolean atFront) {
     if (orig.length() == length)
       return orig;
 
