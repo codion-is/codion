@@ -80,12 +80,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           throw new DbException("Can not insert a read only entity");
 
         final IdSource idSource = EntityRepository.getIdSource(entityID);
-        if (idSource == IdSource.MAX_PLUS_ONE || idSource == IdSource.SEQUENCE || idSource == IdSource.QUERY)
-          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), getNextIdValue(entityID, idSource), false);
+        if (idSource.isQueried())
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNextIdValue(entityID, idSource), false);
 
         execute(sql = getInsertSQL(entity));
 
-        if (idSource == IdSource.AUTO_INCREMENT)
+        if (idSource.isAutoIncrement())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
                   queryInteger(Database.get().getAutoIncrementValueSQL(
                           EntityRepository.getEntityIdSource(entityID))), false);
@@ -225,7 +225,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
-      return query(sql, getPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
+      return query(sql, getResultPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, sql);
@@ -489,15 +489,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return new ArrayList<EntityKey>(ret);
   }
 
-  private EntityResultPacker getResultPacker(final String entityID) {
-    EntityResultPacker packer = resultPackers.get(entityID);
-    if (packer == null)
-      resultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
-
-    return packer;
-  }
-
-  private int getNextIdValue(final String entityID, final IdSource idSource) throws DbException {
+  private int queryNextIdValue(final String entityID, final IdSource idSource) throws DbException {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
@@ -511,7 +503,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         sql = Database.get().getSequenceSQL(EntityRepository.getEntityIdSource(entityID));
         break;
       default:
-        throw new IllegalArgumentException(idSource + " is not a valid auto-increment ID source constant");
+        throw new IllegalArgumentException(idSource + " does not represent a queried ID source");
     }
     try {
       return queryInteger(sql);
@@ -521,7 +513,15 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  private static ResultPacker getPacker(final Type propertyType) {
+  private EntityResultPacker getResultPacker(final String entityID) {
+    EntityResultPacker packer = resultPackers.get(entityID);
+    if (packer == null)
+      resultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
+
+    return packer;
+  }
+
+  private static ResultPacker getResultPacker(final Type propertyType) {
     return new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<Object> ret = new ArrayList<Object>(50);

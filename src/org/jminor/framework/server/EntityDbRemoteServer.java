@@ -74,7 +74,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   private int connectionTimeout = 120000;
 
   /**
-   * Constructs a new EntityDbRemoteServer.
+   * Constructs a new EntityDbRemoteServer and binds it to the given registry
    * @param registry the Registry to bind to
    * @throws java.rmi.RemoteException in case of a remote exception
    */
@@ -123,7 +123,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   /** {@inheritDoc} */
   public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                 final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException {
+                                final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException {
     if (connectionKey == null)
       return null;
 

@@ -29,5 +29,13 @@ public enum IdSource {
   /**
    * the id source is a query
    */
-  QUERY
+  QUERY;
+
+  public boolean isQueried() {
+    return this == MAX_PLUS_ONE || this == SEQUENCE || this == QUERY;
+  }
+
+  public boolean isAutoIncrement() {
+    return this == AUTO_INCREMENT;
+  }
 }

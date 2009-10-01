@@ -791,3 +791,5 @@
   EntityDb.logout() renamed to disconnect
   DbConnection.getConnectionUser() renamed to getUser()
   EntityDbRemoteServer and EntityDbRemoteServerAdmin refactored, removing cyclical dependency
+  IdSource.isQueried() and isAutoIncrement() added
+  EntityDbConnection uses the above in insert()
