@@ -152,12 +152,7 @@ public class State {
    * them from being garbage collected.
    */
   public static class StateGroup {
-    final List<WeakReference<State>> members;
-
-    /** Constructs a new StateGroup. */
-    public StateGroup() {
-      this.members = new ArrayList<WeakReference<State>>();
-    }
+    final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
 
     /**
      * Adds a state to this state group via a WeakReference,
@@ -171,12 +166,14 @@ public class State {
 
       state.evtStateChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
-            final State referredState = iterator.next().get();
-            if (referredState == null) //remove this dead weak reference
-              iterator.remove();
-            else if (state.isActive() && referredState != state)
-              referredState.setActive(false);
+          synchronized (members) {
+            for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
+              final State referredState = iterator.next().get();
+              if (referredState == null) //remove this dead weak reference
+                iterator.remove();
+              else if (state.isActive() && referredState != state)
+                referredState.setActive(false);
+            }
           }
         }
       });
