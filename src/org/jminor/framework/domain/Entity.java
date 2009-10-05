@@ -44,8 +44,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * An event fired when a property changes, is null until initialized with
    * a call to setFirePropertyChangeEvents
-   * @see #addPropertyListener(PropertyListener)
-   * @see #removePropertyListener(PropertyListener)
+   * @see #addPropertyListener(org.jminor.framework.domain.Property.Listener)
+   * @see #removePropertyListener(org.jminor.framework.domain.Property.Listener)
    */
   private transient Event evtPropertyChanged;
 
@@ -128,7 +128,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Adds a PropertyListener, this listener will be notified each time a property value changes
    * @param propertyListener the PropertyListener
    */
-  public void addPropertyListener(final PropertyListener propertyListener) {
+  public void addPropertyListener(final Property.Listener propertyListener) {
     if (evtPropertyChanged == null)
       evtPropertyChanged = new Event();
     evtPropertyChanged.addListener(propertyListener);
@@ -138,7 +138,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Removes the given PropertyListener
    * @param propertyListener the PropertyListener to remove
    */
-  public void removePropertyListener(final PropertyListener propertyListener) {
+  public void removePropertyListener(final Property.Listener propertyListener) {
     if (evtPropertyChanged != null)
       evtPropertyChanged.removeListener(propertyListener);
   }
@@ -518,7 +518,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
     if (evtPropertyChanged != null)
       for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-        evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, getRawValue(property.getPropertyID()),
+        evtPropertyChanged.fire(new Property.Event(this, getEntityID(), property, getRawValue(property.getPropertyID()),
                 null, true, true));
 
     toString = sourceEntity.toString;
@@ -689,7 +689,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       handleValueChange(property.getPropertyID(), property.getPropertyType(), newValue, oldValue);
 
     if (evtPropertyChanged != null && !isEqual(property.getPropertyType(), newValue, oldValue))
-      evtPropertyChanged.fire(new PropertyEvent(this, getEntityID(), property, newValue, oldValue, true, initialization));
+      evtPropertyChanged.fire(new Property.Event(this, getEntityID(), property, newValue, oldValue, true, initialization));
   }
 
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {

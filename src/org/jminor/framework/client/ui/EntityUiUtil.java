@@ -37,8 +37,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.PropertyEvent;
-import org.jminor.framework.domain.PropertyListener;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -265,9 +263,9 @@ public class EntityUiUtil {
     final JTextField txt = new JTextField();
     txt.setEditable(false);
     setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, txt);
-    editModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new PropertyListener() {
+    editModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new Property.Listener() {
       @Override
-      public void propertyChanged(final PropertyEvent e) {
+      public void propertyChanged(final Property.Event e) {
         txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
     });

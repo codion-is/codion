@@ -17,8 +17,6 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.PropertyEvent;
-import org.jminor.framework.domain.PropertyListener;
 import org.jminor.framework.domain.Type;
 
 import java.awt.event.ActionEvent;
@@ -67,9 +65,9 @@ public class EmployeeModel extends EntityModel {
         }
       }
     });
-    getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new PropertyListener() {
+    getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new Property.Listener() {
       @Override
-      public void propertyChanged(final PropertyEvent e) {
+      public void propertyChanged(final Property.Event e) {
         //only show managers in the same department as the active entity
         getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria() {
           public boolean include(final Object item) {

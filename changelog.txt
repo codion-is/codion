@@ -795,3 +795,5 @@
   EntityDbConnection uses the above in insert()
   EntityProxy nested into Entity, renamed to Proxy
   EntityKey nested into Entity, renamed to Key
+  PropertyEvent nested into Property, renamed to Event
+  PropertyListener nested into Property, renamed to Listener

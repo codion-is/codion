@@ -41,6 +41,8 @@ public class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
+
+  private static List<Logger> loggers = new ArrayList<Logger>();
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
 
@@ -58,8 +60,6 @@ public class Util {
     else if (loggingLevel.equals(LOGGING_LEVEL_TRACE))
       defaultLoggingLevel = Level.TRACE;
   }
-
-  private static final ArrayList<Logger> loggers = new ArrayList<Logger>();
 
   public static String getUserPreference(final String key, final String defaultValue) {
     if (userPreferences == null)

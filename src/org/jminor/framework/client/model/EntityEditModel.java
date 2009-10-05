@@ -13,8 +13,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.PropertyEvent;
-import org.jminor.framework.domain.PropertyListener;
 
 import org.apache.log4j.Logger;
 
@@ -320,7 +318,7 @@ public class EntityEditModel {
     final Object newValue = doSetValue(property, value, true);
 
     if (!Util.equal(newValue, oldValue))
-      notifyPropertyValueSet(new PropertyEvent(this, getEntityID(), property, newValue, oldValue, false, false));
+      notifyPropertyValueSet(new Property.Event(this, getEntityID(), property, newValue, oldValue, false, false));
   }
 
   /**
@@ -480,18 +478,18 @@ public class EntityEditModel {
    * You must call super.bindEvents() in case you override this method
    */
   protected void bindEvents() {
-    entity.addPropertyListener(new PropertyListener() {
+    entity.addPropertyListener(new Property.Listener() {
       @Override
-      protected void propertyChanged(final PropertyEvent event) {
+      protected void propertyChanged(final Property.Event event) {
         final Event propertyEvent = propertyChangeEventMap.get(event.getProperty());
         if (propertyEvent != null)
           propertyEvent.fire(event);
       }
     });
     if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      entity.addPropertyListener(new PropertyListener() {
+      entity.addPropertyListener(new Property.Listener() {
         @Override
-        protected void propertyChanged(final PropertyEvent event) {
+        protected void propertyChanged(final Property.Event event) {
           final String msg = getPropertyChangeDebugString(event);
           System.out.println(msg);
           log.trace(msg);
@@ -513,7 +511,7 @@ public class EntityEditModel {
     propertyComboBoxModels.put(property, model);
   }
 
-  private void notifyPropertyValueSet(final PropertyEvent event) {
+  private void notifyPropertyValueSet(final Property.Event event) {
     if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
       final String msg = getPropertyChangeDebugString(event);
       System.out.println(msg);
@@ -522,7 +520,7 @@ public class EntityEditModel {
     getPropertyValueSetEvent(event.getProperty()).fire(event);
   }
 
-  private static String getPropertyChangeDebugString(final PropertyEvent event) {
+  private static String getPropertyChangeDebugString(final Property.Event event) {
     final StringBuilder ret = new StringBuilder();
     if (event.getSource() instanceof Entity)
       ret.append("[entity] ");
