@@ -794,3 +794,4 @@
   IdSource.isQueried() and isAutoIncrement() added
   EntityDbConnection uses the above in insert()
   EntityProxy nested into Entity, renamed to Proxy
+  EntityKey nested into Entity, renamed to Key

@@ -20,7 +20,6 @@ import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -67,11 +66,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<EntityKey> insert(final List<Entity> entities) throws DbException {
+  public List<Entity.Key> insert(final List<Entity> entities) throws DbException {
     if (entities == null || entities.size() == 0)
-      return new ArrayList<EntityKey>();
+      return new ArrayList<Entity.Key>();
 
-    final List<EntityKey> ret = new ArrayList<EntityKey>(entities.size());
+    final List<Entity.Key> ret = new ArrayList<Entity.Key>(entities.size());
     String sql = null;//so we can include it in the exception
     try {
       for (final Entity entity : entities) {
@@ -133,12 +132,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public void delete(final List<EntityKey> entityKeys) throws DbException {
+  public void delete(final List<Entity.Key> entityKeys) throws DbException {
     if (entityKeys == null || entityKeys.size() == 0)
       return;
 
     final List<String> statements = new ArrayList<String>(entityKeys.size());
-    for (final EntityKey entityKey : entityKeys) {
+    for (final Entity.Key entityKey : entityKeys) {
       if (EntityRepository.isReadOnly(entityKey.getEntityID()))
         throw new DbException("Can not delete a read only entity");
       statements.add(0, getDeleteSQL(entityKey));
@@ -154,7 +153,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final EntityKey primaryKey) throws DbException {
+  public Entity selectSingle(final Entity.Key primaryKey) throws DbException {
     return selectSingle(new EntityCriteria(primaryKey.getEntityID(), new EntityKeyCriteria(primaryKey)));
   }
 
@@ -171,7 +170,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectMany(final List<EntityKey> primaryKeys) throws DbException {
+  public List<Entity> selectMany(final List<Entity.Key> primaryKeys) throws DbException {
     if (primaryKeys == null || primaryKeys.size() == 0)
       return new ArrayList<Entity>(0);
 
@@ -419,7 +418,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param entityKey the EntityKey instance
    * @return a query for deleting the entity having the given primary key
    */
-  static String getDeleteSQL(final EntityKey entityKey) {
+  static String getDeleteSQL(final Entity.Key entityKey) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
             .append(EntityUtil.getWhereCondition(entityKey)).toString();
   }
@@ -460,8 +459,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
-      final List<EntityKey> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
-      final Map<EntityKey, Entity> hashedReferencedEntities = foreignKeyProperty.lazyLoading
+      final List<Entity.Key> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
+      final Map<Entity.Key, Entity> hashedReferencedEntities = foreignKeyProperty.lazyLoading
               ? initLazyLoaded(referencedPrimaryKeys)
               : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
       for (final Entity entity : entities)
@@ -469,24 +468,24 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  private Map<EntityKey, Entity> initLazyLoaded(final List<EntityKey> referencedPrimaryKeys) {
-    final Map<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
-    for (final EntityKey key : referencedPrimaryKeys)
+  private Map<Entity.Key, Entity> initLazyLoaded(final List<Entity.Key> referencedPrimaryKeys) {
+    final Map<Entity.Key, Entity> ret = new HashMap<Entity.Key, Entity>();
+    for (final Entity.Key key : referencedPrimaryKeys)
       ret.put(key, new Entity(key));
 
     return ret;
   }
 
-  private static List<EntityKey> getPrimaryKeysOfEntityValues(final List<Entity> entities,
+  private static List<Entity.Key> getPrimaryKeysOfEntityValues(final List<Entity> entities,
                                                               final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Set<EntityKey> ret = new HashSet<EntityKey>(entities.size());
+    final Set<Entity.Key> ret = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
-      final EntityKey key = entity.getReferencedPrimaryKey(foreignKeyProperty);
+      final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
       if (key != null)
         ret.add(key);
     }
 
-    return new ArrayList<EntityKey>(ret);
+    return new ArrayList<Entity.Key>(ret);
   }
 
   private int queryNextIdValue(final String entityID, final IdSource idSource) throws DbException {

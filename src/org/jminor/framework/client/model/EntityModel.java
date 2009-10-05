@@ -20,7 +20,6 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -511,7 +510,7 @@ public class EntityModel implements Refreshable {
     evtBeforeInsert.fire();
     validateData(entities, INSERT);
 
-    final List<EntityKey> primaryKeys = EntityKey.copyEntityKeys(doInsert(entities));
+    final List<Entity.Key> primaryKeys = Entity.Key.copyEntityKeys(doInsert(entities));
     if (containsTableModel()) {
       getTableModel().getSelectionModel().clearSelection();
       getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
@@ -765,7 +764,7 @@ public class EntityModel implements Refreshable {
    * @throws UserException in case of a exception
    * @throws UserCancelException in case the operation is canceled
    */
-  protected List<EntityKey> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
+  protected List<Entity.Key> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
     try {
       return getEntityDb().insert(entities);
     }
@@ -928,7 +927,7 @@ public class EntityModel implements Refreshable {
    * @param primaryKeys the primary keys of the inserted entities
    * @throws UserException in case of an exception
    */
-  protected void refreshDetailModelsAfterInsert(final List<EntityKey> primaryKeys) throws UserException {
+  protected void refreshDetailModelsAfterInsert(final List<Entity.Key> primaryKeys) throws UserException {
     if (detailModels.size() == 0)
       return;
 

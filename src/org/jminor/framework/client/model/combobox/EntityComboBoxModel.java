@@ -11,7 +11,6 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 
 import org.apache.log4j.Logger;
 
@@ -152,7 +151,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  public void setSelectedEntityByPrimaryKey(final EntityKey primaryKey) {
+  public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final int size = getSize();
     for (int i = 0; i < size; i++) {
       final Object item = getElementAt(i);

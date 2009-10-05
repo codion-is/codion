@@ -20,7 +20,6 @@ import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -238,7 +237,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<EntityKey> insert(final List<Entity> entities) throws DbException, RemoteException {
+  public List<Entity.Key> insert(final List<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.insert(entities);
     }
@@ -264,7 +263,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public void delete(final List<EntityKey> entityKeys) throws DbException, RemoteException {
+  public void delete(final List<Entity.Key> entityKeys) throws DbException, RemoteException {
     try {
       loggingEntityDbProxy.delete(entityKeys);
     }
@@ -304,7 +303,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final EntityKey key) throws DbException, RemoteException {
+  public Entity selectSingle(final Entity.Key key) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(key);
     }
@@ -330,7 +329,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final List<EntityKey> keys) throws DbException, RemoteException {
+  public List<Entity> selectMany(final List<Entity.Key> keys) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectMany(keys);
     }

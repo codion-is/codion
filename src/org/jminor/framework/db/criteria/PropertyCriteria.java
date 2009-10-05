@@ -8,7 +8,6 @@ import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -178,7 +177,7 @@ public class PropertyCriteria implements Criteria, Serializable {
       return getMultiColumnForeignKeyCriteriaString();
 
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
-    final EntityKey entityKey = (EntityKey) values.get(0);
+    final Entity.Key entityKey = (Entity.Key) values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).referenceEntityID);
     for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
@@ -199,7 +198,7 @@ public class PropertyCriteria implements Criteria, Serializable {
         for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
           pkSet.addCriteria(new PropertyCriteria(
                   ((Property.ForeignKeyProperty) property).referenceProperties.get(keyProperty.getIndex()),
-                  searchType, ((EntityKey) entityKey).getValue(keyProperty.getPropertyID())));
+                  searchType, ((Entity.Key) entityKey).getValue(keyProperty.getPropertyID())));
 
         set.addCriteria(pkSet);
       }

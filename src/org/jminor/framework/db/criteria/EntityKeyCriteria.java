@@ -4,7 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
@@ -23,7 +23,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   /**
    * The keys used in this criteria
    */
-  private final List<EntityKey> keys;
+  private final List<Entity.Key> keys;
 
   /**
    * The properties to use for column names when constructing the criteria string
@@ -34,7 +34,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    * Instantiates a new EntityKeyCriteria comprised of the given keys
    * @param keys the keys
    */
-  public EntityKeyCriteria(final EntityKey... keys) {
+  public EntityKeyCriteria(final Entity.Key... keys) {
     this(Arrays.asList(keys));
   }
 
@@ -42,7 +42,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    * Instantiates a new EntityKeyCriteria comprised of the given keys
    * @param keys the keys
    */
-  public EntityKeyCriteria(final List<EntityKey> keys) {
+  public EntityKeyCriteria(final List<Entity.Key> keys) {
     this(null, keys);
   }
 
@@ -52,7 +52,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    * @param properties the properties to use for column names when constructing the criteria string
    * @param keys the keys
    */
-  public EntityKeyCriteria(final List<Property> properties, final List<EntityKey> keys) {
+  public EntityKeyCriteria(final List<Property> properties, final List<Entity.Key> keys) {
     if (keys == null || keys.size() == 0)
       throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
     if (properties != null && properties.size() != keys.get(0).getPropertyCount())
@@ -65,7 +65,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   /**
    * @return the keys
    */
-  public List<EntityKey> getKeys() {
+  public List<Entity.Key> getKeys() {
     return keys;
   }
 
@@ -132,7 +132,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    * @param columnNames the column names to use in the criteria
    * @return a query condition string based on the given key and column names
    */
-  private static String getQueryConditionString(final EntityKey key, final List<String> columnNames) {
+  private static String getQueryConditionString(final Entity.Key key, final List<String> columnNames) {
     final StringBuilder ret = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
@@ -145,7 +145,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     return ret.append(")").toString();
   }
 
-  private static void appendInCondition(final String whereColumn, final StringBuilder ret, final List<EntityKey> keys) {
+  private static void appendInCondition(final String whereColumn, final StringBuilder ret, final List<Entity.Key> keys) {
     ret.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {

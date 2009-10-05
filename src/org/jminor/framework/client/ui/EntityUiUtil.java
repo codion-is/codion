@@ -35,7 +35,6 @@ import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.PropertyEvent;
@@ -629,7 +628,7 @@ public class EntityUiUtil {
         try {
           final EntityPanel entityPanel = EntityPanel.createInstance(panelProvider, comboBox.getModel().getDbProvider());
           entityPanel.initializePanel();
-          final List<EntityKey> lastInsertedPrimaryKeys = new ArrayList<EntityKey>();
+          final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
           entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
               lastInsertedPrimaryKeys.clear();
@@ -662,7 +661,7 @@ public class EntityUiUtil {
   }
 
   private static JButton initializeOkButton(final EntityComboBoxModel comboBoxModel, final EntityTableModel tableModel,
-                                            final JDialog dialog, final List<EntityKey> lastInsertedPrimaryKeys) {
+                                            final JDialog dialog, final List<Entity.Key> lastInsertedPrimaryKeys) {
     final JButton ret = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         try {

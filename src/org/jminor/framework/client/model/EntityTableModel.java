@@ -17,7 +17,6 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -145,7 +144,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   /**
    * Holds the selected items while sorting
    */
-  private List<EntityKey> selectedPrimaryKeys;
+  private List<Entity.Key> selectedPrimaryKeys;
 
   /**
    * If true the underlying query should be filtered by the selected master record
@@ -485,7 +484,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  public Entity getEntityByPrimaryKey(final EntityKey primaryKey) {
+  public Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : visibleEntities)
       if (entity.getPrimaryKey().equals(primaryKey))
         return entity;
@@ -493,7 +492,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     return null;
   }
 
-  public int getViewIndexByPrimaryKey(final EntityKey primaryKey) {
+  public int getViewIndexByPrimaryKey(final Entity.Key primaryKey) {
     return viewIndexOf(getEntityByPrimaryKey(primaryKey));
   }
 
@@ -548,7 +547,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       log.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
+      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       clear();
       addEntities(performQuery(getQueryCriteria()), false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
@@ -570,7 +569,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @throws UserException in case of an exception
    * @throws DbException in case of a database exception
    */
-  public void addEntitiesByPrimaryKeys(final List<EntityKey> primaryKeys, boolean atFrontOfList)
+  public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFrontOfList)
           throws UserException, DbException {
     try {
       addEntities(getEntityDb().selectMany(primaryKeys), atFrontOfList);
@@ -660,7 +659,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     try {
       isFiltering = true;
       evtFilteringStarted.fire();
-      final List<EntityKey> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
+      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       visibleEntities.addAll(hiddenEntities);
       hiddenEntities.clear();
       for (final ListIterator<Entity> iterator = visibleEntities.listIterator(); iterator.hasNext();) {
@@ -694,7 +693,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a list containing the primary keys of the selected entities,
    * if none are selected an empty list is returned
    */
-  public List<EntityKey> getPrimaryKeysOfSelectedEntities() {
+  public List<Entity.Key> getPrimaryKeysOfSelectedEntities() {
     return EntityUtil.getPrimaryKeys(getSelectedEntities());
   }
 
@@ -748,7 +747,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * Sets the selected entities according to the primary keys in <code>primaryKeys</code>
    * @param primaryKeys the primary keys of the entities to select
    */
-  public void setSelectedByPrimaryKeys(final List<EntityKey> primaryKeys) {
+  public void setSelectedByPrimaryKeys(final List<Entity.Key> primaryKeys) {
     final IntArray indexArray = new IntArray(primaryKeys.size());
     for (final Entity visibleEntity : visibleEntities) {
       final int index = primaryKeys.indexOf(visibleEntity.getPrimaryKey());
@@ -816,13 +815,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in <code>keys</code>
    */
-  public List<Entity> getEntitiesByPrimaryKeys(final List<EntityKey> keys) {
+  public List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys) {
     final List<Entity> ret = new ArrayList<Entity>();
     final List<Entity> allEntities = new ArrayList<Entity>(visibleEntities.size() + hiddenEntities.size());
     allEntities.addAll(visibleEntities);
     allEntities.addAll(hiddenEntities);
     for (final Entity entity : allEntities) {
-      for (final EntityKey key : keys) {
+      for (final Entity.Key key : keys) {
         if (entity.getPrimaryKey().equals(key)) {
           ret.add(entity);
           break;

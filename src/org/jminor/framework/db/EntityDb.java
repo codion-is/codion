@@ -6,7 +6,6 @@ package org.jminor.framework.db;
 import org.jminor.common.db.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -91,7 +90,7 @@ public interface EntityDb {
    * @return the primary key values of the inserted entities
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public List<EntityKey> insert(final List<Entity> entities) throws Exception;
+  public List<Entity.Key> insert(final List<Entity> entities) throws Exception;
 
   /**
    * Updates the given entities according to their properties
@@ -107,7 +106,7 @@ public interface EntityDb {
    * @param entityKeys the primary keys of the entities to delete
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public void delete(final List<EntityKey> entityKeys) throws Exception;
+  public void delete(final List<Entity.Key> entityKeys) throws Exception;
 
   /**
    * Selects distinct non-null values of the given property of the given entity
@@ -138,7 +137,7 @@ public interface EntityDb {
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public Entity selectSingle(final EntityKey key) throws Exception;
+  public Entity selectSingle(final Entity.Key key) throws Exception;
 
   /**
    * Selects a single entity according to the specified criteria, throws a DbException
@@ -156,7 +155,7 @@ public interface EntityDb {
    * @return entities according to <code>keys</code>
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public List<Entity> selectMany(final List<EntityKey> keys) throws Exception;
+  public List<Entity> selectMany(final List<Entity.Key> keys) throws Exception;
 
   /**
    * Selects entities according to the specified criteria

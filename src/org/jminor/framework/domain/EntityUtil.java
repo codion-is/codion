@@ -44,8 +44,8 @@ public class EntityUtil {
     return false;
   }
 
-  public static Map<EntityKey, Entity> hashByPrimaryKey(final List<Entity> entities) {
-    final Map<EntityKey, Entity> ret = new HashMap<EntityKey, Entity>();
+  public static Map<Entity.Key, Entity> hashByPrimaryKey(final List<Entity> entities) {
+    final Map<Entity.Key, Entity> ret = new HashMap<Entity.Key, Entity>();
     for (final Entity entity : entities)
       ret.put(entity.getPrimaryKey(), entity);
 
@@ -56,8 +56,8 @@ public class EntityUtil {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  public static List<EntityKey> getPrimaryKeys(final Collection<Entity> entities) {
-    final List<EntityKey> ret = new ArrayList<EntityKey>(entities.size());
+  public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities) {
+    final List<Entity.Key> ret = new ArrayList<Entity.Key>(entities.size());
     for (final Entity entity : entities)
       ret.add(entity.getPrimaryKey());
 
@@ -207,7 +207,7 @@ public class EntityUtil {
         return getBooleanSQLString(property, (Type.Boolean) value);
       case ENTITY:
         return value instanceof Entity ? getSQLStringValue(property, ((Entity)value).getPrimaryKey().getFirstKeyValue())
-                : getSQLStringValue(((EntityKey)value).getFirstKeyProperty(), ((EntityKey)value).getFirstKeyValue());
+                : getSQLStringValue(((Entity.Key)value).getFirstKeyProperty(), ((Entity.Key)value).getFirstKeyValue());
       default:
         throw new IllegalArgumentException("Undefined property type: " + property.getPropertyType());
     }
@@ -236,7 +236,7 @@ public class EntityUtil {
    * @return a where clause using this EntityKey instance,
    * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final EntityKey entityKey) {
+  public static String getWhereCondition(final Entity.Key entityKey) {
     return getWhereCondition(entityKey.getProperties(), new ValueProvider() {
       public Object getValue(final String propertyID) {
         return entityKey.getValue(propertyID);

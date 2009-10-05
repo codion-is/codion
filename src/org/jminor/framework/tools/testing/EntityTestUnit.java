@@ -14,7 +14,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityKey;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -137,7 +136,7 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected Entity testInsert(final Entity testEntity) throws Exception {
     try {
-      final List<EntityKey> keys = getDbConnectionProvider().getEntityDb().insert(Arrays.asList(testEntity));
+      final List<Entity.Key> keys = getDbConnectionProvider().getEntityDb().insert(Arrays.asList(testEntity));
       try {
         return getDbConnectionProvider().getEntityDb().selectSingle(keys.get(0));
       }

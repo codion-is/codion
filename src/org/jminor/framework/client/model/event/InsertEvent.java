@@ -3,21 +3,21 @@
  */
 package org.jminor.framework.client.model.event;
 
-import org.jminor.framework.domain.EntityKey;
+import org.jminor.framework.domain.Entity;
 
 import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class InsertEvent extends ActionEvent {
 
-  private final List<EntityKey> insertedKeys;
+  private final List<Entity.Key> insertedKeys;
 
-  public InsertEvent(final Object source, final List<EntityKey> insertedKeys) {
+  public InsertEvent(final Object source, final List<Entity.Key> insertedKeys) {
     super(source, 0, "insert");
     this.insertedKeys = insertedKeys;
   }
 
-  public List<EntityKey> getInsertedKeys() {
+  public List<Entity.Key> getInsertedKeys() {
     return insertedKeys;
   }
 }

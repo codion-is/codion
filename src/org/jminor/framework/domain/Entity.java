@@ -11,9 +11,11 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +28,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * The primary key of this entity
    */
-  private final EntityKey primaryKey;
+  private final Key primaryKey;
 
   /**
    * Holds the values of all properties except primary key properties
@@ -67,7 +69,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
-  private transient Map<Property.ForeignKeyProperty, EntityKey> referencedPrimaryKeysCache;
+  private transient Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
 
   private static Map<String, Proxy> proxies;
   private static Proxy defaultProxy = new Proxy();
@@ -77,14 +79,14 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param entityID the ID of the entity type
    */
   public Entity(final String entityID) {
-    this(new EntityKey(entityID));
+    this(new Key(entityID));
   }
 
   /**
    * Instantiates a new Entity
    * @param primaryKey the primary key
    */
-  public Entity(final EntityKey primaryKey) {
+  public Entity(final Key primaryKey) {
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
@@ -101,7 +103,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * @return the primary key of this entity
    */
-  public EntityKey getPrimaryKey() {
+  public Key getPrimaryKey() {
     return primaryKey;
   }
 
@@ -529,8 +531,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param foreignKeyProperty the foreign key property for which to retrieve the underlying EntityKey
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  public EntityKey getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    EntityKey primaryKey = referencedPrimaryKeysCache == null ? null : referencedPrimaryKeysCache.get(foreignKeyProperty);
+  public Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Key primaryKey = referencedPrimaryKeysCache == null ? null : referencedPrimaryKeysCache.get(foreignKeyProperty);
     if (primaryKey != null)
       return primaryKey;
 
@@ -541,8 +543,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
               : values.get(referenceKeyProperty.getPropertyID());
       if (!isValueNull(referenceKeyProperty.getPropertyType(), value)) {
         if (primaryKey == null)
-          (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, EntityKey>()
-                  : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new EntityKey(foreignKeyProperty.referenceEntityID));
+          (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
+                  : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.referenceEntityID));
         primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value);
       }
       else
@@ -596,7 +598,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       case STRING:
         return value.equals("");
       case ENTITY:
-        return value instanceof Entity ? ((Entity) value).isNull() : ((EntityKey) value).isNull();
+        return value instanceof Entity ? ((Entity) value).isNull() : ((Key) value).isNull();
       default:
         return false;
     }
@@ -828,6 +830,256 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     throw new IllegalArgumentException("Unknown type " + property.getPropertyType());
+  }
+
+  /**
+ * A class representing column key objects for entities, contains the values for those columns
+   */
+  public static class Key implements Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    /**
+     * the entity ID
+     */
+    private final String entityID;
+
+    /**
+     * Contains the values of this key mapped to their respective propertyIDs
+     */
+    private final Map<String, Object> values;
+
+    /**
+     * Caching the hash code
+     */
+    private int hashCode = -Integer.MAX_VALUE;
+
+    /**
+     * True if the value of a key property has changed, thereby invalidating the cached hash code value
+     */
+    private boolean hashCodeDirty = true;
+
+    /**
+     * Caching this extremely frequently referenced attribute
+     */
+    private transient List<Property.PrimaryKeyProperty> properties;
+
+    /**
+     * Instantiates a new EntityKey for the given entity type
+     * @param entityID the entity ID
+     */
+    public Key(final String entityID) {
+      if (entityID == null)
+        throw new IllegalArgumentException("Key can not be instantiated without an entityID");
+      this.entityID = entityID;
+      this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
+      this.values = new HashMap<String, Object>(properties.size());
+    }
+
+    /**
+     * @return the entity ID
+     */
+    public String getEntityID() {
+      return entityID;
+    }
+
+    /**
+     * @return a List containing the properties comprising this key
+     */
+    public List<Property.PrimaryKeyProperty> getProperties() {
+      if (properties == null)
+        properties = EntityRepository.getPrimaryKeyProperties(entityID);
+
+      return properties;
+    }
+
+    /**
+     * @param propertyID the property identifier
+     * @return the key property identified by propertyID, null if the property is not found
+     */
+    public Property.PrimaryKeyProperty getProperty(final String propertyID) {
+      for (final Property.PrimaryKeyProperty property : getProperties())
+        if (property.getPropertyID().equals(propertyID))
+          return property;
+
+      return null;
+    }
+
+    /**
+     * @return the first key property
+     */
+    public Property getFirstKeyProperty() {
+      return getProperties().size() > 0 ? getProperties().get(0) : null;
+    }
+
+    /**
+     * @return the first value contained in this key, useful for single property keys
+     */
+    public Object getFirstKeyValue() {
+      return values.values().iterator().next();
+    }
+
+    /**
+     * @param propertyID the property identifier
+     * @return true if this key contains a value for propertyID
+     */
+    public boolean hasValue(final String propertyID) {
+      return values.containsKey(propertyID);
+    }
+
+    /**
+     * @param propertyID the property identifier
+     * @return true if this key contains a property with the given identifier
+     */
+    public boolean containsProperty(final String propertyID) {
+      for (final Property.PrimaryKeyProperty property : getProperties())
+        if (property.getPropertyID().equals(propertyID))
+          return true;
+
+      return false;
+    }
+
+    /**
+     * @param propertyID the property identifier
+     * @return the value of the property identified by propertyID
+     */
+    public Object getValue(final String propertyID) {
+      return values.get(propertyID);
+    }
+
+    /**
+     * @return a string representation of this key
+     */
+    @Override
+    public String toString() {
+      final StringBuilder ret = new StringBuilder();
+      int i = 0;
+      for (final Property.PrimaryKeyProperty property : getProperties()) {
+        ret.append(property.getPropertyID()).append("=").append(getValue(property.getPropertyID()));
+        if (i++ < getPropertyCount()-1)
+          ret.append(", ");
+      }
+
+      return ret.toString();
+    }
+
+    /**
+     * @return an identical deep copy of this entity key
+     */
+    public Key copy() {
+      final Key ret = new Key(entityID);
+      ret.setValue(this);
+
+      return ret;
+    }
+
+    /**
+     * @return the number of properties comprising this key
+     */
+    public int getPropertyCount() {
+      return getProperties().size();
+    }
+
+    /**
+     * @param object the object to compare with
+     * @return true if object is equal to this key
+     */
+    @Override
+    public boolean equals(final Object object) {
+      return this == object || object instanceof Key && ((Key) object).entityID.equals(entityID)
+              && object.hashCode() == hashCode();
+    }
+
+    /**
+     * @param key the key to compare with
+     * @return true if key is equal to this key
+     */
+    public boolean equals(final Key key) {
+      return key.entityID.equals(entityID) && hashCode() == key.hashCode();
+    }
+
+    /**
+     * @return a hash code based on the values of this key, unique among entities of the same type
+     */
+    @Override
+    public int hashCode() {
+      if (hashCodeDirty) {
+        int hash = 0;
+        for (final Object value : values.values())
+          hash = hash + (value == null ? 0 : value.hashCode());
+
+        hashCode = hash == 0 ? -Integer.MAX_VALUE : hash;//in case all values were null
+        hashCodeDirty = false;
+      }
+
+      return hashCode;
+    }
+
+    /**
+     * @return true if one of the properties has a null value
+     */
+    public boolean isNull() {
+      if (isSingleIntegerKey())
+        return hashCode() == -Integer.MAX_VALUE;
+
+      if (hashCode() == -Integer.MAX_VALUE)
+        return true;
+
+      for (final Property property : getProperties())
+        if (isValueNull(property.getPropertyType(), values.get(property.getPropertyID())))
+          return true;
+
+      return false;
+    }
+
+    public static List<Key> copyEntityKeys(final List<Key> entityKeys) {
+      final List<Key> ret = new ArrayList<Key>(entityKeys.size());
+      for (final Key key : entityKeys)
+        ret.add(key.copy());
+
+      return ret;
+    }
+
+    /**
+     * Copies the values from key to this entity key
+     * @param key the key to copy
+     */
+    void setValue(final Key key) {
+      values.clear();
+      hashCode = -Integer.MAX_VALUE;
+      hashCodeDirty = true;
+      if (key != null) {
+        for (final Property.PrimaryKeyProperty property : getProperties())
+          values.put(property.getPropertyID(), copyPropertyValue(key.getValue(property.getPropertyID())));
+
+        hashCode = key.hashCode;
+        hashCodeDirty = key.hashCodeDirty;
+      }
+    }
+
+    /**
+     * Sets the value of the property identified by propertyID to newValue
+     * @param propertyID the property identifier
+     * @param newValue the new value
+     */
+    void setValue(final String propertyID, final Object newValue) {
+      values.put(propertyID, newValue);
+      hashCodeDirty = true;
+      if (isSingleIntegerKey()) {
+        if (!(newValue == null || newValue instanceof Integer))
+          throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
+                  + propertyID + ", got " + newValue + "; " + newValue.getClass());
+        hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
+        hashCodeDirty = false;
+      }
+    }
+
+    /**
+     * @return true if this is a single integer column key
+     */
+    private boolean isSingleIntegerKey() {
+      return getPropertyCount() == 1 && getFirstKeyProperty().getPropertyType() == Type.INT;
+    }
   }
 
   /**
