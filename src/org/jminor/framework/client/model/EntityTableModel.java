@@ -18,7 +18,6 @@ import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityKey;
-import org.jminor.framework.domain.EntityProxy;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -463,13 +462,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.domain.EntityProxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getEntityAtViewIndex(row);
 
-    return EntityProxy.getEntityProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return Entity.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
 
   /**

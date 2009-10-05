@@ -6,7 +6,6 @@ package org.jminor.framework.demos.schemabrowser.domain;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityProxy;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -87,7 +86,7 @@ public class SchemaBrowser {
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Type.STRING, "Column name"),
             new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"));
 
-    EntityProxy.setDefaultEntityProxy(new EntityProxy() {
+    Entity.setDefaultProxy(new Entity.Proxy() {
       @Override
       public String toString(final Entity entity) {
         if (entity.is(T_COLUMN))

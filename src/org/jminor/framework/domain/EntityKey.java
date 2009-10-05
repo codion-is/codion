@@ -210,7 +210,7 @@ public class EntityKey implements Serializable {
   }
 
   public static List<EntityKey> copyEntityKeys(final List<EntityKey> entityKeys) {
-    final ArrayList<EntityKey> ret = new ArrayList<EntityKey>(entityKeys.size());
+    final List<EntityKey> ret = new ArrayList<EntityKey>(entityKeys.size());
     for (final EntityKey key : entityKeys)
       ret.add(key.copy());
 

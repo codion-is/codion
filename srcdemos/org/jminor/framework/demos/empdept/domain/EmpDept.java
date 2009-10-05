@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityProxy;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -85,9 +84,9 @@ public class EmpDept {
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredWidth(100));
 
-    /*Set a EntityProxy implementation to provide toString values for the entities
+    /*Set a Proxy implementation to provide toString values for the entities
     * and custom background color for managers*/
-    EntityProxy.setDefaultEntityProxy(new EntityProxy() {
+    Entity.setDefaultProxy(new Entity.Proxy() {
       @Override
       public String toString(final Entity entity) {
         if (entity.is(T_DEPARTMENT))

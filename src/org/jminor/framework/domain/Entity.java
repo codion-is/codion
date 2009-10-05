@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -67,6 +68,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
   private transient Map<Property.ForeignKeyProperty, EntityKey> referencedPrimaryKeysCache;
+
+  private static Map<String, Proxy> proxies;
+  private static Proxy defaultProxy = new Proxy();
 
   /**
    * Instantiates a new Entity
@@ -222,7 +226,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(getEntityID()).getValue(this, property);
+    return getProxy(getEntityID()).getValue(this, property);
   }
 
   /**
@@ -316,7 +320,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return a String representation of the value of the property identified by <code>propertyID</code>
-   * @see org.jminor.framework.domain.EntityProxy#getValueAsString(Entity, Property)
+   * @see org.jminor.framework.domain.Entity.Proxy#getValueAsString(Entity, Property)
    */
   public String getValueAsString(final String propertyID) {
     return getValueAsString(getProperty(propertyID));
@@ -325,20 +329,20 @@ public final class Entity implements Serializable, Comparable<Entity> {
   /**
    * @param property the property for which to retrieve the value
    * @return a String representation of the value of <code>property</code>
-   * @see org.jminor.framework.domain.EntityProxy#getValueAsString(Entity, Property)
+   * @see org.jminor.framework.domain.Entity.Proxy#getValueAsString(Entity, Property)
    */
   public String getValueAsString(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValueAsString((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(getEntityID()).getValueAsString(this, property);
+    return getProxy(getEntityID()).getValueAsString(this, property);
   }
 
   /**
    * Returns the value to use when the property is shown in a table
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the table representation of the value of the property identified by <code>propertyID</code>
-   * @see org.jminor.framework.domain.EntityProxy#getTableValue(Entity, Property)
+   * @see org.jminor.framework.domain.Entity.Proxy#getTableValue(Entity, Property)
    */
   public Object getTableValue(final String propertyID) {
     return getTableValue(getProperty(propertyID));
@@ -348,13 +352,13 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Returns the value to use when the property is shown in a table
    * @param property the property for which to retrieve the value
    * @return the table representation of the value of <code>property</code>
-   * @see org.jminor.framework.domain.EntityProxy#getTableValue(Entity, Property)
+   * @see org.jminor.framework.domain.Entity.Proxy#getTableValue(Entity, Property)
    */
   public Object getTableValue(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
-    return EntityProxy.getEntityProxy(getEntityID()).getTableValue(this, property);
+    return getProxy(getEntityID()).getTableValue(this, property);
   }
 
   /**
@@ -440,7 +444,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return the compare result from comparing <code>entity</code> with this Entity instance
    */
   public int compareTo(final Entity entity) {
-    return EntityProxy.getEntityProxy(getEntityID()).compareTo(this, entity);
+    return getProxy(getEntityID()).compareTo(this, entity);
   }
 
   /**
@@ -453,12 +457,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * @return a string representation of this entity
-   * @see EntityProxy#toString(Entity)
+   * @see org.jminor.framework.domain.Entity.Proxy#toString(Entity)
    */
   @Override
   public String toString() {
     if (toString == null)
-      toString = EntityProxy.getEntityProxy(getEntityID()).toString(this);
+      toString = getProxy(getEntityID()).toString(this);
 
     return toString;
   }
@@ -627,6 +631,27 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
+   * @param proxy sets the default EntityProxy instance used if no entity specific one is specified
+   */
+  public static void setDefaultProxy(final Proxy proxy) {
+    defaultProxy = proxy;
+  }
+
+  public static void setProxy(final String entityID, final Proxy entityProxy) {
+    if (proxies == null)
+      proxies = new HashMap<String, Proxy>();
+
+    proxies.put(entityID, entityProxy);
+  }
+
+  public static Proxy getProxy(final String entityID) {
+    if (proxies != null && proxies.containsKey(entityID))
+      return proxies.get(entityID);
+
+    return defaultProxy;
+  }
+
+  /**
    * Performs the actual value setting, minding all the stuff that needs minding here
    * @param property the property
    * @param newValue the new value
@@ -692,7 +717,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.getPropertyID())
-            : !values.containsKey(referenceProperty.getPropertyID());
+                : !values.containsKey(referenceProperty.getPropertyID());
         doSetValue(referenceProperty, referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.getPropertyID()) : null,
                 isPrimaryKeyProperty, initialization, true);
       }
@@ -803,5 +828,44 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     throw new IllegalArgumentException("Unknown type " + property.getPropertyType());
+  }
+
+  /**
+   * Acts as a proxy for retrieving values from Entity objects, allowing for plugged
+   * in entity specific functionality, such as providing toString() and compareTo() implementations
+   */
+  public static class Proxy {
+
+    public Object getValue(final Entity entity, final Property property) {
+      if (property instanceof Property.DenormalizedViewProperty)
+        throw new IllegalArgumentException("Entity.Proxy.getValue does not handle denormalized view properties (Property.DenormalizedViewProperty)");
+      else if (property instanceof Property.PrimaryKeyProperty)
+        return entity.getPrimaryKey().getValue(property.getPropertyID());
+      else if (entity.hasValue(property.getPropertyID()))
+        return entity.getRawValue(property.getPropertyID());
+      else
+        return property.getDefaultValue();
+    }
+
+    public int compareTo(final Entity entity, final Entity entityToCompare) {
+      return entity.toString().compareTo(entityToCompare.toString());
+    }
+
+    public String toString(final Entity entity) {
+      return entity.getEntityID() + ": " + entity.getPrimaryKey().toString();
+    }
+
+    public String getValueAsString(final Entity entity, final Property property) {
+      return entity.isValueNull(property.getPropertyID()) ? "" : getValue(entity, property).toString();
+    }
+
+    public Object getTableValue(final Entity entity, final Property property) {
+      return getValue(entity, property);
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public Color getBackgroundColor(final Entity entity) {
+      return null;
+    }
   }
 }

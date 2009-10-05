@@ -5,7 +5,6 @@ package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityProxy;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -134,7 +133,7 @@ public class Petstore {
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT).setIndex(1)));
 
-    EntityProxy.setDefaultEntityProxy(new EntityProxy() {
+    Entity.setDefaultProxy(new Entity.Proxy() {
       @Override
       public String toString(final Entity entity) {
         if (entity.is(T_ADDRESS))

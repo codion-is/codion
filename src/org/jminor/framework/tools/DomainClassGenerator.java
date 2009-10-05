@@ -60,7 +60,6 @@ public class DomainClassGenerator {
     final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
     builder.append("import org.jminor.framework.domain.Entity;\n");
-    builder.append("import org.jminor.framework.domain.EntityProxy;\n");
     builder.append("import org.jminor.framework.domain.EntityRepository;\n");
     builder.append("import org.jminor.framework.domain.Property;\n");
     builder.append("import org.jminor.framework.domain.Type;\n\n");

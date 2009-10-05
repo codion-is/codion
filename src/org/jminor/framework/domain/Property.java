@@ -459,9 +459,9 @@ public class Property implements Serializable {
   /**
    * A property that does not map to an underlying database column, the value must
    * be provided by a EntityProxy, by overriding it's getValue() method
-   * @see EntityProxy#setDefaultEntityProxy(EntityProxy)
-   * @see EntityProxy#setEntityProxy(String, EntityProxy)
-   * @see EntityProxy#getValue(Entity, Property)
+   * @see Entity#setDefaultProxy(org.jminor.framework.domain.Entity.Proxy)
+   * @see Entity#setProxy(String, org.jminor.framework.domain.Entity.Proxy)
+   * @see org.jminor.framework.domain.Entity.Proxy#getValue(Entity, Property)
    */
   public static class TransientProperty extends Property {
 
