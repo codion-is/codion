@@ -16,4 +16,5 @@ grant {
   permission java.awt.AWTPermission "setWindowAlwaysOnTop";
 
   permission java.lang.RuntimePermission "setDefaultUncaughtExceptionHandler";
+  permission java.lang.RuntimePermission "preferences";
 };

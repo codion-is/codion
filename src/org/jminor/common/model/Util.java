@@ -42,7 +42,7 @@ public class Util {
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
   private static Level defaultLoggingLevel;
-  private static final Preferences USER_PREFERENCES = Preferences.userRoot();
+  private static Preferences userPreferences;
 
   static {
     final String loggingLevel = System.getProperty(LOGGING_LEVEL_PROPERTY, LOGGING_LEVEL_INFO);
@@ -62,11 +62,15 @@ public class Util {
   private static final ArrayList<Logger> loggers = new ArrayList<Logger>();
 
   public static String getUserPreference(final String key, final String defaultValue) {
-    return USER_PREFERENCES.get(key, defaultValue);
+    if (userPreferences == null)
+      userPreferences = Preferences.userRoot();
+    return userPreferences.get(key, defaultValue);
   }
 
   public static void putUserPreference(final String key, final String value) {
-    USER_PREFERENCES.put(key, value);
+    if (userPreferences == null)
+      userPreferences = Preferences.userRoot();
+    userPreferences.put(key, value);
   }
 
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {

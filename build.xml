@@ -151,6 +151,7 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/server/monitor/**,
+                org/jminor/framework/server/EntityDbServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
