@@ -797,3 +797,4 @@
   EntityKey nested into Entity, renamed to Key
   PropertyEvent nested into Property, renamed to Event
   PropertyListener nested into Property, renamed to Listener
+  EntityPropertyEditor renamed to PropertyEditorPanel and refactored

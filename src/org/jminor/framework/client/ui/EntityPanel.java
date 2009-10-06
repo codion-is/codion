@@ -765,13 +765,12 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
-    try {
       if (!getModel().containsTableModel() || getModel().getTableModel().stSelectionEmpty.isActive())
         return;
 
       final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
-      final EntityPropertyEditor editPanel = new EntityPropertyEditor(propertyToUpdate,
-              selectedEntities, getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
+      final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, selectedEntities,
+              getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
       UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
               null, editPanel.getOkButton(), editPanel.evtButtonClicked);
       if (editPanel.isEditAccepted()) {
@@ -783,16 +782,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         }
         catch (Exception e) {
           EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
-          throw e;
+          if (e instanceof UserException)
+            throw ((UserException) e).getRuntimeException();
+          else
+            throw new RuntimeException(e);
         }
         finally {
           UiUtil.setWaitCursor(false, this);
         }
       }
-    }
-    catch (Exception e) {
-      handleException(e);
-    }
   }
 
   /**
@@ -1769,11 +1767,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param property the property for which to get the InputManager
    * @param toUpdate the entities that are about to be updated
    * @return the InputManager handling input for <code>property</code>
-   * @throws UserException in case of an exception
    * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected EntityPropertyEditor.InputManager getInputManager(final Property property, final List<Entity> toUpdate) throws UserException {
+  protected PropertyEditPanel.InputManager getInputManager(final Property property, final List<Entity> toUpdate) {
     return null;
   }
 
