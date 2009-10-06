@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.beans.ui;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
@@ -28,8 +29,8 @@ public class EmployeePanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected EntityEditPanel initializeEditPanel() {
-    return new EntityEditPanel(getEditModel()) {
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+    return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
         final JTextField txtName = UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_NAME));

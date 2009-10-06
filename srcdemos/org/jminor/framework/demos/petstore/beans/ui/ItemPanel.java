@@ -5,6 +5,7 @@ package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.client.ui.EntityEditPanel;
@@ -39,8 +40,8 @@ public class ItemPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected EntityEditPanel initializeEditPanel() {
-    return new EntityEditPanel(getEditModel()) {
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+    return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(3,3,5,5));

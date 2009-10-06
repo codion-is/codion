@@ -323,7 +323,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     this.compactLayout = compactLayout;
     this.detailEntityPanels = new ArrayList<EntityPanel>(initializeDetailPanels());
     setupControls();
-    this.entityTablePanel = model.containsTableModel() ? initializeEntityTablePanel(rowColoring) : null;
+    this.entityTablePanel = model.containsTableModel() ? initializeTablePanel(model.getTableModel(),
+            getTablePopupControlSet(), rowColoring) : null;
     this.stActive.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         if (isActive()) {
@@ -765,32 +766,32 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
-      if (!getModel().containsTableModel() || getModel().getTableModel().stSelectionEmpty.isActive())
-        return;
+    if (!getModel().containsTableModel() || getModel().getTableModel().stSelectionEmpty.isActive())
+      return;
 
-      final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
-      final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, selectedEntities,
-              getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
-      UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
-              null, editPanel.getOkButton(), editPanel.evtButtonClicked);
-      if (editPanel.isEditAccepted()) {
-        final Object[] oldValues = EntityUtil.setPropertyValue(
-                propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
-        try {
-          UiUtil.setWaitCursor(true, this);
-          getModel().update(selectedEntities);
-        }
-        catch (Exception e) {
-          EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
-          if (e instanceof UserException)
-            throw ((UserException) e).getRuntimeException();
-          else
-            throw new RuntimeException(e);
-        }
-        finally {
-          UiUtil.setWaitCursor(false, this);
-        }
+    final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
+    final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, selectedEntities,
+            getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
+    UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
+            null, editPanel.getOkButton(), editPanel.evtButtonClicked);
+    if (editPanel.isEditAccepted()) {
+      final Object[] oldValues = EntityUtil.setPropertyValue(
+              propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
+      try {
+        UiUtil.setWaitCursor(true, this);
+        getModel().update(selectedEntities);
       }
+      catch (Exception e) {
+        EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
+        if (e instanceof UserException)
+          throw ((UserException) e).getRuntimeException();
+        else
+          throw new RuntimeException(e);
+      }
+      finally {
+        UiUtil.setWaitCursor(false, this);
+      }
+    }
   }
 
   /**
@@ -1126,8 +1127,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     };
     final EntityPanel ret = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED) {
       @Override
-      protected EntityTablePanel initializeEntityTablePanel(final boolean rowColoring) {
-        return new EntityTablePanel(entityModel.getTableModel(), getTablePopupControlSet(), false) {
+      protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel, final ControlSet popupMenuControlSet,
+                                                      final boolean rowColoring) {
+        return new EntityTablePanel(tableModel, popupMenuControlSet, false) {
           @Override
           protected JPanel initializeSearchPanel() {
             return null;
@@ -1143,13 +1145,56 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         return includePopupMenu ? super.getTablePopupControlSet() : null;
       }
       @Override
-      protected EntityEditPanel initializeEditPanel() {
+      protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
         return null;
       }
     };
     ret.initializePanel();
 
     return ret;
+  }
+
+  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) throws UserException {
+    if (model == null)
+      throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
+    try {
+      return (EntityPanel) panelProvider.getEntityPanelClass().getConstructor(EntityModel.class).newInstance(model);
+    }
+    catch (InvocationTargetException ite) {
+      if (ite.getCause() instanceof UserException)
+        throw (UserException) ite.getCause();
+
+      throw new UserException(ite.getCause());
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
+  }
+
+  public static EntityPanel createInstance(final EntityPanelProvider panelProvider,
+                                           final EntityDbProvider dbProvider) throws UserException {
+    try {
+      return createInstance(panelProvider, (EntityModel) panelProvider.getEntityModelClass().getConstructor(
+              EntityDbProvider.class).newInstance(dbProvider));
+    }
+    catch (InvocationTargetException ite) {
+      if (ite.getCause() instanceof UserException)
+        throw (UserException) ite.getCause();
+
+      throw new UserException(ite.getCause());
+    }
+    catch (UserException e) {
+      throw e;
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw new UserException(e);
+    }
   }
 
   /**
@@ -1285,7 +1330,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * returns null then by default this method returns null as well
    */
   protected JPanel initializeEditControlPanel() {
-    editPanel = initializeEditPanel();
+    editPanel = initializeEditPanel(getEditModel());
     if (editPanel == null)
       return null;
 
@@ -1387,20 +1432,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   /**
-   * Initializes the EntityEditPanel, that is, the panel containing the UI controls for editing the active entity,
-   * this method should return null if editing is not required
-   * @return the EntityEditPanel panel
-   */
-  protected abstract EntityEditPanel initializeEditPanel();
-
-  /**
-   * @return a list of EntityPanelProvider objects, specifying the detail panels this panel should contain
-   */
-  protected List<EntityPanelProvider> getDetailPanelProviders() {
-    return new ArrayList<EntityPanelProvider>(0);
-  }
-
-  /**
    * Called during construction, before controls have been initialized
    */
   protected void initializeAssociatedPanels() {}
@@ -1420,7 +1451,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * Instantiates the detail panels according to the result of <code>getDetailPanelProviders</code> method.
    * This method should return an empty List instead of null if overridden.
+   * This method is responsible for setting the master panel value of the returned detail panels
    * @return a List containing the detail EntityPanels
+   * @see #setMasterPanel(EntityPanel)
    */
   protected List<? extends EntityPanel> initializeDetailPanels() {
     try {
@@ -1442,57 +1475,33 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     }
   }
 
-  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) throws UserException {
-    if (model == null)
-      throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
-    try {
-      return (EntityPanel) panelProvider.getEntityPanelClass().getConstructor(EntityModel.class).newInstance(model);
-    }
-    catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof UserException)
-        throw (UserException) ite.getCause();
-
-      throw new UserException(ite.getCause());
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
+  /**
+   * This method should return an empty List instead of null if overridden.
+   * @return a list of EntityPanelProvider objects, specifying the detail panels this panel should contain
+   */
+  protected List<EntityPanelProvider> getDetailPanelProviders() {
+    return new ArrayList<EntityPanelProvider>(0);
   }
 
-  public static EntityPanel createInstance(final EntityPanelProvider panelProvider,
-                                           final EntityDbProvider dbProvider) throws UserException {
-    try {
-      return createInstance(panelProvider, (EntityModel) panelProvider.getEntityModelClass().getConstructor(
-              EntityDbProvider.class).newInstance(dbProvider));
-    }
-    catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof UserException)
-        throw (UserException) ite.getCause();
-
-      throw new UserException(ite.getCause());
-    }
-    catch (UserException e) {
-      throw e;
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
-  }
+  /**
+   * Initializes the EntityEditPanel, that is, the panel containing the UI controls for editing the active entity,
+   * this method should return null if editing is not required
+   * @param editModel the EntityEditModel
+   * @return the EntityEditPanel panel
+   */
+  protected abstract EntityEditPanel initializeEditPanel(final EntityEditModel editModel);
 
   /**
    * Initializes the EntityTablePanel instance using the EntityTableModel instance
    * provided by the getTableModel() method in the underlying EntityModel
+   * @param tableModel the EntityTableModel
+   * @param popupMenuControlSet the ControlSet to use when creating the popup menu for the EntityTablePanel
    * @param rowColoring true if the a table row should be colored according to the underlying entity
-   * @return the table panel
+   * @return the EntityTablePanel
    */
-  protected EntityTablePanel initializeEntityTablePanel(final boolean rowColoring) {
-    return new EntityTablePanel(getModel().getTableModel(), getTablePopupControlSet(),rowColoring);
+  protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel, final ControlSet popupMenuControlSet,
+                                                  final boolean rowColoring) {
+    return new EntityTablePanel(tableModel, popupMenuControlSet, rowColoring);
   }
 
   /**

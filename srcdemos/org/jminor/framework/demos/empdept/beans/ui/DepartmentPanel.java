@@ -9,6 +9,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
@@ -60,8 +61,8 @@ public class DepartmentPanel extends EntityPanel {
 
   /** {@inheritDoc} */
   @Override
-  protected EntityEditPanel initializeEditPanel() {
-    return new EntityEditPanel(getEditModel()) {
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+    return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
         final JTextField txtDeptno =
