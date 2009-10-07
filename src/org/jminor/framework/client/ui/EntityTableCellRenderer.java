@@ -117,8 +117,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class DateRenderer extends DefaultTableCellRenderer {
-    final SimpleDateFormat format = new SimpleDateFormat((String)
-            Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
+    private final SimpleDateFormat format = Configuration.getDefaultDateFormat();
 
     public DateRenderer() {
       super();
@@ -139,8 +138,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class TimestampRenderer extends DefaultTableCellRenderer {
-    final SimpleDateFormat format = new SimpleDateFormat((String)
-            Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
+    private final SimpleDateFormat format = Configuration.getDefaultTimestampFormat();
 
     public TimestampRenderer() {
       super();

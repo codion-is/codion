@@ -285,9 +285,7 @@ public abstract class EntityEditPanel extends JPanel {
    * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
-    return createDateInputPanel(propertyID,
-            new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT)),
-            includeButton, null);
+    return createDateInputPanel(propertyID, Configuration.getDefaultDateFormat(), includeButton, null);
   }
 
   /**

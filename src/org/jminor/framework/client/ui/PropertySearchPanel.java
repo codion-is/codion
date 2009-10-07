@@ -64,9 +64,8 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     switch (model.getPropertyType()) {
       case TIMESTAMP:
       case DATE:
-        final SimpleDateFormat format =
-                new SimpleDateFormat((String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
-                        ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT));
+        final SimpleDateFormat format =model.getPropertyType() == Type.TIMESTAMP
+                ? Configuration.getDefaultTimestampFormat() : Configuration.getDefaultDateFormat();
         field = UiUtil.createFormattedField(DateUtil.getDateMask(format));
         new TextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,

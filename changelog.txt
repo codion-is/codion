@@ -804,3 +804,4 @@
   ValidationException added, thrown by EntityModel.validateData() and EntityPanel.validateData()
   UiUtil.DefaultExceptionHandler.handleException() now unwraps RuntimeExceptions
   PropertyFilterPanel refactored
+  Configuration.getDefaultDateFormat() and getDefaultTimestampFormat() added

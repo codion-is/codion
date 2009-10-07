@@ -126,11 +126,9 @@ public class PropertyEditPanel extends JPanel {
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     switch (property.getPropertyType()) {
       case TIMESTAMP:
-        return new DateInputManager((Date) currentValue,
-                new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT)));
+        return new DateInputManager((Date) currentValue, Configuration.getDefaultTimestampFormat());
       case DATE:
-        return new DateInputManager((Date) currentValue,
-                new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT)));
+        return new DateInputManager((Date) currentValue, Configuration.getDefaultDateFormat());
       case DOUBLE:
         return new DoubleInputManager((Double) currentValue);
       case INT:

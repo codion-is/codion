@@ -175,9 +175,9 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   private SimpleDateFormat initFormat() {
     if (model.getPropertyType() == Type.TIMESTAMP)
-      return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
+      return Configuration.getDefaultTimestampFormat();
     if (model.getPropertyType() == Type.DATE)
-      return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
+      return Configuration.getDefaultDateFormat();
 
     return null;
   }

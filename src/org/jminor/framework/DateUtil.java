@@ -14,10 +14,8 @@ import java.util.Date;
  */
 public class DateUtil {
 
-  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat((String)
-          Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
-  public static final DateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat((String)
-          Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
+  public static final DateFormat DEFAULT_DATE_FORMAT = Configuration.getDefaultDateFormat();
+  public static final DateFormat DEFAULT_TIMESTAMP_FORMAT = Configuration.getDefaultTimestampFormat();
 
 
   /**
