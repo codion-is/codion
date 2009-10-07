@@ -545,8 +545,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       isRefreshing = true;
       evtRefreshStarted.fire();
       final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
+      final List<Entity> queryResult = performQuery(getQueryCriteria());
       clear();
-      addEntities(performQuery(getQueryCriteria()), false);
+      addEntities(queryResult, false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
     finally {
