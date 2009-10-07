@@ -86,12 +86,12 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
       return null;
 
     if (format != null)
-      return getFormattedValue();
+      return getParsedValue();
 
     return text;
   }
 
-  protected Object getFormattedValue() {
+  protected Object getParsedValue() {
     final String text = getText();
     try {
       if (text != null) {

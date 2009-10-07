@@ -5,13 +5,11 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserException;
-import org.jminor.common.model.formats.LongMediumDateFormat;
-import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -79,10 +77,10 @@ public class PropertyEditPanel extends JPanel {
    * @param entities the entities
    * @param editModel an EntityEditModel instance used in case of an Property.ForeignKeyProperty being edited,
    * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
-   * @param inputManager the InputManager to use
+   * @param inputManager the InputManager to use, if no InputManager is specified a default one is used
    */
   public PropertyEditPanel(final Property property, final List<Entity> entities, final EntityEditModel editModel,
-                           final InputManager inputManager){
+                           final InputManager inputManager) {
     if (property == null)
       throw new IllegalArgumentException("Property must be specified");
     if (property instanceof Property.ForeignKeyProperty && editModel == null)
@@ -128,9 +126,11 @@ public class PropertyEditPanel extends JPanel {
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     switch (property.getPropertyType()) {
       case TIMESTAMP:
+        return new DateInputManager((Date) currentValue,
+                new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT)));
       case DATE:
-        return new DateInputManager((Date) currentValue, property.getPropertyType() == Type.DATE ?
-                new ShortDashDateFormat() : new LongMediumDateFormat());
+        return new DateInputManager((Date) currentValue,
+                new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT)));
       case DOUBLE:
         return new DoubleInputManager((Double) currentValue);
       case INT:
@@ -155,7 +155,7 @@ public class PropertyEditPanel extends JPanel {
   }
 
   private JButton createButton(final String caption, final String mnemonic, final int option) {
-    final JButton ret = new JButton(new AbstractAction(caption){
+    final JButton ret = new JButton(new AbstractAction(caption) {
       public void actionPerformed(final ActionEvent e) {
         buttonValue = option;
         evtButtonClicked.fire();
@@ -266,19 +266,14 @@ public class PropertyEditPanel extends JPanel {
     private static JComponent createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                 final EntityEditModel editModel, final Object currentValue) {
       if (!EntityRepository.isLargeDataset(foreignKeyProperty.referenceEntityID)) {
-        try {
-          final EntityComboBoxModel model = editModel.createEntityComboBoxModel(foreignKeyProperty);
-          if (model.getNullValueItem() == null)
-            model.setNullValueItem("-");
-          model.refresh();
-          if (currentValue != null)
-            model.setSelectedItem(currentValue);
+        final EntityComboBoxModel model = editModel.createEntityComboBoxModel(foreignKeyProperty);
+        if (model.getNullValueItem() == null)
+          model.setNullValueItem("-");
+        model.refresh();
+        if (currentValue != null)
+          model.setSelectedItem(currentValue);
 
-          return new JComboBox(model);
-        }
-        catch (UserException e) {
-          throw e.getRuntimeException();
-        }
+        return new JComboBox(model);
       }
       else {
         final String[] searchPropertyIds = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);

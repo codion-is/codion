@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 
@@ -19,11 +18,11 @@ public abstract class EntityApplicationModel {
   private final EntityDbProvider dbProvider;
   private final List<? extends EntityModel> mainApplicationModels;
 
-  public EntityApplicationModel(final User user, final String appID) throws UserException {
+  public EntityApplicationModel(final User user, final String appID) {
     this(EntityDbProviderFactory.createEntityDbProvider(user, createClientKey(appID, user)));
   }
 
-  public EntityApplicationModel(final EntityDbProvider dbProvider) throws UserException {
+  public EntityApplicationModel(final EntityDbProvider dbProvider) {
     loadDomainModel();
     this.dbProvider = dbProvider;
     this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
@@ -32,14 +31,13 @@ public abstract class EntityApplicationModel {
 
   /**
    * @return the current user
-   * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public User getUser() throws UserException {
+  public User getUser() {
     try {
       return dbProvider.getEntityDb().getUser();
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -99,9 +97,8 @@ public abstract class EntityApplicationModel {
 
   /**
    * Refreshes the whole application tree
-   * @throws UserException in case of an exception
    */
-  public void refreshAll() throws UserException {
+  public void refreshAll() {
     final boolean cascade = isCascadeRefresh();
     try {
       setCascadeRefresh(true);
@@ -136,9 +133,8 @@ public abstract class EntityApplicationModel {
    * Returns the main EntityModel instances
    * @param dbProvider the EntityDbProvider instance
    * @return a list containing the main application models
-   * @throws UserException in case of an exception
    */
-  protected abstract List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider) throws UserException;
+  protected abstract List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider);
 
   protected void bindEvents() {}
 }

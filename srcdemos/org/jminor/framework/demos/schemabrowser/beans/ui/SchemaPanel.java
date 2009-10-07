@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class SchemaPanel extends EntityPanel {
 
-  public SchemaPanel(final EntityModel model) throws UserException {
+  public SchemaPanel(final EntityModel model) {
     super(model, "Schema Users", true, false);
   }
 

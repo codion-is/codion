@@ -7,7 +7,6 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.Configuration;
@@ -53,10 +52,9 @@ public abstract class EntityTestUnit extends TestCase {
 
   /**
    * @return the EntityDbProvider instance this test case should use
-   * @throws UserException in case of an exception
    * @throws UserCancelException in case the login was cancelled
    */
-  protected EntityDbProvider initializeDbConnectionProvider() throws UserException, UserCancelException {
+  protected EntityDbProvider initializeDbConnectionProvider() throws UserCancelException {
     return EntityDbProviderFactory.createEntityDbProvider(getTestUser(), getClass().getSimpleName());
   }
 
@@ -64,7 +62,7 @@ public abstract class EntityTestUnit extends TestCase {
    * Returns the database user to use when running the tests, this default implementation
    * prompts for the user/password information, usually overridden
    * @return the db user to use when running the test
-   * @throws org.jminor.common.model.UserCancelException in case the user cancels the login
+   * @throws UserCancelException in case the user cancels the login
    */
   protected User getTestUser() throws UserCancelException {
     return LoginPanel.getUser(null, new User(Configuration.getDefaultUsername(getClass().getName()), null));

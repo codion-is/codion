@@ -8,7 +8,6 @@ import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.ExceptionDialog;
@@ -99,11 +98,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * @param applicationModel the application model this application panel should use
-   * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public void initialize(final EntityApplicationModel applicationModel) throws UserException {
+  public void initialize(final EntityApplicationModel applicationModel) {
     if (applicationModel == null)
-      throw new UserException("Unable to initialize application panel without application model");
+      throw new RuntimeException("Unable to initialize application panel without application model");
 
     this.applicationModel = applicationModel;
     setUncaughtExceptionHandler();
@@ -256,7 +254,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     System.exit(0);
   }
 
-  public void showHelp() throws UserException {
+  public void showHelp() {
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
@@ -269,7 +267,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
-  public void showAbout() throws UserException {
+  public void showAbout() {
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
@@ -393,9 +391,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * @return the panel shown when Help -> Help is selected
-   * @throws org.jminor.common.model.UserException in case there is an error reading the help file
    */
-  protected JPanel getHelpPanel() throws UserException {
+  protected JPanel getHelpPanel() {
     try {
       final JPanel ret = new JPanel(new BorderLayout());
       final String contents = Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
@@ -410,7 +407,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       return ret;
     }
     catch (IOException e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -501,12 +498,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected void showEntityPanel(final EntityPanelProvider panelProvider) {
-    try {
-      showEntityPanelDialog(panelProvider, applicationModel.getDbProvider(), this);
-    }
-    catch (UserException ux) {
-      throw ux.getRuntimeException();
-    }
+    showEntityPanelDialog(panelProvider, applicationModel.getDbProvider(), this);
   }
 
   /**
@@ -518,9 +510,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Initializes this EntityApplicationPanel
-   * @throws UserException in case of an exception
    */
-  protected void initializeUI() throws UserException {
+  protected void initializeUI() {
     setLayout(new BorderLayout());
     applicationTabPane = new JTabbedPane((Integer) Configuration.getValue(Configuration.TAB_PLACEMENT));
     applicationTabPane.setFocusable(false);
@@ -619,12 +610,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param showMenuBar true if a menubar should be created
    * @param size if the JFrame is not maximed then it's preferredSize is set to this value
    * @return an initialized, but non-visible JFrame
-   * @throws org.jminor.common.model.UserException in case of a user exception
    * @see #getNorthToolBar()
    */
   private static JFrame prepareFrame(final JFrame frame, final EntityApplicationPanel applicationPanel,
                                      final String title, final boolean maximize, final boolean northToolBar,
-                                     final boolean showMenuBar, final Dimension size) throws UserException {
+                                     final boolean showMenuBar, final Dimension size) {
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -658,7 +648,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return frame;
   }
 
-  private JMenuBar createMenuBar() throws UserException {
+  private JMenuBar createMenuBar() {
     return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
@@ -817,49 +807,28 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   private static EntityApplicationPanel constructApplicationPanel(
-          final Class<? extends EntityApplicationPanel> applicationPanelClass) throws UserException {
+          final Class<? extends EntityApplicationPanel> applicationPanelClass) {
     try {
       return applicationPanelClass.getConstructor().newInstance();
     }
     catch (InvocationTargetException te) {
-      if (te.getTargetException() instanceof UserException)
-        throw (UserException) te.getTargetException();
-
-      throw new UserException(te.getTargetException());
+      throw new RuntimeException(te.getTargetException());
     }
-    catch (NoSuchMethodException e) {
-      throw new UserException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new UserException(e);
-    }
-    catch (InstantiationException e) {
-      throw new UserException(e);
+    catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
   private static EntityApplicationModel constructApplicationModel(
-          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserException {
+          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) {
     try {
       return applicationModelClass.getConstructor(User.class).newInstance(user);
     }
     catch (InvocationTargetException te) {
-      final Throwable target = te.getTargetException();
-      if (target instanceof UserException)
-        throw (UserException) target;
-      else if (target instanceof RuntimeException)
-        throw (RuntimeException) target;
-      else
-        throw new UserException(target);
+      throw new RuntimeException(te.getTargetException());
     }
-    catch (NoSuchMethodException e) {
-      throw new UserException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new UserException(e);
-    }
-    catch (InstantiationException e) {
-      throw new UserException(e);
+    catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -884,23 +853,23 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static User getUser(final String frameCaption, final User defaultUser,
                               final String applicationIdentifier, final ImageIcon applicationIcon)
-          throws UserCancelException, UserException {
+          throws UserCancelException {
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
             new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
     if (user.getUsername() == null || user.getUsername().length() == 0)
-      throw new UserException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
+      throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
 
     return user;
   }
 
   private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
-                                            final JPanel owner) throws UserException {
+                                            final JPanel owner) {
     showEntityPanelDialog(panelProvider, dbProvider, owner, false);
   }
 
   private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
-                                            final JPanel owner, final boolean modalDialog) throws UserException {
+                                            final JPanel owner, final boolean modalDialog) {
     final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, owner);

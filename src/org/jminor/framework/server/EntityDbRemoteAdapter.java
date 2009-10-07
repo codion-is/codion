@@ -133,6 +133,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     try {
       return loggingEntityDbProxy.selectRowCount(criteria);
     }
+    catch (DbException dbe) {
+      throw dbe;
+    }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
     }

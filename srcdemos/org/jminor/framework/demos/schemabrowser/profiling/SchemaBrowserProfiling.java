@@ -5,7 +5,6 @@ package org.jminor.framework.demos.schemabrowser.profiling;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
@@ -42,20 +41,15 @@ public class SchemaBrowserProfiling extends ProfilingModel {
   @Override
   protected void performWork(EntityApplicationModel applicationModel) {
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
-    try {
-      schemaModel.getTableModel().refresh();
-      selectRandomRow(schemaModel.getTableModel());
-      selectRandomRow(schemaModel.getDetailModels().get(0).getTableModel());
-      selectRandomRow(schemaModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
-    }
-    catch (UserException e) {
-      e.printStackTrace();
-    }
+    schemaModel.getTableModel().refresh();
+    selectRandomRow(schemaModel.getTableModel());
+    selectRandomRow(schemaModel.getDetailModels().get(0).getTableModel());
+    selectRandomRow(schemaModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
   }
 
   /** {@inheritDoc} */
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException {
+  protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
     final EntityApplicationModel ret =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = ret.getMainApplicationModels().iterator().next();

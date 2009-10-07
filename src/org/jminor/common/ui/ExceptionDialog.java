@@ -8,7 +8,6 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -177,7 +176,7 @@ public class ExceptionDialog extends JDialog {
     }
   }
 
-  public void saveErrorReport() throws UserException {
+  public void saveErrorReport() {
     try {
       Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }
@@ -215,7 +214,7 @@ public class ExceptionDialog extends JDialog {
     if (throwable instanceof UserCancelException)
       return;
 
-    if (throwable instanceof UserException && throwable.getCause() instanceof AuthenticationException)
+    if (throwable instanceof RuntimeException && throwable.getCause() instanceof AuthenticationException)
       handleException(throwable.getCause(), dialogParent);
     else {
       if (!(throwable instanceof AuthenticationException))

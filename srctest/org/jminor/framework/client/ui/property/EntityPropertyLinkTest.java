@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
@@ -33,7 +32,7 @@ public class EntityPropertyLinkTest extends TestCase {
 
   private EntityEditModel model;
 
-  public EntityPropertyLinkTest() throws UserException {
+  public EntityPropertyLinkTest() {
     new EmpDept();
     model = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger"))).getEditModel();
   }

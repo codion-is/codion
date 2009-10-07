@@ -8,7 +8,6 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -231,7 +230,7 @@ public class EntityTablePanel extends JPanel {
    * Shows a dialog for configuring the underlying EntityTableModel query.
    * If the underlying table model does not allow query configuration this
    * method returns silentry
-   * @see org.jminor.framework.client.model.EntityTableModel#isQueryConfigurationAllowed()
+   * @see EntityTableModel#isQueryConfigurationAllowed()
    */
   public void configureQuery() {
     if (!getTableModel().isQueryConfigurationAllowed())
@@ -244,12 +243,7 @@ public class EntityTablePanel extends JPanel {
       panel = new EntityCriteriaPanel(getTableModel());
       action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
         public void actionPerformed(ActionEvent event) {
-          try {
-            getTableModel().refresh();
-          }
-          catch (UserException ex) {
-            throw ex.getRuntimeException();
-          }
+          getTableModel().refresh();
         }
       };
       action.putValue(Action.MNEMONIC_KEY, FrameworkMessages.get(FrameworkMessages.APPLY_MNEMONIC).charAt(0));
@@ -674,7 +668,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes a simple search panel, with a single search field, which performes a search based on the default
    * search properties or if none are defined all string based properties
    * @return a simple search panel
-   * @see org.jminor.framework.domain.EntityRepository#setEntitySearchProperties(String, String[])
+   * @see EntityRepository#setEntitySearchProperties(String, String[])
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = new ArrayList<Property>();
@@ -713,9 +707,6 @@ public class EntityTablePanel extends JPanel {
           }
 
           getTableModel().refresh();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
         }
         finally {
           getTableModel().getSearchModel().setSearchConjunction(conjunction);
@@ -824,7 +815,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes the JTable instance
    * @param rowColoring if true then the JTable should paint each row according to the underlying entity
    * @return the JTable instance
-   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable(final boolean rowColoring) {
     final JTable table = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),
@@ -875,14 +866,11 @@ public class EntityTablePanel extends JPanel {
           copyTableAsDelimitedString();
         }
         catch (UserCancelException ex) {/**/}
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
       }
     };
   }
 
-  private void copyTableAsDelimitedString() throws UserException, UserCancelException {
+  private void copyTableAsDelimitedString() throws UserCancelException {
     final List<String> headerValues = new ArrayList<String>();
     final List<Property> properties = new ArrayList<Property>(getTableModel().getTableColumnProperties());
     final ListIterator<Property> iterator = properties.listIterator();

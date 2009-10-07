@@ -7,7 +7,6 @@ import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -145,13 +144,8 @@ public class EntityTableSearchModel {
    * Refreshes all combo box models associated with PropertySearchModels
    */
   public void refreshSearchComboBoxModels() {
-    try {
-      for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
-        model.refresh();
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
+    for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
+      model.refresh();
   }
 
   /**
@@ -214,9 +208,8 @@ public class EntityTableSearchModel {
    * @param referencedEntityID the ID of the entity
    * @param referenceEntities the entities to use as search criteria value
    * @return true if the search state changed as a result of this method call, false otherwise
-   * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) throws UserException {
+  public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) {
     final String searchState = getSearchModelState();
     for (final Property property : tableColumnProperties) {
       if (property instanceof Property.ForeignKeyProperty && ((Property.ForeignKeyProperty)property).referenceEntityID.equals(referencedEntityID)) {

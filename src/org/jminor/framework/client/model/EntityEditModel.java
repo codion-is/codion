@@ -4,7 +4,6 @@ import org.jminor.common.db.Criteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -180,10 +179,9 @@ public class EntityEditModel {
 
   /**
    * Refreshes the Refreshable ComboBoxModels associated with this EntityModel
-   * @throws UserException in case of an exception
    * @see org.jminor.common.model.Refreshable
    */
-  public void refreshComboBoxModels() throws UserException {
+  public void refreshComboBoxModels() {
     for (final ComboBoxModel comboBoxModel : propertyComboBoxModels.values())
       if (comboBoxModel instanceof Refreshable)
         ((Refreshable) comboBoxModel).refresh();
@@ -209,19 +207,14 @@ public class EntityEditModel {
    */
   public PropertyComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                                final String nullValue) {
-    try {
-      PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
-      if (ret == null) {
-        setComboBoxModel(property, ret = createPropertyComboBoxModel(property,
-                refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
-        ret.refresh();
-      }
+    PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    if (ret == null) {
+      setComboBoxModel(property, ret = createPropertyComboBoxModel(property,
+              refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
+      ret.refresh();
+    }
 
-      return ret;
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
+    return ret;
   }
 
   /**

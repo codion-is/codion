@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -127,13 +126,5 @@ public class Control extends AbstractAction {
    */
   public Icon getIcon() {
     return (Icon) getValue(SMALL_ICON);
-  }
-
-  protected void handleException(final Throwable exception) {
-    if (exception instanceof UserCancelException)
-      return;
-
-    exception.printStackTrace();
-    throw new RuntimeException(exception);
   }
 }

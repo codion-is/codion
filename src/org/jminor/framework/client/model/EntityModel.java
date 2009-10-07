@@ -8,13 +8,13 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
+import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.exception.EntityModifiedException;
@@ -25,6 +25,7 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.log4j.Logger;
 
@@ -185,9 +186,8 @@ public class EntityModel implements Refreshable {
    * Instantiates a new EntityModel
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a EntityDbProvider
-   * @throws UserException in case of an exception
    */
-  public EntityModel(final String entityID, final EntityDbProvider dbProvider) throws UserException {
+  public EntityModel(final String entityID, final EntityDbProvider dbProvider) {
     this(entityID, dbProvider, true);
   }
 
@@ -196,10 +196,8 @@ public class EntityModel implements Refreshable {
    * @param entityID the ID of the Entity this EntityModel represents
    * @param dbProvider a EntityDbProvider
    * @param includeTableModel true if this EntityModel should include a table model
-   * @throws UserException in case of an exception
    */
-  public EntityModel(final String entityID, final EntityDbProvider dbProvider,
-                     final boolean includeTableModel) throws UserException {
+  public EntityModel(final String entityID, final EntityDbProvider dbProvider, final boolean includeTableModel) {
     if (entityID == null || entityID.length() == 0)
       throw new IllegalArgumentException("entityID must be specified");
     if (dbProvider == null)
@@ -233,9 +231,8 @@ public class EntityModel implements Refreshable {
    * method should not be viewed as long lived since it does not survive
    * network connection outages for example
    * @return the database connection
-   * @throws UserException in case of an exception
    */
-  public EntityDb getEntityDb() throws UserException {
+  public EntityDb getEntityDb() {
     return getDbProvider().getEntityDb();
   }
 
@@ -482,11 +479,12 @@ public class EntityModel implements Refreshable {
   /**
    * Performes a insert, using the entities returned by getEntitiesForInsert()
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
+   * @throws ValidationException in case validation fails
    * @see #getEntitiesForInsert()
+   * @see #validateData(java.util.List, int)
    */
-  public final void insert() throws UserException, UserCancelException, DbException {
+  public final void insert() throws UserCancelException, DbException, ValidationException {
     insert(getEntitiesForInsert());
   }
 
@@ -494,16 +492,17 @@ public class EntityModel implements Refreshable {
    * Performs an insert on the given entities
    * @param entities the entities to insert
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
+   * @throws ValidationException in case validation fails
    * @see #evtBeforeInsert
    * @see #evtAfterInsert
+   * @see #validateData(java.util.List, int)
    */
-  public final void insert(final List<Entity> entities) throws UserException, DbException, UserCancelException {
+  public final void insert(final List<Entity> entities) throws UserCancelException, DbException, ValidationException {
     if (isReadOnly())
-      throw new UserException("This is a read-only model, inserting is not allowed!");
+      throw new RuntimeException("This is a read-only model, inserting is not allowed!");
     if (!isInsertAllowed())
-      throw new UserException("This model does not allow inserting!");
+      throw new RuntimeException("This model does not allow inserting!");
 
     log.debug(toString() + " - insert "+ Util.getListContentsAsString(entities, false));
 
@@ -523,12 +522,13 @@ public class EntityModel implements Refreshable {
   /**
    * Performs a update, using the entities returned by getEntitiesForUpdate()
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
    * @throws EntityModifiedException in case an entity was modified by another user
+   * @throws ValidationException in case validation fails
    * @see #getEntitiesForUpdate()
+   * @see #validateData(java.util.List, int)
    */
-  public final void update() throws UserException, UserCancelException, DbException, EntityModifiedException {
+  public final void update() throws UserCancelException, DbException, EntityModifiedException, ValidationException {
     update(getEntitiesForUpdate());
   }
 
@@ -537,19 +537,20 @@ public class EntityModel implements Refreshable {
    * If the entities are unmodified this method returns silently.
    * @param entities the Entities to update
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
    * @throws EntityModifiedException in case an entity was modified by another user
+   * @throws ValidationException in case validation fails
    * @see #evtBeforeUpdate
    * @see #evtAfterUpdate
+   * @see #validateData(java.util.List, int)
    */
-  public final void update(final List<Entity> entities) throws UserException, DbException, EntityModifiedException, UserCancelException {
+  public final void update(final List<Entity> entities) throws DbException, EntityModifiedException, UserCancelException, ValidationException {
     if (isReadOnly())
-      throw new UserException("This is a read-only model, updating is not allowed!");
+      throw new RuntimeException("This is a read-only model, updating is not allowed!");
     if (!isMultipleUpdateAllowed() && entities.size() > 1)
-      throw new UserException("Update of multiple entities is not allowed!");
+      throw new RuntimeException("Update of multiple entities is not allowed!");
     if (!isUpdateAllowed())
-      throw new UserException("This model does not allow updating!");
+      throw new RuntimeException("This model does not allow updating!");
 
     log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
 
@@ -582,17 +583,16 @@ public class EntityModel implements Refreshable {
   /**
    * Deletes the entities returned by getEntitiesForDelete()
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a user exception
    * @throws UserCancelException in case the user cancels the operation
    * @see #getEntitiesForDelete()
    * @see #evtBeforeDelete
    * @see #evtAfterDelete
    */
-  public final void delete() throws DbException, UserException, UserCancelException {
+  public final void delete() throws DbException, UserCancelException {
     if (isReadOnly())
-      throw new UserException("This is a read-only model, deleting is not allowed!");
+      throw new RuntimeException("This is a read-only model, deleting is not allowed!");
     if (!isDeleteAllowed())
-      throw new UserException("This model does not allow deleting!");
+      throw new RuntimeException("This model does not allow deleting!");
 
     final List<Entity> entities = getEntitiesForDelete();
     log.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
@@ -648,10 +648,9 @@ public class EntityModel implements Refreshable {
    * @param reportPath the path to the report file
    * @param reportParameters the report parameters
    * @return an initialized JasperPrint object
-   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
-   * @throws Exception in case of exception
+   * @throws JRException in case of a report exception
    */
-  public JasperPrint fillJdbcReport(final String reportPath, final Map reportParameters) throws Exception {
+  public JasperPrint fillJdbcReport(final String reportPath, final Map reportParameters) throws JRException {
     return EntityReportUtil.fillJdbcReport(getDbProvider().getEntityDb(), reportPath, reportParameters);
   }
 
@@ -661,11 +660,10 @@ public class EntityModel implements Refreshable {
    * @param reportPath the path to the report file
    * @param reportParameters the report parameters
    * @return an initialized JasperPrint object
-   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
-   * @throws Exception in case of exception
-   * @see org.jminor.framework.client.model.EntityTableModel#getJRDataSource()
+   * @throws JRException in case of a report exception
+   * @see EntityTableModel#getJRDataSource()
    */
-  public JasperPrint fillReport(final String reportPath, final Map reportParameters) throws Exception {
+  public JasperPrint fillReport(final String reportPath, final Map reportParameters) throws JRException {
     return fillReport(reportPath, reportParameters, getTableModel().getJRDataSource());
   }
 
@@ -675,22 +673,20 @@ public class EntityModel implements Refreshable {
    * @param reportParameters the report parameters
    * @param dataSource the JRDataSource used to provide the report data
    * @return an initialized JasperPrint object
-   * @throws net.sf.jasperreports.engine.JRException in case of a report exception
-   * @throws Exception in case of exception
+   * @throws JRException in case of a report exception
    */
   public JasperPrint fillReport(final String reportPath, final Map reportParameters,
-                                final JRDataSource dataSource) throws Exception {
+                                final JRDataSource dataSource) throws JRException {
     return EntityReportUtil.fillReport(reportPath, reportParameters, dataSource);
   }
 
   /**
    * Refreshes this EntityModel
-   * @throws UserException in case of a user exception
    * @see #evtRefreshStarted
    * @see #evtRefreshDone
    * @see #getCascadeRefresh
    */
-  public void refresh() throws UserException {
+  public void refresh() {
     if (isRefreshing)
       return;
 
@@ -719,9 +715,8 @@ public class EntityModel implements Refreshable {
    * sets the appropriate property value and filters the EntityTableModel
    * @param masterValues the master entities
    * @param masterEntityID the ID of the master entity
-   * @throws UserException in case of a problem
    */
-  public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) throws UserException {
+  public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) {
     if (isSelectionFiltersDetail() && containsTableModel())
       getTableModel().filterByReference(masterValues, masterEntityID);
 
@@ -731,40 +726,37 @@ public class EntityModel implements Refreshable {
 
   /**
    * @return a List of EntityModels serving as detail models
-   * @throws UserException in case of an exception
    */
-  protected List<? extends EntityModel> initializeDetailModels() throws UserException {
+  protected List<? extends EntityModel> initializeDetailModels() {
     return new ArrayList<EntityModel>(0);
   }
 
   /**
    * Override this method to initialize any associated models before bindEvents() is called.
    * An associated model could for example be an EntityModel that is used by this model but is not a detail model.
-   * @throws UserException in case of an exception
    */
-  protected void initializeAssociatedModels() throws UserException {}
+  protected void initializeAssociatedModels() {}
 
   /**
    * Validates the given Entity objects
    * For overriding
    * @param entities the entities to validate
    * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
-   * @throws UserException in case the validation fails
+   * @throws ValidationException in case the validation fails
    * @see #INSERT
    * @see #UPDATE
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void validateData(final List<Entity> entities, final int action) throws UserException {}
+  protected void validateData(final List<Entity> entities, final int action) throws ValidationException {}
 
   /**
    * Inserts the given entities from the database
    * @param entities the entities to insert
    * @return a list containing the primary keys of the inserted entities
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a exception
    * @throws UserCancelException in case the operation is canceled
    */
-  protected List<Entity.Key> doInsert(final List<Entity> entities) throws DbException, UserException, UserCancelException {
+  protected List<Entity.Key> doInsert(final List<Entity> entities) throws DbException, UserCancelException {
     try {
       return getEntityDb().insert(entities);
     }
@@ -772,7 +764,7 @@ public class EntityModel implements Refreshable {
       throw dbe;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -781,10 +773,9 @@ public class EntityModel implements Refreshable {
    * @param entities the entities to update
    * @return a list the udpated entities
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a exception
    * @throws UserCancelException in case the operation is cancelled
    */
-  protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, UserException, UserCancelException {
+  protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, UserCancelException {
     try {
       return getEntityDb().update(entities);
     }
@@ -792,7 +783,7 @@ public class EntityModel implements Refreshable {
       throw dbe;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -800,10 +791,9 @@ public class EntityModel implements Refreshable {
    * Deletes the given entities from the database
    * @param entities the entities to delete
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a exception
    * @throws UserCancelException in case the operation is canceled
    */
-  protected void doDelete(final List<Entity> entities) throws DbException, UserException, UserCancelException {
+  protected void doDelete(final List<Entity> entities) throws DbException, UserCancelException {
     try {
       getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
     }
@@ -811,7 +801,7 @@ public class EntityModel implements Refreshable {
       throw dbe;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -838,24 +828,14 @@ public class EntityModel implements Refreshable {
     evtAfterUpdate.addListener(evtEntitiesChanged);
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        try {
-          if (!getEditModel().isEntityNull())
-            updateDetailModelsByActiveEntity();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
+        if (!getEditModel().isEntityNull())
+          updateDetailModelsByActiveEntity();
       }
     });
     if (!containsTableModel()) {
       getEditModel().getEntityChangedEvent().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent event) {
-          try {
-            updateDetailModelsByActiveEntity();
-          }
-          catch (UserException ex) {
-            throw ex.getRuntimeException();
-          }
+          updateDetailModelsByActiveEntity();
         }
       });
     }
@@ -871,12 +851,7 @@ public class EntityModel implements Refreshable {
 
     getTableModel().evtSelectionChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        try {
-          updateDetailModelsByActiveEntity();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
+        updateDetailModelsByActiveEntity();
       }
     });
 
@@ -925,9 +900,8 @@ public class EntityModel implements Refreshable {
    * and sets the value of the master property to the entity with the primary key found
    * at index 0 in <code>primaryKeys</code>
    * @param primaryKeys the primary keys of the inserted entities
-   * @throws UserException in case of an exception
    */
-  protected void refreshDetailModelsAfterInsert(final List<Entity.Key> primaryKeys) throws UserException {
+  protected void refreshDetailModelsAfterInsert(final List<Entity.Key> primaryKeys) {
     if (detailModels.size() == 0)
       return;
 
@@ -943,16 +917,13 @@ public class EntityModel implements Refreshable {
         }
       }
     }
-    catch (UserException ue) {
-      throw ue;
-    }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void refreshDetailModelsAfterUpdate(final List<Entity> entities) throws UserException {
+  protected void refreshDetailModelsAfterUpdate(final List<Entity> entities) {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
@@ -963,13 +934,13 @@ public class EntityModel implements Refreshable {
     }
   }
 
-  protected void refreshDetailModels() throws UserException {
+  protected void refreshDetailModels() {
     log.trace(this + " refreshing detail models");
     for (final EntityModel detailModel : detailModels)
       detailModel.refresh();
   }
 
-  protected void updateDetailModelsByActiveEntity() throws UserException {
+  protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = containsTableModel() ?
             (getTableModel().stSelectionEmpty.isActive() ? null : getTableModel().getSelectedEntities()) :
             (getEditModel().isEntityNull() ? null : Arrays.asList(getEditModel().getEntityCopy()));
@@ -977,7 +948,7 @@ public class EntityModel implements Refreshable {
       detailModel.masterSelectionChanged(activeEntities, getEntityID());
   }
 
-  private void addDetailModels() throws UserException {
+  private void addDetailModels() {
     final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
     for (final EntityModel detailModel : initializeDetailModels()) {
       detailModels.add(detailModel);

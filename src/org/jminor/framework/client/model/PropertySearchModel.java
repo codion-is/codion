@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.domain.Entity;
@@ -107,9 +106,8 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   /**
    * Ensures that the data this PropertySearchModel relies on (in ComboBoxModels f.ex) has been initialized
-   * @throws org.jminor.common.model.UserException in case of exception
    */
-  public void initialize() throws UserException {
+  public void initialize() {
     if (entityComboBoxModel != null && !entityComboBoxModel.isDataInitialized()) {
       entityComboBoxModel.refresh();
       try {

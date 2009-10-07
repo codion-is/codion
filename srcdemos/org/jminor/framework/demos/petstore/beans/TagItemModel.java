@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.petstore.beans;
 
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
@@ -15,7 +14,7 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
  */
 public class TagItemModel extends EntityModel {
 
-  public TagItemModel(final EntityDbProvider dbProvider) throws UserException {
+  public TagItemModel(final EntityDbProvider dbProvider) {
     super(Petstore.T_TAG_ITEM, dbProvider);
   }
 }

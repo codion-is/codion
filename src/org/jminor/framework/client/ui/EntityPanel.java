@@ -4,13 +4,11 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.common.db.DbException;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
@@ -26,6 +24,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -35,6 +34,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.log4j.Logger;
 
 import javax.swing.AbstractAction;
@@ -377,9 +377,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
           getModel().refresh();//refreshes combo models
         else
           getEditModel().refreshComboBoxModels();
-      }
-      catch (UserException e) {
-        throw e.getRuntimeException();
       }
       finally {
         panelInitialized = true;
@@ -726,8 +723,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public final boolean update() {
     try {
-      validateData();
       if (confirmUpdate()) {
+        validateData();
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
           getModel().update();
@@ -783,10 +780,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       }
       catch (Exception e) {
         EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
-        if (e instanceof UserException)
-          throw ((UserException) e).getRuntimeException();
-        else
-          throw new RuntimeException(e);
+        throw new RuntimeException(e);
       }
       finally {
         UiUtil.setWaitCursor(false, this);
@@ -822,9 +816,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * Prints the table if one is available
-   * @throws UserException in case of a printer exception
    */
-  public void printTable() throws UserException {
+  public void printTable() {
     try {
       if (entityTablePanel != null)
         entityTablePanel.getJTable().print();
@@ -832,7 +825,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       prepareUI(true, false);
     }
     catch (PrinterException pr) {
-      throw new UserException(pr);
+      throw new RuntimeException(pr);
     }
   }
 
@@ -1065,11 +1058,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * Creates a static entity panel showing the given entities
    * @param entities the entities to show in the panel
    * @return a static EntityPanel showing the given entities
-   * @throws UserException in case of an exception
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities) throws UserException {
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities) {
     if (entities == null || entities.size() == 0)
-      throw new UserException("Cannot create an EntityPanel without the entities");
+      throw new RuntimeException("Cannot create an EntityPanel without the entities");
 
     return createStaticEntityPanel(entities, null);
   }
@@ -1079,12 +1071,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param entities the entities to show in the panel
    * @param dbProvider the EntityDbProvider, in case the returned panel should require one
    * @return a static EntityPanel showing the given entities
-   * @throws UserException in case of an exception
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
-                                                    final EntityDbProvider dbProvider) throws UserException {
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider) {
     if (entities == null || entities.size() == 0)
-      throw new UserException("Cannot create an EntityPanel without the entities");
+      throw new RuntimeException("Cannot create an EntityPanel without the entities");
 
     return createStaticEntityPanel(entities, dbProvider, entities.get(0).getEntityID(), true);
   }
@@ -1095,11 +1085,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param dbProvider the EntityDbProvider, in case the returned panel should require one
    * @param entityID the entityID
    * @return a static EntityPanel showing the given entities
-   * @throws UserException in case of an exception
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities,
-                                                    final EntityDbProvider dbProvider,
-                                                    final String entityID) throws UserException {
+  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider,
+                                                    final String entityID) {
     return createStaticEntityPanel(entities, dbProvider, entityID, true);
   }
 
@@ -1110,16 +1098,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param entityID the entityID
    * @param includePopupMenu if true then the default popup menu is included in the table panel, otherwise it's hidden
    * @return a static EntityPanel showing the given entities
-   * @throws UserException in case of an exception
    */
   public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider,
-                                                    final String entityID, final boolean includePopupMenu) throws UserException {
+                                                    final String entityID, final boolean includePopupMenu) {
     final EntityModel entityModel = new EntityModel(entityID, dbProvider) {
       @Override
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider, false) {
           @Override
-          protected List<Entity> performQuery(final Criteria criteria) throws DbException, UserException {
+          protected List<Entity> performQuery(final Criteria criteria) {
             return entities;
           }
         };
@@ -1154,46 +1141,42 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ret;
   }
 
-  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) throws UserException {
+  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) {
     if (model == null)
       throw new RuntimeException("Can not create a EntityPanel without an EntityModel");
     try {
       return (EntityPanel) panelProvider.getEntityPanelClass().getConstructor(EntityModel.class).newInstance(model);
     }
     catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof UserException)
-        throw (UserException) ite.getCause();
+      if (ite.getCause() instanceof RuntimeException)
+        throw (RuntimeException) ite.getCause();
 
-      throw new UserException(ite.getCause());
+      throw new RuntimeException(ite.getCause());
     }
     catch (RuntimeException e) {
       throw e;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
-  public static EntityPanel createInstance(final EntityPanelProvider panelProvider,
-                                           final EntityDbProvider dbProvider) throws UserException {
+  public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider) {
     try {
       return createInstance(panelProvider, (EntityModel) panelProvider.getEntityModelClass().getConstructor(
               EntityDbProvider.class).newInstance(dbProvider));
     }
     catch (InvocationTargetException ite) {
-      if (ite.getCause() instanceof UserException)
-        throw (UserException) ite.getCause();
+      if (ite.getCause() instanceof RuntimeException)
+        throw (RuntimeException) ite.getCause();
 
-      throw new UserException(ite.getCause());
-    }
-    catch (UserException e) {
-      throw e;
+      throw new RuntimeException(ite.getCause());
     }
     catch (RuntimeException e) {
       throw e;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -1456,23 +1439,18 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see #setMasterPanel(EntityPanel)
    */
   protected List<? extends EntityPanel> initializeDetailPanels() {
-    try {
-      final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
-      for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
-        final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getEntityModelClass());
-        if (detailModel == null)
-          throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
-                  + " not found in model of type " + getModel().getClass());
-        final EntityPanel detailPanel = createInstance(detailPanelProvider, detailModel);
-        detailPanel.setMasterPanel(this);
-        detailEntityPanels.add(detailPanel);
-      }
+    final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
+    for (final EntityPanelProvider detailPanelProvider : getDetailPanelProviders()) {
+      final EntityModel detailModel = getModel().getDetailModel(detailPanelProvider.getEntityModelClass());
+      if (detailModel == null)
+        throw new RuntimeException("Detail model of type " + detailPanelProvider.getEntityModelClass()
+                + " not found in model of type " + getModel().getClass());
+      final EntityPanel detailPanel = createInstance(detailPanelProvider, detailModel);
+      detailPanel.setMasterPanel(this);
+      detailEntityPanels.add(detailPanel);
+    }
 
-      return detailEntityPanels;
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
+    return detailEntityPanels;
   }
 
   /**
@@ -1760,16 +1738,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * for overriding, called after a successful insert, after the UI has been initialized for a new entry
-   * @throws UserException in case of an exception
    */
-  protected void postInsert() throws UserException {}
+  protected void postInsert() {}
 
   /**
    * for overriding, called before insert/update
-   * @throws UserException in case of an exception
+   * @throws ValidationException in case of a validation failure
    * @throws UserCancelException in case the user cancels the action during validation
    */
-  protected void validateData() throws UserException, UserCancelException {}
+  protected void validateData() throws ValidationException, UserCancelException {}
 
   /**
    * for overriding, to provide specific input components for multi-entity update
@@ -1886,16 +1863,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param reportPath the path to the report object
    * @param reportParameters a map containing the parameters required for the report
    * @param frameTitle the title to display on the frame
-   * @throws UserException in case of an exception
    */
   protected void viewJdbcReport(final String reportPath, final Map<String, Object> reportParameters,
-                                final String frameTitle) throws UserException {
+                                final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
       EntityReportUiUtil.viewReport(getModel().fillJdbcReport(reportPath, reportParameters), frameTitle);
     }
-    catch (Exception e) {
-      throw new UserException(e);
+    catch (JRException e) {
+      throw new RuntimeException(e);
     }
     finally {
       UiUtil.setWaitCursor(false, this);
@@ -1908,11 +1884,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param reportPath the path to the report object
    * @param reportParameters a map containing the parameters required for the report
    * @param frameTitle the title to display on the frame
-   * @throws UserException in case of an exception
-   * @see org.jminor.framework.client.model.EntityTableModel#getJRDataSource()
+   * @see EntityTableModel#getJRDataSource()
    */
   protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
-                            final String frameTitle) throws UserException {
+                            final String frameTitle) {
     viewReport(reportPath, reportParameters, getModel().getTableModel().getJRDataSource(), frameTitle);
   }
 
@@ -1922,16 +1897,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param reportParameters a map containing the parameters required for the report
    * @param dataSource the JRDataSource used to provide the report data
    * @param frameTitle the title to display on the frame
-   * @throws UserException in case of an exception
    */
   protected void viewReport(final String reportPath, final Map<String, Object> reportParameters,
-                            final JRDataSource dataSource, final String frameTitle) throws UserException {
+                            final JRDataSource dataSource, final String frameTitle) {
     try {
       UiUtil.setWaitCursor(true, this);
       EntityReportUiUtil.viewReport(getModel().fillReport(reportPath, reportParameters, dataSource), frameTitle);
     }
-    catch (Exception e) {
-      throw new UserException(e);
+    catch (JRException e) {
+      throw new RuntimeException(e);
     }
     finally {
       UiUtil.setWaitCursor(false, this);
@@ -2155,9 +2129,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
   }
 
-  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies,
-                                             final EntityDbProvider dbProvider,
-                                             final JComponent dialogParent) throws UserException {
+  private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies, final EntityDbProvider dbProvider,
+                                             final JComponent dialogParent) {
     JPanel dependenciesPanel;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
@@ -2171,23 +2144,18 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
-                                                final EntityDbProvider dbProvider) throws UserException {
-    try {
-      final JPanel ret = new JPanel(new BorderLayout());
-      final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
-      tabPane.setUI(new BorderlessTabbedPaneUI());
-      for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
-        final List<Entity> dependantEntities = entry.getValue();
-        if (dependantEntities.size() > 0)
-          tabPane.addTab(entry.getKey(), createStaticEntityPanel(dependantEntities, dbProvider));
-      }
-      ret.add(tabPane, BorderLayout.CENTER);
+                                                final EntityDbProvider dbProvider) {
+    final JPanel ret = new JPanel(new BorderLayout());
+    final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
+    tabPane.setUI(new BorderlessTabbedPaneUI());
+    for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
+      final List<Entity> dependantEntities = entry.getValue();
+      if (dependantEntities.size() > 0)
+        tabPane.addTab(entry.getKey(), createStaticEntityPanel(dependantEntities, dbProvider));
+    }
+    ret.add(tabPane, BorderLayout.CENTER);
 
-      return ret;
-    }
-    catch (Exception e) {
-      throw new UserException(e);
-    }
+    return ret;
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {

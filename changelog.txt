@@ -800,3 +800,7 @@
   EntityPropertyEditor renamed to PropertyEditorPanel and refactored
   EntityPanel.initializeEditPanel(), added EntityEditModel as parameter
   EntityPanel.initializeEntityTablePanel() renamed to initializeTablePanel(), added EntityTableModel and ControlSet as parameters
+  UserException removed, RuntimeException used throughout instead
+  ValidationException added, thrown by EntityModel.validateData() and EntityPanel.validateData()
+  UiUtil.DefaultExceptionHandler.handleException() now unwraps RuntimeExceptions
+  PropertyFilterPanel refactored

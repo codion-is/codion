@@ -4,7 +4,6 @@
 package org.jminor.framework.client.model.combobox;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Property;
@@ -58,12 +57,7 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
     if (refreshEvent != null) {
       refreshEvent.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent event) {
-          try {
-            refresh();
-          }
-          catch (UserException ex) {
-            throw ex.getRuntimeException();
-          }
+          refresh();
         }
       });
     }
@@ -73,9 +67,6 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
   protected List<?> getContents() {
     try {
       return dbProvider.getEntityDb().selectPropertyValues(entityID, property.getPropertyID(), true);
-    }
-    catch (UserException ue) {
-      throw ue.getRuntimeException();
     }
     catch (Exception e) {
       throw new RuntimeException(e);

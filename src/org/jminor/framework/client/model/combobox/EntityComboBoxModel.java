@@ -3,9 +3,7 @@
  */
 package org.jminor.framework.client.model.combobox;
 
-import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntityCriteria;
@@ -126,9 +124,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive
-   * @throws org.jminor.common.model.UserException in case of an exception
    */
-  public void forceRefresh() throws UserException {
+  public void forceRefresh() {
     try {
       forceRefresh = true;
       refresh();
@@ -250,12 +247,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
       return entities;
     }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
-    catch (DbException e) {
-      throw new RuntimeException(e);
-    }
     finally {
       dataInitialized = true;
       evtRefreshDone.fire();
@@ -266,21 +257,16 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * Retrieves the entities to present in this EntityComboBoxModel
    * @return the entities to present in this EntityComboBoxModel
-   * @throws UserException in case of an exception
-   * @throws DbException in case of a database exception
    */
-  protected List<Entity> performQuery() throws UserException, DbException {
+  protected List<Entity> performQuery() {
     try {
       if (getEntityCriteria() != null)
         return dbProvider.getEntityDb().selectMany(getEntityCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID());
     }
-    catch (DbException dbe) {
-      throw dbe;
-    }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 }

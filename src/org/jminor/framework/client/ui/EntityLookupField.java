@@ -4,8 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.UserException;
-import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.framework.client.model.EntityLookupModel;
@@ -173,19 +171,14 @@ public class EntityLookupField extends JTextField {
   private AbstractAction initializeLookupAction() {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
-        try {
-          if (getModel().getSearchString().length() == 0) {
-            getModel().setSelectedEntities(null);
-          }
-          else {
-            if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
-              getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
-            else if (!getModel().searchStringRepresentsSelected())
-              selectEntities(getModel().performQuery());
-          }
+        if (getModel().getSearchString().length() == 0) {
+          getModel().setSelectedEntities(null);
         }
-        catch (UserException ex) {
-          ExceptionDialog.handleException(ex, EntityLookupField.this);
+        else {
+          if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
+            getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
+          else if (!getModel().searchStringRepresentsSelected())
+            selectEntities(getModel().performQuery());
         }
       }
     };

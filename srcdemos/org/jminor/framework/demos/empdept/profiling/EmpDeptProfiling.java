@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.profiling;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserException;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -48,14 +48,14 @@ public class EmpDeptProfiling extends ProfilingModel {
       model.refresh();
       selectRandomRow(model.getTableModel());
     }
-    catch (UserException e) {
+    catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws UserException {
+  protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
     final EntityApplicationModel applicationModel =
             new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
 

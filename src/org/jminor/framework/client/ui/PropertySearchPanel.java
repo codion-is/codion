@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.UserException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -42,13 +41,8 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   public PropertySearchPanel(final PropertySearchModel model, final boolean includeActivateBtn,
                              final boolean includeToggleAdvBtn) {
     super(model, includeActivateBtn, includeToggleAdvBtn);
-    try {
-      model.initialize();
-      bindEvents();
-    }
-    catch (UserException e) {
-      throw e.getRuntimeException();
-    }
+    model.initialize();
+    bindEvents();
   }
 
   /** {@inheritDoc} */

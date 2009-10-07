@@ -4,7 +4,6 @@
 package org.jminor.framework.server.provider;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
@@ -49,28 +48,28 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     this.clientTypeID = clientTypeID;
   }
 
-  public EntityDb getEntityDb() throws UserException {
+  public EntityDb getEntityDb() {
     initializeEntityDb();
 
     return entityDb;
   }
 
-  public void disconnect() throws UserException {
+  public void disconnect() {
     try {
       getEntityDb().disconnect();
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
-  private void initializeEntityDb() throws UserException {
+  private void initializeEntityDb() {
     try {
       if (entityDb == null || !connectionValid())
         entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.getRepository());
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 

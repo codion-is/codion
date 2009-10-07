@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.Criteria;
 import org.jminor.common.db.User;
 import org.jminor.common.model.IntArray;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.db.provider.EntityDbLocalProvider;
 import org.jminor.framework.domain.Entity;
@@ -162,7 +161,7 @@ public class EntityTableModelTest extends TestCase {
     }
 
     @Override
-    public void refresh() throws UserException {
+    public void refresh() {
       clear();
       addEntities(performQuery(null), false);
     }

@@ -7,7 +7,6 @@ import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Dbms;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
@@ -45,24 +44,24 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   /** {@inheritDoc} */
-  public final EntityDb getEntityDb() throws UserException {
+  public final EntityDb getEntityDb() {
     validateDbConnection();
 
     return entityDb;
   }
 
   /** {@inheritDoc} */
-  public void disconnect() throws UserException {
+  public void disconnect() {
     try {
       getEntityDb().disconnect();
       Database.get().shutdownEmbedded(connectionProperties);
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
-  private void validateDbConnection() throws UserException {
+  private void validateDbConnection() {
     try {
       if (entityDb == null)
         connect();
@@ -75,7 +74,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
       }
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 

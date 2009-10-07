@@ -179,7 +179,7 @@ public class AutoCompletion extends PlainDocument {
       super.insertString(0, text, null);
     }
     catch (BadLocationException e) {
-      throw new RuntimeException(e.toString());
+      throw new RuntimeException(e);
     }
   }
 

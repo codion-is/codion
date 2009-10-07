@@ -3,11 +3,9 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -82,28 +80,20 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    * @see #evtRefreshDone
    */
   public void refresh() {
-    try {
-      if ((staticData && dataInitialized))
-        return;
+    if ((staticData && dataInitialized))
+      return;
 
-      log.trace(this + " refreshing");
-      data.clear();
-      final List<Entity> entities = performQuery();
+    log.trace(this + " refreshing");
+    data.clear();
+    final List<Entity> entities = performQuery();
 
-      for (final Entity entity : entities) {
-        if (include(entity))
-          data.add(entity);
-      }
+    for (final Entity entity : entities) {
+      if (include(entity))
+        data.add(entity);
+    }
 
-      dataInitialized = true;
-      evtRefreshDone.fire();
-    }
-    catch (UserException ue) {
-      throw ue.getRuntimeException();
-    }
-    catch (DbException e) {
-      throw new RuntimeException(e);
-    }
+    dataInitialized = true;
+    evtRefreshDone.fire();
   }
 
   public void clear() {
@@ -157,21 +147,16 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   /**
    * Retrieves the entities to present in this EntityComboBoxModel
    * @return the entities to present in this EntityComboBoxModel
-   * @throws UserException in case of an exception
-   * @throws DbException in case of a database exception
    */
-  protected List<Entity> performQuery() throws UserException, DbException {
+  protected List<Entity> performQuery() {
     try {
       if (getEntityCriteria() != null)
         return dbProvider.getEntityDb().selectMany(getEntityCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID());
     }
-    catch (DbException dbe) {
-      throw dbe;
-    }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 }

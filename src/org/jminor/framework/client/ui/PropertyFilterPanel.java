@@ -21,11 +21,8 @@ import org.jminor.framework.domain.Type;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Point;
@@ -34,20 +31,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class PropertyFilterPanel extends AbstractSearchPanel {
 
   private final State stIsDialogActive = new State();
   private final State stIsDialogShowing = new State();
-
-  private final SimpleDateFormat timestampFormat =
-          new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
-  private final SimpleDateFormat shortDateFormat =
-          new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
 
   private JDialog searchDlg;
   private Point lastPosition;
@@ -148,24 +138,13 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   @Override
   protected JComponent getInputField(final boolean isUpperBound) {
-    JComponent field;
-    switch (model.getPropertyType()) {
-      case TIMESTAMP:
-      case DATE:
-        field = createDateChooserField(isUpperBound, model.getPropertyType() == Type.TIMESTAMP);
-        break;
-      case DOUBLE:
-        createTextProperty(field = new DoubleField(4), isUpperBound);
-        break;
-      case INT:
-        createTextProperty(field = new IntField(4), isUpperBound);
-        break;
-      case BOOLEAN:
-        createToggleProperty((JCheckBox) (field = new JCheckBox()), isUpperBound);
-        break;
-      default:
-        createTextProperty(field = new JTextField(4), isUpperBound);
-    }
+    final SimpleDateFormat format = initFormat();
+    final JComponent field = initField(format);
+    if (model.getPropertyType() == Type.BOOLEAN)
+      createToggleProperty((JCheckBox) field, isUpperBound);
+    else
+      createTextProperty(field, isUpperBound, format);
+
     if (field instanceof JTextField) {//enter button toggles the filter on/off
       ((JTextField) field).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -176,6 +155,31 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     field.setToolTipText(isUpperBound ? "a" : "b");
 
     return field;
+  }
+
+  private JComponent initField(final SimpleDateFormat format) {
+    switch (model.getPropertyType()) {
+      case DATE:
+      case TIMESTAMP:
+        return UiUtil.createFormattedField(DateUtil.getDateMask(format));
+      case DOUBLE:
+        return new DoubleField(4);
+      case INT:
+        return new IntField(4);
+      case BOOLEAN:
+        return new JCheckBox();
+      default:
+        return new JTextField(4);
+    }
+  }
+
+  private SimpleDateFormat initFormat() {
+    if (model.getPropertyType() == Type.TIMESTAMP)
+      return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
+    if (model.getPropertyType() == Type.DATE)
+      return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
+
+    return null;
   }
 
   private void initSearchDlg(Container parent) {
@@ -207,75 +211,13 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     });
   }
 
-  private JTextField createDateChooserField(final boolean isUpperBound, final boolean isTimestamp) {
-    final String mask = isTimestamp ? "##-##-#### ##:##" : "##-##-####";
-    final JFormattedTextField ret = UiUtil.createFormattedField(mask);
-    model.evtSearchModelCleared.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ret.setValue(null);
-      }
-    });
-
-    ret.getDocument().addDocumentListener(new DocumentListener() {
-      public void changedUpdate(DocumentEvent e) {
-        refreshDateField(ret, isTimestamp, isUpperBound);
-      }
-
-      public void insertUpdate(DocumentEvent e) {
-        refreshDateField(ret, isTimestamp, isUpperBound);
-      }
-
-      public void removeUpdate(DocumentEvent e) {
-        refreshDateField(ret, isTimestamp, isUpperBound);
-      }
-    });
-
-    return ret;
-  }
-
-  private void refreshDateField(final JFormattedTextField dateField,
-                                final boolean isTimestamp, final boolean isUpperBound) {
-    try {
-      final String txt = dateField.getText();
-      final SimpleDateFormat format = isTimestamp ? timestampFormat : shortDateFormat;
-      if (DateUtil.isDateValid(txt, false, format)) {
-        final Date val = getDate(format, dateField);
-        if (isUpperBound)
-          model.setUpperBound(isTimestamp ? new Timestamp(val.getTime()) : val);
-        else
-          model.setLowerBound(isTimestamp ? new Timestamp(val.getTime()) : val);
-      }
-      else {
-        if (isUpperBound)
-          model.setUpperBound((Comparable) null);
-        else
-          model.setLowerBound((Comparable) null);
-      }
-    }
-    catch (ParseException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  private Date getDate(final SimpleDateFormat format, final JFormattedTextField dateField) throws ParseException {
-    final Date date = format.parse(dateField.getText());
-    final Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
-
-    return new Date(cal.getTimeInMillis());
-  }
-
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
     ControlProvider.bindToggleButtonAndProperty(checkBox, model,
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
             null, isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
   }
 
-  private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper) {
+  private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
     switch(model.getPropertyType()) {
       case INT:
         return new IntBeanPropertyLink((IntField) component, model,
@@ -289,20 +231,31 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       case DOUBLE:
         return new DoubleBeanPropertyLink((DoubleField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null){
+                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
           @Override
           public void setModelPropertyValue(final Object obj) {
             super.setModelPropertyValue(obj instanceof String && obj.equals("") ? null : obj);
           }
         };
       case DATE:
+        return new TextBeanPropertyLink((JTextField) component, model,
+                isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
+                Date.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
+                LinkType.READ_WRITE, format);
       case TIMESTAMP:
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, new SimpleDateFormat(
-                        (String) Configuration.getValue(model.getPropertyType() == Type.TIMESTAMP
-                                ? Configuration.DEFAULT_TIMESTAMP_FORMAT : Configuration.DEFAULT_DATE_FORMAT)));
+                LinkType.READ_WRITE, format) {
+          @Override
+          protected Object getParsedValue() {
+            final Date date = (Date) super.getParsedValue();
+            if (date != null)
+              return new Timestamp(date.getTime());
+
+            return null;
+          }
+        };
       default:
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,

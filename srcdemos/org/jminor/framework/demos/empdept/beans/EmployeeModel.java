@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
@@ -24,7 +23,7 @@ import java.awt.event.ActionListener;
 
 public class EmployeeModel extends EntityModel {
 
-  public EmployeeModel(final EntityDbProvider dbProvider) throws UserException {
+  public EmployeeModel(final EntityDbProvider dbProvider) {
     super(EmpDept.T_EMPLOYEE, dbProvider);
     getTableModel().setShowAllWhenNotFiltered(true);
     getTableModel().getPropertySummaryModel(EmpDept.EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.AVERAGE);
@@ -57,12 +56,7 @@ public class EmployeeModel extends EntityModel {
     super.bindEvents();
     evtEntitiesChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        try {
-          getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
+        getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
       }
     });
     getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new Property.Listener() {

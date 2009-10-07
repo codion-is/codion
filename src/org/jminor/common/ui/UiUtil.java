@@ -8,11 +8,9 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
-import net.sf.jasperreports.engine.JRException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -702,14 +700,12 @@ public class UiUtil {
     public void handleException(final Throwable exception, final JComponent dialogParent) {
       if (exception instanceof UserCancelException)
         return;
-      if (exception instanceof DbException)
-        handleDbException((DbException) exception, dialogParent);
-      else if (exception instanceof JRException && exception.getCause() != null)
-        handleException(exception.getCause(), dialogParent);
-      else if (exception instanceof UserException && exception.getCause() instanceof DbException)
-        handleDbException((DbException) exception.getCause(), dialogParent);
+
+      final Throwable rootCause = unwrapRuntimeException(exception);
+      if (rootCause instanceof DbException)
+        handleDbException((DbException) rootCause, dialogParent);
       else {
-        ExceptionDialog.showExceptionDialog(getParentWindow(dialogParent), getMessageTitle(exception), exception.getMessage(), exception);
+        ExceptionDialog.showExceptionDialog(getParentWindow(dialogParent), getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
       }
     }
 
@@ -723,6 +719,14 @@ public class UiUtil {
       }
       ExceptionDialog.showExceptionDialog(getParentWindow(dialogParent),
               Messages.get(Messages.EXCEPTION), errMsg, dbException);
+    }
+
+    private static Throwable unwrapRuntimeException(final Throwable exception) {
+      if (exception.getClass().equals(RuntimeException.class) && exception.getCause() != null 
+              && exception.getCause().getClass().equals(RuntimeException.class))
+        return unwrapRuntimeException(exception.getCause());
+
+      return exception;
     }
 
     private String getMessageTitle(final Throwable e) {

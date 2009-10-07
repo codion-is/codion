@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.petstore.profiling;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserException;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
@@ -35,22 +35,17 @@ public class PetstoreProfiling extends ProfilingModel {
   /** {@inheritDoc} */
   @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
-    try {
-      final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
-      categoryModel.getTableModel().clearSelection();
-      categoryModel.refresh();
-      selectRandomRow(categoryModel.getTableModel());
-      selectRandomRow(categoryModel.getDetailModels().get(0).getTableModel());
-      selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
-    }
-    catch (UserException e) {
-      e.printStackTrace();
-    }
+    final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
+    categoryModel.getTableModel().clearSelection();
+    categoryModel.refresh();
+    selectRandomRow(categoryModel.getTableModel());
+    selectRandomRow(categoryModel.getDetailModels().get(0).getTableModel());
+    selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
   }
 
   /** {@inheritDoc} */
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws UserException {
+  protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.petstore.beans;
 
-import org.jminor.common.model.UserException;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
@@ -18,13 +17,13 @@ import java.util.List;
  */
 public class ContactInfoModel extends EntityModel {
 
-  public ContactInfoModel(final EntityDbProvider dbProvider) throws UserException {
+  public ContactInfoModel(final EntityDbProvider dbProvider) {
     super(Petstore.T_SELLER_CONTACT_INFO, dbProvider);
   }
 
   /** {@inheritDoc} */
   @Override
-  protected List<? extends EntityModel> initializeDetailModels() throws UserException {
+  protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new ItemModel(getDbProvider()));
   }
 }

@@ -12,6 +12,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * User: Björn Darri
@@ -152,6 +153,13 @@ public abstract class AbstractSearchModel {
   }
 
   /**
+   * @param value the upper bound
+   */
+  public void setUpperBound(final Date value) {
+    setUpperBound((Object) value);
+  }
+
+  /**
    * @param upper the upper bound
    * @throws IllegalStateException in case this model has been locked
    */
@@ -220,6 +228,13 @@ public abstract class AbstractSearchModel {
    * @param value the lower bound
    */
   public void setLowerBound(final Timestamp value) {
+    setLowerBound((Object) value);
+  }
+
+  /**
+   * @param value the lower bound
+   */
+  public void setLowerBound(final Date value) {
     setLowerBound((Object) value);
   }
 

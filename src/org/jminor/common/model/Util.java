@@ -285,8 +285,7 @@ public class Util {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
 
-  public static String getDelimitedString(final String[][] headers, final String[][] data,
-                                          final String delimiter) throws UserException {
+  public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
     final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
@@ -309,16 +308,16 @@ public class Util {
     return contents.toString();
   }
 
-  public static void writeDelimitedFile(final String[][] headers, final String[][] data,
-                                        final String delimiter, final File file) throws UserException {
+  public static void writeDelimitedFile(final String[][] headers, final String[][] data, final String delimiter,
+                                        final File file) {
     writeFile(getDelimitedString(headers, data, delimiter), file);
   }
 
-  public static void writeFile(final String contents, final File file) throws UserException {
+  public static void writeFile(final String contents, final File file) {
     writeFile(contents, file, false);
   }
 
-  public static void writeFile(final String contents, final File file, final boolean append) throws UserException {
+  public static void writeFile(final String contents, final File file, final boolean append) {
     BufferedWriter writer = null;
     try {
       final FileWriter fileWriter = new FileWriter(file, append);
@@ -328,7 +327,7 @@ public class Util {
     }
     catch (IOException e) {
       e.printStackTrace();
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
     finally {
       try {

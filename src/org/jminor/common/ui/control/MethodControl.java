@@ -28,7 +28,7 @@ public class MethodControl extends Control {
     }
     catch (NoSuchMethodException e) {
       System.out.println("Method " + methodName + " not found in class " + owner.getClass().getName());
-      throw new RuntimeException(e.getMessage());
+      throw new RuntimeException(e);
     }
   }
 
@@ -39,10 +39,10 @@ public class MethodControl extends Control {
       method.invoke(owner);
     }
     catch (InvocationTargetException ite) {
-      handleException(ite.getTargetException());
+      throw new RuntimeException(ite.getTargetException());
     }
-    catch (Throwable th) {
-      handleException(th);
+    catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
     finally {
       evtActionPerfomed.fire();

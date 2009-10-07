@@ -393,11 +393,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /**
    * @param entity the Entity instance
    * @return a query for updating this entity instance
-   * @throws DbException in case the entity is unmodified
+   * @throws DbException in case the entity is unmodified or it contains no modified updatable properties
    */
-  static String getUpdateSQL(final Entity entity) throws DbException{
+  static String getUpdateSQL(final Entity entity) throws DbException {
     if (!entity.isModified())
-      throw new RuntimeException("Can not get update sql for an unmodified entity");
+      throw new DbException("Can not get update sql for an unmodified entity");
 
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");

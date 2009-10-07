@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.UserException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
@@ -46,12 +45,7 @@ public class EntityComboBox extends SteppedComboBox {
     final JPopupMenu ret = new JPopupMenu();
     ret.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
       public void actionPerformed(ActionEvent e) {
-        try {
-          getModel().forceRefresh();
-        }
-        catch (UserException ex) {
-          throw ex.getRuntimeException();
-        }
+        getModel().forceRefresh();
       }
     });
 

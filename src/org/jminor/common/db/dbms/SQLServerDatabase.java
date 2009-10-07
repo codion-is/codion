@@ -35,7 +35,7 @@ public class SQLServerDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getSequenceSQL(final String sequenceName) {
-    throw new IllegalArgumentException("Sequence support is not implemented for database type: " + getDatabaseType());
+    throw new RuntimeException("Sequence support is not implemented for database type: " + getDatabaseType());
   }
 
   /** {@inheritDoc} */

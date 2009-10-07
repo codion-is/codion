@@ -9,7 +9,6 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.client.model.reporting.EntityJRDataSource;
@@ -325,9 +324,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   /**
    * @return the database connection
-   * @throws UserException in case of an exception
    */
-  public EntityDb getEntityDb() throws UserException {
+  public EntityDb getEntityDb() {
     return getDbProvider().getEntityDb();
   }
 
@@ -535,11 +533,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   /**
    * Refreshes this table model
-   * @throws UserException in case of an exception
    * @see #evtRefreshStarted
    * @see #evtRefreshDone
    */
-  public void refresh() throws UserException {
+  public void refresh() {
     if (isRefreshing)
       return;
 
@@ -552,9 +549,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       addEntities(performQuery(getQueryCriteria()), false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
-    catch (DbException e) {
-      throw new UserException(e);
-    }
     finally {
       isRefreshing = false;
       evtRefreshDone.fire();
@@ -566,11 +560,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * Retrieves the entities identified by the given primary keys and adds them to this table model
    * @param primaryKeys the primary keys
    * @param atFrontOfList if true the entities are added to the front
-   * @throws UserException in case of an exception
    * @throws DbException in case of a database exception
    */
-  public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFrontOfList)
-          throws UserException, DbException {
+  public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFrontOfList) throws DbException {
     try {
       addEntities(getEntityDb().selectMany(primaryKeys), atFrontOfList);
     }
@@ -578,7 +570,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       throw dbe;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -678,7 +670,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     }
   }
 
-  public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID) throws UserException {
+  public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID) {
     if (isQueryFilteredByMaster()) {
       if (tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities))
         refresh();
@@ -860,9 +852,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a Map containing all entities which depend on the selected entities,
    * where the keys are entityIDs and the value is an array of entities of that type
    * @throws DbException in case of a database exception
-   * @throws UserException in case of a user exception
    */
-  public final Map<String, List<Entity>> getSelectionDependencies() throws DbException, UserException {
+  public final Map<String, List<Entity>> getSelectionDependencies() throws DbException {
     try {
       return getEntityDb().selectDependentEntities(getSelectedEntities());
     }
@@ -870,7 +861,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       throw dbe;
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -963,10 +954,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * Queries for the data used to populate this EntityTableModel when it is refreshed
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
-   * @throws UserException in case of an exception
-   * @throws DbException in case of a database exception
    */
-  protected List<Entity> performQuery(final Criteria criteria) throws DbException, UserException {
+  protected List<Entity> performQuery(final Criteria criteria) {
     if (isQueryFilteredByMaster() && criteria == null && !isShowAllWhenNotFiltered())
       return new ArrayList<Entity>();
 
@@ -974,11 +963,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       return getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
               EntityRepository.getOrderByClause(getEntityID())));
     }
-    catch (DbException dbe) {
-      throw dbe;
-    }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 

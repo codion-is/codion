@@ -7,7 +7,6 @@ import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
@@ -206,12 +205,12 @@ public class EntityLookupModel {
             new CriteriaSet(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 
-  public List<Entity> performQuery() throws UserException {
+  public List<Entity> performQuery() {
     try {
       return dbProvider.getEntityDb().selectMany(getEntityCriteria());
     }
     catch (Exception e) {
-      throw new UserException(e);
+      throw new RuntimeException(e);
     }
   }
 

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.provider;
 
-import org.jminor.common.model.UserException;
 import org.jminor.framework.db.EntityDb;
 
 /**
@@ -19,13 +18,11 @@ public interface EntityDbProvider {
    * healthy EntityDb object, that is, it must perform all
    * reconnections whether remotely or locally
    * @return EntityDb
-   * @throws UserException in case of a problem
    */
-  public EntityDb getEntityDb() throws UserException;
+  public EntityDb getEntityDb();
 
   /**
    * Logs out, disconnects and performs cleanup if required
-   * @throws UserException in case of an exception
    */
-  public void disconnect() throws UserException;
+  public void disconnect();
 }

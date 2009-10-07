@@ -7,7 +7,6 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.IntArray;
 import org.jminor.common.model.UserCancelException;
-import org.jminor.common.model.UserException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -140,7 +139,6 @@ public abstract class ProfilingModel {
 
   /**
    * @param clientCount the required number of active clients
-   * @throws org.jminor.common.model.UserException in case of an exception
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   public void setClientCount(int clientCount) throws Exception {
@@ -222,7 +220,7 @@ public abstract class ProfilingModel {
 
   protected abstract void performWork(final EntityApplicationModel applicationModel);
 
-  protected abstract EntityApplicationModel initializeApplicationModel() throws UserException, UserCancelException;
+  protected abstract EntityApplicationModel initializeApplicationModel() throws UserCancelException;
 
   protected void initializeSettings() {/**/}
 
@@ -335,7 +333,7 @@ public abstract class ProfilingModel {
     }
   }
 
-  private EntityApplicationModel initApplicationModel() throws UserException, UserCancelException {
+  private EntityApplicationModel initApplicationModel() throws UserCancelException {
     try {
       final int sleepyTime = getClientThinkTime(true);
       System.out.println("AppModel delaying login for " + sleepyTime + " ms");
