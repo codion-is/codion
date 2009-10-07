@@ -127,7 +127,7 @@
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/criteria/**,
                 org/jminor/framework/db/exception/**,
-                org/jminor/framework/db/EntityDb*,
+                org/jminor/framework/db/EntityDb.class,
                 org/jminor/framework/db/provider/EntityDbProvider*,
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/domain/**,
