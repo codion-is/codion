@@ -23,6 +23,7 @@ public class EmpDept {
 
   /**Used for i18n*/
   public static final String NONE = "none";
+  public static final String EMPLOYEE_SALARY_DESCRIPTION = "employee_salary_description";
 
   /**Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "scott.dept";
@@ -83,6 +84,8 @@ public class EmpDept {
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredWidth(100));
+
+    EntityRepository.setPropertyDescription(T_EMPLOYEE, EMPLOYEE_SALARY, getString(EMPLOYEE_SALARY_DESCRIPTION));
 
     /*Set a Proxy implementation to provide toString values for the entities
     * and custom background color for managers*/
