@@ -254,14 +254,6 @@ public class Property implements Serializable {
   }
 
   /**
-   * Sets the parent property
-   * @param parentProperty the property to set as parent property
-   */
-  public void setParentProperty(final ForeignKeyProperty parentProperty) {
-    this.parentProperty = parentProperty;
-  }
-
-  /**
    * @return the caption used when the value of this property is presented
    */
   public String getCaption() {
@@ -301,6 +293,14 @@ public class Property implements Serializable {
   @Override
   public boolean equals(final Object object) {
     return this == object || object instanceof Property && this.propertyID.equals(((Property) object).propertyID);
+  }
+
+  /**
+   * Sets the parent property
+   * @param parentProperty the property to set as parent property
+   */
+  private void setParentProperty(final ForeignKeyProperty parentProperty) {
+    this.parentProperty = parentProperty;
   }
 
   /**

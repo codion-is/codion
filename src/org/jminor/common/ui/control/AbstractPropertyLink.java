@@ -37,7 +37,7 @@ public abstract class AbstractPropertyLink extends Control {
    * Instantiates a new AbstractPropertyLink
    * @param propertyOwner the owner of the property value
    * @param name the name of the property
-   * @param modelPropertyValueChangeEvent an Event on which the UI should be updated
+   * @param modelPropertyValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type
    */
   public AbstractPropertyLink(final Object propertyOwner, final String name, final Event modelPropertyValueChangeEvent,

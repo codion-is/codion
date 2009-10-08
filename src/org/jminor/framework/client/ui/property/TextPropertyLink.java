@@ -88,7 +88,6 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
     }
     if (linkType == LinkType.READ_ONLY)
       this.textComponent.setEnabled(false);
-
     updateUI();
     this.textComponent.getDocument().addDocumentListener(this);
   }

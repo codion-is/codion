@@ -6,14 +6,14 @@ package org.jminor.common.model;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * A synchronous event class
  */
 public class Event implements ActionListener {
 
-  private final List<ActionListener> listeners = new ArrayList<ActionListener>();
+  private final Collection<ActionListener> listeners = new ArrayList<ActionListener>();
   private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
 
   /**
