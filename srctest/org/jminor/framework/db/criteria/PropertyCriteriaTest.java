@@ -44,7 +44,7 @@ public class PropertyCriteriaTest extends TestCase {
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.LIKE, "");
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, null);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
@@ -94,7 +94,7 @@ public class PropertyCriteriaTest extends TestCase {
     testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null}).setCaseSensitive(false);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
-    testCrit = new PropertyCriteria(property, SearchType.LIKE, "").setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, null).setCaseSensitive(false);
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
@@ -230,11 +230,11 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "colName is null", testCrit.toString());
 
     //string, =
-    testCrit = new PropertyCriteria(property, SearchType.LIKE, Type.Boolean.FALSE);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, false);
     assertEquals("Condition should fit", "colName = 0", testCrit.toString());
 
     //<=>=
-    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, Type.Boolean.TRUE);
+    testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, true);
     assertEquals("Condition should fit", "colName <> 1", testCrit.toString());
   }
 

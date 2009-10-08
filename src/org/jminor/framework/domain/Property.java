@@ -705,33 +705,33 @@ public class Property implements Serializable {
     }
 
     /**
-     * @param object the Object value to translate into a Type.Boolean value
-     * @return the Type.Boolean value of <code>object</code>
+     * @param object the Object value to translate into a Boolean value
+     * @return the Boolean value of <code>object</code>
      */
-    public Type.Boolean toBoolean(final Object object) {
+    public Boolean toBoolean(final Object object) {
       final int hashCode = object == null ? 0 : object.hashCode();
       if (hashCode == trueValueHash)
-        return Type.Boolean.TRUE;
+        return true;
       else if (hashCode == falseValueHash)
-        return Type.Boolean.FALSE;
+        return false;
 
       return null;
     }
 
     /**
-     * @param value the Type.Boolean value to translate into a sql string value
+     * @param value the Boolean value to translate into a sql string value
      * @return the sql string value of <code>value</code>
      */
-    public String toSQLString(final Type.Boolean value) {
-      final Object ret = value == Type.Boolean.FALSE ? falseValue : (value == Type.Boolean.TRUE ? trueValue : nullValue);
+    public String toSQLString(final Boolean value) {
+      final Object ret = value == null ? nullValue : (value ? trueValue : nullValue);
       if (columnType == Type.STRING)
         return "'" + ret + "'";
       else
         return ret == null ? "null" : ret.toString();
     }
 
-    public Object toSQLValue(final Type.Boolean value) {
-      return value == Type.Boolean.FALSE ? falseValue : (value == Type.Boolean.TRUE ? trueValue : nullValue);
+    public Object toSQLValue(final Boolean value) {
+      return value == null ? nullValue : (value ? trueValue : falseValue);
     }
   }
 

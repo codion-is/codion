@@ -1090,7 +1090,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     if (type == Type.DOUBLE)
       return Double.class;
     if (type == Type.BOOLEAN)
-      return Type.Boolean.class;
+      return Boolean.class;
     if (type == Type.DATE || type == Type.TIMESTAMP)
       return Date.class;
     if (type == Type.CHAR)

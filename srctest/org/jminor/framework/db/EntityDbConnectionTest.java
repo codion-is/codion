@@ -7,7 +7,6 @@ import org.jminor.common.db.Database;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTest;
 import org.jminor.framework.domain.EntityTestDomain;
-import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 
@@ -32,7 +31,7 @@ public class EntityDbConnectionTest extends TestCase {
     final String stringValue = "string";
     final Date dateValue = new Date();
     final Timestamp timestampValue = new Timestamp(new Date().getTime());
-    final Type.Boolean booleanValue = Type.Boolean.TRUE;
+    final Boolean booleanValue = true;
     final int referenceId = 2;
 
     final Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);

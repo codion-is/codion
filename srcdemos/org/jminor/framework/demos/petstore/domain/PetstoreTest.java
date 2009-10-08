@@ -6,7 +6,6 @@ package org.jminor.framework.demos.petstore.domain;
 import org.jminor.common.db.User;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Type;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import java.util.Collection;
@@ -85,7 +84,7 @@ public class PetstoreTest extends EntityTestUnit {
       item.setValue(Petstore.ITEM_NAME, "item");
       item.setValue(Petstore.ITEM_PRICE, 34.2);
       item.setValue(Petstore.ITEM_PRODUCT_FK, getReferenceEntity(Petstore.T_PRODUCT));
-      item.setValue(Petstore.ITEM_DISABLED, Type.Boolean.FALSE);
+      item.setValue(Petstore.ITEM_DISABLED, false);
 
       return item;
     }
@@ -211,7 +210,7 @@ public class PetstoreTest extends EntityTestUnit {
       item.setValue(Petstore.ITEM_NAME, "refitem");
       item.setValue(Petstore.ITEM_PRICE, 34.2);
       item.setValue(Petstore.ITEM_PRODUCT_FK, getReferenceEntity(Petstore.T_PRODUCT));
-      item.setValue(Petstore.ITEM_DISABLED, Type.Boolean.TRUE);
+      item.setValue(Petstore.ITEM_DISABLED, true);
 
       setReferenceEntity(Petstore.T_ITEM, item);
     }

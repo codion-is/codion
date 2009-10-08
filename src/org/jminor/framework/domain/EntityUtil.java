@@ -202,9 +202,9 @@ public class EntityUtil {
           throw new IllegalArgumentException("String value expected for property: " + property + ", got: " + value.getClass());
         return "'" + sqlEscapeString((String) value) + "'";
       case BOOLEAN:
-        if (!(value instanceof Type.Boolean))
-          throw new IllegalArgumentException("Type.Boolean value expected for property: " + property + ", got: " + value.getClass());
-        return getBooleanSQLString(property, (Type.Boolean) value);
+        if (!(value instanceof Boolean))
+          throw new IllegalArgumentException("Boolean value expected for property: " + property + ", got: " + value.getClass());
+        return getBooleanSQLString(property, (Boolean) value);
       case ENTITY:
         return value instanceof Entity ? getSQLStringValue(property, ((Entity)value).getPrimaryKey().getFirstKeyValue())
                 : getSQLStringValue(((Entity.Key)value).getFirstKeyProperty(), ((Entity.Key)value).getFirstKeyValue());
@@ -217,16 +217,16 @@ public class EntityUtil {
     return val.replaceAll("'", "''");
   }
 
-  public static String getBooleanSQLString(final Property property, final Type.Boolean value) {
+  public static String getBooleanSQLString(final Property property, final Boolean value) {
     if (property instanceof Property.BooleanProperty)
       return ((Property.BooleanProperty) property).toSQLString(value);
     else {
-      switch(value) {
-        case FALSE: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE) + "";
-        case TRUE: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE) + "";
-        case NULL: return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL) + "";
-        default: throw new RuntimeException("Unknown boolean value: " + value);
-      }
+      if (value == null)
+        return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL) + "";
+      else if (value)
+        return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE) + "";
+      else
+        return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE) + "";
     }
   }
 

@@ -5,13 +5,14 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -134,7 +135,7 @@ public class PropertyEditPanel extends JPanel {
       case INT:
         return new IntInputManager((Integer) currentValue);
       case BOOLEAN:
-        return new BooleanInputManager((Type.Boolean) currentValue);
+        return new BooleanInputManager((Boolean) currentValue);
       case STRING:
         return new TextInputManager(property, editModel, (String) currentValue);
       case ENTITY:
@@ -226,7 +227,7 @@ public class PropertyEditPanel extends JPanel {
   }
 
   public static class BooleanInputManager extends InputManager {
-    public BooleanInputManager(final Type.Boolean currentValue) {
+    public BooleanInputManager(final Boolean currentValue) {
       super(new JComboBox(new BooleanComboBoxModel()));
       if (currentValue != null)
         ((JComboBox) getInputComponent()).setSelectedItem(currentValue);
@@ -234,7 +235,7 @@ public class PropertyEditPanel extends JPanel {
 
     @Override
     protected Object getValue() {
-      return ((JComboBox) getInputComponent()).getSelectedItem();
+      return ((ItemComboBoxModel.Item) ((JComboBox) getInputComponent()).getModel().getSelectedItem()).getItem();
     }
   }
 

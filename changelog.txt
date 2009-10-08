@@ -820,3 +820,5 @@
   AbstractPropertyLink, removed name parameter
   PropertySearchPanel refactored
   AbstractSearchPanel.getInputFormat() added
+  Type.Boolean enum removed, good riddance
+  BooleanComboBoxModel refactored and moved to common.model.combobox

@@ -170,13 +170,13 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(final JTable table, final Object value,
                                                    final boolean isSelected, final boolean hasFocus,
                                                    final int row, final int column) {
-      if (value != null && !(value instanceof Type.Boolean))
+      if (value != null && !(value instanceof Boolean))
         throw new IllegalArgumentException("Non boolean value: " + value.getClass());
 
       setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
       setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
 
-      setSelected(value == Type.Boolean.TRUE);
+      setSelected(value != null && (Boolean) value);
       setEnabled(value != null);
 
       return this;

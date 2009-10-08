@@ -42,8 +42,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private Map<String, Object> originalValues;
 
   /**
-   * An event fired when a property changes, is null until initialized with
-   * a call to setFirePropertyChangeEvents
+   * An event fired when a property changes
    * @see #addPropertyListener(org.jminor.framework.domain.Property.Listener)
    * @see #removePropertyListener(org.jminor.framework.domain.Property.Listener)
    */
@@ -293,10 +292,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is a Boolean
-   * @throws ClassCastException if the value is not a Type.Boolean instance
+   * @throws ClassCastException if the value is not a Boolean instance
    */
-  public Type.Boolean getBooleanValue(final String propertyID) {
-    return (Type.Boolean) getValue(propertyID);
+  public Boolean getBooleanValue(final String propertyID) {
+    return (Boolean) getValue(propertyID);
   }
 
   /**
@@ -403,7 +402,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * @param propertyID the property identifier
-   * @return the value of the property, bypassing the EntityProxy
+   * @return the value of the property, bypassing the Entity.Proxy
    */
   public Object getRawValue(final String propertyID) {
     if (primaryKey.containsProperty(propertyID))
@@ -586,22 +585,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return true if <code>value</code> represents null
    */
   public static boolean isValueNull(final Type propertyType, final Object value) {
-    if (value == null)
-      return true;
-
-    switch (propertyType) {
-      case CHAR:
-        if (value instanceof String)
-          return ((String)value).length() == 0;
-      case BOOLEAN:
-        return value == Type.Boolean.NULL;
-      case STRING:
-        return value.equals("");
-      case ENTITY:
-        return value instanceof Entity ? ((Entity) value).isNull() : ((Key) value).isNull();
-      default:
-        return false;
-    }
+    return value == null || propertyType == Type.ENTITY
+            && (value instanceof Entity ? ((Entity) value).isNull() : ((Key) value).isNull());
   }
 
   /**
@@ -788,48 +773,41 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
     final String propertyID = property.getPropertyID();
     switch (property.getPropertyType()) {
-      case INT: {
+      case INT:
         if (!(value instanceof Integer))
           throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case DOUBLE: {
+        break;
+      case DOUBLE:
         if (!(value instanceof Double))
           throw new IllegalArgumentException("Double value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case BOOLEAN: {
-        if (!(value instanceof Type.Boolean))
+        break;
+      case BOOLEAN:
+        if (!(value instanceof Boolean))
           throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
+        break;
       case TIMESTAMP:
         if (!(value instanceof Timestamp))
           throw new IllegalArgumentException("Timestamp value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      case DATE: {
+        break;
+      case DATE:
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case ENTITY: {
+        break;
+      case ENTITY:
         if (!(value instanceof Entity))
           throw new IllegalArgumentException("Entity value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case CHAR: {
+        break;
+      case CHAR:
         if (!(value instanceof Character))
           throw new IllegalArgumentException("Character value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
-      case STRING: {
+        break;
+      case STRING:
         if (!(value instanceof String))
           throw new IllegalArgumentException("String value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        return value;
-      }
+        break;
     }
 
-    throw new IllegalArgumentException("Unknown type " + property.getPropertyType());
+    return value;
   }
 
   /**

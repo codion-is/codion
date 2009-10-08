@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
@@ -16,7 +17,6 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.PropertySearchModel;
-import org.jminor.framework.client.model.combobox.BooleanComboBoxModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;

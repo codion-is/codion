@@ -41,7 +41,7 @@ public class EntityTestDomain {
             new Property(DETAIL_STRING, Type.STRING, DETAIL_STRING),
             new Property(DETAIL_DATE, Type.DATE, DETAIL_DATE),
             new Property(DETAIL_TIMESTAMP, Type.TIMESTAMP, DETAIL_TIMESTAMP),
-            new Property(DETAIL_BOOLEAN, Type.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(Type.Boolean.TRUE),
+            new Property(DETAIL_BOOLEAN, Type.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(true),
             new Property.ForeignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     new Property(DETAIL_ENTITY_ID)),
             new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,

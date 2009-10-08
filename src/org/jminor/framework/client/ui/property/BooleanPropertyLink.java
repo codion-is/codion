@@ -6,7 +6,6 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import javax.swing.JToggleButton;
 
@@ -34,12 +33,12 @@ public class BooleanPropertyLink extends AbstractEntityPropertyLink {
   /** {@inheritDoc} */
   @Override
   protected Object getUIPropertyValue() {
-    return buttonModel.isSelected() ? Type.Boolean.TRUE : Type.Boolean.FALSE;
+    return buttonModel.isSelected();
   }
 
   /** {@inheritDoc} */
   @Override
   protected void setUIPropertyValue(final Object propertyValue) {
-    buttonModel.setSelected(propertyValue == Type.Boolean.TRUE);
+    buttonModel.setSelected(propertyValue != null && (Boolean) propertyValue);
   }
 }

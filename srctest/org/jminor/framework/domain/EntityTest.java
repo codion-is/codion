@@ -14,7 +14,7 @@ public class EntityTest extends TestCase {
 
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
                                            final String stringValue, final Date dateValue, final Timestamp timestampValue,
-                                           final Type.Boolean booleanValue, final Entity entityValue) {
+                                           final Boolean booleanValue, final Entity entityValue) {
     final Entity ret = new Entity(EntityTestDomain.T_DETAIL);
     ret.setValue(EntityTestDomain.DETAIL_ID, id);
     ret.setValue(EntityTestDomain.DETAIL_INT, intValue);
@@ -39,7 +39,7 @@ public class EntityTest extends TestCase {
     final String detailString = "string";
     final Date detailDate = new Date();
     final Timestamp detailTimestamp = new Timestamp(new Date().getTime());
-    final Type.Boolean detailBoolean = Type.Boolean.TRUE;
+    final Boolean detailBoolean = true;
 
     final int masterId = 2;
     final String masterName = "master";

@@ -175,8 +175,6 @@ public class PropertyFilterModel extends AbstractSearchModel {
     final Object value = entity.getValue(getPropertyID());
     if (getPropertyType() ==  Type.ENTITY)
       return value.toString();
-    else if (getPropertyType() == Type.BOOLEAN)
-      return Type.Boolean.get((Type.Boolean) value);
     else
       return (Comparable) value;
   }
