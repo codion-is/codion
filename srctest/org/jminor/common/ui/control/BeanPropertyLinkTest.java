@@ -37,12 +37,12 @@ public class BeanPropertyLinkTest extends TestCase {
 
   public void testIntBeanPropertyLink() throws Exception {
     final IntField txtInt = new IntField();
-    new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged, "");
+    new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged);
     assertNull("Int value should be null on initialization", txtInt.getInt());
     setIntValue(2);
-    assertEquals("Int value should be 2", 2, (int) txtInt.getInt());
+    assertEquals("Int value should be 2", 2, txtInt.getInt().intValue());
     txtInt.setText("42");
-    assertEquals("Int value should be 42", 42, (int) getIntValue());
+    assertEquals("Int value should be 42", 42, getIntValue().intValue());
     txtInt.setText("");
     assertNull("Int value should be null", getIntValue());
   }
@@ -50,7 +50,7 @@ public class BeanPropertyLinkTest extends TestCase {
   public void testDoubleBeanPropertyLink() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    new DoubleBeanPropertyLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, "");
+    new DoubleBeanPropertyLink(txtDouble, this, "doubleValue", evtDoubleValueChanged);
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", 2.2, txtDouble.getDouble());
@@ -62,7 +62,7 @@ public class BeanPropertyLinkTest extends TestCase {
 
   public void testStringBeanPropertyLink() throws Exception {
     final JTextField txtString = new JTextField();
-    new TextBeanPropertyLink(txtString, this, "stringValue", String.class, evtStringValueChanged, "");
+    new TextBeanPropertyLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
     assertEquals("String value should be empty on initialization", "", txtString.getText());
     setStringValue("hello");
     assertEquals("String value should be 'hello'", "hello", txtString.getText());

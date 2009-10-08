@@ -122,7 +122,7 @@ public class ServerMonitorPanel extends JPanel {
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
     new TextBeanPropertyLink(txtConnectionCount, model, "connectionCount", Integer.class, model.evtStatsUpdated,
-            null, LinkType.READ_ONLY, null);
+            LinkType.READ_ONLY);
 
     return txtConnectionCount;
   }
@@ -132,7 +132,7 @@ public class ServerMonitorPanel extends JPanel {
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
     new TextBeanPropertyLink(txtMemory, model, "memoryUsage", String.class, model.evtStatsUpdated,
-            null, LinkType.READ_ONLY, null);
+            LinkType.READ_ONLY);
 
     return txtMemory;
   }

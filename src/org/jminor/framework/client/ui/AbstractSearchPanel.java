@@ -12,6 +12,7 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.domain.Type;
 
@@ -25,6 +26,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 
 /**
  * User: Björn Darri
@@ -191,6 +193,15 @@ public abstract class AbstractSearchPanel extends JPanel {
    * @return true if a lower bound field is required given the data type
    */
   protected abstract boolean isLowerBoundFieldRequired(final Type type);
+
+  protected SimpleDateFormat getInputFormat() {
+    if (model.getPropertyType() == Type.TIMESTAMP)
+      return Configuration.getDefaultTimestampFormat();
+    if (model.getPropertyType() == Type.DATE)
+      return Configuration.getDefaultDateFormat();
+
+    return null;
+  }
 
   private JComboBox initSearchTypeComboBox() {
     final JComboBox ret = new SteppedComboBox(initSearchTypeModel());

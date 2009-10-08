@@ -18,14 +18,13 @@ public class IntBeanSpinnerPropertyLink extends BeanPropertyLink {
 
   private final SpinnerNumberModel spinnerModel;
 
-  public IntBeanSpinnerPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
-                                    final String text) {
-    this(owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
+  public IntBeanSpinnerPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent) {
+    this(owner, propertyName, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
   public IntBeanSpinnerPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
-                                    final String text, final LinkType linkType) {
-    super(owner, propertyName, int.class, propertyChangeEvent, text, linkType);
+                                    final LinkType linkType) {
+    super(owner, propertyName, int.class, propertyChangeEvent, linkType);
     spinnerModel = new SpinnerNumberModel();
     spinnerModel.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {

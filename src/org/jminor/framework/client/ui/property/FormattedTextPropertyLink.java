@@ -94,15 +94,13 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
     final Color defaultTextFieldBackground = textComponent.getBackground();
     final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
     textComponent.getDocument().addDocumentListener(new DocumentListener() {
-      public void changedUpdate(final DocumentEvent e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
-      }
       public void insertUpdate(final DocumentEvent e) {
         updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
       }
       public void removeUpdate(final DocumentEvent e) {
         updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
       }
+      public void changedUpdate(final DocumentEvent e) {}
     });
     editModel.getPropertyChangeEvent(getProperty()).addListener(new Property.Listener() {
       @Override

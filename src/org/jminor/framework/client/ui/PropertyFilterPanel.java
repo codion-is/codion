@@ -8,12 +8,12 @@ import org.jminor.common.model.State;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
+import org.jminor.common.ui.control.FormattedTextBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.domain.Type;
@@ -21,6 +21,7 @@ import org.jminor.framework.domain.Type;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
@@ -39,7 +40,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   private final State stIsDialogActive = new State();
   private final State stIsDialogShowing = new State();
 
-  private JDialog searchDlg;
+  private JDialog dialog;
   private Point lastPosition;
 
   public PropertyFilterPanel(final PropertyFilterModel model) {
@@ -80,8 +81,8 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       if (position == null)
         position = new Point(0,0);
 
-      position.y = position.y - searchDlg.getHeight();
-      searchDlg.setLocation(position);
+      position.y = position.y - dialog.getHeight();
+      dialog.setLocation(position);
       stIsDialogActive.setActive(true);
     }
 
@@ -92,10 +93,10 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     if (isDialogActive()) {
       if (isDialogShowing())
         hideDialog();
-      lastPosition = searchDlg.getLocation();
-      lastPosition.y = lastPosition.y + searchDlg.getHeight();
-      searchDlg.dispose();
-      searchDlg = null;
+      lastPosition = dialog.getLocation();
+      lastPosition.y = lastPosition.y + dialog.getHeight();
+      dialog.dispose();
+      dialog = null;
 
       stIsDialogActive.setActive(false);
     }
@@ -103,7 +104,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   public void showDialog() {
     if (isDialogActive() && !isDialogShowing()) {
-      searchDlg.setVisible(true);
+      dialog.setVisible(true);
       upperBoundField.requestFocusInWindow();
       stIsDialogShowing.setActive(true);
     }
@@ -111,7 +112,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   public void hideDialog() {
     if (isDialogShowing()) {
-      searchDlg.setVisible(false);
+      dialog.setVisible(false);
       stIsDialogShowing.setActive(false);
     }
   }
@@ -120,7 +121,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
    * @return the dialog used to show this filter panel
    */
   public JDialog getDialog() {
-    return searchDlg;
+    return dialog;
   }
 
   /** {@inheritDoc} */
@@ -138,7 +139,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   @Override
   protected JComponent getInputField(final boolean isUpperBound) {
-    final SimpleDateFormat format = initFormat();
+    final SimpleDateFormat format = getInputFormat();
     final JComponent field = initField(format);
     if (model.getPropertyType() == Type.BOOLEAN)
       createToggleProperty((JCheckBox) field, isUpperBound);
@@ -173,37 +174,28 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     }
   }
 
-  private SimpleDateFormat initFormat() {
-    if (model.getPropertyType() == Type.TIMESTAMP)
-      return Configuration.getDefaultTimestampFormat();
-    if (model.getPropertyType() == Type.DATE)
-      return Configuration.getDefaultDateFormat();
-
-    return null;
-  }
-
   private void initSearchDlg(Container parent) {
-    if (searchDlg != null)
+    if (dialog != null)
       return;
 
     final JDialog dlgParent = UiUtil.getParentDialog(parent);
     if (dlgParent != null)
-      searchDlg = new JDialog(dlgParent, model.getCaption(), false);
+      dialog = new JDialog(dlgParent, model.getCaption(), false);
     else
-      searchDlg = new JDialog(UiUtil.getParentFrame(parent), model.getCaption(), false);
+      dialog = new JDialog(UiUtil.getParentFrame(parent), model.getCaption(), false);
 
     final JPanel searchPanel = new JPanel(new BorderLayout());
     searchPanel.add(this, BorderLayout.NORTH);
-    searchDlg.getContentPane().add(searchPanel);
-    searchDlg.pack();
+    dialog.getContentPane().add(searchPanel);
+    dialog.pack();
 
     stAdvancedSearch.evtStateChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        searchDlg.pack();
+        dialog.pack();
       }
     });
 
-    searchDlg.addWindowListener(new WindowAdapter() {
+    dialog.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
         inactivateDialog();
@@ -222,36 +214,22 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       case INT:
         return new IntBeanPropertyLink((IntField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
-          @Override
-          public void setModelPropertyValue(final Object obj) {
-            super.setModelPropertyValue(obj instanceof String && obj.equals("") ? null : obj);
-          }
-        };
+                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
       case DOUBLE:
         return new DoubleBeanPropertyLink((DoubleField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null) {
-          @Override
-          public void setModelPropertyValue(final Object obj) {
-            super.setModelPropertyValue(obj instanceof String && obj.equals("") ? null : obj);
-          }
-        };
+                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
       case DATE:
-        return new TextBeanPropertyLink((JTextField) component, model,
-                isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                Date.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, format);
       case TIMESTAMP:
-        return new TextBeanPropertyLink((JTextField) component, model,
+        return new FormattedTextBeanPropertyLink((JFormattedTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                Timestamp.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null,
-                LinkType.READ_WRITE, format) {
+                model.getPropertyType() == Type.TIMESTAMP ? Timestamp.class : Date.class,
+                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, LinkType.READ_WRITE, format) {
           @Override
-          protected Object getParsedValue() {
-            final Date date = (Date) super.getParsedValue();
+          protected Object getUIPropertyValue() {
+            final Date date = (Date) super.getUIPropertyValue();
             if (date != null)
-              return new Timestamp(date.getTime());
+              return model.getPropertyType() == Type.TIMESTAMP ? new Timestamp(date.getTime()) : date;
 
             return null;
           }
@@ -259,7 +237,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       default:
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                String.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
+                String.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
     }
   }
 }

@@ -15,13 +15,13 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
   private final Method setMethod;
 
   public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent, final String name) {
-    this(owner, propertyName, propertyClass, propertyChangeEvent, name, LinkType.READ_WRITE);
+                          final Event propertyChangeEvent) {
+    this(owner, propertyName, propertyClass, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
   public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent, final String name, final LinkType linkType) {
-    super(owner, name, propertyChangeEvent, linkType);
+                          final Event propertyChangeEvent, final LinkType linkType) {
+    super(owner, propertyChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.propertyClass = propertyClass;

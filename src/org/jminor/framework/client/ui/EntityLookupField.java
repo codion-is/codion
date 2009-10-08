@@ -84,7 +84,7 @@ public class EntityLookupField extends JTextField {
     setEnterAction(enterAction);
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
-    new TextBeanPropertyLink(this, model, "searchString", String.class, model.evtSearchStringChanged, null);
+    new TextBeanPropertyLink(this, model, "searchString", String.class, model.evtSearchStringChanged);
     model.evtSearchStringChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateBackgroundColor();

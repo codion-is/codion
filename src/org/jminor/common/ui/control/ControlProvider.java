@@ -32,7 +32,7 @@ public class ControlProvider {
 
   public static void bindItemSelector(final JComboBox combo, final Object owner, final String property,
                                       final Class propertyClass, final Event changedEvent) {
-    new SelectedItemBeanPropertyLink(combo, owner, property, propertyClass, changedEvent, null, LinkType.READ_WRITE);
+    new SelectedItemBeanPropertyLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);
   }
 
   public static void bindToggleButtonAndProperty(final JToggleButton toggleButton, final Object owner, final String property,

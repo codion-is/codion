@@ -13,14 +13,15 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
   private final JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
-                                final String text) {
-    this(owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
+                                final String caption) {
+    this(owner, propertyName, propertyChangeEvent, caption, LinkType.READ_WRITE);
   }
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
-                                final String text, final LinkType linkType) {
-    super(owner, propertyName, boolean.class, propertyChangeEvent, text, linkType);
+                                final String caption, final LinkType linkType) {
+    super(owner, propertyName, boolean.class, propertyChangeEvent, linkType);
     this.buttonModel.addActionListener(this);
+    setName(caption);
     updateUI();
   }
 

@@ -16,15 +16,14 @@ public class SelectedItemBeanPropertyLink extends BeanPropertyLink {
   private final ComboBoxModel comboBoxModel;
 
   public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
-                                      final Class propertyClass, final Event propertyChangeEvent,
-                                      final String text) {
-    this(box, owner, propertyName, propertyClass, propertyChangeEvent, text, LinkType.READ_WRITE);
+                                      final Class propertyClass, final Event propertyChangeEvent) {
+    this(box, owner, propertyName, propertyClass, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
   public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
                                       final Class propertyClass, final Event propertyChangeEvent,
-                                      final String text, final LinkType linkType) {
-    super(owner, propertyName, propertyClass, propertyChangeEvent, text, linkType);
+                                      final LinkType linkType) {
+    super(owner, propertyName, propertyClass, propertyChangeEvent, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();
     box.addItemListener(new ItemListener() {

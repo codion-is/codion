@@ -816,3 +816,7 @@
   Configuration.INVALID_VALUE_BACKGROUND_COLOR added
   Property.description field added
   EntityRepository.set/getPropertyDescription() removed
+  FormattedTextBeanPropertyLink refactored out of TextBeanPropertyLink
+  AbstractPropertyLink, removed name parameter
+  PropertySearchPanel refactored
+  AbstractSearchPanel.getInputFormat() added

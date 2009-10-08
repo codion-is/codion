@@ -10,13 +10,13 @@ import org.jminor.common.ui.textfield.IntField;
 public class IntBeanPropertyLink extends TextBeanPropertyLink {
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,
-                             final Event propertyChangeEvent, final String text) {
-    this(intField, owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
+                             final Event propertyChangeEvent) {
+    this(intField, owner, propertyName, propertyChangeEvent,LinkType.READ_WRITE);
   }
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,
-                             final Event propertyChangeEvent, final String text, final LinkType linkType) {
-    super(intField, owner, propertyName, Integer.class, propertyChangeEvent, text, linkType, null);
+                             final Event propertyChangeEvent, final LinkType linkType) {
+    super(intField, owner, propertyName, Integer.class, propertyChangeEvent, linkType);
     updateUI();
   }
 

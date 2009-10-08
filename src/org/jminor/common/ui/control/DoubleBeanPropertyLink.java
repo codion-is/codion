@@ -10,13 +10,13 @@ import org.jminor.common.ui.textfield.DoubleField;
 public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
 
   public DoubleBeanPropertyLink(final DoubleField doubleField, final Object owner, final String propertyName,
-                                final Event propertyChangeEvent, final String text) {
-    this(doubleField, owner, propertyName, propertyChangeEvent, text, LinkType.READ_WRITE);
+                                final Event propertyChangeEvent) {
+    this(doubleField, owner, propertyName, propertyChangeEvent,LinkType.READ_WRITE);
   }
 
   public DoubleBeanPropertyLink(final DoubleField doubleField, final Object owner, final String propertyName,
-                                final Event propertyChangeEvent, final String text, final LinkType linkType) {
-    super(doubleField, owner, propertyName, Double.class, propertyChangeEvent, text, linkType, null);
+                                final Event propertyChangeEvent, final LinkType linkType) {
+    super(doubleField, owner, propertyName, Double.class, propertyChangeEvent, linkType);
     updateUI();
   }
 

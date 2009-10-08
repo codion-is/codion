@@ -60,15 +60,13 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
     //this allows editable string based combo boxes to post their edits after each keystroke
     if (comboBox.isEditable() && property.getPropertyType() == Type.STRING) {
       ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
-        public void changedUpdate(DocumentEvent e) {
-          boxModel.setSelectedItem(comboBox.getEditor().getItem());
-        }
         public void insertUpdate(DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());
         }
         public void removeUpdate(DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());
         }
+        public void changedUpdate(DocumentEvent e) {}
       });
     }
   }

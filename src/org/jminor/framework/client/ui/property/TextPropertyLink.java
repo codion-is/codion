@@ -92,10 +92,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /** {@inheritDoc} */
-  public void changedUpdate(final DocumentEvent e) {
-    if (isImmediateUpdate())
-      updateModel();
-  }
+  public void changedUpdate(final DocumentEvent e) {}
 
   /** {@inheritDoc} */
   @Override

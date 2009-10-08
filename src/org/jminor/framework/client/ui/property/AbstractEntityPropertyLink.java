@@ -25,7 +25,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
    * @param linkType the link type
    */
   public AbstractEntityPropertyLink(final EntityEditModel editModel, final Property property, final LinkType linkType) {
-    super(editModel, property.getPropertyID(), editModel.getPropertyChangeEvent(property), linkType);
+    super(editModel, editModel.getPropertyChangeEvent(property), linkType);
     this.property = property;
   }
 

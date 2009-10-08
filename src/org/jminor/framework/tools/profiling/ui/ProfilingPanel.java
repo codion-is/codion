@@ -109,8 +109,7 @@ public class ProfilingPanel extends JPanel {
 
     final IntField clientCountField = new IntField();
     clientCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().evtClientCountChanged,
-            null, LinkType.READ_ONLY);
+    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().evtClientCountChanged, LinkType.READ_ONLY);
 
     final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
             getModel().evtMaximumThinkTimeChanged, null).getSpinnerModel());
