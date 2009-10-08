@@ -49,11 +49,6 @@ public class EntityEditModel {
   protected final Entity entity;
 
   /**
-   * The ID of the Entity this EntityModel represents
-   */
-  private final String entityID;
-
-  /**
    * The EntityDbProvider instance to use when populating combo boxes and such
    */
   private final EntityDbProvider dbProvider;
@@ -76,7 +71,6 @@ public class EntityEditModel {
   private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Event evtEntitiesChanged) {
-    this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     this.entity = new Entity(entityID);
@@ -86,7 +80,7 @@ public class EntityEditModel {
   }
 
   public String getEntityID() {
-    return entityID;
+    return entity.getEntityID();
   }
 
   public EntityDbProvider getDbProvider() {
@@ -175,6 +169,15 @@ public class EntityEditModel {
       propertyChangeEventMap.put(property, new Event());
 
     return propertyChangeEventMap.get(property);
+  }
+
+  /**
+   * Returns true if the value of the given property is valid, the default implementation simply returns true
+   * @param property the property
+   * @return true if the value of the given property is valid
+   */
+  public boolean isValid(final Property property) {
+    return property.isNullable() || !isValueNull(property.getPropertyID());
   }
 
   /**
@@ -397,13 +400,16 @@ public class EntityEditModel {
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.
    * This default implementation returns a sorted EntityComboBoxModel with the default nullValueItem
+   * if the underlying property is nullable
    * @param foreignKeyProperty the foreign key property for which to create a EntityComboBoxModel
    * @return a EntityComboBoxModel for the given property
    * @see Configuration#DEFAULT_COMBO_BOX_NULL_VALUE_ITEM
+   * @see org.jminor.framework.domain.Property#isNullable()
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     return new EntityComboBoxModel(foreignKeyProperty.referenceEntityID, getDbProvider(), false,
-            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM), true);
+            foreignKeyProperty.isNullable() ?
+                    (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null, true);
   }
 
   /**
@@ -421,6 +427,7 @@ public class EntityEditModel {
   /**
    * If this method is overridden then calling super.getDefaultValue() would be proper
    * @return the default entity for this EntitModel, it is set as active when no item is selected
+   * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
   public Entity getDefaultEntity() {
     final Entity ret = new Entity(getEntityID());
@@ -446,6 +453,13 @@ public class EntityEditModel {
     return persistValueOnClear(property) ? getValue(property) : property.getDefaultValue();
   }
 
+  /**
+   * Sets the value in the underlying entity
+   * @param property the property for which to set the value
+   * @param value the value
+   * @param validateType if true then type validation should be performed
+   * @return the value that was just set
+   */
   protected Object doSetValue(final Property property, final Object value, final boolean validateType) {
     entity.setValue(property.getPropertyID(), value, validateType);
 

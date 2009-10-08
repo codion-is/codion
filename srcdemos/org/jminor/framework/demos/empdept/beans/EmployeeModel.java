@@ -47,6 +47,15 @@ public class EmployeeModel extends EntityModel {
 
         return super.createEntityComboBoxModel(property);
       }
+
+      @Override
+      public boolean isValid(final Property property) {
+        if (property.getPropertyID().equals(EmpDept.EMPLOYEE_SALARY)) {
+          final Double salary = (Double) getValue(EmpDept.EMPLOYEE_SALARY);
+          return salary != null && (salary >= 1000 && salary <= 10000);
+        }
+        return super.isValid(property);
+      }
     };
   }
 

@@ -398,7 +398,7 @@ public class EntityUiUtil {
     switch (property.getPropertyType()) {
       case STRING:
         if (formatMaskString != null)
-          new FormattedTextPropertyLink((JFormattedTextField) ret, editModel, property, immediateUpdate, linkType, null);
+          new FormattedTextPropertyLink((JFormattedTextField) ret, editModel, property, null, immediateUpdate, linkType);
         else
           new TextPropertyLink(ret, editModel, property, immediateUpdate, linkType);
         break;

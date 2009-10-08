@@ -809,3 +809,8 @@
   FormattedTextPropertyLink refactored out of TextPropertyLink
   DatePropertyLink now extends FormattedTextPropertyLink
   EntityUiUtil.createTextField() refactored
+  Property.isNullable field added
+  EntityEditModel.isValid() default implementation uses the above  
+  TextPropertyLink.addValidator() added
+  FormattedTextPropertyLink overrides the above and does its thing
+  Configuration.INVALID_VALUE_BACKGROUND_COLOR added

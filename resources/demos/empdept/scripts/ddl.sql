@@ -2,7 +2,7 @@ create schema scott;
 
 CREATE TABLE scott.dept (
   deptno INT NOT NULL,
-  dname VARCHAR(14),
+  dname VARCHAR(14) NOT NULL,
   loc VARCHAR(13)
 );
 
@@ -12,11 +12,11 @@ primary key (deptno);
 
 CREATE TABLE scott.emp (
   empno INT NOT NULL,
-  ename VARCHAR(10),
+  ename VARCHAR(10) NOT NULL,
   job VARCHAR(9),
   mgr INT,
   hiredate DATE,
-  sal DECIMAL(7, 2),
+  sal DECIMAL(7, 2) NOT NULL,
   comm DECIMAL(7, 2),
   deptno INT
 );

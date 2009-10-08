@@ -63,23 +63,23 @@ public class EmpDept {
   static {
     /*Defining the entity type T_DEPARTMENT*/
     EntityRepository.define(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
-            new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID)),
-            new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME)).setPreferredWidth(120).setMaxLength(14),
+            new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID)).setNullable(false),
+            new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME)).setPreferredWidth(120).setMaxLength(14).setNullable(false),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION)).setPreferredWidth(150).setMaxLength(13));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.define(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
             EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
-            new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME)).setMaxLength(10),
+            new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME)).setMaxLength(10).setNullable(false),
             new Property.ForeignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
-                    new Property(EMPLOYEE_DEPARTMENT)),
+                    new Property(EMPLOYEE_DEPARTMENT)).setNullable(false),
             new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB)).setMaxLength(9),
-            new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY)),
+            new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY)).setNullable(false),
             new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION)),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
-            new Property(EMPLOYEE_HIREDATE, Type.DATE, getString(EMPLOYEE_HIREDATE)),
+            new Property(EMPLOYEE_HIREDATE, Type.DATE, getString(EMPLOYEE_HIREDATE)).setNullable(false),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredWidth(100));

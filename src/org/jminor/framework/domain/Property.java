@@ -68,6 +68,11 @@ public class Property implements Serializable {
   private boolean updatable = true;
 
   /**
+   * True if the value of this property is allowed to be null
+   */
+  private boolean isNullable = true;
+
+  /**
    * The maximum length of the data
    */
   private int maxLength = 0;
@@ -193,6 +198,22 @@ public class Property implements Serializable {
    */
   public boolean isSelectOnly() {
     return this.selectOnly;
+  }
+
+  /**
+   * @param nullable specifies whether or not this property accepts a null value
+   * @return this Property instance
+   */
+  public Property setNullable(final boolean nullable) {
+    isNullable = nullable;
+    return this;
+  }
+
+  /**
+   * @return true if this property accepts a null value
+   */
+  public boolean isNullable() {
+    return isNullable;
   }
 
   /**

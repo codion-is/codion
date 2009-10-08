@@ -1,6 +1,7 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -8,6 +9,7 @@ import org.jminor.framework.domain.Property;
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import java.awt.Color;
 import java.text.Format;
@@ -23,18 +25,16 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
    * @param textComponent the text component to link
    * @param editModel the EntityEditModel instance
    * @param property the property to link
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
-   * otherwise it is updated on actionPerformed or focusLost
-   * @param linkType the link type
    * @param format the format
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * @param linkType the link type
    */
   public FormattedTextPropertyLink(final JFormattedTextField textComponent, final EntityEditModel editModel,
-                                      final Property property, final boolean immediateUpdate, final LinkType linkType,
-                                      final Format format) {
+                                   final Property property, final Format format, final boolean immediateUpdate,
+                                   final LinkType linkType) {
     super(textComponent, editModel, property, immediateUpdate, linkType);
     this.format = format;
     this.formatter = (MaskFormatter) textComponent.getFormatter();
-    addColorUpdating(textComponent, editModel, property, textComponent.getText());
     updateUI();
   }
 
@@ -84,30 +84,37 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
     }
   }
 
-  private void addColorUpdating(final JFormattedTextField textComponent, final EntityEditModel editModel,
-                                final Property property, final String maskString) {
+  @Override
+  protected void addValidator(final JTextComponent textField, final EntityEditModel editModel) {
+    addColorUpdating(textField, editModel, textField.getText());
+  }
+
+  private void addColorUpdating(final JTextComponent textComponent, final EntityEditModel editModel,
+                                final String maskString) {
     final Color defaultTextFieldBackground = textComponent.getBackground();
+    final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
     textComponent.getDocument().addDocumentListener(new DocumentListener() {
       public void changedUpdate(final DocumentEvent e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground);
+        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
       }
       public void insertUpdate(final DocumentEvent e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground);
+        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
       }
       public void removeUpdate(final DocumentEvent e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground);
+        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
       }
     });
-    editModel.getPropertyChangeEvent(property).addListener(new Property.Listener() {
+    editModel.getPropertyChangeEvent(getProperty()).addListener(new Property.Listener() {
       @Override
       protected void propertyChanged(final Property.Event e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground);
+        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
       }
     });
   }
 
-  private void updateFieldColor(final JFormattedTextField textComponent, final String maskString, final Color defaultTextFieldBackground) {
-    final boolean validInput = !isModelPropertyValueNull() || textComponent.getText().equals(maskString);
-    textComponent.setBackground(validInput ? defaultTextFieldBackground : Color.LIGHT_GRAY);
+  private void updateFieldColor(final JTextComponent textComponent, final String maskString,
+                                final Color validBackground, final Color invalidBackground) {
+    final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && getProperty().isNullable());//todo use isNullable
+    textComponent.setBackground(validInput ? validBackground : invalidBackground);
   }
 }

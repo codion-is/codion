@@ -27,7 +27,7 @@ public class DateTextPropertyLink extends FormattedTextPropertyLink {
    */
   public DateTextPropertyLink(final JFormattedTextField textField, final EntityEditModel editModel, final Property property,
                               final LinkType linkType, final DateFormat dateFormat) {
-    super(textField, editModel, property, true, linkType, dateFormat);
+    super(textField, editModel, property, dateFormat, true, linkType);
     if (dateFormat == null)
       throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
   }

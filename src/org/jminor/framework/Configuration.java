@@ -7,6 +7,7 @@ import org.jminor.common.model.Util;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -314,6 +315,13 @@ public class Configuration {
    */
   public static final String DEFAULT_COMBO_BOX_NULL_VALUE_ITEM = "default_combo_box_null_value_item";
 
+  /**
+   * Specifies the color to use as background in input fields containing invalid values
+   * Value type: Color
+   * Default value: Color.LIGHT_GRAY
+   */
+  public static final String INVALID_VALUE_BACKGROUND_COLOR = "invalid_value_background_color";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -346,6 +354,7 @@ public class Configuration {
     setValue(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
     setValue(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
     setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, null);
+    setValue(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
   }
 
   public static void setValue(final String key, final Object value) {
