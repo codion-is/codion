@@ -8,30 +8,25 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.MaskFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.io.Serializable;
-import java.text.Format;
-import java.text.ParseException;
 
 /**
  * A class for linking a text component to a EntityModel text property value
  */
-public class TextPropertyLink extends AbstractEntityPropertyLink implements DocumentListener, Serializable {
+public class TextPropertyLink extends AbstractEntityPropertyLink implements DocumentListener {
 
-  private final JTextComponent textComponent;
+  private final Document document;
   /**
    * If true the model value is updated on each keystroke, otherwise it is updated on focus lost and action performed
    */
   private final boolean immediateUpdate;
-  private final String placeholder;
-  private final Format format;
 
   /**
    * Instantiates a new TextPropertyLink
@@ -56,30 +51,11 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
    */
   public TextPropertyLink(final JTextComponent textComponent, final EntityEditModel editModel, final Property property,
                           final boolean immediateUpdate, final LinkType linkType) {
-    this(textComponent, editModel, property, immediateUpdate, linkType, null);
-  }
-
-  /**
-   * Instantiates a new TextPropertyLink
-   * @param textComponent the text component to link
-   * @param editModel the EntityEditModel instance
-   * @param property the property to link
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
-   * otherwise it is updated on actionPerformed or focusLost
-   * @param linkType the link type
-   * @param format the format object to use when presenting the value in the text field
-   */
-  protected TextPropertyLink(final JTextComponent textComponent, final EntityEditModel editModel, final Property property,
-                             final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, property, linkType);
-    this.textComponent = textComponent;
-    this.format = format;
+    this.document = textComponent.getDocument();
     this.immediateUpdate = immediateUpdate;
-    this.placeholder = textComponent instanceof JFormattedTextField ?
-            Character.toString((((MaskFormatter) ((JFormattedTextField)
-                    textComponent).getFormatter()).getPlaceholderCharacter())) : null;
     if (!this.immediateUpdate) {
-      this.textComponent.addFocusListener(new FocusAdapter() {
+      textComponent.addFocusListener(new FocusAdapter() {
         @Override
         public void focusLost(FocusEvent e) {
           actionPerformed(new ActionEvent(e.getSource(), e.getID(), "focusLost"));
@@ -87,16 +63,9 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
       });
     }
     if (linkType == LinkType.READ_ONLY)
-      this.textComponent.setEnabled(false);
+      textComponent.setEnabled(false);
     updateUI();
-    this.textComponent.getDocument().addDocumentListener(this);
-  }
-
-  /**
-   * @return the format, if any
-   */
-  public Format getFormat() {
-    return format;
+    this.document.addDocumentListener(this);
   }
 
   /**
@@ -124,11 +93,19 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
       updateModel();
   }
 
-  /**
-   * @return the linked text component
-   */
-  protected final JTextComponent getTextComponent() {
-    return this.textComponent;
+  /** {@inheritDoc} */
+  @Override
+  protected Object getUIPropertyValue() {
+    return valueFromText(getText());
+  }
+
+  protected String getText() {
+    try {
+      return document.getText(0, document.getLength());
+    }
+    catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -137,58 +114,22 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
    * @return a valid value
    */
   protected Object valueFromText(final String text) {
-    if (placeholder != null && text != null && text.contains(placeholder))
-      return null;
-
-    if (format != null)
-      return getParsedValue(text);
-
     return text;
-  }
-
-  /**
-   * Parses the given text according to the format used by this TextPropertyLink
-   * @param text the text to parse
-   * @return an Object parsed from the given text
-   */
-  protected Object getParsedValue(final String text) {
-    try {
-      return text != null ? format.parseObject(text) : null;
-    }
-    catch (ParseException nf) {
-      return null;
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected Object getUIPropertyValue() {
-    return valueFromText(getText());
   }
 
   /** {@inheritDoc} */
   @Override
   protected void setUIPropertyValue(final Object propertyValue) {
-    textComponent.setText(getValueAsString(propertyValue));
+    try {
+      document.remove(0, document.getLength());
+      document.insertString(0, getValueAsString(propertyValue), null);
+    }
+    catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   protected String getValueAsString(final Object value) {
-    if (Entity.isValueNull(getProperty().getPropertyType(), value))
-      return null;
-    else
-      return format == null ? value.toString() : format.format(value);
-  }
-
-  private String getText() {
-    if (textComponent instanceof JFormattedTextField) {
-      try {
-        return (String) ((JFormattedTextField) textComponent).getFormatter().stringToValue(textComponent.getText());
-      }
-      catch (ParseException e) {
-        return null;
-      }
-    }
-
-    return textComponent.getText();
+    return Entity.isValueNull(getProperty().getPropertyType(), value) ? null : value.toString();
   }
 }

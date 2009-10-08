@@ -74,7 +74,7 @@ public class EntityPropertyLinkTest extends TestCase {
     final ShortDashDateFormat format = new ShortDashDateFormat();
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
     new DateTextPropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
-            LinkType.READ_WRITE, format, DateUtil.getDateMask(format));
+            LinkType.READ_WRITE, format);
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date dateValue = format.parse("03-10-1975");
     txtDate.setText(format.format(dateValue));

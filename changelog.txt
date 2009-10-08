@@ -806,3 +806,6 @@
   PropertyFilterPanel refactored
   Configuration.getDefaultDateFormat() and getDefaultTimestampFormat() added
   EntityTableModel now performs the query on refresh before clearing the model
+  FormattedTextPropertyLink refactored out of TextPropertyLink
+  DatePropertyLink now extends FormattedTextPropertyLink
+  EntityUiUtil.createTextField() refactored

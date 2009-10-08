@@ -16,7 +16,7 @@ public class DoubleTextPropertyLink extends TextPropertyLink {
 
   public DoubleTextPropertyLink(final DoubleField textField, final EntityEditModel editModel, final Property property,
                                 final boolean immediateUpdate, final LinkType linkType) {
-    super(textField, editModel, property, immediateUpdate, linkType, null);
+    super(textField, editModel, property, immediateUpdate, linkType);
   }
 
   /** {@inheritDoc} */

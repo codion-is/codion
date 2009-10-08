@@ -16,7 +16,7 @@ public class IntTextPropertyLink extends TextPropertyLink {
 
   public IntTextPropertyLink(final IntField textField, final EntityEditModel editModel, final Property property,
                              final boolean immediateUpdate, final LinkType linkType) {
-    super(textField, editModel, property, immediateUpdate, linkType, null);
+    super(textField, editModel, property, immediateUpdate, linkType);
   }
 
   /** {@inheritDoc} */

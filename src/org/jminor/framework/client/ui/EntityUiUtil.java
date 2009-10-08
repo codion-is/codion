@@ -29,6 +29,7 @@ import org.jminor.framework.client.ui.property.BooleanPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
 import org.jminor.framework.client.ui.property.DateTextPropertyLink;
 import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
+import org.jminor.framework.client.ui.property.FormattedTextPropertyLink;
 import org.jminor.framework.client.ui.property.IntTextPropertyLink;
 import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
@@ -393,35 +394,27 @@ public class EntityUiUtil {
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
-    final JTextField ret;
+    final JTextField ret = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     switch (property.getPropertyType()) {
       case STRING:
-        new TextPropertyLink(ret = formatMaskString == null ? new TextFieldPlus() :
-                UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters, false),
-                editModel, property, immediateUpdate, linkType);
+        if (formatMaskString != null)
+          new FormattedTextPropertyLink((JFormattedTextField) ret, editModel, property, immediateUpdate, linkType, null);
+        else
+          new TextPropertyLink(ret, editModel, property, immediateUpdate, linkType);
         break;
       case INT:
-        new IntTextPropertyLink((IntField) (ret = new IntField(0)), editModel, property, immediateUpdate, linkType);
+        new IntTextPropertyLink((IntField) ret, editModel, property, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoubleTextPropertyLink((DoubleField) (ret = new DoubleField(0)), editModel, property, immediateUpdate, linkType);
+        new DoubleTextPropertyLink((DoubleField) ret, editModel, property, immediateUpdate, linkType);
         break;
       case DATE:
       case TIMESTAMP:
-        new DateTextPropertyLink((JFormattedTextField) (ret = UiUtil.createFormattedField(formatMaskString, true)),
-                editModel, property, linkType, dateFormat, formatMaskString);
+        new DateTextPropertyLink((JFormattedTextField) ret, editModel, property, linkType, dateFormat);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);
     }
-    UiUtil.linkToEnabledState(enabledState, ret);
-    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
-      UiUtil.transferFocusOnEnter(ret);
-    setPropertyToolTip(editModel.getEntityID(), property, ret);
-    if (ret instanceof TextFieldPlus && property.getMaxLength() > 0)
-      ((TextFieldPlus) ret).setMaxLength(property.getMaxLength());
-    if (property.isDatabaseProperty())
-      addLookupDialog(ret, property, editModel);
 
     return ret;
   }
@@ -594,6 +587,39 @@ public class EntityUiUtil {
     ret.add(initializeNewRecordButton(entityComboBox, panelProvider, newRecordButtonTakesFocus), BorderLayout.EAST);
 
     return ret;
+  }
+
+  private static JTextField initTextField(final Property property, final EntityEditModel editModel,
+                                          final State enabledState, final String formatMaskString,
+                                          final boolean valueContainsLiteralCharacters) {
+    final JTextField field;
+    switch (property.getPropertyType()) {
+      case INT:
+        field = new IntField(0);
+        break;
+      case DOUBLE:
+        field = new DoubleField(0);
+        break;
+      case DATE:
+      case TIMESTAMP:
+        field = UiUtil.createFormattedField(formatMaskString, true);
+        break;
+      case STRING:
+        field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+        break;
+      default:
+        throw new RuntimeException("Unable to create text field for property type: " + property.getPropertyType());
+    }
+    UiUtil.linkToEnabledState(enabledState, field);
+    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+      UiUtil.transferFocusOnEnter(field);
+    setPropertyToolTip(editModel.getEntityID(), property, field);
+    if (field instanceof TextFieldPlus && property.getMaxLength() > 0)
+      ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
+    if (property.isDatabaseProperty())
+      addLookupDialog(field, property, editModel);
+
+    return field;
   }
 
   private static JButton initializeNewRecordButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider,
