@@ -29,42 +29,6 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
-   * @param propertyID the property ID
-   * @param description a string describing the property
-   */
-  public static void setPropertyDescription(final String entityID, final String propertyID, final String description) {
-    if (!entityDefinitions.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
-    if (entityDefinitions.get(entityID).propertyDescriptions == null)
-      entityDefinitions.get(entityID).propertyDescriptions = new HashMap<String, String>();
-
-    entityDefinitions.get(entityID).propertyDescriptions.put(propertyID, description);
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param property the property
-   * @return the description string for the given property, null if none is defined
-   */
-  public static String getPropertyDescription(final String entityID, final Property property) {
-    return getPropertyDescription(entityID, property.getPropertyID());
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param propertyID the property ID
-   * @return the description string for the given property, null if none is defined
-   */
-  public static String getPropertyDescription(final String entityID, final String propertyID) {
-    if (!entityDefinitions.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
-
-    return entityDefinitions.get(entityID).propertyDescriptions != null ?
-            entityDefinitions.get(entityID).propertyDescriptions.get(propertyID) : null;
-  }
-
-  /**
-   * @param entityID the entity ID
    * @param searchPropertyIDs the IDs of the properties to use as default lookup properties for
    * entities identified by <code>entityID</code>, these must be STRING properties
    * @throws RuntimeException in case of a non-string property ID
@@ -628,7 +592,6 @@ public class EntityRepository {
 
     private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
 
-    private Map<String, String> propertyDescriptions;
     private String[] searchPropertyIDs;
 
     private String selectColumnsString;

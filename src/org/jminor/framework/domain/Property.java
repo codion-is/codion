@@ -78,6 +78,11 @@ public class Property implements Serializable {
   private int maxLength = 0;
 
   /**
+   * A string describing this property
+   */
+  private String description;
+
+  /**
    * Cached select column index
    */
   private int selectIndex = -1;
@@ -265,6 +270,22 @@ public class Property implements Serializable {
    */
   public Integer getPreferredWidth() {
     return preferredWidth;
+  }
+
+  /**
+   * @return a String describing this property
+   */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * @param description a String describing this property
+   * @return this Property instance
+   */
+  public Property setDescription(final String description) {
+    this.description = description;
+    return this;
   }
 
   /**

@@ -76,7 +76,8 @@ public class EmpDept {
             new Property.ForeignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
                     new Property(EMPLOYEE_DEPARTMENT)).setNullable(false),
             new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB)).setMaxLength(9),
-            new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY)).setNullable(false),
+            new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY)).setNullable(false)
+                    .setDescription(getString(EMPLOYEE_SALARY_DESCRIPTION)),
             new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION)),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
@@ -84,8 +85,6 @@ public class EmpDept {
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredWidth(100));
-
-    EntityRepository.setPropertyDescription(T_EMPLOYEE, EMPLOYEE_SALARY, getString(EMPLOYEE_SALARY_DESCRIPTION));
 
     /*Set a Proxy implementation to provide toString values for the entities
     * and custom background color for managers*/

@@ -181,16 +181,16 @@ public class EntityUiUtil {
 
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
-    final JCheckBox ret = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
+    final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
-      ret.setToolTipText(property.getCaption());
-    ret.setModel(new BooleanPropertyLink(editModel, property).getButtonModel());
-    UiUtil.linkToEnabledState(enabledState, ret);
-    setPropertyToolTip(editModel.getEntityID(), property, ret);
+      checkBox.setToolTipText(property.getCaption());
+    checkBox.setModel(new BooleanPropertyLink(editModel, property).getButtonModel());
+    UiUtil.linkToEnabledState(enabledState, checkBox);
+    checkBox.setToolTipText(property.getDescription());
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
-      UiUtil.transferFocusOnEnter(ret);
+      UiUtil.transferFocusOnEnter(checkBox);
 
-    return ret;
+    return checkBox;
   }
 
   public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel) {
@@ -215,15 +215,15 @@ public class EntityUiUtil {
     final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
     if (!boxModel.isDataInitialized())
       boxModel.refresh();
-    final EntityComboBox ret = new EntityComboBox(boxModel);
-    new ComboBoxPropertyLink(ret, editModel, foreignKeyProperty);
-    UiUtil.linkToEnabledState(enabledState, ret);
-    MaximumMatch.enable(ret);
-    setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, ret);
+    final EntityComboBox comboBox = new EntityComboBox(boxModel);
+    new ComboBoxPropertyLink(comboBox, editModel, foreignKeyProperty);
+    UiUtil.linkToEnabledState(enabledState, comboBox);
+    MaximumMatch.enable(comboBox);
+    comboBox.setToolTipText(foreignKeyProperty.getDescription());
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
-      UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
+      UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
 
-    return ret;
+    return comboBox;
   }
 
   public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
@@ -250,17 +250,17 @@ public class EntityUiUtil {
 
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
                                              final EntityEditModel editModel) {
-    final JTextField txt = new JTextField();
-    txt.setEditable(false);
-    setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, txt);
+    final JTextField textField = new JTextField();
+    textField.setEditable(false);
+    textField.setToolTipText(foreignKeyProperty.getDescription());
     editModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new Property.Listener() {
       @Override
       public void propertyChanged(final Property.Event e) {
-        txt.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
+        textField.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
     });
 
-    return txt;
+    return textField;
   }
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
@@ -295,7 +295,7 @@ public class EntityUiUtil {
                     (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
     new LookupModelPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
-    setPropertyToolTip(editModel.getEntityID(), foreignKeyProperty, lookupField);
+    lookupField.setToolTipText(foreignKeyProperty.getDescription());
 
     return lookupField;
   }
@@ -308,17 +308,17 @@ public class EntityUiUtil {
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final State enabledState,
                                                final boolean editable) {
-    final SteppedComboBox ret = new SteppedComboBox(model);
-    ret.setEditable(editable);
-    new ComboBoxPropertyLink(ret, editModel, property);
-    UiUtil.linkToEnabledState(enabledState, ret);
-    setPropertyToolTip(editModel.getEntityID(), property, ret);
+    final SteppedComboBox comboBox = new SteppedComboBox(model);
+    comboBox.setEditable(editable);
+    new ComboBoxPropertyLink(comboBox, editModel, property);
+    UiUtil.linkToEnabledState(enabledState, comboBox);
+    comboBox.setToolTipText(property.getDescription());
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
-      UiUtil.transferFocusOnEnter((JComponent) ret.getEditor().getEditorComponent());
-      UiUtil.transferFocusOnEnter(ret);
+      UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
+      UiUtil.transferFocusOnEnter(comboBox);
     }
 
-    return ret;
+    return comboBox;
   }
 
   public static DateInputPanel createDateInputPanel(final Date initialValue, final SimpleDateFormat maskFormat) {
@@ -356,14 +356,14 @@ public class EntityUiUtil {
     if (property.getPropertyType() != Type.STRING)
       throw new RuntimeException("Cannot create a text area for a non-string property");
 
-    final JTextArea ret = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
-    ret.setLineWrap(true);
-    ret.setWrapStyleWord(true);
+    final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
+    textArea.setLineWrap(true);
+    textArea.setWrapStyleWord(true);
 
-    new TextPropertyLink(ret, editModel, property, true, LinkType.READ_WRITE);
-    setPropertyToolTip(editModel.getEntityID(), property, ret);
+    new TextPropertyLink(textArea, editModel, property, true, LinkType.READ_WRITE);
+    textArea.setToolTipText(property.getDescription());
 
-    return ret;
+    return textArea;
   }
 
   public static JTextField createTextField(final Property property, final EntityEditModel editModel) {
@@ -470,12 +470,6 @@ public class EntityUiUtil {
       MaximumMatch.enable(ret);
 
     return ret;
-  }
-
-  public static void setPropertyToolTip(final String entityID, final Property property, final JComponent component) {
-    final String propertyDescription = EntityRepository.getPropertyDescription(entityID, property);
-    if (propertyDescription != null)
-      component.setToolTipText(propertyDescription);
   }
 
   public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
@@ -613,7 +607,7 @@ public class EntityUiUtil {
     UiUtil.linkToEnabledState(enabledState, field);
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(field);
-    setPropertyToolTip(editModel.getEntityID(), property, field);
+    field.setToolTipText(property.getDescription());
     if (field instanceof TextFieldPlus && property.getMaxLength() > 0)
       ((TextFieldPlus) field).setMaxLength(property.getMaxLength());
     if (property.isDatabaseProperty())

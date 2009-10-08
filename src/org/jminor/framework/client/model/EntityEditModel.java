@@ -71,10 +71,10 @@ public class EntityEditModel {
   private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Event evtEntitiesChanged) {
-    this.dbProvider = dbProvider;
-    this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
+    this.dbProvider = dbProvider;
+    this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     this.evtEntitiesChanged = evtEntitiesChanged;
     bindEvents();
   }
