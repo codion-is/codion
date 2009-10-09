@@ -125,7 +125,7 @@ public class EntityTableSearchModel {
    * @return the property filters configured in this table search model
    */
   public List<PropertyFilterModel> getPropertyFilterModels() {
-    return propertyFilterModels;
+    return new ArrayList<PropertyFilterModel>(propertyFilterModels);
   }
 
   /**
@@ -168,7 +168,7 @@ public class EntityTableSearchModel {
    * @return a list containing the PropertySearchModels configured in this table search model
    */
   public List<PropertySearchModel> getPropertySearchModels() {
-    return propertySearchModels;
+    return new ArrayList<PropertySearchModel>(propertySearchModels);
   }
 
   /**

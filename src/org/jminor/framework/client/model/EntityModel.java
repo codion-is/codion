@@ -411,7 +411,7 @@ public class EntityModel implements Refreshable {
    * @return the detail models this model contains
    */
   public List<? extends EntityModel> getDetailModels() {
-    return detailModels;
+    return new ArrayList<EntityModel>(detailModels);
   }
 
   /**
@@ -451,20 +451,36 @@ public class EntityModel implements Refreshable {
    * @return a list containing the detail models that are currently linked to this model
    */
   public List<EntityModel> getLinkedDetailModels() {
-    return linkedDetailModels;
+    return new ArrayList<EntityModel>(linkedDetailModels);
   }
 
   /**
-   * Returns the detail model for the given Class
-   * @param entityModelClass the Class of the Entity for which to find the detail model
-   * @return the detail model for the given Entity Class, null if none is found
+   * Returns the detail model of the given type
+   * @param entityModelClass the type of the required EntityModel
+   * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
-  public EntityModel getDetailModel(final Class<?> entityModelClass) {
+  public EntityModel getDetailModel(final Class entityModelClass) {
     for (final EntityModel detailModel : detailModels)
       if (detailModel.getClass().equals(entityModelClass))
         return detailModel;
 
     throw new RuntimeException("No detail model of type " + entityModelClass + " found in model: " + this);
+  }
+
+  /**
+   * Returns the detail model for the given entityID, this simply returns the first
+   * detail model found, so if multiple detail models are based on the same entity, this method
+   * is not reliable
+   * @param entityID the ID of the Entity for which to find the detail model
+   * @return the detail model representing the given entityID , null if none is found
+   * @see #getDetailModel(Class)
+   */
+  public EntityModel getDetailModel(final String entityID) {
+    for (final EntityModel detailModel : detailModels)
+      if (detailModel.getEntityID().equals(entityID))
+        return detailModel;
+
+    throw new RuntimeException("No detail model based on entityID " + entityID + " found in model: " + this);
   }
 
   /**

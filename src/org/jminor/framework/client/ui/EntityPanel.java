@@ -420,7 +420,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return a List containing the detail EntityPanels, if any
    */
   public List<EntityPanel> getDetailPanels() {
-    return detailEntityPanels;
+    return new ArrayList<EntityPanel>(detailEntityPanels);
   }
 
   /**

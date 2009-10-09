@@ -822,3 +822,7 @@
   AbstractSearchPanel.getInputFormat() added
   Type.Boolean enum removed, good riddance
   BooleanComboBoxModel refactored and moved to common.model.combobox
+  EntityModel.getDetailModel(String entityID) added
+  EntityTestUnit.getDbConnectionProvider() renamed to getDbProvider()
+  EntityKeyCriteria, removed the unused getKeys() and getProperties() methods
+  Methods returning Collection fields now return a new Collection, preventing modification to the field contents

@@ -67,32 +67,6 @@ public class PropertyCriteria implements Criteria, Serializable {
     setValues(values);
   }
 
-  /**
-   * @param values the values to use in this criteria
-   */
-  @SuppressWarnings({"unchecked"})
-  public void setValues(final Object... values) {
-    this.values.clear();
-    if (values == null)
-      this.values.add(null);
-    else
-      this.values.addAll(getValues(values));
-  }
-
-  /**
-   * @return the values used by this criteria
-   */
-  public List<Object> getValues() {
-    return this.values;
-  }
-
-  /**
-   * @return the search type used by this criteria
-   */
-  public SearchType getSearchType() {
-    return this.searchType;
-  }
-
   /** {@inheritDoc} */
   @Override
   public String toString() {
@@ -100,10 +74,27 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /**
+   * Sets whether this criteria should be case sensitive, only applies to criterias based on string properties
+   * @param value if true then this criteria is case sensitive, false otherwise
+   * @return this PropertyCriteria instance
+   */
+  public PropertyCriteria setCaseSensitive(final boolean value) {
+    this.caseSensitive = value;
+    return this;
+  }
+
+  /**
+   * @return true if this criteria is case sensitive (only applies to criterias based on string properties)
+   */
+  public boolean isCaseSensitive() {
+    return caseSensitive;
+  }
+
+  /**
    * @return the SQL condition string this criteria represents, i.e. propertyName = 'value',
    * this string should not contain the 'where' keyword
    */
-  public String getConditionString() {
+  String getConditionString() {
     if (property instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaString();
 
@@ -153,23 +144,6 @@ public class PropertyCriteria implements Criteria, Serializable {
     }
 
     throw new IllegalArgumentException("Unknown search type" + searchType);
-  }
-
-  /**
-   * Sets whether this criteria should be case sensitive, only applies to criterias based on string properties
-   * @param value if true then this criteria is case sensitive, false otherwise
-   * @return this PropertyCriteria instance
-   */
-  public PropertyCriteria setCaseSensitive(final boolean value) {
-    this.caseSensitive = value;
-    return this;
-  }
-
-  /**
-   * @return true if this criteria is case sensitive (only applies to criterias based on string properties)
-   */
-  public boolean isCaseSensitive() {
-    return caseSensitive;
   }
 
   private String getForeignKeyCriteriaString() {
@@ -233,6 +207,18 @@ public class PropertyCriteria implements Criteria, Serializable {
     ret.append("))");
 
     return ret.toString();
+  }
+
+  /**
+   * @param values the values to use in this criteria
+   */
+  @SuppressWarnings({"unchecked"})
+  private void setValues(final Object... values) {
+    this.values.clear();
+    if (values == null)
+      this.values.add(null);
+    else
+      this.values.addAll(getValues(values));
   }
 
   @SuppressWarnings({"unchecked"})

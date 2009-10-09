@@ -71,9 +71,9 @@ public class EntityEditModel {
   private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Event evtEntitiesChanged) {
+    this.dbProvider = dbProvider;
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
-    this.dbProvider = dbProvider;
     this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     this.evtEntitiesChanged = evtEntitiesChanged;
     bindEvents();
@@ -257,6 +257,13 @@ public class EntityEditModel {
     return (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
   }
 
+  /**
+   * @param propertyID the ID of the foreign key property for which to retrieve the <code>EntityComboBoxModel</code>
+   * @return the EntityComboBoxModel for the <code>property</code>,
+   * if no combo box model is associated with the property a new one is initialized, and associated
+   * with the given property
+   * @see #initializeEntityComboBoxModels()
+   */
   public EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
     if (!(property instanceof Property.ForeignKeyProperty))

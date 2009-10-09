@@ -89,7 +89,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
-    hasDenormalizedProperties = EntityRepository.hasDenormalizedProperties(getEntityID());
+    this.hasDenormalizedProperties = EntityRepository.hasDenormalizedProperties(getEntityID());
   }
 
   /**

@@ -112,7 +112,7 @@ public class EntityLookupModel {
   }
 
   public List<Entity> getSelectedEntities() {
-    return selectedEntities;
+    return new ArrayList<Entity>(selectedEntities);
   }
 
   public boolean isCaseSensitive() {

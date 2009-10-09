@@ -234,7 +234,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the underlying table column properties
    */
   public List<Property> getTableColumnProperties() {
-    return tableColumnProperties;
+    return new ArrayList<Property>(tableColumnProperties);
   }
 
   /**

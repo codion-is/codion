@@ -8,6 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class EntityApplicationModel {
@@ -52,7 +53,7 @@ public abstract class EntityApplicationModel {
    * @return a List containing the main application models
    */
   public List<? extends EntityModel> getMainApplicationModels() {
-    return mainApplicationModels;
+    return new ArrayList<EntityModel>(mainApplicationModels);
   }
 
   /**

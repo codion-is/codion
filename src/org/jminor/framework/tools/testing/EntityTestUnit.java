@@ -71,7 +71,7 @@ public abstract class EntityTestUnit extends TestCase {
   /**
    * @return the EntityDb instance used by this EntityTestUnit
    */
-  protected EntityDbProvider getDbConnectionProvider() {
+  protected EntityDbProvider getDbProvider() {
     return dbConnectionProvider;
   }
 
@@ -109,7 +109,7 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected void testEntity(final String entityID) throws Exception {
     try {
-      getDbConnectionProvider().getEntityDb().beginTransaction();
+      getDbProvider().getEntityDb().beginTransaction();
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new HashSet<String>()));
       final Entity initialEntity = initializeTestEntity(entityID);
       if (initialEntity == null)
@@ -122,7 +122,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
     finally {
       referencedEntities.clear();
-      getDbConnectionProvider().getEntityDb().endTransaction(false);
+      getDbProvider().getEntityDb().endTransaction(false);
     }
   }
 
@@ -134,9 +134,9 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected Entity testInsert(final Entity testEntity) throws Exception {
     try {
-      final List<Entity.Key> keys = getDbConnectionProvider().getEntityDb().insert(Arrays.asList(testEntity));
+      final List<Entity.Key> keys = getDbProvider().getEntityDb().insert(Arrays.asList(testEntity));
       try {
-        return getDbConnectionProvider().getEntityDb().selectSingle(keys.get(0));
+        return getDbProvider().getEntityDb().selectSingle(keys.get(0));
       }
       catch (RecordNotFoundException e) {
         fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
@@ -156,11 +156,11 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected void testSelect(final Entity testEntity) throws Exception {
     try {
-      final Entity etmp = getDbConnectionProvider().getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      final Entity etmp = getDbProvider().getEntityDb().selectSingle(testEntity.getPrimaryKey());
       assertTrue("Entity of type " + testEntity.getEntityID() + " failed select comparison",
               testEntity.propertyValuesEqual(etmp));
 
-      final List<Entity> entityByPrimaryKey = getDbConnectionProvider().getEntityDb().selectMany(
+      final List<Entity> entityByPrimaryKey = getDbProvider().getEntityDb().selectMany(
               Arrays.asList(testEntity.getPrimaryKey()));
       assertTrue("Entity of type " + testEntity.getEntityID() + " was not found when selecting by primary key",
               entityByPrimaryKey.size() == 1 && entityByPrimaryKey.get(0).equals(testEntity));
@@ -182,9 +182,9 @@ public abstract class EntityTestUnit extends TestCase {
       if (!testEntity.isModified())
         return;
 
-      getDbConnectionProvider().getEntityDb().update(Arrays.asList(testEntity));
+      getDbProvider().getEntityDb().update(Arrays.asList(testEntity));
 
-      final Entity tmp = getDbConnectionProvider().getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      final Entity tmp = getDbProvider().getEntityDb().selectSingle(testEntity.getPrimaryKey());
       assertEquals("Primary keys of entity and its updated counterpart should be equal",
               testEntity.getPrimaryKey(), tmp.getPrimaryKey());
       for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
@@ -211,11 +211,11 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected void testDelete(final Entity testEntity) throws Exception {
     try {
-      getDbConnectionProvider().getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
+      getDbProvider().getEntityDb().delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
 
       boolean caught = false;
       try {
-        getDbConnectionProvider().getEntityDb().selectSingle(testEntity.getPrimaryKey());
+        getDbProvider().getEntityDb().selectSingle(testEntity.getPrimaryKey());
       }
       catch (DbException e) {
         caught = true;
@@ -265,12 +265,12 @@ public abstract class EntityTestUnit extends TestCase {
    */
   private Entity initialize(final Entity entity) throws Exception {
     try {
-      final List<Entity> entities = getDbConnectionProvider().getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
+      final List<Entity> entities = getDbProvider().getEntityDb().selectMany(Arrays.asList(entity.getPrimaryKey()));
       if (entities.size() > 0)
         return entities.get(0);
 
-      return getDbConnectionProvider().getEntityDb().selectSingle(
-              getDbConnectionProvider().getEntityDb().insert(Arrays.asList(entity)).get(0));
+      return getDbProvider().getEntityDb().selectSingle(
+              getDbProvider().getEntityDb().insert(Arrays.asList(entity)).get(0));
     }
     catch (DbException e) {
       System.out.println(e.getStatement());

@@ -45,7 +45,7 @@ public class EntityModelTest extends TestCase {
     departmentModel.getTableModel().setQueryFilteredByMaster(true);
     departmentModel.getTableModel().setSelectedEntity(department);
     final List<Entity> employeesFromDetailModel =
-            departmentModel.getDetailModel(EmployeeModel.class).getTableModel().getAllEntities();
+            departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllEntities();
     assertTrue("Filtered list should contain all employees for department", containsAll(employees, employeesFromDetailModel));
   }
 
@@ -104,7 +104,7 @@ public class EntityModelTest extends TestCase {
     final EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
           new User("scott", "tiger"), "EntityModelTest");
     departmentModel = new DepartmentModel(dbProvider);
-    employeeModel = (EmployeeModel) departmentModel.getDetailModel(EmployeeModel.class);
+    employeeModel = (EmployeeModel) departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
   }
 
   @Override

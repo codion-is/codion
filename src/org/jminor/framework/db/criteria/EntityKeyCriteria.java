@@ -63,24 +63,10 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   }
 
   /**
-   * @return the keys
-   */
-  public List<Entity.Key> getKeys() {
-    return keys;
-  }
-
-  /**
    * @return the entityID
    */
   public String getEntityID() {
     return keys.get(0).getEntityID();
-  }
-
-  /**
-   * @return the properties used for column names when constructing the criteria string
-   */
-  public List<Property> getProperties() {
-    return properties;
   }
 
   /** {@inheritDoc} */
