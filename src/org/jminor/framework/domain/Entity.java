@@ -579,14 +579,20 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Returns true if <code>value</code> represents a null value for the given property type
+   * Returns true if <code>value</code> represents a null value for the given property type.
+   * An empty string is regarded as null.
    * @param propertyType the property type
    * @param value the value to check
    * @return true if <code>value</code> represents null
    */
   public static boolean isValueNull(final Type propertyType, final Object value) {
-    return value == null || propertyType == Type.ENTITY
-            && (value instanceof Entity ? ((Entity) value).isNull() : ((Key) value).isNull());
+    if (value == null)
+      return true;
+
+    if (propertyType == Type.STRING)
+      return ((String) value).length() == 0;
+
+    return propertyType == Type.ENTITY && ((Entity) value).isNull();
   }
 
   /**
