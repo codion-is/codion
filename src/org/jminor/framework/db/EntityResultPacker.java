@@ -82,7 +82,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   private Boolean getBoolean(final ResultSet resultSet, final Property property) throws SQLException {
     if (property instanceof Property.BooleanProperty)
       return ((Property.BooleanProperty) property).toBoolean(
-              getValue(resultSet, ((Property.BooleanProperty) property).columnType, property.getSelectIndex()));
+              getValue(resultSet, ((Property.BooleanProperty) property).getColumnType(), property.getSelectIndex()));
     else {
       final Integer result = getInteger(resultSet, property.getSelectIndex());
       if (result == null)

@@ -265,9 +265,9 @@ public class EntityUiUtil {
 
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
-    final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.referenceEntityID);
+    final String[] searchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs == null)
-      throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.referenceEntityID
+      throw new RuntimeException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
 
     return createEntityLookupField(foreignKeyProperty, editModel, searchPropertyIDs);
@@ -283,14 +283,14 @@ public class EntityUiUtil {
                                                           final Criteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
     if (searchPropertyIDs.length == 0)
-      throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.referenceEntityID);
-    final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.referenceEntityID, searchPropertyIDs);
+      throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
+    final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
       if (searchProperty.getPropertyType() != Type.STRING)
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
     final EntityLookupField lookupField =
-            new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.referenceEntityID,
+            new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     additionalSearchCriteria, searchProperties),
                     (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());

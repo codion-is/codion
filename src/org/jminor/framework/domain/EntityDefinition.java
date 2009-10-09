@@ -76,7 +76,7 @@ public class EntityDefinition implements Serializable {
                 + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
       properties.put(property.getPropertyID(), property);
       if (property instanceof Property.ForeignKeyProperty) {
-        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).referenceProperties) {
+        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
           if (!(referenceProperty instanceof Property.MirrorProperty)) {
             if (properties.containsKey(referenceProperty.getPropertyID()))
               throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
@@ -217,9 +217,9 @@ public class EntityDefinition implements Serializable {
         databaseProperties.add(property);
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-        Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.foreignKeyPropertyID);
+        Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.getForeignKeyPropertyID());
         if (denormProps == null)
-          denormalizedProperties.put(denormalizedProperty.foreignKeyPropertyID, denormProps = new ArrayList<Property.DenormalizedProperty>());
+          denormalizedProperties.put(denormalizedProperty.getForeignKeyPropertyID(), denormProps = new ArrayList<Property.DenormalizedProperty>());
         denormProps.add(denormalizedProperty);
       }
       if (!property.isHidden())

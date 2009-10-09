@@ -8,6 +8,7 @@ import org.jminor.framework.Configuration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -388,43 +389,47 @@ public class Property implements Serializable {
    */
   public static class ForeignKeyProperty extends Property {
 
-    /**
-     * the ID of the referenced entity
-     */
-    public final String referenceEntityID;
+    private final String referencedEntityID;
 
-    /**
-     * the actual reference properties
-     */
-    public final List<Property> referenceProperties;
+    private final List<Property> referenceProperties;
 
-    /**
-     * if true a shallow entity instance with only the primary key is loaded as opposed to
-     * loading the referenced entity with all property values populated
-     */
-    public boolean lazyLoading;
+    private boolean lazyLoading;
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
      * be a underlying table column, it must only be unique for this entity
      * @param caption the property caption
-     * @param referenceEntityID the ID of the referenced entity type
+     * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperties the actual column properties involved in the reference
      */
-    public ForeignKeyProperty(final String propertyID, final String caption, final String referenceEntityID,
+    public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final Property... referenceProperties) {
 
       super(propertyID, Type.ENTITY, caption);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
-          throw new IllegalArgumentException(referenceEntityID + ", reference property does not have a unique name: " + propertyID);
-      if (referenceEntityID == null)
-        throw new IllegalArgumentException("referenceEntityID is null: " + propertyID);
+          throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
+      if (referencedEntityID == null)
+        throw new IllegalArgumentException("referencedEntityID is null: " + propertyID);
 
       for (final Property referenceProperty : referenceProperties)
         referenceProperty.setParentProperty(this);
-      this.referenceEntityID = referenceEntityID;
+      this.referencedEntityID = referencedEntityID;
       this.referenceProperties = Arrays.asList(referenceProperties);
+    }
+
+    /**
+     * @return the ID of the referenced entity
+     */
+    public String getReferencedEntityID() {
+      return referencedEntityID;
+    }
+
+    /**
+     * @return the reference properties
+     */
+    public List<Property> getReferenceProperties() {
+      return new ArrayList<Property>(referenceProperties);
     }
 
     /**
@@ -434,6 +439,11 @@ public class Property implements Serializable {
       return this.referenceProperties.size() > 1;
     }
 
+    /**
+     * if true a shallow entity instance with only the primary key is loaded as opposed to
+     * loading the referenced entity with all property values populated
+     * @return true if this foreign key value should be lazy loaded
+     */
     public boolean isLazyLoading() {
       return lazyLoading;
     }
@@ -465,13 +475,8 @@ public class Property implements Serializable {
    */
   public static class DenormalizedProperty extends Property {
 
-    /**
-     * the id of the foreign key property (entity) from which this property should retrieve its value
-     */
-    public final String foreignKeyPropertyID;
-    /**
-     * the property from which this property gets its value
-     */
+    private final String foreignKeyPropertyID;
+
     public final Property denormalizedProperty;
 
     /**
@@ -497,6 +502,20 @@ public class Property implements Serializable {
       super(propertyID, denormalizedProperty.propertyType, caption);
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = denormalizedProperty;
+    }
+
+    /**
+     * @return the id of the foreign key property (entity) from which this property should retrieve its value
+     */
+    public String getForeignKeyPropertyID() {
+      return foreignKeyPropertyID;
+    }
+
+    /**
+     * @return the property from which this property gets its value
+     */
+    public Property getDenormalizedProperty() {
+      return denormalizedProperty;
     }
   }
 
@@ -548,14 +567,10 @@ public class Property implements Serializable {
    * display only, and does not map to a database column
    */
   public static class DenormalizedViewProperty extends TransientProperty {
-    /**
-     * the id of the foreign key property (entity) from which this property should retrieve its value
-     */
-    public final String foreignKeyPropertyID;
-    /**
-     * the property from which this property should get its value
-     */
-    public final Property denormalizedProperty;
+
+    private final String foreignKeyPropertyID;
+
+    private final Property denormalizedProperty;
 
     /**
      * @param propertyID the ID of the property, this should not be a column name since this property does not
@@ -580,15 +595,28 @@ public class Property implements Serializable {
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = property;
     }
+
+
+    /**
+     * @return the id of the foreign key property (entity) from which this property should retrieve its value
+     */
+    public String getForeignKeyPropertyID() {
+      return foreignKeyPropertyID;
+    }
+
+    /**
+     * @return the property from which this property gets its value
+     */
+    public Property getDenormalizedProperty() {
+      return denormalizedProperty;
+    }
   }
 
   /**
    * A property based on a subquery, returning a single value
    */
   public static class SubqueryProperty extends Property {
-    /**
-     * the sql query string
-     */
+
     private final String subquery;
 
     /**
@@ -628,10 +656,8 @@ public class Property implements Serializable {
    * are used for representing boolean values in different systems
    */
   public static class BooleanProperty extends Property {
-    /**
-     * the datatype of the underlying column
-     */
-    public final Type columnType;
+
+    private final Type columnType;
     /**
      * the Object value representing true
      */
@@ -702,6 +728,13 @@ public class Property implements Serializable {
       this.falseValue = falseValue;
       this.trueValueHash = trueValue.hashCode();
       this.falseValueHash = falseValue.hashCode();
+    }
+
+    /**
+     * @return the datatype of the underlying column
+     */
+    public Type getColumnType() {
+      return columnType;
     }
 
     /**

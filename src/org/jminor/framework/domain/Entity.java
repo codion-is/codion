@@ -535,15 +535,15 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (primaryKey != null)
       return primaryKey;
 
-    for (int i = 0; i < foreignKeyProperty.referenceProperties.size(); i++) {
-      final Property referenceKeyProperty = foreignKeyProperty.referenceProperties.get(i);
+    for (int i = 0; i < foreignKeyProperty.getReferenceProperties().size(); i++) {
+      final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(i);
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
               : values.get(referenceKeyProperty.getPropertyID());
       if (!isValueNull(referenceKeyProperty.getPropertyType(), value)) {
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
-                  : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.referenceEntityID));
+                  : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.getReferencedEntityID()));
         primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value);
       }
       else
@@ -708,9 +708,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             referencedEntity != null ? referencedEntity.primaryKey.getProperties()
-                    : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.referenceEntityID);
+                    : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
-      final Property referenceProperty = foreignKeyProperty.referenceProperties.get(primaryKeyProperty.getIndex());
+      final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
         final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.getPropertyID())
@@ -732,7 +732,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         doSetValue(denormalizedProperty,
-                entity == null ? null : entity.getRawValue(denormalizedProperty.denormalizedProperty.getPropertyID()),
+                entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()),
                 false, !values.containsKey(foreignKeyProperty.getPropertyID()), true);
       }
     }
@@ -758,15 +758,15 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = getEntityValue(denormalizedViewProperty.foreignKeyPropertyID);
+    final Entity valueOwner = getEntityValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
-    return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.denormalizedProperty) : null;
+    return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty()) : null;
   }
 
   private String getDenormalizedViewValueAsString(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = getEntityValue(denormalizedViewProperty.foreignKeyPropertyID);
+    final Entity valueOwner = getEntityValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
-    return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.denormalizedProperty) : null;
+    return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.getDenormalizedProperty()) : null;
   }
 
   /**

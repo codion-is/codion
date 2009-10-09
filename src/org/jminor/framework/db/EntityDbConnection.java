@@ -460,7 +460,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
       final List<Entity.Key> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
-      final Map<Entity.Key, Entity> hashedReferencedEntities = foreignKeyProperty.lazyLoading
+      final Map<Entity.Key, Entity> hashedReferencedEntities = foreignKeyProperty.isLazyLoading()
               ? initLazyLoaded(referencedPrimaryKeys)
               : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
       for (final Entity entity : entities)
@@ -547,8 +547,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final Set<Dependency> dependencies = new HashSet<Dependency>();
     for (final String entityIDToCheck : entityIDs) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityIDToCheck))
-        if (foreignKeyProperty.referenceEntityID.equals(entityID))
-          dependencies.add(new Dependency(entityIDToCheck, foreignKeyProperty.referenceProperties));
+        if (foreignKeyProperty.getReferencedEntityID().equals(entityID))
+          dependencies.add(new Dependency(entityIDToCheck, foreignKeyProperty.getReferenceProperties()));
     }
 
     return dependencies;

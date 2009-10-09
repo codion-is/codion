@@ -1070,7 +1070,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   private int getColumnIndex(final String masterEntityID) {
     for (int i = 0; i < tableColumnProperties.size(); i++)
       if (tableColumnProperties.get(i) instanceof Property.ForeignKeyProperty
-              && ((Property.ForeignKeyProperty) tableColumnProperties.get(i)).referenceEntityID.equals(masterEntityID))
+              && ((Property.ForeignKeyProperty) tableColumnProperties.get(i)).getReferencedEntityID().equals(masterEntityID))
         return i;
 
     return -1;

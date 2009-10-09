@@ -832,3 +832,4 @@
   EntityRepository.define(EntityDefinition) renamed to add
   EntityRepository.define() removed, wohooo
   Entity.isValueNull() needs to handle Entity.Key values as well for Type.ENTITY
+  Property fields privatized, getters added

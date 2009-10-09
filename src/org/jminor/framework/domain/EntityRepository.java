@@ -299,7 +299,7 @@ public class EntityRepository {
   public static List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
     final List<Property.ForeignKeyProperty> ret = new ArrayList<Property.ForeignKeyProperty>();
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
-      if (foreignKeyProperty.referenceEntityID.equals(referenceEntityID))
+      if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID))
         ret.add(foreignKeyProperty);
 
     return ret;

@@ -414,7 +414,7 @@ public class EntityEditModel {
    * @see org.jminor.framework.domain.Property#isNullable()
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return new EntityComboBoxModel(foreignKeyProperty.referenceEntityID, getDbProvider(), false,
+    return new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), getDbProvider(), false,
             foreignKeyProperty.isNullable() ?
                     (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null, true);
   }
