@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.IdSource;
-
 public class EntityTestDomain {
 
   public static final String T_MASTER = "test.master_entity";
@@ -28,13 +26,12 @@ public class EntityTestDomain {
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
-    EntityRepository.define(T_MASTER,
+    EntityRepository.add(new EntityDefinition(T_MASTER,
             new Property.PrimaryKeyProperty(MASTER_ID),
             new Property(MASTER_NAME, Type.STRING),
-            new Property(MASTER_CODE, Type.INT));
+            new Property(MASTER_CODE, Type.INT)));
 
-    EntityRepository.define(T_DETAIL, IdSource.NONE, null,
-            DETAIL_STRING, DETAIL_SELECT_TABLE_NAME, false,
+    EntityRepository.add(new EntityDefinition(T_DETAIL,
             new Property.PrimaryKeyProperty(DETAIL_ID).setDefaultValue(42),
             new Property(DETAIL_INT, Type.INT, DETAIL_INT),
             new Property(DETAIL_DOUBLE, Type.DOUBLE, DETAIL_DOUBLE),
@@ -47,6 +44,7 @@ public class EntityTestDomain {
             new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
                     EntityRepository.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             new Property.DenormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
-                    EntityRepository.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE));
+                    EntityRepository.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
+            .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME));
   }
 }

@@ -50,19 +50,19 @@ public class SchemaBrowser {
   public static final String COLUMN_CONSTRAINT_POSITION = bundle.getString("column_constraint_position");
 
   static {
-    EntityRepository.define(new EntityDefinition(T_SCHEMA,
+    EntityRepository.add(new EntityDefinition(T_SCHEMA,
             new Property.PrimaryKeyProperty(SCHEMA_NAME, Type.STRING, "Name"))
             .setOrderByClause(SCHEMA_NAME)
             .setReadOnly(true));
 
-    EntityRepository.define(new EntityDefinition(T_TABLE,
+    EntityRepository.add(new EntityDefinition(T_TABLE,
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING).setIndex(0)),
             new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true));
 
-    EntityRepository.define(new EntityDefinition(T_COLUMN,
+    EntityRepository.add(new EntityDefinition(T_COLUMN,
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING).setIndex(0),
                     new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING).setIndex(1)),
@@ -71,7 +71,7 @@ public class SchemaBrowser {
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true));
 
-    EntityRepository.define(new EntityDefinition(T_CONSTRAINT,
+    EntityRepository.add(new EntityDefinition(T_CONSTRAINT,
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
                     new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING).setIndex(1)),
@@ -80,7 +80,7 @@ public class SchemaBrowser {
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true).setLargeDataset(true));
 
-    EntityRepository.define(new EntityDefinition(T_COLUMN_CONSTRAINT,
+    EntityRepository.add(new EntityDefinition(T_COLUMN_CONSTRAINT,
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Type.STRING).setIndex(1),

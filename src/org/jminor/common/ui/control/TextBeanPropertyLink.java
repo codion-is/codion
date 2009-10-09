@@ -26,7 +26,6 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
     this.document = textComponent.getDocument();
     if (linkType == LinkType.READ_ONLY)
       textComponent.setEditable(false);
-    updateUI();
     this.document.addDocumentListener(this);
   }
 

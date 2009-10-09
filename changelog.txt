@@ -829,3 +829,5 @@
   EntityRepository.EntityDefinition moved up to framework.domain
   EntityDefinition refactored, added chained setters
   EntityRepository.define(EntityDefinition) added, rest deprecated
+  EntityRepository.define(EntityDefinition) renamed to add
+  EntityRepository.define() removed, wohooo

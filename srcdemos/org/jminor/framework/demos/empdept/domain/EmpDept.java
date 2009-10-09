@@ -64,7 +64,7 @@ public class EmpDept {
 
   static {
     /*Defining the entity type T_DEPARTMENT*/
-    EntityRepository.define(new EntityDefinition(T_DEPARTMENT,
+    EntityRepository.add(new EntityDefinition(T_DEPARTMENT,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID))
                     .setNullable(false),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME))
@@ -73,7 +73,7 @@ public class EmpDept {
                     .setPreferredWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
 
     /*Defining the entity type T_EMPLOYEE*/
-    EntityRepository.define(new EntityDefinition(T_EMPLOYEE,
+    EntityRepository.add(new EntityDefinition(T_EMPLOYEE,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),

@@ -17,13 +17,16 @@ public class FormattedTextBeanPropertyLink extends TextBeanPropertyLink {
                                        final Event propertyChangeEvent, final LinkType linkType,
                                        final Format format) {
     super(textComponent, owner, propertyName, valueClass, propertyChangeEvent, linkType);
+    if (format == null)
+      throw new RuntimeException("Format is null");
     this.format = format;
     this.placeholder = Character.toString((((MaskFormatter) textComponent.getFormatter()).getPlaceholderCharacter()));
+    updateUI();
   }
 
   @Override
   protected String getPropertyValueAsString(final Object propertyValue) {
-    return propertyValue != null ? format.format(propertyValue) : null;
+    return propertyValue == null ? null : format.format(propertyValue);
   }
 
   /**
