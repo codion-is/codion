@@ -4,7 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.User;
-import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityDefinition;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -21,7 +21,7 @@ public interface EntityDbServer extends Remote {
   public final String SERVER_ADMIN_SUFFIX = "-admin";
 
   public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException;
+                                final Map<String, EntityDefinition> repository) throws RemoteException;
 
   /**
    * @return the server name

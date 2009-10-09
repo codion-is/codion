@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 
 import org.apache.log4j.Logger;
@@ -123,7 +124,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   /** {@inheritDoc} */
   public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                final Map<String, EntityRepository.EntityDefinition> repository) throws RemoteException {
+                                final Map<String, EntityDefinition> repository) throws RemoteException {
     if (connectionKey == null)
       return null;
 

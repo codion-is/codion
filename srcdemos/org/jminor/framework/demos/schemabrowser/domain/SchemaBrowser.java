@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.IdSource;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -50,41 +50,45 @@ public class SchemaBrowser {
   public static final String COLUMN_CONSTRAINT_POSITION = bundle.getString("column_constraint_position");
 
   static {
-    EntityRepository.define(T_SCHEMA,
-            IdSource.NONE, null, SCHEMA_NAME, null, true,
-            new Property.PrimaryKeyProperty(SCHEMA_NAME, Type.STRING, "Name"));
+    EntityRepository.define(new EntityDefinition(T_SCHEMA,
+            new Property.PrimaryKeyProperty(SCHEMA_NAME, Type.STRING, "Name"))
+            .setOrderByClause(SCHEMA_NAME)
+            .setReadOnly(true));
 
-    EntityRepository.define(T_TABLE,
-            IdSource.NONE, null, TABLE_SCHEMA + ", " + TABLE_NAME, null, true, true,
+    EntityRepository.define(new EntityDefinition(T_TABLE,
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING).setIndex(0)),
-            new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name").setIndex(1));
+            new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name").setIndex(1))
+            .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
+            .setReadOnly(true));
 
-    EntityRepository.define(T_COLUMN,
-            IdSource.NONE, null, COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME, null, true,
+    EntityRepository.define(new EntityDefinition(T_COLUMN,
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Type.STRING).setIndex(0),
                     new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Type.STRING).setIndex(1)),
             new Property.PrimaryKeyProperty(COLUMN_NAME, Type.STRING, "Column name").setIndex(2),
-            new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"));
+            new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"))
+            .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
+            .setReadOnly(true));
 
-    EntityRepository.define(T_CONSTRAINT,
-            IdSource.NONE, null, CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME, null, true, true,
+    EntityRepository.define(new EntityDefinition(T_CONSTRAINT,
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
                     new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Type.STRING).setIndex(1)),
             new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Type.STRING, "Constraint name").setIndex(2),
-            new Property(CONSTRAINT_TYPE, Type.STRING, "Type"));
+            new Property(CONSTRAINT_TYPE, Type.STRING, "Type"))
+            .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
+            .setReadOnly(true).setLargeDataset(true));
 
-    EntityRepository.define(T_COLUMN_CONSTRAINT,
-            IdSource.NONE, null, COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME,
-            null, true,
+    EntityRepository.define(new EntityDefinition(T_COLUMN_CONSTRAINT,
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Type.STRING).setIndex(1),
                     new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Type.STRING).setIndex(2)),
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Type.STRING, "Column name"),
-            new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"));
+            new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"))
+            .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)
+            .setReadOnly(true));
 
     Entity.setDefaultProxy(new Entity.Proxy() {
       @Override

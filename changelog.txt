@@ -826,3 +826,6 @@
   EntityTestUnit.getDbConnectionProvider() renamed to getDbProvider()
   EntityKeyCriteria, removed the unused getKeys() and getProperties() methods
   Methods returning Collection fields now return a new Collection, preventing modification to the field contents
+  EntityRepository.EntityDefinition moved up to framework.domain
+  EntityDefinition refactored, added chained setters
+  EntityRepository.define(EntityDefinition) added, rest deprecated

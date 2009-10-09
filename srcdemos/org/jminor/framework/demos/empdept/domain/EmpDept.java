@@ -5,6 +5,7 @@ package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -63,17 +64,16 @@ public class EmpDept {
 
   static {
     /*Defining the entity type T_DEPARTMENT*/
-    EntityRepository.define(T_DEPARTMENT, IdSource.NONE, null, DEPARTMENT_NAME,
+    EntityRepository.define(new EntityDefinition(T_DEPARTMENT,
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID))
                     .setNullable(false),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME))
                     .setPreferredWidth(120).setMaxLength(14).setNullable(false),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
-                    .setPreferredWidth(150).setMaxLength(13));
+                    .setPreferredWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
 
     /*Defining the entity type T_EMPLOYEE*/
-    EntityRepository.define(T_EMPLOYEE, IdSource.MAX_PLUS_ONE, null,
-            EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME,
+    EntityRepository.define(new EntityDefinition(T_EMPLOYEE,
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),
@@ -91,7 +91,9 @@ public class EmpDept {
                     .setNullable(false),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
-                    getString(DEPARTMENT_LOCATION)).setPreferredWidth(100));
+                    getString(DEPARTMENT_LOCATION)).setPreferredWidth(100))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME));
 
     /*Set a Proxy implementation to provide toString values for the entities
     * and custom background color for managers*/
