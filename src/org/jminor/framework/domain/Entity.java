@@ -591,8 +591,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
     if (propertyType == Type.STRING)
       return ((String) value).length() == 0;
+    if (propertyType == Type.ENTITY) {
+      final Entity.Key key = value instanceof Entity ? ((Entity) value).getPrimaryKey() : (Entity.Key) value;
+      return key.isNull();
+    }
 
-    return propertyType == Type.ENTITY && ((Entity) value).isNull();
+    return false;
   }
 
   /**
