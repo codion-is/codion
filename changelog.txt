@@ -834,3 +834,4 @@
   Entity.isValueNull() needs to handle Entity.Key values as well for Type.ENTITY
   Property fields privatized, getters added
   Property.selectOnly field renamed to readOnly
+  ForeignKeyProperty now uses an unmodifiable list for reference properties

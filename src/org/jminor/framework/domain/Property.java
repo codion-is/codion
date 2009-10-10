@@ -8,8 +8,8 @@ import org.jminor.framework.Configuration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -415,7 +415,7 @@ public class Property implements Serializable {
       for (final Property referenceProperty : referenceProperties)
         referenceProperty.setParentProperty(this);
       this.referencedEntityID = referencedEntityID;
-      this.referenceProperties = Arrays.asList(referenceProperties);
+      this.referenceProperties = Collections.unmodifiableList(Arrays.asList(referenceProperties));
     }
 
     /**
@@ -426,10 +426,12 @@ public class Property implements Serializable {
     }
 
     /**
+     * Returns a list containing the actual reference properties,
+     * N.B. this list should not be modified.
      * @return the reference properties
      */
     public List<Property> getReferenceProperties() {
-      return new ArrayList<Property>(referenceProperties);
+      return referenceProperties;
     }
 
     /**
