@@ -61,7 +61,7 @@ public class Property implements Serializable {
    * True if this property is for selecting only, implicitly not updatable
    * and not used in insert statements
    */
-  private boolean selectOnly = false;
+  private boolean readOnly = false;
 
   /**
    * True if this property is updatable
@@ -191,19 +191,19 @@ public class Property implements Serializable {
   }
 
   /**
-   * @param selectOnly specifies whether this property should be included during insert/update operations
+   * @param readOnly specifies whether this property should be included during insert/update operations
    * @return this Property instance
    */
-  public Property setSelectOnly(final boolean selectOnly) {
-    this.selectOnly = selectOnly;
+  public Property setReadOnly(final boolean readOnly) {
+    this.readOnly = readOnly;
     return this;
   }
 
   /**
    * @return true if this property is for select only
    */
-  public boolean isSelectOnly() {
-    return this.selectOnly;
+  public boolean isReadOnly() {
+    return this.readOnly;
   }
 
   /**
@@ -628,7 +628,7 @@ public class Property implements Serializable {
      */
     public SubqueryProperty(final String propertyID, final Type type, final String caption, final String subquery) {
       super(propertyID, type, caption);
-      super.setSelectOnly(true);
+      super.setReadOnly(true);
       super.setUpdatable(false);
       this.subquery = subquery;
     }
@@ -639,7 +639,7 @@ public class Property implements Serializable {
     }
 
     @Override
-    public Property setSelectOnly(final boolean selectOnly) {
+    public Property setReadOnly(final boolean selectOnly) {
       throw new IllegalArgumentException("SubqueryProperty can only be select only");
     }
 

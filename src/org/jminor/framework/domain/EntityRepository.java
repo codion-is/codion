@@ -155,21 +155,20 @@ public class EntityRepository {
    * Retrive the database properties comprising the entity identified by <code>entityID</code>
    * @param entityID the entity ID
    * @param includePrimaryKeyProperties if true primary key properties are included
-   * @param includeSelectOnly if true then properties that are marked as 'select only' are included
+   * @param includeReadOnly if true then properties that are marked as 'read only' are included
    * @param includeNonUpdatable if true then non updatable properties are included
    * @return a list containing the database properties (properties that map to database columns) comprising
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getDatabaseProperties(final String entityID,
                                                      final boolean includePrimaryKeyProperties,
-                                                     final boolean includeSelectOnly,
+                                                     final boolean includeReadOnly,
                                                      final boolean includeNonUpdatable) {
     final List<Property> properties = new ArrayList<Property>(getDatabaseProperties(entityID));
     final ListIterator<Property> iterator = properties.listIterator();
     while (iterator.hasNext()) {
       final Property property = iterator.next();
-      if (!includeSelectOnly && property.isSelectOnly()
-              || !includeNonUpdatable && !property.isUpdatable()
+      if (!includeReadOnly && property.isReadOnly() || !includeNonUpdatable && !property.isUpdatable()
               || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty)
         iterator.remove();
     }
@@ -372,7 +371,7 @@ public class EntityRepository {
    */
   public static void add(EntityDefinition entityDefinition) {
     if (entityDefinitions.containsKey(entityDefinition.getEntityID()))
-      throw new RuntimeException("Entity already adde: " + entityDefinition.getEntityID());
+      throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
     entityDefinitions.put(entityDefinition.getEntityID(), entityDefinition);
   }
 }

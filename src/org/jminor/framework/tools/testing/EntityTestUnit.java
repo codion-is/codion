@@ -188,7 +188,7 @@ public abstract class EntityTestUnit extends TestCase {
       assertEquals("Primary keys of entity and its updated counterpart should be equal",
               testEntity.getPrimaryKey(), tmp.getPrimaryKey());
       for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
-        if (!property.isSelectOnly() && property.isUpdatable()) {
+        if (!property.isReadOnly() && property.isUpdatable()) {
           final Object beforeUpdate = testEntity.getRawValue(property.getPropertyID());
           final Object afterUpdate = tmp.getRawValue(property.getPropertyID());
           assertTrue("Values of property " + property + " should be equal after update ["
