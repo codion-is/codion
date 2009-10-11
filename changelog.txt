@@ -835,3 +835,5 @@
   Property fields privatized, getters added
   Property.selectOnly field renamed to readOnly
   ForeignKeyProperty now uses an unmodifiable list for reference properties
+  EntityDbConnection.getResultPacker(Type) is now non static and caches the packers
+  EntityComboBoxModelTest and PropertyComboBoxModelTest added, rather rudimentary, to say the least

@@ -49,7 +49,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
-  private final Map<String, EntityResultPacker> resultPackers = new HashMap<String, EntityResultPacker>();
+  private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
+  private final Map<Type, ResultPacker> propertyResultPackers = new HashMap<Type, ResultPacker>();
   private boolean optimisticLockingEnabled = (Boolean) Configuration.getValue(Configuration.USE_OPTIMISTIC_LOCKING);
 
   /**Used by the EntityDbConnectionPool class*/
@@ -477,7 +478,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private static List<Entity.Key> getPrimaryKeysOfEntityValues(final List<Entity> entities,
-                                                              final Property.ForeignKeyProperty foreignKeyProperty) {
+                                                               final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> ret = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
@@ -513,33 +514,38 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private EntityResultPacker getResultPacker(final String entityID) {
-    EntityResultPacker packer = resultPackers.get(entityID);
+    EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null)
-      resultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
+      entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
 
     return packer;
   }
 
-  private static ResultPacker getResultPacker(final Type propertyType) {
-    return new ResultPacker() {
-      public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-        final List<Object> ret = new ArrayList<Object>(50);
-        int counter = 0;
-        while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-          switch(propertyType) {
-            case INT:
-              ret.add(resultSet.getInt(1));
-              break;
-            case DOUBLE:
-              ret.add(resultSet.getDouble(1));
-              break;
-            default:
-              ret.add(resultSet.getObject(1));
+  private ResultPacker getResultPacker(final Type propertyType) {
+    ResultPacker packer = propertyResultPackers.get(propertyType);
+    if (packer == null) {
+      propertyResultPackers.put(propertyType, packer = new ResultPacker() {
+        public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+          final List<Object> ret = new ArrayList<Object>(50);
+          int counter = 0;
+          while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+            switch(propertyType) {
+              case INT:
+                ret.add(resultSet.getInt(1));
+                break;
+              case DOUBLE:
+                ret.add(resultSet.getDouble(1));
+                break;
+              default:
+                ret.add(resultSet.getObject(1));
+            }
           }
+          return ret;
         }
-        return ret;
-      }
-    };
+      });
+    }
+
+    return packer;
   }
 
   private Set<Dependency> resolveEntityDependencies(final String entityID) {
