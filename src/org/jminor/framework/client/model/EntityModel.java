@@ -23,6 +23,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.i18n.FrameworkMessages;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -498,7 +499,7 @@ public class EntityModel implements Refreshable {
    * @throws UserCancelException in case the user cancels the operation
    * @throws ValidationException in case validation fails
    * @see #getEntitiesForInsert()
-   * @see #validateData(java.util.List, int)
+   * @see #validateEntities(java.util.List, int)
    */
   public final void insert() throws UserCancelException, DbException, ValidationException {
     insert(getEntitiesForInsert());
@@ -512,7 +513,7 @@ public class EntityModel implements Refreshable {
    * @throws ValidationException in case validation fails
    * @see #evtBeforeInsert
    * @see #evtAfterInsert
-   * @see #validateData(java.util.List, int)
+   * @see #validateEntities(java.util.List, int)
    */
   public final void insert(final List<Entity> entities) throws UserCancelException, DbException, ValidationException {
     if (isReadOnly())
@@ -523,7 +524,7 @@ public class EntityModel implements Refreshable {
     log.debug(toString() + " - insert "+ Util.getListContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
-    validateData(entities, INSERT);
+    validateEntities(entities, INSERT);
 
     final List<Entity.Key> primaryKeys = Entity.Key.copyEntityKeys(doInsert(entities));
     if (containsTableModel()) {
@@ -542,7 +543,7 @@ public class EntityModel implements Refreshable {
    * @throws EntityModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see #getEntitiesForUpdate()
-   * @see #validateData(java.util.List, int)
+   * @see #validateEntities(java.util.List, int)
    */
   public final void update() throws UserCancelException, DbException, EntityModifiedException, ValidationException {
     update(getEntitiesForUpdate());
@@ -558,7 +559,7 @@ public class EntityModel implements Refreshable {
    * @throws ValidationException in case validation fails
    * @see #evtBeforeUpdate
    * @see #evtAfterUpdate
-   * @see #validateData(java.util.List, int)
+   * @see #validateEntities(java.util.List, int)
    */
   public final void update(final List<Entity> entities) throws DbException, EntityModifiedException, UserCancelException, ValidationException {
     if (isReadOnly())
@@ -575,7 +576,7 @@ public class EntityModel implements Refreshable {
       return;
 
     evtBeforeUpdate.fire();
-    validateData(modifiedEntities, UPDATE);
+    validateEntities(modifiedEntities, UPDATE);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     if (containsTableModel()) {
@@ -754,16 +755,27 @@ public class EntityModel implements Refreshable {
   protected void initializeAssociatedModels() {}
 
   /**
-   * Validates the given Entity objects
-   * For overriding
+   * Validates the given Entity objects, this default implementation performs a null value validation
+   * if the corresponding configuration parameter is set
    * @param entities the entities to validate
    * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
    * @throws ValidationException in case the validation fails
+   * @see Property#setNullable(boolean)
+   * @see Configuration#PERFORM_NULL_VALIDATION
    * @see #INSERT
    * @see #UPDATE
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void validateData(final List<Entity> entities, final int action) throws ValidationException {}
+  protected void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
+    if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
+      for (final Entity entity : entities) {
+        for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
+          if (!property.isNullable() && entity.isValueNull(property.getPropertyID()))
+            throw new ValidationException(FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+        }
+      }
+    }
+  }
 
   /**
    * Inserts the given entities from the database

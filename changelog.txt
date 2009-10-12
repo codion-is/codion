@@ -843,3 +843,7 @@
   EntityDefinition, fixed bug preventing DenormalizedProperty from working
   Entity.hasDenormalizedProperties field removed
   State.StateGroup, now all other states are deactivated if an active state is added to the group, added a synchronized block in the add method
+  Configuration.PERFORM_NULL_VALIDATION added
+  EntityModel.validateData() renamed to validateEntities
+  EntityModel.validateEntities() performs null validation if Configuration.PERFORM_NULL_VALIDATION is true
+  EntityDefinition refactored, all Collection fields made unmodifiable

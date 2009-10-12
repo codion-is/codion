@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,42 +53,38 @@ public class EntityDefinition implements Serializable {
    */
   private boolean largeDataset;
 
-  private List<Property.PrimaryKeyProperty> primaryKeyProperties;
-  private List<Property.ForeignKeyProperty> foreignKeyProperties;
-
-  private List<Property> visibleProperties;
-  private List<Property> databaseProperties;
-
-  private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
-
+  /**
+   * The IDs of the properties to use when performing a string based lookup on this entity
+   */
   private List<String> searchPropertyIDs;
 
-  private String selectColumnsString;
+  private final List<Property.PrimaryKeyProperty> primaryKeyProperties;
+  private final List<Property.ForeignKeyProperty> foreignKeyProperties;
+
+  private final List<Property> visibleProperties;
+  private final List<Property> databaseProperties;
+
+  private final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
+
+  private final String selectColumnsString;
 
   public EntityDefinition(final String entityID, final Property... propertyDefinitions) {
     this.entityID = entityID;
     this.tableName = entityID;
     this.selectTableName = entityID;
-    this.properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
-    for (final Property property : propertyDefinitions) {
-      if (properties.containsKey(property.getPropertyID()))
-        throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
-                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
-      properties.put(property.getPropertyID(), property);
-      if (property instanceof Property.ForeignKeyProperty) {
-        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-          if (!(referenceProperty instanceof Property.MirrorProperty)) {
-            if (properties.containsKey(referenceProperty.getPropertyID()))
-              throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
-                      + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                      + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
-            properties.put(referenceProperty.getPropertyID(), referenceProperty);
-          }
-        }
-      }
-    }
-    initialize();
+
+    this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
+    this.visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
+    this.databaseProperties = Collections.unmodifiableList(getDatabaseProperties(properties.values()));
+    this.foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
+    this.primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
+    this.denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
+
+    final String[] selectColumnNames = initSelectColumnNames(this.databaseProperties);
+    for (int idx = 0; idx < selectColumnNames.length; idx++)
+      properties.get(selectColumnNames[idx]).setSelectIndex(idx+1);
+
+    this.selectColumnsString = initSelectColumnsString(this.databaseProperties);
   }
 
   public String getEntityID() {
@@ -178,7 +175,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public Map<String, Property> getProperties() {
-    return new HashMap<String, Property>(properties);
+    return properties;
   }
 
   public Collection<Property> getVisibleProperties() {
@@ -190,7 +187,7 @@ public class EntityDefinition implements Serializable {
   }
 
   public Collection<Property.ForeignKeyProperty> getForeignKeyProperties() {
-    return foreignKeyProperties != null ? foreignKeyProperties : new ArrayList<Property.ForeignKeyProperty>(0);
+    return foreignKeyProperties;
   }
 
   public boolean hasDenormalizedProperties() {
@@ -201,20 +198,32 @@ public class EntityDefinition implements Serializable {
     return denormalizedProperties.get(propertyOwnerEntityID);
   }
 
-  private void initialize() {
-    visibleProperties = new ArrayList<Property>(properties.size());
-    databaseProperties = new ArrayList<Property>(properties.size());
-    foreignKeyProperties = new ArrayList<Property.ForeignKeyProperty>(properties.size());
-    primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
-    denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
+  private Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
+    final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
+    for (final Property property : propertyDefinitions) {
+      if (properties.containsKey(property.getPropertyID()))
+        throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
+                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
+                + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
+      properties.put(property.getPropertyID(), property);
+      if (property instanceof Property.ForeignKeyProperty) {
+        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
+          if (!(referenceProperty instanceof Property.MirrorProperty)) {
+            if (properties.containsKey(referenceProperty.getPropertyID()))
+              throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
+                      + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
+                      + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
+            properties.put(referenceProperty.getPropertyID(), referenceProperty);
+          }
+        }
+      }
+    }
+    return properties;
+  }
 
-    for (final Property property : properties.values()) {
-      if (property instanceof Property.PrimaryKeyProperty)
-        primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
-      if (property instanceof Property.ForeignKeyProperty)
-        foreignKeyProperties.add((Property.ForeignKeyProperty) property);
-      if (property.isDatabaseProperty())
-        databaseProperties.add(property);
+  private Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
+    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
+    for (final Property property : properties) {
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
         Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.getForeignKeyPropertyID());
@@ -222,33 +231,63 @@ public class EntityDefinition implements Serializable {
           denormalizedProperties.put(denormalizedProperty.getForeignKeyPropertyID(), denormProps = new ArrayList<Property.DenormalizedProperty>());
         denormProps.add(denormalizedProperty);
       }
-      if (!property.isHidden())
-        visibleProperties.add(property);
     }
 
-    final String[] selectColumnNames = initSelectColumnNames();
-    for (int idx = 0; idx < selectColumnNames.length; idx++)
-      properties.get(selectColumnNames[idx]).setSelectIndex(idx+1);
+    return denormalizedProperties;
+  }
 
-    this.selectColumnsString = initSelectColumnsString();
+  private List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
+    final List<Property.PrimaryKeyProperty> primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
+    for (final Property property : properties)
+      if (property instanceof Property.PrimaryKeyProperty)
+        primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
+
+    return primaryKeyProperties;
+  }
+
+  private List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<Property.ForeignKeyProperty>(properties.size());
+    for (final Property property : properties)
+      if (property instanceof Property.ForeignKeyProperty)
+        foreignKeyProperties.add((Property.ForeignKeyProperty) property);
+
+    return foreignKeyProperties;
+  }
+
+  private List<Property> getDatabaseProperties(final Collection<Property> properties) {
+    final List<Property> databaseProperties = new ArrayList<Property>(properties.size());
+    for (final Property property : properties)
+      if (property.isDatabaseProperty())
+        databaseProperties.add(property);
+
+    return databaseProperties;
+  }
+
+  private List<Property> getVisibleProperties(final Collection<Property> properties) {
+    final List<Property> visibleProperties = new ArrayList<Property>(properties.size());
+    for (final Property property : properties)
+      if (!property.isHidden())
+        visibleProperties.add(property);
+
+    return visibleProperties;
   }
 
   /**
+   * @param databaseProperties the properties to base the column names on
    * @return the column names used to select an entity of this type from the database
    */
-  private String[] initSelectColumnNames() {
+  private static String[] initSelectColumnNames(final Collection<Property> databaseProperties) {
     final List<String> ret = new ArrayList<String>();
-    for (final Property property : getDatabaseProperties())
+    for (final Property property : databaseProperties)
       if (!(property instanceof Property.ForeignKeyProperty))
         ret.add(property.getPropertyID());
 
     return ret.toArray(new String[ret.size()]);
   }
 
-  private String initSelectColumnsString() {
-    final Collection<Property> dbProperties = getDatabaseProperties();
-    final List<Property> selectProperties = new ArrayList<Property>(dbProperties.size());
-    for (final Property property : dbProperties)
+  private static String initSelectColumnsString(final Collection<Property> databaseProperties) {
+    final List<Property> selectProperties = new ArrayList<Property>(databaseProperties.size());
+    for (final Property property : databaseProperties)
       if (!(property instanceof Property.ForeignKeyProperty))
         selectProperties.add(property);
 

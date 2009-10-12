@@ -322,6 +322,14 @@ public class Configuration {
    */
   public static final String INVALID_VALUE_BACKGROUND_COLOR = "invalid_value_background_color";
 
+  /**
+   * Specifies whether the client layer should perform null validation on entities
+   * before update/insert actions are performed
+   * Value type: Boolean
+   * Default value: true
+   */
+  public static final String PERFORM_NULL_VALIDATION = "perform_null_validation";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -355,6 +363,7 @@ public class Configuration {
     setValue(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
     setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, null);
     setValue(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
+    setValue(PERFORM_NULL_VALIDATION, true);
   }
 
   public static void setValue(final String key, final Object value) {

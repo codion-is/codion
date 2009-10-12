@@ -126,6 +126,7 @@ public class FrameworkMessages {
   public static final String CASE_SENSITIVE = "case_sensitive";
   public static final String POSTFIX_WILDCARD = "postfix_wildcard";
   public static final String PREFIX_WILDCARD = "prefix_wildcard";
+  public static final String PROPERTY_VALUE_IS_REQUIRED = "property_value_is_required";
 
   public static String get(final String key) {
     return bundle.getString(key);
