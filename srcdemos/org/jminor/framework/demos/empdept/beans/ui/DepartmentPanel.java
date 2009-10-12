@@ -46,11 +46,11 @@ public class DepartmentPanel extends EntityPanel {
 
   @Override
   public ControlSet getPrintControls() {
-    final ControlSet ret = new ControlSet("Print");
-    ret.add(ControlFactory.methodControl(this, "viewEmployeeReport", "Employee report"));
-    ret.add(getControl(PRINT));
+    final ControlSet controlSet = new ControlSet("Print");
+    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", "Employee report"));
+    controlSet.add(getControl(PRINT));
 
-    return ret;
+    return controlSet;
   }
 
   /** {@inheritDoc} */

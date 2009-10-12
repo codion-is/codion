@@ -15,17 +15,17 @@ public class EntityTest extends TestCase {
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
                                            final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                            final Boolean booleanValue, final Entity entityValue) {
-    final Entity ret = new Entity(EntityTestDomain.T_DETAIL);
-    ret.setValue(EntityTestDomain.DETAIL_ID, id);
-    ret.setValue(EntityTestDomain.DETAIL_INT, intValue);
-    ret.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
-    ret.setValue(EntityTestDomain.DETAIL_STRING, stringValue);
-    ret.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
-    ret.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
-    ret.setValue(EntityTestDomain.DETAIL_BOOLEAN, booleanValue);
-    ret.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entityValue);
+    final Entity entity = new Entity(EntityTestDomain.T_DETAIL);
+    entity.setValue(EntityTestDomain.DETAIL_ID, id);
+    entity.setValue(EntityTestDomain.DETAIL_INT, intValue);
+    entity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
+    entity.setValue(EntityTestDomain.DETAIL_STRING, stringValue);
+    entity.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
+    entity.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
+    entity.setValue(EntityTestDomain.DETAIL_BOOLEAN, booleanValue);
+    entity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entityValue);
 
-    return ret;
+    return entity;
   }
 
   public EntityTest() {

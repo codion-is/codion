@@ -162,17 +162,17 @@ public class EmpDeptProfiling extends ProfilingModel {
 
   private Entity getEmployee(final Integer id, final String name, final String job, final Entity manager,
                              final Date hiredate, final double salary, final double commission, final Entity department) {
-    final Entity ret = new Entity(EmpDept.T_EMPLOYEE);
-    ret.setValue(EmpDept.EMPLOYEE_ID, id);
-    ret.setValue(EmpDept.EMPLOYEE_NAME, name);
-    ret.setValue(EmpDept.EMPLOYEE_JOB, job);
-    ret.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
-    ret.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    ret.setValue(EmpDept.EMPLOYEE_SALARY, salary);
-    ret.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+    final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_ID, id);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, name);
+    employee.setValue(EmpDept.EMPLOYEE_JOB, job);
+    employee.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
+    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+    employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
+    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
-    return ret;
+    return employee;
   }
 
   public static void main(String[] args) {

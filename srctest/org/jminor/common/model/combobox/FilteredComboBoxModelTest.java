@@ -95,13 +95,13 @@ public class FilteredComboBoxModelTest extends TestCase {
   }
 
   private Vector<String> initContents() {
-    final Vector<String> ret = new Vector<String>();
-    ret.add(ANNA);
-    ret.add(KALLI);
-    ret.add(SIGGI);
-    ret.add(TOMAS);
-    ret.add(BJORN);
+    final Vector<String> names = new Vector<String>();
+    names.add(ANNA);
+    names.add(KALLI);
+    names.add(SIGGI);
+    names.add(TOMAS);
+    names.add(BJORN);
 
-    return ret;
+    return names;
   }
 }

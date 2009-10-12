@@ -68,16 +68,16 @@ public class DbConnectionTest extends TestCase {
       dbConnection = new DbConnection(new User("scott", "tiger"));
       final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-          final List<List> ret = new ArrayList<List>();
+          final List<List> result = new ArrayList<List>();
           int counter = 0;
           while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
             final List<Object> row = new ArrayList<Object>();
             row.add(resultSet.getInt(1));
             row.add(resultSet.getString(2));
             row.add(resultSet.getString(3));
-            ret.add(row);
+            result.add(row);
           }
-          return ret;
+          return result;
         }
       }, 1);
       assertEquals("Result from query should include one row", 1, ret.size());

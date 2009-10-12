@@ -59,26 +59,26 @@ public class EmpDeptTest extends EntityTestUnit {
   @Override
   protected Entity initializeTestEntity(final String entityID) {
     if (entityID.equals(EmpDept.T_DEPARTMENT)) {
-      final Entity ret = new Entity(EmpDept.T_DEPARTMENT);
-      ret.setValue(EmpDept.DEPARTMENT_ID, 99);
-      ret.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
-      ret.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
+      final Entity department = new Entity(EmpDept.T_DEPARTMENT);
+      department.setValue(EmpDept.DEPARTMENT_ID, 99);
+      department.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
+      department.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
 
-      return ret;
+      return department;
     }
     else if (entityID.equals(EmpDept.T_EMPLOYEE)) {
-      final Entity ret = new Entity(EmpDept.T_EMPLOYEE);
+      final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
       final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
       final Entity manager = getReferenceEntity(EmpDept.T_EMPLOYEE);
-      ret.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-      ret.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-      ret.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
-      ret.setValue(EmpDept.EMPLOYEE_JOB, "Slacker");
-      ret.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
-      ret.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
-      ret.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
+      employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+      employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
+      employee.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
+      employee.setValue(EmpDept.EMPLOYEE_JOB, "Slacker");
+      employee.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
+      employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
+      employee.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-      return ret;
+      return employee;
     }
 
     return null;

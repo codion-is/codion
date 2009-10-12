@@ -17,14 +17,14 @@ public class PropertySummaryModelTest extends TestCase {
 
   final PropertySummaryModel testIntModel = new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
     public Collection<Object> getValues() {
-      final Collection<Object> ret = new ArrayList<Object>();
-      ret.add(1);
-      ret.add(2);
-      ret.add(3);
-      ret.add(4);
-      ret.add(5);
+      final Collection<Object> values = new ArrayList<Object>();
+      values.add(1);
+      values.add(2);
+      values.add(3);
+      values.add(4);
+      values.add(5);
 
-      return ret;
+      return values;
     }
 
     public boolean isValueSubset() {
@@ -40,14 +40,14 @@ public class PropertySummaryModelTest extends TestCase {
 
   final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
     public Collection<Object> getValues() {
-      final Collection<Object> ret = new ArrayList<Object>();
-      ret.add(1.1);
-      ret.add(2.2);
-      ret.add(3.3);
-      ret.add(4.4);
-      ret.add(5.5);
+      final Collection<Object> values = new ArrayList<Object>();
+      values.add(1.1);
+      values.add(2.2);
+      values.add(3.3);
+      values.add(4.4);
+      values.add(5.5);
 
-      return ret;
+      return values;
     }
 
     public boolean isValueSubset() {
