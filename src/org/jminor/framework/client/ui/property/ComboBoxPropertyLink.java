@@ -74,17 +74,17 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
   /** {@inheritDoc} */
   @Override
   protected Object getUIPropertyValue() {
-    Object ret;
+    Object value;
     if (boxModel instanceof EntityComboBoxModel)
-      ret = ((EntityComboBoxModel) boxModel).getSelectedEntity();
+      value = ((EntityComboBoxModel) boxModel).getSelectedEntity();
     else if (boxModel instanceof ItemComboBoxModel)
-      ret = ((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem();
+      value = ((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem();
     else if (boxModel instanceof PropertyComboBoxModel)
-      ret = ((PropertyComboBoxModel) boxModel).isNullValueItemSelected() ? null : boxModel.getSelectedItem();
+      value = ((PropertyComboBoxModel) boxModel).isNullValueItemSelected() ? null : boxModel.getSelectedItem();
     else
-      ret = boxModel.getSelectedItem();
+      value = boxModel.getSelectedItem();
 
-    return ret;
+    return value;
   }
 
   /** {@inheritDoc} */

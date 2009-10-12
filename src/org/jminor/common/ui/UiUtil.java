@@ -230,11 +230,11 @@ public class UiUtil {
       formatter.setAllowsInvalid(false);
       formatter.setValueContainsLiteralCharacters(valueContainsLiteralCharacter);
 
-      final JFormattedTextField ret = new JFormattedTextField(formatter);
-      ret.setFocusLostBehavior(JFormattedTextField.COMMIT);
-      moveCaretToStartOnFocusGained(ret);
+      final JFormattedTextField formattedTextField = new JFormattedTextField(formatter);
+      formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
+      moveCaretToStartOnFocusGained(formattedTextField);
 
-      return ret;
+      return formattedTextField;
     }
     catch (ParseException e) {
       throw new RuntimeException(e);
@@ -287,13 +287,13 @@ public class UiUtil {
   }
 
   public static JFrame createFrame(final Image icon) {
-    final JFrame ret = new JFrame();
+    final JFrame frame = new JFrame();
     if (icon != null)
-      ret.setIconImage(icon);
+      frame.setIconImage(icon);
 
-    ret.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-    return ret;
+    return frame;
   }
 
   public static Dimension getSize(final double ratio) {
@@ -326,9 +326,9 @@ public class UiUtil {
   }
 
   public static Window getParentWindow(final Container container) {
-    final Window ret = getParentDialog(container);
+    final Window window = getParentDialog(container);
 
-    return ret == null ? getParentFrame(container) : ret;
+    return window == null ? getParentFrame(container) : window;
   }
 
   public static JFrame getParentFrame(Container container) {
@@ -722,7 +722,7 @@ public class UiUtil {
     }
 
     private static Throwable unwrapRuntimeException(final Throwable exception) {
-      if (exception.getClass().equals(RuntimeException.class) && exception.getCause() != null 
+      if (exception.getClass().equals(RuntimeException.class) && exception.getCause() != null
               && exception.getCause().getClass().equals(RuntimeException.class))
         return unwrapRuntimeException(exception.getCause());
 

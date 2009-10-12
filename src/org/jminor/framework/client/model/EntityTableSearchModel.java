@@ -239,12 +239,12 @@ public class EntityTableSearchModel {
    * @return the current criteria based on the state of the search models
    */
   public Criteria getSearchCriteria() {
-    final CriteriaSet ret = new CriteriaSet(getSearchCriteriaConjunction());
+    final CriteriaSet criteriaSet = new CriteriaSet(getSearchCriteriaConjunction());
     for (final AbstractSearchModel criteria : propertySearchModels)
       if (criteria.isSearchEnabled())
-        ret.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
+        criteriaSet.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
 
-    return ret.getCriteriaCount() > 0 ? ret : null;
+    return criteriaSet.getCriteriaCount() > 0 ? criteriaSet : null;
   }
 
   /**
@@ -279,7 +279,7 @@ public class EntityTableSearchModel {
    * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
    */
   private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final EntityDbProvider dbProvider) {
-    final List<PropertySearchModel> ret = new ArrayList<PropertySearchModel>();
+    final List<PropertySearchModel> searchModels = new ArrayList<PropertySearchModel>();
     for (final Property property : properties) {
       PropertySearchModel searchModel;
       if (property instanceof Property.ForeignKeyProperty) {
@@ -303,10 +303,10 @@ public class EntityTableSearchModel {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
         }
       });
-      ret.add(searchModel);
+      searchModels.add(searchModel);
     }
 
-    return ret;
+    return searchModels;
   }
 
   /**
@@ -328,11 +328,11 @@ public class EntityTableSearchModel {
    * @return a String representing the current state of the search models
    */
   private String getSearchModelState() {
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     for (final PropertySearchModel model : getPropertySearchModels())
-      ret.append(model.toString());
+      stringBuilder.append(model.toString());
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   private List<Property> getSearchProperties(final String entityID) {
@@ -342,12 +342,12 @@ public class EntityTableSearchModel {
   }
 
   private List<Property> getStringProperties(final String entityID) {
-    final Collection<Property> properties = EntityRepository.getDatabaseProperties(entityID);
-    final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : properties)
+    final Collection<Property> databaseProperties = EntityRepository.getDatabaseProperties(entityID);
+    final List<Property> stringProperties = new ArrayList<Property>();
+    for (final Property property : databaseProperties)
       if (property.getPropertyType() == Type.STRING)
-        ret.add(property);
+        stringProperties.add(property);
 
-    return ret;
+    return stringProperties;
   }
 }

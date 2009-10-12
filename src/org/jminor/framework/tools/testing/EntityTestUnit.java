@@ -83,11 +83,11 @@ public abstract class EntityTestUnit extends TestCase {
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   protected Entity getReferenceEntity(final String entityID) {
-    final Entity ret = referencedEntities.get(entityID);
-    if (ret == null)
+    final Entity entity = referencedEntities.get(entityID);
+    if (entity == null)
       throw new RuntimeException("No reference entity available of type " + entityID);
 
-    return ret;
+    return entity;
   }
 
   /**

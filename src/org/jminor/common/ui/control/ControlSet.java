@@ -68,12 +68,12 @@ public class ControlSet extends Control {
   }
 
   public List<ControlSet> getControlSets() {
-    final List<ControlSet> ret = new ArrayList<ControlSet>();
+    final List<ControlSet> controlSets = new ArrayList<ControlSet>();
     for (final Action control : actions)
       if (control instanceof ControlSet)
-        ret.add((ControlSet) control);
+        controlSets.add((ControlSet) control);
 
-    return ret;
+    return controlSets;
   }
 
   public List<Action> getActions() {

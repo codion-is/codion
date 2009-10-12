@@ -178,15 +178,15 @@ public class EntityDefinition implements Serializable {
     return properties;
   }
 
-  public Collection<Property> getVisibleProperties() {
+  public List<Property> getVisibleProperties() {
     return visibleProperties;
   }
 
-  public Collection<Property> getDatabaseProperties() {
+  public List<Property> getDatabaseProperties() {
     return databaseProperties;
   }
 
-  public Collection<Property.ForeignKeyProperty> getForeignKeyProperties() {
+  public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
     return foreignKeyProperties;
   }
 
@@ -277,12 +277,12 @@ public class EntityDefinition implements Serializable {
    * @return the column names used to select an entity of this type from the database
    */
   private static String[] initSelectColumnNames(final Collection<Property> databaseProperties) {
-    final List<String> ret = new ArrayList<String>();
+    final List<String> columnNames = new ArrayList<String>();
     for (final Property property : databaseProperties)
       if (!(property instanceof Property.ForeignKeyProperty))
-        ret.add(property.getPropertyID());
+        columnNames.add(property.getPropertyID());
 
-    return ret.toArray(new String[ret.size()]);
+    return columnNames.toArray(new String[columnNames.size()]);
   }
 
   private static String initSelectColumnsString(final Collection<Property> databaseProperties) {
@@ -291,19 +291,19 @@ public class EntityDefinition implements Serializable {
       if (!(property instanceof Property.ForeignKeyProperty))
         selectProperties.add(property);
 
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     int i = 0;
     for (final Property property : selectProperties) {
       if (property instanceof Property.SubqueryProperty)
-        ret.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
+        stringBuilder.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
                 ") ").append(property.getPropertyID());
       else
-        ret.append(property.getPropertyID());
+        stringBuilder.append(property.getPropertyID());
 
       if (i++ < selectProperties.size() - 1)
-        ret.append(", ");
+        stringBuilder.append(", ");
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 }

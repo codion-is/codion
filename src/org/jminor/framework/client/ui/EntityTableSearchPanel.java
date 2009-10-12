@@ -92,13 +92,13 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   public ControlSet getControls() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    ret.setIcon(Images.loadImage("Filter16.gif"));
-    ret.add(ControlFactory.toggleControl(this, "advanced",
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    controlSet.setIcon(Images.loadImage("Filter16.gif"));
+    controlSet.add(ControlFactory.toggleControl(this, "advanced",
             FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
-    ret.add(ControlFactory.methodControl(this, "clear", FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controlSet.add(ControlFactory.methodControl(this, "clear", FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
-    return ret;
+    return controlSet;
   }
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
@@ -117,18 +117,18 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   private List<JPanel> initializeSearchPanels() {
-    final List<JPanel> ret = new ArrayList<JPanel>(tableColumnProperties.size());
+    final List<JPanel> panels = new ArrayList<JPanel>(tableColumnProperties.size());
     for (final Property property : tableColumnProperties) {
       final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
       if (propertySearchModel != null)
-        ret.add(new PropertySearchPanel(propertySearchModel, true, false));
+        panels.add(new PropertySearchPanel(propertySearchModel, true, false));
       else {
         final JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
-        ret.add(panel);
+        panels.add(panel);
       }
     }
 
-    return ret;
+    return panels;
   }
 }

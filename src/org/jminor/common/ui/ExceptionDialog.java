@@ -320,13 +320,13 @@ public class ExceptionDialog extends JDialog {
     detailPanel.add(messageLabel);
     detailPanel.add(messageScroller);
 
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
+    final JPanel northPanel = new JPanel(new BorderLayout(5,5));
     final JPanel northNorthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     northNorthPanel.add(descriptionLabel);
-    ret.add(northNorthPanel, BorderLayout.NORTH);
-    ret.add(detailPanel, BorderLayout.CENTER);
+    northPanel.add(northNorthPanel, BorderLayout.NORTH);
+    northPanel.add(detailPanel, BorderLayout.CENTER);
 
-    return ret;
+    return northPanel;
   }
 
   private JPanel createCenterPanel() {
@@ -339,10 +339,10 @@ public class ExceptionDialog extends JDialog {
 
     final JScrollPane scr = new JScrollPane(detailsArea);
     scr.setPreferredSize(new Dimension(500,200));
-    final JPanel ret = new JPanel(new BorderLayout());
-    ret.add(scr, BorderLayout.CENTER);
+    final JPanel centerPanel = new JPanel(new BorderLayout());
+    centerPanel.add(scr, BorderLayout.CENTER);
 
-    return ret;
+    return centerPanel;
   }
 
   private JPanel createButtonPanel() {

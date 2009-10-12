@@ -147,24 +147,24 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   public Collection<User> getUsers() throws RemoteException {
-    final Set<User> ret = new HashSet<User>();
+    final Set<User> users = new HashSet<User>();
     synchronized (connections) {
       for (final EntityDbRemoteAdapter adapter : connections.values())
-        ret.add(adapter.getUser());
+        users.add(adapter.getUser());
     }
 
-    return ret;
+    return users;
   }
 
   public Collection<ClientInfo> getClients(final User user) throws RemoteException {
-    final Collection<ClientInfo> ret = new ArrayList<ClientInfo>();
+    final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     synchronized (connections) {
       for (final EntityDbRemoteAdapter adapter : connections.values())
         if (user == null || adapter.getUser().equals(user))
-          ret.add(adapter.getClientInfo());
+          clients.add(adapter.getClientInfo());
     }
 
-    return ret;
+    return clients;
   }
 
   public void disconnect(final String connectionKey) throws RemoteException {
@@ -295,8 +295,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   private EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
-    final EntityDbRemoteAdapter ret = new EntityDbRemoteAdapter(client, SERVER_DB_PORT, LOGGING_ENABLED);
-    ret.evtLoggingOut.addListener(new ActionListener() {
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(client, SERVER_DB_PORT, LOGGING_ENABLED);
+    remoteAdapter.evtLoggingOut.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
           removeConnection(client, false);
@@ -306,9 +306,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
         }
       }
     });
-    connections.put(client, ret);
+    connections.put(client, remoteAdapter);
     log.info("Connection added: " + client);
 
-    return ret;
+    return remoteAdapter;
   }
 }

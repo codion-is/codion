@@ -28,12 +28,12 @@ public class EntityUtil {
    * @return a List of entities that have been modified
    */
   public static List<Entity> getModifiedEntities(final List<Entity> entities) {
-    final List<Entity> ret = new ArrayList<Entity>();
+    final List<Entity> modifiedEntities = new ArrayList<Entity>();
     for (final Entity entity : entities)
       if (entity.isModified())
-        ret.add(entity);
+        modifiedEntities.add(entity);
 
-    return ret;
+    return modifiedEntities;
   }
 
   public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
@@ -45,11 +45,11 @@ public class EntityUtil {
   }
 
   public static Map<Entity.Key, Entity> hashByPrimaryKey(final List<Entity> entities) {
-    final Map<Entity.Key, Entity> ret = new HashMap<Entity.Key, Entity>();
+    final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
     for (final Entity entity : entities)
-      ret.put(entity.getPrimaryKey(), entity);
+      entityMap.put(entity.getPrimaryKey(), entity);
 
-    return ret;
+    return entityMap;
   }
 
   /**
@@ -57,11 +57,11 @@ public class EntityUtil {
    * @return a List containing the primary keys of the given entities
    */
   public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities) {
-    final List<Entity.Key> ret = new ArrayList<Entity.Key>(entities.size());
+    final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     for (final Entity entity : entities)
-      ret.add(entity.getPrimaryKey());
+      keys.add(entity.getPrimaryKey());
 
-    return ret;
+    return keys;
   }
 
   /**
@@ -82,15 +82,15 @@ public class EntityUtil {
    */
   public static Object[] getPropertyValues(final String propertyID, final List<Entity> entities,
                                            final boolean includeNullValues) {
-    final List<Object> ret = new ArrayList<Object>(entities.size());
+    final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues)
-        ret.add(entity.getValue(propertyID));
+        values.add(entity.getValue(propertyID));
       else if (!entity.isValueNull(propertyID))
-        ret.add(entity.getValue(propertyID));
+        values.add(entity.getValue(propertyID));
     }
 
-    return ret.toArray();
+    return values.toArray();
   }
 
   /**
@@ -100,11 +100,11 @@ public class EntityUtil {
    * @return a Collection containing the distinct property values
    */
   public static Collection<Object> getPropertyValues(final List<Entity> entities, final String propertyID) {
-    final Set<Object> ret = new HashSet<Object>();
+    final Set<Object> values = new HashSet<Object>();
     for (final Entity entity : entities)
-      ret.add(entity.getValue(propertyID));
+      values.add(entity.getValue(propertyID));
 
-    return ret;
+    return values;
   }
 
   /**
@@ -140,19 +140,19 @@ public class EntityUtil {
    * @return a Map of entities hashed by property value
    */
   public static Map<Object, List<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
-    final Map<Object, List<Entity>> ret = new HashMap<Object, List<Entity>>(entities.size());
+    final Map<Object, List<Entity>> entityMap = new HashMap<Object, List<Entity>>(entities.size());
     for (final Entity entity : entities) {
       final Object key = entity.getValue(propertyID);
-      if (ret.containsKey(key))
-        ret.get(key).add(entity);
+      if (entityMap.containsKey(key))
+        entityMap.get(key).add(entity);
       else {
         final List<Entity> list = new ArrayList<Entity>();
         list.add(entity);
-        ret.put(key, list);
+        entityMap.put(key, list);
       }
     }
 
-    return ret;
+    return entityMap;
   }
 
   /**
@@ -161,19 +161,19 @@ public class EntityUtil {
    * @return a Map of entities hashed by entityID
    */
   public static Map<String, Collection<Entity>> hashByEntityID(final Collection<Entity> entities) {
-    final Map<String, Collection<Entity>> ret = new HashMap<String, Collection<Entity>>(entities.size());
+    final Map<String, Collection<Entity>> entityMap = new HashMap<String, Collection<Entity>>(entities.size());
     for (final Entity entity : entities) {
       final String entityID = entity.getEntityID();
-      if (ret.containsKey(entityID))
-        ret.get(entityID).add(entity);
+      if (entityMap.containsKey(entityID))
+        entityMap.get(entityID).add(entity);
       else {
         final List<Entity> list = new ArrayList<Entity>();
         list.add(entity);
-        ret.put(entityID, list);
+        entityMap.put(entityID, list);
       }
     }
 
-    return ret;
+    return entityMap;
   }
 
   /**
@@ -268,15 +268,15 @@ public class EntityUtil {
    * e.g. " where (idCol = 42)" or in case of multiple properties " where (idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
-    final StringBuilder ret = new StringBuilder(" where (");
+    final StringBuilder stringBuilder = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
-      ret.append(getQueryString(property.getPropertyID(), getSQLStringValue(property, valueProvider.getValue(property.getPropertyID()))));
+      stringBuilder.append(getQueryString(property.getPropertyID(), getSQLStringValue(property, valueProvider.getValue(property.getPropertyID()))));
       if (i++ < properties.size() - 1)
-        ret.append(" and ");
+        stringBuilder.append(" and ");
     }
 
-    return ret.append(")").toString();
+    return stringBuilder.append(")").toString();
   }
 
   /**
@@ -296,14 +296,14 @@ public class EntityUtil {
    * @return the properties used to insert the given entity type
    */
   public static List<Property> getInsertProperties(final Entity entity) {
-    final List<Property> ret = new ArrayList<Property>();
+    final List<Property> properties = new ArrayList<Property>();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
       if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.getPropertyID()))
-        ret.add(property);
+        properties.add(property);
     }
 
-    return ret;
+    return properties;
   }
 
   /**
@@ -311,12 +311,12 @@ public class EntityUtil {
    * @return the properties used to update this entity, modified properties that is
    */
   public static Collection<Property> getUpdateProperties(final Entity entity) {
-    final List<Property> ret = new ArrayList<Property>();
+    final List<Property> properties = new ArrayList<Property>();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false))
       if (entity.isModified(property.getPropertyID()) && !(property instanceof Property.ForeignKeyProperty))
-        ret.add(property);
+        properties.add(property);
 
-    return ret;
+    return properties;
   }
 
   public interface ValueProvider {

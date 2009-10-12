@@ -466,10 +466,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    */
   public Entity getCopy() {
     try {
-      final Entity ret = new Entity(getEntityID());
-      ret.setAs(this);
+      final Entity copy = new Entity(getEntityID());
+      copy.setAs(this);
 
-      return ret;
+      return copy;
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -933,25 +933,25 @@ public final class Entity implements Serializable, Comparable<Entity> {
      */
     @Override
     public String toString() {
-      final StringBuilder ret = new StringBuilder();
+      final StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
       for (final Property.PrimaryKeyProperty property : getProperties()) {
-        ret.append(property.getPropertyID()).append("=").append(getValue(property.getPropertyID()));
+        stringBuilder.append(property.getPropertyID()).append("=").append(getValue(property.getPropertyID()));
         if (i++ < getPropertyCount()-1)
-          ret.append(", ");
+          stringBuilder.append(", ");
       }
 
-      return ret.toString();
+      return stringBuilder.toString();
     }
 
     /**
      * @return an identical deep copy of this entity key
      */
     public Key copy() {
-      final Key ret = new Key(entityID);
-      ret.setValue(this);
+      final Key copy = new Key(entityID);
+      copy.setValue(this);
 
-      return ret;
+      return copy;
     }
 
     /**
@@ -1014,11 +1014,11 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     public static List<Key> copyEntityKeys(final List<Key> entityKeys) {
-      final List<Key> ret = new ArrayList<Key>(entityKeys.size());
+      final List<Key> copies = new ArrayList<Key>(entityKeys.size());
       for (final Key key : entityKeys)
-        ret.add(key.copy());
+        copies.add(key.copy());
 
-      return ret;
+      return copies;
     }
 
     /**

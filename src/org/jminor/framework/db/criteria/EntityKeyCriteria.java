@@ -79,36 +79,36 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value2"
    */
   public String getConditionString() {
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     if (keys.get(0).getPropertyCount() > 1) {//multi column key
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
-        ret.append(getQueryConditionString(keys.get(i), getColumnNames()));
+        stringBuilder.append(getQueryConditionString(keys.get(i), getColumnNames()));
         if (i < keys.size() - 1)
-          ret.append(" or ");
+          stringBuilder.append(" or ");
       }
     }
     else {
       //a = b
       if (keys.size() == 1)
-        ret.append(getQueryConditionString(keys.get(0), getColumnNames()));
+        stringBuilder.append(getQueryConditionString(keys.get(0), getColumnNames()));
       else //a in (c, v, d, s)
         appendInCondition(properties != null ? properties.get(0).getPropertyID()
-                : keys.get(0).getFirstKeyProperty().getPropertyID(), ret, keys);
+                : keys.get(0).getFirstKeyProperty().getPropertyID(), stringBuilder, keys);
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   private List<String> getColumnNames() {
     if (properties == null)
       return null;
 
-    final List<String> ret = new ArrayList<String>(properties.size());
+    final List<String> columnNames = new ArrayList<String>(properties.size());
     for (final Property property : properties)
-      ret.add(property.getPropertyID());
+      columnNames.add(property.getPropertyID());
 
-    return ret;
+    return columnNames;
   }
 
   /**
@@ -119,30 +119,30 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    * @return a query condition string based on the given key and column names
    */
   private static String getQueryConditionString(final Entity.Key key, final List<String> columnNames) {
-    final StringBuilder ret = new StringBuilder("(");
+    final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
-      ret.append(EntityUtil.getQueryString(columnNames == null ? property.getPropertyID() : columnNames.get(i),
+      stringBuilder.append(EntityUtil.getQueryString(columnNames == null ? property.getPropertyID() : columnNames.get(i),
               EntityUtil.getSQLStringValue(property, key.getValue(property.getPropertyID()))));
       if (i++ < key.getPropertyCount() -1)
-        ret.append(" and ");
+        stringBuilder.append(" and ");
     }
 
-    return ret.append(")").toString();
+    return stringBuilder.append(")").toString();
   }
 
-  private static void appendInCondition(final String whereColumn, final StringBuilder ret, final List<Entity.Key> keys) {
-    ret.append(whereColumn).append(" in (");
+  private static void appendInCondition(final String whereColumn, final StringBuilder stringBuilder, final List<Entity.Key> keys) {
+    stringBuilder.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {
-      ret.append(EntityUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
+      stringBuilder.append(EntityUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
       if (cnt == 1000 && i < keys.size()-1) {//Oracle limit
-        ret.append(") or ").append(whereColumn).append(" in (");
+        stringBuilder.append(") or ").append(whereColumn).append(" in (");
         cnt = 1;
       }
       else if (i < keys.size() - 1)
-        ret.append(",");
+        stringBuilder.append(",");
     }
-    ret.append(")");
+    stringBuilder.append(")");
   }
 }

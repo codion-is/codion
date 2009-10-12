@@ -116,11 +116,11 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public XYDataset getInPoolDataSet() {
-    final XYSeriesCollection ret = new XYSeriesCollection();
-    ret.addSeries(statsCollection.getSeries(0));
-    ret.addSeries(statsCollection.getSeries(1));
+    final XYSeriesCollection poolDataSet = new XYSeriesCollection();
+    poolDataSet.addSeries(statsCollection.getSeries(0));
+    poolDataSet.addSeries(statsCollection.getSeries(1));
 
-    return ret;
+    return poolDataSet;
   }
 
   public XYDataset getInPoolDataSetMacro() {
@@ -190,18 +190,18 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   private List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
-    final List<ConnectionPoolState> ret = new ArrayList<ConnectionPoolState>(stats.size());
-    Collections.sort(ret);
+    final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
+    Collections.sort(poolStates);
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
       if (state.time != time)
-        ret.add(state);
+        poolStates.add(state);
 
       time = state.time;
     }
 
-    return ret;
+    return poolStates;
   }
 
   private void startUpdateTimer(final int delay) {

@@ -215,13 +215,13 @@ public class EntityLookupModel {
   }
 
   private String toString(final List<Entity> entityList) {
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < entityList.size(); i++) {
-      ret.append(entityList.get(i).toString());
+      stringBuilder.append(entityList.get(i).toString());
       if (i < entityList.size()-1)
-        ret.append(getMultiValueSeperator());
+        stringBuilder.append(getMultiValueSeperator());
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 }

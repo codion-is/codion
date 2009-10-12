@@ -113,11 +113,11 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   public Collection<String> getClientTypes() throws RemoteException {
-    final Set<String> ret = new HashSet<String>();
+    final Set<String> clientTypes = new HashSet<String>();
     for (final ClientInfo client : getClients(null))
-      ret.add(client.getClientTypeID());
+      clientTypes.add(client.getClientTypeID());
 
-    return ret;
+    return clientTypes;
   }
 
   /** {@inheritDoc} */

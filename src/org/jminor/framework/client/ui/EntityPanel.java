@@ -951,19 +951,19 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final State enabled = new AggregateState(AggregateState.Type.AND,
             getModel().getUpdateAllowedState(),
             getModel().getTableModel().stSelectionEmpty.getReversedState());
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
-    ret.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
+    controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     for (final Property property : getUpdateProperties()) {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
-      ret.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
+      controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         public void actionPerformed(final ActionEvent event) {
           updateSelectedEntities(property);
         }
       }));
     }
 
-    return ret;
+    return controlSet;
   }
 
   /**
@@ -1112,7 +1112,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         };
       }
     };
-    final EntityPanel ret = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED) {
+    final EntityPanel entityPanel = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED) {
       @Override
       protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel, final ControlSet popupMenuControlSet,
                                                       final boolean rowColoring) {
@@ -1136,9 +1136,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         return null;
       }
     };
-    ret.initializePanel();
+    entityPanel.initializePanel();
 
-    return ret;
+    return entityPanel;
   }
 
   public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) {
@@ -1317,22 +1317,22 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (editPanel == null)
       return null;
 
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
-    ret.setMinimumSize(new Dimension(0,0));
-    ret.setBorder(BorderFactory.createEtchedBorder());
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    panel.setMinimumSize(new Dimension(0,0));
+    panel.setBorder(BorderFactory.createEtchedBorder());
     final JPanel propertyBase =
             new JPanel(new FlowLayout(buttonPlacement.equals(BorderLayout.SOUTH) ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
-    ret.addMouseListener(new ActivationFocusAdapter(propertyBase));
+    panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     propertyBase.add(editPanel);
-    ret.add(propertyBase, BorderLayout.CENTER);
+    panel.add(propertyBase, BorderLayout.CENTER);
     final JComponent controlPanel = (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
             initializeControlToolBar() : initializeControlPanel();
     if (controlPanel != null)
-      ret.add(controlPanel, (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
+      panel.add(controlPanel, (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 
-    return ret;
+    return panel;
   }
 
   /**
@@ -1363,17 +1363,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return the control panel
    */
   protected JPanel initializeControlPanel() {
-    JPanel ret;
+    JPanel panel;
     if (buttonPlacement.equals(BorderLayout.SOUTH)) {
-      ret = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
-      ret.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
+      panel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
+      panel.add(ControlProvider.createHorizontalButtonPanel(getControlPanelControlSet()));
     }
     else {
-      ret = new JPanel(new BorderLayout(5,5));
-      ret.add(ControlProvider.createVerticalButtonPanel(getControlPanelControlSet()), BorderLayout.NORTH);
+      panel = new JPanel(new BorderLayout(5,5));
+      panel.add(ControlProvider.createVerticalButtonPanel(getControlPanelControlSet()), BorderLayout.NORTH);
     }
 
-    return ret;
+    return panel;
   }
 
   /**
@@ -1389,19 +1389,19 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return the JTabbedPane for holding detail panels
    */
   protected JTabbedPane initializeDetailTabPane() {
-    final JTabbedPane ret = new JTabbedPane();
-    ret.setFocusable(false);
-    ret.setUI(new BorderlessTabbedPaneUI());
+    final JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane.setFocusable(false);
+    tabbedPane.setUI(new BorderlessTabbedPaneUI());
     for (final EntityPanel detailPanel : detailEntityPanels)
-      ret.addTab(detailPanel.getCaption(), detailPanel);
+      tabbedPane.addTab(detailPanel.getCaption(), detailPanel);
 
-    ret.addChangeListener(new ChangeListener() {
+    tabbedPane.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent event) {
         getModel().setLinkedDetailModel(getDetailPanelState() != HIDDEN ? getSelectedDetailPanel().getModel() : null);
         getSelectedDetailPanel().initializePanel();
       }
     });
-    ret.addMouseListener(new MouseAdapter() {
+    tabbedPane.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent event) {
         if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1)
@@ -1411,7 +1411,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       }
     });
 
-    return ret;
+    return tabbedPane;
   }
 
   /**
@@ -1487,43 +1487,43 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return an array containing the buttons to include on the south panel toolbar, a null item indicates a separator
    */
   protected AbstractButton[] getSouthPanelButtons(final EntityTablePanel tablePanel) {
-    final List<AbstractButton> ret = new ArrayList<AbstractButton>();
+    final List<AbstractButton> buttons = new ArrayList<AbstractButton>();
 
     AbstractButton tmp = getToggleSummaryPanelButton(tablePanel);
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
     tmp = getSearchButton(tablePanel);
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
     tmp = getPrintButton();
     if (tmp != null)
-      ret.add(tmp);
-    ret.add(null);
+      buttons.add(tmp);
+    buttons.add(null);
     tmp = getUpdateButton();
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
     tmp = getDeleteButton();
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
     tmp = getClearSelectionButton();
     if (tmp != null)
-      ret.add(tmp);
-    ret.add(null);
+      buttons.add(tmp);
+    buttons.add(null);
     tmp = getMoveSelectionDownButton();
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
     tmp = getMoveSelectionUpButton();
     if (tmp != null)
-      ret.add(tmp);
-    ret.add(null);
+      buttons.add(tmp);
+    buttons.add(null);
     tmp = getToggleEditPanelButton();
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
     tmp = getToggleDetaiPanelButton();
     if (tmp != null)
-      ret.add(tmp);
+      buttons.add(tmp);
 
-    return ret.toArray(new AbstractButton[ret.size()]);
+    return buttons.toArray(new AbstractButton[buttons.size()]);
   }
 
   /**
@@ -1564,54 +1564,54 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   protected ControlSet getTablePopupControlSet() {
     boolean seperatorRequired = false;
-    final ControlSet ret = new ControlSet("");
+    final ControlSet controlSet = new ControlSet("");
     if (detailEntityPanels.size() > 0) {
-      ret.add(getDetailPanelControls(EMBEDDED));
+      controlSet.add(getDetailPanelControls(EMBEDDED));
       seperatorRequired = true;
     }
     if (seperatorRequired) {
-      ret.addSeparator();
+      controlSet.addSeparator();
       seperatorRequired = false;
     }
     if (controlMap.containsKey(UPDATE_SELECTED)) {
-      ret.add(controlMap.get(UPDATE_SELECTED));
+      controlSet.add(controlMap.get(UPDATE_SELECTED));
       seperatorRequired = true;
     }
     if (controlMap.containsKey(MENU_DELETE)) {
-      ret.add(controlMap.get(MENU_DELETE));
+      controlSet.add(controlMap.get(MENU_DELETE));
       seperatorRequired = true;
     }
     if (seperatorRequired) {
-      ret.addSeparator();
+      controlSet.addSeparator();
       seperatorRequired = false;
     }
     if (controlMap.containsKey(VIEW_DEPENDENCIES)) {
-      ret.add(controlMap.get(VIEW_DEPENDENCIES));
+      controlSet.add(controlMap.get(VIEW_DEPENDENCIES));
       seperatorRequired = true;
     }
     if (seperatorRequired) {
-      ret.addSeparator();
+      controlSet.addSeparator();
       seperatorRequired = false;
     }
     final ControlSet printControls = getPrintControls();
     if (printControls != null) {
-      ret.add(getPrintControls());
+      controlSet.add(getPrintControls());
       seperatorRequired = true;
     }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
       if (seperatorRequired) {
-        ret.addSeparator();
+        controlSet.addSeparator();
         seperatorRequired = false;
       }
-      ret.add(controlMap.get(CONFIGURE_QUERY));
+      controlSet.add(controlMap.get(CONFIGURE_QUERY));
     }
     if (controlMap.containsKey(SELECT_COLUMNS)) {
       if (seperatorRequired)
-        ret.addSeparator();
-      ret.add(controlMap.get(SELECT_COLUMNS));
+        controlSet.addSeparator();
+      controlSet.add(controlMap.get(SELECT_COLUMNS));
     }
 
-    return ret;
+    return controlSet;
   }
 
   /**
@@ -1642,9 +1642,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (detailEntityPanels.size() == 0)
       return null;
 
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      ret.add(new Control(detailPanel.getCaption()) {
+      controlSet.add(new Control(detailPanel.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent event) {
           detailPanelTabbedPane.setSelectedComponent(detailPanel);
@@ -1653,7 +1653,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       });
     }
 
-    return ret;
+    return controlSet;
   }
 
   /**
@@ -1717,19 +1717,19 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return the ControlSet on which the control panel is based
    */
   protected ControlSet getControlPanelControlSet() {
-    final ControlSet ret = new ControlSet("Actions");
+    final ControlSet controlSet = new ControlSet("Actions");
     if (controlMap.containsKey(INSERT))
-      ret.add(controlMap.get(INSERT));
+      controlSet.add(controlMap.get(INSERT));
     if (controlMap.containsKey(UPDATE))
-      ret.add(controlMap.get(UPDATE));
+      controlSet.add(controlMap.get(UPDATE));
     if (controlMap.containsKey(DELETE))
-      ret.add(controlMap.get(DELETE));
+      controlSet.add(controlMap.get(DELETE));
     if (controlMap.containsKey(CLEAR))
-      ret.add(controlMap.get(CLEAR));
+      controlSet.add(controlMap.get(CLEAR));
     if (controlMap.containsKey(REFRESH))
-      ret.add(controlMap.get(REFRESH));
+      controlSet.add(controlMap.get(REFRESH));
 
-    return ret;
+    return controlSet;
   }
 
   //#############################################################################################
@@ -1921,17 +1921,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (!tablePanel.getTableModel().isQueryConfigurationAllowed())
       return null;
 
-    final JButton ret = new JButton(new Control() {
+    final JButton button = new JButton(new Control() {
       @Override
       public void actionPerformed(ActionEvent event) {
         tablePanel.toggleSearchPanel();
       }
     });
-    ret.setIcon(Images.loadImage("Filter16.gif"));
-    ret.setToolTipText(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    ret.setPreferredSize(getSouthButtonSize());
+    button.setIcon(Images.loadImage("Filter16.gif"));
+    button.setToolTipText(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   /**
@@ -1944,17 +1944,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
     final ControlSet updateSet = getUpdateSelectedControlSet();
     final JPopupMenu menu = ControlProvider.createPopupMenu(updateSet);
-    final JButton ret = new JButton(Images.loadImage("Modify16.gif"));
-    ret.setToolTipText(updateSet.getDescription());
-    UiUtil.linkToEnabledState(updateSet.getEnabledState(), ret);
-    ret.addActionListener(new ActionListener() {
+    final JButton button = new JButton(Images.loadImage("Modify16.gif"));
+    button.setToolTipText(updateSet.getDescription());
+    UiUtil.linkToEnabledState(updateSet.getEnabledState(), button);
+    button.addActionListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        menu.show(ret, ret.getWidth()/2, ret.getHeight()/2-menu.getPreferredSize().height);
+        menu.show(button, button.getWidth()/2, button.getHeight()/2-menu.getPreferredSize().height);
       }
     });
-    ret.setPreferredSize(getSouthButtonSize());
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JButton getDeleteButton() {
@@ -1964,10 +1964,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final Control delete = getDeleteSelectedControl();
     delete.setName(null);
     delete.setIcon(Images.loadImage("Delete16.gif"));
-    final JButton ret = ControlProvider.createButton(delete);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(delete);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JButton getClearSelectionButton() {
@@ -1975,40 +1975,40 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
             getModel().getTableModel().stSelectionEmpty.getReversedState(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
-    final JButton ret = ControlProvider.createButton(clearSelection);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(clearSelection);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JButton getMoveSelectionDownButton() {
     final Control selectionDown = ControlFactory.methodControl(getModel().getTableModel(), "moveSelectionDown",
             Images.loadImage("Down16.gif"));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
-    final JButton ret = ControlProvider.createButton(selectionDown);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(selectionDown);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JButton getMoveSelectionUpButton() {
     final Control selectionUp = ControlFactory.methodControl(getModel().getTableModel(), "moveSelectionUp",
             Images.loadImage("Up16.gif"));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
-    final JButton ret = ControlProvider.createButton(selectionUp);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(selectionUp);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JButton getPrintButton() {
     final Control print = getPrintControl();
     print.setName("");
     print.setIcon(Images.loadImage("Print16.gif"));
-    final JButton ret = ControlProvider.createButton(print);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(print);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private Dimension getSouthButtonSize() {
@@ -2022,10 +2022,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
             Images.loadImage("Form16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
-    final JButton ret = ControlProvider.createButton(toggle);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(toggle);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JButton getToggleDetaiPanelButton() {
@@ -2035,10 +2035,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
             Images.loadImage("History16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
-    final JButton ret = ControlProvider.createButton(toggle);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JButton button = ControlProvider.createButton(toggle);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private JToggleButton getToggleSummaryPanelButton(final EntityTablePanel tablePanel) {
@@ -2046,10 +2046,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
             tablePanel.evtTableSummaryPanelVisibleChanged);
     toggle.setIcon(Images.loadImage("Sum16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
-    final JToggleButton ret = ControlProvider.createToggleButton(toggle);
-    ret.setPreferredSize(getSouthButtonSize());
+    final JToggleButton button = ControlProvider.createToggleButton(toggle);
+    button.setPreferredSize(getSouthButtonSize());
 
-    return ret;
+    return button;
   }
 
   private void disposeEditDialog() {
@@ -2081,8 +2081,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   private List<Property> getUpdateProperties() {
-    final List<Property> ret = EntityRepository.getDatabaseProperties(getModel().getEntityID(), true, false, false);
-    final ListIterator<Property> iter = ret.listIterator();
+    final List<Property> properties = EntityRepository.getDatabaseProperties(getModel().getEntityID(), true, false, false);
+    final ListIterator<Property> iter = properties.listIterator();
     while(iter.hasNext()) {
       final Property property = iter.next();
       if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty ||
@@ -2090,13 +2090,13 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
                       EntityRepository.getIdSource(getModel().getEntityID()) != IdSource.NONE))
         iter.remove();
     }
-    Collections.sort(ret, new Comparator<Property>() {
+    Collections.sort(properties, new Comparator<Property>() {
       public int compare(final Property propertyOne, final Property propertyTwo) {
         return propertyOne.toString().toLowerCase().compareTo(propertyTwo.toString().toLowerCase());
       }
     });
 
-    return ret;
+    return properties;
   }
 
   private void bindModelEvents() {
@@ -2145,7 +2145,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   private static JPanel createDependenciesPanel(final Map<String, List<Entity>> dependencies,
                                                 final EntityDbProvider dbProvider) {
-    final JPanel ret = new JPanel(new BorderLayout());
+    final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
     tabPane.setUI(new BorderlessTabbedPaneUI());
     for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
@@ -2153,9 +2153,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       if (dependantEntities.size() > 0)
         tabPane.addTab(entry.getKey(), createStaticEntityPanel(dependantEntities, dbProvider));
     }
-    ret.add(tabPane, BorderLayout.CENTER);
+    panel.add(tabPane, BorderLayout.CENTER);
 
-    return ret;
+    return panel;
   }
 
   private static class ActivationFocusAdapter extends MouseAdapter {

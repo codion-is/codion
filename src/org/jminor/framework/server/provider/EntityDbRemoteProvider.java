@@ -132,7 +132,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   }
 
   private static List<EntityDbServer> getEntityServers(final String hostNames) throws RemoteException {
-    final List<EntityDbServer> ret = new ArrayList<EntityDbServer>();
+    final List<EntityDbServer> servers = new ArrayList<EntityDbServer>();
     for (final String serverHostName : hostNames.split(",")) {
       final Registry registry = LocateRegistry.getRegistry(serverHostName);
       final String version = Util.getVersion();
@@ -143,7 +143,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
           try {
             final EntityDbServer server = checkServer((EntityDbServer) registry.lookup(name));
             if (server != null)
-              ret.add(server);
+              servers.add(server);
           }
           catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +153,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
       }
     }
 
-    return ret;
+    return servers;
   }
 
   private static EntityDbServer checkServer(final EntityDbServer server) throws RemoteException {

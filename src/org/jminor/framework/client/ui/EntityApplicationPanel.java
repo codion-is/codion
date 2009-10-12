@@ -331,62 +331,62 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
     ctrSetLoggingLevel.setIcon(setLoggingIcon);
 
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
 
-    ret.add(ctrSelectDetail);
-    ret.add(ctrCascadeRefresh);
-    ret.addSeparator();
-    ret.add(ctrSetLoggingLevel);
+    controlSet.add(ctrSelectDetail);
+    controlSet.add(ctrCascadeRefresh);
+    controlSet.addSeparator();
+    controlSet.add(ctrSetLoggingLevel);
 
-    return ret;
+    return controlSet;
   }
 
   /**
    * @return the ControlSet specifying the items in the 'Tools' menu
    */
   protected ControlSet getToolsControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
             FrameworkMessages.get(FrameworkMessages.TOOLS_MNEMONIC).charAt(0));
-    ret.add(getSettingsControlSet());
+    controlSet.add(getSettingsControlSet());
 
-    return ret;
+    return controlSet;
   }
 
   /**
    * @return the ControlSet specifying the items in the 'View' menu
    */
   protected ControlSet getViewControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
             FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
     final Control ctrRefreshAll = ControlFactory.methodControl(applicationModel, "refreshAll",
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
-    ret.add(ctrRefreshAll);
-    ret.addSeparator();
-    ret.add(ControlFactory.methodControl(this, "viewApplicationTree",
+    controlSet.add(ctrRefreshAll);
+    controlSet.addSeparator();
+    controlSet.add(ControlFactory.methodControl(this, "viewApplicationTree",
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
-    ret.addSeparator();
+    controlSet.addSeparator();
     final ToggleBeanPropertyLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
-    ret.add(ctrAlwaysOnTop);
+    controlSet.add(ctrAlwaysOnTop);
 
-    return ret;
+    return controlSet;
   }
 
   /**
    * @return the ControlSet specifying the items in the 'Help' menu
    */
   protected ControlSet getHelpControlSet() {
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
             FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
     final Control ctrHelp = ControlFactory.methodControl(this, "showHelp",
             FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
-    ret.add(ctrHelp);
-    ret.addSeparator();
+    controlSet.add(ctrHelp);
+    controlSet.addSeparator();
     final Control ctrAbout = ControlFactory.methodControl(this, "showAbout",
             FrameworkMessages.get(FrameworkMessages.ABOUT) + "...", null, null);
-    ret.add(ctrAbout);
+    controlSet.add(ctrAbout);
 
-    return ret;
+    return controlSet;
   }
 
   /**
@@ -394,7 +394,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected JPanel getHelpPanel() {
     try {
-      final JPanel ret = new JPanel(new BorderLayout());
+      final JPanel panel = new JPanel(new BorderLayout());
       final String contents = Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
       final JTextArea text = new JTextArea(contents);
       final JScrollPane scrollPane = new JScrollPane(text);
@@ -402,9 +402,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       text.setFocusable(false);
       text.setLineWrap(true);
       text.setWrapStyleWord(true);
-      ret.add(scrollPane, BorderLayout.CENTER);
+      panel.add(scrollPane, BorderLayout.CENTER);
 
-      return ret;
+      return panel;
     }
     catch (IOException e) {
       throw new RuntimeException(e);
@@ -415,14 +415,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the panel shown when Help -> About is selected
    */
   protected JPanel getAboutPanel() {
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
     final String versionString = Util.getVersionAndBuildNumber();
-    ret.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
+    panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
     txtVersionMemory.setEditable(false);
-    ret.add(txtVersionMemory, BorderLayout.CENTER);
+    panel.add(txtVersionMemory, BorderLayout.CENTER);
 
-    return ret;
+    return panel;
   }
 
   protected EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
@@ -483,10 +483,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       return null;
 
     Collections.sort(supportDetailPanelProviders);
-    final ControlSet ret = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     for (final EntityPanelProvider panelProvider : supportDetailPanelProviders) {
-      ret.add(new Control(panelProvider.getCaption()) {
+      controlSet.add(new Control(panelProvider.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent e) {
           showEntityPanel(panelProvider);
@@ -494,7 +494,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       });
     }
 
-    return ret;
+    return controlSet;
   }
 
   protected void showEntityPanel(final EntityPanelProvider panelProvider) {
@@ -553,17 +553,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected JPanel initializeStartupProgressPane(final Icon icon) {
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
     final JProgressBar prog = new JProgressBar(JProgressBar.HORIZONTAL);
     prog.setIndeterminate(true);
-    ret.add(prog, BorderLayout.CENTER);
+    panel.add(prog, BorderLayout.CENTER);
     if (icon != null) {
       final JLabel lblIcon = new JLabel(icon);
       lblIcon.setBorder(BorderFactory.createRaisedBevelBorder());
-      ret.add(lblIcon, BorderLayout.WEST);
+      panel.add(lblIcon, BorderLayout.WEST);
     }
 
-    return ret;
+    return panel;
   }
 
   protected void initializeResizingAndNavigation() {
@@ -760,9 +760,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       return null;
 
     for (final EntityPanel panel : panels) {
-      final EntityPanel ret = getActivePanel(panel.getDetailPanels());
-      if (ret != null)
-        return ret;
+      final EntityPanel activeDetailPanel = getActivePanel(panel.getDetailPanels());
+      if (activeDetailPanel != null)
+        return activeDetailPanel;
       if (panel.isActive())
         return panel;
     }

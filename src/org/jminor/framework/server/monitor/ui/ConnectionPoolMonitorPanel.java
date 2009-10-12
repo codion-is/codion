@@ -45,11 +45,11 @@ public class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private ControlSet getPopupCommands() {
-    final ControlSet ret = new ControlSet();
-    ret.add(ControlFactory.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
-    ret.addSeparator();
-    ret.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+    final ControlSet controlSet = new ControlSet();
+    controlSet.add(ControlFactory.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
+    controlSet.addSeparator();
+    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
 
-    return ret;
+    return controlSet;
   }
 }

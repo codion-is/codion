@@ -72,9 +72,9 @@ public class ClientTypeMonitorPanel extends JPanel {
   }
 
   private ControlSet getPopupCommands() {
-    final ControlSet ret = new ControlSet();
-    ret.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+    final ControlSet controlSet = new ControlSet();
+    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
 
-    return ret;
+    return controlSet;
   }
 }

@@ -229,13 +229,13 @@ public class DbConnection {
     Statement statement = null;
     try {
       statement = connection.createStatement();
-      final List ret = resultPacker.pack(statement.executeQuery(sql), fetchCount);
+      final List result = resultPacker.pack(statement.executeQuery(sql), fetchCount);
       if (cacheQueriesRequests > 0 && fetchCount < 0)
-        queryCache.put(sql, ret);
+        queryCache.put(sql, result);
 
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
 
-      return ret;
+      return result;
     }
     catch (SQLException e) {
       log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
@@ -259,11 +259,11 @@ public class DbConnection {
    */
   public final List<String> queryStrings(final String sql) throws SQLException {
     final List res = query(sql, DbUtil.STRING_PACKER, -1);
-    final List<String> ret = new ArrayList<String>(res.size());
+    final List<String> strings = new ArrayList<String>(res.size());
     for (final Object object : res)
-      ret.add((String) object);
+      strings.add((String) object);
 
-    return ret;
+    return strings;
   }
 
   /**
@@ -275,9 +275,9 @@ public class DbConnection {
    * @throws DbException thrown if no record is found
    */
   public final int queryInteger(final String sql) throws SQLException, DbException {
-    final List<Integer> ret = queryIntegers(sql);
-    if (ret.size() > 0)
-      return ret.get(0);
+    final List<Integer> integers = queryIntegers(sql);
+    if (integers.size() > 0)
+      return integers.get(0);
 
     throw new DbException("No records returned when querying for an integer", sql);
   }
@@ -311,11 +311,11 @@ public class DbConnection {
 
     final List result = query(sql, new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-        final List<Blob> ret = new ArrayList<Blob>();
+        final List<Blob> blobs = new ArrayList<Blob>();
         if (resultSet.next())
-          ret.add(resultSet.getBlob(1));
+          blobs.add(resultSet.getBlob(1));
 
-        return ret;
+        return blobs;
       }
     }, 1);
 
@@ -503,17 +503,17 @@ public class DbConnection {
 
   private static class MixedResultPacker implements ResultPacker<List> {
     public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<List> ret = new ArrayList<List>();
+      final List<List> result = new ArrayList<List>();
       final int columnCount = resultSet.getMetaData().getColumnCount();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         final List<Object> row = new ArrayList<Object>(columnCount);
         for (int index = 1; index <= columnCount; index++)
           row.add(resultSet.getObject(index));
-        ret.add(row);
+        result.add(row);
       }
 
-      return ret;
+      return result;
     }
   }
 }

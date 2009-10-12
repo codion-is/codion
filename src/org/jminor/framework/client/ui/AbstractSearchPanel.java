@@ -168,12 +168,12 @@ public abstract class AbstractSearchPanel extends JPanel {
    * @return an ItemComboBoxModel containing the available search types
    */
   protected ItemComboBoxModel initSearchTypeModel() {
-    final ItemComboBoxModel ret = new ItemComboBoxModel();
+    final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
     for (int i = 0; i < searchTypes.length; i++)
       if (searchTypeAllowed(searchTypes[i]))
-        ret.addElement(new ItemComboBoxModel.IconItem(searchTypes[i],Images.loadImage(searchTypeImageNames[i])));
+        comboBoxModel.addElement(new ItemComboBoxModel.IconItem(searchTypes[i],Images.loadImage(searchTypeImageNames[i])));
 
-    return ret;
+    return comboBoxModel;
   }
 
   /**
@@ -204,10 +204,10 @@ public abstract class AbstractSearchPanel extends JPanel {
   }
 
   private JComboBox initSearchTypeComboBox() {
-    final JComboBox ret = new SteppedComboBox(initSearchTypeModel());
-    ControlProvider.bindItemSelector(ret, model, "searchType", SearchType.class, model.evtSearchTypeChanged);
+    final JComboBox comboBox = new SteppedComboBox(initSearchTypeModel());
+    ControlProvider.bindItemSelector(comboBox, model, "searchType", SearchType.class, model.evtSearchTypeChanged);
 
-    return ret;
+    return comboBox;
   }
 
   private void initUI() {

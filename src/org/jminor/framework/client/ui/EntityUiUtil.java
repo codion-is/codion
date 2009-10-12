@@ -228,12 +228,12 @@ public class EntityUiUtil {
 
   public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                                               final EntityEditModel editModel, final EntityTableModel lookupModel) {
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
     final JTextField txt = createEntityField(foreignKeyProperty, editModel);
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
         try {
-          final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(ret),
+          final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(panel),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           editModel.setValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
         }
@@ -242,10 +242,10 @@ public class EntityUiUtil {
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
 
-    ret.add(txt, BorderLayout.CENTER);
-    ret.add(btn, BorderLayout.EAST);
+    panel.add(txt, BorderLayout.CENTER);
+    panel.add(btn, BorderLayout.EAST);
 
-    return ret;
+    return panel;
   }
 
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
@@ -394,29 +394,29 @@ public class EntityUiUtil {
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
-    final JTextField ret = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     switch (property.getPropertyType()) {
       case STRING:
         if (formatMaskString != null)
-          new FormattedTextPropertyLink((JFormattedTextField) ret, editModel, property, null, immediateUpdate, linkType);
+          new FormattedTextPropertyLink((JFormattedTextField) textField, editModel, property, null, immediateUpdate, linkType);
         else
-          new TextPropertyLink(ret, editModel, property, immediateUpdate, linkType);
+          new TextPropertyLink(textField, editModel, property, immediateUpdate, linkType);
         break;
       case INT:
-        new IntTextPropertyLink((IntField) ret, editModel, property, immediateUpdate, linkType);
+        new IntTextPropertyLink((IntField) textField, editModel, property, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoubleTextPropertyLink((DoubleField) ret, editModel, property, immediateUpdate, linkType);
+        new DoubleTextPropertyLink((DoubleField) textField, editModel, property, immediateUpdate, linkType);
         break;
       case DATE:
       case TIMESTAMP:
-        new DateTextPropertyLink((JFormattedTextField) ret, editModel, property, linkType, dateFormat);
+        new DateTextPropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);
     }
 
-    return ret;
+    return textField;
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel) {
@@ -464,12 +464,12 @@ public class EntityUiUtil {
   public static SteppedComboBox createPropertyComboBox(final Property property, final EntityEditModel editModel,
                                                        final Event refreshEvent, final State state,
                                                        final String nullValue, final boolean editable) {
-    final SteppedComboBox ret = createComboBox(property, editModel,
+    final SteppedComboBox comboBox = createComboBox(property, editModel,
             editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), state, editable);
     if (!editable)
-      MaximumMatch.enable(ret);
+      MaximumMatch.enable(comboBox);
 
-    return ret;
+    return comboBox;
   }
 
   public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
@@ -567,20 +567,20 @@ public class EntityUiUtil {
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
 
-    final JPanel ret = new JPanel(new BorderLayout(5,0));
-    ret.add(lookupField, BorderLayout.CENTER);
-    ret.add(btn, BorderLayout.EAST);
+    final JPanel panel = new JPanel(new BorderLayout(5,0));
+    panel.add(lookupField, BorderLayout.CENTER);
+    panel.add(btn, BorderLayout.EAST);
 
-    return ret;
+    return panel;
   }
 
   public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
                                                  final boolean newRecordButtonTakesFocus) {
-    final JPanel ret = new JPanel(new BorderLayout());
-    ret.add(entityComboBox, BorderLayout.CENTER);
-    ret.add(initializeNewRecordButton(entityComboBox, panelProvider, newRecordButtonTakesFocus), BorderLayout.EAST);
+    final JPanel panel = new JPanel(new BorderLayout());
+    panel.add(entityComboBox, BorderLayout.CENTER);
+    panel.add(initializeNewRecordButton(entityComboBox, panelProvider, newRecordButtonTakesFocus), BorderLayout.EAST);
 
-    return ret;
+    return panel;
   }
 
   private static JTextField initTextField(final Property property, final EntityEditModel editModel,
@@ -618,12 +618,12 @@ public class EntityUiUtil {
 
   private static JButton initializeNewRecordButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider,
                                                    final boolean newRecordButtonFocusable) {
-    final JButton ret = new JButton(initializeNewRecordAction(comboBox, panelProvider));
-    ret.setIcon(Images.loadImage(Images.IMG_ADD_16));
-    ret.setPreferredSize(new Dimension(18, UiUtil.getPreferredTextFieldHeight()));
-    ret.setFocusable(newRecordButtonFocusable);
+    final JButton button = new JButton(initializeNewRecordAction(comboBox, panelProvider));
+    button.setIcon(Images.loadImage(Images.IMG_ADD_16));
+    button.setPreferredSize(new Dimension(18, UiUtil.getPreferredTextFieldHeight()));
+    button.setFocusable(newRecordButtonFocusable);
 
-    return ret;
+    return button;
   }
 
   private static AbstractAction initializeNewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
@@ -661,7 +661,7 @@ public class EntityUiUtil {
 
   private static JButton initializeOkButton(final EntityComboBoxModel comboBoxModel, final EntityTableModel tableModel,
                                             final JDialog dialog, final List<Entity.Key> lastInsertedPrimaryKeys) {
-    final JButton ret = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
+    final JButton button = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
         comboBoxModel.refresh();
         if (lastInsertedPrimaryKeys != null && lastInsertedPrimaryKeys.size() > 0) {
@@ -675,8 +675,8 @@ public class EntityUiUtil {
         dialog.dispose();
       }
     });
-    ret.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    button.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
 
-    return ret;
+    return button;
   }
 }

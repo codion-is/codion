@@ -205,12 +205,12 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * excluding the nullValueItem object if one is specified.
    */
   protected List<?> getContents() {
-    final List<Object> ret = new ArrayList<Object>(filteredItems);
-    ret.addAll(visibleItems);
+    final List<Object> contents = new ArrayList<Object>(filteredItems);
+    contents.addAll(visibleItems);
     if (nullValueItem != null)
-      ret.remove(nullValueItem);
+      contents.remove(nullValueItem);
 
-    return ret;
+    return contents;
   }
 
   protected List<Object> getFilteredItems() {

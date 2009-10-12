@@ -210,14 +210,14 @@ public class EntityEditModel {
    */
   public PropertyComboBoxModel initializePropertyComboBoxModel(final Property property, final Event refreshEvent,
                                                                final String nullValue) {
-    PropertyComboBoxModel ret = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
-    if (ret == null) {
-      setComboBoxModel(property, ret = createPropertyComboBoxModel(property,
+    PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    if (comboBoxModel == null) {
+      setComboBoxModel(property, comboBoxModel = createPropertyComboBoxModel(property,
               refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValue));
-      ret.refresh();
+      comboBoxModel.refresh();
     }
 
-    return ret;
+    return comboBoxModel;
   }
 
   /**
@@ -280,11 +280,11 @@ public class EntityEditModel {
    * @see #initializeEntityComboBoxModels()
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    EntityComboBoxModel ret = getEntityComboBoxModel(foreignKeyProperty);
-    if (ret == null)
-      setComboBoxModel(foreignKeyProperty, ret = createEntityComboBoxModel(foreignKeyProperty));
+    EntityComboBoxModel comboBoxModel = getEntityComboBoxModel(foreignKeyProperty);
+    if (comboBoxModel == null)
+      setComboBoxModel(foreignKeyProperty, comboBoxModel = createEntityComboBoxModel(foreignKeyProperty));
 
-    return ret;
+    return comboBoxModel;
   }
 
   /**
@@ -381,10 +381,10 @@ public class EntityEditModel {
    * @return a Map of EntityComboBoxModels mapped to their respective properties
    */
   protected final Map<Property.ForeignKeyProperty, EntityComboBoxModel> initializeEntityComboBoxModels(final EntityComboBoxModel... comboBoxModels) {
-    final Map<Property.ForeignKeyProperty, EntityComboBoxModel> ret =
+    final Map<Property.ForeignKeyProperty, EntityComboBoxModel> entityComboBoxModels =
             new HashMap<Property.ForeignKeyProperty, EntityComboBoxModel>();
     if (comboBoxModels == null || comboBoxModels.length == 0)
-      return ret;
+      return entityComboBoxModels;
 
     for (final EntityComboBoxModel comboBoxModel : comboBoxModels) {
       final List<Property.ForeignKeyProperty> properties =
@@ -392,12 +392,12 @@ public class EntityEditModel {
       if (properties.size() > 1)
         throw new RuntimeException("Multiple possible properties found for EntityComboBoxModel: " + comboBoxModel);
       else if (properties.size() == 1)
-        ret.put(properties.get(0), comboBoxModel);
+        entityComboBoxModels.put(properties.get(0), comboBoxModel);
       else
         throw new RuntimeException("Property not found for EntityComboBoxModel: " + comboBoxModel);
     }
 
-    return ret;
+    return entityComboBoxModels;
   }
 
   /**
@@ -437,12 +437,12 @@ public class EntityEditModel {
    * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
   public Entity getDefaultEntity() {
-    final Entity ret = new Entity(getEntityID());
+    final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !(property instanceof Property.DenormalizedProperty))//these are set via their respective parent properties
-        ret.setValue(property, getDefaultValue(property), true);
+        defaultEntity.setValue(property, getDefaultValue(property), true);
 
-    return ret;
+    return defaultEntity;
   }
 
   /**
@@ -535,25 +535,25 @@ public class EntityEditModel {
   }
 
   private static String getPropertyChangeDebugString(final Property.Event event) {
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     if (event.getSource() instanceof Entity)
-      ret.append("[entity] ");
+      stringBuilder.append("[entity] ");
     else
-      ret.append(event.isModelChange() ? "[model] " : "[ui] ");
-    ret.append(event.getEntityID()).append(" : ").append(event.getProperty()).append(
+      stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
+    stringBuilder.append(event.getEntityID()).append(" : ").append(event.getProperty()).append(
             event.getProperty().hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (event.getOldValue() != null)
-        ret.append(event.getOldValue().getClass().getSimpleName()).append(" ");
-      ret.append(getValueString(event.getProperty(), event.getOldValue()));
+        stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");
+      stringBuilder.append(getValueString(event.getProperty(), event.getOldValue()));
     }
     if (!event.isInitialization())
-      ret.append(" -> ");
+      stringBuilder.append(" -> ");
     if (event.getNewValue() != null)
-      ret.append(event.getNewValue().getClass().getSimpleName()).append(" ");
-    ret.append(getValueString(event.getProperty(), event.getNewValue()));
+      stringBuilder.append(event.getNewValue().getClass().getSimpleName()).append(" ");
+    stringBuilder.append(getValueString(event.getProperty(), event.getNewValue()));
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   /**
@@ -563,10 +563,11 @@ public class EntityEditModel {
    */
   private static String getValueString(final Property property, final Object value) {
     final boolean valueIsNull = Entity.isValueNull(property.getPropertyType(), value);
-    final StringBuilder ret = new StringBuilder("[").append(valueIsNull ? (value == null ? "null" : "null value") : value).append("]");
+    final StringBuilder stringBuilder = new StringBuilder("[").append(valueIsNull
+            ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)
-      ret.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
+      stringBuilder.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 }

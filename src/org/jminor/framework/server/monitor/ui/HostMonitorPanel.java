@@ -47,10 +47,10 @@ public class HostMonitorPanel extends JPanel {
   }
 
   private ControlSet getControls() {
-    final ControlSet ret = new ControlSet();
-    ret.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+    final ControlSet controlSet = new ControlSet();
+    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
 
-    return ret;
+    return controlSet;
   }
 
   private void bindEvents() {

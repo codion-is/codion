@@ -30,10 +30,10 @@ public class EntityComboBox extends SteppedComboBox {
 
   @Override
   public Dimension getPreferredSize() {
-    final Dimension ret = super.getPreferredSize();
-    ret.setSize(new Dimension(ret.width, UiUtil.getPreferredTextFieldHeight()));
+    final Dimension dimension = super.getPreferredSize();
+    dimension.setSize(new Dimension(dimension.width, UiUtil.getPreferredTextFieldHeight()));
 
-    return ret;
+    return dimension;
   }
 
   @Override
@@ -42,13 +42,13 @@ public class EntityComboBox extends SteppedComboBox {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final JPopupMenu ret = new JPopupMenu();
-    ret.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
+    final JPopupMenu popupMenu = new JPopupMenu();
+    popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
       public void actionPerformed(ActionEvent e) {
         getModel().forceRefresh();
       }
     });
 
-    return ret;
+    return popupMenu;
   }
 }

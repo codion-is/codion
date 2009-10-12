@@ -101,9 +101,9 @@ public class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private ControlSet getPopupCommands() {
-    final ControlSet ret = new ControlSet();
-    ret.add(ControlFactory.methodControl(this, "disconnectSelected", "Disconnect selected"));
+    final ControlSet controlSet = new ControlSet();
+    controlSet.add(ControlFactory.methodControl(this, "disconnectSelected", "Disconnect selected"));
 
-    return ret;
+    return controlSet;
   }
 }

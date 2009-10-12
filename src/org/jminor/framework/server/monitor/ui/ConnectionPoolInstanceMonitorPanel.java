@@ -152,11 +152,11 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     configBase.add(new JLabel("Idle timout (s)"));
     configBase.add(spnTimeout);
 
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
-    ret.setBorder(BorderFactory.createTitledBorder("Connection pool configuration"));
-    ret.add(configBase, BorderLayout.CENTER);
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    panel.setBorder(BorderFactory.createTitledBorder("Connection pool configuration"));
+    panel.add(configBase, BorderLayout.CENTER);
 
-    return ret;
+    return panel;
   }
 
   private JPanel getStatsPanel() {
@@ -183,13 +183,13 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     statsBase.add(new JLabel(" since"));
     statsBase.add(txtCreatedDestroyedResetTime);
 
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
-    ret.setBorder(BorderFactory.createTitledBorder("Connection pool statistics"));
-    ret.add(statsBase, BorderLayout.CENTER);
-    ret.add(ControlProvider.createButton(
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    panel.setBorder(BorderFactory.createTitledBorder("Connection pool statistics"));
+    panel.add(statsBase, BorderLayout.CENTER);
+    panel.add(ControlProvider.createButton(
             ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
-    return ret;
+    return panel;
   }
 
   private JPanel getChartPanel() {
@@ -213,11 +213,11 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     chartBase.add(inPoolChartPanelMacro);
     chartBase.add(inPoolChartPanel);
 
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
-    ret.setBorder(BorderFactory.createTitledBorder("Connection pool status"));
-    ret.add(chartBase, BorderLayout.CENTER);
-    ret.add(configBase, BorderLayout.NORTH);
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    panel.setBorder(BorderFactory.createTitledBorder("Connection pool status"));
+    panel.add(chartBase, BorderLayout.CENTER);
+    panel.add(configBase, BorderLayout.NORTH);
 
-    return ret;
+    return panel;
   }
 }

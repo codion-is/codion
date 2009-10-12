@@ -59,11 +59,11 @@ public class IntArray extends ArrayList<Integer> implements Serializable {
   }
 
   public int[] toIntArray() {
-    final int[] ret = new int[size()];
-    for (int i = 0; i < ret.length; i++)
-      ret[i] = getIntAt(i);
+    final int[] ints = new int[size()];
+    for (int i = 0; i < ints.length; i++)
+      ints[i] = getIntAt(i);
 
-    return ret;
+    return ints;
   }
 
   public void addAllInts(final int[] integers) {

@@ -508,27 +508,27 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   public int[] getSelectedViewIndexes() {
-    final IntArray ret = new IntArray();
+    final IntArray intArray = new IntArray();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     for (int i = min; i <= max; i++)
       if (selectionModel.isSelectedIndex(i))
-        ret.add(i);
+        intArray.add(i);
 
-    return ret.toIntArray();
+    return intArray.toIntArray();
   }
 
   public int[] getSelectedModelIndexes() {
-    final IntArray ret = new IntArray();
+    final IntArray intArray = new IntArray();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     if (min >= 0 && max >= 0) {
       for (int i = min; i <= max; i++)
         if (selectionModel.isSelectedIndex(i))
-          ret.add(tableSorter.modelIndex(i));
+          intArray.add(tableSorter.modelIndex(i));
     }
 
-    return ret.toIntArray();
+    return intArray.toIntArray();
   }
 
   /**
@@ -695,11 +695,11 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public List<Entity> getSelectedEntities() {
     final int[] selectedModelIndexes = getSelectedModelIndexes();
-    final List<Entity> ret = new ArrayList<Entity>();
+    final List<Entity> selectedEntities = new ArrayList<Entity>();
     for (final int modelIndex : selectedModelIndexes)
-      ret.add(visibleEntities.get(modelIndex));
+      selectedEntities.add(visibleEntities.get(modelIndex));
 
-    return ret;
+    return selectedEntities;
   }
 
   /**
@@ -809,20 +809,17 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the entities having the primary key values as in <code>keys</code>
    */
   public List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys) {
-    final List<Entity> ret = new ArrayList<Entity>();
-    final List<Entity> allEntities = new ArrayList<Entity>(visibleEntities.size() + hiddenEntities.size());
-    allEntities.addAll(visibleEntities);
-    allEntities.addAll(hiddenEntities);
-    for (final Entity entity : allEntities) {
+    final List<Entity> entities = new ArrayList<Entity>();
+    for (final Entity entity : getAllEntities()) {
       for (final Entity.Key key : keys) {
         if (entity.getPrimaryKey().equals(key)) {
-          ret.add(entity);
+          entities.add(entity);
           break;
         }
       }
     }
 
-    return ret;
+    return entities;
   }
 
   /**
@@ -832,7 +829,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the entities having the exact same property values as in <code>properties</properties>
    */
   public Entity[] getEntitiesByPropertyValues(final Map<String, Object> propertyValues) {
-    final List<Entity> ret = new ArrayList<Entity>();
+    final List<Entity> entities = new ArrayList<Entity>();
     for (final Entity entity : getAllEntities()) {
       boolean equal = true;
       for (final Map.Entry<String, Object> entries : propertyValues.entrySet()) {
@@ -843,10 +840,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         }
       }
       if (equal)
-        ret.add(entity);
+        entities.add(entity);
     }
 
-    return ret.toArray(new Entity[ret.size()]);
+    return entities.toArray(new Entity[entities.size()]);
   }
 
   /**
@@ -898,11 +895,11 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return all entities in this table model
    */
   public List<Entity> getAllEntities(final boolean includeHidden) {
-    final List<Entity> ret = new ArrayList<Entity>(visibleEntities);
+    final List<Entity> entities = new ArrayList<Entity>(visibleEntities);
     if (includeHidden)
-      ret.addAll(hiddenEntities);
+      entities.addAll(hiddenEntities);
 
-    return ret;
+    return entities;
   }
 
   /** {@inheritDoc} */
@@ -975,12 +972,12 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * table column based properties which are visible in this table model
    */
   protected List<Property> getSearchableProperties() {
-    final List<Property> ret = new ArrayList<Property>();
+    final List<Property> searchableProperties = new ArrayList<Property>();
     for (final Property property : EntityRepository.getProperties(getEntityID(), false))
       if (property.isDatabaseProperty())
-        ret.add(property);
+        searchableProperties.add(property);
 
-    return ret;
+    return searchableProperties;
   }
 
   /**
@@ -1006,7 +1003,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a list of Properties that should be used as basis for this table models column model
    */
   protected List<Property> initializeColumnProperties() {
-    return EntityRepository.getVisiblePropertyList(getEntityID());
+    return EntityRepository.getVisibleProperties(getEntityID());
   }
 
   /**

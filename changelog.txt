@@ -847,3 +847,4 @@
   EntityModel.validateData() renamed to validateEntities
   EntityModel.validateEntities() performs null validation if Configuration.PERFORM_NULL_VALIDATION is true
   EntityDefinition refactored, all Collection fields made unmodifiable
+  Cryptic ret return parameter name replaced throughout

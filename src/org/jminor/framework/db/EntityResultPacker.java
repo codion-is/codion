@@ -45,12 +45,12 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
     if (resultSet == null)
       throw new IllegalArgumentException("Can not pack result from a null ResultSet");
-    final List<Entity> ret = new ArrayList<Entity>();
+    final List<Entity> entities = new ArrayList<Entity>();
     int counter = 0;
     while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-      ret.add(loadEntity(resultSet));
+      entities.add(loadEntity(resultSet));
 
-    return ret;
+    return entities;
   }
 
   private Entity loadEntity(final ResultSet resultSet) throws SQLException {
@@ -131,9 +131,9 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final String ret = resultSet.getString(columnIndex);
+    final String string = resultSet.getString(columnIndex);
 
-    return ret == null ? "" : ret;
+    return string == null ? "" : string;
   }
 
   private Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {

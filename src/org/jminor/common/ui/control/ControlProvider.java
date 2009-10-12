@@ -266,10 +266,10 @@ public class ControlProvider {
   }
 
   public static JCheckBox createCheckBox(final ToggleBeanPropertyLink propertyLink) {
-    final JCheckBox ret = new JCheckBox(propertyLink);
-    ret.setModel(propertyLink.getButtonModel());
+    final JCheckBox checkBox = new JCheckBox(propertyLink);
+    checkBox.setModel(propertyLink.getButtonModel());
 
-    return ret;
+    return checkBox;
   }
 
   public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink) {
@@ -277,11 +277,11 @@ public class ControlProvider {
   }
 
   public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink, final boolean includeCaption) {
-    final JToggleButton ret = new JToggleButton(propertyLink);
-    ret.setModel(propertyLink.getButtonModel());
-    ret.setText(includeCaption ? propertyLink.getName() : null);
+    final JToggleButton toggleButton = new JToggleButton(propertyLink);
+    toggleButton.setModel(propertyLink.getButtonModel());
+    toggleButton.setText(includeCaption ? propertyLink.getName() : null);
 
-    return ret;
+    return toggleButton;
   }
 
   public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {

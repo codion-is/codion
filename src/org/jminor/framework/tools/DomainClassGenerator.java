@@ -152,12 +152,12 @@ public class DomainClassGenerator {
 
   static class SchemaPacker implements ResultPacker<Schema> {
     public List<Schema> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Schema> ret = new ArrayList<Schema>();
+      final List<Schema> schemas = new ArrayList<Schema>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(new Schema(resultSet.getString("TABLE_SCHEM")));
+        schemas.add(new Schema(resultSet.getString("TABLE_SCHEM")));
 
-      return ret;
+      return schemas;
     }
   }
 
@@ -178,12 +178,12 @@ public class DomainClassGenerator {
 
   static class TablePacker implements ResultPacker<Table> {
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Table> ret = new ArrayList<Table>();
+      final List<Table> tables = new ArrayList<Table>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(new Table(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME")));
+        tables.add(new Table(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME")));
 
-      return ret;
+      return tables;
     }
   }
 
@@ -211,13 +211,13 @@ public class DomainClassGenerator {
 
   static class ColumnPacker implements ResultPacker<Column> {
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Column> ret = new ArrayList<Column>();
+      final List<Column> columns = new ArrayList<Column>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
+        columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getInt("DATA_TYPE"), resultSet.getInt("COLUMN_SIZE")));
 
-      return ret;
+      return columns;
     }
   }
 
@@ -250,15 +250,15 @@ public class DomainClassGenerator {
 
   static class ForeignKeyPacker implements ResultPacker<ForeignKey> {
     public List<ForeignKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<ForeignKey> ret = new ArrayList<ForeignKey>();
+      final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
+        foreignKeys.add(new ForeignKey(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
                 resultSet.getString("FKTABLE_NAME"),  resultSet.getString("FKCOLUMN_NAME"),
                 resultSet.getShort("KEY_SEQ")));
 
-      return ret;
+      return foreignKeys;
     }
   }
 
@@ -283,13 +283,13 @@ public class DomainClassGenerator {
 
   static class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
     public List<PrimaryKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<PrimaryKey> ret = new ArrayList<PrimaryKey>();
+      final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(new PrimaryKey(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
+        primaryKeys.add(new PrimaryKey(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
 
-      return ret;
+      return primaryKeys;
     }
   }
 }

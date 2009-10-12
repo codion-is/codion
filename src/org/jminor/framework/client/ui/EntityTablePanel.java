@@ -440,7 +440,7 @@ public class EntityTablePanel extends JPanel {
     southToolBar.setFocusable(false);
     southToolBar.setFloatable(false);
     southToolBar.setRollover(true);
-    final JPanel ret = new JPanel(new BorderLayout());
+    final JPanel panel = new JPanel(new BorderLayout());
     lblStatusMessage = new JLabel("", JLabel.CENTER);
     if (allowQueryConfiguration) {
       lblStatusMessage.addMouseListener(new MouseAdapter() {
@@ -453,10 +453,10 @@ public class EntityTablePanel extends JPanel {
       });
     }
     lblStatusMessage.setFont(new Font(lblStatusMessage.getFont().getName(), Font.PLAIN, 12));
-    ret.add(lblStatusMessage, BorderLayout.CENTER);
-    ret.add(southToolBar, BorderLayout.EAST);
+    panel.add(lblStatusMessage, BorderLayout.CENTER);
+    panel.add(southToolBar, BorderLayout.EAST);
 
-    return ret;
+    return panel;
   }
 
   /**
@@ -631,21 +631,21 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeSummaryPanel() {
     final List<JPanel> panels = new ArrayList<JPanel>();
-    final JPanel ret = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
     final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final Property property = (Property) columns.nextElement().getIdentifier();
-      final PropertySummaryPanel panel = initializeSummaryPanel(property);
-      panels.add(panel);
-      ret.add(panel);
+      final PropertySummaryPanel summaryPanel = initializeSummaryPanel(property);
+      panels.add(summaryPanel);
+      panel.add(summaryPanel);
     }
     UiUtil.bindColumnAndPanelSizes(getJTable().getColumnModel(), panels);
 
     final JLabel scrollBarBuffer = new JLabel();
     scrollBarBuffer.setPreferredSize(new Dimension(15,20));
-    ret.add(scrollBarBuffer);
+    panel.add(scrollBarBuffer);
 
-    return ret;
+    return panel;
   }
 
   /**
@@ -815,7 +815,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes the JTable instance
    * @param rowColoring if true then the JTable should paint each row according to the underlying entity
    * @return the JTable instance
-   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity) 
+   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable(final boolean rowColoring) {
     final JTable table = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),
@@ -829,11 +829,11 @@ public class EntityTablePanel extends JPanel {
     header.setDefaultRenderer(new TableCellRenderer() {
       public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                      final boolean hasFocus, final int row, final int column) {
-        final JLabel ret = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
+        final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
-        ret.setFont(getTableModel().getSearchModel().isSearchEnabled(column) ? searchFont : defaultFont);
+        label.setFont(getTableModel().getSearchModel().isSearchEnabled(column) ? searchFont : defaultFont);
 
-        return ret;
+        return label;
       }
     });
     header.setFocusable(false);
@@ -980,7 +980,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static List<TableColumn> getTableColumns(final List<Property> columnProperties) {
-    final ArrayList<TableColumn> ret = new ArrayList<TableColumn>(columnProperties.size());
+    final ArrayList<TableColumn> columns = new ArrayList<TableColumn>(columnProperties.size());
     int i = 0;
     for (final Property property : columnProperties) {
       final TableColumn column = new TableColumn(i++);
@@ -988,9 +988,9 @@ public class EntityTablePanel extends JPanel {
       column.setHeaderValue(property.getCaption());
       if (property.getPreferredWidth() > 0)
         column.setPreferredWidth(property.getPreferredWidth());
-      ret.add(column);
+      columns.add(column);
     }
 
-    return ret;
+    return columns;
   }
 }

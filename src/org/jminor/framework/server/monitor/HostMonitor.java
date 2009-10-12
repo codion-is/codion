@@ -85,7 +85,7 @@ public class HostMonitor {
   }
 
   private List<String> getEntityDbRemoteServers(final String serverHostName) {
-    final ArrayList<String> ret = new ArrayList<String>();
+    final ArrayList<String> serverNames = new ArrayList<String>();
     try {
       String message = "HostMonitor locating registry on host: " + serverHostName;
       System.out.println(message);
@@ -99,24 +99,24 @@ public class HostMonitor {
         message = "HostMonitor found server '" + name + "'";
         System.out.println(message);
         log.info(message);
-        ret.add(name);
+        serverNames.add(name);
       }
     }
     catch (RemoteException e) {
       log.error(this, e);
     }
 
-    return ret;
+    return serverNames;
   }
 
   private static String[] getEntityServers(final Registry registry) throws RemoteException {
-    final ArrayList<String> ret = new ArrayList<String>();
+    final ArrayList<String> serverNames = new ArrayList<String>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames)
       if (name.startsWith((String) Configuration.getValue(Configuration.SERVER_NAME_PREFIX))
               && name.endsWith("-admin"))
-        ret.add(name);
+        serverNames.add(name);
 
-    return ret.toArray(new String[ret.size()]);
+    return serverNames.toArray(new String[serverNames.size()]);
   }
 }

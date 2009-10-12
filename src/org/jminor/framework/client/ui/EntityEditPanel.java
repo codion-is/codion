@@ -150,14 +150,14 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
                                             final boolean labelOnTop, final int hgap, final int vgap) {
-    final JPanel ret = new JPanel(labelOnTop ?
+    final JPanel panel = new JPanel(labelOnTop ?
             new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
     if (labelComponent instanceof JLabel)
       ((JLabel)labelComponent).setLabelFor(inputComponent);
-    ret.add(labelComponent);
-    ret.add(inputComponent);
+    panel.add(labelComponent);
+    panel.add(inputComponent);
 
-    return ret;
+    return panel;
   }
 
   /**
@@ -682,11 +682,11 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final State enabledState) {
-    final SteppedComboBox ret = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState);
+    final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState);
     if (maximumMatch)
-      MaximumMatch.enable(ret);
+      MaximumMatch.enable(comboBox);
 
-    return ret;
+    return comboBox;
   }
 
   /**

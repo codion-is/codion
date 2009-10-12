@@ -30,12 +30,12 @@ public class AggregateState extends State {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    final StringBuilder ret = new StringBuilder("Aggregate ");
-    ret.append(type == Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
+    final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
+    stringBuilder.append(type == Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
     for (final State state: states)
-      ret.append(", ").append(state);
+      stringBuilder.append(", ").append(state);
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   /**

@@ -86,14 +86,14 @@ public class CriteriaSet implements Criteria, Serializable {
     if (criterias.size() == 0)
       return "";
 
-    final StringBuilder ret = new StringBuilder(criterias.size() > 1 ? "(" : "");
+    final StringBuilder criteriaString = new StringBuilder(criterias.size() > 1 ? "(" : "");
     int i = 0;
     for (final Criteria criteria : criterias) {
-      ret.append(criteria.toString());
+      criteriaString.append(criteria.toString());
       if (i++ < criterias.size()-1)
-        ret.append(conjunction.toString());
+        criteriaString.append(conjunction.toString());
     }
 
-    return ret.append(criterias.size() > 1 ? ")" : "").toString();
+    return criteriaString.append(criterias.size() > 1 ? ")" : "").toString();
   }
 }

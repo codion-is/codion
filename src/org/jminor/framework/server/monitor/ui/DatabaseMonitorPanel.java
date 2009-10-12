@@ -64,10 +64,10 @@ public class DatabaseMonitorPanel extends JPanel {
     configBase.add(ControlProvider.createButton(
             ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
-    final JPanel ret = new JPanel(new BorderLayout(5,5));
-    ret.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
-    ret.add(configBase, BorderLayout.NORTH);
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
+    panel.add(configBase, BorderLayout.NORTH);
 
-    return ret;
+    return panel;
   }
 }

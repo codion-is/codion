@@ -71,7 +71,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (entities == null || entities.size() == 0)
       return new ArrayList<Entity.Key>();
 
-    final List<Entity.Key> ret = new ArrayList<Entity.Key>(entities.size());
+    final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     String sql = null;//so we can include it in the exception
     try {
       for (final Entity entity : entities) {
@@ -90,13 +90,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
                   queryInteger(Database.get().getAutoIncrementValueSQL(
                           EntityRepository.getEntityIdSource(entityID))), false);
 
-        ret.add(entity.getPrimaryKey());
+        keys.add(entity.getPrimaryKey());
       }
 
       if (!isTransactionOpen())
         commit();
 
-      return ret;
+      return keys;
     }
     catch (SQLException e) {
       try {
@@ -160,13 +160,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public Entity selectSingle(final EntityCriteria criteria) throws DbException {
-    final List<Entity> ret = selectMany(criteria);
-    if (ret.size() == 0)
+    final List<Entity> entities = selectMany(criteria);
+    if (entities.size() == 0)
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-    if (ret.size() > 1)
+    if (entities.size() > 1)
       throw new DbException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
 
-    return ret.get(0);
+    return entities.get(0);
   }
 
   /** {@inheritDoc} */
@@ -257,9 +257,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws DbException {
-    final Map<String, List<Entity>> ret = new HashMap<String, List<Entity>>();
+    final Map<String, List<Entity>> dependencyMap = new HashMap<String, List<Entity>>();
     if (entities == null || entities.size() == 0)
-      return ret;
+      return dependencyMap;
 
     try {
       addCacheQueriesRequest();
@@ -268,10 +268,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependency.entityID,
                 new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
         if (dependentEntities.size() > 0)
-          ret.put(dependency.entityID, dependentEntities);
+          dependencyMap.put(dependency.entityID, dependentEntities);
       }
 
-      return ret;
+      return dependencyMap;
     }
     finally {
       removeCacheQueriesRequest();
@@ -301,11 +301,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /** {@inheritDoc} */
   public Object executeStatement(final String statement, final int outParamType) throws DbException {
     try {
-      final Object ret = executeCallableStatement(statement, outParamType);
+      final Object result = executeCallableStatement(statement, outParamType);
       if (!isTransactionOpen())
         commit();
 
-      return ret;
+      return result;
     }
     catch (SQLException sqle) {
       try {
@@ -470,11 +470,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private Map<Entity.Key, Entity> initLazyLoaded(final List<Entity.Key> referencedPrimaryKeys) {
-    final Map<Entity.Key, Entity> ret = new HashMap<Entity.Key, Entity>();
+    final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
     for (final Entity.Key key : referencedPrimaryKeys)
-      ret.put(key, new Entity(key));
+      entityMap.put(key, new Entity(key));
 
-    return ret;
+    return entityMap;
   }
 
   private static List<Entity.Key> getPrimaryKeysOfEntityValues(final List<Entity> entities,
@@ -526,21 +526,21 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (packer == null) {
       propertyResultPackers.put(propertyType, packer = new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-          final List<Object> ret = new ArrayList<Object>(50);
+          final List<Object> result = new ArrayList<Object>(50);
           int counter = 0;
           while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
             switch(propertyType) {
               case INT:
-                ret.add(resultSet.getInt(1));
+                result.add(resultSet.getInt(1));
                 break;
               case DOUBLE:
-                ret.add(resultSet.getDouble(1));
+                result.add(resultSet.getDouble(1));
                 break;
               default:
-                ret.add(resultSet.getObject(1));
+                result.add(resultSet.getObject(1));
             }
           }
-          return ret;
+          return result;
         }
       });
     }

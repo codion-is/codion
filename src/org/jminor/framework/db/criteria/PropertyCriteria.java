@@ -189,24 +189,24 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   private String getInList(final String whereColumn, final boolean notIn) {
-    final StringBuilder ret = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
+    final StringBuilder stringBuilder = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
       final String sqlValue = EntityUtil.getSQLStringValue(property, values.get(i));
       if (property.getPropertyType() == Type.STRING && !caseSensitive)
-        ret.append("upper(").append(sqlValue).append(")");
+        stringBuilder.append("upper(").append(sqlValue).append(")");
       else
-        ret.append(sqlValue);
+        stringBuilder.append(sqlValue);
       if (cnt++ == 1000 && i < values.size()-1) {//Oracle limit
-        ret.append(notIn ? ") and " : ") or ").append(whereColumn).append(" in (");
+        stringBuilder.append(notIn ? ") and " : ") or ").append(whereColumn).append(" in (");
         cnt = 1;
       }
       else if (i < values.size()-1)
-        ret.append(", ");
+        stringBuilder.append(", ");
     }
-    ret.append("))");
+    stringBuilder.append("))");
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   /**

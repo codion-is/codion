@@ -758,11 +758,11 @@ public class Property implements Serializable {
      * @return the sql string value of <code>value</code>
      */
     public String toSQLString(final Boolean value) {
-      final Object ret = value == null ? nullValue : (value ? trueValue : nullValue);
+      final Object result = value == null ? nullValue : (value ? trueValue : nullValue);
       if (columnType == Type.STRING)
-        return "'" + ret + "'";
+        return "'" + result + "'";
       else
-        return ret == null ? "null" : ret.toString();
+        return result == null ? "null" : result.toString();
     }
 
     public Object toSQLValue(final Boolean value) {

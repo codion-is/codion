@@ -460,13 +460,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   public static List<ConnectionPoolSettings> getActiveConnectionPoolSettings() {
-    final List<ConnectionPoolSettings> ret = new ArrayList<ConnectionPoolSettings>();
+    final List<ConnectionPoolSettings> poolSettings = new ArrayList<ConnectionPoolSettings>();
     for (final EntityDbConnectionPool pool : connectionPools.values()) {
       if (pool.getConnectionPoolSettings().isEnabled())
-        ret.add(pool.getConnectionPoolSettings());
+        poolSettings.add(pool.getConnectionPoolSettings());
     }
 
-    return ret;
+    return poolSettings;
   }
 
   public static ConnectionPoolSettings getConnectionPoolSettings(final User user) {
@@ -546,14 +546,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, AuthenticationException {
     if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()) {
-      final EntityDbConnection ret = connectionPools.get(user).checkOutConnection();
-      if (ret != null) {
+      final EntityDbConnection dbConnection = connectionPools.get(user).checkOutConnection();
+      if (dbConnection != null) {
         if (entityDbConnection != null) {//pool has been turned on since this one was created
           entityDbConnection.disconnect();//discard
           entityDbConnection = null;
         }
 
-        return ret;
+        return dbConnection;
       }
     }
 
@@ -567,14 +567,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     if (args == null)
       return "";
 
-    final StringBuilder ret = new StringBuilder(args.length*40);//best guess ?
+    final StringBuilder stringBuilder = new StringBuilder(args.length*40);//best guess ?
     for (int i = 0; i < args.length; i++) {
-      parameterToString(args[i], ret);
+      parameterToString(args[i], stringBuilder);
       if (i < args.length-1)
-        ret.append(", ");
+        stringBuilder.append(", ");
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   private static void parameterToString(final Object arg, final StringBuilder dest) {

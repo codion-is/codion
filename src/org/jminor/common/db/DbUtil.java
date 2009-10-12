@@ -53,23 +53,23 @@ public class DbUtil {
 
   public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
     public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
-      final ArrayList<Integer> ret = new ArrayList<Integer>();
+      final List<Integer> integers = new ArrayList<Integer>();
       int counter = 0;
       while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(rs.getInt(1));
+        integers.add(rs.getInt(1));
 
-      return ret;
+      return integers;
     }
   };
 
   public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
     public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
-      final ArrayList<String> ret = new ArrayList<String>();
+      final List<String> strings = new ArrayList<String>();
       int counter = 0;
       while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
-        ret.add(rs.getString(1));
+        strings.add(rs.getString(1));
 
-      return ret;
+      return strings;
     }
   };
 

@@ -82,32 +82,32 @@ public class MonitorPanel extends JPanel {
   }
 
   private ControlSet initMainMenuControlSets() {
-    final ControlSet ret = new ControlSet();
+    final ControlSet controlSet = new ControlSet();
     final ControlSet file = new ControlSet("File", 'F');
     file.add(initExitControl());
-    ret.add(file);
+    controlSet.add(file);
     final ControlSet view = new ControlSet("View", 'V');
     view.add(initRefreshControl());
     view.addSeparator();
     view.add(initAlwaysOnTopControl());
-    ret.add(view);
+    controlSet.add(view);
 
-    return ret;
+    return controlSet;
   }
 
   private Control initRefreshControl() {
-    final Control ret = ControlFactory.methodControl(model, "refresh", "Refresh");
-    ret.setMnemonic('R');
+    final Control control = ControlFactory.methodControl(model, "refresh", "Refresh");
+    control.setMnemonic('R');
 
-    return ret;
+    return control;
   }
 
   private Control initAlwaysOnTopControl() {
-    final Control ret =
+    final Control control =
             ControlFactory.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
-    ret.setMnemonic('A');
+    control.setMnemonic('A');
 
-    return ret;
+    return control;
   }
 
   private Control initExitControl() {

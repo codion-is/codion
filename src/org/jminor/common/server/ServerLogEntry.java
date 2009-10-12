@@ -50,18 +50,18 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
 
   @Override
   public String toString() {
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     if (exitTime > 0) {
-      ret.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
+      stringBuilder.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
-      ret.append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
+      stringBuilder.append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
     }
     else {
-      ret.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
+      stringBuilder.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   /**

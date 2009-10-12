@@ -64,7 +64,7 @@ public class PropertySummaryPanel extends JPanel {
   }
 
   private JPopupMenu createPopupMenu() {
-    final JPopupMenu ret = new JPopupMenu();
+    final JPopupMenu popupMenu = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
     for (final PropertySummaryModel.Summary summaryType : model.getSummaryTypes()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
@@ -79,9 +79,9 @@ public class PropertySummaryPanel extends JPanel {
       });
       item.setSelected(PropertySummaryPanel.this.getModel().getSummaryType() == summaryType);
       group.add(item);
-      ret.add(item);
+      popupMenu.add(item);
     }
 
-    return ret;
+    return popupMenu;
   }
 }

@@ -80,14 +80,14 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   @Override
   public String toString() {
-    final StringBuilder ret = new StringBuilder(getProperty().getPropertyID());
+    final StringBuilder stringBuilder = new StringBuilder(getProperty().getPropertyID());
     if (isSearchEnabled()) {
-      ret.append(getSearchType());
-      ret.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
-      ret.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
+      stringBuilder.append(getSearchType());
+      stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
+      stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   /**
@@ -121,26 +121,26 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   public PropertyCriteria getPropertyCriteria() {
-    final PropertyCriteria ret = getValueCount(getSearchType()) == 1 ?
+    final PropertyCriteria criteria = getValueCount(getSearchType()) == 1 ?
             new PropertyCriteria(getProperty(), getSearchType(), getUpperBound()) :
             new PropertyCriteria(getProperty(), getSearchType(), getLowerBound(), getUpperBound());
 
-    ret.setCaseSensitive(isCaseSensitive());
+    criteria.setCaseSensitive(isCaseSensitive());
 
-    return ret;
+    return criteria;
   }
 
   private String toString(final Object object) {
-    final StringBuilder ret = new StringBuilder(getSearchType().toString());
+    final StringBuilder stringBuilder = new StringBuilder(getSearchType().toString());
     if (object instanceof Collection)
       for (final Object obj : ((Collection) object))
-        ret.append(toString(obj));
+        stringBuilder.append(toString(obj));
     else if (object instanceof Entity)
-      ret.append(((Entity)object).getPrimaryKey().toString());
+      stringBuilder.append(((Entity)object).getPrimaryKey().toString());
     else
-      ret.append(object);
+      stringBuilder.append(object);
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   private void bindLookupModelEvents() {

@@ -80,11 +80,11 @@ public class TextInputPanel extends JPanel {
       }
     };
 
-    final JButton ret = new JButton(action);
-    ret.setFocusable(buttonFocusable);
+    final JButton button = new JButton(action);
+    button.setFocusable(buttonFocusable);
     if (buttonSize != null)
-      ret.setPreferredSize(buttonSize);
+      button.setPreferredSize(buttonSize);
 
-    return ret;
+    return button;
   }
 }

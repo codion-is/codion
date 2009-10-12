@@ -236,10 +236,10 @@ public class DateUtil {
    */
   public static String getDateMask(final SimpleDateFormat format) {
     final String datePattern = format.toPattern();
-    final StringBuilder ret = new StringBuilder(datePattern.length());
+    final StringBuilder stringBuilder = new StringBuilder(datePattern.length());
     for (final Character character : datePattern.toCharArray())
-      ret.append(Character.isLetter(character) ? "#" : character);
+      stringBuilder.append(Character.isLetter(character) ? "#" : character);
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 }

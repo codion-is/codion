@@ -85,15 +85,15 @@ public class Util {
     if (orig.length() == length)
       return orig;
 
-    final StringBuilder ret = new StringBuilder(orig);
-    while (ret.length() < length) {
+    final StringBuilder stringBuilder = new StringBuilder(orig);
+    while (stringBuilder.length() < length) {
       if (atFront)
-        ret.insert(0, padChar);
+        stringBuilder.insert(0, padChar);
       else
-        ret.append(padChar);
+        stringBuilder.append(padChar);
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   /**
@@ -116,19 +116,19 @@ public class Util {
   }
 
   public static Logger getLogger(final Class classToLog) {
-    final Logger ret = Logger.getLogger(classToLog);
-    ret.setLevel(getLoggingLevel());
-    loggers.add(ret);
+    final Logger logger = Logger.getLogger(classToLog);
+    logger.setLevel(getLoggingLevel());
+    loggers.add(logger);
 
-    return ret;
+    return logger;
   }
 
   public static Logger getLogger(final String name) {
-    final Logger ret = Logger.getLogger(name);
-    ret.setLevel(getLoggingLevel());
-    loggers.add(ret);
+    final Logger logger = Logger.getLogger(name);
+    logger.setLevel(getLoggingLevel());
+    loggers.add(logger);
 
-    return ret;
+    return logger;
   }
 
   public static Integer getInt(final String text) {
@@ -196,18 +196,18 @@ public class Util {
     if (items == null)
       return "";
 
-    final StringBuilder ret = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < items.length; i++) {
       final Object item = items[i];
       if (item instanceof Object[])
-        ret.append(getArrayContentsAsString((Object[]) item, onePerLine));
+        stringBuilder.append(getArrayContentsAsString((Object[]) item, onePerLine));
       else if (!onePerLine)
-        ret.append(item).append(i < items.length-1 ? ", " : "");
+        stringBuilder.append(item).append(i < items.length-1 ? ", " : "");
       else
-        ret.append(item).append("\n");
+        stringBuilder.append(item).append("\n");
     }
 
-    return ret.toString();
+    return stringBuilder.toString();
   }
 
   public static void printMemoryUsage(final long interval) {
@@ -345,9 +345,9 @@ public class Util {
   }
 
   public static String getVersion() {
-    final String ret = getVersionAndBuildNumber();
-    if (ret.toLowerCase().contains("build"))
-      return ret.substring(0, ret.toLowerCase().indexOf("build")-1);
+    final String versionString = getVersionAndBuildNumber();
+    if (versionString.toLowerCase().contains("build"))
+      return versionString.substring(0, versionString.toLowerCase().indexOf("build")-1);
 
     return "N/A";
   }

@@ -185,8 +185,8 @@ public class EntityLookupField extends JTextField {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final JPopupMenu ret = new JPopupMenu();
-    ret.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
+    final JPopupMenu popupMenu = new JPopupMenu();
+    popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.SETTINGS)) {
       public void actionPerformed(ActionEvent e) {
         final JPanel panel = new JPanel(new GridLayout(3,1,5,5));
         final JCheckBox boxCaseSensitive =
@@ -211,7 +211,7 @@ public class EntityLookupField extends JTextField {
       }
     });
 
-    return ret;
+    return popupMenu;
   }
 
   private void updateBackgroundColor() {

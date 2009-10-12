@@ -178,29 +178,15 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing the visible (non-hidden) properties
-   * in the entity identified by <code>entityID</code>
-   * @throws RuntimeException if no visible properties are defined for the given entity
-   */
-  public static Collection<Property> getVisibleProperties(final String entityID) {
-    if (!entityDefinitions.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
-
-    return entityDefinitions.get(entityID).getVisibleProperties();
-  }
-
-  /**
-   * @param entityID the entity ID
    * @return a list containing the visible (non-hidden) properties
    * in the entity identified by <code>entityID</code>
    * @throws RuntimeException if no visible properties are defined for the given entity
    */
-  public static List<Property> getVisiblePropertyList(final String entityID) {
-    final List<Property> ret = new ArrayList<Property>();
-    for (final Property property : getVisibleProperties(entityID))
-      ret.add(property);
+  public static List<Property> getVisibleProperties(final String entityID) {
+    if (!entityDefinitions.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
 
-    return ret;
+    return entityDefinitions.get(entityID).getVisibleProperties();
   }
 
   /**
@@ -210,11 +196,11 @@ public class EntityRepository {
    * @throws RuntimeException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
-    final Property ret = getProperties(entityID).get(propertyID);
-    if (ret == null)
+    final Property property = getProperties(entityID).get(propertyID);
+    if (property == null)
       throw new RuntimeException("Property '" + propertyID + "' not found in entity: " + entityID);
 
-    return ret;
+    return property;
   }
 
   /**
@@ -224,11 +210,11 @@ public class EntityRepository {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
-    final List<Property> ret = new ArrayList<Property>();
+    final List<Property> properties = new ArrayList<Property>();
     for (final String propertyID : propertyIDs)
-      ret.add(getProperty(entityID, propertyID));
+      properties.add(getProperty(entityID, propertyID));
 
-    return ret;
+    return properties;
   }
 
   /**
@@ -296,12 +282,12 @@ public class EntityRepository {
    * @return a List containing the properties, an empty list is returned in case no properties fit the criteria
    */
   public static List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
-    final List<Property.ForeignKeyProperty> ret = new ArrayList<Property.ForeignKeyProperty>();
+    final List<Property.ForeignKeyProperty> properties = new ArrayList<Property.ForeignKeyProperty>();
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
       if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID))
-        ret.add(foreignKeyProperty);
+        properties.add(foreignKeyProperty);
 
-    return ret;
+    return properties;
   }
 
   /**
@@ -372,6 +358,7 @@ public class EntityRepository {
   public static void add(EntityDefinition entityDefinition) {
     if (entityDefinitions.containsKey(entityDefinition.getEntityID()))
       throw new RuntimeException("Entity already added: " + entityDefinition.getEntityID());
+
     entityDefinitions.put(entityDefinition.getEntityID(), entityDefinition);
   }
 }

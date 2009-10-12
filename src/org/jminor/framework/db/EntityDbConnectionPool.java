@@ -167,27 +167,27 @@ public class EntityDbConnectionPool {
   }
 
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
-    final ConnectionPoolStatistics ret = new ConnectionPoolStatistics(user);
+    final ConnectionPoolStatistics statistics = new ConnectionPoolStatistics(user);
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
-        ret.setConnectionsInUse(connectionsInUse.size());
-        ret.setAvailableInPool(connectionPool.size());
+        statistics.setConnectionsInUse(connectionsInUse.size());
+        statistics.setAvailableInPool(connectionPool.size());
       }
     }
-    ret.setLiveConnectionCount(liveConnections);
-    ret.setConnectionsCreated(connectionsCreated);
-    ret.setConnectionsDestroyed(connectionsDestroyed);
-    ret.setCreationDate(creationDate);
-    ret.setConnectionRequests(connectionRequests);
-    ret.setConnectionRequestsDelayed(connectionRequestsDelayed);
-    ret.setRequestsDelayedPerSecond(requestsDelayedPerSecond);
-    ret.setRequestsPerSecond(requestsPerSecond);
-    ret.setResetDate(resetDate);
-    ret.setTimestamp(System.currentTimeMillis());
+    statistics.setLiveConnectionCount(liveConnections);
+    statistics.setConnectionsCreated(connectionsCreated);
+    statistics.setConnectionsDestroyed(connectionsDestroyed);
+    statistics.setCreationDate(creationDate);
+    statistics.setConnectionRequests(connectionRequests);
+    statistics.setConnectionRequestsDelayed(connectionRequestsDelayed);
+    statistics.setRequestsDelayedPerSecond(requestsDelayedPerSecond);
+    statistics.setRequestsPerSecond(requestsPerSecond);
+    statistics.setResetDate(resetDate);
+    statistics.setTimestamp(System.currentTimeMillis());
     if (since >= 0)
-      ret.setPoolStatistics(getPoolStatistics(since));
+      statistics.setPoolStatistics(getPoolStatistics(since));
 
-    return ret;
+    return statistics;
   }
 
   /**
@@ -195,17 +195,17 @@ public class EntityDbConnectionPool {
    * @return stats collected since <code>since</code>, the results are not garanteed to be ordered
    */
   public List<ConnectionPoolState> getPoolStatistics(final long since) {
-    final List<ConnectionPoolState> ret = new ArrayList<ConnectionPoolState>();
+    final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
     synchronized (connectionPoolStatistics) {
       final ListIterator<ConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
         if (state.time > since)
-          ret.add(state);
+          poolStates.add(state);
       }
     }
 
-    return ret;
+    return poolStates;
   }
 
   public void resetPoolStatistics() {
@@ -221,11 +221,11 @@ public class EntityDbConnectionPool {
       synchronized (connectionsInUse) {
         final int connectionsInPool = connectionPool.size();
         addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
-        final EntityDbConnection ret = connectionsInPool > 0 ? connectionPool.pop() : null;
-        if (ret != null)
-          connectionsInUse.add(ret);
+        final EntityDbConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
+        if (dbConnection != null)
+          connectionsInUse.add(dbConnection);
 
-        return ret;
+        return dbConnection;
       }
     }
   }
