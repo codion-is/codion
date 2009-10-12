@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
@@ -11,7 +10,7 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.db.provider.EntityDbLocalProvider;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
@@ -33,8 +32,7 @@ public class EntityPropertyLinkTest extends TestCase {
   private EntityEditModel model;
 
   public EntityPropertyLinkTest() {
-    new EmpDept();
-    model = new EmployeeModel(new EntityDbLocalProvider(new User("scott", "tiger"))).getEditModel();
+    model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
   public void testIntegerPropertyLink() {

@@ -4,6 +4,10 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.User;
+import org.jminor.framework.db.provider.EntityDbProvider;
+import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTest;
 import org.jminor.framework.domain.EntityTestDomain;
@@ -19,6 +23,13 @@ import java.util.Date;
  * Time: 21:02:43
  */
 public class EntityDbConnectionTest extends TestCase {
+
+  public static final EntityDbProvider dbProvider =
+          EntityDbProviderFactory.createEntityDbProvider(new User("scott", "tiger"), "JMinor Unit Tests");
+
+  static {
+    new EmpDept();
+  }
 
   public EntityDbConnectionTest() {
     new EntityTestDomain();

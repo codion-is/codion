@@ -1,8 +1,7 @@
 package org.jminor.framework.client.model.combobox;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
-import org.jminor.framework.db.provider.EntityDbLocalProvider;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
@@ -22,7 +21,7 @@ public class PropertyComboBoxModelTest extends TestCase {
     new EmpDept();
     comboBoxModel = new PropertyComboBoxModel(EmpDept.T_DEPARTMENT,
             EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME),
-            new EntityDbLocalProvider(new User("scott", "tiger")), null, refreshEvent);
+            EntityDbConnectionTest.dbProvider, null, refreshEvent);
   }
 
   public void test() {

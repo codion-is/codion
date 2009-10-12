@@ -72,7 +72,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private Timer connectionMaintenanceTimer;
   private int checkMaintenanceInterval = 30; //seconds
-  private int connectionTimeout = 120000;
+  private int connectionTimeout = 120; //seconds
 
   /**
    * Constructs a new EntityDbRemoteServer and binds it to the given registry
@@ -254,7 +254,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       for (final ClientInfo client : clients) {
         final EntityDbRemoteAdapter adapter = connections.get(client);
         if (inactiveOnly) {
-          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout()))
+          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout()*1000))
             adapter.disconnect();
         }
         else

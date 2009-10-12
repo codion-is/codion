@@ -815,7 +815,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes the JTable instance
    * @param rowColoring if true then the JTable should paint each row according to the underlying entity
    * @return the JTable instance
-   * @see Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity) 
    */
   protected JTable initializeJTable(final boolean rowColoring) {
     final JTable table = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),

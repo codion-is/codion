@@ -3,11 +3,9 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.PropertyCriteria;
-import org.jminor.framework.db.provider.EntityDbLocalProvider;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -20,7 +18,6 @@ import java.util.List;
 
 public class EntityLookupModelTest extends TestCase {
 
-  private EntityDbProvider dbProvider;
   private EntityLookupModel lookupModel;
 
   public void testLookupModel() throws Exception {
@@ -93,20 +90,18 @@ public class EntityLookupModelTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    new EmpDept();
-    dbProvider = new EntityDbLocalProvider(new User("scott", "tiger"));
-    lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, dbProvider,
+    lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider,
             Arrays.asList(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
 
+    EntityDbConnectionTest.dbProvider.getEntityDb().beginTransaction();
     setupData();
   }
 
   @Override
   protected void tearDown() throws Exception {
     super.tearDown();
-    dbProvider.getEntityDb().endTransaction(false);
-    dbProvider.getEntityDb().disconnect();
+    EntityDbConnectionTest.dbProvider.getEntityDb().endTransaction(false);
   }
 
   private boolean contains(final List<Entity> result, final String employeeName) {
@@ -156,7 +151,6 @@ public class EntityLookupModelTest extends TestCase {
     emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
     emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    dbProvider.getEntityDb().beginTransaction();
-    dbProvider.getEntityDb().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
+    EntityDbConnectionTest.dbProvider.getEntityDb().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }
 }

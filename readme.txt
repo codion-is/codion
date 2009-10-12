@@ -49,14 +49,14 @@ The "dist" directory contains the following distinct jar files for use in applic
 - Full client codebase, including both local and remote connection facilities
 - Dependencies: jminor-common
 
-* "jminor-client-remote (~380 KB)
+* "jminor-client-remote (~390 KB)
 - Client codebase including only remote connection facilities
 - Dependencies: jminor-common
 
 * "jminor-common" (~230 KB)
 - Common codebase
 
-* "jminor-demos.jar" (~75 KB)
+* "jminor-demos.jar" (~70 KB)
 - Three demo applications
 - Dependencies: jminor-client, jminor-common
 
@@ -64,9 +64,12 @@ The "dist" directory contains the following distinct jar files for use in applic
 - RMI server codebase
 - Dependencies: jminor-common
 
-* "jminor_server_monitor" (~70 KB)
+* "jminor_server_monitor" (~60 KB)
 - RMI server monitor codebase
 - Dependencies: jminor-common
+
+* "jminor-api-doc" (~1.7 MB)
+- API documentation
 
 
 4. GETTING STARTED

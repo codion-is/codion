@@ -3,13 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
-import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -25,10 +23,6 @@ public class EntityModelTest extends TestCase {
 
   private EmployeeModel employeeModel;
   private DepartmentModel departmentModel;
-
-  static {
-    new EmpDept();
-  }
 
   public void testDetailModel() throws Exception {
     assertTrue("DepartmentModel should contain EmployeeModel detail", departmentModel.containsDetailModel(EmployeeModel.class));
@@ -101,15 +95,8 @@ public class EntityModelTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    final EntityDbProvider dbProvider = EntityDbProviderFactory.createEntityDbProvider(
-          new User("scott", "tiger"), "EntityModelTest");
-    departmentModel = new DepartmentModel(dbProvider);
+    departmentModel = new DepartmentModel(EntityDbConnectionTest.dbProvider);
     employeeModel = (EmployeeModel) departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    departmentModel.getDbProvider().disconnect();
   }
 
   private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {

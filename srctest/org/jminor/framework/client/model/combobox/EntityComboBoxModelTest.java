@@ -1,7 +1,6 @@
 package org.jminor.framework.client.model.combobox;
 
-import org.jminor.common.db.User;
-import org.jminor.framework.db.provider.EntityDbLocalProvider;
+import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import junit.framework.TestCase;
@@ -17,7 +16,7 @@ public class EntityComboBoxModelTest extends TestCase {
 
   public EntityComboBoxModelTest() {
     new EmpDept();
-    comboBoxModel = new EntityComboBoxModel(EmpDept.T_DEPARTMENT, new EntityDbLocalProvider(new User("scott", "tiger")));
+    comboBoxModel = new EntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityDbConnectionTest.dbProvider);
   }
 
   public void test() {

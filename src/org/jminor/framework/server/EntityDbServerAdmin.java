@@ -156,6 +156,20 @@ public interface EntityDbServerAdmin extends Remote {
    */
   public Collection<ClientInfo> getClients(final User user) throws RemoteException;
 
+  /**
+   * Returns the connection timeout in seconds
+   * @return the connection timeout in seconds
+   * @throws RemoteException in case of a communication error
+   */
+  public int getConnectionTimeout() throws RemoteException;
+
+  /**
+   * Sets the connection timeout in seconds
+   * @param timeout the timeout in seconds
+   * @throws RemoteException in case of a communication error
+   */
+  public void setConnectionTimeout(final int timeout) throws RemoteException;
+
   public Collection<String> getClientTypes() throws RemoteException;
 
   public List<ConnectionPoolSettings> getActiveConnectionPools() throws RemoteException;
@@ -181,8 +195,4 @@ public interface EntityDbServerAdmin extends Remote {
   public void resetConnectionPoolStatistics(final User user) throws RemoteException;
 
   public String getSystemProperties() throws RemoteException;
-
-  public int getConnectionTimeout() throws RemoteException;
-
-  public void setConnectionTimeout(final int timeout) throws RemoteException;
 }
