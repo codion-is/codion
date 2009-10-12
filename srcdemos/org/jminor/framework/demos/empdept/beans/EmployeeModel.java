@@ -9,6 +9,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -49,12 +50,13 @@ public class EmployeeModel extends EntityModel {
       }
 
       @Override
-      public boolean isValid(final Property property) {
+      public void validate(final Property property, final Object value) throws ValidationException {
         if (property.getPropertyID().equals(EmpDept.EMPLOYEE_SALARY)) {
-          final Double salary = (Double) getValue(EmpDept.EMPLOYEE_SALARY);
-          return salary != null && (salary >= 1000 && salary <= 10000);
+          final Double salary = (Double) value;
+          if (salary != null && (salary < 1000 || salary > 10000))
+            throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_SALARY_DESCRIPTION));
         }
-        return super.isValid(property);
+        super.validate(property, value);
       }
     };
   }

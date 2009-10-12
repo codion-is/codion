@@ -18,7 +18,6 @@ import org.apache.log4j.Level;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
@@ -30,7 +29,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   @Override
   protected void configureApplication() {
-    Locale.setDefault(new Locale("en"));
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     Util.setLoggingLevel(Level.DEBUG);

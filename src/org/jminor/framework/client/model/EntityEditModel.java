@@ -8,10 +8,12 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
+import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
@@ -172,12 +174,36 @@ public class EntityEditModel {
   }
 
   /**
-   * Returns true if the value of the given property is valid, the default implementation simply returns true
+   * Returns true if the given value is valid for the given property,
    * @param property the property
-   * @return true if the value of the given property is valid
+   * @param value the value
+   * @return true if the value is valid
    */
-  public boolean isValid(final Property property) {
-    return property.isNullable() || !isValueNull(property.getPropertyID());
+  public final boolean isValid(final Property property, final Object value) {
+    try {
+      validate(property, value);
+      return true;
+    }
+    catch (ValidationException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Checks if the given value is valid for the given property, throws a ValidationException if not,
+   * this default implementation performs a null value validation if the corresponding configuration parameter is set
+   * @param property the property
+   * @param value the value
+   * @throws ValidationException if the given value is not valid for the given property
+   * @see Property#setNullable(boolean)
+   * @see Configuration#PERFORM_NULL_VALIDATION
+   */
+  public void validate(final Property property, final Object value) throws ValidationException {
+    if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
+      if (!property.isNullable() && Entity.isValueNull(property.getPropertyType(), value))
+        throw new ValidationException(property, value,
+                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+    }
   }
 
   /**

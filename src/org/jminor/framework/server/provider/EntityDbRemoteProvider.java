@@ -66,7 +66,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private void initializeEntityDb() {
     try {
       if (entityDb == null || !connectionValid())
-        entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.getRepository());
+        entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.getEntityDefinitions());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

@@ -848,3 +848,6 @@
   EntityModel.validateEntities() performs null validation if Configuration.PERFORM_NULL_VALIDATION is true
   EntityDefinition refactored, all Collection fields made unmodifiable
   Cryptic ret return parameter name replaced throughout
+  EntityEditModel validation refactored, isValid() is now final, validate(property,value) throws ValidationException added
+  EntityModel.validateEntities() now calls EntityEditModel.validate
+  TextPropertyLink now uses the improved validation mechanism in EntityEditModel and adds the validation message to the component tooltip 

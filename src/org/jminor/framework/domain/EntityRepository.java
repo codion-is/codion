@@ -327,18 +327,11 @@ public class EntityRepository {
     return entityDefinitions.get(entityID).getIdValueSource();
   }
 
-  /**
-   * @return the IDs of all the entities defined in this repository
-   */
-  public static Collection<String> getEntityIDs() {
+  public static Collection<String> getDefinedEntities() {
     return entityDefinitions.keySet();
   }
 
-  public static String[] getDefinedEntities() {
-    return entityDefinitions.keySet().toArray(new String[entityDefinitions.keySet().size()]);
-  }
-
-  public static Map<String, EntityDefinition> getRepository() {
+  public static Map<String, EntityDefinition> getEntityDefinitions() {
     return entityDefinitions;
   }
 

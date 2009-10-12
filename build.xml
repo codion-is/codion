@@ -145,7 +145,8 @@
                 org/jminor/framework/db/**,
                 org/jminor/framework/domain/*,
                 org/jminor/framework/server/*.class"
-         excludes="org/jminor/framework/server/*Stub.class"/>
+         excludes="org/jminor/framework/server/*Stub.class,
+                org/jminor/framework/server/*Skel.class"/>
 
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"

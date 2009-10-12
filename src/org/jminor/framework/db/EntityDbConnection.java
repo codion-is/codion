@@ -200,7 +200,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
               criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
 
-      final List<Entity> result = (List<Entity>) query(sql, getResultPacker(criteria.getEntityID()), criteria.getFetchCount());
+      final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
       if (!lastQueryResultCached())
         setForeignKeyValues(result);
@@ -225,7 +225,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
-      return query(sql, getResultPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
+      return query(sql, getPropertyResultPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, sql);
@@ -513,7 +513,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  private EntityResultPacker getResultPacker(final String entityID) {
+  private EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null)
       entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
@@ -521,7 +521,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return packer;
   }
 
-  private ResultPacker getResultPacker(final Type propertyType) {
+  private ResultPacker getPropertyResultPacker(final Type propertyType) {
     ResultPacker packer = propertyResultPackers.get(propertyType);
     if (packer == null) {
       propertyResultPackers.put(propertyType, packer = new ResultPacker() {
@@ -549,7 +549,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private Set<Dependency> resolveEntityDependencies(final String entityID) {
-    final String[] entityIDs = EntityRepository.getDefinedEntities();
+    final Collection<String> entityIDs = EntityRepository.getDefinedEntities();
     final Set<Dependency> dependencies = new HashSet<Dependency>();
     for (final String entityIDToCheck : entityIDs) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityIDToCheck))

@@ -83,7 +83,7 @@ public class EmpDept {
             new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB))
                     .setMaxLength(9),
             new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY))
-                    .setNullable(false).setDescription(getString(EMPLOYEE_SALARY_DESCRIPTION)),
+                    .setNullable(false),
             new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION)),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),

@@ -58,33 +58,21 @@ public class EntityDefinition implements Serializable {
    */
   private List<String> searchPropertyIDs;
 
-  private final List<Property.PrimaryKeyProperty> primaryKeyProperties;
-  private final List<Property.ForeignKeyProperty> foreignKeyProperties;
-
-  private final List<Property> visibleProperties;
-  private final List<Property> databaseProperties;
-
-  private final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
-
-  private final String selectColumnsString;
+  private transient List<Property.PrimaryKeyProperty> primaryKeyProperties;
+  private transient List<Property.ForeignKeyProperty> foreignKeyProperties;
+  private transient List<Property> visibleProperties;
+  private transient List<Property> databaseProperties;
+  private transient Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
+  private transient String selectColumnsString;
 
   public EntityDefinition(final String entityID, final Property... propertyDefinitions) {
     this.entityID = entityID;
     this.tableName = entityID;
     this.selectTableName = entityID;
-
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
-    this.visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
-    this.databaseProperties = Collections.unmodifiableList(getDatabaseProperties(properties.values()));
-    this.foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
-    this.primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
-    this.denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-
-    final String[] selectColumnNames = initSelectColumnNames(this.databaseProperties);
+    final String[] selectColumnNames = initSelectColumnNames(getDatabaseProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++)
       properties.get(selectColumnNames[idx]).setSelectIndex(idx+1);
-
-    this.selectColumnsString = initSelectColumnsString(this.databaseProperties);
   }
 
   public String getEntityID() {
@@ -166,39 +154,53 @@ public class EntityDefinition implements Serializable {
     return this;
   }
 
-  public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
-    return primaryKeyProperties;
-  }
-
-  public String getSelectColumnsString() {
-    return selectColumnsString;
-  }
-
   public Map<String, Property> getProperties() {
     return properties;
   }
 
+  public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
+    if (primaryKeyProperties == null)
+      primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
+    return primaryKeyProperties;
+  }
+
+  public String getSelectColumnsString() {
+    if (selectColumnsString == null)
+      selectColumnsString = initSelectColumnsString(getDatabaseProperties());
+    return selectColumnsString;
+  }
+
   public List<Property> getVisibleProperties() {
+    if (visibleProperties == null)
+      visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
     return visibleProperties;
   }
 
   public List<Property> getDatabaseProperties() {
+    if (databaseProperties == null)
+      databaseProperties = Collections.unmodifiableList(getDatabaseProperties(properties.values()));
     return databaseProperties;
   }
 
   public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
+    if (foreignKeyProperties == null)
+      foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
     return foreignKeyProperties;
   }
 
   public boolean hasDenormalizedProperties() {
+    if (denormalizedProperties == null)
+      denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
     return denormalizedProperties.size() > 0;
   }
 
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String propertyOwnerEntityID) {
+    if (denormalizedProperties == null)
+      denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
     return denormalizedProperties.get(propertyOwnerEntityID);
   }
 
-  private Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
+  private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
     final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {
       if (properties.containsKey(property.getPropertyID()))
@@ -221,7 +223,7 @@ public class EntityDefinition implements Serializable {
     return properties;
   }
 
-  private Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
+  private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
     final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.DenormalizedProperty) {
@@ -236,7 +238,7 @@ public class EntityDefinition implements Serializable {
     return denormalizedProperties;
   }
 
-  private List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
+  private static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
     final List<Property.PrimaryKeyProperty> primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
     for (final Property property : properties)
       if (property instanceof Property.PrimaryKeyProperty)
@@ -245,7 +247,7 @@ public class EntityDefinition implements Serializable {
     return primaryKeyProperties;
   }
 
-  private List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
+  private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<Property.ForeignKeyProperty>(properties.size());
     for (final Property property : properties)
       if (property instanceof Property.ForeignKeyProperty)
@@ -254,7 +256,7 @@ public class EntityDefinition implements Serializable {
     return foreignKeyProperties;
   }
 
-  private List<Property> getDatabaseProperties(final Collection<Property> properties) {
+  private static List<Property> getDatabaseProperties(final Collection<Property> properties) {
     final List<Property> databaseProperties = new ArrayList<Property>(properties.size());
     for (final Property property : properties)
       if (property.isDatabaseProperty())
@@ -263,7 +265,7 @@ public class EntityDefinition implements Serializable {
     return databaseProperties;
   }
 
-  private List<Property> getVisibleProperties(final Collection<Property> properties) {
+  private static List<Property> getVisibleProperties(final Collection<Property> properties) {
     final List<Property> visibleProperties = new ArrayList<Property>(properties.size());
     for (final Property property : properties)
       if (!property.isHidden())

@@ -23,7 +23,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -755,24 +754,20 @@ public class EntityModel implements Refreshable {
   protected void initializeAssociatedModels() {}
 
   /**
-   * Validates the given Entity objects, this default implementation performs a null value validation
-   * if the corresponding configuration parameter is set
+   * Validates the given Entity objects.
+   * The default implementation forwards the validation to the underlying EntityEditModel
    * @param entities the entities to validate
    * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
    * @throws ValidationException in case the validation fails
-   * @see Property#setNullable(boolean)
-   * @see Configuration#PERFORM_NULL_VALIDATION
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object)
    * @see #INSERT
    * @see #UPDATE
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
-    if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
-      for (final Entity entity : entities) {
-        for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-          if (!property.isNullable() && entity.isValueNull(property.getPropertyID()))
-            throw new ValidationException(FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-        }
+    for (final Entity entity : entities) {
+      for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
+        getEditModel().validate(property, entity.getValue(property));
       }
     }
   }
