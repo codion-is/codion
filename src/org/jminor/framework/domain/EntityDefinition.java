@@ -194,11 +194,11 @@ public class EntityDefinition implements Serializable {
   }
 
   public boolean hasDenormalizedProperties() {
-    return denormalizedProperties.size() > 0 && denormalizedProperties.containsKey(entityID);
+    return denormalizedProperties.size() > 0;
   }
 
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String propertyOwnerEntityID) {
-    return denormalizedProperties != null ? denormalizedProperties.get(propertyOwnerEntityID) : null;
+    return denormalizedProperties.get(propertyOwnerEntityID);
   }
 
   private void initialize() {

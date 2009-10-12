@@ -840,3 +840,6 @@
   Unit tests relying on a database connection now use a centrally initialized EntityDbProvider in EntityDbConnectionTest
   EntityDbRemoteServer.connectionTimeout field now represents seconds instead of milliseconds
   EntityTestUnit EntityDbProvider field replaced with a EntityDb field
+  EntityDefinition, fixed bug preventing DenormalizedProperty from working
+  Entity.hasDenormalizedProperties field removed
+  State.StateGroup, now all other states are deactivated if an active state is added to the group, added a synchronized block in the add method

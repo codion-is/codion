@@ -60,12 +60,6 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private transient String toString;
 
   /**
-   * Used to cache this frequently referenced attribute
-   * may not be necessary, performance wise
-   */
-  private transient boolean hasDenormalizedProperties;
-
-  /**
    * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
   private transient Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
@@ -89,7 +83,6 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
-    this.hasDenormalizedProperties = EntityRepository.hasDenormalizedProperties(getEntityID());
   }
 
   /**
@@ -690,7 +683,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
     referencedPrimaryKeysCache = null;
     setForeignKeyValues(foreignKeyProperty, newValue);
-    if (hasDenormalizedProperties) {
+    if (EntityRepository.hasDenormalizedProperties(getEntityID())) {
       final Collection<Property.DenormalizedProperty> denormalizedProperties =
               EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
       setDenormalizedValues(foreignKeyProperty, newValue, denormalizedProperties);

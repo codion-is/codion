@@ -152,11 +152,13 @@ public class State {
    * them from being garbage collected.
    */
   public static class StateGroup {
-    final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
+
+    private final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
 
     /**
      * Adds a state to this state group via a WeakReference,
      * so it does not prevent it from being garbage collected.
+     * Adding an active state deactivates all other states in the group.
      * @param state the State to add
      */
     public void addState(final State state) {
@@ -164,20 +166,27 @@ public class State {
         if (reference.get() == state)
           return;//no duplicate states
 
+      synchronized (members) {
+        members.add(new WeakReference<State>(state));
+      }
+      updateAccordingToState(state);
       state.evtStateChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          synchronized (members) {
-            for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
-              final State referredState = iterator.next().get();
-              if (referredState == null) //remove this dead weak reference
-                iterator.remove();
-              else if (state.isActive() && referredState != state)
-                referredState.setActive(false);
-            }
-          }
+          updateAccordingToState(state);
         }
       });
-      members.add(new WeakReference<State>(state));
+    }
+
+    private void updateAccordingToState(final State state) {
+      synchronized (members) {
+        for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
+          final State referredState = iterator.next().get();
+          if (referredState == null) //remove this dead weak reference
+            iterator.remove();
+          else if (state.isActive() && referredState != state)
+            referredState.setActive(false);
+        }
+      }
     }
   }
 }
