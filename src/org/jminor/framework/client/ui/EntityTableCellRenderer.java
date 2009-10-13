@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.formats.DefaultDateFormat;
+import org.jminor.common.model.formats.DefaultTimestampFormat;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.Type;
@@ -117,7 +119,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class DateRenderer extends DefaultTableCellRenderer {
-    private final SimpleDateFormat format = Configuration.getDefaultDateFormat();
+    private final SimpleDateFormat format = new DefaultDateFormat();
 
     public DateRenderer() {
       super();
@@ -138,7 +140,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class TimestampRenderer extends DefaultTableCellRenderer {
-    private final SimpleDateFormat format = Configuration.getDefaultTimestampFormat();
+    private final SimpleDateFormat format = new DefaultTimestampFormat();
 
     public TimestampRenderer() {
       super();

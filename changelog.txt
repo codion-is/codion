@@ -855,3 +855,5 @@
   AbstractEntityPropertyLink.getValidationMessage() added
   EntityEditModel.getEntityComboBoxModel() and getPropertyComboBoxModel() now throw RuntimeException when no comboboxmodels have been initialized
   EntityComboBoxModel and PropertyComboBoxModel moved from model.combobox to model
+  Configuration.getDefaultDateFormat() and getDefaultTimestampFormat() removed
+  DefaultDateFormat and DefaultTimestampFormat added to common.model.formats

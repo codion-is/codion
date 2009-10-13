@@ -8,7 +8,6 @@ import org.jminor.common.model.Util;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import java.awt.Color;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -372,22 +371,6 @@ public class Configuration {
 
   public static Object getValue(final String key) {
     return settings.get(key);
-  }
-
-  /**
-   * @return the default format to use when presenting and parsing dates
-   * @see #DEFAULT_DATE_FORMAT
-   */
-  public static SimpleDateFormat getDefaultDateFormat() {
-    return new SimpleDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
-  }
-
-  /**
-   * @return the default format to use when presenting and parsing timestamps
-   * @see #DEFAULT_TIMESTAMP_FORMAT
-   */
-  public static SimpleDateFormat getDefaultTimestampFormat() {
-    return new SimpleDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
   }
 
   /**
