@@ -621,7 +621,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * @param proxy sets the default EntityProxy instance used if no entity specific one is specified
+   * @param proxy sets the default Entity.Proxy instance used if no entity specific one is specified
    */
   public static void setDefaultProxy(final Proxy proxy) {
     defaultProxy = proxy;

@@ -523,7 +523,7 @@ public class Property implements Serializable {
 
   /**
    * A property that does not map to an underlying database column, the value must
-   * be provided by a EntityProxy, by overriding it's getValue() method
+   * be provided by a Entity.Proxy, by overriding it's getValue() method
    * @see Entity#setDefaultProxy(org.jminor.framework.domain.Entity.Proxy)
    * @see Entity#setProxy(String, org.jminor.framework.domain.Entity.Proxy)
    * @see org.jminor.framework.domain.Entity.Proxy#getValue(Entity, Property)
