@@ -850,4 +850,6 @@
   Cryptic ret return parameter name replaced throughout
   EntityEditModel validation refactored, isValid() is now final, validate(property,value) throws ValidationException added
   EntityModel.validateEntities() now calls EntityEditModel.validate
-  TextPropertyLink now uses the improved validation mechanism in EntityEditModel and adds the validation message to the component tooltip 
+  TextPropertyLink now uses the improved validation mechanism in EntityEditModel and adds the validation message to the component tooltip
+  TextPropertyLink and FormattedTextPropertyLink refactored a bit, added toolTip functionality to the formatted one
+  AbstractEntityPropertyLink.getValidationMessage() added

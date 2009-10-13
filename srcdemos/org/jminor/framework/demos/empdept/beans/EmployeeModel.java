@@ -35,7 +35,7 @@ public class EmployeeModel extends EntityModel {
     return new EntityEditModel(getEntityID(), getDbProvider(), evtEntitiesChanged) {
       @Override
       public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
-        if (property.getPropertyID().equals(EmpDept.EMPLOYEE_MGR_FK)) {
+        if (property.is(EmpDept.EMPLOYEE_MGR_FK)) {
           final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
                   getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
           //Only show the president and managers
@@ -51,10 +51,15 @@ public class EmployeeModel extends EntityModel {
 
       @Override
       public void validate(final Property property, final Object value) throws ValidationException {
-        if (property.getPropertyID().equals(EmpDept.EMPLOYEE_SALARY)) {
+        if (property.is(EmpDept.EMPLOYEE_SALARY)) {
           final Double salary = (Double) value;
           if (salary != null && (salary < 1000 || salary > 10000))
-            throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_SALARY_DESCRIPTION));
+            throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_SALARY_VALIDATION));
+        }
+        if (property.is(EmpDept.EMPLOYEE_COMMISSION)) {
+          final Double commission = (Double) value;
+          if (commission != null && (commission < 100 || commission > 2000))
+            throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_COMMISSION_VALIDATION));
         }
         super.validate(property, value);
       }

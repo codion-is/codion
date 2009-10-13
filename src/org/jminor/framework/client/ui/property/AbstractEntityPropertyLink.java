@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.ui.control.AbstractPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -53,6 +54,22 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
    */
   protected Property getProperty() {
     return property;
+  }
+
+  /**
+   * If the current value is invalid this method should return a string describing the nature of
+   * the invalidity, if the value is valid this method should return null
+   * @param editModel the underlying EntityEditModel
+   * @return a validation string if the value is invalid, null otherwise
+   */
+  protected String getValidationMessage(final EntityEditModel editModel) {
+    try {
+      editModel.validate(getProperty(), editModel.getValue(getProperty()));
+      return null;
+    }
+    catch (ValidationException e) {
+      return e.getMessage();
+    }
   }
 
   /**

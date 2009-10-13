@@ -298,7 +298,7 @@ public class EntityRepository {
    */
   public static Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID))
-      if (foreignKeyProperty.getPropertyID().equals(propertyID))
+      if (foreignKeyProperty.is(propertyID))
         return foreignKeyProperty;
 
     throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);

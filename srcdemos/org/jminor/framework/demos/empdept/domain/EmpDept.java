@@ -24,7 +24,8 @@ public class EmpDept {
 
   /**Used for i18n*/
   public static final String NONE = "none";
-  public static final String EMPLOYEE_SALARY_DESCRIPTION = "employee_salary_description";
+  public static final String EMPLOYEE_SALARY_VALIDATION = "employee_salary_validation";
+  public static final String EMPLOYEE_COMMISSION_VALIDATION = "employee_commission_validation";
 
   /**Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "scott.dept";

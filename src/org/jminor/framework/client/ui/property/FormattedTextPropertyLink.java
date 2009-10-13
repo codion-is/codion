@@ -85,34 +85,35 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
   }
 
   @Override
-  protected void addValidator(final JTextComponent textField, final EntityEditModel editModel) {
-    addColorUpdating(textField, editModel, textField.getText());
-  }
-
-  private void addColorUpdating(final JTextComponent textComponent, final EntityEditModel editModel,
-                                final String maskString) {
+  protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
     final Color defaultTextFieldBackground = textComponent.getBackground();
     final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
+    final String defaultToolTip = textComponent.getToolTipText();
+    final String maskString = textComponent.getText();
     textComponent.getDocument().addDocumentListener(new DocumentListener() {
       public void insertUpdate(final DocumentEvent e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
+        updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
       }
       public void removeUpdate(final DocumentEvent e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
+        updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
       }
       public void changedUpdate(final DocumentEvent e) {}
     });
     editModel.getPropertyChangeEvent(getProperty()).addListener(new Property.Listener() {
       @Override
       protected void propertyChanged(final Property.Event e) {
-        updateFieldColor(textComponent, maskString, defaultTextFieldBackground, invalidBackgroundColor);
+        updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
       }
     });
   }
 
-  private void updateFieldColor(final JTextComponent textComponent, final String maskString,
-                                final Color validBackground, final Color invalidBackground) {
-    final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && getProperty().isNullable());//todo use isNullable
+  private void updateValidityInfo(final JTextComponent textComponent, final EntityEditModel editModel,
+                                  final String maskString, final Color validBackground, final Color invalidBackground,
+                                  final String defaultToolTip) {
+    final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && getProperty().isNullable());
+    final String validationMessage = getValidationMessage(editModel);
     textComponent.setBackground(validInput ? validBackground : invalidBackground);
+    textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
+            (defaultToolTip != null && defaultToolTip.length() > 0 ? defaultToolTip + ": " : "") + validationMessage);
   }
 }

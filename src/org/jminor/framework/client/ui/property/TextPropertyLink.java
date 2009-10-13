@@ -6,7 +6,6 @@ package org.jminor.framework.client.ui.property;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -156,31 +155,21 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
     final Color validBackgroundColor = textComponent.getBackground();
     final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
-    final String defaultTooltTipText = textComponent.getToolTipText() == null ? "" : textComponent.getToolTipText();
-    updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultTooltTipText);
+    final String defaultTooltTip = textComponent.getToolTipText();
+    updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultTooltTip);
     editModel.getPropertyChangeEvent(getProperty()).addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultTooltTipText);
+        updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultTooltTip);
       }
     });
   }
 
   private void updateValidityInfo(final JTextComponent textComponent, final EntityEditModel editModel,
                                   final Color validBackgroundColor, final Color invalidBackgroundColor,
-                                  final String defaultToolTipText) {
-    final String validMessage = getValidationMessage(editModel);
-    textComponent.setBackground(validMessage == null ? validBackgroundColor : invalidBackgroundColor);
-    textComponent.setToolTipText(validMessage == null ? defaultToolTipText : defaultToolTipText
-            + (defaultToolTipText.length() > 0 ? ": " : "") + validMessage);
-  }
-
-  private String getValidationMessage(final EntityEditModel editModel) {
-    try {
-      editModel.validate(getProperty(), editModel.getValue(getProperty()));
-      return null;
-    }
-    catch (ValidationException e) {
-      return e.getMessage();
-    }
+                                  final String defaultToolTip) {
+    final String validationMessage = getValidationMessage(editModel);
+    textComponent.setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
+    textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
+            (defaultToolTip != null && defaultToolTip.length() > 0 ? defaultToolTip + ": " : "") + validationMessage);
   }
 }

@@ -177,7 +177,7 @@ public class EntityTableSearchModel {
    */
   public PropertySearchModel getPropertySearchModel(final String propertyID) {
     for (final PropertySearchModel searchModel : propertySearchModels)
-      if (searchModel.getProperty().getPropertyID().equals(propertyID))
+      if (searchModel.getProperty().is(propertyID))
         return searchModel;
 
     return null;

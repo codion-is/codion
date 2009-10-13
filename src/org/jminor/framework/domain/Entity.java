@@ -880,7 +880,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
      */
     public Property.PrimaryKeyProperty getProperty(final String propertyID) {
       for (final Property.PrimaryKeyProperty property : getProperties())
-        if (property.getPropertyID().equals(propertyID))
+        if (property.is(propertyID))
           return property;
 
       return null;
@@ -914,7 +914,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
      */
     public boolean containsProperty(final String propertyID) {
       for (final Property.PrimaryKeyProperty property : getProperties())
-        if (property.getPropertyID().equals(propertyID))
+        if (property.is(propertyID))
           return true;
 
       return false;

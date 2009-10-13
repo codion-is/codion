@@ -303,7 +303,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     int idx = 0;
     int columnIndex = -1;
     for (final Property property : EntityRepository.getVisibleProperties(getEntityID())) {
-      if (property.getPropertyID().equals(propertyID)) {
+      if (property.is(propertyID)) {
         columnIndex = idx;
         break;
       }
