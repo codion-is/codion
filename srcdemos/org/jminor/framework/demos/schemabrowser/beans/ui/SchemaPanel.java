@@ -19,25 +19,21 @@ public class SchemaPanel extends EntityPanel {
     super(model, "Schema Users", true, false);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(DbObjectModel.class, DbObjectPanel.class));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected double getDetailSplitPaneResizeWeight() {
     return 0.3;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;

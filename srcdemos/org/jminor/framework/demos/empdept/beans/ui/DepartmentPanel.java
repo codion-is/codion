@@ -53,13 +53,11 @@ public class DepartmentPanel extends EntityPanel {
     return controlSet;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

@@ -33,7 +33,6 @@ public class PetstoreAppModel extends EntityApplicationModel {
     return Arrays.asList(new CategoryModel(dbProvider));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void loadDomainModel() {
     new Petstore();

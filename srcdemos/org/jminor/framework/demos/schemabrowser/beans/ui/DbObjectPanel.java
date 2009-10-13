@@ -21,13 +21,11 @@ public class DbObjectPanel extends EntityPanel {
     super(model, "Tables", false, false, false, EMBEDDED);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(
@@ -35,13 +33,11 @@ public class DbObjectPanel extends EntityPanel {
             new EntityPanelProvider(ConstraintModel.class, ConstraintPanel.class));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Dimension getDetailDialogSize(final Dimension parentSize) {
     return new Dimension((int) (parentSize.width/1.7), (int) (parentSize.height/1.7)-54);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;

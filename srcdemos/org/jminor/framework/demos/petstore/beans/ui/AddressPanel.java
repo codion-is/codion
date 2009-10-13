@@ -24,7 +24,6 @@ public class AddressPanel extends EntityPanel {
     super(model, "Address");
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

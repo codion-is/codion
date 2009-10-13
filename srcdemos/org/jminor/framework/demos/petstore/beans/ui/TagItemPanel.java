@@ -28,7 +28,6 @@ public class TagItemPanel extends EntityPanel {
     super(model, "Item Tags");
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

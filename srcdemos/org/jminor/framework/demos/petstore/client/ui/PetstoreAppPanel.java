@@ -28,7 +28,6 @@ import java.util.Locale;
 
 public class PetstoreAppPanel extends EntityApplicationPanel {
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(CategoryModel.class, CategoryPanel.class));

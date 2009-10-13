@@ -14,13 +14,11 @@ public class ColumnPanel extends EntityPanel {
     super(model, "Columns", false, false);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;

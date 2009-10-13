@@ -21,7 +21,6 @@ public class ItemModel extends EntityModel {
     super(Petstore.T_ITEM, dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new TagItemModel(getDbProvider()));

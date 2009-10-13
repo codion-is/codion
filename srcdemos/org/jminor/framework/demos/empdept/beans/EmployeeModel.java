@@ -33,6 +33,7 @@ public class EmployeeModel extends EntityModel {
   @Override
   protected EntityEditModel intializeEditModel() {
     return new EntityEditModel(getEntityID(), getDbProvider(), evtEntitiesChanged) {
+      /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
       @Override
       public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {
         if (property.is(EmpDept.EMPLOYEE_MGR_FK)) {
@@ -49,6 +50,7 @@ public class EmployeeModel extends EntityModel {
         return super.createEntityComboBoxModel(property);
       }
 
+      /** Implementing validation for the salary and commission properties */
       @Override
       public void validate(final Property property, final Object value) throws ValidationException {
         if (property.is(EmpDept.EMPLOYEE_SALARY)) {
@@ -66,15 +68,17 @@ public class EmployeeModel extends EntityModel {
     };
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void bindEvents() {
     super.bindEvents();
+    //Refresh the manager ComboBoxModel when an employee is either added or updated
     evtEntitiesChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
       }
     });
+    //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
+    //this filtering happens each time the department value is changed
     getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new Property.Listener() {
       @Override
       public void propertyChanged(final Property.Event e) {

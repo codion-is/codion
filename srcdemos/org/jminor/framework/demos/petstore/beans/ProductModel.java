@@ -22,7 +22,6 @@ public class ProductModel extends EntityModel {
     getTableModel().setShowAllWhenNotFiltered(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new ItemModel(getDbProvider()));

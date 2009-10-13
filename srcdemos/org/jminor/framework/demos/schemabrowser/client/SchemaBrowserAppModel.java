@@ -28,7 +28,6 @@ public class SchemaBrowserAppModel extends EntityApplicationModel {
     return Arrays.asList(new SchemaModel(dbProvider));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void loadDomainModel() {
     new SchemaBrowser();

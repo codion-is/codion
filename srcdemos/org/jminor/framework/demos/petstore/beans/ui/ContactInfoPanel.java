@@ -27,13 +27,11 @@ public class ContactInfoPanel extends EntityPanel {
     super(model, "Seller Contact Info");
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

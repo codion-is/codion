@@ -28,13 +28,11 @@ public class ProductPanel extends EntityPanel {
     super(model, "Product", true, false, false, EMBEDDED, true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(ItemModel.class, ItemPanel.class));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

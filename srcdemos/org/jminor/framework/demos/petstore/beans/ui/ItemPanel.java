@@ -32,13 +32,11 @@ public class ItemPanel extends EntityPanel {
     super(model, "Item", true, false, false, HIDDEN);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(TagItemModel.class, TagItemPanel.class));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

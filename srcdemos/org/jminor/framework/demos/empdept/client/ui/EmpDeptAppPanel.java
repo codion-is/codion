@@ -21,7 +21,6 @@ import java.util.List;
 
 public class EmpDeptAppPanel extends EntityApplicationPanel {
 
-  /** {@inheritDoc} */
   @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(DepartmentModel.class, DepartmentPanel.class));

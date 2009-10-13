@@ -31,13 +31,11 @@ public class SchemaBrowserProfiling extends ProfilingModel {
     super(user);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void loadDomainModel() {
     new SchemaBrowser();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void performWork(EntityApplicationModel applicationModel) {
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
@@ -47,7 +45,6 @@ public class SchemaBrowserProfiling extends ProfilingModel {
     selectRandomRow(schemaModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
     final EntityApplicationModel applicationModel =

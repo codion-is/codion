@@ -28,7 +28,6 @@ public class EmpDeptAppModel extends EntityApplicationModel {
     return Arrays.asList(new DepartmentModel(dbProvider));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void loadDomainModel() {
     new EmpDept();

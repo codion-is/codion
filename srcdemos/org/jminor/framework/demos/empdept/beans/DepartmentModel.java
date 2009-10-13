@@ -16,7 +16,6 @@ public class DepartmentModel extends EntityModel {
     super(EmpDept.T_DEPARTMENT, dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new EmployeeModel(getDbProvider()));

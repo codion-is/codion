@@ -33,13 +33,11 @@ public class EmpDeptProfiling extends ProfilingModel {
     super(new User("scott", "tiger"));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void loadDomainModel() {
     new EmpDept();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
@@ -53,7 +51,6 @@ public class EmpDeptProfiling extends ProfilingModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
     final EntityApplicationModel applicationModel =

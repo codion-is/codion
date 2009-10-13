@@ -14,13 +14,11 @@ public class ColumnConstraintPanel extends EntityPanel {
     super(model, "Column constraints", false, false);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void initialize() {
     getTablePanel().setSearchPanelVisible(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;

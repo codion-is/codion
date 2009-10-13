@@ -16,7 +16,6 @@ public class DbObjectModel extends EntityModel {
     super(SchemaBrowser.T_TABLE, dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(

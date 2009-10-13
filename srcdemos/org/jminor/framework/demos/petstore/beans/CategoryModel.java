@@ -21,7 +21,6 @@ public class CategoryModel extends EntityModel {
     super(Petstore.T_CATEGORY, dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new ProductModel(getDbProvider()));

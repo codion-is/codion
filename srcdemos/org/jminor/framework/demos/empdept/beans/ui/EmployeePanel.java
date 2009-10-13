@@ -21,13 +21,11 @@ public class EmployeePanel extends EntityPanel {
     super(model, EmpDept.getString(EmpDept.T_EMPLOYEE), true, true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void initialize() {
     getTablePanel().setSummaryPanelVisible(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {

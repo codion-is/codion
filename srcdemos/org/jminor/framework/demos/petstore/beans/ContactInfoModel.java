@@ -21,7 +21,6 @@ public class ContactInfoModel extends EntityModel {
     super(Petstore.T_SELLER_CONTACT_INFO, dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new ItemModel(getDbProvider()));

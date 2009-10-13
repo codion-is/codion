@@ -16,7 +16,6 @@ public class ConstraintModel extends EntityModel {
     super(SchemaBrowser.T_CONSTRAINT, dbProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected List<? extends EntityModel> initializeDetailModels() {
     return Arrays.asList(new ColumnConstraintModel(getDbProvider()));

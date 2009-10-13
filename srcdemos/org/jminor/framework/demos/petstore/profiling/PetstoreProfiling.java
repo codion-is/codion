@@ -26,13 +26,11 @@ public class PetstoreProfiling extends ProfilingModel {
     super(new User("scott", "tiger"));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void loadDomainModel() {
     new Petstore();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
@@ -43,7 +41,6 @@ public class PetstoreProfiling extends ProfilingModel {
     selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
     final EntityApplicationModel applicationModel =
