@@ -6,14 +6,13 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.model.formats.DefaultDateFormat;
-import org.jminor.common.model.formats.DefaultTimestampFormat;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.domain.Type;
 
@@ -197,9 +196,9 @@ public abstract class AbstractSearchPanel extends JPanel {
 
   protected SimpleDateFormat getInputFormat() {
     if (model.getPropertyType() == Type.TIMESTAMP)
-      return new DefaultTimestampFormat();
+      return DateUtil.getDefaultTimestampFormat();
     if (model.getPropertyType() == Type.DATE)
-      return new DefaultDateFormat();
+      return DateUtil.getDefaultDateFormat();
 
     return null;
   }

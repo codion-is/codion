@@ -7,12 +7,11 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.model.formats.DefaultDateFormat;
-import org.jminor.common.model.formats.DefaultTimestampFormat;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entity;
@@ -128,9 +127,9 @@ public class PropertyEditPanel extends JPanel {
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     switch (property.getPropertyType()) {
       case TIMESTAMP:
-        return new DateInputManager((Date) currentValue, new DefaultTimestampFormat());
+        return new DateInputManager((Date) currentValue, DateUtil.getDefaultTimestampFormat());
       case DATE:
-        return new DateInputManager((Date) currentValue, new DefaultDateFormat());
+        return new DateInputManager((Date) currentValue, DateUtil.getDefaultDateFormat());
       case DOUBLE:
         return new DoubleInputManager((Double) currentValue);
       case INT:

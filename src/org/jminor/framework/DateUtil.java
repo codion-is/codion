@@ -1,8 +1,5 @@
 package org.jminor.framework;
 
-import org.jminor.common.model.formats.DefaultDateFormat;
-import org.jminor.common.model.formats.DefaultTimestampFormat;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,9 +14,8 @@ import java.util.Date;
  */
 public class DateUtil {
 
-  public static final DateFormat DEFAULT_DATE_FORMAT = new DefaultDateFormat();
-  public static final DateFormat DEFAULT_TIMESTAMP_FORMAT = new DefaultTimestampFormat();
-
+  private static final DateFormat DEFAULT_DATE_FORMAT = getDefaultDateFormat();
+  private static final DateFormat DEFAULT_TIMESTAMP_FORMAT = getDefaultTimestampFormat();
 
   /**
    * @param date the date to check for validity
@@ -91,6 +87,22 @@ public class DateUtil {
     }
 
     return false;
+  }
+
+  /**
+   * @return A SimpleDateFormat based on Configuration.DEFAULT_DATE_FORMAT
+   * @see Configuration#DEFAULT_DATE_FORMAT
+   */
+  public static SimpleDateFormat getDefaultDateFormat() {
+    return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
+  }
+
+  /**
+   * @return A SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
+   * @see Configuration#DEFAULT_TIMESTAMP_FORMAT
+   */
+  public static SimpleDateFormat getDefaultTimestampFormat() {
+    return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
   }
 
   /**

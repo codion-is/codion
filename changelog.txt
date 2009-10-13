@@ -859,3 +859,5 @@
   DefaultDateFormat and DefaultTimestampFormat added to common.model.formats
   UiUtil.ExceptionHandler moved up into common.ui package, replaced the old ExceptionHandler interface
   UiUtil.DefaultExceptionHandler moved up into common.ui.package
+  DefaultDateFormat and DefaultTimestampFormat removed from common.model.formats, illegal dependency introduced
+  DateUtil.getDefaultDateFormat() and getDefaultTimestampFormat() added
