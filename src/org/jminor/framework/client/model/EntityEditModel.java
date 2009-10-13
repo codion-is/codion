@@ -6,8 +6,6 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
 import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;

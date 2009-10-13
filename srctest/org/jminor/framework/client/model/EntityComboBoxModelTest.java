@@ -1,4 +1,4 @@
-package org.jminor.framework.client.model.combobox;
+package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;

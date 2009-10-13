@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model.combobox;
+package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;

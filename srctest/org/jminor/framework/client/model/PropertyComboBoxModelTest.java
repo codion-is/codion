@@ -1,4 +1,4 @@
-package org.jminor.framework.client.model.combobox;
+package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.framework.db.EntityDbConnectionTest;

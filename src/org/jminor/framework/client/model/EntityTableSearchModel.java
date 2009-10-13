@@ -7,7 +7,6 @@ import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;

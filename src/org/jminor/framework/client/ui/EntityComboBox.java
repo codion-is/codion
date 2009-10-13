@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
+import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;

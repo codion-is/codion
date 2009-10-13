@@ -479,14 +479,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static List<Entity.Key> getPrimaryKeysOfEntityValues(final List<Entity> entities,
                                                                final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Set<Entity.Key> ret = new HashSet<Entity.Key>(entities.size());
+    final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
       if (key != null)
-        ret.add(key);
+        keySet.add(key);
     }
 
-    return new ArrayList<Entity.Key>(ret);
+    return new ArrayList<Entity.Key>(keySet);
   }
 
   private int queryNextIdValue(final String entityID, final IdSource idSource) throws DbException {

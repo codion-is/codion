@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;

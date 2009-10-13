@@ -10,7 +10,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;

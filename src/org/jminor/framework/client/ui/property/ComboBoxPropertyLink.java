@@ -5,9 +5,9 @@ package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
-import org.jminor.framework.client.model.combobox.PropertyComboBoxModel;
+import org.jminor.framework.client.model.PropertyComboBoxModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 

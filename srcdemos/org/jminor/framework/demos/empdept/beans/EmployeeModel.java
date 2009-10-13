@@ -5,10 +5,10 @@ package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
-import org.jminor.framework.client.model.combobox.EntityComboBoxModel;
 import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
