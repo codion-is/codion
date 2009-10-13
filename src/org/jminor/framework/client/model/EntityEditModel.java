@@ -72,7 +72,16 @@ public class EntityEditModel {
    */
   private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
 
+  /**
+   * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.   *
+   * @param entityID the ID of the entity to base this EntityEditModel on
+   * @param dbProvider the EntityDbProvider instance used when populating ComboBoxModels
+   * @param evtEntitiesChanged an event indicating that the underlying entities have changed, either
+   * via insert, update or delete. This event is used as the default refresh event for PropertyComboBoxModels.
+   */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Event evtEntitiesChanged) {
+    if (entityID == null)
+      throw new RuntimeException("entityID is null");
     this.dbProvider = dbProvider;
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
@@ -86,6 +95,9 @@ public class EntityEditModel {
   }
 
   public EntityDbProvider getDbProvider() {
+    if (dbProvider == null)
+      throw new RuntimeException("No dbProvider available in edit model: " + getEntityID());
+
     return dbProvider;
   }
 
@@ -125,6 +137,9 @@ public class EntityEditModel {
     return getEntityModifiedState().isActive();
   }
 
+  /**
+   * @return an Event which fires when the underlying entities have changed, via insert, update or delete
+   */
   public Event getEntityChangedEvent() {
     return evtEntityChanged;
   }
@@ -174,10 +189,11 @@ public class EntityEditModel {
   }
 
   /**
-   * Returns true if the given value is valid for the given property,
+   * Returns true if the given value is valid for the given property, using the <code>validate</code> method
    * @param property the property
    * @param value the value
    * @return true if the value is valid
+   * @see #validate(org.jminor.framework.domain.Property, Object)
    */
   public final boolean isValid(final Property property, final Object value) {
     try {
@@ -221,7 +237,11 @@ public class EntityEditModel {
    * @return a PropertyComboBoxModel representing <code>property</code>
    */
   public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
-    return (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
+    if (comboBoxModel == null)
+      throw new RuntimeException("No PropertyComboBoxModel has been initialized for property: " + property);
+
+    return comboBoxModel;
   }
 
   /**
@@ -280,7 +300,11 @@ public class EntityEditModel {
    * @see #initializeEntityComboBoxModels()
    */
   public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
+    final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
+    if (comboBoxModel == null)
+      throw new RuntimeException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
+
+    return comboBoxModel;
   }
 
   /**
@@ -306,7 +330,7 @@ public class EntityEditModel {
    * @see #initializeEntityComboBoxModels()
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    EntityComboBoxModel comboBoxModel = getEntityComboBoxModel(foreignKeyProperty);
+    EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null)
       setComboBoxModel(foreignKeyProperty, comboBoxModel = createEntityComboBoxModel(foreignKeyProperty));
 
@@ -317,6 +341,7 @@ public class EntityEditModel {
    * Sets the active entity, that is, the entity to be edited
    * @param entity the entity to set as active, if null then the default entity value is set as active
    * @see #evtEntityChanged
+   * @see #getDefaultEntity()
    */
   public final void setEntity(final Entity entity) {
     if (entity != null && this.entity.propertyValuesEqual(entity))
@@ -480,6 +505,7 @@ public class EntityEditModel {
    * should be overridden so that it returns <code>true</code> for that property.
    * @param property the property
    * @return the default value for the property
+   * @see Property#setDefaultValue(Object)
    * @see #persistValueOnClear(org.jminor.framework.domain.Property)
    */
   public Object getDefaultValue(final Property property) {

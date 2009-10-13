@@ -853,3 +853,4 @@
   TextPropertyLink now uses the improved validation mechanism in EntityEditModel and adds the validation message to the component tooltip
   TextPropertyLink and FormattedTextPropertyLink refactored a bit, added toolTip functionality to the formatted one
   AbstractEntityPropertyLink.getValidationMessage() added
+  EntityEditModel.getEntityComboBoxModel() and getPropertyComboBoxModel() now throw RuntimeException when no comboboxmodels have been initialized
