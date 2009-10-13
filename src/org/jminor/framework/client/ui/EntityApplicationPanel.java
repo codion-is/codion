@@ -10,6 +10,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
+import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
@@ -91,9 +92,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /** {@inheritDoc} */
-  public void handleException(final Throwable e) {
+  public void handleException(final Throwable e, final JComponent component) {
     log.error(this, e);
-    UiUtil.getExceptionHandler().handleException(e, this);
+    DefaultExceptionHandler.get().handleException(e, component);
   }
 
   /**
@@ -585,7 +586,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(final Thread thread, final Throwable throwable) {
-        UiUtil.getExceptionHandler().handleException(throwable, EntityApplicationPanel.this);
+        DefaultExceptionHandler.get().handleException(throwable, EntityApplicationPanel.this);
       }
     });
   }

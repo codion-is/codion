@@ -857,3 +857,5 @@
   EntityComboBoxModel and PropertyComboBoxModel moved from model.combobox to model
   Configuration.getDefaultDateFormat() and getDefaultTimestampFormat() removed
   DefaultDateFormat and DefaultTimestampFormat added to common.model.formats
+  UiUtil.ExceptionHandler moved up into common.ui package, replaced the old ExceptionHandler interface
+  UiUtil.DefaultExceptionHandler moved up into common.ui.package

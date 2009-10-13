@@ -12,6 +12,7 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
+import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -635,7 +636,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public void handleException(final Throwable throwable, final JComponent dialogParent) {
     log.error(this, throwable);
-    UiUtil.getExceptionHandler().handleException(throwable, dialogParent);
+    DefaultExceptionHandler.get().handleException(throwable, dialogParent);
   }
 
   //#############################################################################################
