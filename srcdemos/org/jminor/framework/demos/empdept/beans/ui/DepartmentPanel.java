@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
@@ -46,8 +47,8 @@ public class DepartmentPanel extends EntityPanel {
 
   @Override
   public ControlSet getPrintControls() {
-    final ControlSet controlSet = new ControlSet("Print");
-    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", "Employee report"));
+    final ControlSet controlSet = new ControlSet(Messages.get(Messages.PRINT));
+    controlSet.add(ControlFactory.methodControl(this, "viewEmployeeReport", EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
     controlSet.add(getControl(PRINT));
 
     return controlSet;

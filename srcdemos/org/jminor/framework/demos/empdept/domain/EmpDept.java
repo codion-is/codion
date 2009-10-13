@@ -26,6 +26,7 @@ public class EmpDept {
   public static final String NONE = "none";
   public static final String EMPLOYEE_SALARY_VALIDATION = "employee_salary_validation";
   public static final String EMPLOYEE_COMMISSION_VALIDATION = "employee_commission_validation";
+  public static final String EMPLOYEE_REPORT = "employee_report";
 
   /**Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "scott.dept";
@@ -104,9 +105,7 @@ public class EmpDept {
         if (entity.is(T_DEPARTMENT))
           return entity.getStringValue(DEPARTMENT_NAME);
         else if (entity.is(T_EMPLOYEE))
-          return entity.getStringValue(EMPLOYEE_NAME)
-                  + ", " + entity.getStringValue(EMPLOYEE_JOB)
-                  + ", " + entity.getEntityValue(EMPLOYEE_DEPARTMENT_FK);
+          return entity.getStringValue(EMPLOYEE_NAME);
 
         return super.toString(entity);
       }
