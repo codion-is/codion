@@ -16,6 +16,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * A panel for showing a formatted text field and a button activating a calendar for date input
+ */
 public class DateInputPanel extends JPanel {
 
   private final JFormattedTextField inputField;
@@ -32,11 +35,10 @@ public class DateInputPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
           Date currentValue = null;
           try {
-            currentValue = dateFormat.parse(inputField.getText());
+            currentValue = getDate();
           }
           catch (ParseException ex) {/**/}
-          final Date newValue = UiUtil.getDateFromUser(currentValue,
-                  Messages.get(Messages.SELECT_DATE), inputField);
+          final Date newValue = UiUtil.getDateFromUser(currentValue, Messages.get(Messages.SELECT_DATE), inputField);
           inputField.setText(dateFormat.format(newValue));
         }
       };
@@ -52,7 +54,11 @@ public class DateInputPanel extends JPanel {
     return inputField;
   }
 
-  public SimpleDateFormat getDateFormat() {
-    return dateFormat;
+  public Date getDate() throws ParseException {
+    return dateFormat.parse(inputField.getText());
+  }
+
+  public String getFormatPattern() {
+    return dateFormat.toPattern();
   }
 }

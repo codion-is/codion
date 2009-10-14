@@ -865,3 +865,4 @@
   Property.mnemonic field added
   EntityUiUtil.createLabel() add, moved from EntityEditPanel, now uses the above mnemonic field
   Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT added
+  DomainClassGenerator improved quite a lot

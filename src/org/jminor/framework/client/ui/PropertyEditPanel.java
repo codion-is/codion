@@ -189,13 +189,13 @@ public class PropertyEditPanel extends JPanel {
       try {
         final String dateText = ((DateInputPanel) getInputComponent()).getInputField().getText();
         if (!dateText.contains("_"))
-          return new Timestamp(((DateInputPanel) getInputComponent()).getDateFormat().parse(dateText).getTime());
+          return new Timestamp(((DateInputPanel) getInputComponent()).getDate().getTime());
         else
           return null;
       }
       catch (ParseException e) {
         throw new RuntimeException("Wrong date format "
-                + ((DateInputPanel) getInputComponent()).getDateFormat().toPattern() + " expected");
+                + ((DateInputPanel) getInputComponent()).getFormatPattern() + " expected");
       }
     }
   }

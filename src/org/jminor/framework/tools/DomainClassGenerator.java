@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,13 +27,16 @@ import java.util.List;
 public class DomainClassGenerator {
 
   public static void main(String[] args) {
-    if (args.length != 4)
+    if (args.length < 4)
       throw new IllegalArgumentException("Required arguments: schemaName packageName username password");
 
     try {
       final String schemaName = args[0];
       final String domainClassName = getDomainClassName(schemaName);
-      Util.writeFile(getDomainClass(domainClassName, args[0], args[1], args[2], args[3]),
+      String tablesToInclude = null;
+      if (args.length > 4)
+        tablesToInclude = args[4];
+      Util.writeFile(getDomainClass(domainClassName, args[0], args[1], args[2], args[3], tablesToInclude),
               UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
     }
     catch (Exception e) {
@@ -45,68 +50,129 @@ public class DomainClassGenerator {
   }
 
   public static String getDomainClass(final String domainClassName, final String schema, final String packageName,
-                                      final String username, final String password) throws Exception {
+                                      final String username, final String password, final String tableList) throws Exception {
     if (schema == null || schema.length() == 0)
       throw new IllegalArgumentException("Schema must be specified");
 
     final DbConnection dbConnection = new DbConnection(new User(username, password));
+    try {
+      final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
+      final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
+      final List<Table> allSchemaTables = new TablePacker(null).pack(metaData.getTables(null, schema, null, null), -1);
+      for (final Table table : allSchemaTables)
+        foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
 
-    final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
-    final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
-    final List<Table> schemaTables = new TablePacker().pack(metaData.getTables(null, schema, null, null), -1);
-    for (final Table table : schemaTables)
-      foreignKeys.addAll(new ForeignKeyPacker().pack(metaData.getExportedKeys(null, table.schemaName, table.tableName), -1));
+      final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
 
-    final StringBuilder builder = new StringBuilder("package ").append(packageName).append(";\n\n");
+      builder.append("import org.jminor.framework.domain.EntityDefinition;\n");
+      builder.append("import org.jminor.framework.domain.EntityRepository;\n");
+      builder.append("import org.jminor.framework.domain.Property;\n");
+      builder.append("import org.jminor.framework.domain.Type;\n\n");
 
-    builder.append("import org.jminor.framework.domain.Entity;\n");
-    builder.append("import org.jminor.framework.domain.EntityRepository;\n");
-    builder.append("import org.jminor.framework.domain.Property;\n");
-    builder.append("import org.jminor.framework.domain.Type;\n\n");
+      builder.append("public class ").append(domainClassName).append(" {\n\n");
 
-    builder.append("public class ").append(domainClassName).append(" {\n\n");
-    for (final Table table : schemaTables) {
-      List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
-      builder.append(getConstants(table.schemaName, table.tableName, columns, foreignKeys));
-      builder.append("\n");
+      final List<Table> tablesToProcess = new TablePacker(tableList).pack(metaData.getTables(null, schema, null, null), -1);
+      final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
+      for (final Table table : tablesToProcess)
+        primaryKeys.addAll(new PrimaryKeyPacker().pack(metaData.getPrimaryKeys(null, table.schemaName, table.tableName), -1));
+
+      for (final Table table : tablesToProcess) {
+        System.out.println("Processing table: " + table);
+        final List<Column> columns = new ColumnPacker().pack(metaData.getColumns(null, table.schemaName, table.tableName, null), -1);
+        for (final Column column : columns) {
+          column.setForeignKey(getForeignKey(column, foreignKeys));
+          column.setPrimaryKey(getPrimaryKey(column, primaryKeys));
+        }
+        table.setColumns(columns);
+        builder.append(getConstants(table));
+        builder.append("\n");
+        System.out.println("Done processing table: " + table);
+      }
+      builder.append("  static {\n");
+      for (final Table table : tablesToProcess) {
+        builder.append("    EntityRepository.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
+        for (final Column column : table.getColumns()) {
+          builder.append(getPropertyDefinition(table, column))
+                  .append(table.getColumns().indexOf(column) < table.getColumns().size()-1 ? ", " : "").append("\n");
+        }
+        builder.append("    ));\n");
+      }
+      builder.append("  }\n");
+
+      builder.append("}");
+
+      return builder.toString();
     }
-    builder.append("  static {\n");
-    builder.append("  //define your entities here\n");
-    builder.append("  }\n");
+    finally {
+      dbConnection.disconnect();
+    }
+  }
 
-    builder.append("}");
-
-    dbConnection.disconnect();
+  public static String getConstants(final Table table) {
+    final StringBuilder builder = new StringBuilder("  public static final String ").append(getEntityID(table)).append(
+            " = \"").append(table.schemaName.toLowerCase()).append(".").append(table.tableName.toLowerCase()).append("\";").append("\n");
+    for (final Column column : table.getColumns()) {
+      builder.append("  ").append("public static final String ").append(getPropertyID(table, column, false)).append(" = \"").append(column.columnName.toLowerCase()).append(
+              "\"; //").append(column.columnType).append(", ").append(column.columnSize).append("\n");
+      if (column.foreignKey != null)
+        builder.append("  ").append("public static final String ").append(getPropertyID(table, column, true)).append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
+    }
 
     return builder.toString();
   }
 
-  public static String getConstants(final String schemaName, final String tableName, final List<Column> columns,
-                                    final List<ForeignKey> foreignKeys) {
-    final StringBuilder builder = new StringBuilder("  public static final String T_").append(tableName.toUpperCase()).append(
-            " = \"").append(schemaName.toLowerCase()).append(".").append(tableName.toLowerCase()).append("\";").append("\n");
-    for (final Column column : columns) {
-      builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
-              column.columnName.toUpperCase()).append(" = \"").append(column.columnName.toLowerCase()).append(
-              "\"; //").append(translateType(column)).append(", ").append(column.columnSize).append("\n");
-      if (isForeignKeyColumn(column, foreignKeys))
-        builder.append("  ").append("public static final String ").append(tableName.toUpperCase()).append("_").append(
-                column.columnName.toUpperCase()).append("_FK").append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
+  private static String getPropertyDefinition(final Table table, final Column column) {
+    String ret;
+    if (column.foreignKey != null) {
+      ret = "        new Property.ForeignKeyProperty(" + getPropertyID(table, column, true) + ", \"Caption\", "+ getEntityID(column.foreignKey.getReferencedTable()) + ",\n"
+              + "                new Property(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + "))";
+    }
+    else if (column.primaryKey != null) {
+      ret = "        new Property.PrimaryKeyProperty(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + ")";
+    }
+    else {
+      ret = "        new Property(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + ", \"Caption\")";
     }
 
-    return builder.toString();
+    if (column.nullable == DatabaseMetaData.columnNoNulls)
+      ret += "\n                .setNullable(false)";
+    if (column.columnType == Type.STRING)
+      ret += "\n                .setMaxLength(" + column.columnSize + ")";
+
+    return ret;
   }
 
-  private static boolean isForeignKeyColumn(final Column column, final List<ForeignKey> foreignKeys) {
+  private static String getEntityID(final Table table) {
+    return "T_" + table.tableName.toUpperCase();
+  }
+
+  private static String getPropertyID(final Table table, final Column column, final boolean isForeignKey) {
+    return table.tableName.toUpperCase() + "_" + column.columnName.toUpperCase() + (isForeignKey ? "_FK" : "");
+  }
+
+  private static ForeignKey getForeignKey(final Column column, final List<ForeignKey> foreignKeys) {
     for (final ForeignKey foreignKey : foreignKeys)
-      if (foreignKey.fkTableName.equals(column.tableName) && foreignKey.fkColumnName.equals(column.columnName))
-        return true;
+      if (foreignKey.fkTableName.equals(column.tableName)
+              && foreignKey.fkColumnName.equals(column.columnName)) {
+        System.out.println("foreignKey: " + column.tableName + ", " + column.columnName);
+        return foreignKey;
+      }
 
-    return false;
+    return null;
   }
 
-  public static Type translateType(final Column column) {
-    switch (column.columnType) {
+  private static PrimaryKey getPrimaryKey(final Column column, final List<PrimaryKey> primaryKeys) {
+    for (final PrimaryKey primaryKey : primaryKeys)
+      if (primaryKey.pkTableName.equals(column.tableName)
+              && primaryKey.pkColumnName.equals(column.columnName)) {
+        return primaryKey;
+      }
+
+    return null;
+  }
+
+  public static Type translateType(final int sqlType) {
+    switch (sqlType) {
       case Types.BIGINT:
       case Types.INTEGER:
       case Types.ROWID:
@@ -134,7 +200,7 @@ public class DomainClassGenerator {
         return Type.BOOLEAN;
     }
 
-    throw new IllegalArgumentException("Unsupported sql type (" + column + "): " + column.columnType);
+    throw new IllegalArgumentException("Unsupported sql type: " + sqlType);
   }
 
   static class Schema {
@@ -164,10 +230,19 @@ public class DomainClassGenerator {
   static class Table {
     final String schemaName;
     final String tableName;
+    List<Column> columns;
 
     public Table(final String schemaName, final String tableName) {
       this.schemaName = schemaName;
       this.tableName = tableName;
+    }
+
+    public List<Column> getColumns() {
+      return columns;
+    }
+
+    public void setColumns(final List<Column> columns) {
+      this.columns = columns;
     }
 
     @Override
@@ -177,11 +252,21 @@ public class DomainClassGenerator {
   }
 
   static class TablePacker implements ResultPacker<Table> {
+
+    private final Collection<String> tablesToInclude;
+
+    public TablePacker(final String tablesToInclude) {
+      this.tablesToInclude = tablesToInclude != null ? Arrays.asList(tablesToInclude.split(",")) : null;
+    }
+
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> tables = new ArrayList<Table>();
       int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        tables.add(new Table(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME")));
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        final String tableName = resultSet.getString("TABLE_NAME");
+        if (tablesToInclude == null || tablesToInclude.contains(tableName))
+          tables.add(new Table(resultSet.getString("TABLE_SCHEM"), tableName));
+      }
 
       return tables;
     }
@@ -191,16 +276,28 @@ public class DomainClassGenerator {
     final String schemaName;
     final String tableName;
     final String columnName;
-    final int columnType;
+    final Type columnType;
     final int columnSize;
+    final int nullable;
+    ForeignKey foreignKey;
+    PrimaryKey primaryKey;
 
-    public Column(final String schemaName, final String tableName, final String columnName, final int columnType,
-                  final int columnSize) {
+    public Column(final String schemaName, final String tableName, final String columnName, final Type columnType,
+                  final int columnSize, final int nullable) {
       this.schemaName = schemaName;
       this.tableName = tableName;
       this.columnName = columnName;
       this.columnType = columnType;
       this.columnSize = columnSize;
+      this.nullable = nullable;
+    }
+
+    public void setForeignKey(final ForeignKey foreignKeyColumn) {
+      this.foreignKey = foreignKeyColumn;
+    }
+
+    public void setPrimaryKey(final PrimaryKey primaryKey) {
+      this.primaryKey = primaryKey;
     }
 
     @Override
@@ -215,7 +312,8 @@ public class DomainClassGenerator {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME"), resultSet.getInt("DATA_TYPE"), resultSet.getInt("COLUMN_SIZE")));
+                resultSet.getString("COLUMN_NAME"), translateType(resultSet.getInt("DATA_TYPE")),
+                resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("NULLABLE")));
 
       return columns;
     }
@@ -240,6 +338,10 @@ public class DomainClassGenerator {
       this.fkTableName = fkTableName;
       this.fkColumnName = fkColumnName;
       this.keySeq = keySeq;
+    }
+
+    public Table getReferencedTable() {
+      return new Table(pkSchemaName, pkTableName);
     }
 
     @Override
