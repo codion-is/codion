@@ -1,4 +1,4 @@
-package org.jminor.framework;
+package org.jminor.framework.client.model.util;
 
 import org.jminor.common.model.formats.ShortDotDateFormat;
 

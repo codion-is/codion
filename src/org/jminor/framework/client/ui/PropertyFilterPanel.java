@@ -14,8 +14,8 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.PropertyFilterModel;
+import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Type;
 
 import javax.swing.JCheckBox;

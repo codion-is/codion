@@ -6,9 +6,9 @@ import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 

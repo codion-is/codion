@@ -4,8 +4,8 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.framework.Configuration;
-import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Type;
 
 import javax.swing.JCheckBox;

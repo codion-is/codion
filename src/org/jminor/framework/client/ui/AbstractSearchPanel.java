@@ -12,8 +12,8 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.DateUtil;
 import org.jminor.framework.client.model.AbstractSearchModel;
+import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Type;
 
 import javax.swing.JComboBox;
