@@ -93,6 +93,7 @@ public class SteppedComboBox extends JComboBox {
         popup.getAccessibleContext().setAccessibleParent(comboBox);
 
         return popup;
-      }});
+      }
+    });
   }
 }

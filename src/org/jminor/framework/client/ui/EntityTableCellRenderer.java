@@ -101,7 +101,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     private final boolean formatValue;
 
     public NumberRenderer(final boolean formatValue) {
-      super();
       this.formatter = NumberFormat.getInstance();
       this.formatter.setGroupingUsed((Boolean) Configuration.getValue(Configuration.USE_NUMBER_FORMAT_GROUPING));
       this.formatValue = formatValue;
@@ -121,7 +120,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     private final SimpleDateFormat format = DateUtil.getDefaultDateFormat();
 
     public DateRenderer() {
-      super();
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
@@ -142,7 +140,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     private final SimpleDateFormat format = DateUtil.getDefaultTimestampFormat();
 
     public TimestampRenderer() {
-      super();
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
@@ -163,7 +160,6 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
     /** Constructs a new BooleanRenderer. */
     public BooleanRenderer() {
-      super();
       setHorizontalAlignment(JLabel.CENTER);
     }
 

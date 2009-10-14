@@ -862,3 +862,6 @@
   DefaultDateFormat and DefaultTimestampFormat removed from common.model.formats, illegal dependency introduced
   DateUtil.getDefaultDateFormat() and getDefaultTimestampFormat() added
   DateUtil moved from framework to framework.client.model.util
+  Property.mnemonic field added
+  EntityUiUtil.createLabel() add, moved from EntityEditPanel, now uses the above mnemonic field
+  Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT added

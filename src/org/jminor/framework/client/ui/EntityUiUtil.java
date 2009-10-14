@@ -99,7 +99,7 @@ public class EntityUiUtil {
       }
     };
 
-    final EntityTablePanel entityPanel = new EntityTablePanel(lookupModel, null, false) {
+    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, null, false) {
       @Override
       protected void bindEvents() {
         super.bindEvents();
@@ -115,19 +115,19 @@ public class EntityUiUtil {
         return simpleSearchPanel ? initializeSimpleSearchPanel() : initializeAdvancedSearchPanel();
       }
     };
-    entityPanel.setSearchPanelVisible(true);
+    entityTablePanel.setSearchPanelVisible(true);
     if (singleSelection)
-      entityPanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
           lookupModel.setSelectedItemIndexes(new int[] {0});
-          entityPanel.getJTable().requestFocusInWindow();
+          entityTablePanel.getJTable().requestFocusInWindow();
         }
         else {
-          JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityPanel),
+          JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
                   FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
         }
       }
@@ -145,13 +145,13 @@ public class EntityUiUtil {
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
     dialog.getRootPane().getActionMap().put("cancel", cancelAction);
-    entityPanel.getJTable().getInputMap(
+    entityTablePanel.getJTable().getInputMap(
             JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     dialog.setLayout(new BorderLayout());
     if (preferredSize != null)
-      entityPanel.setPreferredSize(preferredSize);
-    dialog.add(entityPanel, BorderLayout.CENTER);
+      entityTablePanel.setPreferredSize(preferredSize);
+    dialog.add(entityTablePanel, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
     buttonPanel.add(btnSearch);
     buttonPanel.add(btnOk);
@@ -168,6 +168,34 @@ public class EntityUiUtil {
       throw new UserCancelException();
     else
       return selected;
+  }
+
+  /**
+   * Creates a JLabel with a caption from the given property, using the default label text alignment
+   * @param property the property for which to create the label
+   * @return a JLabel for the given property
+   * @see org.jminor.framework.Configuration#DEFAULT_LABEL_TEXT_ALIGNMENT
+   */
+  public static JLabel createLabel(final Property property) {
+    return createLabel(property, (Integer) Configuration.getValue(Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT));
+  }
+
+  /**
+   * Creates a JLabel with a caption from the given property
+   * @param property the property for which to create the label
+   * @param horizontalAlignment the horizontal text alignment
+   * @return a JLabel for the given property
+   */
+  public static JLabel createLabel(final Property property, final int horizontalAlignment) {
+    final String text = property.getCaption();
+    if (text == null || text.length() == 0)
+      throw new IllegalArgumentException("Cannot create a label for property: " + property + ", no caption");
+
+    final JLabel label = new JLabel(text, horizontalAlignment);
+    if (property.getMnemonic() != null)
+      label.setDisplayedMnemonic(property.getMnemonic());
+
+    return label;
   }
 
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel) {

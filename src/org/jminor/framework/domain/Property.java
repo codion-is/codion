@@ -84,6 +84,11 @@ public class Property implements Serializable {
   private String description;
 
   /**
+   * A mnemonic to use when creating a label for this property
+   */
+  private Character mnemonic;
+
+  /**
    * Cached select column index
    */
   private int selectIndex = -1;
@@ -286,6 +291,23 @@ public class Property implements Serializable {
    */
   public Property setDescription(final String description) {
     this.description = description;
+    return this;
+  }
+
+  /**
+   * @return the mnemonic to use when creating a label for this property
+   */
+  public Character getMnemonic() {
+    return mnemonic;
+  }
+
+  /**
+   * Sets the mnemonic to use when creating a label for this property
+   * @param mnemonic the mnemonic character
+   * @return this Property instance
+   */
+  public Property setMnemonic(final Character mnemonic) {
+    this.mnemonic = mnemonic;
     return this;
   }
 

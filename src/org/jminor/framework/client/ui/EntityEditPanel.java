@@ -135,7 +135,8 @@ public abstract class EntityEditPanel extends JPanel {
   protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                             final boolean labelOnTop, final int hgap, final int vgap,
                                             final int labelAlignment) {
-    return createControlPanel(createLabel(propertyID, labelAlignment), inputComponent, labelOnTop, hgap, vgap);
+    return createControlPanel(EntityUiUtil.createLabel(EntityRepository.getProperty(getEditModel().getEntityID(),
+            propertyID), labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
   /**
@@ -930,28 +931,5 @@ public abstract class EntityEditPanel extends JPanel {
   protected final JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                                                 final EntityTableModel lookupModel) {
     return EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
-  }
-
-  /**
-   * Creates a JLabel with a caption from the property identified by <code>propertyID</code>
-   * @param propertyID the ID of the property from which to retrieve the caption
-   * @return a JLabel for the given property
-   */
-  protected final JLabel createLabel(final String propertyID) {
-    return createLabel(propertyID, JLabel.LEFT);
-  }
-
-  /**
-   * Creates a JLabel with a caption from the given property identified by <code>propertyID</code>
-   * @param propertyID the ID of the property from which to retrieve the caption
-   * @param horizontalAlignment the horizontal text alignment
-   * @return a JLabel for the given property
-   */
-  protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
-    final String text = EntityRepository.getProperty(getEditModel().getEntityID(), propertyID).getCaption();
-    if (text == null || text.length() == 0)
-      throw new IllegalArgumentException("Cannot create a label for property: " + propertyID + ", no caption");
-
-    return new JLabel(text, horizontalAlignment);
   }
 }

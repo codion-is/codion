@@ -5,6 +5,7 @@ package org.jminor.framework;
 
 import org.jminor.common.model.Util;
 
+import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import java.awt.Color;
@@ -329,6 +330,16 @@ public class Configuration {
    */
   public static final String PERFORM_NULL_VALIDATION = "perform_null_validation";
 
+  /**
+   * Specifies the default horizontal alignment used in labels
+   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER);
+   * Default value: JLabel.LEFT
+   * @see JLabel#LEFT
+   * @see JLabel#RIGHT
+   * @see JLabel#CENTER
+   */
+  public static final String DEFAULT_LABEL_TEXT_ALIGNMENT = "default_label_text_alignment";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -363,6 +374,7 @@ public class Configuration {
     setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, null);
     setValue(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
     setValue(PERFORM_NULL_VALIDATION, true);
+    setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
   }
 
   public static void setValue(final String key, final Object value) {
