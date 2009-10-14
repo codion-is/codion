@@ -481,7 +481,7 @@ public class EntityEditModel {
   }
 
   /**
-   * If this method is overridden then calling super.getDefaultValue() would be proper
+   * If this method is overridden then calling super.getDefaultEntity() would be proper
    * @return the default entity for this EntitModel, it is set as active when no item is selected
    * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
