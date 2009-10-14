@@ -932,4 +932,23 @@ public abstract class EntityEditPanel extends JPanel {
                                                 final EntityTableModel lookupModel) {
     return EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
   }
+
+  /**
+   * Creates a JLabel with a caption from the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property from which to retrieve the caption
+   * @return a JLabel for the given property
+   */
+  protected final JLabel createLabel(final String propertyID) {
+    return createLabel(propertyID, JLabel.LEFT);
+  }
+
+  /**
+   * Creates a JLabel with a caption from the given property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property from which to retrieve the caption
+   * @param horizontalAlignment the horizontal text alignment
+   * @return a JLabel for the given property
+   */
+  protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
+    return EntityUiUtil.createLabel(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), horizontalAlignment);
+  }
 }
