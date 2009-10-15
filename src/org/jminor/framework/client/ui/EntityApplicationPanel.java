@@ -229,7 +229,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public static String getUsername(final String username) {
-    final String usernamePrefix = (String) Configuration.getValue(Configuration.DEFAULT_USERNAME_PREFIX);
+    final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
     if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase()))
       return username.substring(usernamePrefix.length(), username.length());
 

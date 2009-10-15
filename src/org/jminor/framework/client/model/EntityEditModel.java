@@ -233,6 +233,7 @@ public class EntityEditModel {
   /**
    * @param property the property for which to get the ComboBoxModel
    * @return a PropertyComboBoxModel representing <code>property</code>
+   * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public PropertyComboBoxModel getPropertyComboBoxModel(final Property property) {
     final PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) propertyComboBoxModels.get(property);
@@ -283,6 +284,7 @@ public class EntityEditModel {
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
    * @see #initializeEntityComboBoxModels()
+   * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
@@ -296,6 +298,7 @@ public class EntityEditModel {
    * @param foreignKeyProperty the foreign key property for which to retrieve the <code>EntityComboBoxModel</code>
    * @return the EntityComboBoxModel associated with the <code>property</code>
    * @see #initializeEntityComboBoxModels()
+   * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
@@ -333,6 +336,24 @@ public class EntityEditModel {
       setComboBoxModel(foreignKeyProperty, comboBoxModel = createEntityComboBoxModel(foreignKeyProperty));
 
     return comboBoxModel;
+  }
+
+  /**
+   * Returns true if this edit model contains a ComboBoxModel for the given property
+   * @param propertyID the ID of the property
+   * @return true if a ComboBoxModel has been initialized for the given property
+   */
+  public boolean containsComboBoxModel(final String propertyID) {
+    return containsComboBoxModel(EntityRepository.getProperty(getEntityID(), propertyID));
+  }
+
+/**
+   * Returns true if this edit model contains a ComboBoxModel for the given property
+   * @param property the property
+   * @return true if a ComboBoxModel has been initialized for the given property
+   */
+  public boolean containsComboBoxModel(final Property property) {
+    return propertyComboBoxModels.containsKey(property);
   }
 
   /**
@@ -531,11 +552,11 @@ public class EntityEditModel {
    * property <code>Configuration.PERSIST_ENTITY_REFERENCE_VALUES</code>.
    * @param property the property
    * @return true if the given entity field value should be reset when the model is cleared
-   * @see org.jminor.framework.Configuration#PERSIST_ENTITY_REFERENCE_VALUES
+   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
    */
   protected boolean persistValueOnClear(final Property property) {
     return property instanceof Property.ForeignKeyProperty
-            && (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_REFERENCE_VALUES);
+            && (Boolean) Configuration.getValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
   /**

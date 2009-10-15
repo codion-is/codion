@@ -108,7 +108,7 @@ public class Petstore {
                     new Property(ITEM_C0NTACT_INFO_ID)).setNullable(false),
             new Property.ForeignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
                     new Property(ITEM_ADDRESS_ID)).setNullable(false),
-            new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled"))
+            new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled").setNullable(false).setDefaultValue(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME));
 

@@ -398,7 +398,7 @@
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
-      <jvmarg value="-Djminor.client.connection.type=remote"/>
+      <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
@@ -435,7 +435,7 @@
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
-      <jvmarg value="-Djminor.client.connection.type=remote"/>
+      <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>

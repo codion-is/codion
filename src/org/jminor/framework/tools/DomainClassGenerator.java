@@ -112,10 +112,11 @@ public class DomainClassGenerator {
     final StringBuilder builder = new StringBuilder("  public static final String ").append(getEntityID(table)).append(
             " = \"").append(table.schemaName.toLowerCase()).append(".").append(table.tableName.toLowerCase()).append("\";").append("\n");
     for (final Column column : table.getColumns()) {
-      builder.append("  ").append("public static final String ").append(getPropertyID(table, column, false)).append(" = \"").append(column.columnName.toLowerCase()).append(
-              "\"; //").append(column.columnType).append(", ").append(column.columnSize).append("\n");
+      builder.append("  ").append("public static final String ").append(getPropertyID(table, column, false))
+              .append(" = \"").append(column.columnName.toLowerCase()).append("\";\n");
       if (column.foreignKey != null)
-        builder.append("  ").append("public static final String ").append(getPropertyID(table, column, true)).append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
+        builder.append("  ").append("public static final String ").append(getPropertyID(table, column, true))
+                .append(" = \"").append(column.columnName.toLowerCase()).append("_fk\";").append("\n");
     }
 
     return builder.toString();
@@ -134,7 +135,7 @@ public class DomainClassGenerator {
       ret = "        new Property(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + ", \"Caption\")";
     }
 
-    if (column.nullable == DatabaseMetaData.columnNoNulls)
+    if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null)
       ret += "\n                .setNullable(false)";
     if (column.columnType == Type.STRING)
       ret += "\n                .setMaxLength(" + column.columnSize + ")";

@@ -23,6 +23,7 @@ public class DateInputPanel extends JPanel {
 
   private final JFormattedTextField inputField;
   private final SimpleDateFormat dateFormat;
+  private JButton button;
 
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
                         final boolean includeButton, final State enabledState) {
@@ -42,16 +43,22 @@ public class DateInputPanel extends JPanel {
           inputField.setText(dateFormat.format(newValue));
         }
       };
-      final JButton btnChooser = new JButton(buttonAction);
-      btnChooser.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+      this.button = new JButton(buttonAction);
+      this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null)
-        UiUtil.linkToEnabledState(enabledState, btnChooser);
-      add(btnChooser, BorderLayout.EAST);
+        UiUtil.linkToEnabledState(enabledState, this.button);
+      add(this.button, BorderLayout.EAST);
     }
   }
 
   public JFormattedTextField getInputField() {
     return inputField;
+  }
+
+  public JButton getButton() {
+    if (button == null)
+      throw new RuntimeException("DateInputPanel has no button");
+    return button;
   }
 
   public Date getDate() throws ParseException {

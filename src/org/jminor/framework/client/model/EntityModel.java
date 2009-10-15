@@ -903,8 +903,9 @@ public class EntityModel implements Refreshable {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
-          final EntityComboBoxModel comboModel = detailModel.getEditModel().getEntityComboBoxModel(foreignKeyProperty);
-          if (comboModel != null) {
+          final EntityEditModel detailEditModel = detailModel.getEditModel();
+          if (detailEditModel.containsComboBoxModel(foreignKeyProperty)) {
+            final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
             for (final Entity deletedEntity : deletedEntities)
               comboModel.removeItem(deletedEntity);
             if (comboModel.getSize() > 0)
@@ -932,10 +933,10 @@ public class EntityModel implements Refreshable {
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
-          final EntityComboBoxModel entityComboBoxModel = detailModel.getEditModel().getEntityComboBoxModel(foreignKeyProperty);
-          if (entityComboBoxModel != null)
-            entityComboBoxModel.refresh();
-          detailModel.getEditModel().setValue(foreignKeyProperty, insertedEntity);
+          final EntityEditModel detailEditModel = detailModel.getEditModel();
+          if (detailEditModel.containsComboBoxModel(foreignKeyProperty))
+            detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
+          detailEditModel.setValue(foreignKeyProperty, insertedEntity);
         }
       }
     }
@@ -949,9 +950,9 @@ public class EntityModel implements Refreshable {
     for (final EntityModel detailModel : detailModels) {
       for (final Property.ForeignKeyProperty foreignKeyProperty :
               EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {
-        final EntityComboBoxModel entityComboBoxModel = detailModel.getEditModel().getEntityComboBoxModel(foreignKeyProperty);
-        if (entityComboBoxModel != null)
-          entityComboBoxModel.refresh();
+        final EntityEditModel detailEditModel = detailModel.getEditModel();
+        if (detailEditModel.containsComboBoxModel(foreignKeyProperty))
+          detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
       }
     }
   }

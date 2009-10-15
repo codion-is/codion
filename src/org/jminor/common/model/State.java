@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -153,7 +154,7 @@ public class State {
    */
   public static class StateGroup {
 
-    private final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
+    private final List<WeakReference<State>> members = Collections.synchronizedList(new ArrayList<WeakReference<State>>());
 
     /**
      * Adds a state to this state group via a WeakReference,
