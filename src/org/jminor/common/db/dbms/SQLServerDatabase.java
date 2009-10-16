@@ -14,9 +14,18 @@ import java.util.Properties;
  */
 public class SQLServerDatabase implements Dbms {
 
-  private final DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");//105
-
-  private final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//120
+  private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("MM-dd-yyyy");//105
+    }
+  };
+  private static final ThreadLocal timestampFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//120
+    }
+  };
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
@@ -41,8 +50,8 @@ public class SQLServerDatabase implements Dbms {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "convert(datetime, '" + TIMESTAMP_FORMAT.format(value) + "', 120)" :
-            "convert(datetime, '" + DATE_FORMAT.format(value) + "', 105)";
+            "convert(datetime, '" + ((DateFormat) timestampFormat.get()).format(value) + "', 120)" :
+            "convert(datetime, '" + ((DateFormat) dateFormat.get()).format(value) + "', 105)";
   }
 
   /** {@inheritDoc} */

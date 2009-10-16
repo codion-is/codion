@@ -11,15 +11,18 @@ import java.util.Properties;
 
 public class H2Database implements Dbms {
 
-  /**
-   * The date format used
-   */
-  private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-  /**
-   * The date format for timestamps
-   */
-  private DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd");
+    }
+  };
+  private static final ThreadLocal timestampFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+  };
 
   private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
@@ -46,8 +49,8 @@ public class H2Database implements Dbms {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "PARSEDATETIME('" + TIMESTAMP_FORMAT.format(value) + "','yyyy-MM-dd HH:mm:ss')" :
-            "PARSEDATETIME('" + DATE_FORMAT.format(value) + "','yyyy-MM-dd')";
+            "PARSEDATETIME('" + ((DateFormat) timestampFormat.get()).format(value) + "','yyyy-MM-dd HH:mm:ss')" :
+            "PARSEDATETIME('" + ((DateFormat) dateFormat.get()).format(value) + "','yyyy-MM-dd')";
   }
 
   /** {@inheritDoc} */

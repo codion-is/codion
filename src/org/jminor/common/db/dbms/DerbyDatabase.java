@@ -12,8 +12,18 @@ import java.util.Properties;
 
 public class DerbyDatabase implements Dbms {
 
-  private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-  private DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd");
+    }
+  };
+  private static final ThreadLocal timestampFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+  };
 
   private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
@@ -39,7 +49,7 @@ public class DerbyDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return "DATE('" + (isTimestamp ? TIMESTAMP_FORMAT.format(value) : DATE_FORMAT.format(value)) + "')";
+    return "DATE('" + (isTimestamp ? ((DateFormat)timestampFormat.get()).format(value) : ((DateFormat)dateFormat.get()).format(value)) + "')";
   }
 
   /** {@inheritDoc} */

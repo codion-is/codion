@@ -3,18 +3,26 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.model.formats.ShortDashDateFormat;
-import org.jminor.common.model.formats.TimestampFormat;
-
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
 public class PostgreSQLDatabase implements Dbms {
 
-  private static final DateFormat TIMESTAMP_FORMAT = new TimestampFormat();
-  private static final DateFormat DATE_FORMAT = new ShortDashDateFormat();
+  private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("dd-MM-yyyy");
+    }
+  };
+  private static final ThreadLocal timestampFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    }
+  };
 
   /** {@inheritDoc} */
   public String getDatabaseType() {
@@ -39,8 +47,8 @@ public class PostgreSQLDatabase implements Dbms {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "to_date('" + TIMESTAMP_FORMAT.format(value) + "', 'DD-MM-YYYY HH24:MI')" :
-            "to_date('" + DATE_FORMAT.format(value) + "', 'DD-MM-YYYY')";
+            "to_date('" + ((DateFormat) timestampFormat.get()).format(value) + "', 'DD-MM-YYYY HH24:MI')" :
+            "to_date('" + ((DateFormat) dateFormat.get()).format(value) + "', 'DD-MM-YYYY')";
   }
 
   /** {@inheritDoc} */

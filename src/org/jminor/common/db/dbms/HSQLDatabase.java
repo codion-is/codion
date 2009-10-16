@@ -12,15 +12,18 @@ import java.util.Properties;
 
 public class HSQLDatabase implements Dbms {
 
-  /**
-   * The date format used
-   */
-  private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-  /**
-   * The date format for timestamps
-   */
-  private final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final ThreadLocal dateFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd");
+    }
+  };
+  private static final ThreadLocal timestampFormat = new ThreadLocal() {
+    @Override
+    protected synchronized Object initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+  };
 
   private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
 
@@ -46,7 +49,7 @@ public class HSQLDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return "'" + (isTimestamp ? TIMESTAMP_FORMAT.format(value) : DATE_FORMAT.format(value)) + "'";
+    return "'" + (isTimestamp ? ((DateFormat) timestampFormat.get()).format(value) : ((DateFormat) dateFormat.get()).format(value)) + "'";
   }
 
   /** {@inheritDoc} */

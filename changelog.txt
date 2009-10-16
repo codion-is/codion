@@ -872,3 +872,4 @@
   ICriteria toString renamed to asString
   Database.get() removed and createInstance() added
   Dbms instance is propogated all the way down to DbConnection instead of relying on the static Database.get() method
+  Dbms.getSqlDateString() implementations made thread safe using ThreadLocal DateFormats
