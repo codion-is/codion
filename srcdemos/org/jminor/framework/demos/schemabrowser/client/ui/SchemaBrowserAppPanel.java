@@ -3,9 +3,12 @@
  */
 package org.jminor.framework.demos.schemabrowser.client.ui;
 
+import org.jminor.common.db.User;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.schemabrowser.beans.SchemaModel;
@@ -32,6 +35,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
 
+  @Override
+  protected EntityApplicationModel initializeApplicationModel(final User user) throws UserCancelException {
+    return new SchemaBrowserAppModel(user);
+  }
+
   public static void main(final String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -39,7 +47,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    startApplication("Schema Browser", SchemaBrowserAppPanel.class, SchemaBrowserAppModel.class,
-            null, false, UiUtil.getSize(0.5));
+    startApplication("Schema Browser", new SchemaBrowserAppPanel(), null, false, UiUtil.getSize(0.5));
   }
 }

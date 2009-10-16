@@ -4,9 +4,11 @@
 package org.jminor.framework.demos.petstore.client.ui;
 
 import org.jminor.common.db.User;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.AddressModel;
@@ -49,6 +51,11 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
     Util.setDefaultLoggingLevel(Level.DEBUG);
   }
 
+  @Override
+  protected EntityApplicationModel initializeApplicationModel(final User user) throws UserCancelException {
+    return new PetstoreAppModel(user);
+  }
+
   public static void main(final String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -56,7 +63,6 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    startApplication("The Pet Store", PetstoreAppPanel.class, PetstoreAppModel.class,
-            null, false, UiUtil.getSize(0.8), new User("scott", "tiger"));
+    startApplication("The Pet Store", new PetstoreAppPanel(), null, false, UiUtil.getSize(0.8), new User("scott", "tiger"));
   }
 }

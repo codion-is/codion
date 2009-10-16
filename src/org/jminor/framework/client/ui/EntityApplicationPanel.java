@@ -44,7 +44,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,13 +97,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * @param applicationModel the application model this application panel should use
+   * @param user the user used when initializing the application model
+   * @throws org.jminor.common.model.UserCancelException in case the initialization is cancelled
    */
-  public void initialize(final EntityApplicationModel applicationModel) {
-    if (applicationModel == null)
-      throw new RuntimeException("Unable to initialize application panel without application model");
+  public void initialize(final User user) throws UserCancelException {
+    if (user == null)
+      throw new RuntimeException("Unable to initialize application panel without a user");
 
-    this.applicationModel = applicationModel;
+    this.applicationModel = initializeApplicationModel(user);
     setUncaughtExceptionHandler();
     initializeUI();
     initializeActiveEntityPanel();
@@ -149,53 +149,45 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public static void startApplication(final String frameCaption,
-                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final EntityApplicationPanel applicationPanel,
                                       final String iconName, final boolean maximize, final Dimension frameSize) {
-    startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, frameSize, null);
+    startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, null);
   }
 
   public static void startApplication(final String frameCaption,
-                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final EntityApplicationPanel applicationPanel,
                                       final String iconName, final boolean maximize, final Dimension frameSize,
                                       final User defaultUser) {
-    startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, frameSize,
-            defaultUser, true);
+    startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, defaultUser, true);
   }
 
   public static void startApplication(final String frameCaption,
-                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final EntityApplicationPanel applicationPanel,
                                       final String iconName, final boolean maximize, final Dimension frameSize,
                                       final User defaultUser, final boolean northToolBar) {
-    startApplication(frameCaption, applicationPanelClass, applicationModelClass, iconName, maximize, frameSize,
-            defaultUser, northToolBar, true);
+    startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, defaultUser, northToolBar, true);
   }
 
   public static void startApplication(final String frameCaption,
-                                      final Class<? extends EntityApplicationPanel> applicationPanelClass,
-                                      final Class<? extends EntityApplicationModel> applicationModelClass,
+                                      final EntityApplicationPanel applicationPanel,
                                       final String iconName, final boolean maximize, final Dimension frameSize,
                                       final User defaultUser, final boolean northToolBar, final boolean showFrame) {
     log.info(frameCaption + " starting");
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(applicationPanelClass, iconName) :
+    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(applicationPanel.getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
     frame.setIconImage(applicationIcon.getImage());
     JDialog initializationDialog = null;
     boolean retry = true;
     while (retry) {
       try {
-        final EntityApplicationPanel applicationPanel = constructApplicationPanel(applicationPanelClass);
-        final User user = applicationPanel.isLoginRequired() ?
-                getUser(frameCaption, defaultUser, applicationPanelClass.getSimpleName(), applicationIcon) : new User("", "");
+        final User user = applicationPanel.getUser(frameCaption, defaultUser, applicationPanel.getClass().getSimpleName(), applicationIcon);
 
         final long now = System.currentTimeMillis();
         initializationDialog = showInitializationDialog(frame, applicationPanel, applicationIcon, frameCaption);
 
-        applicationPanel.initialize(applicationPanel.constructApplicationModel(applicationModelClass, user));
+        applicationPanel.initialize(user);
 
         final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
         prepareFrame(frame, applicationPanel, frameTitle, maximize, northToolBar, true, frameSize);
@@ -207,7 +199,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
         retry = false;//successful startup
-        Util.setDefaultUserName(applicationPanelClass.getSimpleName(), user.getUsername());
+        Util.setDefaultUserName(applicationPanel.getClass().getSimpleName(), user.getUsername());
       }
       catch (UserCancelException uce) {
         System.exit(0);
@@ -591,17 +583,21 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     });
   }
 
-  protected EntityApplicationModel constructApplicationModel(
-          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserCancelException {
-    try {
-      return applicationModelClass.getConstructor(User.class).newInstance(user);
+  protected abstract EntityApplicationModel initializeApplicationModel(final User user) throws UserCancelException;
+
+  protected User getUser(final String frameCaption, final User defaultUser, final String applicationIdentifier,
+                         final ImageIcon applicationIcon) throws UserCancelException {
+    if (isLoginRequired()) {
+      final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
+              new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
+              applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
+      if (user.getUsername() == null || user.getUsername().length() == 0)
+        throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
+
+      return user;
     }
-    catch (InvocationTargetException te) {
-      throw new RuntimeException(te.getTargetException());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+
+    return new User("", "");
   }
 
   private JScrollPane initializeApplicationTree() {
@@ -820,19 +816,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
-  private static EntityApplicationPanel constructApplicationPanel(
-          final Class<? extends EntityApplicationPanel> applicationPanelClass) {
-    try {
-      return applicationPanelClass.getConstructor().newInstance();
-    }
-    catch (InvocationTargetException te) {
-      throw new RuntimeException(te.getTargetException());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   private static JDialog showInitializationDialog(final JFrame owner, final EntityApplicationPanel applicationPanel,
                                                   final Icon icon, final String initializationMessage) {
     final String message = initializationMessage == null ? "Initializing Application" : initializationMessage;
@@ -850,18 +833,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private static String getUserInfo(final User user, final String dbSid) {
     return getUsername(user.getUsername().toUpperCase()) + (dbSid != null ? "@" + dbSid.toUpperCase() : "");
-  }
-
-  private static User getUser(final String frameCaption, final User defaultUser,
-                              final String applicationIdentifier, final ImageIcon applicationIcon)
-          throws UserCancelException {
-    final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-            new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
-            applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-    if (user.getUsername() == null || user.getUsername().length() == 0)
-      throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
-
-    return user;
   }
 
   private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,

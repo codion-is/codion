@@ -875,3 +875,6 @@
   Dbms.getSqlDateString() implementations made thread safe using ThreadLocal DateFormats
   EntityApplicationPanel.constructApplicationModel() made non-static and protected
   EntityDbLocalProvider.disconnect() does not revalidate an invalid connection before trying to disconnect it
+  EntityApplicationPanel.constructApplicationModel() made abstract and renamed to initializeApplicationModel
+  EntityApplicationPanel.startApplication() signature changed accordingly
+  EntityApplicationPanel.getUser() made non-static and protected
