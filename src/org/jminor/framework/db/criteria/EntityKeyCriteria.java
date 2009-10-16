@@ -70,8 +70,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  @Override
-  public String toString() {
+  public String asString() {
     return getConditionString();
   }
 

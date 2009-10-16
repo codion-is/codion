@@ -4,7 +4,6 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.AuthenticationException;
-import org.jminor.common.db.Database;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
@@ -12,6 +11,7 @@ import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -58,12 +58,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /**
    * Constructs a new EntityDbConnection instance
+   * @param database the Dbms instance
    * @param user the user used for connecting to the database
    * @throws AuthenticationException in case the user credentials are not accepted
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
-  public EntityDbConnection(final User user) throws AuthenticationException, ClassNotFoundException {
-    super(user);
+  public EntityDbConnection(final Dbms database, final User user) throws AuthenticationException, ClassNotFoundException {
+    super(database, user);
+    EntityUtil.initializeDatabase(database);
   }
 
   /** {@inheritDoc} */
@@ -87,7 +89,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
         if (idSource.isAutoIncrement())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
-                  queryInteger(Database.get().getAutoIncrementValueSQL(
+                  queryInteger(getDatabase().getAutoIncrementValueSQL(
                           EntityRepository.getEntityIdSource(entityID))), false);
 
         keys.add(entity.getPrimaryKey());
@@ -106,7 +108,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       catch (SQLException ex) {
         log.error(this, ex);
       }
-      throw new DbException(e, sql);
+      throw new DbException(e, sql, getDatabase().getErrorMessage(e));
     }
   }
 
@@ -210,7 +212,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     catch (SQLException sqle) {
       log.info(sql);
       log.error(this, sqle);
-      throw new DbException(sqle, sql);
+      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
     }
     finally {
       removeCacheQueriesRequest();
@@ -228,7 +230,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return query(sql, getPropertyResultPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle, sql);
+      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -238,7 +240,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return queryObjects(statement, fetchCount);
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle, statement);
+      throw new DbException(sqle, statement, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -251,7 +253,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               criteria.getWhereClause(), null));
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle, sql);
+      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -294,7 +296,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-      throw new DbException(sqle, statement);
+      throw new DbException(sqle, statement, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -316,7 +318,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-      throw new DbException(sqle, statement);
+      throw new DbException(sqle, statement, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -352,7 +354,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       }
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle);
+      throw new DbException(sqle, null, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -365,7 +367,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               EntityUtil.getWhereCondition(entity));
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle);
+      throw new DbException(sqle, null, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -442,7 +444,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         log.error(this, ex);
       }
 
-      throw new DbException(sqle, sql);
+      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
     }
   }
 
@@ -500,7 +502,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         sql = EntityRepository.getEntityIdSource(entityID);
         break;
       case SEQUENCE:
-        sql = Database.get().getSequenceSQL(EntityRepository.getEntityIdSource(entityID));
+        sql = getDatabase().getSequenceSQL(EntityRepository.getEntityIdSource(entityID));
         break;
       default:
         throw new IllegalArgumentException(idSource + " does not represent a queried ID source");
@@ -509,7 +511,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return queryInteger(sql);
     }
     catch (SQLException sqle) {
-      throw new DbException(sqle, sql);
+      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
     }
   }
 

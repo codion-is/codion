@@ -5,6 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -59,8 +60,9 @@ public class EntityDbConnectionTest extends TestCase {
     final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, doubleValue,
             stringValue, dateValue, timestampValue, booleanValue, referencedEntityValue);
     //assert dml
-    final String shortDateStringSql = Database.get().getSQLDateString(dateValue, false);
-    final String longDateStringSql = Database.get().getSQLDateString(timestampValue, true);
+    final Dbms database = Database.createInstance();
+    final String shortDateStringSql = database.getSQLDateString(dateValue, false);
+    final String longDateStringSql = database.getSQLDateString(timestampValue, true);
     assertEquals("insert into " + EntityTestDomain.T_DETAIL
                     + "(id, int, double, string, date, timestamp, boolean, entity_id)"
                     + " values(1, 2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2)",

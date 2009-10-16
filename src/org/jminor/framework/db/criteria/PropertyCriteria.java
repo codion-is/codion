@@ -68,8 +68,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  @Override
-  public String toString() {
+  public String asString() {
     return getConditionString();
   }
 
@@ -159,7 +158,7 @@ public class PropertyCriteria implements Criteria, Serializable {
               ((Property.ForeignKeyProperty) property).getReferenceProperties().get(keyProperty.getIndex()),
               searchType, entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
 
-    return set.toString();
+    return set.asString();
   }
 
   private String getMultiColumnForeignKeyCriteriaString() {
@@ -177,7 +176,7 @@ public class PropertyCriteria implements Criteria, Serializable {
         set.addCriteria(pkSet);
       }
 
-      return set.toString();
+      return set.asString();
     }
     else
       return getInList(((Property.ForeignKeyProperty) property).getReferenceProperties().get(0).getPropertyID(),

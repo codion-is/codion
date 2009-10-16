@@ -36,23 +36,6 @@ public class DbException extends Exception  {
   /**
    * Constructs a new DbException instance
    * @param cause the cause of the exception
-   */
-  public DbException(final SQLException cause) {
-    this(cause, null);
-  }
-
-  /**
-   * Constructs a new DbException instance
-   * @param cause the cause of the exception
-   * @param statement the sql statement which caused the exception
-   */
-  public DbException(final SQLException cause, final String statement) {
-    this(cause, statement, getMessage(cause));
-  }
-
-  /**
-   * Constructs a new DbException instance
-   * @param cause the cause of the exception
    * @param statement the sql statement which caused the exception
    * @param message the exception message
    */
@@ -66,11 +49,5 @@ public class DbException extends Exception  {
    */
   public String getStatement() {
     return this.statement;
-  }
-
-  private static String getMessage(final SQLException exception) {
-    final String message = Database.get().getErrorMessage(exception);
-
-    return message == null ? exception.getMessage() : message;
   }
 }

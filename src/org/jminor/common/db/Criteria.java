@@ -10,6 +10,5 @@ public interface Criteria {
   /**
    * @return a SQL where condition string without the 'where' keyword
    */
-  @Override
-  public String toString();
+  public String asString();
 }

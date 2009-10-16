@@ -165,7 +165,8 @@ public interface Dbms {
   public boolean supportsIsValid();
 
   /**
-   * Returns a user friendly error message for the given exception
+   * Returns a user friendly error message for the given exception,
+   * otherwise simply return the message from <code>exception</code>
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception
    */

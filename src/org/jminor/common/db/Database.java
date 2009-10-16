@@ -7,27 +7,25 @@ import org.jminor.common.db.dbms.Dbms;
 
 public class Database {
 
-  private static Dbms instance;
-
-  public static Dbms get() {
-    if (instance == null) {
-      try {
-        final String dbmsClassName = System.getProperty(Dbms.DATABASE_IMPLEMENTATION_CLASS, getDbmsClassName());
-        instance = (Dbms) Class.forName(dbmsClassName).newInstance();
-      }
-      catch (RuntimeException iae) {
-        throw iae;
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+  public static Dbms createInstance() {
+    try {
+      final String dbmsClassName = System.getProperty(Dbms.DATABASE_IMPLEMENTATION_CLASS, getDbmsClassName());
+      return (Dbms) Class.forName(dbmsClassName).newInstance();
     }
+    catch (RuntimeException iae) {
+      throw iae;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-    return instance;
+  public static String getDatabaseType() {
+    return System.getProperty(Dbms.DATABASE_TYPE);
   }
 
   private static String getDbmsClassName() {
-    final String dbType = System.getProperty(Dbms.DATABASE_TYPE);
+    final String dbType = getDatabaseType();
     if (dbType == null)
       throw new RuntimeException("Required system property missing: " + Dbms.DATABASE_TYPE);
 

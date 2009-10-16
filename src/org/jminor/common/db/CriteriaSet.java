@@ -81,15 +81,14 @@ public class CriteriaSet implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  @Override
-  public String toString() {
+  public String asString() {
     if (criterias.size() == 0)
       return "";
 
     final StringBuilder criteriaString = new StringBuilder(criterias.size() > 1 ? "(" : "");
     int i = 0;
     for (final Criteria criteria : criterias) {
-      criteriaString.append(criteria.toString());
+      criteriaString.append(criteria.asString());
       if (i++ < criterias.size()-1)
         criteriaString.append(conjunction.toString());
     }

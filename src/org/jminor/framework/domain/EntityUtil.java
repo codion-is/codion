@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.Database;
 import org.jminor.common.db.IdSource;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.framework.Configuration;
 
 import java.util.ArrayList;
@@ -21,7 +21,21 @@ import java.util.Set;
  */
 public class EntityUtil {
 
+  private static Dbms database;
+
   private EntityUtil() {}
+
+  public static void initializeDatabase(final Dbms database) {
+    if (EntityUtil.database == null)
+      EntityUtil.database = database;
+  }
+
+  public static Dbms getDatabase() {
+    if (database == null)
+      throw new RuntimeException("No Dbms instance has been initialized for EntityUtil");
+
+    return database;
+  }
 
   /**
    * @param entities the entities
@@ -194,7 +208,7 @@ public class EntityUtil {
       case DATE:
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + property + ", got: " + value.getClass());
-        return Database.get().getSQLDateString((Date) value, property.getPropertyType() == Type.TIMESTAMP);
+        return getDatabase().getSQLDateString((Date) value, property.getPropertyType() == Type.TIMESTAMP);
       case CHAR:
         return "'" + value + "'";
       case STRING:

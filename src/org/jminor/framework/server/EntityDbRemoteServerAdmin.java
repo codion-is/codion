@@ -89,7 +89,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   /** {@inheritDoc} */
   public String getDatabaseURL() {
-    return Database.get().getURL(null);
+    return server.getDatabase().getURL(null);
   }
 
   /** {@inheritDoc} */
@@ -205,7 +205,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   /** {@inheritDoc} */
   public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
-    EntityDbRemoteAdapter.setConnectionPoolSettings(settings.getUser(), settings);
+    EntityDbRemoteAdapter.setConnectionPoolSettings(server.getDatabase(), settings.getUser(), settings);
   }
 
   /** {@inheritDoc} */
@@ -264,7 +264,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   public static void main(String[] args) {
     try {
       System.setSecurityManager(new RMISecurityManager());
-      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(initializeRegistry()), SERVER_ADMIN_PORT,
+      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(Database.createInstance(), initializeRegistry()), SERVER_ADMIN_PORT,
               EntityDbRemoteServer.SECURE_CONNECTION);
     }
     catch (Exception e) {

@@ -25,24 +25,24 @@ public class PropertySearchModelTest extends TestCase {
     assertEquals(property, model.getProperty());
     model.setSearchType(SearchType.LIKE);
     model.setUpperBound("upper");
-    assertEquals(property.getPropertyID() + " = '" + "upper'", model.getPropertyCriteria().toString());
+    assertEquals(property.getPropertyID() + " = '" + "upper'", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " <> '" + "upper'", model.getPropertyCriteria().toString());
+    assertEquals(property.getPropertyID() + " <> '" + "upper'", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.AT_MOST);
-    assertEquals(property.getPropertyID() + " >= '" + "upper'", model.getPropertyCriteria().toString());
+    assertEquals(property.getPropertyID() + " >= '" + "upper'", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.AT_LEAST);
-    assertEquals(property.getPropertyID() + " <= '" + "upper'", model.getPropertyCriteria().toString());
+    assertEquals(property.getPropertyID() + " <= '" + "upper'", model.getPropertyCriteria().asString());
 
     model.setSearchType(SearchType.WITHIN_RANGE);
     model.setLowerBound("lower");
     assertEquals("(" + property.getPropertyID() + " >= '" + "lower' and "
-            + property.getPropertyID() + " <= '" + "upper')", model.getPropertyCriteria().toString());
+            + property.getPropertyID() + " <= '" + "upper')", model.getPropertyCriteria().asString());
 
     model.setSearchType(SearchType.LIKE);
     model.setAutomaticWildcard(true);
     final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-    assertEquals(property.getPropertyID() + " like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().toString());
+    assertEquals(property.getPropertyID() + " like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().asString());
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().toString());
+    assertEquals(property.getPropertyID() + " not like '" + wildcard + "upper" + wildcard + "'", model.getPropertyCriteria().asString());
   }
 }

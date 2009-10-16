@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.dbms.Dbms;
+
 import junit.framework.TestCase;
 
 import java.sql.ResultSet;
@@ -14,6 +16,8 @@ import java.util.List;
  * This test relies on the emp/dept schema
  */
 public class DbConnectionTest extends TestCase {
+
+  private final Dbms database = Database.createInstance();
 
   /*public void testBlob() throws Exception {
     DbConnection dbConnection = null;
@@ -47,7 +51,7 @@ public class DbConnectionTest extends TestCase {
   public void testQueryObjects() throws Exception {
     DbConnection dbConnection = null;
     try {
-      dbConnection = new DbConnection(new User("scott", "tiger"));
+      dbConnection = new DbConnection(database, new User("scott", "tiger"));
       final List<List> result = dbConnection.queryObjects("select deptno, dname, loc from scott.dept", 1);
       assertTrue(result.size() == 1);
       final List row = result.get(0);
@@ -65,7 +69,7 @@ public class DbConnectionTest extends TestCase {
   public void testQuery() throws Exception {
     DbConnection dbConnection = null;
     try {
-      dbConnection = new DbConnection(new User("scott", "tiger"));
+      dbConnection = new DbConnection(database, new User("scott", "tiger"));
       final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
           final List<List> result = new ArrayList<List>();
@@ -91,7 +95,7 @@ public class DbConnectionTest extends TestCase {
   public void testQueryInt() throws Exception {
     DbConnection dbConnection = null;
     try {
-      dbConnection = new DbConnection(new User("scott", "tiger"));
+      dbConnection = new DbConnection(database, new User("scott", "tiger"));
       final Integer ret = dbConnection.queryInteger("select deptno from scott.dept");
       assertNotNull("queryInteger should return a value", ret);
     }
@@ -104,7 +108,7 @@ public class DbConnectionTest extends TestCase {
   public void testQueryIntegers() throws Exception {
     DbConnection dbConnection = null;
     try {
-      dbConnection = new DbConnection(new User("scott", "tiger"));
+      dbConnection = new DbConnection(database, new User("scott", "tiger"));
       final List<Integer> ret = dbConnection.queryIntegers("select deptno from scott.dept");
       assertTrue("queryIntegers should return a value", ret.size() > 0);
     }
@@ -117,7 +121,7 @@ public class DbConnectionTest extends TestCase {
   public void testQueryStrings() throws Exception {
     DbConnection dbConnection = null;
     try {
-      dbConnection = new DbConnection(new User("scott", "tiger"));
+      dbConnection = new DbConnection(database, new User("scott", "tiger"));
       final List<String> ret = dbConnection.queryStrings("select dname from scott.dept");
       assertTrue("queryStrings should return a value", ret.size() > 0);
     }

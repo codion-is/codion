@@ -54,10 +54,12 @@ public class EntityDbConnectionPool {
   private long requestsPerSecondTime = System.currentTimeMillis();
 
   private final User user;
+  private final Dbms database;
   private boolean closed = false;
   private int poolStatisticsSize = 1000;
 
-  public EntityDbConnectionPool(final User user, final ConnectionPoolSettings settings) {
+  public EntityDbConnectionPool(final Dbms database, final User user, final ConnectionPoolSettings settings) {
+    this.database = database;
     this.user = user;
     final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (sid != null && sid.length() != 0)
@@ -93,7 +95,7 @@ public class EntityDbConnectionPool {
           connectionsCreated++;
           if (log.isDebugEnabled())
             log.debug("$$$$ creating a new connection for " + user);
-          checkInConnection(new EntityDbConnection(user));
+          checkInConnection(new EntityDbConnection(database, user));
         }
       }
       int retryCount = 0;

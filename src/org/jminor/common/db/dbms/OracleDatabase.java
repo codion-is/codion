@@ -107,6 +107,6 @@ public class OracleDatabase implements Dbms {
     if (ERROR_CODE_MAP.containsKey(exception.getErrorCode()))
       return ERROR_CODE_MAP.get(exception.getErrorCode());
 
-    return null;
+    return exception.getMessage();
   }
 }

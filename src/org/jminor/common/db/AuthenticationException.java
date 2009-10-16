@@ -15,6 +15,6 @@ public class AuthenticationException extends DbException {
   }
 
   public AuthenticationException(final String username, final SQLException cause) {
-    super(cause, username);
+    super(cause, username, cause.getMessage());
   }
 }

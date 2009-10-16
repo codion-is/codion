@@ -108,6 +108,6 @@ public class HSQLDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getErrorMessage(final SQLException exception) {
-    return null;
+    return exception.getMessage();
   }
 }

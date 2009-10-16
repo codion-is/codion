@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.tools;
 
+import org.jminor.common.db.Database;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
@@ -54,7 +55,7 @@ public class DomainClassGenerator {
     if (schema == null || schema.length() == 0)
       throw new IllegalArgumentException("Schema must be specified");
 
-    final DbConnection dbConnection = new DbConnection(new User(username, password));
+    final DbConnection dbConnection = new DbConnection(Database.createInstance(), new User(username, password));
     try {
       final DatabaseMetaData metaData = dbConnection.getConnection().getMetaData();
       final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();

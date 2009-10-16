@@ -125,7 +125,7 @@ public class EntityCriteria implements Serializable {
    * @return a where clause base on this criteria
    */
   public String getWhereClause(final boolean includeWhereKeyword) {
-    final String criteriaString = criteria == null ? "" : criteria.toString();
+    final String criteriaString = criteria == null ? "" : criteria.asString();
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
   }

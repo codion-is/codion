@@ -27,15 +27,22 @@ public class EntityDbLocalProvider implements EntityDbProvider {
    */
   protected final User user;
 
+  protected final Dbms database;
+
   /**
    * The EntityDb instance used by this db provider
    */
-  protected EntityDb entityDb;
+  protected EntityDbConnection entityDb;
 
   private final Properties connectionProperties = new Properties();
 
   public EntityDbLocalProvider(final User user) {
+    this(user, Database.createInstance());
+  }
+
+  public EntityDbLocalProvider(final User user, final Dbms database) {
     this.user = user;
+    this.database = database;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
     final String sid = System.getProperty(Dbms.DATABASE_SID);
@@ -53,8 +60,8 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   /** {@inheritDoc} */
   public void disconnect() {
     try {
-      getEntityDb().disconnect();
-      Database.get().shutdownEmbedded(connectionProperties);
+      getEntityDb().disconnect();//todo not use get
+      entityDb.getDatabase().shutdownEmbedded(connectionProperties);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -80,6 +87,6 @@ public class EntityDbLocalProvider implements EntityDbProvider {
 
   private void connect() throws ClassNotFoundException, AuthenticationException {
     log.debug("Initializing connection for " + user);
-    entityDb = new EntityDbConnection(user);
+    entityDb = new EntityDbConnection(database, user);
   }
 }

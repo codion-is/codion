@@ -55,6 +55,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   public final Event evtLoggingOut = new Event();
 
   private final ClientInfo clientInfo;
+  private final Dbms database;
   private final long creationDate = System.currentTimeMillis();
   private final EntityDb loggingEntityDbProxy;
   private EntityDbConnection entityDbConnection;
@@ -67,13 +68,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
           Collections.synchronizedMap(new HashMap<User, EntityDbConnectionPool>());
 
   static {
-    final String initialPoolUsers = System.getProperty(Configuration.SERVER_POOLING_INITIAL);
-    if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
-      for (final String username : initialPoolUsers.split(",")) {
-        final User user = new User(username, null);
-        setConnectionPoolSettings(user, ConnectionPoolSettings.getDefault(user));
-      }
-    }
     new Timer(true).schedule(new TimerTask() {
       @Override
       public void run() {
@@ -82,12 +76,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }, new Date(), 15000);
   }
 
-  public EntityDbRemoteAdapter(final ClientInfo clientInfo, final int dbRemotePort,
+  public EntityDbRemoteAdapter(final Dbms database, final ClientInfo clientInfo, final int dbRemotePort,
                                final boolean loggingEnabled) throws RemoteException {
     super(dbRemotePort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (connectionPools.containsKey(clientInfo.getUser()))
       connectionPools.get(clientInfo.getUser()).setPassword(clientInfo.getUser().getPassword());
+    this.database = database;
     this.clientInfo = clientInfo;
     final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (sid != null && sid.length() != 0)
@@ -473,10 +468,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     return connectionPools.get(user).getConnectionPoolSettings();
   }
 
-  public static void setConnectionPoolSettings(final User user, final ConnectionPoolSettings settings) {
+  public static void setConnectionPoolSettings(final Dbms database, final User user, final ConnectionPoolSettings settings) {
     EntityDbConnectionPool pool = connectionPools.get(user);
     if (pool == null)
-      connectionPools.put(user, new EntityDbConnectionPool(user, settings));
+      connectionPools.put(user, new EntityDbConnectionPool(database, user, settings));
     else
       pool.setConnectionPoolSettings(settings);
   }
@@ -503,6 +498,16 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   public static void setWarningThreshold(final int threshold) {
     RequestCounter.warningThreshold = threshold;
+  }
+
+  static void initConnectionPools(final Dbms database) {
+    final String initialPoolUsers = System.getProperty(Configuration.SERVER_POOLING_INITIAL);
+    if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
+      for (final String username : initialPoolUsers.split(",")) {
+        final User user = new User(username, null);
+        setConnectionPoolSettings(database, user, ConnectionPoolSettings.getDefault(user));
+      }
+    }
   }
 
   private EntityDb initializeProxy() {
@@ -558,7 +563,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     if (entityDbConnection == null)
-      entityDbConnection = new EntityDbConnection(clientInfo.getUser());
+      entityDbConnection = new EntityDbConnection(database, clientInfo.getUser());
 
     return entityDbConnection;
   }

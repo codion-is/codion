@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -38,6 +39,7 @@ public class DbConnection {
   private final Properties connectionProperties = new Properties();
   private final Map<String, List> queryCache = new HashMap<String, List>();
   private final User user;
+  private final Dbms database;
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -65,17 +67,19 @@ public class DbConnection {
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
+   * @param database the database
    * @param user the user for the db-connection
    * @throws AuthenticationException in case the user does not have access to the database
    * @throws ClassNotFoundException in case the database driver was not found
    */
-  public DbConnection(final User user) throws ClassNotFoundException, AuthenticationException {
+  public DbConnection(final Dbms database, final User user) throws ClassNotFoundException, AuthenticationException {
     if (user == null)
       throw new IllegalArgumentException("DbConnection requires a non-null user instance");
     if (user.getUsername() == null)
       throw new IllegalArgumentException("Username must be provided");
     if (user.getPassword() == null)
       throw new IllegalArgumentException("Password must be provided");
+    this.database = database;
     this.user = user;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
@@ -94,7 +98,7 @@ public class DbConnection {
    */
   public boolean isConnectionValid() {
     try {
-      return Database.get().supportsIsValid() ? connection.isValid(0) : checkConnection();
+      return database.supportsIsValid() ? connection.isValid(0) : checkConnection();
     }
     catch (SQLException e) {
       log.error(this, e);
@@ -450,6 +454,10 @@ public class DbConnection {
     return connection;
   }
 
+  public Dbms getDatabase() {
+    return database;
+  }
+
   private void revalidate() throws AuthenticationException, ClassNotFoundException {
     try {
       if (connection != null) {
@@ -462,9 +470,9 @@ public class DbConnection {
     }
     catch (SQLException e) {/**/}
 
-    Database.get().loadDriver();
+    database.loadDriver();
     try {
-      connection = DriverManager.getConnection(Database.get().getURL(connectionProperties), connectionProperties);
+      connection = DriverManager.getConnection(database.getURL(connectionProperties), connectionProperties);
       connection.setAutoCommit(false);
       checkConnectionStatement = connection.createStatement();
       connected = true;
