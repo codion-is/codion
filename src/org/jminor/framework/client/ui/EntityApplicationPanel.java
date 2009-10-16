@@ -195,7 +195,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         final long now = System.currentTimeMillis();
         initializationDialog = showInitializationDialog(frame, applicationPanel, applicationIcon, frameCaption);
 
-        applicationPanel.initialize(constructApplicationModel(applicationModelClass, user));
+        applicationPanel.initialize(applicationPanel.constructApplicationModel(applicationModelClass, user));
 
         final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
         prepareFrame(frame, applicationPanel, frameTitle, maximize, northToolBar, true, frameSize);
@@ -591,6 +591,19 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     });
   }
 
+  protected EntityApplicationModel constructApplicationModel(
+          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) throws UserCancelException {
+    try {
+      return applicationModelClass.getConstructor(User.class).newInstance(user);
+    }
+    catch (InvocationTargetException te) {
+      throw new RuntimeException(te.getTargetException());
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private JScrollPane initializeApplicationTree() {
     final JTree tree = new JTree(createApplicationTree(mainApplicationPanels));
     tree.setShowsRootHandles(true);
@@ -811,19 +824,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           final Class<? extends EntityApplicationPanel> applicationPanelClass) {
     try {
       return applicationPanelClass.getConstructor().newInstance();
-    }
-    catch (InvocationTargetException te) {
-      throw new RuntimeException(te.getTargetException());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static EntityApplicationModel constructApplicationModel(
-          final Class<? extends EntityApplicationModel> applicationModelClass, final User user) {
-    try {
-      return applicationModelClass.getConstructor(User.class).newInstance(user);
     }
     catch (InvocationTargetException te) {
       throw new RuntimeException(te.getTargetException());

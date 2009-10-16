@@ -41,6 +41,10 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   }
 
   public EntityDbLocalProvider(final User user, final Dbms database) {
+    if (user == null)
+      throw new RuntimeException("User is null");
+    if (database == null)
+      throw new RuntimeException("Database is null");
     this.user = user;
     this.database = database;
     this.connectionProperties.put("user", user.getUsername());
@@ -60,8 +64,10 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   /** {@inheritDoc} */
   public void disconnect() {
     try {
-      getEntityDb().disconnect();//todo not use get
-      entityDb.getDatabase().shutdownEmbedded(connectionProperties);
+      if (entityDb != null && entityDb.isConnectionValid()) {
+        entityDb.disconnect();//todo not use get
+        entityDb.getDatabase().shutdownEmbedded(connectionProperties);
+      }
     }
     catch (Exception e) {
       throw new RuntimeException(e);
