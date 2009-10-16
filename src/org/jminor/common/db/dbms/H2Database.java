@@ -54,6 +54,8 @@ public class H2Database implements Dbms {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
+      if (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0)
+        connectionProperties.put("user","sa");
       final String host = System.getProperty(DATABASE_HOST);
       if (host == null || host.length() == 0)
         throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());

@@ -106,7 +106,8 @@ public class ExceptionDialog extends JDialog {
     setTitle(title);
 
     final String name = translateExceptionClass(throwable.getClass());
-    descriptionLabel.setText(message == null ? name : message);
+    descriptionLabel.setText(message == null ? name : truncateMessage(message));
+    descriptionLabel.setToolTipText(message);
 
     exceptionField.setText(name);
     messageArea.setText(throwable.getMessage());
@@ -125,6 +126,13 @@ public class ExceptionDialog extends JDialog {
     detailsArea.setCaretPosition(0);
     initDetailView(false);
     setVisible(true);
+  }
+
+  private String truncateMessage(final String message) {
+    if (message.length() > 100)
+      return message.substring(0, 100) + "...";
+
+    return message;
   }
 
   private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {

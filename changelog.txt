@@ -867,3 +867,5 @@
   Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT added
   DomainClassGenerator improved quite a lot
   Configuration constants changed
+  H2Database now uses "sa" for username in embedded mode if none is specified
+  ExceptionDialog now truncates the shown message to 100 characters
