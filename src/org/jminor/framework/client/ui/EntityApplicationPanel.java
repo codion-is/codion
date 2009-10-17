@@ -182,7 +182,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     boolean retry = true;
     while (retry) {
       try {
-        final User user = applicationPanel.getUser(frameCaption, defaultUser, applicationPanel.getClass().getSimpleName(), applicationIcon);
+        final User user = applicationPanel.isLoginRequired() ?
+                applicationPanel.getUser(frameCaption, defaultUser, applicationPanel.getClass().getSimpleName(), applicationIcon) :
+                new User("", "");
 
         final long now = System.currentTimeMillis();
         initializationDialog = showInitializationDialog(frame, applicationPanel, applicationIcon, frameCaption);
@@ -218,14 +220,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           System.exit(0);
       }
     }
-  }
-
-  public static String getUsername(final String username) {
-    final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
-    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase()))
-      return username.substring(usernamePrefix.length(), username.length());
-
-    return username;
   }
 
   public static void exit(final EntityApplicationPanel panel) throws UserCancelException {
@@ -272,8 +266,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
-  protected List<ControlSet> getMainMenuControlSet() {
-    final List<ControlSet> menuControlSets = new ArrayList<ControlSet>();
+  protected ControlSet getMainMenuControlSet() {
+    final ControlSet menuControlSets = new ControlSet();
     menuControlSets.add(getFileControlSet());
     menuControlSets.add(getViewControlSet());
     menuControlSets.add(getToolsControlSet());
@@ -281,9 +275,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     if (supportModelControlSet != null)
       menuControlSets.add(supportModelControlSet);
     final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
-    if (additionalMenus != null && additionalMenus.size() > 0)
-      menuControlSets.addAll(additionalMenus);
-
+    if (additionalMenus != null) {
+      for (final ControlSet set : additionalMenus)
+        menuControlSets.add(set);
+    }
     menuControlSets.add(getHelpControlSet());
 
     return menuControlSets;
@@ -587,17 +582,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   protected User getUser(final String frameCaption, final User defaultUser, final String applicationIdentifier,
                          final ImageIcon applicationIcon) throws UserCancelException {
-    if (isLoginRequired()) {
-      final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-              new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
-              applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
-      if (user.getUsername() == null || user.getUsername().length() == 0)
-        throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
+    final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
+            new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
+            applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
+    if (user.getUsername() == null || user.getUsername().length() == 0)
+      throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
 
-      return user;
-    }
-
-    return new User("", "");
+    return user;
   }
 
   private JScrollPane initializeApplicationTree() {
@@ -838,6 +829,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
                                             final JPanel owner) {
     showEntityPanelDialog(panelProvider, dbProvider, owner, false);
+  }
+
+  private static String getUsername(final String username) {
+    final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
+    if (usernamePrefix != null && usernamePrefix.length() > 0 && username.toUpperCase().startsWith(usernamePrefix.toUpperCase()))
+      return username.substring(usernamePrefix.length(), username.length());
+
+    return username;
   }
 
   private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,

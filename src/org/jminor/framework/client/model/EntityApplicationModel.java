@@ -20,7 +20,10 @@ public abstract class EntityApplicationModel {
   private final List<? extends EntityModel> mainApplicationModels;
 
   public EntityApplicationModel(final User user, final String appID) {
-    this(EntityDbProviderFactory.createEntityDbProvider(user, createClientKey(appID, user)));
+    loadDomainModel();
+    this.dbProvider = initializeDbProvider(user, appID);
+    this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
+    bindEvents();
   }
 
   public EntityApplicationModel(final EntityDbProvider dbProvider) {
@@ -136,6 +139,10 @@ public abstract class EntityApplicationModel {
    * @return a list containing the main application models
    */
   protected abstract List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider);
+
+  protected EntityDbProvider initializeDbProvider(final User user, final String appID) {
+    return EntityDbProviderFactory.createEntityDbProvider(user, createClientKey(appID, user));
+  }
 
   protected void bindEvents() {}
 }
