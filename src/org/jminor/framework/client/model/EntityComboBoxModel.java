@@ -149,16 +149,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @param primaryKey the primary key of the entity to select
    */
   public void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
-    final int size = getSize();
-    for (int i = 0; i < size; i++) {
-      final Object item = getElementAt(i);
-      if (item instanceof Entity) {
-        if (((Entity) item).getPrimaryKey().equals(primaryKey)) {
-          super.setSelectedItem(item);
-          return;
-        }
-      }
-    }
+    final int indexOfKey = getIndexOfKey(primaryKey);
+    if (indexOfKey >= 0)
+      setSelectedItem(getElementAt(indexOfKey));
   }
 
   /**
@@ -183,8 +176,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
     if (item == null || !(item instanceof Entity))
       super.setSelectedItem(null);
-    else
-      setSelectedEntityByPrimaryKey(((Entity)toSelect).getPrimaryKey());
+    else {
+      final int indexOfKey = getIndexOfKey(((Entity)toSelect).getPrimaryKey());
+      if (indexOfKey >= 0)
+        super.setSelectedItem(getElementAt(indexOfKey));
+      else
+        super.setSelectedItem(toSelect);
+    }
   }
 
   /** {@inheritDoc} */
@@ -268,5 +266,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected int getIndexOfKey(final Entity.Key primaryKey) {
+    final int size = getSize();
+    for (int index = 0; index < size; index++) {
+      final Object item = getElementAt(index);
+      if (item instanceof Entity) {
+        if (((Entity) item).getPrimaryKey().equals(primaryKey)) {
+          return index;
+        }
+      }
+    }
+    return -1;
   }
 }

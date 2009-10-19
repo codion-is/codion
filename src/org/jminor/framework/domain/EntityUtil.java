@@ -41,7 +41,7 @@ public class EntityUtil {
    * @param entities the entities
    * @return a List of entities that have been modified
    */
-  public static List<Entity> getModifiedEntities(final List<Entity> entities) {
+  public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
     final List<Entity> modifiedEntities = new ArrayList<Entity>();
     for (final Entity entity : entities)
       if (entity.isModified())

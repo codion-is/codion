@@ -85,7 +85,8 @@ public interface EntityDb {
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
-   * in the same order as they were received
+   * in the same order as they were received.
+   * If the primary key value of a entity is specified the id generation is disregarded.
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities
    * @throws org.jminor.common.db.DbException in case of a db exception

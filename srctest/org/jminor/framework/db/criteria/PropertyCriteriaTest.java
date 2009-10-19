@@ -10,6 +10,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.ShortDashDateFormat;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
@@ -18,6 +19,10 @@ import junit.framework.TestCase;
 import java.util.Date;
 
 public class PropertyCriteriaTest extends TestCase {
+
+  static {
+    EntityUtil.initializeDatabase(Database.createInstance());
+  }
 
   public PropertyCriteriaTest() {
     new EmpDept();

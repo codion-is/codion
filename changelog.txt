@@ -878,3 +878,6 @@
   EntityApplicationPanel.constructApplicationModel() made abstract and renamed to initializeApplicationModel
   EntityApplicationPanel.startApplication() signature changed accordingly
   EntityApplicationPanel.getUser() made non-static and protected
+  EntityComboBoxModel now selectes item whether or not it exists in the model
+  EntityApplicationPanel.saveUser() added
+  EntityDbConnection.insert() now disregards id generation if primary key values are already set

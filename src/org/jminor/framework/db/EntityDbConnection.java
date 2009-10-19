@@ -82,12 +82,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           throw new DbException("Can not insert a read only entity");
 
         final IdSource idSource = EntityRepository.getIdSource(entityID);
-        if (idSource.isQueried())
+        if (idSource.isQueried() && entity.getPrimaryKey().isNull())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNextIdValue(entityID, idSource), false);
 
         execute(sql = getInsertSQL(entity));
 
-        if (idSource.isAutoIncrement())
+        if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
                   queryInteger(getDatabase().getAutoIncrementValueSQL(
                           EntityRepository.getEntityIdSource(entityID))), false);

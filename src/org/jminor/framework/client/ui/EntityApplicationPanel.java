@@ -201,7 +201,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
         retry = false;//successful startup
-        Util.setDefaultUserName(applicationPanel.getClass().getSimpleName(), user.getUsername());
+        applicationPanel.saveUser(user);
       }
       catch (UserCancelException uce) {
         System.exit(0);
@@ -589,6 +589,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new RuntimeException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
 
     return user;
+  }
+
+  /**
+   * Saves the user info so that it can be used as default the next time this application is started.
+   * This default implementation saves the username in the user preferences.
+   * @param user the user
+   */
+  protected void saveUser(final User user) {
+    Util.setDefaultUserName(getClass().getSimpleName(), user.getUsername());
   }
 
   private JScrollPane initializeApplicationTree() {
