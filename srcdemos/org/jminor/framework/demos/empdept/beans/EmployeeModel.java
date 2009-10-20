@@ -42,7 +42,7 @@ public class EmployeeModel extends EntityModel {
           //Only show the president and managers
           managerModel.setEntityCriteria(new EntityCriteria(EmpDept.T_EMPLOYEE,
                   new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
-                          SearchType.IN, "MANAGER", "PRESIDENT")));
+                          SearchType.LIKE, "MANAGER", "PRESIDENT")));
 
           return managerModel;
         }

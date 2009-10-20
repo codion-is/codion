@@ -183,7 +183,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
     return selectMany(new EntityCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
-            values != null && values.length > 1 ? SearchType.IN : SearchType.LIKE, values)));
+            SearchType.LIKE, values)));
   }
 
   /** {@inheritDoc} */

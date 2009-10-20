@@ -138,8 +138,6 @@ public class PropertyCriteria implements Criteria, Serializable {
         return "(" + columnName + " >= " + sqlValue + " and " + columnName +  " <= " + sqlValue2 + ")";
       case OUTSIDE_RANGE:
         return "(" + columnName + " <= "+ sqlValue + " or " + columnName + " >= " + sqlValue2 + ")";
-      case IN:
-        return getInList(columnName, false);
     }
 
     throw new IllegalArgumentException("Unknown search type" + searchType);

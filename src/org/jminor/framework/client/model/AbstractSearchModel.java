@@ -334,7 +334,6 @@ public abstract class AbstractSearchModel {
       case AT_LEAST:
       case AT_MOST:
       case NOT_LIKE:
-      case IN:
         return 1;
       case WITHIN_RANGE:
       case OUTSIDE_RANGE:

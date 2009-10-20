@@ -881,3 +881,4 @@
   EntityComboBoxModel now selectes item whether or not it exists in the model
   EntityApplicationPanel.saveUser() added
   EntityDbConnection.insert() now disregards id generation if primary key values are already set
+  SearchType.IN removed

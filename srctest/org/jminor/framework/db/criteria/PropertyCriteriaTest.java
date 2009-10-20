@@ -89,7 +89,7 @@ public class PropertyCriteriaTest extends TestCase {
     value = "min";
     value2 = "max";
     String value3 = "bla";
-    testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value, value2, value3);
     assertEquals("Condition should fit", "(colName in ('"+value+"', '"+value2+"', '"+value3+"'))", testCrit.asString());
 
     //
@@ -141,7 +141,7 @@ public class PropertyCriteriaTest extends TestCase {
     value = "min";
     value2 = "max";
     value3 = "bla";
-    testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3).setCaseSensitive(false);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value, value2, value3).setCaseSensitive(false);
     assertEquals("Condition should fit", "(upper(colName) in (upper('" + value + "'), upper('" + value2
             + "'), upper('" + value3 + "')))", testCrit.asString());
   }
@@ -169,7 +169,7 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit",  "(colName <= 2 or colName >= 4)", testCrit.asString());
 
     //in
-    testCrit = new PropertyCriteria(property, SearchType.IN, 2, 3, 4);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, 2, 3, 4);
     assertEquals("Condition should fit", "(colName in (2, 3, 4))", testCrit.asString());
   }
 
@@ -198,7 +198,7 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit",  "(colName <= 2.2 or colName >= 4.2)", testCrit.asString());
 
     //in
-    testCrit = new PropertyCriteria(property, SearchType.IN, 2.2, 3.2, 4.2);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, 2.2, 3.2, 4.2);
     assertEquals("Condition should fit", "(colName in (2.2, 3.2, 4.2))", testCrit.asString());
   }
 
@@ -225,7 +225,7 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit",  "(colName <= 'd' or colName >= 'f')", testCrit.asString());
 
     //in
-    testCrit = new PropertyCriteria(property, SearchType.IN, 'a', 'b', 'c');
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, 'a', 'b', 'c');
     assertEquals("Condition should fit", "(colName in ('a', 'b', 'c'))", testCrit.asString());
   }
 
@@ -280,7 +280,7 @@ public class PropertyCriteriaTest extends TestCase {
 
     //string, in
     final Date value3 = new ShortDashDateFormat().parse("12-10-2001");
-    testCrit = new PropertyCriteria(property, SearchType.IN, value, value2, value3);
+    testCrit = new PropertyCriteria(property, SearchType.LIKE, value, value2, value3);
     requiredValue = "(colName in ("
             + database.getSQLDateString(value, false) + ", "
             + database.getSQLDateString(value2, false) + ", "
@@ -303,7 +303,7 @@ public class PropertyCriteriaTest extends TestCase {
             set2.asString());
 
     final Property property4 = new Property("colName4", Type.CHAR);
-    final PropertyCriteria criteria4 = new PropertyCriteria(property4, SearchType.IN, 'a', 'b', 'c');
+    final PropertyCriteria criteria4 = new PropertyCriteria(property4, SearchType.LIKE, 'a', 'b', 'c');
     final CriteriaSet set3 = new CriteriaSet(CriteriaSet.Conjunction.OR, set2, criteria4);
     assertEquals("Set condition should fit", "(((colName1 = 'value' or colName2 <= 10) and colName3 <> 34.5)"
             + " or (colName4 in ('a', 'b', 'c')))", set3.asString());
