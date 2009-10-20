@@ -882,3 +882,4 @@
   EntityApplicationPanel.saveUser() added
   EntityDbConnection.insert() now disregards id generation if primary key values are already set
   SearchType.IN removed
+  EntityCriteria.propertyCriteria() added

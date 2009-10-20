@@ -4,6 +4,8 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
+import org.jminor.common.model.SearchType;
+import org.jminor.framework.domain.EntityRepository;
 
 import java.io.Serializable;
 
@@ -135,5 +137,29 @@ public class EntityCriteria implements Serializable {
    */
   public String getOrderByClause() {
     return orderByClause;
+  }
+
+  public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
+                                                final SearchType searchType, final Object... values) {
+    return propertyCriteria(entityID, propertyID, searchType, -1, values);
+  }
+
+  public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
+                                                final SearchType searchType, final String orderByClause,
+                                                final Object... values) {
+    return propertyCriteria(entityID, propertyID, searchType, orderByClause, -1, values);
+  }
+
+  public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
+                                                final SearchType searchType, final int fetchCount,
+                                                final Object... values) {
+    return propertyCriteria(entityID, propertyID, searchType, null, fetchCount, values);
+  }
+
+  public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
+                                                final SearchType searchType, final String orderByClause,
+                                                final int fetchCount, final Object... values) {
+    return new EntityCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
+            searchType, values), orderByClause, fetchCount);
   }
 }

@@ -11,11 +11,9 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
@@ -40,9 +38,8 @@ public class EmployeeModel extends EntityModel {
           final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
                   getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
           //Only show the president and managers
-          managerModel.setEntityCriteria(new EntityCriteria(EmpDept.T_EMPLOYEE,
-                  new PropertyCriteria(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
-                          SearchType.LIKE, "MANAGER", "PRESIDENT")));
+          managerModel.setEntityCriteria(EntityCriteria.propertyCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
+                  SearchType.LIKE, "MANAGER", "PRESIDENT"));
 
           return managerModel;
         }

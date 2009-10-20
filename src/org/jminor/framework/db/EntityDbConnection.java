@@ -17,7 +17,6 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
-import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -151,8 +150,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
-    return selectSingle(new EntityCriteria(entityID,
-            new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID), SearchType.LIKE, value)));
+    return selectSingle(EntityCriteria.propertyCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
   /** {@inheritDoc} */
@@ -182,8 +180,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
-    return selectMany(new EntityCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
-            SearchType.LIKE, values)));
+    return selectMany(EntityCriteria.propertyCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
   /** {@inheritDoc} */
