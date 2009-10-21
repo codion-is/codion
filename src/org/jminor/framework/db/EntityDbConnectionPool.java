@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
 import org.jminor.common.db.ConnectionPoolStatistics;
@@ -79,7 +78,7 @@ public class EntityDbConnectionPool {
     }, new Date(), 2550);
   }
 
-  public EntityDbConnection checkOutConnection() throws ClassNotFoundException, AuthenticationException {
+  public EntityDbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.DbUtil;
@@ -59,10 +58,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * Constructs a new EntityDbConnection instance
    * @param database the Dbms instance
    * @param user the user used for connecting to the database
-   * @throws AuthenticationException in case the user credentials are not accepted
+   * @throws SQLException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
-  public EntityDbConnection(final Dbms database, final User user) throws AuthenticationException, ClassNotFoundException {
+  public EntityDbConnection(final Dbms database, final User user) throws SQLException, ClassNotFoundException {
     super(database, user);
     EntityUtil.initializeDatabase(database);
   }

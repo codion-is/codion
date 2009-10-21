@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.provider;
 
-import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Dbms;
@@ -13,6 +12,7 @@ import org.jminor.framework.db.EntityDbConnection;
 
 import org.apache.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -65,7 +65,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   public void disconnect() {
     try {
       if (entityDb != null && entityDb.isConnectionValid()) {
-        entityDb.disconnect();//todo not use get
+        entityDb.disconnect();
         entityDb.getDatabase().shutdownEmbedded(connectionProperties);
       }
     }
@@ -91,7 +91,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     }
   }
 
-  private void connect() throws ClassNotFoundException, AuthenticationException {
+  private void connect() throws ClassNotFoundException, SQLException {
     log.debug("Initializing connection for " + user);
     entityDb = new EntityDbConnection(database, user);
   }

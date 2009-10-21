@@ -869,7 +869,7 @@
   Configuration constants changed
   H2Database now uses "sa" for username in embedded mode if none is specified
   ExceptionDialog now truncates the shown message to 100 characters
-  ICriteria toString renamed to asString
+  Criteria toString renamed to asString
   Database.get() removed and createInstance() added
   Dbms instance is propogated all the way down to DbConnection instead of relying on the static Database.get() method
   Dbms.getSqlDateString() implementations made thread safe using ThreadLocal DateFormats
@@ -883,3 +883,4 @@
   EntityDbConnection.insert() now disregards id generation if primary key values are already set
   SearchType.IN removed
   EntityCriteria.propertyCriteria() added
+  AuthenticationException removed, replaced with SQLException

@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.ExceptionDialog;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -67,8 +69,9 @@ public class ClientTypeMonitorPanel extends JPanel {
     return cmbMaintainanceCheck;
   }
 
-  private void handleException(final Exception exeption) {
-    ExceptionDialog.handleException(exeption, this);
+  private void handleException(final Exception exception) {
+    ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(this),
+            Messages.get(Messages.EXCEPTION), exception.getMessage(), exception);
   }
 
   private ControlSet getPopupCommands() {

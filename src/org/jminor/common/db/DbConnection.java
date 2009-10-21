@@ -69,10 +69,10 @@ public class DbConnection {
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
    * @param database the database
    * @param user the user for the db-connection
-   * @throws AuthenticationException in case the user does not have access to the database
+   * @throws SQLException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the database driver was not found
    */
-  public DbConnection(final Dbms database, final User user) throws ClassNotFoundException, AuthenticationException {
+  public DbConnection(final Dbms database, final User user) throws ClassNotFoundException, SQLException {
     if (user == null)
       throw new IllegalArgumentException("DbConnection requires a non-null user instance");
     if (user.getUsername() == null)
@@ -458,7 +458,7 @@ public class DbConnection {
     return database;
   }
 
-  private void revalidate() throws AuthenticationException, ClassNotFoundException {
+  private void revalidate() throws ClassNotFoundException, SQLException {
     try {
       if (connection != null) {
         log.info("Revalidating connection: " + user.getUsername());
@@ -471,15 +471,10 @@ public class DbConnection {
     catch (SQLException e) {/**/}
 
     database.loadDriver();
-    try {
-      connection = DriverManager.getConnection(database.getURL(connectionProperties), connectionProperties);
-      connection.setAutoCommit(false);
-      checkConnectionStatement = connection.createStatement();
-      connected = true;
-    }
-    catch (SQLException e) {
-      throw new AuthenticationException(connectionProperties.getProperty("user"), e);
-    }
+    connection = DriverManager.getConnection(database.getURL(connectionProperties), connectionProperties);
+    connection.setAutoCommit(false);
+    checkConnectionStatement = connection.createStatement();
+    connected = true;
   }
 
   private boolean checkConnection() throws SQLException {

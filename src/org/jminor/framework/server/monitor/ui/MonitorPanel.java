@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
@@ -23,6 +22,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 /**
  * User: Björn Darri
@@ -132,7 +132,7 @@ public class MonitorPanel extends JPanel {
     }
   }
 
-  private static void authenticate(final User user) throws AuthenticationException, ClassNotFoundException {
+  private static void authenticate(final User user) throws SQLException, ClassNotFoundException {
 //    DbConnection db = null;
 //    try {
 //      db = new DbConnection(user);

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.db.AuthenticationException;
 import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
@@ -27,7 +26,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -215,20 +213,6 @@ public class ExceptionDialog extends JDialog {
     }
     catch (IOException e) {
       e.printStackTrace();
-    }
-  }
-
-  public static void handleException(final Throwable throwable, final Container dialogParent) {
-    if (throwable instanceof UserCancelException)
-      return;
-
-    if (throwable instanceof RuntimeException && throwable.getCause() instanceof AuthenticationException)
-      handleException(throwable.getCause(), dialogParent);
-    else {
-      if (!(throwable instanceof AuthenticationException))
-        throwable.printStackTrace();
-      showExceptionDialog(UiUtil.getParentWindow(dialogParent),
-              Messages.get(Messages.EXCEPTION), throwable.getMessage(), throwable);
     }
   }
 
