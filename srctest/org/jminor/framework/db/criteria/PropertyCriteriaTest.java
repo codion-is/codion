@@ -61,17 +61,17 @@ public class PropertyCriteriaTest extends TestCase {
     //string, like
     value = "val%ue";
     testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
-    assertEquals("Condition should fit",  "colName like '" + value + "'", testCrit.getConditionString());
+    assertEquals("Condition should fit",  "colName like '" + value + "'", testCrit.asString());
 
     //string, <>
     value = "value";
     testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
-    assertEquals("Condition should fit", "colName <> '" + value + "'", testCrit.getConditionString());
+    assertEquals("Condition should fit", "colName <> '" + value + "'", testCrit.asString());
 
     //string, not like
     value = "val%ue";
     testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value);
-    assertEquals("Condition should fit",  "colName not like '" + value + "'", testCrit.getConditionString());
+    assertEquals("Condition should fit",  "colName not like '" + value + "'", testCrit.asString());
 
     //string, between
     value = "min";
@@ -111,17 +111,17 @@ public class PropertyCriteriaTest extends TestCase {
     //string, like
     value = "val%ue";
     testCrit = new PropertyCriteria(property, SearchType.LIKE, value).setCaseSensitive(false);
-    assertEquals("Condition should fit",  "upper(colName) like upper('" + value + "')", testCrit.getConditionString());
+    assertEquals("Condition should fit",  "upper(colName) like upper('" + value + "')", testCrit.asString());
 
     //string, <>
     value = "value";
     testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value).setCaseSensitive(false);
-    assertEquals("Condition should fit", "upper(colName) <> upper('" + value + "')", testCrit.getConditionString());
+    assertEquals("Condition should fit", "upper(colName) <> upper('" + value + "')", testCrit.asString());
 
     //string, not like
     value = "val%ue";
     testCrit = new PropertyCriteria(property, SearchType.NOT_LIKE, value).setCaseSensitive(false);
-    assertEquals("Condition should fit",  "upper(colName) not like upper('" + value + "')", testCrit.getConditionString());
+    assertEquals("Condition should fit",  "upper(colName) not like upper('" + value + "')", testCrit.asString());
 
     //string, between
     value = "min";

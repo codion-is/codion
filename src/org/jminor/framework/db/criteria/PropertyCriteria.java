@@ -34,7 +34,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   /**
    * The values used in this criteria
    */
-  private final List<Object> values = new ArrayList<Object>();
+  private final List<Object> values;
 
   /**
    * The search type used in this criteria
@@ -62,14 +62,42 @@ public class PropertyCriteria implements Criteria, Serializable {
       throw new IllegalArgumentException("Property criteria requires a non-null property");
     if (searchType == null)
       throw new IllegalArgumentException("Property criteria requires a non-null search type");
+    if (values != null && values.length == 0)
+      throw new RuntimeException("No values specified for PropertyCriteria: " + property);
     this.property = property;
     this.searchType = searchType;
-    setValues(values);
+    this.values = initValues(values);
   }
 
   /** {@inheritDoc} */
   public String asString() {
-    return getConditionString();
+    if (property instanceof Property.ForeignKeyProperty)
+      return getForeignKeyCriteriaString();
+
+    final boolean isNullCriteria = values.size() == 1 && Entity.isValueNull(property.getPropertyType(), values.get(0));
+    final String columnIdentifier = initColumnIdentifier(isNullCriteria);
+    if (isNullCriteria)
+      return columnIdentifier + (searchType == SearchType.LIKE ? " is null" : " is not null");
+
+    final String sqlValue = getSqlValue(EntityUtil.getSQLStringValue(property, values.get(0)));
+    final String sqlValue2 = values.size() == 2 ? getSqlValue(EntityUtil.getSQLStringValue(property, values.get(1))) : null;
+
+    switch(searchType) {
+      case LIKE:
+        return getLikeCondition(columnIdentifier, sqlValue);
+      case NOT_LIKE:
+        return getNotLikeCondition(columnIdentifier, sqlValue);
+      case AT_LEAST:
+        return columnIdentifier + " <= " + sqlValue;
+      case AT_MOST:
+        return columnIdentifier + " >= " + sqlValue;
+      case WITHIN_RANGE:
+        return "(" + columnIdentifier + " >= " + sqlValue + " and " + columnIdentifier +  " <= " + sqlValue2 + ")";
+      case OUTSIDE_RANGE:
+        return "(" + columnIdentifier + " <= "+ sqlValue + " or " + columnIdentifier + " >= " + sqlValue2 + ")";
+    }
+
+    throw new IllegalArgumentException("Unknown search type" + searchType);
   }
 
   /**
@@ -87,60 +115,6 @@ public class PropertyCriteria implements Criteria, Serializable {
    */
   public boolean isCaseSensitive() {
     return caseSensitive;
-  }
-
-  /**
-   * @return the SQL condition string this criteria represents, i.e. propertyName = 'value',
-   * this string should not contain the 'where' keyword
-   */
-  String getConditionString() {
-    if (property instanceof Property.ForeignKeyProperty)
-      return getForeignKeyCriteriaString();
-
-    String columnName;
-    if (property instanceof Property.SubqueryProperty)
-      columnName = "("+((Property.SubqueryProperty)property).getSubQuery()+")";
-    else
-      columnName = property.getPropertyID();
-
-    if (values.size() == 0)
-      throw new RuntimeException("No values specified for PropertyCriteria: " + property);
-    if (values.size() == 1 && Entity.isValueNull(property.getPropertyType(), values.get(0)))
-      return columnName + (searchType == SearchType.LIKE ? " is null" : " is not null");
-
-    String sqlValue = EntityUtil.getSQLStringValue(property, values.get(0));
-    String sqlValue2 = values.size() == 2 ? EntityUtil.getSQLStringValue(property, values.get(1)) : null;
-
-    if (property.getPropertyType() == Type.STRING && !caseSensitive) {
-      columnName = "upper(" + columnName + ")";
-      sqlValue = "upper(" + sqlValue + ")";
-      sqlValue2 = "upper(" + sqlValue2 + ")";
-    }
-
-    switch(searchType) {
-      case LIKE:
-        if (values.size() > 1)
-          return getInList(columnName, false);
-        else
-          return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
-                ? " like " + sqlValue : " = " + sqlValue);
-      case NOT_LIKE:
-        if (values.size() > 1)
-          return getInList(columnName, true);
-        else
-          return columnName + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
-                ? " not like " + sqlValue : " <> " + sqlValue);
-      case AT_LEAST:
-        return columnName + " <= " + sqlValue;
-      case AT_MOST:
-        return columnName + " >= " + sqlValue;
-      case WITHIN_RANGE:
-        return "(" + columnName + " >= " + sqlValue + " and " + columnName +  " <= " + sqlValue2 + ")";
-      case OUTSIDE_RANGE:
-        return "(" + columnName + " <= "+ sqlValue + " or " + columnName + " >= " + sqlValue2 + ")";
-    }
-
-    throw new IllegalArgumentException("Unknown search type" + searchType);
   }
 
   private String getForeignKeyCriteriaString() {
@@ -181,6 +155,18 @@ public class PropertyCriteria implements Criteria, Serializable {
               searchType == SearchType.NOT_LIKE);
   }
 
+  private String getNotLikeCondition(final String columnIdentifier, final String sqlValue) {
+    return values.size() > 1 ? getInList(columnIdentifier, true) :
+            columnIdentifier + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
+            ? " not like " + sqlValue : " <> " + sqlValue);
+  }
+
+  private String getLikeCondition(final String columnIdentifier, final String sqlValue) {
+    return values.size() > 1 ? getInList(columnIdentifier, false) :
+            columnIdentifier + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
+            ? " like " + sqlValue : " = " + sqlValue);
+  }
+
   private boolean containsWildcard(final String val) {
     return val != null && val.length() > 0 && val.indexOf(wildcard) > -1;
   }
@@ -208,14 +194,17 @@ public class PropertyCriteria implements Criteria, Serializable {
 
   /**
    * @param values the values to use in this criteria
+   * @return a list containing the values
    */
   @SuppressWarnings({"unchecked"})
-  private void setValues(final Object... values) {
-    this.values.clear();
+  private List<Object> initValues(final Object... values) {
+    final List<Object> ret = new ArrayList<Object>();
     if (values == null)
-      this.values.add(null);
+      ret.add(null);
     else
-      this.values.addAll(getValues(values));
+      ret.addAll(getValues(values));
+
+    return ret;
   }
 
   @SuppressWarnings({"unchecked"})
@@ -226,5 +215,22 @@ public class PropertyCriteria implements Criteria, Serializable {
       return EntityUtil.getPrimaryKeys((Collection) Arrays.asList(values));
     else
       return Arrays.asList(values);
+  }
+
+  private String initColumnIdentifier(final boolean isNullCriteria) {
+    String columnName;
+    if (property instanceof Property.SubqueryProperty)
+      columnName = "("+((Property.SubqueryProperty)property).getSubQuery()+")";
+    else
+      columnName = property.getPropertyID();
+
+    if (!isNullCriteria && property.getPropertyType() == Type.STRING && !caseSensitive)
+      columnName = "upper(" + columnName + ")";
+
+    return columnName;
+  }
+
+  private String getSqlValue(final String sqlStringValue) {
+    return property.getPropertyType() == Type.STRING && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
   }
 }

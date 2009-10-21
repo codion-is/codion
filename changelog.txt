@@ -884,3 +884,4 @@
   SearchType.IN removed
   EntityCriteria.propertyCriteria() added
   AuthenticationException removed, replaced with SQLException
+  PropertyCriteria refactored
