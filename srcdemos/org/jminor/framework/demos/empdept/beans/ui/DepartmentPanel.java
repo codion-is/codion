@@ -8,7 +8,6 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -20,6 +19,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityUtil;
 
 import javax.swing.JTextField;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -64,32 +64,31 @@ public class DepartmentPanel extends EntityPanel {
     return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
-        final JTextField txtDeptno =
-                createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
-        setDefaultFocusComponent(txtDeptno);
-        txtDeptno.setColumns(10);
+        final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
+        final JTextField txtDepartmentName = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
+        final JTextField txtDepartmentLocation = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
-        final JTextField txtName = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-        txtName.setColumns(10);
+        setDefaultFocusComponent(txtDepartmentNumber);
+        txtDepartmentNumber.setColumns(10);
 
         //we don't allow editing of the department number since it's a primary key
         getEditModel().stEntityNotNull.evtStateChanged.addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (getEditModel().stEntityNotNull.isActive()) {
-              txtDeptno.setEnabled(false);
-              setDefaultFocusComponent(txtName);
+              txtDepartmentNumber.setEnabled(false);
+              setDefaultFocusComponent(txtDepartmentName);
             }
             else {
-              txtDeptno.setEnabled(true);
-              setDefaultFocusComponent(txtDeptno);
+              txtDepartmentNumber.setEnabled(true);
+              setDefaultFocusComponent(txtDepartmentNumber);
             }
           }
         });
 
-        setLayout(new FlexibleGridLayout(3,1,5,5,true,false));
-        add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDeptno));
-        add(createControlPanel(EmpDept.DEPARTMENT_NAME, txtName));
-        add(createControlPanel(EmpDept.DEPARTMENT_LOCATION, UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION))));
+        setLayout(new GridLayout(3,1,5,5));
+        add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDepartmentNumber));
+        add(createControlPanel(EmpDept.DEPARTMENT_NAME, txtDepartmentName));
+        add(createControlPanel(EmpDept.DEPARTMENT_LOCATION, txtDepartmentLocation));
       }
     };
   }

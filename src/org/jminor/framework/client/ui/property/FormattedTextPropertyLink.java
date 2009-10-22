@@ -111,7 +111,7 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
                                   final String defaultToolTip) {
     final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && getProperty().isNullable());
     final String validationMessage = getValidationMessage(editModel);
-    textComponent.setBackground(validInput ? validBackground : invalidBackground);
+    textComponent.setBackground(validInput && validationMessage == null ? validBackground : invalidBackground);
     textComponent.setToolTipText(validationMessage == null ? defaultToolTip :
             (defaultToolTip != null && defaultToolTip.length() > 0 ? defaultToolTip + ": " : "") + validationMessage);
   }
