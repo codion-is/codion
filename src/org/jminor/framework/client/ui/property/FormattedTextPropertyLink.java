@@ -44,11 +44,7 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
     return format;
   }
 
-  /**
-   * Returns a valid property value based on the given text
-   * @param text the text to use to create a valid value
-   * @return a valid value
-   */
+  /** {@inheritDoc} */
   @Override
   protected Object valueFromText(final String text) {
     if (text == null)
@@ -62,6 +58,7 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected String getValueAsString(final Object value) {
     if (Entity.isValueNull(getProperty().getPropertyType(), value))
@@ -70,6 +67,7 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
     return format == null ? value.toString() : format.format(value);
   }
 
+  /** {@inheritDoc} */
   @Override
   protected String getText() {
     final String value = super.getText();
@@ -83,6 +81,7 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
     final Color defaultTextFieldBackground = textComponent.getBackground();

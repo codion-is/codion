@@ -96,7 +96,7 @@ public class DomainClassGenerator {
           builder.append(getPropertyDefinition(table, column))
                   .append(table.getColumns().indexOf(column) < table.getColumns().size()-1 ? ", " : "").append("\n");
         }
-        builder.append("    ));\n");
+        builder.append("    ));\n\n");
       }
       builder.append("  }\n");
 

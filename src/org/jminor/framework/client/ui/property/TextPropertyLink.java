@@ -126,16 +126,17 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /**
-   * Returns a valid property value based on the given text
-   * @param text the text to use to create a valid value
-   * @return a valid value
+   * Returns a property value based on the given text, if the text can not
+   * be parsed into a valid value, null is returned
+   * @param text the text from which to parse a value
+   * @return a value, null if the input text does not yield a valid value
    */
   protected Object valueFromText(final String text) {
     return text;
   }
 
   /**
-   * Returns a String version of the given value
+   * Returns a String representation of the given value object
    * @param value the value to return as String
    * @return a String representation of the given value
    */
@@ -151,6 +152,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
    * @param editModel the underlying edit model
    * @see Configuration#INVALID_VALUE_BACKGROUND_COLOR
    * @see EntityEditModel#isValid(org.jminor.framework.domain.Property, Object)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object)
    */
   protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
     final Color validBackgroundColor = textComponent.getBackground();
