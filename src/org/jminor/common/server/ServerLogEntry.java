@@ -3,10 +3,11 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.formats.ExactTimestampFormat;
+import org.jminor.common.model.formats.DateFormats;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Date;
 public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> {
 
   private static final long serialVersionUID = 1;
-  private static final DateFormat TIMESTAMP_FORMAT = new ExactTimestampFormat();
+  private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP);
 
   public String method;
   public String message;

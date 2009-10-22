@@ -63,6 +63,6 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    startApplication("The Pet Store", new PetstoreAppPanel(), null, false, UiUtil.getSize(0.8), new User("scott", "tiger"));
+    startApplication("The Pet Store", new PetstoreAppPanel(), null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 }

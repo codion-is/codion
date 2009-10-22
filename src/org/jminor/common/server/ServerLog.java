@@ -3,9 +3,10 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.formats.ExactTimestampFormat;
+import org.jminor.common.model.formats.DateFormats;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,14 +114,14 @@ public class ServerLog implements Serializable {
    * @return a formatted last access date
    */
   public String getLastAccessDateFormatted() {
-    return new ExactTimestampFormat().format(getLastAccessDate());
+    return new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP).format(getLastAccessDate());
   }
 
   /**
    * @return a formatted last exit date
    */
   public String getLastExitDateFormatted() {
-    return new ExactTimestampFormat().format(getLastExitDate());
+    return new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP).format(getLastExitDate());
   }
 
   /** {@inheritDoc} */

@@ -47,6 +47,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    startApplication("Emp-Dept", new EmpDeptAppPanel(), null, false, UiUtil.getSize(0.6), new User("scott", "tiger"));
+    startApplication("Emp-Dept", new EmpDeptAppPanel(), null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 }

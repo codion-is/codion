@@ -885,3 +885,6 @@
   EntityCriteria.propertyCriteria() added
   AuthenticationException removed, replaced with SQLException
   PropertyCriteria refactored
+  common.model.formats SimpleDateFormat classes deleted
+  common.model.formats.DateFormats added
+  UiUtil.getSize() renamed to getScreenSizeRatio()

@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.ConnectionPoolStatistics;
-import org.jminor.common.model.formats.FullTimestampFormat;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * User: Björn Darri
@@ -74,7 +75,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     txtPoolSize.setText(format.format(stats.getLiveConnectionCount()));
     txtCreated.setText(format.format(stats.getConnectionsCreated()));
     txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
-    txtCreatedDestroyedResetTime.setText(new FullTimestampFormat().format(stats.getResetDate()));
+    txtCreatedDestroyedResetTime.setText(new SimpleDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetDate()));
     txtRequested.setText(format.format(stats.getConnectionRequests()));
     final double prc = (double) stats.getConnectionRequestsDelayed()/(double) stats.getConnectionRequests()*100;
     txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())

@@ -1,8 +1,10 @@
 package org.jminor.framework.client.model.util;
 
-import org.jminor.common.model.formats.ShortDotDateFormat;
+import org.jminor.common.model.formats.DateFormats;
 
 import junit.framework.TestCase;
+
+import java.text.SimpleDateFormat;
 
 /**
  * User: Björn Darri
@@ -19,6 +21,7 @@ public class DateUtilTest extends TestCase {
 
     assertTrue("isDateValid should work with long date", DateUtil.isDateValid("03-10-1975 10:45", false, true));
 
-    assertTrue("isDateValid should work with a date format specified", DateUtil.isDateValid("03.10.1975", false, new ShortDotDateFormat()));
+    assertTrue("isDateValid should work with a date format specified",
+            DateUtil.isDateValid("03.10.1975", false, new SimpleDateFormat(DateFormats.SHORT_DOT)));
   }
 }

@@ -7,7 +7,7 @@ import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -16,6 +16,7 @@ import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PropertyCriteriaTest extends TestCase {
@@ -245,6 +246,8 @@ public class PropertyCriteriaTest extends TestCase {
   }
 
   public void testConditionDate() throws Exception {
+    final SimpleDateFormat dateFormat = new SimpleDateFormat(DateFormats.SHORT_DASH);
+
     final Dbms database = Database.createInstance();
     //string, =
     final Property property = new Property("colName", Type.DATE);
@@ -255,7 +258,7 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //string, =
-    Date value = new ShortDashDateFormat().parse("10-12-2004");
+    Date value = dateFormat.parse("10-12-2004");
     testCrit = new PropertyCriteria(property, SearchType.LIKE, value);
     String requiredValue =  "colName = " + database.getSQLDateString(value, false);
     assertEquals("Condition should fit", requiredValue, testCrit.asString());
@@ -266,7 +269,7 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", requiredValue, testCrit.asString());
 
     //string, between
-    Date value2 = new ShortDashDateFormat().parse("10-09-2001");
+    Date value2 = dateFormat.parse("10-09-2001");
     testCrit = new PropertyCriteria(property, SearchType.WITHIN_RANGE, value, value2);
     requiredValue =  "(colName >= " + database.getSQLDateString(value, false) + " and " +
             "colName <= " + database.getSQLDateString(value2, false) + ")";
@@ -279,7 +282,7 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", requiredValue, testCrit.asString());
 
     //string, in
-    final Date value3 = new ShortDashDateFormat().parse("12-10-2001");
+    final Date value3 = dateFormat.parse("12-10-2001");
     testCrit = new PropertyCriteria(property, SearchType.LIKE, value, value2, value3);
     requiredValue = "(colName in ("
             + database.getSQLDateString(value, false) + ", "

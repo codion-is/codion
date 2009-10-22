@@ -292,7 +292,11 @@ public class UiUtil {
     return frame;
   }
 
-  public static Dimension getSize(final double ratio) {
+  /**
+   * @param ratio a ratio, 0.0 - 1.0
+   * @return a Dimension which is the size of the available screen times ratio
+   */
+  public static Dimension getScreenSizeRatio(final double ratio) {
     final Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
 
     return new Dimension((int) (screen.getWidth() * ratio), (int) (screen.getHeight() * ratio));
@@ -314,7 +318,7 @@ public class UiUtil {
 
   public static void resizeWindow(final Window window, final double screenSizeRatio,
                                   final Dimension minimumSize) {
-    final Dimension ratioSize = getSize(screenSizeRatio);
+    final Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
     if (minimumSize != null)
       ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));
 

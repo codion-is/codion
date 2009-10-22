@@ -66,7 +66,7 @@ public class TextInputPanel extends JPanel {
     final AbstractAction action = new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
         final JTextArea txtArea = new JTextArea(textComponent.getText());
-        txtArea.setPreferredSize(txtAreaSize == null ? UiUtil.getSize(0.3) : txtAreaSize);
+        txtArea.setPreferredSize(txtAreaSize == null ? UiUtil.getScreenSizeRatio(0.3) : txtAreaSize);
         txtArea.setLineWrap(true);
         txtArea.setWrapStyleWord(true);
         final JScrollPane scroller = new JScrollPane(txtArea);

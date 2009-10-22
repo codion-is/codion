@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.formats.ShortDashDateFormat;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -69,7 +70,7 @@ public class EntityPropertyLinkTest extends TestCase {
   }
 
   public void testDatePropertyLink() throws ParseException {
-    final ShortDashDateFormat format = new ShortDashDateFormat();
+    final SimpleDateFormat format = new SimpleDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
     new DateTextPropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
             LinkType.READ_WRITE, format);

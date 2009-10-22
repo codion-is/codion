@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.formats.FullTimestampFormat;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerLogEntry;
 import org.jminor.common.ui.control.ControlFactory;
@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
       else
         log.append("Disconnected!");
 
-      txtCreationDate.setText(new FullTimestampFormat().format(new Date(model.getCreationDate())));
+      txtCreationDate.setText(new SimpleDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
     }
     else {
       txtCreationDate.setText("");

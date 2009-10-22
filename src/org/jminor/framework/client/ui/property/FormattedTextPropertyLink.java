@@ -10,7 +10,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.MaskFormatter;
 import java.awt.Color;
 import java.text.Format;
 import java.text.ParseException;
@@ -18,7 +17,7 @@ import java.text.ParseException;
 public class FormattedTextPropertyLink extends TextPropertyLink {
 
   private final Format format;
-  private final MaskFormatter formatter;
+  private final JFormattedTextField.AbstractFormatter formatter;
 
   /**
    * Instantiates a new FormattedTextPropertyLink
@@ -34,7 +33,7 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
                                    final LinkType linkType) {
     super(textComponent, editModel, property, immediateUpdate, linkType);
     this.format = format;
-    this.formatter = (MaskFormatter) textComponent.getFormatter();
+    this.formatter = textComponent.getFormatter();
     updateUI();
   }
 

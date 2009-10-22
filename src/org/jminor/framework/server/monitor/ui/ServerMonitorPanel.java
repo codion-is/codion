@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.formats.FullTimestampFormat;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -29,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 
 /**
  * User: Björn Darri
@@ -103,7 +104,7 @@ public class ServerMonitorPanel extends JPanel {
     final EntityDbServerAdmin server = model.getServer();
     contents.append("Server info:").append("\n");
     contents.append(server.getServerName()).append(" (").append(
-            new FullTimestampFormat().format(server.getStartDate())).append(")").append(
+            new SimpleDateFormat(DateFormats.FULL_TIMESTAMP).format(server.getStartDate())).append(")").append(
             " server/db port: ").append(server.getServerPort()).append("/").append(
             server.getServerDbPort()).append("\n").append("\n");
     contents.append("Database URL:").append("\n");
