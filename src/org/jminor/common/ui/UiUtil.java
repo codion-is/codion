@@ -409,7 +409,7 @@ public class UiUtil {
    * @param textField the text field
    * @return the text field
    */
-  public static JTextField makeUpperCase(final JTextField textField) {
+  public static JTextComponent makeUpperCase(final JTextComponent textField) {
     if (textField instanceof TextFieldPlus)
       return makeUpperCase((TextFieldPlus) textField);
 
@@ -431,7 +431,7 @@ public class UiUtil {
     return textField;
   }
 
-  public static JTextField makeUpperCase(final TextFieldPlus textField) {
+  public static TextFieldPlus makeUpperCase(final TextFieldPlus textField) {
     textField.setUpperCase(true);
     return textField;
   }
@@ -441,7 +441,7 @@ public class UiUtil {
    * @param textField the text field
    * @return the text field
    */
-  public static JTextField makeLowerCase(final JTextField textField) {
+  public static JTextComponent makeLowerCase(final JTextComponent textField) {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
       public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {

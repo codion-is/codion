@@ -7,16 +7,23 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.domain.Type;
 
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,20 +35,34 @@ import java.util.List;
 public class DomainClassGenerator {
 
   public static void main(String[] args) {
-    if (args.length < 4)
-      throw new IllegalArgumentException("Required arguments: schemaName packageName username password");
+    final JTextField txtSchemaName = new JTextField();
+    UiUtil.makeUpperCase(txtSchemaName);
+    final JTextField txtPackageName = new JTextField();
+    UiUtil.makeLowerCase(txtPackageName);
+    final JTextArea txtTablesToInclude = new JTextArea(3,10);
+    UiUtil.makeUpperCase(txtTablesToInclude);
+    final JPanel panel = new JPanel(new FlexibleGridLayout(6,1,5,5,false,true));
+    panel.add(new JLabel("Schema name"));
+    panel.add(txtSchemaName);
+    panel.add(new JLabel("Package name"));
+    panel.add(txtPackageName);
+    panel.add(new JLabel("Tables to include (comma seperated)"));
+    panel.add(txtTablesToInclude);
 
-    try {
-      final String schemaName = args[0];
-      final String domainClassName = getDomainClassName(schemaName);
-      String tablesToInclude = null;
-      if (args.length > 4)
-        tablesToInclude = args[4];
-      Util.writeFile(getDomainClass(domainClassName, args[0], args[1], args[2], args[3], tablesToInclude),
-              UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
-    }
-    catch (Exception e) {
-      e.printStackTrace();
+    final int option = JOptionPane.showConfirmDialog(null, panel, "Settings", JOptionPane.OK_CANCEL_OPTION);
+    if (option == JOptionPane.OK_OPTION) {
+      try {
+        final User user = LoginPanel.getUser(null, null);
+        final String schemaName = txtSchemaName.getText();
+        final String domainClassName = getDomainClassName(schemaName);
+        Util.writeFile(getDomainClass(domainClassName, schemaName, txtPackageName.getText(),
+                user.getUsername(), user.getPassword(), txtTablesToInclude.getText()),
+                UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
+      }
+      catch (UserCancelException uce) {/**/}
+      catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     System.exit(0);
   }
@@ -258,7 +279,7 @@ public class DomainClassGenerator {
     private final Collection<String> tablesToInclude;
 
     public TablePacker(final String tablesToInclude) {
-      this.tablesToInclude = tablesToInclude != null ? Arrays.asList(tablesToInclude.split(",")) : null;
+      this.tablesToInclude = tablesToInclude.length() > 0 ? getTablesToInclude(tablesToInclude) : null;
     }
 
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
@@ -271,6 +292,14 @@ public class DomainClassGenerator {
       }
 
       return tables;
+    }
+
+    private List<String> getTablesToInclude(final String tablesToInclude) {
+      final List<String> ret = new ArrayList<String>();
+      for (final String tableName : tablesToInclude.split(","))
+        ret.add(tableName.trim());
+
+      return ret;
     }
   }
 

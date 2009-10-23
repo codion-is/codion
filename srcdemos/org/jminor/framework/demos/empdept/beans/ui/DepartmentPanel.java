@@ -65,8 +65,8 @@ public class DepartmentPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
-        final JTextField txtDepartmentName = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-        final JTextField txtDepartmentLocation = UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
+        final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
+        final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
         setDefaultFocusComponent(txtDepartmentNumber);
         txtDepartmentNumber.setColumns(10);
