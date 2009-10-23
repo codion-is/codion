@@ -279,7 +279,8 @@ public class DomainClassGenerator {
     private final Collection<String> tablesToInclude;
 
     public TablePacker(final String tablesToInclude) {
-      this.tablesToInclude = tablesToInclude.length() > 0 ? getTablesToInclude(tablesToInclude) : null;
+      this.tablesToInclude = tablesToInclude != null && tablesToInclude.length() > 0
+              ? getTablesToInclude(tablesToInclude) : null;
     }
 
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
