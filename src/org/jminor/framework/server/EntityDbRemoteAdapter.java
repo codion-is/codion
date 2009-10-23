@@ -60,7 +60,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   private EntityDbConnection entityDbConnection;
   private boolean connected = true;
 
-  private final MethodLogger methodLogger = new MethodLogger();
+  private final MethodLogger methodLogger;
   private static final boolean useSecureConnection = Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
   private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
   private static final Map<User, EntityDbConnectionPool> connectionPools =
@@ -82,6 +82,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     if (connectionPools.containsKey(clientInfo.getUser()))
       connectionPools.get(clientInfo.getUser()).setPassword(clientInfo.getUser().getPassword());
     this.database = database;
+    this.methodLogger = new MethodLogger(database);
     this.clientInfo = clientInfo;
     final String sid = System.getProperty(Dbms.DATABASE_SID);
     if (sid != null && sid.length() != 0)
@@ -511,7 +512,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
-            EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
+    EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         RequestCounter.requestsPerSecondCounter++;
         final String methodName = method.getName();
@@ -567,29 +568,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     return entityDbConnection;
   }
 
-  private static String parameterArrayToString(final Object[] args) {
-    if (args == null)
-      return "";
-
-    final StringBuilder stringBuilder = new StringBuilder(args.length*40);//best guess ?
-    for (int i = 0; i < args.length; i++) {
-      parameterToString(args[i], stringBuilder);
-      if (i < args.length-1)
-        stringBuilder.append(", ");
-    }
-
-    return stringBuilder.toString();
-  }
-
-  private static void parameterToString(final Object arg, final StringBuilder dest) {
-    if (arg instanceof Object[]) {
-      if (((Object[]) arg).length > 0)
-        dest.append("[").append(parameterArrayToString((Object[]) arg)).append("]");
-    }
-    else
-      dest.append(arg.toString());
-  }
-
   static class MethodLogger {
 
     private static final int logSize = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
@@ -597,6 +575,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
     private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
 
+    private final Dbms database;
     private boolean loggingEnabled = false;
     private List<ServerLogEntry> logEntries;
     private int currentLogEntryIndex = 0;
@@ -607,6 +586,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     String lastAccessMessage;
     String lastExitedMethod;
 
+    public MethodLogger(final Dbms database) {
+      this.database = database;
+    }
+
     public List<ServerLogEntry> getLogEntries() {
       return new ArrayList<ServerLogEntry>(logEntries);
     }
@@ -615,7 +598,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       this.lastAccessDate = System.currentTimeMillis();
       this.lastAccessedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
-        this.lastAccessMessage = parameterArrayToString(args);
+        this.lastAccessMessage = parameterArrayToString(database, args);
         addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false);
       }
     }
@@ -671,6 +654,31 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         logEntries.add(new ServerLogEntry());
 
       return logEntries;
+    }
+
+    private static String parameterArrayToString(final Dbms database, final Object[] args) {
+      if (args == null)
+        return "";
+
+      final StringBuilder stringBuilder = new StringBuilder(args.length*40);//best guess ?
+      for (int i = 0; i < args.length; i++) {
+        parameterToString(database, args[i], stringBuilder);
+        if (i < args.length-1)
+          stringBuilder.append(", ");
+      }
+
+      return stringBuilder.toString();
+    }
+
+    private static void parameterToString(final Dbms database, final Object arg, final StringBuilder dest) {
+      if (arg instanceof Object[]) {
+        if (((Object[]) arg).length > 0)
+          dest.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");
+      }
+      else if (arg instanceof EntityCriteria)
+        dest.append(((EntityCriteria) arg).asString(database));
+      else
+        dest.append(arg.toString());
     }
   }
 

@@ -21,21 +21,7 @@ import java.util.Set;
  */
 public class EntityUtil {
 
-  private static Dbms database;
-
   private EntityUtil() {}
-
-  public static void initializeDatabase(final Dbms database) {
-    if (EntityUtil.database == null)
-      EntityUtil.database = database;
-  }
-
-  public static Dbms getDatabase() {
-    if (database == null)
-      throw new RuntimeException("No Dbms instance has been initialized for EntityUtil");
-
-    return database;
-  }
 
   /**
    * @param entities the entities
@@ -192,11 +178,12 @@ public class EntityUtil {
 
   /**
    * Returns a SQL string version of the given value
+   * @param database the Dbms instance
    * @param property the property
    * @param value the value
    * @return a SQL string version of value
    */
-  public static String getSQLStringValue(final Property property, final Object value) {
+  public static String getSQLStringValue(final Dbms database, final Property property, final Object value) {
     if (Entity.isValueNull(property.getPropertyType(), value))
       return "null";
 
@@ -208,7 +195,7 @@ public class EntityUtil {
       case DATE:
         if (!(value instanceof Date))
           throw new IllegalArgumentException("Date value expected for property: " + property + ", got: " + value.getClass());
-        return getDatabase().getSQLDateString((Date) value, property.getPropertyType() == Type.TIMESTAMP);
+        return database.getSQLDateString((Date) value, property.getPropertyType() == Type.TIMESTAMP);
       case CHAR:
         return "'" + value + "'";
       case STRING:
@@ -220,8 +207,8 @@ public class EntityUtil {
           throw new IllegalArgumentException("Boolean value expected for property: " + property + ", got: " + value.getClass());
         return getBooleanSQLString(property, (Boolean) value);
       case ENTITY:
-        return value instanceof Entity ? getSQLStringValue(property, ((Entity)value).getPrimaryKey().getFirstKeyValue())
-                : getSQLStringValue(((Entity.Key)value).getFirstKeyProperty(), ((Entity.Key)value).getFirstKeyValue());
+        return value instanceof Entity ? getSQLStringValue(database, property, ((Entity)value).getPrimaryKey().getFirstKeyValue())
+                : getSQLStringValue(database, ((Entity.Key)value).getFirstKeyProperty(), ((Entity.Key)value).getFirstKeyValue());
       default:
         throw new IllegalArgumentException("Undefined property type: " + property.getPropertyType());
     }
@@ -246,12 +233,13 @@ public class EntityUtil {
 
   /**
    * Constructs a where condition based on the given primary key
+   * @param database the Dbms instance
    * @param entityKey the EntityKey instance
    * @return a where clause using this EntityKey instance,
    * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final Entity.Key entityKey) {
-    return getWhereCondition(entityKey.getProperties(), new ValueProvider() {
+  public static String getWhereCondition(final Dbms database, final Entity.Key entityKey) {
+    return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
       public Object getValue(final String propertyID) {
         return entityKey.getValue(propertyID);
       }
@@ -262,12 +250,13 @@ public class EntityUtil {
    * Constructs a where condition based on the primary key of the given entity, using the
    * original property values. This method should be used when updating an entity in case
    * a primary key property value has changed, hence using the original value.
+   * @param database the Dbms instance
    * @param entity the Entity instance
    * @return a where clause specifying this entity instance,
    * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final Entity entity) {
-    return getWhereCondition(entity.getPrimaryKey().getProperties(), new ValueProvider() {
+  public static String getWhereCondition(final Dbms database, final Entity entity) {
+    return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {
       public Object getValue(final String propertyID) {
         return entity.getOriginalValue(propertyID);
       }
@@ -276,16 +265,18 @@ public class EntityUtil {
 
   /**
    * Constructs a where condition based on the given primary key properties and the values provide by <code>valueProvider</code>
+   * @param database the Dbms instance
    * @param properties the properties to use when constructing the condition
    * @param valueProvider the value provider
    * @return a where clause according to the given properties and the values provided by <code>valueProvider</code>,
    * e.g. " where (idCol = 42)" or in case of multiple properties " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
+  public static String getWhereCondition(final Dbms database, final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
     final StringBuilder stringBuilder = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
-      stringBuilder.append(getQueryString(property.getPropertyID(), getSQLStringValue(property, valueProvider.getValue(property.getPropertyID()))));
+      stringBuilder.append(getQueryString(property.getPropertyID(),
+              getSQLStringValue(database, property, valueProvider.getValue(property.getPropertyID()))));
       if (i++ < properties.size() - 1)
         stringBuilder.append(" and ");
     }

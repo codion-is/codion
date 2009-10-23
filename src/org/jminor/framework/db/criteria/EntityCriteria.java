@@ -4,6 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.EntityRepository;
 
@@ -109,25 +110,30 @@ public class EntityCriteria implements Serializable {
     return fetchCount;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public String toString() {
-    return getEntityID() + " " + getWhereClause();
+  /**
+   * Returns a where condition based on this EntityCriteria
+   * @param database the Dbms instance
+   * @return a where condition based on this EntityCriteria
+   */
+  public String asString(final Dbms database) {
+    return getEntityID() + " " + getWhereClause(database);
   }
 
   /**
+   * @param database the Dbms instance
    * @return the where clause
    */
-  public String getWhereClause() {
-    return getWhereClause(true);
+  public String getWhereClause(final Dbms database) {
+    return getWhereClause(database, true);
   }
 
   /**
+   * @param database the Dbms instance
    * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
-  public String getWhereClause(final boolean includeWhereKeyword) {
-    final String criteriaString = criteria == null ? "" : criteria.asString();
+  public String getWhereClause(final Dbms database, final boolean includeWhereKeyword) {
+    final String criteriaString = criteria == null ? "" : criteria.asString(database);
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
   }

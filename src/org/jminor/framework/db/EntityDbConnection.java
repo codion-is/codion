@@ -63,7 +63,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   public EntityDbConnection(final Dbms database, final User user) throws SQLException, ClassNotFoundException {
     super(database, user);
-    EntityUtil.initializeDatabase(database);
   }
 
   /** {@inheritDoc} */
@@ -83,7 +82,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         if (idSource.isQueried() && entity.getPrimaryKey().isNull())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNextIdValue(entityID, idSource), false);
 
-        execute(sql = getInsertSQL(entity));
+        execute(sql = getInsertSQL(getDatabase(), entity));
 
         if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
@@ -124,7 +123,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       if (optimisticLockingEnabled && hasChanged(entity))
         throw new EntityModifiedException(entity);
       else
-        statements.add(getUpdateSQL(entity));
+        statements.add(getUpdateSQL(getDatabase(), entity));
     }
 
     execute(statements);
@@ -141,7 +140,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     for (final Entity.Key entityKey : entityKeys) {
       if (EntityRepository.isReadOnly(entityKey.getEntityID()))
         throw new DbException("Can not delete a read only entity");
-      statements.add(0, getDeleteSQL(entityKey));
+      statements.add(0, getDeleteSQL(getDatabase(), entityKey));
     }
 
     execute(statements);
@@ -196,7 +195,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     try {
       final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
       sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getWhereClause(!datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
+              criteria.getWhereClause(getDatabase(), !datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
@@ -246,7 +245,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     try {
       return queryInteger(sql = DbUtil.generateSelectSql(
               EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
-              criteria.getWhereClause(), null));
+              criteria.getWhereClause(getDatabase()), null));
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
@@ -334,7 +333,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         beginTransaction();
         final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
-        final String whereCondition = EntityUtil.getWhereCondition(entity);
+        final String whereCondition = EntityUtil.getWhereCondition(getDatabase(), entity);
 
         execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.getPropertyID())
                 .append(" = '").append(entity.getStringValue(propertyID)).append("' ").append(whereCondition).toString());
@@ -360,7 +359,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
 
       return readBlobField(EntityRepository.getTableName(entity.getEntityID()), property.getBlobColumnName(),
-              EntityUtil.getWhereCondition(entity));
+              EntityUtil.getWhereCondition(getDatabase(), entity));
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, null, getDatabase().getErrorMessage(sqle));
@@ -368,10 +367,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
+   * @param database the Dbms instance
    * @param entity the Entity instance
    * @return a query for inserting this entity instance
    */
-  static String getInsertSQL(final Entity entity) {
+  static String getInsertSQL(final Dbms database, final Entity entity) {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
@@ -379,7 +379,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getPropertyID());
-      columnValues.append(EntityUtil.getSQLStringValue(property, entity.getValue(property.getPropertyID())));
+      columnValues.append(EntityUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -390,11 +390,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
+   * @param database the Dbms instance
    * @param entity the Entity instance
    * @return a query for updating this entity instance
    * @throws DbException in case the entity is unmodified or it contains no modified updatable properties
    */
-  static String getUpdateSQL(final Entity entity) throws DbException {
+  static String getUpdateSQL(final Dbms database, final Entity entity) throws DbException {
     if (!entity.isModified())
       throw new DbException("Can not get update sql for an unmodified entity");
 
@@ -405,21 +406,23 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException("No modified updateable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      sql.append(property.getPropertyID()).append(" = ").append(EntityUtil.getSQLStringValue(property, entity.getValue(property.getPropertyID())));
+      sql.append(property.getPropertyID()).append(" = ").append(
+              EntityUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
 
-    return sql.append(EntityUtil.getWhereCondition(entity)).toString();
+    return sql.append(EntityUtil.getWhereCondition(database, entity)).toString();
   }
 
   /**
+   * @param database the Dbms instance
    * @param entityKey the EntityKey instance
    * @return a query for deleting the entity having the given primary key
    */
-  static String getDeleteSQL(final Entity.Key entityKey) {
+  static String getDeleteSQL(final Dbms database, final Entity.Key entityKey) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
-            .append(EntityUtil.getWhereCondition(entityKey)).toString();
+            .append(EntityUtil.getWhereCondition(database, entityKey)).toString();
   }
 
   private void execute(final List<String> statements) throws DbException {

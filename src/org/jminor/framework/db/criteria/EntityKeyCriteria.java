@@ -4,6 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
+import org.jminor.common.db.dbms.Dbms;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -70,19 +71,20 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString() {
-    return getConditionString();
+  public String asString(final Dbms database) {
+    return getConditionString(database);
   }
 
   /**
+   * @param database the Dbms instance
    * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value2"
    */
-  public String getConditionString() {
+  public String getConditionString(final Dbms database) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (keys.get(0).getPropertyCount() > 1) {//multi column key
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
-        stringBuilder.append(getQueryConditionString(keys.get(i), getColumnNames()));
+        stringBuilder.append(getQueryConditionString(database, keys.get(i), getColumnNames()));
         if (i < keys.size() - 1)
           stringBuilder.append(" or ");
       }
@@ -90,9 +92,9 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     else {
       //a = b
       if (keys.size() == 1)
-        stringBuilder.append(getQueryConditionString(keys.get(0), getColumnNames()));
+        stringBuilder.append(getQueryConditionString(database, keys.get(0), getColumnNames()));
       else //a in (c, v, d, s)
-        appendInCondition(properties != null ? properties.get(0).getPropertyID()
+        appendInCondition(database, properties != null ? properties.get(0).getPropertyID()
                 : keys.get(0).getFirstKeyProperty().getPropertyID(), stringBuilder, keys);
     }
 
@@ -113,16 +115,17 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   /**
    * Constructs a query condition string from the given EntityKey, using the column names
    * provided or if none are provided, the column names from the key
+   * @param database the Dbms instance
    * @param key the EntityKey instance
    * @param columnNames the column names to use in the criteria
    * @return a query condition string based on the given key and column names
    */
-  private static String getQueryConditionString(final Entity.Key key, final List<String> columnNames) {
+  private static String getQueryConditionString(final Dbms database, final Entity.Key key, final List<String> columnNames) {
     final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
       stringBuilder.append(EntityUtil.getQueryString(columnNames == null ? property.getPropertyID() : columnNames.get(i),
-              EntityUtil.getSQLStringValue(property, key.getValue(property.getPropertyID()))));
+              EntityUtil.getSQLStringValue(database, property, key.getValue(property.getPropertyID()))));
       if (i++ < key.getPropertyCount() -1)
         stringBuilder.append(" and ");
     }
@@ -130,11 +133,11 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     return stringBuilder.append(")").toString();
   }
 
-  private static void appendInCondition(final String whereColumn, final StringBuilder stringBuilder, final List<Entity.Key> keys) {
+  private static void appendInCondition(final Dbms database, final String whereColumn, final StringBuilder stringBuilder, final List<Entity.Key> keys) {
     stringBuilder.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {
-      stringBuilder.append(EntityUtil.getSQLStringValue(property, keys.get(i).getFirstKeyValue()));
+      stringBuilder.append(EntityUtil.getSQLStringValue(database, property, keys.get(i).getFirstKeyValue()));
       if (cnt == 1000 && i < keys.size()-1) {//Oracle limit
         stringBuilder.append(") or ").append(whereColumn).append(" in (");
         cnt = 1;

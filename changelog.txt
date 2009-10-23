@@ -888,3 +888,4 @@
   common.model.formats SimpleDateFormat classes deleted
   common.model.formats.DateFormats added
   UiUtil.getSize() renamed to getScreenSizeRatio()
+  common.db.Criteria.asString(), added Dbms parameter

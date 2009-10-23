@@ -50,27 +50,28 @@ public class EntityDbConnectionTest extends TestCase {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, referenceId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, stringValue);
 
+    final Dbms database = Database.createInstance();
+
     //test with null values
     final Entity testEntity2 = EntityTest.getDetailEntity(idValue, intValue, null,
             stringValue, null, null, booleanValue, referencedEntityValue);
     assertEquals("insert into " + EntityTestDomain.T_DETAIL
                     + "(id, int, string, boolean, entity_id)"
-                    + " values(1, 2, 'string', 1, 2)", EntityDbConnection.getInsertSQL(testEntity2));
+                    + " values(1, 2, 'string', 1, 2)", EntityDbConnection.getInsertSQL(database, testEntity2));
 
     final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, doubleValue,
             stringValue, dateValue, timestampValue, booleanValue, referencedEntityValue);
     //assert dml
-    final Dbms database = Database.createInstance();
     final String shortDateStringSql = database.getSQLDateString(dateValue, false);
     final String longDateStringSql = database.getSQLDateString(timestampValue, true);
     assertEquals("insert into " + EntityTestDomain.T_DETAIL
                     + "(id, int, double, string, date, timestamp, boolean, entity_id)"
                     + " values(1, 2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2)",
-            EntityDbConnection.getInsertSQL(testEntity));
+            EntityDbConnection.getInsertSQL(database, testEntity));
     assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
-            EntityDbConnection.getDeleteSQL(testEntity.getPrimaryKey()));
+            EntityDbConnection.getDeleteSQL(database, testEntity.getPrimaryKey()));
     try {
-      EntityDbConnection.getUpdateSQL(testEntity);
+      EntityDbConnection.getUpdateSQL(database, testEntity);
       fail("Should get an exception when trying to get update sql of a non-modified entity");
     }
     catch (Exception e) {}
@@ -78,9 +79,9 @@ public class EntityDbConnectionTest extends TestCase {
     testEntity.setValue(EntityTestDomain.DETAIL_INT, 42);
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "newString");
     assertEquals( "update " + EntityTestDomain.T_DETAIL
-            + " set int = 42, string = 'newString' where (id = 1)", EntityDbConnection.getUpdateSQL(testEntity));
+            + " set int = 42, string = 'newString' where (id = 1)", EntityDbConnection.getUpdateSQL(database, testEntity));
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "string");
     assertEquals("update " + EntityTestDomain.T_DETAIL + " set int = 42 where (id = 1)",
-            EntityDbConnection.getUpdateSQL(testEntity));
+            EntityDbConnection.getUpdateSQL(database, testEntity));
   }
 }
