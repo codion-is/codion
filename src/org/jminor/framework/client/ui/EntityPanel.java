@@ -623,8 +623,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         break;
     }
   }
-
-  /** {@inheritDoc} */
   public void handleException(final Throwable throwable) {
     handleException(throwable, this);
   }
