@@ -510,6 +510,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       }
     });
     final List<EntityPanelProvider> mainEntityPanelProviders = getMainEntityPanelProviders();
+    if (mainEntityPanelProviders == null || mainEntityPanelProviders.size() == 0)
+      throw new RuntimeException("No main entity panels provided");
     for (final EntityPanelProvider provider : mainEntityPanelProviders) {
       final EntityModel entityModel = applicationModel.getMainApplicationModel(provider.getEntityModelClass());
       final EntityPanel entityPanel = EntityPanel.createInstance(provider, entityModel);
