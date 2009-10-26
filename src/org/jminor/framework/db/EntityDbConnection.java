@@ -323,7 +323,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws DbException {
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
+                        final byte[] blobData) throws DbException {
     if (isTransactionOpen())
       throw new DbException("Can not save blob within an open transaction");
 
@@ -331,21 +332,23 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       boolean success = false;
       try {
         beginTransaction();
-        final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
+        final Property.BlobProperty property =
+                (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-        final String whereCondition = EntityUtil.getWhereCondition(getDatabase(), entity);
+        final String whereCondition = EntityUtil.getWhereCondition(getDatabase(), primaryKey);
 
-        execute(new StringBuilder("update ").append(entity.getEntityID()).append(" set ").append(property.getPropertyID())
-                .append(" = '").append(entity.getStringValue(propertyID)).append("' ").append(whereCondition).toString());
+        execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getPropertyID())
+                .append(" = '").append(dataDescription).append("' ").append(whereCondition).toString());
 
-        writeBlobField(blobData, EntityRepository.getTableName(entity.getEntityID()),
+        writeBlobField(blobData, EntityRepository.getTableName(primaryKey.getEntityID()),
                 property.getBlobColumnName(), whereCondition);
         success = true;
-
-        return entity;
       }
       finally {
-        endTransaction(success);
+        if (success)
+          commitTransaction();
+        else
+          rollbackTransaction();
       }
     }
     catch (SQLException sqle) {
@@ -354,12 +357,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public byte[] readBlob(final Entity entity, final String propertyID) throws Exception {
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception {
     try {
-      final Property.BlobProperty property = (Property.BlobProperty) entity.getProperty(propertyID);
+      final Property.BlobProperty property =
+              (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-      return readBlobField(EntityRepository.getTableName(entity.getEntityID()), property.getBlobColumnName(),
-              EntityUtil.getWhereCondition(getDatabase(), entity));
+      return readBlobField(EntityRepository.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
+              EntityUtil.getWhereCondition(getDatabase(), primaryKey));
     }
     catch (SQLException sqle) {
       throw new DbException(sqle, null, getDatabase().getErrorMessage(sqle));

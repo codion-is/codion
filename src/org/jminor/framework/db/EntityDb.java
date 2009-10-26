@@ -58,16 +58,23 @@ public interface EntityDb {
   public void beginTransaction() throws Exception;
 
   /**
-   * Ends the transaction on this connection, if no transaction is open
-   * then only commit or rollback is performed
-   * @param commit if true then a commit is performed, otherwise rollback
-   * @throws java.sql.SQLException in case of a sql exception
+   * Performs a rollback and ends the current transaction
+   * @throws java.sql.SQLException in case anything goes wrong during the rollback action
+   * @throws IllegalStateException in case transaction is not open
    */
-  public void endTransaction(final boolean commit) throws Exception;
+  public void rollbackTransaction() throws Exception;
+
+  /**
+   * Performs a commit and ends the current transaction
+   * @throws java.sql.SQLException in case anything goes wrong during the commit action
+   * @throws IllegalStateException in case transaction is not open
+   */
+  public void commitTransaction() throws Exception;
 
   /**
    * Executes the given statement.
    * This method does not handle select statements.
+   * Performs a commit unless a transaction is open.
    * @param statement the statement to execute
    * @throws org.jminor.common.db.DbException in case of a database exception
    */
@@ -76,6 +83,7 @@ public interface EntityDb {
   /**
    * Executes the given statement.
    * This method does not handle select statements.
+   * Performs a commit unless a transaction is open.
    * @param statement the statement to execute
    * @param outParamType the type of the output param, if any, java.sql.Types.*
    * @throws org.jminor.common.db.DbException in case of a database error
@@ -87,6 +95,7 @@ public interface EntityDb {
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
    * in the same order as they were received.
    * If the primary key value of a entity is specified the id generation is disregarded.
+   * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities
    * @throws org.jminor.common.db.DbException in case of a db exception
@@ -94,7 +103,8 @@ public interface EntityDb {
   public List<Entity.Key> insert(final List<Entity> entities) throws Exception;
 
   /**
-   * Updates the given entities according to their properties
+   * Updates the given entities according to their properties.
+   * Performs a commit unless a transaction is open.
    * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.DbException in case of a db exception
@@ -103,7 +113,8 @@ public interface EntityDb {
   public List<Entity> update(final List<Entity> entities) throws Exception;
 
   /**
-   * Deletes the entities according to the given primary keys
+   * Deletes the entities according to the given primary keys.
+   * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
@@ -223,20 +234,21 @@ public interface EntityDb {
   /**
    * Writes <code>blobData</code> in the blob field specified by the property identified by <code>propertyID</code>
    * for the given entity
-   * @param entity the entity for which to write the blob
-   * @param propertyID the ID of the blob property
+   * @param primaryKey the primary key of the entity for which to write the blob field
+   * @param blobPropertyID the ID of the blob property
+   * @param dataDescription the value to insert into the blob description column
    * @param blobData the blob data
-   * @return the entity
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws Exception;
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
+                        final byte[] blobData) throws Exception;
 
   /**
    * Reads the blob specified by the property identified by <code>propertyID</code> from the given entity
-   * @param entity the entity
-   * @param propertyID the ID of the blob property
+   * @param primaryKey the primary key of the entity
+   * @param blobPropertyID the ID of the blob property
    * @return a byte array containing the blob data
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public byte[] readBlob(final Entity entity, final String propertyID) throws Exception;
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception;
 }

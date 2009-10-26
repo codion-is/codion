@@ -131,7 +131,7 @@ public class EntityDbConnectionPool {
       if (connection.isConnectionValid()) {
         try {
           if (connection.isTransactionOpen())
-            connection.endTransaction(false);
+            connection.rollbackTransaction();
         }
         catch (SQLException e) {
           log.error(this, e);

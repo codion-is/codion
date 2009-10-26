@@ -889,3 +889,6 @@
   common.model.formats.DateFormats added
   UiUtil.getSize() renamed to getScreenSizeRatio()
   common.db.Criteria.asString(), added Dbms parameter
+  DbConnection.endTransaction(boolean commit) replaced with rollbackTransaction() and commitTransaction()
+  EntityDb.endTransaction(boolean commit) replaced with rollbackTransaction() and commitTransaction()
+  EntityDb.writeBlob() readBlob() signatures changed

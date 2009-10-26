@@ -324,7 +324,7 @@ public class EntityUtil {
     return properties;
   }
 
-  public interface ValueProvider {
+  private interface ValueProvider {
     public Object getValue(final String propertyID);
   }
 }

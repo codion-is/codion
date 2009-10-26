@@ -212,9 +212,22 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public void endTransaction(final boolean commit) throws SQLException, RemoteException {
+  public void commitTransaction() throws IllegalStateException, SQLException, RemoteException {
     try {
-      loggingEntityDbProxy.endTransaction(commit);
+      loggingEntityDbProxy.commitTransaction();
+    }
+    catch (SQLException sqle) {
+      throw sqle;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public void rollbackTransaction() throws IllegalStateException, SQLException, RemoteException {
+    try {
+      loggingEntityDbProxy.rollbackTransaction();
     }
     catch (SQLException sqle) {
       throw sqle;
@@ -393,9 +406,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public Entity writeBlob(final Entity entity, final String propertyID, final byte[] blobData) throws DbException, RemoteException{
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
+                        final byte[] blobData) throws DbException, RemoteException{
     try {
-      return loggingEntityDbProxy.writeBlob(entity, propertyID, blobData);
+      loggingEntityDbProxy.writeBlob(primaryKey, blobPropertyID, dataDescription, blobData);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -406,9 +420,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public byte[] readBlob(final Entity entity, final String propertyID) throws DbException, RemoteException {
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DbException, RemoteException {
     try {
-      return loggingEntityDbProxy.readBlob(entity, propertyID);
+      return loggingEntityDbProxy.readBlob(primaryKey, blobPropertyID);
     }
     catch (DbException dbe) {
       throw dbe;

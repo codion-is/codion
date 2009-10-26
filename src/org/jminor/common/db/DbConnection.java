@@ -139,23 +139,48 @@ public class DbConnection {
     return connected;
   }
 
+  /**
+   * Begins a transaction on this connection
+   * @throws IllegalStateException in case a transaction is already open
+   */
   public void beginTransaction() throws IllegalStateException {
-    if (isTransactionOpen())
+    if (transactionOpen)
       throw new IllegalStateException("Transaction already open");
 
     transactionOpen = true;
   }
 
-  public void endTransaction(final boolean commit) throws SQLException {
+  /**
+   * Performs a rollback and ends the current transaction
+   * @throws SQLException in case anything goes wrong during the rollback action
+   * @throws IllegalStateException in case transaction is not open
+   */
+  public void rollbackTransaction() throws SQLException, IllegalStateException {
     try {
-      if (commit)
-        commit();
-      else
-        rollback();
+      if (!transactionOpen)
+        throw new IllegalStateException("Transaction is not open");
+
+      rollback();
     }
     finally {
-      if (transactionOpen)
-        transactionOpen = false;
+      transactionOpen = false;
+    }
+  }
+
+  /**
+   * Performs a commit and ends the current transaction
+   * @throws SQLException in case anything goes wrong during the commit action
+   * @throws IllegalStateException in case transaction is not open
+   */
+  public void commitTransaction() throws SQLException, IllegalStateException {
+    try {
+      if (!transactionOpen)
+        throw new IllegalStateException("Transaction is not open");
+
+      commit();
+    }
+    finally {
+      transactionOpen = false;
     }
   }
 
@@ -174,7 +199,11 @@ public class DbConnection {
   }
 
   /**
+   * Turns the query cache mechanism on or off.
+   * If the query cache is being turned off all query cache requests are removed and the cache is cleared.
    * @param value true if query caching should be allowed
+   * @see #addCacheQueriesRequest()
+   * @see #removeCacheQueriesRequest()
    */
   public void setAllowCaching(final boolean value) {
     allowCaching = value;
@@ -191,11 +220,22 @@ public class DbConnection {
     return allowCaching;
   }
 
+  /**
+   * Activates a simple query cache, based on the query string.
+   * A call to this method adds a request for turning on the caching mechanism,
+   * must be balanced with a call to <code>removeCacheQueriesRequest</code>
+   * @see #removeCacheQueriesRequest()
+   */
   public void addCacheQueriesRequest() {
     if (allowCaching)
       this.cacheQueriesRequests++;
   }
 
+  /**
+   * Removes a single query cache request, the cache is deactivated and cleared
+   * when all query cache requests have been removed.
+   * @see #addCacheQueriesRequest()
+   */
   public void removeCacheQueriesRequest() {
     if (this.cacheQueriesRequests > 0)
       this.cacheQueriesRequests--;
@@ -337,11 +377,8 @@ public class DbConnection {
     final String sql = "update " + tableName + " set " + columnName + " = ? " + whereClause;
     try {
       statement = connection.prepareStatement(sql);
-
       inputStream = new ByteArrayInputStream(blobData);
-
       statement.setBinaryStream(1, inputStream, blobData.length);
-
       statement.execute();
     }
     catch (SQLException e) {

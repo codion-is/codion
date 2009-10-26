@@ -124,7 +124,7 @@ public abstract class EntityTestUnit extends TestCase {
     }
     finally {
       referencedEntities.clear();
-      getEntityDb().endTransaction(false);
+      getEntityDb().rollbackTransaction();
     }
   }
 
