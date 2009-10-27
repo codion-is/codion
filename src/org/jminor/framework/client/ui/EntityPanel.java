@@ -674,11 +674,11 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       if (confirmInsert()) {
         validateData();
         try {
-          UiUtil.setWaitCursor(true, EntityPanel.this);
+          UiUtil.setWaitCursor(true, this);
           getModel().getEditModel().insert();
         }
         finally {
-          UiUtil.setWaitCursor(false, EntityPanel.this);
+          UiUtil.setWaitCursor(false, this);
         }
         prepareUI(true, true);
         return true;
@@ -699,14 +699,14 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     try {
       if (confirmDelete()) {
         try {
-          UiUtil.setWaitCursor(true, EntityPanel.this);
+          UiUtil.setWaitCursor(true, this);
           if (getModel().containsTableModel())
             getModel().getEditModel().delete(getModel().getTableModel().getSelectedEntities());
           else
             getModel().getEditModel().delete();
         }
         finally {
-          UiUtil.setWaitCursor(false, EntityPanel.this);
+          UiUtil.setWaitCursor(false, this);
         }
 
         return true;
@@ -728,11 +728,11 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       if (confirmUpdate()) {
         validateData();
         try {
-          UiUtil.setWaitCursor(true, EntityPanel.this);
+          UiUtil.setWaitCursor(true, this);
           getModel().getEditModel().update();
         }
         finally {
-          UiUtil.setWaitCursor(false, EntityPanel.this);
+          UiUtil.setWaitCursor(false, this);
         }
         prepareUI(true, false);
 
@@ -797,17 +797,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     try {
       final Map<String, List<Entity>> dependencies;
       try {
-        UiUtil.setWaitCursor(true, EntityPanel.this);
+        UiUtil.setWaitCursor(true, this);
         dependencies = getModel().getTableModel().getSelectionDependencies();
       }
       finally {
-        UiUtil.setWaitCursor(false, EntityPanel.this);
+        UiUtil.setWaitCursor(false, this);
       }
       if (EntityUtil.activeDependencies(dependencies)) {
-        showDependenciesDialog(dependencies, getModel().getDbProvider(), EntityPanel.this);
+        showDependenciesDialog(dependencies, getModel().getDbProvider(), this);
       }
       else {
-        JOptionPane.showMessageDialog(EntityPanel.this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
+        JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
                 FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
       }
     }
@@ -1769,8 +1769,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   protected boolean confirmDelete() {
     final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_DELETE);
-    final int res = JOptionPane.showConfirmDialog(EntityPanel.this,
-            msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
+    final int res = JOptionPane.showConfirmDialog(this, msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
@@ -1820,7 +1819,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x+(parentSize.width-size.width),
             parentLocation.y+(parentSize.height-size.height)-29);
-    detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
+    detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), detailPanelTabbedPane, false,
             getCaption() + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
             null, size, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
@@ -1844,7 +1843,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   protected void showEditDialog() {
     final Point location = getLocationOnScreen();
     location.setLocation(location.x+1, location.y + getSize().height- editControlPanel.getSize().height-98);
-    editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), editControlPanel, false,
+    editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             getCaption(), false, true, null, null, location, new AbstractAction() {
               public void actionPerformed(ActionEvent event) {
                 setEditPanelState(HIDDEN);
