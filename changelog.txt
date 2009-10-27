@@ -892,3 +892,5 @@
   DbConnection.endTransaction(boolean commit) replaced with rollbackTransaction() and commitTransaction()
   EntityDb.endTransaction(boolean commit) replaced with rollbackTransaction() and commitTransaction()
   EntityDb.writeBlob() readBlob() signatures changed
+  EntityCriteria removed ambiguous method
+  EntityCriteria.setOrderByClause() added

@@ -20,7 +20,7 @@ public class EntityCriteria implements Serializable {
   private final String entityID;
   private final Criteria criteria;
   private final int fetchCount;
-  private final String orderByClause;
+  private String orderByClause;
 
   /**
    * Instantiates a new empty EntityCriteria.
@@ -138,6 +138,11 @@ public class EntityCriteria implements Serializable {
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
   }
 
+  public EntityCriteria setOrderByClause(final String orderByClause) {
+    this.orderByClause = orderByClause;
+    return this;
+  }
+
   /**
    * @return the order by clause specified by this criteria
    */
@@ -148,12 +153,6 @@ public class EntityCriteria implements Serializable {
   public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
                                                 final SearchType searchType, final Object... values) {
     return propertyCriteria(entityID, propertyID, searchType, -1, values);
-  }
-
-  public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
-                                                final SearchType searchType, final String orderByClause,
-                                                final Object... values) {
-    return propertyCriteria(entityID, propertyID, searchType, orderByClause, -1, values);
   }
 
   public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,
