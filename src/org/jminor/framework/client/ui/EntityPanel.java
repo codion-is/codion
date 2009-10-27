@@ -623,6 +623,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         break;
     }
   }
+
   public void handleException(final Throwable throwable) {
     handleException(throwable, this);
   }
@@ -647,7 +648,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public final void save() {
     if ((getModel().containsTableModel() && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
-            || !getEditModel().isEntityModified() || !getModel().getEditModel().isUpdateAllowed()) {
+            || !getEditModel().isEntityModified() || !getEditModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
     }
@@ -680,7 +681,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
           UiUtil.setWaitCursor(false, EntityPanel.this);
         }
         prepareUI(true, true);
-        postInsert();
         return true;
       }
     }
@@ -1690,7 +1690,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   protected void bindTableModelEvents() {}
 
   /**
-   * Binds events associated to the EntityTablePanel
+   * Binds events associated with the EntityTablePanel
    * this method is called during initialization after the UI is initialized
    */
   protected void bindTablePanelEvents() {
@@ -1735,11 +1735,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
-
-  /**
-   * for overriding, called after a successful insert, after the UI has been initialized for a new entry
-   */
-  protected void postInsert() {}
 
   /**
    * for overriding, called before insert/update
