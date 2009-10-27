@@ -895,3 +895,4 @@
   EntityCriteria removed ambiguous method
   EntityCriteria.setOrderByClause() added
   EntityModel refactored, insert/update/delete mechanism moved to EntityEditModel
+  EntityEditModelTest added
