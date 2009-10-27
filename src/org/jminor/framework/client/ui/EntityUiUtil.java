@@ -660,7 +660,7 @@ public class EntityUiUtil {
         final EntityPanel entityPanel = EntityPanel.createInstance(panelProvider, comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
-        entityPanel.getModel().evtAfterInsert.addListener(new ActionListener() {
+        entityPanel.getModel().getEditModel().evtAfterInsert.addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             lastInsertedPrimaryKeys.clear();
             lastInsertedPrimaryKeys.addAll(((InsertEvent) e).getInsertedKeys());

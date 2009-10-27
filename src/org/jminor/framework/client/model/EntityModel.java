@@ -7,20 +7,16 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
-import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -45,46 +41,6 @@ public class EntityModel implements Refreshable {
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
   /**
-   * Code for the insert action
-   */
-  public static final int INSERT = 1;
-
-  /**
-   * Code for the update action
-   */
-  public static final int UPDATE = 2;
-
-  /**
-   * Fired before an insert is performed
-   */
-  public final Event evtBeforeInsert = new Event();
-
-  /**
-   * Fired when an Entity has been inserted
-   */
-  public final Event evtAfterInsert = new Event();
-
-  /**
-   * Fired before an update is performed
-   */
-  public final Event evtBeforeUpdate = new Event();
-
-  /**
-   * Fired when an Entity has been updated
-   */
-  public final Event evtAfterUpdate = new Event();
-
-  /**
-   * Fired before a delete is performed
-   */
-  public final Event evtBeforeDelete = new Event();
-
-  /**
-   * Fired when an Entity has been deleted
-   */
-  public final Event evtAfterDelete = new Event();
-
-  /**
    * Fired when an entity is deleted, inserted or updated via this EntityModel
    */
   public final Event evtEntitiesChanged = new Event();
@@ -101,11 +57,6 @@ public class EntityModel implements Refreshable {
   public final Event evtRefreshDone = new Event();
 
   /**
-   * Fired when the model has been cleared
-   */
-  public final Event evtModelCleared = new Event();
-
-  /**
    * Fired when detail models are linked or unlinked
    */
   public final Event evtLinkedDetailModelsChanged = new Event();
@@ -114,27 +65,6 @@ public class EntityModel implements Refreshable {
    * If this state is active a refresh of this model triggers a refresh in all detail models
    */
   private final State stCascadeRefresh = new State();
-
-  /**
-   * This state determines whether this model allows records to be inserted
-   * @see #setInsertAllowed(boolean)
-   * @see #isInsertAllowed()
-   */
-  private final State stAllowInsert = new State(true);
-
-  /**
-   * This state determines whether this model allows records to be updated
-   * @see #setUpdateAllowed(boolean)
-   * @see #isUpdateAllowed()
-   */
-  private final State stAllowUpdate = new State(true);
-
-  /**
-   * This state determines whether this model allows records to be deleted
-   * @see #setDeleteAllowed(boolean)
-   * @see #isDeleteAllowed()
-   */
-  private final State stAllowDelete = new State(true);
 
   /**
    * The ID of the Entity this EntityModel represents
@@ -203,7 +133,7 @@ public class EntityModel implements Refreshable {
       throw new IllegalArgumentException("dbProvider can not be null");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.editModel = intializeEditModel();
+    this.editModel = initializeEditModel();
     this.tableModel = includeTableModel ? initializeTableModel() : null;
     addDetailModels();
     initializeAssociatedModels();
@@ -245,14 +175,6 @@ public class EntityModel implements Refreshable {
   }
 
   /**
-   * @return true if this model is read only,
-   * by default this returns the isReadOnly value of the underlying entity
-   */
-  public boolean isReadOnly() {
-    return EntityRepository.isReadOnly(getEntityID());
-  }
-
-  /**
    * @return true if a refresh on this model should trigger a refresh in its detail models
    */
   public boolean getCascadeRefresh() {
@@ -288,82 +210,6 @@ public class EntityModel implements Refreshable {
 
     getTableModel().getSelectionModel().clearSelection();
     selectionFiltersDetail = value;
-  }
-
-  /**
-   * @return true if this model allows multiple entities to be updated at a time
-   */
-  public boolean isMultipleUpdateAllowed() {
-    return true;
-  }
-
-  /**
-   * @return true if this model should allow records to be inserted
-   */
-  public boolean isInsertAllowed() {
-    return stAllowInsert.isActive();
-  }
-
-  /**
-   * @param value true if this model should allow inserts
-   */
-  public void setInsertAllowed(final boolean value) {
-    stAllowInsert.setActive(value);
-  }
-
-  /**
-   * @return the state used to determine if inserting should be enabled
-   * @see #isInsertAllowed()
-   * @see #setInsertAllowed(boolean)
-   */
-  public State getInsertAllowedState() {
-    return stAllowInsert;
-  }
-
-  /**
-   * @return true if this model should allow records to be updated
-   */
-  public boolean isUpdateAllowed() {
-    return stAllowUpdate.isActive();
-  }
-
-  /**
-   * @param value true if this model should allow records to be updated
-   */
-  public void setUpdateAllowed(final boolean value) {
-    stAllowUpdate.setActive(value);
-  }
-
-  /**
-   * @return the state used to determine if updating should be enabled
-   * @see #isUpdateAllowed()
-   * @see #setUpdateAllowed(boolean)
-   */
-  public State getUpdateAllowedState() {
-    return stAllowUpdate;
-  }
-
-  /**
-   * @return true if this model should allow records to be deleted
-   */
-  public boolean isDeleteAllowed() {
-    return stAllowDelete.isActive();
-  }
-
-  /**
-   * @param value true if this model should allow records to be deleted
-   */
-  public void setDeleteAllowed(final boolean value) {
-    stAllowDelete.setActive(value);
-  }
-
-  /**
-   * @return the state used to determine if deleting should be enabled
-   * @see #isDeleteAllowed()
-   * @see #setDeleteAllowed(boolean)
-   */
-  public State getDeleteAllowedState() {
-    return stAllowDelete;
   }
 
   /**
@@ -482,181 +328,7 @@ public class EntityModel implements Refreshable {
     throw new RuntimeException("No detail model based on entityID " + entityID + " found in model: " + this);
   }
 
-  /**
-   * Clears the model by setting the active entity to null
-   * @see #evtModelCleared
-   */
-  public final void clear() {
-    getEditModel().setEntity(null);
-    evtModelCleared.fire();
-  }
 
-  /**
-   * Performes a insert, using the entities returned by getEntitiesForInsert()
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the user cancels the operation
-   * @throws ValidationException in case validation fails
-   * @see #getEntitiesForInsert()
-   * @see #validateEntities(java.util.List, int)
-   */
-  public final void insert() throws UserCancelException, DbException, ValidationException {
-    insert(getEntitiesForInsert());
-  }
-
-  /**
-   * Performs an insert on the given entities
-   * @param entities the entities to insert
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the user cancels the operation
-   * @throws ValidationException in case validation fails
-   * @see #evtBeforeInsert
-   * @see #evtAfterInsert
-   * @see #validateEntities(java.util.List, int)
-   */
-  public final void insert(final List<Entity> entities) throws UserCancelException, DbException, ValidationException {
-    if (isReadOnly())
-      throw new RuntimeException("This is a read-only model, inserting is not allowed!");
-    if (!isInsertAllowed())
-      throw new RuntimeException("This model does not allow inserting!");
-
-    log.debug(toString() + " - insert "+ Util.getListContentsAsString(entities, false));
-
-    evtBeforeInsert.fire();
-    validateEntities(entities, INSERT);
-
-    final List<Entity.Key> primaryKeys = Entity.Key.copyEntityKeys(doInsert(entities));
-    if (containsTableModel()) {
-      getTableModel().getSelectionModel().clearSelection();
-      getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
-    }
-
-    evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
-    refreshDetailModelsAfterInsert(primaryKeys);
-  }
-
-  /**
-   * Performs a update, using the entities returned by getEntitiesForUpdate()
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the user cancels the operation
-   * @throws EntityModifiedException in case an entity was modified by another user
-   * @throws ValidationException in case validation fails
-   * @see #getEntitiesForUpdate()
-   * @see #validateEntities(java.util.List, int)
-   */
-  public final void update() throws UserCancelException, DbException, EntityModifiedException, ValidationException {
-    update(getEntitiesForUpdate());
-  }
-
-  /**
-   * Updates the given Entities and selects the updated entities in the table model if one is available
-   * If the entities are unmodified this method returns silently.
-   * @param entities the Entities to update
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the user cancels the operation
-   * @throws EntityModifiedException in case an entity was modified by another user
-   * @throws ValidationException in case validation fails
-   * @see #evtBeforeUpdate
-   * @see #evtAfterUpdate
-   * @see #validateEntities(java.util.List, int)
-   */
-  public final void update(final List<Entity> entities) throws DbException, EntityModifiedException, UserCancelException, ValidationException {
-    if (isReadOnly())
-      throw new RuntimeException("This is a read-only model, updating is not allowed!");
-    if (!isMultipleUpdateAllowed() && entities.size() > 1)
-      throw new RuntimeException("Update of multiple entities is not allowed!");
-    if (!isUpdateAllowed())
-      throw new RuntimeException("This model does not allow updating!");
-
-    log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
-
-    final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
-    if (modifiedEntities.size() == 0)
-      return;
-
-    evtBeforeUpdate.fire();
-    validateEntities(modifiedEntities, UPDATE);
-
-    final List<Entity> updatedEntities = doUpdate(modifiedEntities);
-    if (containsTableModel()) {
-      if (Entity.isPrimaryKeyModified(modifiedEntities)) {
-        getTableModel().refresh();//best we can do under the circumstances
-      }
-      else {//replace and select the updated entities
-        final List<Entity> updated = new ArrayList<Entity>();
-        for (final Entity entity : updatedEntities)
-          if (entity.is(getEntityID()))
-            updated.add(entity);
-        getTableModel().replaceEntities(updated);
-        getTableModel().setSelectedEntities(updated);
-      }
-    }
-
-    evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities));
-    refreshDetailModelsAfterUpdate(updatedEntities);
-  }
-
-  /**
-   * Deletes the entities returned by getEntitiesForDelete()
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the user cancels the operation
-   * @see #getEntitiesForDelete()
-   * @see #evtBeforeDelete
-   * @see #evtAfterDelete
-   */
-  public final void delete() throws DbException, UserCancelException {
-    if (isReadOnly())
-      throw new RuntimeException("This is a read-only model, deleting is not allowed!");
-    if (!isDeleteAllowed())
-      throw new RuntimeException("This model does not allow deleting!");
-
-    final List<Entity> entities = getEntitiesForDelete();
-    log.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
-
-    evtBeforeDelete.fire();
-    if (containsTableModel())
-      getTableModel().getSelectionModel().clearSelection();
-
-    doDelete(entities);
-    if (containsTableModel())
-      getTableModel().removeEntities(entities);
-
-    evtAfterDelete.fire(new DeleteEvent(this, entities));
-    refreshDetailModelsAfterDelete(entities);
-  }
-
-  /**
-   * Default behavior is returning a List containing a copy of the active entity
-   * This method should return an empty List instead of null.
-   * @return the entities to use when insert is triggered
-   * @see #insert()
-   */
-  public List<Entity> getEntitiesForInsert() {
-    return Arrays.asList(getEditModel().getEntityCopy());
-  }
-
-  /**
-   * Default behavior is returning a List containing a copy of the active entity
-   * This method should return an empty List instead of null.
-   * @return the entities to use when update is triggered
-   * @see #update()
-   */
-  public List<Entity> getEntitiesForUpdate() {
-    return Arrays.asList(getEditModel().getEntityCopy());
-  }
-
-  /**
-   * Returns the entities to use when delete is triggered.
-   * Default behavior is returning the selected entities
-   * from the table model or if no table model is available
-   * a List containing a copy of the active entity.
-   * This method should return an empty List instead of null.
-   * @return the entities to use when delete is triggered
-   * @see #delete()
-   */
-  public List<Entity> getEntitiesForDelete() {
-    return containsTableModel() ? getTableModel().getSelectedEntities() :
-            getEditModel().isEntityNull() ? new ArrayList<Entity>() :  Arrays.asList(getEditModel().getEntityCopy());
-  }
 
   /**
    * Takes a path to a report which uses a JDBC datasource and returns an initialized JasperPrint object
@@ -753,81 +425,6 @@ public class EntityModel implements Refreshable {
   protected void initializeAssociatedModels() {}
 
   /**
-   * Validates the given Entity objects.
-   * The default implementation forwards the validation to the underlying EntityEditModel
-   * @param entities the entities to validate
-   * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
-   * @throws ValidationException in case the validation fails
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object)
-   * @see #INSERT
-   * @see #UPDATE
-   */
-  @SuppressWarnings({"UnusedDeclaration"})
-  protected void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
-    for (final Entity entity : entities) {
-      for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-        getEditModel().validate(property, entity.getValue(property));
-      }
-    }
-  }
-
-  /**
-   * Inserts the given entities from the database
-   * @param entities the entities to insert
-   * @return a list containing the primary keys of the inserted entities
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the operation is canceled
-   */
-  protected List<Entity.Key> doInsert(final List<Entity> entities) throws DbException, UserCancelException {
-    try {
-      return getEntityDb().insert(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Updates the given entities in the database
-   * @param entities the entities to update
-   * @return a list the udpated entities
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the operation is cancelled
-   */
-  protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, UserCancelException {
-    try {
-      return getEntityDb().update(entities);
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Deletes the given entities from the database
-   * @param entities the entities to delete
-   * @throws DbException in case of a database exception
-   * @throws UserCancelException in case the operation is canceled
-   */
-  protected void doDelete(final List<Entity> entities) throws DbException, UserCancelException {
-    try {
-      getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
-    }
-    catch (DbException dbe) {
-      throw dbe;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
    * @return the EntityTableModel used by this EntityModel
    */
   protected EntityTableModel initializeTableModel() {
@@ -837,17 +434,65 @@ public class EntityModel implements Refreshable {
   /**
    * @return the EntityEditMOdel used by this EntityModel
    */
-  protected EntityEditModel intializeEditModel() {
-    return new EntityEditModel(getEntityID(), getDbProvider(), evtEntitiesChanged);
+  protected EntityEditModel initializeEditModel() {
+    return new EntityEditModel(getEntityID(), getDbProvider());
   }
 
   /**
    * Override to add specific event bindings, remember to call super.bindEvents()
    */
   protected void bindEvents() {
-    evtAfterDelete.addListener(evtEntitiesChanged);
-    evtAfterInsert.addListener(evtEntitiesChanged);
-    evtAfterUpdate.addListener(evtEntitiesChanged);
+    getEditModel().evtAfterInsert.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final List<Entity.Key> primaryKeys = ((InsertEvent) e).getInsertedKeys();
+          if (containsTableModel()) {
+            getTableModel().getSelectionModel().clearSelection();
+            getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
+          }
+
+          refreshDetailModelsAfterInsert(primaryKeys);
+        }
+        catch (DbException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    });
+    getEditModel().evtAfterUpdate.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final List<Entity> updatedEntities = ((UpdateEvent) e).getUpdatedEntities();
+        if (containsTableModel()) {
+          if (((UpdateEvent) e).isPrimaryKeyModified()) {
+            getTableModel().refresh();//best we can do under the circumstances
+          }
+          else {//replace and select the updated entities
+            final List<Entity> updated = new ArrayList<Entity>();
+            for (final Entity entity : updatedEntities)
+              if (entity.is(getEntityID()))
+                updated.add(entity);
+            getTableModel().replaceEntities(updated);
+            getTableModel().setSelectedEntities(updated);
+          }
+        }
+
+        refreshDetailModelsAfterUpdate(updatedEntities);
+      }
+    });
+    getEditModel().evtBeforeDelete.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        if (containsTableModel())
+          getTableModel().getSelectionModel().clearSelection();
+      }
+    });
+    getEditModel().evtAfterDelete.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final List<Entity> entities = ((DeleteEvent) e).getDeletedEntities();
+        if (containsTableModel())
+          getTableModel().removeEntities(entities);
+
+        refreshDetailModelsAfterDelete(entities);
+      }
+    });
     evtLinkedDetailModelsChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!getEditModel().isEntityNull())
@@ -922,14 +567,14 @@ public class EntityModel implements Refreshable {
    * Refreshes the EntityComboBoxModels based on the inserted entity type in the detail models
    * and sets the value of the master property to the entity with the primary key found
    * at index 0 in <code>primaryKeys</code>
-   * @param primaryKeys the primary keys of the inserted entities
+   * @param insertedPrimaryKeys the primary keys of the inserted entities
    */
-  protected void refreshDetailModelsAfterInsert(final List<Entity.Key> primaryKeys) {
+  protected void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
     if (detailModels.size() == 0)
       return;
 
     try {
-      final Entity insertedEntity = getEntityDb().selectSingle(primaryKeys.get(0));
+      final Entity insertedEntity = getEntityDb().selectSingle(insertedPrimaryKeys.get(0));
       for (final EntityModel detailModel : detailModels) {
         for (final Property.ForeignKeyProperty foreignKeyProperty :
                 EntityRepository.getForeignKeyProperties(detailModel.getEntityID(), getEntityID())) {

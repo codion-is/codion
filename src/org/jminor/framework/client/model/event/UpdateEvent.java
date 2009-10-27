@@ -11,13 +11,19 @@ import java.util.List;
 public class UpdateEvent extends ActionEvent {
 
   private final List<Entity> updatedEntities;
+  private final boolean primaryKeyModified;
 
-  public UpdateEvent(final Object source, final List<Entity> updatedEntities) {
+  public UpdateEvent(final Object source, final List<Entity> updatedEntities, final boolean primaryKeyModified) {
     super(source, 0, "update");
     this.updatedEntities = updatedEntities;
+    this.primaryKeyModified = primaryKeyModified;
   }
 
   public List<Entity> getUpdatedEntities() {
     return updatedEntities;
+  }
+
+  public boolean isPrimaryKeyModified() {
+    return primaryKeyModified;
   }
 }

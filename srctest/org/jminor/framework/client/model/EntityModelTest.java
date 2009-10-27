@@ -86,7 +86,7 @@ public class EntityModelTest extends TestCase {
     assertTrue("Active entity is not null after selection is cleared", employeeModel.getEditModel().getEntityCopy().isNull());
     employeeModel.getTableModel().setSelectedItemIndex(0);
     assertTrue("Active entity is null after selection is made", !employeeModel.getEditModel().getEntityCopy().isNull());
-    employeeModel.clear();
+    employeeModel.getEditModel().clear();
     assertTrue("Active entity is not null after model is cleared", employeeModel.getEditModel().getEntityCopy().isNull());
   }
 

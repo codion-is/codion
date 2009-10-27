@@ -1,21 +1,29 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.Criteria;
+import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
+import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.event.DeleteEvent;
+import org.jminor.framework.client.model.event.InsertEvent;
+import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.exception.ValidationException;
+import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +36,46 @@ public class EntityEditModel {
   protected static final Logger log = Util.getLogger(EntityEditModel.class);
 
   /**
+   * Code for the insert action
+   */
+  public static final int INSERT = 1;
+
+  /**
+   * Code for the update action
+   */
+  public static final int UPDATE = 2;
+
+    /**
+   * Fired before an insert is performed
+   */
+  public final Event evtBeforeInsert = new Event();
+
+  /**
+   * Fired when an Entity has been inserted
+   */
+  public final Event evtAfterInsert = new Event();
+
+  /**
+   * Fired before an update is performed
+   */
+  public final Event evtBeforeUpdate = new Event();
+
+  /**
+   * Fired when an Entity has been updated
+   */
+  public final Event evtAfterUpdate = new Event();
+
+  /**
+   * Fired before a delete is performed
+   */
+  public final Event evtBeforeDelete = new Event();
+
+  /**
+   * Fired when an Entity has been deleted
+   */
+  public final Event evtAfterDelete = new Event();
+
+  /**
    * Fired when the active entity has changed
    */
   public final Event evtEntityChanged = new Event();
@@ -36,12 +84,38 @@ public class EntityEditModel {
    * An event fired when the underlying table has undergone changes,
    * such as insert, update or delete
    */
-  public final Event evtEntitiesChanged;
+  public final Event evtEntitiesChanged = new Event();
+
+  /**
+   * Fired when the model has been cleared
+   */
+  public final Event evtModelCleared = new Event();
 
   /**
    * Active when a non-null entity is active
    */
   public final State stEntityNotNull = new State();
+
+  /**
+   * This state determines whether this model allows records to be inserted
+   * @see #setInsertAllowed(boolean)
+   * @see #isInsertAllowed()
+   */
+  private final State stAllowInsert = new State(true);
+
+  /**
+   * This state determines whether this model allows records to be updated
+   * @see #setUpdateAllowed(boolean)
+   * @see #isUpdateAllowed()
+   */
+  private final State stAllowUpdate = new State(true);
+
+  /**
+   * This state determines whether this model allows records to be deleted
+   * @see #setDeleteAllowed(boolean)
+   * @see #isDeleteAllowed()
+   */
+  private final State stAllowDelete = new State(true);
 
   /**
    * The entity used for editing
@@ -74,18 +148,99 @@ public class EntityEditModel {
    * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.   *
    * @param entityID the ID of the entity to base this EntityEditModel on
    * @param dbProvider the EntityDbProvider instance used when populating ComboBoxModels
-   * @param evtEntitiesChanged an event indicating that the underlying entities have changed, either
-   * via insert, update or delete. This event is used as the default refresh event for PropertyComboBoxModels.
    */
-  public EntityEditModel(final String entityID, final EntityDbProvider dbProvider, final Event evtEntitiesChanged) {
+  public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     if (entityID == null)
       throw new RuntimeException("entityID is null");
     this.dbProvider = dbProvider;
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
     this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
-    this.evtEntitiesChanged = evtEntitiesChanged;
     bindEvents();
+  }
+
+  /**
+   * @return true if this model is read only,
+   * by default this returns the isReadOnly value of the underlying entity
+   */
+  public boolean isReadOnly() {
+    return EntityRepository.isReadOnly(getEntityID());
+  }
+
+  /**
+   * @return true if this model allows multiple entities to be updated at a time
+   */
+  public boolean isMultipleUpdateAllowed() {
+    return true;
+  }
+
+  /**
+   * @return true if this model should allow records to be inserted
+   */
+  public boolean isInsertAllowed() {
+    return stAllowInsert.isActive();
+  }
+
+  /**
+   * @param value true if this model should allow inserts
+   */
+  public void setInsertAllowed(final boolean value) {
+    stAllowInsert.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if inserting should be enabled
+   * @see #isInsertAllowed()
+   * @see #setInsertAllowed(boolean)
+   */
+  public State getInsertAllowedState() {
+    return stAllowInsert;
+  }
+
+  /**
+   * @return true if this model should allow records to be updated
+   */
+  public boolean isUpdateAllowed() {
+    return stAllowUpdate.isActive();
+  }
+
+  /**
+   * @param value true if this model should allow records to be updated
+   */
+  public void setUpdateAllowed(final boolean value) {
+    stAllowUpdate.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if updating should be enabled
+   * @see #isUpdateAllowed()
+   * @see #setUpdateAllowed(boolean)
+   */
+  public State getUpdateAllowedState() {
+    return stAllowUpdate;
+  }
+
+  /**
+   * @return true if this model should allow records to be deleted
+   */
+  public boolean isDeleteAllowed() {
+    return stAllowDelete.isActive();
+  }
+
+  /**
+   * @param value true if this model should allow records to be deleted
+   */
+  public void setDeleteAllowed(final boolean value) {
+    stAllowDelete.setActive(value);
+  }
+
+  /**
+   * @return the state used to determine if deleting should be enabled
+   * @see #isDeleteAllowed()
+   * @see #setDeleteAllowed(boolean)
+   */
+  public State getDeleteAllowedState() {
+    return stAllowDelete;
   }
 
   public String getEntityID() {
@@ -109,6 +264,15 @@ public class EntityEditModel {
    */
   public boolean isEntityNull() {
     return entity.isNull();
+  }
+
+  /**
+   * Clears the model by setting the active entity to null
+   * @see #evtModelCleared
+   */
+  public final void clear() {
+    setEntity(null);
+    evtModelCleared.fire();
   }
 
   /**
@@ -187,6 +351,121 @@ public class EntityEditModel {
   }
 
   /**
+   * Performes a insert on the active entity
+   * @throws org.jminor.common.db.DbException in case of a database exception
+   * @throws org.jminor.common.model.UserCancelException in case the user cancels the operation
+   * @throws ValidationException in case validation fails
+   * @see #validateEntities(java.util.List, int)
+   */
+  public final void insert() throws UserCancelException, DbException, ValidationException {
+    insert(Arrays.asList(getEntityCopy()));
+  }
+
+  /**
+   * Performs an insert on the given entities
+   * @param entities the entities to insert
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the user cancels the operation
+   * @throws ValidationException in case validation fails
+   * @see #evtBeforeInsert
+   * @see #evtAfterInsert
+   * @see #validateEntities(java.util.List, int)
+   */
+  public final void insert(final List<Entity> entities) throws UserCancelException, DbException, ValidationException {
+    if (isReadOnly())
+      throw new RuntimeException("This is a read-only model, inserting is not allowed!");
+    if (!isInsertAllowed())
+      throw new RuntimeException("This model does not allow inserting!");
+
+    log.debug(toString() + " - insert "+ Util.getListContentsAsString(entities, false));
+
+    evtBeforeInsert.fire();
+    validateEntities(entities, INSERT);
+
+    final List<Entity.Key> primaryKeys = Entity.Key.copyEntityKeys(doInsert(entities));
+    evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
+  }
+
+  /**
+   * Performs a update on the active entity
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the user cancels the operation
+   * @throws org.jminor.framework.db.exception.EntityModifiedException in case an entity was modified by another user
+   * @throws ValidationException in case validation fails
+   * @see #validateEntities(java.util.List, int)
+   */
+  public final void update() throws UserCancelException, DbException, EntityModifiedException, ValidationException {
+    update(Arrays.asList(getEntityCopy()));
+  }
+
+  /**
+   * Updates the given Entities. If the entities are unmodified this method returns silently.
+   * @param entities the Entities to update
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the user cancels the operation
+   * @throws EntityModifiedException in case an entity was modified by another user
+   * @throws ValidationException in case validation fails
+   * @see #evtBeforeUpdate
+   * @see #evtAfterUpdate
+   * @see #validateEntities(java.util.List, int)
+   */
+  public final void update(final List<Entity> entities) throws DbException, EntityModifiedException, UserCancelException, ValidationException {
+    if (isReadOnly())
+      throw new RuntimeException("This is a read-only model, updating is not allowed!");
+    if (!isMultipleUpdateAllowed() && entities.size() > 1)
+      throw new RuntimeException("Update of multiple entities is not allowed!");
+    if (!isUpdateAllowed())
+      throw new RuntimeException("This model does not allow updating!");
+
+    log.debug(toString() + " - update " + Util.getListContentsAsString(entities, false));
+
+    final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
+    if (modifiedEntities.size() == 0)
+      return;
+
+    evtBeforeUpdate.fire();
+    validateEntities(modifiedEntities, UPDATE);
+
+    final List<Entity> updatedEntities = doUpdate(modifiedEntities);
+
+    evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities, Entity.isPrimaryKeyModified(modifiedEntities)));
+  }
+
+  /**
+   * Deletes the active entity
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the user cancels the operation
+   * @see #evtBeforeDelete
+   * @see #evtAfterDelete
+   */
+  public final void delete() throws DbException, UserCancelException {
+    delete(Arrays.asList(getEntityCopy()));
+  }
+
+  /**
+   * Deletes the given entities
+   * @param entities the entities to delete
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the user cancels the operation
+   * @see #evtBeforeDelete
+   * @see #evtAfterDelete
+   */
+  public final void delete(final List<Entity> entities) throws DbException, UserCancelException {
+    if (isReadOnly())
+      throw new RuntimeException("This is a read-only model, deleting is not allowed!");
+    if (!isDeleteAllowed())
+      throw new RuntimeException("This model does not allow deleting!");
+
+    log.debug(toString() + " - delete " + Util.getListContentsAsString(entities, false));
+
+    evtBeforeDelete.fire();
+
+    doDelete(entities);
+
+    evtAfterDelete.fire(new DeleteEvent(this, entities));
+  }
+
+  /**
    * Returns true if the given value is valid for the given property, using the <code>validate</code> method
    * @param property the property
    * @param value the value
@@ -200,6 +479,25 @@ public class EntityEditModel {
     }
     catch (ValidationException e) {
       return false;
+    }
+  }
+
+  /**
+   * Validates the given Entity objects.
+   * The default implementation forwards the validation to the underlying EntityEditModel
+   * @param entities the entities to validate
+   * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
+   * @throws ValidationException in case the validation fails
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object)
+   * @see #INSERT
+   * @see #UPDATE
+   */
+  @SuppressWarnings({"UnusedDeclaration"})
+  public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
+    for (final Entity entity : entities) {
+      for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
+        validate(property, entity.getValue(property));
+      }
     }
   }
 
@@ -532,6 +830,62 @@ public class EntityEditModel {
   }
 
   /**
+   * Inserts the given entities from the database
+   * @param entities the entities to insert
+   * @return a list containing the primary keys of the inserted entities
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the operation is canceled
+   */
+  protected List<Entity.Key> doInsert(final List<Entity> entities) throws DbException, UserCancelException {
+    try {
+      return getDbProvider().getEntityDb().insert(entities);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Updates the given entities in the database
+   * @param entities the entities to update
+   * @return a list the udpated entities
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the operation is cancelled
+   */
+  protected List<Entity> doUpdate(final List<Entity> entities) throws DbException, UserCancelException {
+    try {
+      return getDbProvider().getEntityDb().update(entities);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Deletes the given entities from the database
+   * @param entities the entities to delete
+   * @throws DbException in case of a database exception
+   * @throws UserCancelException in case the operation is canceled
+   */
+  protected void doDelete(final List<Entity> entities) throws DbException, UserCancelException {
+    try {
+      getDbProvider().getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
    * Sets the value in the underlying entity
    * @param property the property for which to set the value
    * @param value the value
@@ -563,6 +917,9 @@ public class EntityEditModel {
    * You must call super.bindEvents() in case you override this method
    */
   protected void bindEvents() {
+    evtAfterDelete.addListener(evtEntitiesChanged);
+    evtAfterInsert.addListener(evtEntitiesChanged);
+    evtAfterUpdate.addListener(evtEntitiesChanged);
     entity.addPropertyListener(new Property.Listener() {
       @Override
       protected void propertyChanged(final Property.Event event) {

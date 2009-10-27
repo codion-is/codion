@@ -647,7 +647,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public final void save() {
     if ((getModel().containsTableModel() && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
-            || !getEditModel().isEntityModified() || !getModel().isUpdateAllowed()) {
+            || !getEditModel().isEntityModified() || !getModel().getEditModel().isUpdateAllowed()) {
       //no entity selected, selected entity is unmodified or update is not allowed, can only insert
       insert();
     }
@@ -674,7 +674,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         validateData();
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
-          getModel().insert();
+          getModel().getEditModel().insert();
         }
         finally {
           UiUtil.setWaitCursor(false, EntityPanel.this);
@@ -700,7 +700,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       if (confirmDelete()) {
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
-          getModel().delete();
+          if (getModel().containsTableModel())
+            getModel().getEditModel().delete(getModel().getTableModel().getSelectedEntities());
+          else
+            getModel().getEditModel().delete();
         }
         finally {
           UiUtil.setWaitCursor(false, EntityPanel.this);
@@ -726,7 +729,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         validateData();
         try {
           UiUtil.setWaitCursor(true, EntityPanel.this);
-          getModel().update();
+          getModel().getEditModel().update();
         }
         finally {
           UiUtil.setWaitCursor(false, EntityPanel.this);
@@ -775,7 +778,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
               propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
-        getModel().update(selectedEntities);
+        getModel().getEditModel().update(selectedEntities);
       }
       catch (Exception e) {
         EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
@@ -820,8 +823,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     try {
       if (entityTablePanel != null)
         entityTablePanel.getJTable().print();
-
-      prepareUI(true, false);
     }
     catch (PrinterException pr) {
       throw new RuntimeException(pr);
@@ -858,13 +859,13 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see EntityEditPanel#setDefaultFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
-    if (clearUI)
-      getModel().clear();
-    if (requestDefaultFocus) {
-      if ((getEditPanel() == null || getEditPanelState() == HIDDEN) && getTablePanel() != null)
+    final EntityEditPanel editPanel = getEditPanel();
+    if (editPanel != null) {
+      editPanel.prepareUI(requestDefaultFocus, clearUI);
+    }
+    else if (requestDefaultFocus) {
+      if (getTablePanel() != null)
         getTablePanel().getJTable().requestFocus();
-      else if (getEditPanel().getDefaultFocusComponent() != null)
-        getEditPanel().getDefaultFocusComponent().requestFocusInWindow();
       else if (getComponentCount() > 0)
         getComponents()[0].requestFocus();
     }
@@ -913,7 +914,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public Control getDeleteSelectedControl() {
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
-                    getModel().getDeleteAllowedState(),
+                    getModel().getEditModel().getDeleteAllowedState(),
                     getModel().getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -936,7 +937,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ControlFactory.methodControl(this, "updateSelectedEntities",
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             new AggregateState(AggregateState.Type.AND,
-                    getModel().getUpdateAllowedState(),
+                    getModel().getEditModel().getUpdateAllowedState(),
                     getModel().getTableModel().stSelectionEmpty.getReversedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP), 0,
             null, Images.loadImage(Images.IMG_SAVE_16));
@@ -948,7 +949,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public ControlSet getUpdateSelectedControlSet() {
     final State enabled = new AggregateState(AggregateState.Type.AND,
-            getModel().getUpdateAllowedState(),
+            getModel().getEditModel().getUpdateAllowedState(),
             getModel().getTableModel().stSelectionEmpty.getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
@@ -973,7 +974,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
-                    getModel().getDeleteAllowedState(),
+                    getModel().getEditModel().getDeleteAllowedState(),
                     getEditModel().getEntityNotNullState()),//changed from stSelectionEmpty.getReversedState()
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -984,7 +985,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return ControlFactory.methodControl(getModel(), "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return ControlFactory.methodControl(getModel().getEditModel(), "clear", FrameworkMessages.get(FrameworkMessages.CLEAR),
             stActive, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
@@ -997,7 +998,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
-                    getModel().getUpdateAllowedState(),
+                    getModel().getEditModel().getUpdateAllowedState(),
                     getEditModel().getEntityNotNullState(),
                     getEditModel().getEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
@@ -1010,7 +1011,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            new AggregateState(AggregateState.Type.AND, stActive, getModel().getInsertAllowedState()),
+            new AggregateState(AggregateState.Type.AND, stActive, getModel().getEditModel().getInsertAllowedState()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -1020,8 +1021,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getInsertAllowedState(),
-            new AggregateState(AggregateState.Type.AND, getModel().getUpdateAllowedState(),
+    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getEditModel().getInsertAllowedState(),
+            new AggregateState(AggregateState.Type.AND, getModel().getEditModel().getUpdateAllowedState(),
                     getEditModel().getEntityModifiedState()));
     return ControlFactory.methodControl(this, "save", insertCaption,
             new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
@@ -1275,7 +1276,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         public void actionPerformed(ActionEvent event) {
           if (getEditPanelState() == HIDDEN)
             setEditPanelState(EMBEDDED);
-          prepareUI(true, false);
+          getEditPanel().prepareUI(true, false);
         }
       });
     }
@@ -1534,21 +1535,21 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see #getControl(String)
    */
   protected void setupControls() {
-    if (!getModel().isReadOnly()) {
-      if (getModel().isInsertAllowed())
+    if (!getModel().getEditModel().isReadOnly()) {
+      if (getModel().getEditModel().isInsertAllowed())
         setControl(INSERT, getInsertControl());
-      if (getModel().isUpdateAllowed())
+      if (getModel().getEditModel().isUpdateAllowed())
         setControl(UPDATE, getUpdateControl());
-      if (getModel().isDeleteAllowed())
+      if (getModel().getEditModel().isDeleteAllowed())
         setControl(DELETE, getDeleteControl());
     }
     setControl(CLEAR, getClearControl());
     if (getModel().containsTableModel()) {
-      if (!getModel().isReadOnly() && getModel().isUpdateAllowed()
-              && getModel().isMultipleUpdateAllowed())
+      if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isUpdateAllowed()
+              && getModel().getEditModel().isMultipleUpdateAllowed())
         setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
       setControl(REFRESH, getRefreshControl());
-      if (!getModel().isReadOnly() && getModel().isDeleteAllowed())
+      if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed())
         setControl(MENU_DELETE, getDeleteSelectedControl());
       setControl(PRINT, getPrintControl());
       setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1696,7 +1697,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (entityTablePanel == null)
       return;
 
-    if (!getModel().isReadOnly() && getModel().isDeleteAllowed()) {
+    if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed()) {
       entityTablePanel.getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent event) {
@@ -1854,7 +1855,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
                 setEditPanelState(HIDDEN);
               }
             });
-    prepareUI(true, false);
+    getEditPanel().prepareUI(true, false);
   }
 
   /**
@@ -1938,7 +1939,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return the multiple entity update button
    */
   private JButton getUpdateButton() {
-    if (getModel().isReadOnly() || !getModel().isMultipleUpdateAllowed() || !getModel().isUpdateAllowed())
+    if (getModel().getEditModel().isReadOnly() || !getModel().getEditModel().isMultipleUpdateAllowed()
+            || !getModel().getEditModel().isUpdateAllowed())
       return null;
 
     final ControlSet updateSet = getUpdateSelectedControlSet();
@@ -1957,7 +1959,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   private JButton getDeleteButton() {
-    if (getModel().isReadOnly() || !getModel().isDeleteAllowed())
+    if (getModel().getEditModel().isReadOnly() || !getModel().getEditModel().isDeleteAllowed())
       return null;
 
     final Control delete = getDeleteSelectedControl();

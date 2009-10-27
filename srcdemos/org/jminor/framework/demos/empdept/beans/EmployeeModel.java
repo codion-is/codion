@@ -29,8 +29,8 @@ public class EmployeeModel extends EntityModel {
   }
 
   @Override
-  protected EntityEditModel intializeEditModel() {
-    return new EntityEditModel(getEntityID(), getDbProvider(), evtEntitiesChanged) {
+  protected EntityEditModel initializeEditModel() {
+    return new EntityEditModel(getEntityID(), getDbProvider()) {
       /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
       @Override
       public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty property) {

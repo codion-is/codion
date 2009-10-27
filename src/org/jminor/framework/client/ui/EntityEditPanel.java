@@ -60,12 +60,16 @@ public abstract class EntityEditPanel extends JPanel {
     return this.defaultFocusComponent = defaultFocusComponent;
   }
 
-  /**
-   * @return the component which should receive focus after a record has been inserted
-   * or the panel is activated
-   */
-  public JComponent getDefaultFocusComponent() {
-    return defaultFocusComponent;
+  public void setDefaultFocus() {
+    if (defaultFocusComponent != null)
+      defaultFocusComponent.requestFocusInWindow();
+  }
+
+  public void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
+    if (clearUI)
+      getEditModel().clear();
+    if (requestDefaultFocus && isVisible())
+      setDefaultFocus();
   }
 
   /**
