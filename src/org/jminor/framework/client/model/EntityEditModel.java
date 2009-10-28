@@ -51,7 +51,7 @@ public class EntityEditModel {
   public final Event evtBeforeInsert = new Event();
 
   /**
-   * Fired when an Entity has been inserted
+   * Fired after a successful insert
    */
   public final Event evtAfterInsert = new Event();
 
@@ -61,7 +61,7 @@ public class EntityEditModel {
   public final Event evtBeforeUpdate = new Event();
 
   /**
-   * Fired when an Entity has been updated
+   * Fired after a successful update
    */
   public final Event evtAfterUpdate = new Event();
 
@@ -71,7 +71,7 @@ public class EntityEditModel {
   public final Event evtBeforeDelete = new Event();
 
   /**
-   * Fired when an Entity has been deleted
+   * Fired after a successful delete
    */
   public final Event evtAfterDelete = new Event();
 
@@ -152,10 +152,13 @@ public class EntityEditModel {
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     if (entityID == null)
       throw new RuntimeException("entityID is null");
+    if (dbProvider == null)
+      throw new RuntimeException("dbProvider is null");
     this.dbProvider = dbProvider;
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
     this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
+    bindEventsInternal();
     bindEvents();
   }
 
@@ -248,14 +251,11 @@ public class EntityEditModel {
   }
 
   public EntityDbProvider getDbProvider() {
-    if (dbProvider == null)
-      throw new RuntimeException("No dbProvider available in edit model: " + getEntityID());
-
     return dbProvider;
   }
 
   public State getEntityNotNullState() {
-    return stEntityNotNull;
+    return stEntityNotNull.getLinkedState();
   }
 
   /**
@@ -914,9 +914,11 @@ public class EntityEditModel {
   }
 
   /**
-   * You must call super.bindEvents() in case you override this method
+   * Override to add event bindings
    */
-  protected void bindEvents() {
+  protected void bindEvents() {}
+
+  private void bindEventsInternal() {
     evtAfterDelete.addListener(evtEntitiesChanged);
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);

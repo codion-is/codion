@@ -102,7 +102,6 @@ public class EntityUiUtil {
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, null, false) {
       @Override
       protected void bindEvents() {
-        super.bindEvents();
         evtTableDoubleClicked.addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (!getTableModel().getSelectionModel().isSelectionEmpty())

@@ -896,3 +896,4 @@
   EntityCriteria.setOrderByClause() added
   EntityModel refactored, insert/update/delete mechanism moved to EntityEditModel
   EntityEditModelTest added
+  bindEventsInternal() added where applicable, so that you don't have to remember to call super.bindEvents() when overriding bindEvents()

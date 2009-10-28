@@ -42,7 +42,6 @@ public class PropertySearchPanel extends AbstractSearchPanel {
                              final boolean includeToggleAdvBtn) {
     super(model, includeActivateBtn, includeToggleAdvBtn);
     model.initialize();
-    bindEvents();
   }
 
   /** {@inheritDoc} */

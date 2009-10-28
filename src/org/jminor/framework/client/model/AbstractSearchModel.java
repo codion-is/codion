@@ -343,7 +343,7 @@ public abstract class AbstractSearchModel {
     throw new IllegalArgumentException("Undefined search type " + searchType);
   }
 
-  protected void bindEvents() {
+  private void bindEvents() {
     evtUpperBoundChanged.addListener(evtSearchStateChanged);
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);

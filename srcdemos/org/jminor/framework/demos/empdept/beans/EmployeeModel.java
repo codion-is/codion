@@ -67,7 +67,6 @@ public class EmployeeModel extends EntityModel {
 
   @Override
   protected void bindEvents() {
-    super.bindEvents();
     //Refresh the manager ComboBoxModel when an employee is either added or updated
     evtEntitiesChanged.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

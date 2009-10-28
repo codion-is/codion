@@ -137,7 +137,9 @@ public class EntityModel implements Refreshable {
     this.tableModel = includeTableModel ? initializeTableModel() : null;
     addDetailModels();
     initializeAssociatedModels();
+    bindEventsInternal();
     bindEvents();
+    bindTableModelEventsInternal();
     bindTableModelEvents();
   }
 
@@ -439,105 +441,14 @@ public class EntityModel implements Refreshable {
   }
 
   /**
-   * Override to add specific event bindings, remember to call super.bindEvents()
+   * Override to add event bindings
    */
-  protected void bindEvents() {
-    getEditModel().evtAfterInsert.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          final List<Entity.Key> primaryKeys = ((InsertEvent) e).getInsertedKeys();
-          if (containsTableModel()) {
-            getTableModel().getSelectionModel().clearSelection();
-            getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
-          }
-
-          refreshDetailModelsAfterInsert(primaryKeys);
-        }
-        catch (DbException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    });
-    getEditModel().evtAfterUpdate.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        final List<Entity> updatedEntities = ((UpdateEvent) e).getUpdatedEntities();
-        if (containsTableModel()) {
-          if (((UpdateEvent) e).isPrimaryKeyModified()) {
-            getTableModel().refresh();//best we can do under the circumstances
-          }
-          else {//replace and select the updated entities
-            final List<Entity> updated = new ArrayList<Entity>();
-            for (final Entity entity : updatedEntities)
-              if (entity.is(getEntityID()))
-                updated.add(entity);
-            getTableModel().replaceEntities(updated);
-            getTableModel().setSelectedEntities(updated);
-          }
-        }
-
-        refreshDetailModelsAfterUpdate(updatedEntities);
-      }
-    });
-    getEditModel().evtBeforeDelete.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        if (containsTableModel())
-          getTableModel().getSelectionModel().clearSelection();
-      }
-    });
-    getEditModel().evtAfterDelete.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        final List<Entity> entities = ((DeleteEvent) e).getDeletedEntities();
-        if (containsTableModel())
-          getTableModel().removeEntities(entities);
-
-        refreshDetailModelsAfterDelete(entities);
-      }
-    });
-    evtLinkedDetailModelsChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        if (!getEditModel().isEntityNull())
-          updateDetailModelsByActiveEntity();
-      }
-    });
-    if (!containsTableModel()) {
-      getEditModel().getEntityChangedEvent().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent event) {
-          updateDetailModelsByActiveEntity();
-        }
-      });
-    }
-  }
+  protected void bindEvents() {}
 
   /**
-   * Override to add specific event bindings that depend on the table model,
-   * remember to call super.bindTableModelEvents()
+   * Override to add specific event bindings that depend on the table model
    */
-  protected void bindTableModelEvents() {
-    if (!containsTableModel())
-      return;
-
-    getTableModel().evtSelectionChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        updateDetailModelsByActiveEntity();
-      }
-    });
-
-    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        getEditModel().setEntity(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedEntity());
-      }
-    });
-
-    getTableModel().addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent event) {
-        //if the selected record is being updated via the table model refresh the one in the model
-        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
-          getEditModel().setEntity(null);
-          getEditModel().setEntity(getTableModel().getSelectedEntity());
-        }
-      }
-    });
-  }
+  protected void bindTableModelEvents() {}
 
   /**
    * Removes the deleted entities from combobox models
@@ -628,5 +539,98 @@ public class EntityModel implements Refreshable {
 
   private void setMasterModel(final EntityModel masterModel) {
     this.masterModel = masterModel;
+  }
+
+  private void bindEventsInternal() {
+    getEditModel().evtAfterInsert.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final List<Entity.Key> primaryKeys = ((InsertEvent) e).getInsertedKeys();
+          if (containsTableModel()) {
+            getTableModel().getSelectionModel().clearSelection();
+            getTableModel().addEntitiesByPrimaryKeys(primaryKeys, true);
+          }
+
+          refreshDetailModelsAfterInsert(primaryKeys);
+        }
+        catch (DbException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    });
+    getEditModel().evtAfterUpdate.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final List<Entity> updatedEntities = ((UpdateEvent) e).getUpdatedEntities();
+        if (containsTableModel()) {
+          if (((UpdateEvent) e).isPrimaryKeyModified()) {
+            getTableModel().refresh();//best we can do under the circumstances
+          }
+          else {//replace and select the updated entities
+            final List<Entity> updated = new ArrayList<Entity>();
+            for (final Entity entity : updatedEntities)
+              if (entity.is(getEntityID()))
+                updated.add(entity);
+            getTableModel().replaceEntities(updated);
+            getTableModel().setSelectedEntities(updated);
+          }
+        }
+
+        refreshDetailModelsAfterUpdate(updatedEntities);
+      }
+    });
+    getEditModel().evtBeforeDelete.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        if (containsTableModel())
+          getTableModel().getSelectionModel().clearSelection();
+      }
+    });
+    getEditModel().evtAfterDelete.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final List<Entity> entities = ((DeleteEvent) e).getDeletedEntities();
+        if (containsTableModel())
+          getTableModel().removeEntities(entities);
+
+        refreshDetailModelsAfterDelete(entities);
+      }
+    });
+    evtLinkedDetailModelsChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        if (!getEditModel().isEntityNull())
+          updateDetailModelsByActiveEntity();
+      }
+    });
+    if (!containsTableModel()) {
+      getEditModel().getEntityChangedEvent().addListener(new ActionListener() {
+        public void actionPerformed(ActionEvent event) {
+          updateDetailModelsByActiveEntity();
+        }
+      });
+    }
+  }
+
+  private void bindTableModelEventsInternal() {if (!containsTableModel())
+      return;
+
+    getTableModel().evtSelectionChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        updateDetailModelsByActiveEntity();
+      }
+    });
+
+    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        getEditModel().setEntity(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedEntity());
+      }
+    });
+
+    getTableModel().addTableModelListener(new TableModelListener() {
+      public void tableChanged(TableModelEvent event) {
+        //if the selected record is being updated via the table model refresh the one in the model
+        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
+          getEditModel().setEntity(null);
+          getEditModel().setEntity(getTableModel().getSelectedEntity());
+        }
+      }
+    });
   }
 }

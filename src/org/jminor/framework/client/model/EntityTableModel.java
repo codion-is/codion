@@ -227,6 +227,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     this.tableColumnProperties = initializeColumnProperties();
     this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);
+    bindEventsInternal();
     bindEvents();
   }
 
@@ -1015,35 +1016,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     return getSelectedEntities().iterator();
   }
 
-  protected void bindEvents() {
-    tableSearchModel.evtFilterStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        filterTable();
-      }
-    });
-    evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        tableSearchModel.setSearchModelState();
-      }
-    });
-    addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent event) {
-        evtTableDataChanged.fire();
-      }
-    });
-    tableSorter.evtBeforeSort.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        isSorting = true;
-        selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      }
-    });
-    tableSorter.evtAfterSort.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        setSelectedByPrimaryKeys(selectedPrimaryKeys);
-        isSorting = false;
-      }
-    });
-  }
+  /**
+   * Override to add event bindings
+   */
+  protected void bindEvents() {}
 
   /**
    * Adds the given entities to this table model
@@ -1079,6 +1055,36 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   private int viewIndexOf(final Entity entity) {
     return tableSorter.viewIndex(modelIndexOf(entity));
+  }
+
+  private void bindEventsInternal() {
+    tableSearchModel.evtFilterStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        filterTable();
+      }
+    });
+    evtRefreshDone.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        tableSearchModel.setSearchModelState();
+      }
+    });
+    addTableModelListener(new TableModelListener() {
+      public void tableChanged(TableModelEvent event) {
+        evtTableDataChanged.fire();
+      }
+    });
+    tableSorter.evtBeforeSort.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        isSorting = true;
+        selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
+      }
+    });
+    tableSorter.evtAfterSort.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        setSelectedByPrimaryKeys(selectedPrimaryKeys);
+        isSorting = false;
+      }
+    });
   }
 
   private static Class<?> getValueClass(final Type type, final Object value) {

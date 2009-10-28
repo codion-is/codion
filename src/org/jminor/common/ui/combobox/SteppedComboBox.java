@@ -54,7 +54,7 @@ public class SteppedComboBox extends JComboBox {
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
   }
 
-  protected void bindEvents() {
+  private void bindEvents() {
     getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
       @Override
       public void focusLost(FocusEvent e) {

@@ -179,6 +179,7 @@ public class EntityTablePanel extends JPanel {
     this.searchPanel = initializeSearchPanel();
     this.propertyFilterPanels = initializeFilterPanels();
     initializeUI(popupControls);
+    bindEventsInternal();
     bindEvents();
     updateStatusMessage();
   }
@@ -460,59 +461,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Override to provide specific event bindings, remember to call <code>super.bindEvents()</code>
+   * Override to add event bindings
    */
-  protected void bindEvents() {
-    getTableModel().evtRefreshStarted.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        UiUtil.setWaitCursor(true, EntityTablePanel.this);
-      }
-    });
-    getTableModel().evtRefreshDone.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        UiUtil.setWaitCursor(false, EntityTablePanel.this);
-      }
-    });
-    getJTable().addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent event) {
-        if(event.getClickCount() == 2) {
-          evtTableDoubleClicked.fire();
-        }
-      }
-    });
-    final ActionListener statusListener = new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        updateStatusMessage();
-      }
-    };
-    getTableModel().evtSelectionChanged.addListener(statusListener);
-    getTableModel().evtFilteringDone.addListener(statusListener);
-    getTableModel().evtTableDataChanged.addListener(statusListener);
-
-    getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent event) {
-        if (event.isShiftDown())
-          toggleColumnFilterPanel(event);
-      }
-    });
-
-    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        if (!getTableModel().stSelectionEmpty.isActive())
-          getJTable().scrollRectToVisible(getJTable().getCellRect(
-                  getTableModel().getSelectedIndex(), getJTable().getSelectedColumn(), true));
-      }
-    });
-
-    getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        getJTable().getTableHeader().repaint();
-        getJTable().repaint();
-      }
-    });
-  }
+  protected void bindEvents() {}
 
   /**
    * Initializes the UI
@@ -941,6 +892,58 @@ public class EntityTablePanel extends JPanel {
     }
 
     return propertyFilterPanels;
+  }
+
+  private void bindEventsInternal() {
+    getTableModel().evtRefreshStarted.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        UiUtil.setWaitCursor(true, EntityTablePanel.this);
+      }
+    });
+    getTableModel().evtRefreshDone.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        UiUtil.setWaitCursor(false, EntityTablePanel.this);
+      }
+    });
+    getJTable().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent event) {
+        if(event.getClickCount() == 2) {
+          evtTableDoubleClicked.fire();
+        }
+      }
+    });
+    final ActionListener statusListener = new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        updateStatusMessage();
+      }
+    };
+    getTableModel().evtSelectionChanged.addListener(statusListener);
+    getTableModel().evtFilteringDone.addListener(statusListener);
+    getTableModel().evtTableDataChanged.addListener(statusListener);
+
+    getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent event) {
+        if (event.isShiftDown())
+          toggleColumnFilterPanel(event);
+      }
+    });
+
+    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        if (!getTableModel().stSelectionEmpty.isActive())
+          getJTable().scrollRectToVisible(getJTable().getCellRect(
+                  getTableModel().getSelectedIndex(), getJTable().getSelectedColumn(), true));
+      }
+    });
+
+    getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        getJTable().getTableHeader().repaint();
+        getJTable().repaint();
+      }
+    });
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {

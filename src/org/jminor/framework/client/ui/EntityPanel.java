@@ -368,6 +368,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         UiUtil.setWaitCursor(true, this);
         initializeAssociatedPanels();
         initializeControlPanels();
+        bindEventsInternal();
         bindEvents();
         bindTableModelEvents();
         initializeUI();
@@ -1667,21 +1668,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * Override to keep event bindings in one place,
-   * remember to call super.bindEvents()
    * this method is called during initialization before the UI is initialized
    */
-  protected void bindEvents() {
-    addComponentListener(new ComponentAdapter() {
-      @Override
-      public void componentHidden(ComponentEvent event) {
-        setFilterPanelsVisible(false);
-      }
-      @Override
-      public void componentShown(ComponentEvent event) {
-        setFilterPanelsVisible(true);
-      }
-    });
-  }
+  protected void bindEvents() {}
 
   /**
    * Override to keep table model event bindings in one place,
@@ -2122,6 +2111,19 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
     //is editPanelDialog parent?
     return editPanelDialog != null && SwingUtilities.getWindowAncestor(component) == editPanelDialog;
+  }
+
+  private void bindEventsInternal() {
+    addComponentListener(new ComponentAdapter() {
+      @Override
+      public void componentHidden(ComponentEvent event) {
+        setFilterPanelsVisible(false);
+      }
+      @Override
+      public void componentShown(ComponentEvent event) {
+        setFilterPanelsVisible(true);
+      }
+    });
   }
 
   private static void showDependenciesDialog(final Map<String, List<Entity>> dependencies, final EntityDbProvider dbProvider,
