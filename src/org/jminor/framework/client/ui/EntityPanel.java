@@ -775,7 +775,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
             null, editPanel.getOkButton(), editPanel.evtButtonClicked);
     if (editPanel.isEditAccepted()) {
-      final Object[] oldValues = EntityUtil.setPropertyValue(
+      final List<Object> oldValues = EntityUtil.setPropertyValue(
               propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);

@@ -535,7 +535,7 @@ public class EntityEditModel {
    */
   public void validate(final Property property, final Object value) throws ValidationException {
     if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
-      if (!property.isNullable() && Entity.isValueNull(property.getPropertyType(), value))
+      if (!isPropertyNullable(property) && Entity.isValueNull(property.getPropertyType(), value))
         throw new ValidationException(property, value,
                 FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
     }
@@ -766,7 +766,7 @@ public class EntityEditModel {
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     return new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), getDbProvider(), false,
-            foreignKeyProperty.isNullable() ?
+            isPropertyNullable(foreignKeyProperty) ?
                     (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null, true);
   }
 
@@ -866,6 +866,16 @@ public class EntityEditModel {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Returns true if the given property accepts a null value, by default this
+   * method simply returns <code>property.isNullable()</code>
+   * @param property the property
+   * @return true if the property accepts a null value
+   */
+  protected boolean isPropertyNullable(final Property property) {
+    return property.isNullable();
   }
 
   /**

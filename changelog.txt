@@ -902,3 +902,4 @@
   EntityEditModel.stEntityNotNull changed to stEntityNull
   EntityEditModel.getEntityNotNullState() renamed to getEntityNullState()
   EntityEditModel.initializeEntityComboBoxModels() removed
+  EntityEditModel.isPropertyNullable() added

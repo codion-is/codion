@@ -70,7 +70,7 @@ public class EntityUtil {
    * @return an array containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static Object[] getPropertyValues(final String propertyID, final List<Entity> entities) {
+  public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities) {
     return getPropertyValues(propertyID, entities, true);
   }
 
@@ -80,7 +80,7 @@ public class EntityUtil {
    * @param includeNullValues if true then null values are included
    * @return an array containing the values of the property with the given ID from the given entities
    */
-  public static Object[] getPropertyValues(final String propertyID, final List<Entity> entities,
+  public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities,
                                            final boolean includeNullValues) {
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
@@ -90,7 +90,7 @@ public class EntityUtil {
         values.add(entity.getValue(propertyID));
     }
 
-    return values.toArray();
+    return values;
   }
 
   /**
@@ -115,20 +115,20 @@ public class EntityUtil {
    * @param entities the entities for which to set the value
    * @return the old values in the same order as the entities were recieved
    */
-  public static Object[] setPropertyValue(final String propertyID, final Object value,
+  public static List<Object> setPropertyValue(final String propertyID, final Object value,
                                           final List<Entity> entities) {
-    final Object[] oldValues = getPropertyValues(propertyID, entities);
+    final List<Object> oldValues = getPropertyValues(propertyID, entities);
     for (final Entity entity : entities)
       entity.setValue(propertyID, value);
 
     return oldValues;
   }
 
-  public static Object[] setPropertyValue(final String propertyID, final Object[] values,
+  public static List<Object> setPropertyValue(final String propertyID, final List<Object> values,
                                           final List<Entity> entities) {
-    final Object[] oldValues = getPropertyValues(propertyID, entities);
+    final List<Object> oldValues = getPropertyValues(propertyID, entities);
     for (int i = 0; i < entities.size(); i++)
-      entities.get(i).setValue(propertyID, values[i]);
+      entities.get(i).setValue(propertyID, values.get(i));
 
     return oldValues;
   }
