@@ -976,7 +976,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
             new AggregateState(AggregateState.Type.AND,
                     stActive,
                     getModel().getEditModel().getDeleteAllowedState(),
-                    getEditModel().getEntityNotNullState()),//changed from stSelectionEmpty.getReversedState()
+                    getEditModel().getEntityNullState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -1000,7 +1000,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
             new AggregateState(AggregateState.Type.AND,
                     stActive,
                     getModel().getEditModel().getUpdateAllowedState(),
-                    getEditModel().getEntityNotNullState(),
+                    getEditModel().getEntityNullState().getReversedState(),
                     getEditModel().getEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));

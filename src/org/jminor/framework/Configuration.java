@@ -311,7 +311,7 @@ public class Configuration {
    * Specifies the value used by default to represent a null value in combo box models.
    * Using the value null indicates that no null value item should be used (the default).
    * Value type: String
-   * Default value: null
+   * Default value: -
    */
   public static final String DEFAULT_COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.defaultComboBoxNullValueItem";
 
@@ -371,7 +371,7 @@ public class Configuration {
     setValue(USE_NUMBER_FORMAT_GROUPING, true);
     setValue(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.EntityDbRemoteProvider");
     setValue(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.EntityDbLocalProvider");
-    setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, null);
+    setValue(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
     setValue(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
     setValue(PERFORM_NULL_VALIDATION, true);
     setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);

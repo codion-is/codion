@@ -897,3 +897,8 @@
   EntityModel refactored, insert/update/delete mechanism moved to EntityEditModel
   EntityEditModelTest added
   bindEventsInternal() added where applicable, so that you don't have to remember to call super.bindEvents() when overriding bindEvents()
+  EntityEditModel.getEntityCopy() overloaded with includePrimaryKeyValues parameter
+  EntityEditModel.insert() now uses the above method
+  EntityEditModel.stEntityNotNull changed to stEntityNull
+  EntityEditModel.getEntityNotNullState() renamed to getEntityNullState()
+  EntityEditModel.initializeEntityComboBoxModels() removed

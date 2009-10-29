@@ -72,15 +72,15 @@ public class DepartmentPanel extends EntityPanel {
         txtDepartmentNumber.setColumns(10);
 
         //we don't allow editing of the department number since it's a primary key
-        getEditModel().stEntityNotNull.evtStateChanged.addListener(new ActionListener() {
+        getEditModel().getEntityNullState().evtStateChanged.addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (getEditModel().stEntityNotNull.isActive()) {
-              txtDepartmentNumber.setEnabled(false);
-              setDefaultFocusComponent(txtDepartmentName);
-            }
-            else {
+            if (getEditModel().isEntityNull()) {
               txtDepartmentNumber.setEnabled(true);
               setDefaultFocusComponent(txtDepartmentNumber);
+            }
+            else {
+              txtDepartmentNumber.setEnabled(false);
+              setDefaultFocusComponent(txtDepartmentName);              
             }
           }
         });

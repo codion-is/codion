@@ -1004,7 +1004,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a list of Properties that should be used as basis for this table models column model
    */
   protected List<Property> initializeColumnProperties() {
-    return EntityRepository.getVisibleProperties(getEntityID());
+    return new ArrayList<Property>(EntityRepository.getVisibleProperties(getEntityID()));
   }
 
   /**

@@ -92,9 +92,9 @@ public class EntityEditModel {
   public final Event evtModelCleared = new Event();
 
   /**
-   * Active when a non-null entity is active
+   * Active when a null entity is active
    */
-  public final State stEntityNotNull = new State();
+  private final State stEntityNull = new State(true);
 
   /**
    * This state determines whether this model allows records to be inserted
@@ -132,7 +132,7 @@ public class EntityEditModel {
    * are refreshed when refreshComboBoxModels() is called
    * @see org.jminor.common.model.Refreshable
    */
-  private final Map<Property, ComboBoxModel> propertyComboBoxModels;
+  private final Map<Property, ComboBoxModel> propertyComboBoxModels = new HashMap<Property, ComboBoxModel>();
 
   /**
    * Holds events signaling property changes made to the active entity via the ui
@@ -157,7 +157,6 @@ public class EntityEditModel {
     this.dbProvider = dbProvider;
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());
-    this.propertyComboBoxModels = new HashMap<Property, ComboBoxModel>(initializeEntityComboBoxModels());
     bindEventsInternal();
     bindEvents();
   }
@@ -246,16 +245,25 @@ public class EntityEditModel {
     return stAllowDelete;
   }
 
+  /**
+   * @return the ID of the entity this EntityEditModel is based on
+   */
   public String getEntityID() {
     return entity.getEntityID();
   }
 
+  /**
+   * @return the EntityDbProvider instance used by this EntityEditModel
+   */
   public EntityDbProvider getDbProvider() {
     return dbProvider;
   }
 
-  public State getEntityNotNullState() {
-    return stEntityNotNull.getLinkedState();
+  /**
+   * @return a State indicating whether or not the active entity is null
+   */
+  public State getEntityNullState() {
+    return stEntityNull.getLinkedState();
   }
 
   /**
@@ -280,7 +288,22 @@ public class EntityEditModel {
    * @see org.jminor.framework.domain.Entity#getCopy()
    */
   public Entity getEntityCopy() {
-    return entity.getCopy();
+    return getEntityCopy(true);
+  }
+
+  /**
+   * @param includePrimaryKeyValues if true then the primary key values are include
+   * @return a deep copy of the active entity
+   * @see org.jminor.framework.domain.Entity#getCopy()
+   */
+  public Entity getEntityCopy(final boolean includePrimaryKeyValues) {
+    final Entity copy = entity.getCopy();
+    if (!includePrimaryKeyValues) {
+      for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(copy.getEntityID()))
+        copy.setValue(property, null, false);
+    }
+
+    return copy;
   }
 
   /**
@@ -358,7 +381,7 @@ public class EntityEditModel {
    * @see #validateEntities(java.util.List, int)
    */
   public final void insert() throws UserCancelException, DbException, ValidationException {
-    insert(Arrays.asList(getEntityCopy()));
+    insert(Arrays.asList(getEntityCopy(false)));
   }
 
   /**
@@ -581,7 +604,6 @@ public class EntityEditModel {
    * @return the EntityComboBoxModel for the property identified by <code>propertyID</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
-   * @see #initializeEntityComboBoxModels()
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public EntityComboBoxModel getEntityComboBoxModel(final String propertyID) {
@@ -595,7 +617,6 @@ public class EntityEditModel {
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the <code>EntityComboBoxModel</code>
    * @return the EntityComboBoxModel associated with the <code>property</code>
-   * @see #initializeEntityComboBoxModels()
    * @throws RuntimeException if no combo box has been initialized for the given property
    */
   public EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
@@ -611,7 +632,6 @@ public class EntityEditModel {
    * @return the EntityComboBoxModel for the <code>property</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
-   * @see #initializeEntityComboBoxModels()
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final String propertyID) {
     final Property property = EntityRepository.getProperty(getEntityID(), propertyID);
@@ -626,7 +646,6 @@ public class EntityEditModel {
    * @return the EntityComboBoxModel for the <code>property</code>,
    * if no combo box model is associated with the property a new one is initialized, and associated
    * with the given property
-   * @see #initializeEntityComboBoxModels()
    */
   public EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
@@ -665,7 +684,7 @@ public class EntityEditModel {
       return;
 
     this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-    stEntityNotNull.setActive(!this.entity.isNull());
+    stEntityNull.setActive(this.entity.isNull());
     evtEntityChanged.fire();
   }
 
@@ -730,42 +749,6 @@ public class EntityEditModel {
    */
   public Entity getEntityValue(final Property.ForeignKeyProperty foreignKeyProperty) {
     return getEntityValue(foreignKeyProperty.getPropertyID());
-  }
-
-  /**
-   * @return a map of initialized EntityComboBoxModels associated with
-   * their respective properties.
-   * Use this method to provide combo box models with specific functionality.
-   */
-  protected Map<Property.ForeignKeyProperty, EntityComboBoxModel> initializeEntityComboBoxModels() {
-    return initializeEntityComboBoxModels(new EntityComboBoxModel[0]);
-  }
-
-  /**
-   * Returns a Map, mapping the provided EntityComboBoxModels to their respective properties according to the entityID.
-   * This implementation maps the EntityComboBoxModel to the Property.ForeignKeyProperty with the same entityID.
-   * If the underlying Entity references the same Entity via more than one foreign key, a RuntimeException is thrown.
-   * @param comboBoxModels the EntityComboBoxModels to map to their respective properties
-   * @return a Map of EntityComboBoxModels mapped to their respective properties
-   */
-  protected final Map<Property.ForeignKeyProperty, EntityComboBoxModel> initializeEntityComboBoxModels(final EntityComboBoxModel... comboBoxModels) {
-    final Map<Property.ForeignKeyProperty, EntityComboBoxModel> entityComboBoxModels =
-            new HashMap<Property.ForeignKeyProperty, EntityComboBoxModel>();
-    if (comboBoxModels == null || comboBoxModels.length == 0)
-      return entityComboBoxModels;
-
-    for (final EntityComboBoxModel comboBoxModel : comboBoxModels) {
-      final List<Property.ForeignKeyProperty> properties =
-              EntityRepository.getForeignKeyProperties(getEntityID(), comboBoxModel.getEntityID());
-      if (properties.size() > 1)
-        throw new RuntimeException("Multiple possible properties found for EntityComboBoxModel: " + comboBoxModel);
-      else if (properties.size() == 1)
-        entityComboBoxModels.put(properties.get(0), comboBoxModel);
-      else
-        throw new RuntimeException("Property not found for EntityComboBoxModel: " + comboBoxModel);
-    }
-
-    return entityComboBoxModels;
   }
 
   /**
