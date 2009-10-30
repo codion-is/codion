@@ -61,8 +61,9 @@ public abstract class EntityEditPanel extends JPanel {
   }
 
   public void setDefaultFocus() {
+    final JComponent defaultFocusComponent = getDefaultFocusComponent();
     if (defaultFocusComponent != null)
-      defaultFocusComponent.requestFocusInWindow();
+      getDefaultFocusComponent().requestFocusInWindow();
   }
 
   public void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
@@ -81,6 +82,10 @@ public abstract class EntityEditPanel extends JPanel {
    * Performs event binding, for overriding
    */
   protected void bindEvents() {}
+
+  protected JComponent getDefaultFocusComponent() {
+    return defaultFocusComponent;
+  }
 
   /**
    * Creates a panel containing a label and the given component.

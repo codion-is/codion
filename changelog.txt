@@ -903,3 +903,5 @@
   EntityEditModel.getEntityNotNullState() renamed to getEntityNullState()
   EntityEditModel.initializeEntityComboBoxModels() removed
   EntityEditModel.isPropertyNullable() added
+  EntityEditPanel.getDefaultFocusComponent() added, protected
+  EntityApplicationPanel now statically initializes the Messages class

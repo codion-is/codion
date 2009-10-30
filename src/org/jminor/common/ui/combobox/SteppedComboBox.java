@@ -74,7 +74,7 @@ public class SteppedComboBox extends JComboBox {
           public void show() {
             final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
             popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-            final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
+            final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width + 20, popupSize.height);
             scroller.setMaximumSize(popupBounds.getSize());
             scroller.setPreferredSize(popupBounds.getSize());
             scroller.setMinimumSize(popupBounds.getSize());

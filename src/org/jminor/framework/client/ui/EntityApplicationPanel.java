@@ -55,6 +55,10 @@ import java.util.Properties;
 
 public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
 
+  static {
+    new Messages();//OptionPane messages are statically loaded
+  }
+
   private static final Logger log = Util.getLogger(EntityApplicationPanel.class);
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
