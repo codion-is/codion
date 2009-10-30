@@ -875,13 +875,27 @@ public abstract class EntityEditPanel extends JPanel {
    * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
+   * @return an EntityLookupField bound the property
+   */
+  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID) {
+    final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(getEditModel().getEntityID(),
+            foreignKeyPropertyID);
+    return createEntityLookupField(fkProperty, EntityRepository.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID()));
+  }
+
+  /**
+   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
+   * must be an Property.ForeignKeyProperty
+   * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @param searchPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
   protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
                                                             final String... searchPropertyIDs) {
-    return createEntityLookupField(EntityRepository.getForeignKeyProperty(getEditModel().getEntityID(),
-            foreignKeyPropertyID), searchPropertyIDs);
+    final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(getEditModel().getEntityID(),
+            foreignKeyPropertyID);
+    return createEntityLookupField(fkProperty, searchPropertyIDs == null || searchPropertyIDs.length == 0 ?
+            EntityRepository.getEntitySearchPropertyIDs(fkProperty.getReferencedEntityID()) : searchPropertyIDs);
   }
 
   /**
