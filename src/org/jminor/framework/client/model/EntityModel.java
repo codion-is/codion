@@ -608,7 +608,8 @@ public class EntityModel implements Refreshable {
     }
   }
 
-  private void bindTableModelEventsInternal() {if (!containsTableModel())
+  private void bindTableModelEventsInternal() {
+    if (!containsTableModel())
       return;
 
     getTableModel().evtSelectionChanged.addListener(new ActionListener() {
