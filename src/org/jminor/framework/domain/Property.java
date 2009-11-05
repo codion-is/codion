@@ -50,7 +50,7 @@ public class Property implements Serializable {
   /**
    * The preferred column width when this property is presented in a table
    */
-  private int preferredWidth = -1;
+  private int preferredColumnWidth = -1;
 
   /**
    * True if this property should be hidden in table views
@@ -265,8 +265,8 @@ public class Property implements Serializable {
    * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
    * @return this Property instance
    */
-  public Property setPreferredWidth(final int preferredColumnWidth) {
-    this.preferredWidth = preferredColumnWidth;
+  public Property setPreferredColumnWidth(final int preferredColumnWidth) {
+    this.preferredColumnWidth = preferredColumnWidth;
     return this;
   }
 
@@ -274,8 +274,8 @@ public class Property implements Serializable {
    * @return the preferred column width of this property when
    * presented in a table, null if none has been specified
    */
-  public Integer getPreferredWidth() {
-    return preferredWidth;
+  public Integer getPreferredColumnWidth() {
+    return preferredColumnWidth;
   }
 
   /**
@@ -369,7 +369,8 @@ public class Property implements Serializable {
   }
 
   /**
-   * A property that is part of a entities primary key
+   * A property that is part of a entities primary key.
+   * A primary key property is by default non-updatable.
    */
   public static class PrimaryKeyProperty extends Property {
 
@@ -544,8 +545,9 @@ public class Property implements Serializable {
   }
 
   /**
-   * A property that does not map to an underlying database column, the value must
-   * be provided by a Entity.Proxy, by overriding it's getValue() method
+   * A property that does not map to an underlying database column. The value of a transient property
+   * is initialized to null when entities are loaded.
+   * The Entity.Proxy class can be used to provide the values of transient properties, by overriding it's getValue() method.
    * @see Entity#setDefaultProxy(org.jminor.framework.domain.Entity.Proxy)
    * @see Entity#setProxy(String, org.jminor.framework.domain.Entity.Proxy)
    * @see org.jminor.framework.domain.Entity.Proxy#getValue(Entity, Property)

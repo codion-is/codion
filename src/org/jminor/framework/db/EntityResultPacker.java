@@ -23,14 +23,17 @@ public class EntityResultPacker implements ResultPacker<Entity> {
 
   private final String entityID;
   private final Collection<Property> properties;
+  private final Collection<Property.TransientProperty> transientProperties;
 
-  public EntityResultPacker(final String entityID, final Collection<Property> properties) {
+  public EntityResultPacker(final String entityID, final Collection<Property> properties,
+                            final Collection<Property.TransientProperty> transientProperties) {
     if (entityID == null)
       throw new IllegalArgumentException("EntityResultPacker requires a non-null entityID");
     if (properties == null)
       throw new IllegalArgumentException("EntityResultPacker requires non-null properties");
     this.entityID = entityID;
     this.properties = properties;
+    this.transientProperties = transientProperties;
   }
 
   /**
@@ -55,6 +58,12 @@ public class EntityResultPacker implements ResultPacker<Entity> {
 
   private Entity loadEntity(final ResultSet resultSet) throws SQLException {
     final Entity entity = new Entity(entityID);
+    if (transientProperties != null && transientProperties.size() > 0) {
+      for (final Property.TransientProperty transientProperty : transientProperties) {
+        if (!(transientProperty instanceof Property.DenormalizedViewProperty))
+          entity.setValue(transientProperty.getPropertyID(), null);
+      }
+    }
     for (final Property property : properties)
       if (!(property instanceof Property.ForeignKeyProperty)) {
         try {

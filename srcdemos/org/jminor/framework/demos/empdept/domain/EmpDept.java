@@ -70,9 +70,9 @@ public class EmpDept {
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID))
                     .setNullable(false),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME))
-                    .setPreferredWidth(120).setMaxLength(14).setNullable(false),
+                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
-                    .setPreferredWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
+                    .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE,
@@ -93,7 +93,7 @@ public class EmpDept {
                     .setNullable(false),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
-                    getString(DEPARTMENT_LOCATION)).setPreferredWidth(100))
+                    getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME));
 

@@ -240,6 +240,18 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
+   * @return a collection containing all transient database properties found in the entity identified by <code>entityID</code>,
+   * that is, properties that do not map to database columns
+   */
+  public static Collection<Property.TransientProperty> getTransientProperties(final String entityID) {
+    if (!entityDefinitions.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+
+    return entityDefinitions.get(entityID).getTransientProperties();
+  }
+
+  /**
+   * @param entityID the entity ID
    * @return a collection containing all the foreign key properties found in the entity
    * identified by <code>entityID</code>
    */

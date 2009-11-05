@@ -521,7 +521,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   private EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null)
-      entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID, EntityRepository.getDatabaseProperties(entityID)));
+      entityResultPackers.put(entityID, packer = new EntityResultPacker(entityID,
+              EntityRepository.getDatabaseProperties(entityID), EntityRepository.getTransientProperties(entityID)));
 
     return packer;
   }

@@ -60,6 +60,7 @@ public class EntityDefinition implements Serializable {
 
   private transient List<Property.PrimaryKeyProperty> primaryKeyProperties;
   private transient List<Property.ForeignKeyProperty> foreignKeyProperties;
+  private transient List<Property.TransientProperty> transientProperties;
   private transient List<Property> visibleProperties;
   private transient List<Property> databaseProperties;
   private transient Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
@@ -182,6 +183,12 @@ public class EntityDefinition implements Serializable {
     return databaseProperties;
   }
 
+  public List<Property.TransientProperty> getTransientProperties() {
+    if (transientProperties == null)
+      transientProperties = Collections.unmodifiableList(getTransientProperties(properties.values()));
+    return transientProperties;
+  }
+
   public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
     if (foreignKeyProperties == null)
       foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
@@ -263,6 +270,15 @@ public class EntityDefinition implements Serializable {
         databaseProperties.add(property);
 
     return databaseProperties;
+  }
+
+  private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
+    final List<Property.TransientProperty> transientProperties = new ArrayList<Property.TransientProperty>(properties.size());
+    for (final Property property : properties)
+      if (property instanceof Property.TransientProperty)
+        transientProperties.add((Property.TransientProperty) property);
+
+    return transientProperties;
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
