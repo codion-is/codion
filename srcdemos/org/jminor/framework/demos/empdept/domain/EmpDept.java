@@ -29,7 +29,7 @@ public class EmpDept {
   public static final String EMPLOYEE_REPORT = "employee_report";
 
   /**Entity identifier for the table scott.dept*/
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final String T_DEPARTMENT = "department";
 
   /**Property identifier for the DEPTNO column in the table scott.dept*/
   public static final String DEPARTMENT_ID = "deptno";
@@ -39,7 +39,7 @@ public class EmpDept {
   public static final String DEPARTMENT_LOCATION = "loc";
 
   /**Entity identifier for the table scott.emp*/
-  public static final String T_EMPLOYEE = "scott.emp";
+  public static final String T_EMPLOYEE = "employee";
 
   /**Property identifier for the EMPNO column in the table scott.emp*/
   public static final String EMPLOYEE_ID = "empno";
@@ -66,7 +66,7 @@ public class EmpDept {
 
   static {
     /*Defining the entity type T_DEPARTMENT*/
-    EntityRepository.add(new EntityDefinition(T_DEPARTMENT,
+    EntityRepository.add(new EntityDefinition(T_DEPARTMENT, "scott.dept",
             new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID))
                     .setNullable(false),
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME))
@@ -75,7 +75,7 @@ public class EmpDept {
                     .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
 
     /*Defining the entity type T_EMPLOYEE*/
-    EntityRepository.add(new EntityDefinition(T_EMPLOYEE,
+    EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
             new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),

@@ -17,7 +17,7 @@ import org.jminor.framework.domain.Type;
  */
 public class Petstore {
 
-  public static final String T_ADDRESS = "petstore.address";
+  public static final String T_ADDRESS = "address";
   public static final String ADDRESS_ID = "addressid";
   public static final String ADDRESS_STREET_1 = "street1";
   public static final String ADDRESS_STREET_2 = "street2";
@@ -28,13 +28,13 @@ public class Petstore {
   public static final String ADDRESS_LATITUDE = "latitude";
   public static final String ADDRESS_LONGITUDE = "longitude";
 
-  public static final String T_CATEGORY = "petstore.category";
+  public static final String T_CATEGORY = "category";
   public static final String CATEGORY_ID = "categoryid";
   public static final String CATEGORY_NAME = "name";
   public static final String CATEGORY_DESCRIPTION = "description";
   public static final String CATEGORY_IMAGE_URL = "imageurl";
 
-  public static final String T_ITEM = "petstore.item";
+  public static final String T_ITEM = "item";
   public static final String ITEM_ID = "itemid";
   public static final String ITEM_PRODUCT_ID = "productid";
   public static final String ITEM_PRODUCT_FK = "product_fk";
@@ -49,7 +49,7 @@ public class Petstore {
   public static final String ITEM_C0NTACT_INFO_FK = "contactinfo_fk";
   public static final String ITEM_DISABLED = "disabled";
 
-  public static final String T_PRODUCT = "petstore.product";
+  public static final String T_PRODUCT = "product";
   public static final String PRODUCT_ID = "productid";
   public static final String PRODUCT_CATEGORY_ID = "categoryid";
   public static final String PRODUCT_CATEGORY_FK = "category_fk";
@@ -57,25 +57,25 @@ public class Petstore {
   public static final String PRODUCT_DESCRIPTION = "description";
   public static final String PRODUCT_IMAGE_URL = "imageurl";
 
-  public static final String T_SELLER_CONTACT_INFO = "petstore.sellercontactinfo";
+  public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo";
   public static final String SELLER_CONTACT_INFO_ID = "contactinfoid";
   public static final String SELLER_CONTACT_INFO_FIRST_NAME = "firstname";
   public static final String SELLER_CONTACT_INFO_LAST_NAME = "lastname";
   public static final String SELLER_CONTACT_INFO_EMAIL = "email";
 
-  public static final String T_TAG = "petstore.tag";//alias used in a subquery property, see below
+  public static final String T_TAG = "tag";
   public static final String TAG_ID = "tagid";
   public static final String TAG_TAG = "tag";
   public static final String TAG_REFCOUNT = "refcount";
 
-  public static final String T_TAG_ITEM = "petstore.tag_item";
+  public static final String T_TAG_ITEM = "tag_item";
   public static final String TAG_ITEM_TAG_ID = "tagid";
   public static final String TAG_ITEM_TAG_FK = "tag_fk";
   public static final String TAG_ITEM_ITEM_ID = "itemid";
   public static final String TAG_ITEM_ITEM_FK = "item_fk";
 
   static {
-    EntityRepository.add(new EntityDefinition(T_ADDRESS,
+    EntityRepository.add(new EntityDefinition(T_ADDRESS, "petstore.address",
             new Property.PrimaryKeyProperty(ADDRESS_ID),
             new Property(ADDRESS_STREET_1, Type.STRING, "Street 1").setMaxLength(55).setNullable(false),
             new Property(ADDRESS_STREET_2, Type.STRING, "Street 2").setMaxLength(55),
@@ -87,7 +87,7 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2));
 
-    EntityRepository.add(new EntityDefinition(T_CATEGORY,
+    EntityRepository.add(new EntityDefinition(T_CATEGORY, "petstore.category",
             new Property.PrimaryKeyProperty(CATEGORY_ID),
             new Property(CATEGORY_NAME, Type.STRING, "Name").setMaxLength(25).setNullable(false),
             new Property(CATEGORY_DESCRIPTION, Type.STRING, "Description").setMaxLength(255).setNullable(false),
@@ -95,7 +95,7 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(CATEGORY_NAME));
 
-    EntityRepository.add(new EntityDefinition(T_ITEM,
+    EntityRepository.add(new EntityDefinition(T_ITEM, "petstore.item",
             new Property.PrimaryKeyProperty(ITEM_ID),
             new Property.ForeignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
                     new Property(ITEM_PRODUCT_ID)).setNullable(false),
@@ -112,7 +112,7 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME));
 
-    EntityRepository.add(new EntityDefinition(T_PRODUCT,
+    EntityRepository.add(new EntityDefinition(T_PRODUCT, "petstore.product",
             new Property.PrimaryKeyProperty(PRODUCT_ID),
             new Property.ForeignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
                     new Property(PRODUCT_CATEGORY_ID)).setNullable(false),
@@ -122,7 +122,7 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(PRODUCT_NAME));
 
-    EntityRepository.add(new EntityDefinition(T_SELLER_CONTACT_INFO,
+    EntityRepository.add(new EntityDefinition(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
             new Property.PrimaryKeyProperty(SELLER_CONTACT_INFO_ID),
             new Property(SELLER_CONTACT_INFO_FIRST_NAME, Type.STRING, "First name").setMaxLength(24).setNullable(false),
             new Property(SELLER_CONTACT_INFO_LAST_NAME, Type.STRING, "Last name").setMaxLength(24).setNullable(false),
@@ -130,16 +130,16 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME));
 
-    EntityRepository.add(new EntityDefinition(T_TAG,
+    EntityRepository.add(new EntityDefinition(T_TAG, "petstore.tag",
             new Property.PrimaryKeyProperty(TAG_ID),
             new Property(TAG_TAG, Type.STRING, "Tag").setMaxLength(30).setNullable(false),
             new Property.SubqueryProperty(TAG_REFCOUNT, Type.INT, "Reference count",
-                    "select count(*) from " + T_TAG_ITEM + "  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID))
+                    "select count(*) from petstore.tag_item  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag"));
 
-    EntityRepository.add(new EntityDefinition(T_TAG_ITEM,
+    EntityRepository.add(new EntityDefinition(T_TAG_ITEM, "petstore.tag_item",
             new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT).setIndex(0)).setNullable(false),
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,

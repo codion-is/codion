@@ -27,22 +27,6 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
-   * @param searchPropertyIDs the IDs of the properties to use as default lookup properties for
-   * entities identified by <code>entityID</code>, these must be STRING properties
-   * @throws RuntimeException in case of a non-string property ID
-   */
-  public static void setEntitySearchProperties(final String entityID, final String... searchPropertyIDs) {
-    if (!entityDefinitions.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
-    for (final String propertyID : searchPropertyIDs)
-      if (getProperty(entityID, propertyID).getPropertyType() != Type.STRING)
-        throw new RuntimeException("Entity search property must be of type String: " + getProperty(entityID, propertyID));
-
-    entityDefinitions.get(entityID).setSearchPropertyIDs(searchPropertyIDs);
-  }
-
-  /**
-   * @param entityID the entity ID
    * @return a String array containing the IDs of the properties used as default search properties
    * for entities identified by <code>entityID</code>
    */

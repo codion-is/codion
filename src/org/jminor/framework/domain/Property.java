@@ -112,7 +112,7 @@ public class Property implements Serializable {
   /**
    * @param propertyID the property ID, in case of database properties this should be the underlying column name
    * @param propertyType the datatype of this property
-   * @param caption the caption of this property
+   * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
   public Property(final String propertyID, final Type propertyType, final String caption) {
     if (propertyID == null)

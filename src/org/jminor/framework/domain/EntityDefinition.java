@@ -66,10 +66,25 @@ public class EntityDefinition implements Serializable {
   private transient Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
   private transient String selectColumnsString;
 
+  /**
+   * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
+   * @param entityID the ID uniquely identifying the entity
+   * @param propertyDefinitions the Property objects this entity should encompass
+   */
   public EntityDefinition(final String entityID, final Property... propertyDefinitions) {
+    this(entityID, entityID, propertyDefinitions);
+  }
+
+  /**
+   * Defines a new entity
+   * @param entityID the ID uniquely identifying the entity
+   * @param tableName the name of the underlying table
+   * @param propertyDefinitions the Property objects this entity should encompass
+   */
+  public EntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
     this.entityID = entityID;
-    this.tableName = entityID;
-    this.selectTableName = entityID;
+    this.tableName = tableName;
+    this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     final String[] selectColumnNames = initSelectColumnNames(getDatabaseProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++)
@@ -151,6 +166,10 @@ public class EntityDefinition implements Serializable {
   }
 
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
+    for (final String propertyID : searchPropertyIDs)
+      if (properties.get(propertyID).getPropertyType() != Type.STRING)
+        throw new RuntimeException("Entity search property must be of type String: " + properties.get(propertyID));
+
     this.searchPropertyIDs = Arrays.asList(searchPropertyIDs);
     return this;
   }

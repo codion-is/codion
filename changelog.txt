@@ -909,3 +909,5 @@
   EntityRepository.getTransientProperties() added
   EntityDefinition.transientProperties field added plus getter
   EntityResultPacker now initializes Property.TransientProperty values as null, does not apply to Property.DenomormalizedViewProperty
+  EntityDefinition, added tableName to constructor, used in demos, supports multiple entities based on the same table
+  EntityRepository.setEntitySearchProperties() removed
