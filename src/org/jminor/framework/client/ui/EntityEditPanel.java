@@ -6,6 +6,7 @@ import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.util.DateUtil;
@@ -21,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
 
 public abstract class EntityEditPanel extends JPanel {
@@ -110,7 +110,7 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
                                             final boolean labelOnTop) {
-    return createControlPanel(propertyID, inputComponent, labelOnTop, 0, 0);
+    return createControlPanel(propertyID, inputComponent, labelOnTop, 5, 5);
   }
 
   /**
@@ -161,7 +161,7 @@ public abstract class EntityEditPanel extends JPanel {
   protected final JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
                                             final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel panel = new JPanel(labelOnTop ?
-            new GridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
+            new FlexibleGridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
     if (labelComponent instanceof JLabel)
       ((JLabel)labelComponent).setLabelFor(inputComponent);
     panel.add(labelComponent);
@@ -760,12 +760,12 @@ public abstract class EntityEditPanel extends JPanel {
    * contains the underlying values of the property
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValue the value used to represent a null value, shown at the top of the combo box value list
+   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
-                                                         final String nullValue) {
-    return createPropertyComboBox(propertyID, enabledState, nullValue, false);
+                                                         final String nullValueString) {
+    return createPropertyComboBox(propertyID, enabledState, nullValueString, false);
   }
 
   /**
@@ -773,14 +773,14 @@ public abstract class EntityEditPanel extends JPanel {
    * contains the underlying values of the property
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValue the value used to represent a null value, shown at the top of the combo box value list
+   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @param editable true if the combo box should be editable, only works with combo boxes based on Type.STRING properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
-                                                         final String nullValue, final boolean editable) {
+                                                         final String nullValueString, final boolean editable) {
     return createPropertyComboBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
-            enabledState, nullValue, editable);
+            enabledState, nullValueString, editable);
   }
 
   /**
@@ -809,12 +809,12 @@ public abstract class EntityEditPanel extends JPanel {
    * contains the underlying values of the property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValue the value used to represent a null value, shown at the top of the combo box value list
+   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
-                                                         final String nullValue) {
-    return createPropertyComboBox(property, enabledState, nullValue, false);
+                                                         final String nullValueString) {
+    return createPropertyComboBox(property, enabledState, nullValueString, false);
   }
 
   /**
@@ -822,13 +822,13 @@ public abstract class EntityEditPanel extends JPanel {
    * contains the underlying values of the property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValue the value used to represent a null value, shown at the top of the combo box value list
+   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @param editable true if the combo box should be editable, only works with combo boxes based on Type.STRING properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
-                                                         final String nullValue, final boolean editable) {
-    return EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValue, editable);
+                                                         final String nullValueString, final boolean editable) {
+    return EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValueString, editable);
   }
 
   /**

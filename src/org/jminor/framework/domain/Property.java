@@ -74,6 +74,11 @@ public class Property implements Serializable {
   private boolean isNullable = true;
 
   /**
+   * True if the underlying column has a default value
+   */
+  private boolean columnHasDefaultValue = false;
+
+  /**
    * The maximum length of the data
    */
   private int maxLength = 0;
@@ -228,7 +233,23 @@ public class Property implements Serializable {
   }
 
   /**
-   * Sets the default value for this property
+   * @return true if the underlying column has a default value
+   */
+  public boolean columnHasDefaultValue() {
+    return columnHasDefaultValue;
+  }
+
+  /**
+   * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
+   * @return this Property instance
+   */
+  public Property setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
+    this.columnHasDefaultValue = columnHasDefaultValue;
+    return this;
+  }
+
+  /**
+   * Sets the default value for this property, overrides the underlying column default value, if any
    * @param defaultValue the value to use as default
    * @return the property
    */

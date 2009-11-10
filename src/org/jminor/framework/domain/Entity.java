@@ -764,11 +764,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
   /**
    * Performes a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
-   * consistent with the data type of this property, returns the value
+   * consistent with the data type of this property, returns the value.
+   * For foreign key properties this method also checks if the value entityID fits the key.
    * @param value the value to validate
    * @param property the property
    * @return the value to validate
-   * @throws IllegalArgumentException when the value is not of the same type as the propertyValue
+   * @throws IllegalArgumentException when the value type does not fit the property type
    */
   private static Object validateType(final Property property, final Object value) throws IllegalArgumentException {
     if (value == null)
@@ -799,6 +800,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
       case ENTITY:
         if (!(value instanceof Entity))
           throw new IllegalArgumentException("Entity value expected for property: " + propertyID + " (" + value.getClass() + ")");
+        final String requiredEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
+        if (!requiredEntityID.equals(((Entity) value).getEntityID()))
+          throw new IllegalArgumentException("Entity of type " + requiredEntityID + " required, got " + ((Entity) value).getEntityID());
         break;
       case CHAR:
         if (!(value instanceof Character))

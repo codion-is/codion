@@ -12,6 +12,8 @@ import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.exception.ValidationException;
+import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -36,14 +38,19 @@ public class EntityEditModel {
   protected static final Logger log = Util.getLogger(EntityEditModel.class);
 
   /**
-   * Code for the insert action
+   * Code for the insert action, used during validation
    */
   public static final int INSERT = 1;
 
   /**
-   * Code for the update action
+   * Code for the update action, used during validation
    */
   public static final int UPDATE = 2;
+
+  /**
+   * Code for an unknown action, used during validation
+   */
+  public static final int UNKNOWN = 3;
 
     /**
    * Fired before an insert is performed
@@ -493,11 +500,11 @@ public class EntityEditModel {
    * @param property the property
    * @param value the value
    * @return true if the value is valid
-   * @see #validate(org.jminor.framework.domain.Property, Object)
+   * @see #validate(org.jminor.framework.domain.Property, Object, int)
    */
   public final boolean isValid(final Property property, final Object value) {
     try {
-      validate(property, value);
+      validate(property, value, isEntityNull() ? INSERT : UPDATE);
       return true;
     }
     catch (ValidationException e) {
@@ -509,17 +516,19 @@ public class EntityEditModel {
    * Validates the given Entity objects.
    * The default implementation forwards the validation to the underlying EntityEditModel
    * @param entities the entities to validate
-   * @param action describes the action requiring validation, EntityModel.INSERT or EntityModel.UPDATE
+   * @param action describes the action requiring validation,
+   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException in case the validation fails
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object, int)
    * @see #INSERT
    * @see #UPDATE
+   * @see #UNKNOWN
    */
   @SuppressWarnings({"UnusedDeclaration"})
   public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-        validate(property, entity.getValue(property));
+        validate(property, entity.getValue(property), action);
       }
     }
   }
@@ -529,15 +538,19 @@ public class EntityEditModel {
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param property the property
    * @param value the value
+   * @param action describes the action requiring validation,
+   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException if the given value is not valid for the given property
    * @see Property#setNullable(boolean)
    * @see Configuration#PERFORM_NULL_VALIDATION
    */
-  public void validate(final Property property, final Object value) throws ValidationException {
+  public void validate(final Property property, final Object value, final int action) throws ValidationException {
     if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
-      if (!isPropertyNullable(property) && Entity.isValueNull(property.getPropertyType(), value))
-        throw new ValidationException(property, value,
-                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+      if (!isPropertyNullable(property) && Entity.isValueNull(property.getPropertyType(), value)) {
+        if (action == INSERT && !property.columnHasDefaultValue())
+          throw new ValidationException(property, value,
+                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+      }
     }
   }
 
@@ -858,7 +871,8 @@ public class EntityEditModel {
    */
   protected void doDelete(final List<Entity> entities) throws DbException, UserCancelException {
     try {
-      getDbProvider().getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
+      getDbProvider().getEntityDb().delete(
+              new EntityCriteria(getEntityID(), new EntityKeyCriteria(EntityUtil.getPrimaryKeys(entities))));
     }
     catch (DbException dbe) {
       throw dbe;

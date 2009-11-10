@@ -6,9 +6,11 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.Criteria;
 import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A class encapsulating query criteria parameters
@@ -116,7 +118,7 @@ public class EntityCriteria implements Serializable {
    * @return a where condition based on this EntityCriteria
    */
   public String asString(final Dbms database) {
-    return getEntityID() + " " + getWhereClause(database);
+    return EntityRepository.getSelectTableName(getEntityID()) + " " + getWhereClause(database);
   }
 
   /**
@@ -148,6 +150,11 @@ public class EntityCriteria implements Serializable {
    */
   public String getOrderByClause() {
     return orderByClause;
+  }
+
+  public static EntityCriteria keyCriteria(final List<Entity.Key> keys) {
+    final EntityKeyCriteria keyCriteria = new EntityKeyCriteria(keys);
+    return new EntityCriteria(keyCriteria.getEntityID(), keyCriteria);
   }
 
   public static EntityCriteria propertyCriteria(final String entityID, final String propertyID,

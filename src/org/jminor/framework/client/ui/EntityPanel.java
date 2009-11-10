@@ -77,6 +77,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1058,26 +1059,14 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * Creates a static entity panel showing the given entities
    * @param entities the entities to show in the panel
-   * @return a static EntityPanel showing the given entities
-   */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities) {
-    if (entities == null || entities.size() == 0)
-      throw new RuntimeException("Cannot create an EntityPanel without the entities");
-
-    return createStaticEntityPanel(entities, null);
-  }
-
-  /**
-   * Creates a static entity panel showing the given entities
-   * @param entities the entities to show in the panel
    * @param dbProvider the EntityDbProvider, in case the returned panel should require one
    * @return a static EntityPanel showing the given entities
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider) {
+  public static EntityPanel createStaticEntityPanel(final Collection<Entity> entities, final EntityDbProvider dbProvider) {
     if (entities == null || entities.size() == 0)
       throw new RuntimeException("Cannot create an EntityPanel without the entities");
 
-    return createStaticEntityPanel(entities, dbProvider, entities.get(0).getEntityID(), true);
+    return createStaticEntityPanel(entities, dbProvider, entities.iterator().next().getEntityID(), true);
   }
 
   /**
@@ -1087,7 +1076,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param entityID the entityID
    * @return a static EntityPanel showing the given entities
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider,
+  public static EntityPanel createStaticEntityPanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
                                                     final String entityID) {
     return createStaticEntityPanel(entities, dbProvider, entityID, true);
   }
@@ -1100,7 +1089,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param includePopupMenu if true then the default popup menu is included in the table panel, otherwise it's hidden
    * @return a static EntityPanel showing the given entities
    */
-  public static EntityPanel createStaticEntityPanel(final List<Entity> entities, final EntityDbProvider dbProvider,
+  public static EntityPanel createStaticEntityPanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
                                                     final String entityID, final boolean includePopupMenu) {
     final EntityModel entityModel = new EntityModel(entityID, dbProvider) {
       @Override
@@ -1108,7 +1097,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         return new EntityTableModel(entityID, dbProvider, false) {
           @Override
           protected List<Entity> performQuery(final Criteria criteria) {
-            return entities;
+            return new ArrayList<Entity>(entities);
           }
         };
       }

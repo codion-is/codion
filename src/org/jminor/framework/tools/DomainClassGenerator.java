@@ -159,6 +159,8 @@ public class DomainClassGenerator {
 
     if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null)
       ret += "\n                .setNullable(false)";
+    if (column.hasDefaultValue)
+      ret += "\n                .setColumnHasDefaultValue(false)";
     if (column.columnType == Type.STRING)
       ret += "\n                .setMaxLength(" + column.columnSize + ")";
 
@@ -311,17 +313,19 @@ public class DomainClassGenerator {
     final Type columnType;
     final int columnSize;
     final int nullable;
+    final boolean hasDefaultValue;
     ForeignKey foreignKey;
     PrimaryKey primaryKey;
 
     public Column(final String schemaName, final String tableName, final String columnName, final Type columnType,
-                  final int columnSize, final int nullable) {
+                  final int columnSize, final int nullable, final boolean hasDefaultValue) {
       this.schemaName = schemaName;
       this.tableName = tableName;
       this.columnName = columnName;
       this.columnType = columnType;
       this.columnSize = columnSize;
       this.nullable = nullable;
+      this.hasDefaultValue = hasDefaultValue;
     }
 
     public void setForeignKey(final ForeignKey foreignKeyColumn) {
@@ -345,7 +349,7 @@ public class DomainClassGenerator {
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
         columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                 resultSet.getString("COLUMN_NAME"), translateType(resultSet.getInt("DATA_TYPE")),
-                resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("NULLABLE")));
+                resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("NULLABLE"), resultSet.getObject("COLUMN_DEF") != null));
 
       return columns;
     }

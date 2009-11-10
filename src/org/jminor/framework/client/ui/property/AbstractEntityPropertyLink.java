@@ -64,7 +64,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
    */
   protected String getValidationMessage(final EntityEditModel editModel) {
     try {
-      editModel.validate(getProperty(), editModel.getValue(getProperty()));
+      editModel.validate(getProperty(), editModel.getValue(getProperty()), EntityEditModel.UNKNOWN);
       return null;
     }
     catch (ValidationException e) {

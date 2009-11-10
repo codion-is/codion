@@ -51,6 +51,7 @@ public class PropertyComboBoxModel extends FilteredComboBoxModel {
     if (property instanceof Property.ForeignKeyProperty)
       throw new IllegalArgumentException("Cannot create a PropertyComboBoxModel for a reference property "
               + property.getPropertyID() + ",\nuse an EntityComboBoxModel instead!");
+    setEmptyStringIsNull(true);
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.property = property;

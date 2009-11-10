@@ -60,14 +60,14 @@ public interface EntityDb {
   /**
    * Performs a rollback and ends the current transaction
    * @throws java.sql.SQLException in case anything goes wrong during the rollback action
-   * @throws IllegalStateException in case transaction is not open
+   * @throws IllegalStateException in case a transaction is not open
    */
   public void rollbackTransaction() throws Exception;
 
   /**
    * Performs a commit and ends the current transaction
    * @throws java.sql.SQLException in case anything goes wrong during the commit action
-   * @throws IllegalStateException in case transaction is not open
+   * @throws IllegalStateException in case a transaction is not open
    */
   public void commitTransaction() throws Exception;
 
@@ -119,6 +119,13 @@ public interface EntityDb {
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
   public void delete(final List<Entity.Key> entityKeys) throws Exception;
+
+  /**
+   * Deletes the entities specified by the given criteria
+   * @param criteria the criteria specifying the entities to delete
+   * @throws org.jminor.common.db.DbException in case of a db exception
+   */
+  public void delete(final EntityCriteria criteria) throws Exception;
 
   /**
    * Selects distinct non-null values of the given property of the given entity

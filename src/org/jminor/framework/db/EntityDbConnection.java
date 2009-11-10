@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -144,6 +145,15 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
 
     execute(statements);
+  }
+
+  /** {@inheritDoc} */
+  public void delete(final EntityCriteria criteria) throws Exception {
+    if (EntityRepository.isReadOnly(criteria.getEntityID()))
+      throw new DbException("Can not delete a read only entity");
+
+    execute(Arrays.asList("delete " + EntityRepository.getTableName(criteria.getEntityID())
+            + " " + criteria.getWhereClause(getDatabase())));
   }
 
   /** {@inheritDoc} */

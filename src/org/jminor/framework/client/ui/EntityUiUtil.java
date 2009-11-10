@@ -323,6 +323,7 @@ public class EntityUiUtil {
     lookupField.setBorder(BorderFactory.createEtchedBorder());
     new LookupModelPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
+    UiUtil.selectAllOnFocusGained(lookupField);
 
     return lookupField;
   }

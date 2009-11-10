@@ -170,7 +170,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     if (getSize() == 0)
       return;
     final Object item = toSelect instanceof String && ((String)toSelect).length() == 0 ? null : toSelect;
-    if (item != null && !item.equals(getNullValueItem()) && !(item instanceof Entity))
+    if (item != null && !item.equals(getNullValueString()) && !(item instanceof Entity))
       throw new IllegalArgumentException("Cannot set '" + item + "' [" + item.getClass()
               + "] as selected item in a EntityComboBoxModel (" + this + ")");
 

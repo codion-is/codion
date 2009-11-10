@@ -19,6 +19,14 @@ public class FilteredComboBoxModelTest extends TestCase {
   private static final String TOMAS = "tomas";
   private static final String BJORN = "björn";
 
+  public void testSelection() {
+    testModel.setEmptyStringIsNull(false);
+    testModel.setSelectedItem("");
+    assertFalse(testModel.isNullValueItemSelected());
+    testModel.setEmptyStringIsNull(true);
+    assertTrue(testModel.isNullValueItemSelected());
+  }
+
   public void testSort() {
     testModel.setSortContents(true);
     assertTrue(ANNA + " should be at index 0, got " + testModel.getElementAt(0), testModel.getElementAt(0).equals(ANNA));

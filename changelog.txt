@@ -911,3 +911,14 @@
   EntityResultPacker now initializes Property.TransientProperty values as null, does not apply to Property.DenomormalizedViewProperty
   EntityDefinition, added tableName to constructor, used in demos, supports multiple entities based on the same table
   EntityRepository.setEntitySearchProperties() removed
+  EntityTestUnit.createEntity() added
+  Property.columnHasDefaultValue field added
+  UiUtil.selectAllOnFocusGained() now clears the selection on focus lost
+  FilteredComboBoxModel.nullValueItem renamed to nullValueString
+  FilteredComboBoxModel.emptyStringIsNull boolean field added
+  PropertyComboBoxModel sets emptyStringIsNull as true
+  EntityEditModel.validate() now takes an action parameter
+  EntityEditModel.validate() now takes into account if a column has a default value during null value validation
+  EntityUiUtil.createEntityLookupField() now calls UiUtil.selectAllOnFocusGained() for the field
+  Entity.validateType() added entity type validation for foreign keys
+  EntityDb.delete(EntityCriteria) added

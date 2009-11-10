@@ -480,7 +480,8 @@ public class UiUtil {
   }
 
   /**
-   * Selects all text in the given component when it gains focus
+   * Selects all text in the given component when it gains focus and clears
+   * the selection when focus is lost
    * @param textComponent the text component
    */
   public static void selectAllOnFocusGained(final JTextComponent textComponent) {
@@ -488,6 +489,10 @@ public class UiUtil {
       @Override
       public void focusGained(final FocusEvent e) {
         textComponent.selectAll();
+      }
+      @Override
+      public void focusLost(final FocusEvent e) {
+        textComponent.select(0,0);
       }
     });
   }

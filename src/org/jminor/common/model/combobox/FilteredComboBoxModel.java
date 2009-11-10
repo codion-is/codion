@@ -29,10 +29,11 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   private final List<Object> filteredItems = new ArrayList<Object>();
 
   private Object selectedItem;
-  private String nullValueItem;
+  private String nullValueString;
 
   private FilterCriteria filterCriteria;
   private boolean sortContents = false;
+  private boolean emptyStringIsNull = false;
 
   private final Comparator<? super Object> sortComparator;
 
@@ -47,11 +48,11 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   /**
    * Instantiates a new FilteredComboBoxModel
    * @param sortContents if true then the contents of this model are sorted on refresh
-   * @param nullValueItem an object representing a null value, which is shown at the top of the item list
+   * @param nullValueString an object representing a null value, which is shown at the top of the item list
    * @see #isNullValueItemSelected()
    */
-  public FilteredComboBoxModel(final boolean sortContents, final String nullValueItem) {
-    this(sortContents, nullValueItem, new Comparator<Object>() {
+  public FilteredComboBoxModel(final boolean sortContents, final String nullValueString) {
+    this(sortContents, nullValueString, new Comparator<Object>() {
       @SuppressWarnings({"unchecked"})
       public int compare(final Object objectOne, final Object objectTwo) {
         if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
@@ -62,11 +63,11 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     });
   }
 
-  public FilteredComboBoxModel(final boolean sortContents, final String nullValueItem,
+  public FilteredComboBoxModel(final boolean sortContents, final String nullValueString,
                                final Comparator<? super Object> sortComparator) {
     this.sortContents = sortContents;
-    this.nullValueItem = nullValueItem;
-    this.selectedItem = nullValueItem != null ? nullValueItem : null;
+    this.nullValueString = nullValueString;
+    this.selectedItem = nullValueString != null ? nullValueString : null;
     this.sortComparator = sortComparator;
   }
 
@@ -106,8 +107,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     }
     if (sortContents)
       Collections.sort(visibleItems, sortComparator);
-    if (nullValueItem != null)
-      visibleItems.add(0, nullValueItem);
+    if (nullValueString != null)
+      visibleItems.add(0, nullValueString);
 
     fireContentsChanged();
   }
@@ -140,28 +141,47 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   }
 
   /**
-   * @return the Object representing the null value, null if none has been specified
+   * @return true if this combo box model should regard an empty string as representing null
    */
-  public String getNullValueItem() {
-    return nullValueItem;
+  public boolean isEmptyStringIsNull() {
+    return emptyStringIsNull;
+  }
+
+  /**
+   * @param emptyStringIsNull true if this combo box model should regard an empty string as representing null
+   */
+  public void setEmptyStringIsNull(final boolean emptyStringIsNull) {
+    this.emptyStringIsNull = emptyStringIsNull;
+  }
+
+  /**
+   * @return the String representing the null value, null if none has been specified
+   */
+  public String getNullValueString() {
+    return nullValueString;
   }
 
   /**
    * Sets the nullValueItem, a refresh is required for it to show up
-   * @param nullValueItem the Object representing a null value
+   * @param nullValueString a String representing a null value
    */
-  public void setNullValueItem(final String nullValueItem) {
-    this.nullValueItem = nullValueItem;
+  public void setNullValueString(final String nullValueString) {
+    this.nullValueString = nullValueString;
     if (selectedItem == null)
       setSelectedItem(null);
   }
 
   /**
-   * @return true if the value representing null is selected, false if none has been specified
-   * or it is not selected
+   * @return true if a value representing null is selected
+   * @see #setEmptyStringIsNull(boolean)
+   * @see #isEmptyStringIsNull()
    */
   public boolean isNullValueItemSelected() {
-    return selectedItem != null && nullValueItem != null && selectedItem.equals(nullValueItem);
+    //noinspection SimplifiableIfStatement
+    if (emptyStringIsNull && selectedItem instanceof String && ((String) selectedItem).length() == 0)
+      return true;
+
+    return selectedItem != null && nullValueString != null && selectedItem.equals(nullValueString);
   }
 
   /** {@inheritDoc} */
@@ -174,7 +194,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     if (selectedItem == item)
       return;
 
-    selectedItem = item == null ? nullValueItem : item;
+    selectedItem = item == null ? nullValueString : item;
     fireContentsChanged();
     evtSelectionChanged.fire();
   }
@@ -207,8 +227,8 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   protected List<?> getContents() {
     final List<Object> contents = new ArrayList<Object>(filteredItems);
     contents.addAll(visibleItems);
-    if (nullValueItem != null)
-      contents.remove(nullValueItem);
+    if (nullValueString != null)
+      contents.remove(nullValueString);
 
     return contents;
   }

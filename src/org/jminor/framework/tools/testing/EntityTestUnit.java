@@ -78,6 +78,24 @@ public abstract class EntityTestUnit extends TestCase {
   }
 
   /**
+   * Instantiates an entity of the given type, initializing the foreign key values
+   * according the reference entities set via <code>setReferenceEntity</code>
+   * @param entityID the ID specifying the entity type to return
+   * @return an initialized entity
+   * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
+   */
+  protected Entity createEntity(final String entityID) {
+    final Entity entity = new Entity(entityID);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
+      final Entity referenceEntity = referencedEntities.get(foreignKeyProperty.getReferencedEntityID());
+      if (referenceEntity != null)
+        entity.setValue(foreignKeyProperty.getPropertyID(), referenceEntity);
+    }
+
+    return entity;
+  }
+
+  /**
    * @param entityID the entityID of the the reference entity to retrieve
    * @return the entity mapped to the given entityID
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)

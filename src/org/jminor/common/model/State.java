@@ -163,11 +163,11 @@ public class State {
      * @param state the State to add
      */
     public void addState(final State state) {
-      for (final WeakReference<State> reference : members)
-        if (reference.get() == state)
-          return;//no duplicate states
-
       synchronized (members) {
+        for (final WeakReference<State> reference : members)
+          if (reference.get() == state)
+            return;//no duplicate states
+
         members.add(new WeakReference<State>(state));
       }
       updateAccordingToState(state);

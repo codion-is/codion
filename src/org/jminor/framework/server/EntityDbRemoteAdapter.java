@@ -287,6 +287,19 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
+  public void delete(final EntityCriteria criteria) throws DbException, RemoteException {
+    try {
+      loggingEntityDbProxy.delete(criteria);
+    }
+    catch (DbException dbe) {
+      throw dbe;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
   public List<?> selectPropertyValues(final String entityID, final String propertyID,
                                       final boolean order) throws DbException, RemoteException {
     try {
