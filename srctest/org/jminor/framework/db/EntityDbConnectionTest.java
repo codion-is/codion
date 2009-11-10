@@ -84,4 +84,9 @@ public class EntityDbConnectionTest extends TestCase {
     assertEquals("update " + EntityTestDomain.T_DETAIL + " set int = 42 where (id = 1)",
             EntityDbConnection.getUpdateSQL(database, testEntity));
   }
+
+  public void testGenerateSelectSql() throws Exception {
+    final String generated = EntityDbConnection.getSelectSql("table", "col, col2", "where col = 1", "col2");
+    assertEquals("Generate select should be working", "select col, col2 from table where col = 1 order by col2", generated);
+  }
 }

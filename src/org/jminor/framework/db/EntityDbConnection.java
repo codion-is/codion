@@ -5,7 +5,6 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbException;
-import org.jminor.common.db.DbUtil;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.ResultPacker;
@@ -14,8 +13,10 @@ import org.jminor.common.db.dbms.Dbms;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -148,26 +149,25 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public void delete(final EntityCriteria criteria) throws Exception {
+  public void delete(final EntityCriteria criteria) throws DbException {
     if (EntityRepository.isReadOnly(criteria.getEntityID()))
       throw new DbException("Can not delete a read only entity");
 
-    execute(Arrays.asList("delete " + EntityRepository.getTableName(criteria.getEntityID())
-            + " " + criteria.getWhereClause(getDatabase())));
+    execute(Arrays.asList(getDeleteSql(getDatabase(), criteria)));
   }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
-    return selectSingle(EntityCriteria.propertyCriteria(entityID, propertyID, SearchType.LIKE, value));
+    return selectSingle(CriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final Entity.Key primaryKey) throws DbException {
-    return selectSingle(new EntityCriteria(primaryKey.getEntityID(), new EntityKeyCriteria(primaryKey)));
+    return selectSingle(CriteriaUtil.selectCriteria(primaryKey));
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final EntityCriteria criteria) throws DbException {
+  public Entity selectSingle(final SelectCriteria criteria) throws DbException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.size() == 0)
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
@@ -183,28 +183,28 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (primaryKeys == null || primaryKeys.size() == 0)
       return new ArrayList<Entity>(0);
 
-    return selectMany(new EntityCriteria(primaryKeys.get(0).getEntityID(), new EntityKeyCriteria(primaryKeys)));
+    return selectMany(CriteriaUtil.selectCriteria(primaryKeys));
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
-    return selectMany(EntityCriteria.propertyCriteria(entityID, propertyID, SearchType.LIKE, values));
+    return selectMany(CriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException {
-    return selectMany(new EntityCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
+    return selectMany(new SelectCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
   }
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectMany(final EntityCriteria criteria) throws DbException {
+  public List<Entity> selectMany(final SelectCriteria criteria) throws DbException {
     addCacheQueriesRequest();
 
     String sql = null;
     try {
       final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-      sql = DbUtil.generateSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
+      sql = getSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
               criteria.getWhereClause(getDatabase(), !datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
@@ -228,7 +228,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   public List<?> selectPropertyValues(final String entityID, final String columnName, final boolean order) throws DbException {
     String sql = null;
     try {
-      sql = DbUtil.generateSelectSql(EntityRepository.getSelectTableName(entityID),
+      sql = getSelectSql(EntityRepository.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
@@ -253,7 +253,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
     String sql = "";
     try {
-      return queryInteger(sql = DbUtil.generateSelectSql(
+      return queryInteger(sql = getSelectSql(
               EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
               criteria.getWhereClause(getDatabase()), null));
     }
@@ -272,7 +272,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       addCacheQueriesRequest();
       final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
       for (final Dependency dependency : dependencies) {
-        final List<Entity> dependentEntities = selectMany(new EntityCriteria(dependency.entityID,
+        final List<Entity> dependentEntities = selectMany(new SelectCriteria(dependency.entityID,
                 new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
         if (dependentEntities.size() > 0)
           dependencyMap.put(dependency.entityID, dependentEntities);
@@ -437,6 +437,42 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   static String getDeleteSQL(final Dbms database, final Entity.Key entityKey) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
             .append(EntityUtil.getWhereCondition(database, entityKey)).toString();
+  }
+
+  /**
+   *
+   * @param database the Dbms instance
+   * @param criteria the EntityCriteria instance
+   * @return a query for deleting the entities specified by the given criteria
+   */
+  static String getDeleteSql(final Dbms database, final EntityCriteria criteria) {
+    return new StringBuilder("delete ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
+            .append(criteria.getWhereClause(database)).toString();
+  }
+
+  /**
+   * Generates a sql select query with the given parameters
+   * @param table the name of the table from which to select
+   * @param columns the columns to select, example: "col1, col2"
+   * @param whereCondition the where condition
+   * @param orderByClause a string specifying the columns 'ORDER BY' clause,
+   * "col1, col2" as input results in the following order by clause "order by col1, col2"
+   * @return the generated sql query
+   */
+  static String getSelectSql(final String table, final String columns, final String whereCondition,
+                             final String orderByClause) {
+    final StringBuilder sql = new StringBuilder("select ");
+    sql.append(columns);
+    sql.append(" from ");
+    sql.append(table);
+    if (whereCondition != null && whereCondition.length() > 0)
+      sql.append(" ").append(whereCondition);
+    if (orderByClause != null && orderByClause.length() > 0) {
+      sql.append(" order by ");
+      sql.append(orderByClause);
+    }
+
+    return sql.toString();
   }
 
   private void execute(final List<String> statements) throws DbException {

@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
@@ -36,9 +36,9 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   private final boolean staticData;
 
   /**
-   * the EntityCriteria used to filter the data
+   * the SelectCriteria used to filter the data
    */
-  private EntityCriteria entityCriteria;
+  private SelectCriteria selectCriteria;
 
   private boolean dataInitialized = false;
 
@@ -120,17 +120,17 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
 
   /**
    * Sets the criteria to use when querying data
-   * @param entityCriteria the criteria
+   * @param selectCriteria the criteria
    */
-  public void setEntityCriteria(final EntityCriteria entityCriteria) {
-    this.entityCriteria = entityCriteria;
+  public void setSelectCriteria(final SelectCriteria selectCriteria) {
+    this.selectCriteria = selectCriteria;
   }
 
   /**
-   * @return the EntityCriteria used by this EntityComboBoxModel
+   * @return the SelectCriteria used by this EntityComboBoxModel
    */
-  protected EntityCriteria getEntityCriteria() {
-    return entityCriteria;
+  protected SelectCriteria getSelectCriteria() {
+    return selectCriteria;
   }
 
   /**
@@ -150,8 +150,8 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getEntityCriteria() != null)
-        return dbProvider.getEntityDb().selectMany(getEntityCriteria());
+      if (getSelectCriteria() != null)
+        return dbProvider.getEntityDb().selectMany(getSelectCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID());
     }

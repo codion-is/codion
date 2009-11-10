@@ -72,29 +72,4 @@ public class DbUtil {
       return strings;
     }
   };
-
-  /**
-   * Generates a sql select query with the given parameters
-   * @param table the name of the table from which to select
-   * @param columns the columns to select, example: "col1, col2"
-   * @param whereCondition the where condition
-   * @param orderByClause a string specifying the columns 'ORDER BY' clause,
-   * "col1, col2" as input results in the following order by clause "order by col1, col2"
-   * @return the generated sql query
-   */
-  public static String generateSelectSql(final String table, final String columns, final String whereCondition,
-                                         final String orderByClause) {
-    final StringBuilder sql = new StringBuilder("select ");
-    sql.append(columns);
-    sql.append(" from ");
-    sql.append(table);
-    if (whereCondition != null && whereCondition.length() > 0)
-      sql.append(" ").append(whereCondition);
-    if (orderByClause != null && orderByClause.length() > 0) {
-      sql.append(" order by ");
-      sql.append(orderByClause);
-    }
-
-    return sql.toString();
-  }
 }

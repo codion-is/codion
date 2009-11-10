@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
@@ -53,9 +53,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   private boolean forceRefresh = false;
 
   /**
-   * the EntityCriteria used to filter the data
+   * the SelectCriteria used to filter the data
    */
-  private EntityCriteria entityCriteria;
+  private SelectCriteria selectCriteria;
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
@@ -200,20 +200,20 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   /**
    * Sets the criteria to use when querying data
-   * @param entityCriteria the criteria
+   * @param selectCriteria the criteria
    */
-  public void setEntityCriteria(final EntityCriteria entityCriteria) {
-    if (entityCriteria != null && !entityCriteria.getEntityID().equals(getEntityID()))
-      throw new RuntimeException("EntityCriteria entityID mismatch, " + getEntityID()
-              + " expected, got " + entityCriteria.getEntityID());
-    this.entityCriteria = entityCriteria;
+  public void setSelectCriteria(final SelectCriteria selectCriteria) {
+    if (selectCriteria != null && !selectCriteria.getEntityID().equals(getEntityID()))
+      throw new RuntimeException("SelectCriteria entityID mismatch, " + getEntityID()
+              + " expected, got " + selectCriteria.getEntityID());
+    this.selectCriteria = selectCriteria;
   }
 
   /**
-   * @return the EntityCriteria used by this EntityComboBoxModel
+   * @return the SelectCriteria used by this EntityComboBoxModel
    */
-  protected EntityCriteria getEntityCriteria() {
-    return entityCriteria;
+  protected SelectCriteria getSelectCriteria() {
+    return selectCriteria;
   }
 
   /**
@@ -258,8 +258,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getEntityCriteria() != null)
-        return dbProvider.getEntityDb().selectMany(getEntityCriteria());
+      if (getSelectCriteria() != null)
+        return dbProvider.getEntityDb().selectMany(getSelectCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID());
     }

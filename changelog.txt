@@ -922,3 +922,5 @@
   EntityUiUtil.createEntityLookupField() now calls UiUtil.selectAllOnFocusGained() for the field
   Entity.validateType() added entity type validation for foreign keys
   EntityDb.delete(EntityCriteria) added
+  SelectCriteria refactored out of EntityCriteria
+  CriteriaUtil added, moved static helper methods there from EntityCriteria

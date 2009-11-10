@@ -18,6 +18,7 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.domain.Entity;
 
 import net.sf.jasperreports.engine.JRException;
@@ -340,7 +341,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final EntityCriteria criteria) throws DbException, RemoteException {
+  public Entity selectSingle(final SelectCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(criteria);
     }
@@ -366,7 +367,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final EntityCriteria criteria) throws DbException, RemoteException {
+  public List<Entity> selectMany(final SelectCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectMany(criteria);
     }

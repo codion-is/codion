@@ -5,6 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.domain.Entity;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -122,6 +123,7 @@ public interface EntityDb {
 
   /**
    * Deletes the entities specified by the given criteria
+   * Performs a commit unless a transaction is open.
    * @param criteria the criteria specifying the entities to delete
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
@@ -150,8 +152,8 @@ public interface EntityDb {
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws Exception;
 
   /**
-   * Selects a single entity
-   * @param key the key used in the condition
+   * Selects a single entity by key
+   * @param key the key of the entity to select
    * @return an entity of the type <code>entityID</code>, having the key <code>key</code>
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
    * @throws org.jminor.common.db.DbException in case of a db exception
@@ -166,7 +168,7 @@ public interface EntityDb {
    * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
    * @throws org.jminor.common.db.DbException if an exception occurs
    */
-  public Entity selectSingle(final EntityCriteria criteria) throws Exception;
+  public Entity selectSingle(final SelectCriteria criteria) throws Exception;
 
   /**
    * Returns entities according to <code>keys</code>
@@ -182,7 +184,7 @@ public interface EntityDb {
    * @return entities according to the given criteria
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public List<Entity> selectMany(final EntityCriteria criteria) throws Exception;
+  public List<Entity> selectMany(final SelectCriteria criteria) throws Exception;
 
   /**
    * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition

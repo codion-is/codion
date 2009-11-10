@@ -13,7 +13,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.client.model.reporting.EntityJRDataSource;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -959,7 +959,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       return new ArrayList<Entity>();
 
     try {
-      return getEntityDb().selectMany(new EntityCriteria(getEntityID(), criteria,
+      return getEntityDb().selectMany(new SelectCriteria(getEntityID(), criteria,
               EntityRepository.getOrderByClause(getEntityID())));
     }
     catch (Exception e) {
