@@ -640,8 +640,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     if (index >= 0 && index < visibleEntities.size())
       return visibleEntities.get(tableSorter.modelIndex(index));
 
-    throw new ArrayIndexOutOfBoundsException("No visible entity found at index: "
-            + index + ", size: " + visibleEntities.size());
+    throw new ArrayIndexOutOfBoundsException("No visible entity found at index: " + index + ", size: " + visibleEntities.size());
   }
 
   /**
@@ -672,14 +671,25 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     }
   }
 
-  public void filterByReference(final List<Entity> referenceEntities, final String referencedEntityID) {
-    if (isQueryFilteredByMaster()) {
-      if (tableSearchModel.setExactSearchValue(referencedEntityID, referenceEntities))
-        refresh();
-    }
-    else {
-      tableSearchModel.setExactFilterValue((referenceEntities == null || referenceEntities.size() == 0)
-              ? null : referenceEntities.get(0).toString(), getColumnIndex(referencedEntityID));
+  /**
+   * Filters this table model according the the given values by finding the first foreign key property
+   * referencing the entity identified by <code>referencedEntityID</code> and setting <code>referenceEntities</code>
+   * as the criteria values. If no foreign key property is found this method has no effect.
+   * @param referencedEntityID the ID of the master entity
+   * @param referenceEntities the entities to use as criteria values
+   * @see #isQueryFilteredByMaster()
+   */
+  public void filterByReference(final String referencedEntityID, final List<Entity> referenceEntities) {
+    final List<Property.ForeignKeyProperty> properties = EntityRepository.getForeignKeyProperties(getEntityID(), referencedEntityID);
+    if (properties.size() > 0) {
+      if (isQueryFilteredByMaster()) {
+        if (tableSearchModel.setSearchValues(properties.get(0).getPropertyID(), referenceEntities))
+          refresh();
+      }
+      else {
+        tableSearchModel.setFilterValue(properties.get(0).getPropertyID(),
+                (referenceEntities == null || referenceEntities.size() == 0) ? null : referenceEntities.get(0).toString());
+      }
     }
   }
 
@@ -1038,15 +1048,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         hiddenEntities.add(entity);
     }
     fireTableDataChanged();
-  }
-
-  private int getColumnIndex(final String masterEntityID) {
-    for (int i = 0; i < tableColumnProperties.size(); i++)
-      if (tableColumnProperties.get(i) instanceof Property.ForeignKeyProperty
-              && ((Property.ForeignKeyProperty) tableColumnProperties.get(i)).getReferencedEntityID().equals(masterEntityID))
-        return i;
-
-    return -1;
   }
 
   private int modelIndexOf(final Entity entity) {

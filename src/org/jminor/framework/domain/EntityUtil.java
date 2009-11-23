@@ -94,13 +94,16 @@ public class EntityUtil {
   }
 
   /**
-   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities
+   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities.
+   * If the <code>entities</code> list is null an empty Collection is returned.
    * @param entities the entities from which to retrieve the values
    * @param propertyID the ID of the property for which to retrieve the values
    * @return a Collection containing the distinct property values
    */
   public static Collection<Object> getPropertyValues(final List<Entity> entities, final String propertyID) {
     final Set<Object> values = new HashSet<Object>();
+    if (entities == null)
+      return values;
     for (final Entity entity : entities)
       values.add(entity.getValue(propertyID));
 

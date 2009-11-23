@@ -715,12 +715,6 @@ public class EntityTablePanel extends JPanel {
     final AbstractButton button = ControlProvider.createButton(refresh);
     button.setPreferredSize(new Dimension(20,20));
     button.setFocusable(false);
-    getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        if (getTableModel().getSearchModel().stSearchStateChanged.isActive())
-          UiUtil.showToolTip(button);
-      }
-    });
 
     searchRefreshToolBar = new JToolBar(JToolBar.HORIZONTAL);
     searchRefreshToolBar.setFocusable(false);

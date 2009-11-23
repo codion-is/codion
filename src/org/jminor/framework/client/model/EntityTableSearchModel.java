@@ -201,37 +201,32 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * Finds the PropertySearchModel associated with the ForeignKeyProperty representing
-   * the entity identified by <code>referencedEntityID</code>, sets <code>referenceEntities</code>
-   * as the search criteria value and enables the PropertySearchModel
-   * @param referencedEntityID the ID of the entity
-   * @param referenceEntities the entities to use as search criteria value
+   * Sets the search criteria values of the search model associated with the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property
+   * @param values the search criteria values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  public boolean setExactSearchValue(final String referencedEntityID, final List<Entity> referenceEntities) {
+  public boolean setSearchValues(final String propertyID, final Collection<?> values) {
     final String searchState = getSearchModelState();
-    for (final Property property : tableColumnProperties) {
-      if (property instanceof Property.ForeignKeyProperty && ((Property.ForeignKeyProperty)property).getReferencedEntityID().equals(referencedEntityID)) {
-        final PropertySearchModel searchModel = getPropertySearchModel(property.getPropertyID());
-        if (searchModel != null) {
-          searchModel.initialize();
-          searchModel.setSearchEnabled(referenceEntities != null && referenceEntities.size() > 0);
-          searchModel.setUpperBound((Object) null);//because the upperBound is a reference to the active entity and changes accordingly
-          searchModel.setUpperBound(referenceEntities != null && referenceEntities.size() == 0 ? null : referenceEntities);//this then fails to register a changed upper bound
-        }
-      }
+    final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
+    if (searchModel != null) {
+      searchModel.initialize();
+      searchModel.setSearchEnabled(values != null && values.size() > 0);
+      searchModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
+      searchModel.setUpperBound(values != null && values.size() == 0 ? null : values);//this then fails to register a changed upper bound
     }
     return !searchState.equals(getSearchModelState());
   }
 
   /**
-   * Sets the criteria value of the PropertyFilterModel behind the column at <code>columnIndex</code>
+   * Sets the criteria value of the PropertyFilterModel associated with the property identified by <code>propertyID</code>.
+   * @param propertyID the id of the property
    * @param value the criteria value
-   * @param columnIndex the index of the column
    */
-  public void setExactFilterValue(final Comparable value, final int columnIndex) {
-    if (columnIndex >= 0)
-      getPropertyFilterModel(columnIndex).setLikeValue(value);
+  public void setFilterValue(final String propertyID, final Comparable value) {
+    final PropertyFilterModel filterModel = getPropertyFilterModel(propertyID);
+    if (filterModel != null)
+      filterModel.setLikeValue(value);
   }
 
   /**

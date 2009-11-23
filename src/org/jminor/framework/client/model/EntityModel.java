@@ -204,7 +204,7 @@ public class EntityModel implements Refreshable {
    * @param value true if selecting a record in this model should filter the detail models
    * @see #masterSelectionChanged
    * @see #masterSelectionChanged
-   * @see org.jminor.framework.client.model.EntityTableModel#filterByReference(java.util.List, String)
+   * @see EntityTableModel#filterByReference(String, java.util.List)
    */
   public void setSelectionFiltersDetail(final boolean value) {
     for (final EntityModel detailModel : detailModels)
@@ -402,15 +402,15 @@ public class EntityModel implements Refreshable {
   /**
    * Updates this EntityModel according to the given master entities,
    * sets the appropriate property value and filters the EntityTableModel
-   * @param masterValues the master entities
    * @param masterEntityID the ID of the master entity
+   * @param selectedMasterEntities the master entities
    */
-  public void masterSelectionChanged(final List<Entity> masterValues, final String masterEntityID) {
+  public void masterSelectionChanged(final String masterEntityID, final List<Entity> selectedMasterEntities) {
     if (isSelectionFiltersDetail() && containsTableModel())
-      getTableModel().filterByReference(masterValues, masterEntityID);
+      getTableModel().filterByReference(masterEntityID, selectedMasterEntities);
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
-      getEditModel().setValue(foreignKeyProperty, masterValues != null && masterValues.size() > 0 ? masterValues.get(0) : null);//todo
+      getEditModel().setValue(foreignKeyProperty, selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);//todo
   }
 
   /**
@@ -524,7 +524,7 @@ public class EntityModel implements Refreshable {
             (getTableModel().stSelectionEmpty.isActive() ? null : getTableModel().getSelectedEntities()) :
             (getEditModel().isEntityNull() ? null : Arrays.asList(getEditModel().getEntityCopy()));
     for (final EntityModel detailModel : linkedDetailModels)
-      detailModel.masterSelectionChanged(activeEntities, getEntityID());
+      detailModel.masterSelectionChanged(getEntityID(), activeEntities);
   }
 
   private void addDetailModels() {
