@@ -296,7 +296,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState) {
-    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState, false);
+    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState,
+            (Boolean) Configuration.getValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT));
   }
 
   /**
@@ -322,8 +323,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     this.refreshOnInit = refreshOnInit;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
-    this.compactLayout = compactLayout;
     this.detailEntityPanels = new ArrayList<EntityPanel>(initializeDetailPanels());
+    this.compactLayout = compactLayout && this.detailEntityPanels.size() > 0;
     setupControls();
     this.entityTablePanel = model.containsTableModel() ? initializeTablePanel(model.getTableModel(),
             getTablePopupControlSet(), rowColoring) : null;

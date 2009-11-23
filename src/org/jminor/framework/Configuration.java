@@ -133,6 +133,13 @@ public class Configuration {
   public static final String ALL_PANELS_ACTIVE = "jminor.client.allPanelsActive";
 
   /**
+   * Indicates whether entity panels should by default by layed out in a compact manner
+   * Value type: Boolean
+   * Default value: false
+   */
+  public static final String COMPACT_ENTITY_PANEL_LAYOUT = "jminor.client.compactEntityPanelLayout";
+
+  /**
    * Indicates whether keyboard navigation will be enabled
    * Value type: Boolean
    * Default value: true
@@ -347,6 +354,7 @@ public class Configuration {
     setValue(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     setValue(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
     setValue(ALL_PANELS_ACTIVE, false);
+    setValue(COMPACT_ENTITY_PANEL_LAYOUT, false);
     setValue(USE_KEYBOARD_NAVIGATION, true);
     setValue(USE_FOCUS_ACTIVATION, true);
     setValue(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);

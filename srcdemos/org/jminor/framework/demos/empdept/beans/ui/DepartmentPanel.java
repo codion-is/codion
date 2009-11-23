@@ -30,7 +30,7 @@ import java.util.List;
 public class DepartmentPanel extends EntityPanel {
 
   public DepartmentPanel(final EntityModel model) {
-    super(model, EmpDept.getString(EmpDept.T_DEPARTMENT), true, false, false, EMBEDDED, true);
+    super(model, EmpDept.getString(EmpDept.T_DEPARTMENT));
   }
 
   public void viewEmployeeReport() throws Exception {
@@ -80,7 +80,7 @@ public class DepartmentPanel extends EntityPanel {
             }
             else {
               txtDepartmentNumber.setEnabled(false);
-              setDefaultFocusComponent(txtDepartmentName);              
+              setDefaultFocusComponent(txtDepartmentName);
             }
           }
         });
