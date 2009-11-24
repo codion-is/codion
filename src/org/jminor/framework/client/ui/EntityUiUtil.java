@@ -50,7 +50,7 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -571,14 +571,12 @@ public class EntityUiUtil {
 
   public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
                                      final EntityDbProvider dbProvider) {
-    txtField.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown()) {
-          final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
+    txtField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK), "valueLookup");
+    txtField.getActionMap().put("valueLookup", new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
           if (value != null)
             txtField.setText(value.toString());
-        }
       }
     });
   }

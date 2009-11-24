@@ -205,7 +205,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
         retry = false;//successful startup
-        applicationPanel.saveUser(user);
+        applicationPanel.saveDefaultUser(user);
       }
       catch (UserCancelException uce) {
         System.exit(0);
@@ -602,7 +602,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * This default implementation saves the username in the user preferences.
    * @param user the user
    */
-  protected void saveUser(final User user) {
+  protected void saveDefaultUser(final User user) {
     Util.setDefaultUserName(getClass().getSimpleName(), user.getUsername());
   }
 
