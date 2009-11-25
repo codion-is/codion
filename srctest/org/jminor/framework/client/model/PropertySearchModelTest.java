@@ -1,7 +1,7 @@
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.DatabaseProvider;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -17,7 +17,7 @@ import junit.framework.TestCase;
  */
 public class PropertySearchModelTest extends TestCase {
 
-  private static final Dbms database = Database.createInstance();
+  private static final Database database = DatabaseProvider.createInstance();
 
   static {
     new EmpDept();

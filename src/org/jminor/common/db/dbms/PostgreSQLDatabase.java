@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class PostgreSQLDatabase implements Dbms {
+public class PostgreSQLDatabase extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
@@ -24,9 +24,8 @@ public class PostgreSQLDatabase implements Dbms {
     }
   };
 
-  /** {@inheritDoc} */
-  public String getDatabaseType() {
-    return POSTGRESQL;
+  public PostgreSQLDatabase() {
+    super(POSTGRESQL);
   }
 
   /** {@inheritDoc} */
@@ -53,13 +52,13 @@ public class PostgreSQLDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = System.getProperty(DATABASE_HOST);
+    final String host = getHost();
     if (host == null || host.length() == 0)
       throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-    final String port = System.getProperty(DATABASE_PORT);
+    final String port = getPort();
     if (port == null || port.length() == 0)
       throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
-    final String sid = System.getProperty(DATABASE_SID);
+    final String sid = getSid();
     if (sid == null || sid.length() == 0)
       throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
@@ -69,11 +68,6 @@ public class PostgreSQLDatabase implements Dbms {
   /** {@inheritDoc} */
   public String getAuthenticationInfo(final Properties connectionProperties) {
     return null;
-  }
-
-  /** {@inheritDoc} */
-  public boolean isEmbedded() {
-    return false;
   }
 
   /** {@inheritDoc} */

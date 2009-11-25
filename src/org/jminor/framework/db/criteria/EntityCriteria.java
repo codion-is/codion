@@ -4,7 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
 import java.io.Serializable;
@@ -59,27 +59,27 @@ public class EntityCriteria implements Serializable {
 
   /**
    * Returns a where condition based on this EntityCriteria
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @return a where condition based on this EntityCriteria
    */
-  public String asString(final Dbms database) {
+  public String asString(final Database database) {
     return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause(database);
   }
 
   /**
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @return the where clause
    */
-  public String getWhereClause(final Dbms database) {
+  public String getWhereClause(final Database database) {
     return getWhereClause(database, true);
   }
 
   /**
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
-  public String getWhereClause(final Dbms database, final boolean includeWhereKeyword) {
+  public String getWhereClause(final Database database, final boolean includeWhereKeyword) {
     final String criteriaString = criteria == null ? "" : criteria.asString(database);
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";

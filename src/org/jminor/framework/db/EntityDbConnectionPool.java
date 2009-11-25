@@ -7,7 +7,7 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolState;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -53,16 +53,16 @@ public class EntityDbConnectionPool {
   private long requestsPerSecondTime = System.currentTimeMillis();
 
   private final User user;
-  private final Dbms database;
+  private final Database database;
   private boolean closed = false;
   private int poolStatisticsSize = 1000;
 
-  public EntityDbConnectionPool(final Dbms database, final User user, final ConnectionPoolSettings settings) {
+  public EntityDbConnectionPool(final Database database, final User user, final ConnectionPoolSettings settings) {
     this.database = database;
     this.user = user;
-    final String sid = System.getProperty(Dbms.DATABASE_SID);
+    final String sid = database.getSid();
     if (sid != null && sid.length() != 0)
-      this.user.setProperty(Dbms.DATABASE_SID, sid);
+      this.user.setProperty(Database.DATABASE_SID, sid);
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       @Override

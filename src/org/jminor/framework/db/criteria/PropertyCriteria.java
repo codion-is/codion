@@ -5,7 +5,7 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
@@ -71,7 +71,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Dbms database) {
+  public String asString(final Database database) {
     if (property instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaString(database);
 
@@ -118,7 +118,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     return caseSensitive;
   }
 
-  private String getForeignKeyCriteriaString(final Dbms database) {
+  private String getForeignKeyCriteriaString(final Database database) {
     if (values.size() > 1)
       return getMultiColumnForeignKeyCriteriaString(database);
 
@@ -134,7 +134,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     return set.asString(database);
   }
 
-  private String getMultiColumnForeignKeyCriteriaString(final Dbms database) {
+  private String getMultiColumnForeignKeyCriteriaString(final Database database) {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).getReferencedEntityID());
     if (primaryKeyProperties.size() > 1) {
@@ -156,13 +156,13 @@ public class PropertyCriteria implements Criteria, Serializable {
               searchType == SearchType.NOT_LIKE);
   }
 
-  private String getNotLikeCondition(final Dbms database, final String columnIdentifier, final String sqlValue) {
+  private String getNotLikeCondition(final Database database, final String columnIdentifier, final String sqlValue) {
     return values.size() > 1 ? getInList(database, columnIdentifier, true) :
             columnIdentifier + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
             ? " not like " + sqlValue : " <> " + sqlValue);
   }
 
-  private String getLikeCondition(final Dbms database, final String columnIdentifier, final String sqlValue) {
+  private String getLikeCondition(final Database database, final String columnIdentifier, final String sqlValue) {
     return values.size() > 1 ? getInList(database, columnIdentifier, false) :
             columnIdentifier + (property.getPropertyType() == Type.STRING && containsWildcard(sqlValue)
             ? " like " + sqlValue : " = " + sqlValue);
@@ -172,7 +172,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     return val != null && val.length() > 0 && val.indexOf(wildcard) > -1;
   }
 
-  private String getInList(final Dbms database, final String whereColumn, final boolean notIn) {
+  private String getInList(final Database database, final String whereColumn, final boolean notIn) {
     final StringBuilder stringBuilder = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {

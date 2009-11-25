@@ -926,3 +926,6 @@
   CriteriaUtil added, moved static helper methods there from EntityCriteria
   EntityTableSearchModel.setExactSearchValue renamed to setSearchValues and generalized, now takes a propertyID and a Collection of values
   Configuration.COMPACT_ENTITY_PANEL_LAYOUT added
+  common.db.Database renamed to DatabaseProvider
+  common.db.dbms.AbstractDatabase added
+  common.db.dbms.Dbms renamed to Database

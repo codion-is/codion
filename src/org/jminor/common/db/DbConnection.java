@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -39,7 +39,7 @@ public class DbConnection {
   private final Properties connectionProperties = new Properties();
   private final Map<String, List> queryCache = new HashMap<String, List>();
   private final User user;
-  private final Dbms database;
+  private final Database database;
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -72,7 +72,7 @@ public class DbConnection {
    * @throws SQLException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the database driver was not found
    */
-  public DbConnection(final Dbms database, final User user) throws ClassNotFoundException, SQLException {
+  public DbConnection(final Database database, final User user) throws ClassNotFoundException, SQLException {
     if (user == null)
       throw new IllegalArgumentException("DbConnection requires a non-null user instance");
     if (user.getUsername() == null)
@@ -491,7 +491,7 @@ public class DbConnection {
     return connection;
   }
 
-  public Dbms getDatabase() {
+  public Database getDatabase() {
     return database;
   }
 

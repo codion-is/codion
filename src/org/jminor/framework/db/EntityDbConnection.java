@@ -9,7 +9,7 @@ import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -58,12 +58,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /**
    * Constructs a new EntityDbConnection instance
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param user the user used for connecting to the database
    * @throws SQLException in case there is a problem connecting to the database
    * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
-  public EntityDbConnection(final Dbms database, final User user) throws SQLException, ClassNotFoundException {
+  public EntityDbConnection(final Database database, final User user) throws SQLException, ClassNotFoundException {
     super(database, user);
   }
 
@@ -381,11 +381,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param entity the Entity instance
    * @return a query for inserting this entity instance
    */
-  static String getInsertSQL(final Dbms database, final Entity entity) {
+  static String getInsertSQL(final Database database, final Entity entity) {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
@@ -404,12 +404,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param entity the Entity instance
    * @return a query for updating this entity instance
    * @throws DbException in case the entity is unmodified or it contains no modified updatable properties
    */
-  static String getUpdateSQL(final Dbms database, final Entity entity) throws DbException {
+  static String getUpdateSQL(final Database database, final Entity entity) throws DbException {
     if (!entity.isModified())
       throw new DbException("Can not get update sql for an unmodified entity");
 
@@ -430,22 +430,22 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param entityKey the EntityKey instance
    * @return a query for deleting the entity having the given primary key
    */
-  static String getDeleteSQL(final Dbms database, final Entity.Key entityKey) {
+  static String getDeleteSQL(final Database database, final Entity.Key entityKey) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
             .append(EntityUtil.getWhereCondition(database, entityKey)).toString();
   }
 
   /**
    *
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param criteria the EntityCriteria instance
    * @return a query for deleting the entities specified by the given criteria
    */
-  static String getDeleteSql(final Dbms database, final EntityCriteria criteria) {
+  static String getDeleteSql(final Database database, final EntityCriteria criteria) {
     return new StringBuilder("delete ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
             .append(criteria.getWhereClause(database)).toString();
   }

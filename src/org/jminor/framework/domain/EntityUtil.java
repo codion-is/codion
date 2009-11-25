@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.IdSource;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.Configuration;
 
 import java.util.ArrayList;
@@ -181,12 +181,12 @@ public class EntityUtil {
 
   /**
    * Returns a SQL string version of the given value
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param property the property
    * @param value the value
    * @return a SQL string version of value
    */
-  public static String getSQLStringValue(final Dbms database, final Property property, final Object value) {
+  public static String getSQLStringValue(final Database database, final Property property, final Object value) {
     if (Entity.isValueNull(property.getPropertyType(), value))
       return "null";
 
@@ -236,12 +236,12 @@ public class EntityUtil {
 
   /**
    * Constructs a where condition based on the given primary key
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param entityKey the EntityKey instance
    * @return a where clause using this EntityKey instance,
    * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final Dbms database, final Entity.Key entityKey) {
+  public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
     return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
       public Object getValue(final String propertyID) {
         return entityKey.getValue(propertyID);
@@ -253,12 +253,12 @@ public class EntityUtil {
    * Constructs a where condition based on the primary key of the given entity, using the
    * original property values. This method should be used when updating an entity in case
    * a primary key property value has changed, hence using the original value.
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param entity the Entity instance
    * @return a where clause specifying this entity instance,
    * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final Dbms database, final Entity entity) {
+  public static String getWhereCondition(final Database database, final Entity entity) {
     return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {
       public Object getValue(final String propertyID) {
         return entity.getOriginalValue(propertyID);
@@ -268,13 +268,13 @@ public class EntityUtil {
 
   /**
    * Constructs a where condition based on the given primary key properties and the values provide by <code>valueProvider</code>
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param properties the properties to use when constructing the condition
    * @param valueProvider the value provider
    * @return a where clause according to the given properties and the values provided by <code>valueProvider</code>,
    * e.g. " where (idCol = 42)" or in case of multiple properties " where (idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final Dbms database, final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
+  public static String getWhereCondition(final Database database, final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
     final StringBuilder stringBuilder = new StringBuilder(" where (");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {

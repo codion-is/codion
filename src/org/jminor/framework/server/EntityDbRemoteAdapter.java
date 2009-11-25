@@ -7,7 +7,7 @@ import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
@@ -55,7 +55,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   public final Event evtLoggingOut = new Event();
 
   private final ClientInfo clientInfo;
-  private final Dbms database;
+  private final Database database;
   private final long creationDate = System.currentTimeMillis();
   private final EntityDb loggingEntityDbProxy;
   private EntityDbConnection entityDbConnection;
@@ -76,7 +76,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }, new Date(), 15000);
   }
 
-  public EntityDbRemoteAdapter(final Dbms database, final ClientInfo clientInfo, final int dbRemotePort,
+  public EntityDbRemoteAdapter(final Database database, final ClientInfo clientInfo, final int dbRemotePort,
                                final boolean loggingEnabled) throws RemoteException {
     super(dbRemotePort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -85,9 +85,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     this.database = database;
     this.methodLogger = new MethodLogger(database);
     this.clientInfo = clientInfo;
-    final String sid = System.getProperty(Dbms.DATABASE_SID);
+    final String sid = database.getSid();
     if (sid != null && sid.length() != 0)
-      this.clientInfo.getUser().setProperty(Dbms.DATABASE_SID, sid);
+      this.clientInfo.getUser().setProperty(Database.DATABASE_SID, sid);
     this.loggingEntityDbProxy = initializeProxy();
     this.methodLogger.setLoggingEnabled(loggingEnabled);
   }
@@ -496,7 +496,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     return connectionPools.get(user).getConnectionPoolSettings();
   }
 
-  public static void setConnectionPoolSettings(final Dbms database, final User user, final ConnectionPoolSettings settings) {
+  public static void setConnectionPoolSettings(final Database database, final User user, final ConnectionPoolSettings settings) {
     EntityDbConnectionPool pool = connectionPools.get(user);
     if (pool == null)
       connectionPools.put(user, new EntityDbConnectionPool(database, user, settings));
@@ -528,7 +528,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     RequestCounter.warningThreshold = threshold;
   }
 
-  static void initConnectionPools(final Dbms database) {
+  static void initConnectionPools(final Database database) {
     final String initialPoolUsers = System.getProperty(Configuration.SERVER_POOLING_INITIAL);
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
@@ -603,7 +603,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
     private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
 
-    private final Dbms database;
+    private final Database database;
     private boolean loggingEnabled = false;
     private List<ServerLogEntry> logEntries;
     private int currentLogEntryIndex = 0;
@@ -614,7 +614,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     String lastAccessMessage;
     String lastExitedMethod;
 
-    public MethodLogger(final Dbms database) {
+    public MethodLogger(final Database database) {
       this.database = database;
     }
 
@@ -684,7 +684,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return logEntries;
     }
 
-    private static String parameterArrayToString(final Dbms database, final Object[] args) {
+    private static String parameterArrayToString(final Database database, final Object[] args) {
       if (args == null)
         return "";
 
@@ -698,7 +698,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return stringBuilder.toString();
     }
 
-    private static void parameterToString(final Dbms database, final Object arg, final StringBuilder dest) {
+    private static void parameterToString(final Database database, final Object arg, final StringBuilder dest) {
       if (arg instanceof Object[]) {
         if (((Object[]) arg).length > 0)
           dest.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");

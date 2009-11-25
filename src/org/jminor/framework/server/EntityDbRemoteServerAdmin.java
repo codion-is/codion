@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
-import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseProvider;
 import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.User;
 import org.jminor.common.model.Util;
@@ -264,8 +264,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   public static void main(String[] args) {
     try {
       System.setSecurityManager(new RMISecurityManager());
-      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(Database.createInstance(), initializeRegistry()), SERVER_ADMIN_PORT,
-              EntityDbRemoteServer.SECURE_CONNECTION);
+      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance(), initializeRegistry()),
+              SERVER_ADMIN_PORT, EntityDbRemoteServer.SECURE_CONNECTION);
     }
     catch (Exception e) {
       e.printStackTrace();

@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db.provider;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseProvider;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
@@ -27,7 +27,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
    */
   protected final User user;
 
-  protected final Dbms database;
+  protected final Database database;
 
   /**
    * The EntityDb instance used by this db provider
@@ -37,10 +37,10 @@ public class EntityDbLocalProvider implements EntityDbProvider {
   private final Properties connectionProperties = new Properties();
 
   public EntityDbLocalProvider(final User user) {
-    this(user, Database.createInstance());
+    this(user, DatabaseProvider.createInstance());
   }
 
-  public EntityDbLocalProvider(final User user, final Dbms database) {
+  public EntityDbLocalProvider(final User user, final Database database) {
     if (user == null)
       throw new RuntimeException("User is null");
     if (database == null)
@@ -49,9 +49,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     this.database = database;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
-    final String sid = System.getProperty(Dbms.DATABASE_SID);
+    final String sid = database.getSid();
     if (sid != null)
-      user.setProperty(Dbms.DATABASE_SID, sid);
+      user.setProperty(Database.DATABASE_SID, sid);
   }
 
   /** {@inheritDoc} */

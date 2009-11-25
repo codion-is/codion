@@ -3,13 +3,13 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 
 import junit.framework.TestCase;
 
 public class CriteriaSetTest extends TestCase {
 
-  private static final Dbms database = Database.createInstance();
+  private static final Database database = DatabaseProvider.createInstance();
 
   public void test() throws Exception {
     final CriteriaSet andSet = new CriteriaSet(CriteriaSet.Conjunction.AND,
@@ -28,7 +28,7 @@ public class CriteriaSetTest extends TestCase {
   }
 
   private static class Criteria implements org.jminor.common.db.Criteria {
-    public String asString(final Dbms database) {
+    public String asString(final Database database) {
       return "criteria";
     }
   }

@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseProvider;
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -50,7 +50,7 @@ public class EntityDbConnectionTest extends TestCase {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, referenceId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, stringValue);
 
-    final Dbms database = Database.createInstance();
+    final Database database = DatabaseProvider.createInstance();
 
     //test with null values
     final Entity testEntity2 = EntityTest.getDetailEntity(idValue, intValue, null,

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class CriteriaSet implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Dbms database) {
+  public String asString(final Database database) {
     if (criterias.size() == 0)
       return "";
 

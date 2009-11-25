@@ -12,17 +12,17 @@ import java.util.Properties;
  * Date: 16.6.2009
  * Time: 08:52:08
  */
-public interface Dbms {
+public interface Database {
 
   /**
    * Specifies the database type
-   * @see Dbms#DERBY
-   * @see Dbms#HSQL
-   * @see Dbms#H2
-   * @see Dbms#MYSQL
-   * @see Dbms#ORACLE
-   * @see Dbms#POSTGRESQL
-   * @see Dbms#SQLSERVER
+   * @see Database#DERBY
+   * @see Database#HSQL
+   * @see Database#H2
+   * @see Database#MYSQL
+   * @see Database#ORACLE
+   * @see Database#POSTGRESQL
+   * @see Database#SQLSERVER
    */
   public static final String DATABASE_TYPE = "jminor.db.type";
 
@@ -51,49 +51,49 @@ public interface Dbms {
 
   /**
    * Specifies the IDatabase implementation class to use in case of a dbms that is not directly supported
-   * @see Dbms
+   * @see Database
    */
   public static final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
    * The constant used to denote the Oracle database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String ORACLE = "oracle";
 
   /**
    * The constant used to denote the MySQL database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String MYSQL = "mysql";
 
   /**
    * The constant used to denote the PostgreSQL database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String POSTGRESQL = "postgresql";
 
   /**
    * The constant used to denote the Microsoft SQL Server database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String SQLSERVER = "sqlserver";
 
   /**
    * The constant used to denote the Derby database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String DERBY = "derby";
 
   /**
    * The constant used to denote the H2 database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String H2 = "h2";
 
   /**
    * The constant used to denote the HSQL database type
-   * @see Dbms#DATABASE_TYPE
+   * @see Database#DATABASE_TYPE
    */
   public static final String HSQL = "hsql";
 
@@ -107,6 +107,21 @@ public interface Dbms {
    * @return the name of the dbms in use
    */
   public String getDatabaseType();
+
+  /**
+   * @return the database host name
+   */
+  public String getHost();
+
+  /**
+   * @return the database port
+   */
+  public String getPort();
+
+  /**
+   * @return the database service id
+   */
+  public String getSid();
 
   /**
    * Returns a query string for retrieving the last automatically generated id from the given id source

@@ -4,7 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -71,15 +71,15 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Dbms database) {
+  public String asString(final Database database) {
     return getConditionString(database);
   }
 
   /**
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @return the condition string, i.e. "pkcol1 = value and pkcol2 = value2"
    */
-  public String getConditionString(final Dbms database) {
+  public String getConditionString(final Database database) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (keys.get(0).getPropertyCount() > 1) {//multi column key
       //(a = b and c = d) or (a = g and c = d)
@@ -115,12 +115,12 @@ public class EntityKeyCriteria implements Criteria, Serializable {
   /**
    * Constructs a query condition string from the given EntityKey, using the column names
    * provided or if none are provided, the column names from the key
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @param key the EntityKey instance
    * @param columnNames the column names to use in the criteria
    * @return a query condition string based on the given key and column names
    */
-  private static String getQueryConditionString(final Dbms database, final Entity.Key key, final List<String> columnNames) {
+  private static String getQueryConditionString(final Database database, final Entity.Key key, final List<String> columnNames) {
     final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
@@ -133,7 +133,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     return stringBuilder.append(")").toString();
   }
 
-  private static void appendInCondition(final Dbms database, final String whereColumn, final StringBuilder stringBuilder, final List<Entity.Key> keys) {
+  private static void appendInCondition(final Database database, final String whereColumn, final StringBuilder stringBuilder, final List<Entity.Key> keys) {
     stringBuilder.append(whereColumn).append(" in (");
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {

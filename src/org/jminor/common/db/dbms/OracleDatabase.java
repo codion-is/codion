@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 
-public class OracleDatabase implements Dbms {
+public class OracleDatabase extends AbstractDatabase {
 
   public static final HashMap<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
 
@@ -44,9 +44,12 @@ public class OracleDatabase implements Dbms {
     ERROR_CODE_MAP.put(4063, Messages.get(Messages.VIEW_HAS_ERRORS_ERROR));
   }
 
-  /** {@inheritDoc} */
-  public String getDatabaseType() {
-    return ORACLE;
+  public OracleDatabase() {
+    super(ORACLE);
+  }
+
+  public OracleDatabase(final String host, final String port, final String sid) {
+    super(ORACLE, host, port, sid, false);
   }
 
   /** {@inheritDoc} */
@@ -73,13 +76,13 @@ public class OracleDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = System.getProperty(DATABASE_HOST);
+    final String host = getHost();
     if (host == null || host.length() == 0)
       throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-    final String port = System.getProperty(DATABASE_PORT);
+    final String port = getPort();
     if (port == null || port.length() == 0)
       throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
-    final String sid = System.getProperty(DATABASE_SID);
+    final String sid = getSid();
     if (sid == null || sid.length() == 0)
       throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
@@ -89,11 +92,6 @@ public class OracleDatabase implements Dbms {
   /** {@inheritDoc} */
   public String getAuthenticationInfo(final Properties connectionProperties) {
     return null;
-  }
-
-  /** {@inheritDoc} */
-  public boolean isEmbedded() {
-    return false;
   }
 
   /** {@inheritDoc} */

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class H2Database implements Dbms {
+public class H2Database extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
@@ -24,11 +24,16 @@ public class H2Database implements Dbms {
     }
   };
 
-  private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
+  public H2Database() {
+    super(H2);
+  }
 
-  /** {@inheritDoc} */
-  public String getDatabaseType() {
-    return H2;
+  public H2Database(final String databaseName) {
+    super(H2, databaseName, null, null, true);
+  }
+
+  public H2Database(final String host, final String port, final String sid) {
+    super(H2, host, port, sid, false);
   }
 
   /** {@inheritDoc} */
@@ -59,20 +64,20 @@ public class H2Database implements Dbms {
     if (isEmbedded()) {
       if (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0)
         connectionProperties.put("user","sa");
-      final String host = System.getProperty(DATABASE_HOST);
+      final String host = getHost();
       if (host == null || host.length() == 0)
         throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
 
       return "jdbc:h2:" + host + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      final String host = System.getProperty(DATABASE_HOST);
+      final String host = getHost();
       if (host == null || host.length() == 0)
         throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-      final String port = System.getProperty(DATABASE_PORT);
+      final String port = getPort();
       if (port == null || port.length() == 0)
         throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
-      final String sid = System.getProperty(DATABASE_SID);
+      final String sid = getSid();
       if (sid == null || sid.length() == 0)
         throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
@@ -90,11 +95,6 @@ public class H2Database implements Dbms {
     }
 
     return null;
-  }
-
-  /** {@inheritDoc} */
-  public boolean isEmbedded() {
-    return embedded;
   }
 
   /** {@inheritDoc} */

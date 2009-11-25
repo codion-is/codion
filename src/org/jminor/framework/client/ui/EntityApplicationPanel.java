@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.UserCancelException;
@@ -543,7 +543,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final Properties properties =
             getModel().getDbProvider().getEntityDb().getUser().getProperties();
     return frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(Dbms.DATABASE_SID) : null);
+            properties != null ? properties.getProperty(Database.DATABASE_SID) : null);//todo EntityDb.getDatabase()?
   }
 
   protected JPanel initializeStartupProgressPane(final Icon icon) {

@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class DerbyDatabase implements Dbms {
+public class DerbyDatabase extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
@@ -25,11 +25,16 @@ public class DerbyDatabase implements Dbms {
     }
   };
 
-  private boolean embedded = System.getProperty(Dbms.DATABASE_EMBEDDED, "false").toUpperCase().equals("TRUE");
+  public DerbyDatabase() {
+    super(DERBY);
+  }
 
-  /** {@inheritDoc} */
-  public String getDatabaseType() {
-    return DERBY;
+  public DerbyDatabase(final String databaseName) {
+    super(DERBY, databaseName, null, null, true);
+  }
+
+  public DerbyDatabase(final String host, final String port, final String sid) {
+    super(DERBY, host, port, sid, false);
   }
 
   /** {@inheritDoc} */
@@ -56,20 +61,20 @@ public class DerbyDatabase implements Dbms {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      final String host = System.getProperty(DATABASE_HOST);
+      final String host = getHost();
       if (host == null || host.length() == 0)
         throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
 
       return "jdbc:derby:" + host + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      final String host = System.getProperty(DATABASE_HOST);
+      final String host = getHost();
       if (host == null || host.length() == 0)
         throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-      final String port = System.getProperty(DATABASE_PORT);
+      final String port = getPort();
       if (port == null || port.length() == 0)
         throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
-      final String sid = System.getProperty(DATABASE_SID);
+      final String sid = getSid();
       if (sid == null || sid.length() == 0)
         throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
@@ -90,15 +95,10 @@ public class DerbyDatabase implements Dbms {
   }
 
   /** {@inheritDoc} */
-  public boolean isEmbedded() {
-    return embedded;
-  }
-
-  /** {@inheritDoc} */
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {
       final String authentication = getAuthenticationInfo(connectionProperties);
-      DriverManager.getConnection("jdbc:derby:" + System.getProperty(DATABASE_HOST) + ";shutdown=true"
+      DriverManager.getConnection("jdbc:derby:" + getHost() + ";shutdown=true"
                + (authentication == null ? "" : ";" + authentication));
     }
     catch (SQLException e) {

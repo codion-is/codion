@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * Works for SQL Server 2000 and higher
  */
-public class SQLServerDatabase implements Dbms {
+public class SQLServerDatabase extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
@@ -27,9 +27,8 @@ public class SQLServerDatabase implements Dbms {
     }
   };
 
-  /** {@inheritDoc} */
-  public String getDatabaseType() {
-    return SQLSERVER;
+  public SQLServerDatabase() {
+    super(SQLSERVER);
   }
 
   /** {@inheritDoc} */
@@ -56,13 +55,13 @@ public class SQLServerDatabase implements Dbms {
 
   /** {@inheritDoc} */
   public String getURL(final Properties connectionProperties) {
-    final String host = System.getProperty(DATABASE_HOST);
+    final String host = getHost();
     if (host == null || host.length() == 0)
       throw new RuntimeException(DATABASE_HOST + " is required for database type " + getDatabaseType());
-    final String port = System.getProperty(DATABASE_PORT);
+    final String port = getPort();
     if (port == null || port.length() == 0)
       throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
-    final String sid = System.getProperty(DATABASE_SID);
+    final String sid = getSid();
     if (sid == null || sid.length() == 0)
       throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
@@ -72,11 +71,6 @@ public class SQLServerDatabase implements Dbms {
   /** {@inheritDoc} */
   public String getAuthenticationInfo(final Properties connectionProperties) {
     return null;
-  }
-
-  /** {@inheritDoc} */
-  public boolean isEmbedded() {
-    return false;
   }
 
   /** {@inheritDoc} */

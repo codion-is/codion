@@ -1,7 +1,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
 /**
@@ -77,11 +77,11 @@ public class SelectCriteria extends EntityCriteria {
 
   /**
    * Returns a where condition based on this EntityCriteria
-   * @param database the Dbms instance
+   * @param database the Database instance
    * @return a where condition based on this EntityCriteria
    */
   @Override
-  public String asString(final Dbms database) {
+  public String asString(final Database database) {
     return EntityRepository.getSelectTableName(getEntityID()) + " " + getWhereClause(database);
   }
 

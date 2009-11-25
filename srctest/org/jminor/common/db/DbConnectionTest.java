@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.dbms.Database;
 
 import junit.framework.TestCase;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class DbConnectionTest extends TestCase {
 
-  private final Dbms database = Database.createInstance();
+  private final Database database = DatabaseProvider.createInstance();
 
   /*public void testBlob() throws Exception {
     DbConnection dbConnection = null;

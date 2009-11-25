@@ -4,8 +4,8 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.DatabaseProvider;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 public class EntityCriteriaTest extends TestCase {
 
   public void test() {
-    final Dbms database = Database.createInstance();
+    final Database database = DatabaseProvider.createInstance();
     final CriteriaSet set1 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,
             new PropertyCriteria(new Property("stringProperty", Type.STRING), SearchType.LIKE, "value"),

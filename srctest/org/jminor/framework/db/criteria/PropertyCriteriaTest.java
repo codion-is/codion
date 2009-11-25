@@ -4,8 +4,8 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.CriteriaSet;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.dbms.Dbms;
+import org.jminor.common.db.DatabaseProvider;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class PropertyCriteriaTest extends TestCase {
 
-  private static final Dbms database = Database.createInstance();
+  private static final Database database = DatabaseProvider.createInstance();
 
   public PropertyCriteriaTest() {
     new EmpDept();
@@ -245,7 +245,7 @@ public class PropertyCriteriaTest extends TestCase {
   public void testConditionDate() throws Exception {
     final SimpleDateFormat dateFormat = new SimpleDateFormat(DateFormats.SHORT_DASH);
 
-    final Dbms database = Database.createInstance();
+    final Database database = DatabaseProvider.createInstance();
     //string, =
     final Property property = new Property("colName", Type.DATE);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
