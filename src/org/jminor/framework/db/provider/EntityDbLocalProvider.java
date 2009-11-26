@@ -67,6 +67,7 @@ public class EntityDbLocalProvider implements EntityDbProvider {
       if (entityDb != null && entityDb.isConnectionValid()) {
         entityDb.disconnect();
         entityDb.getDatabase().shutdownEmbedded(connectionProperties);
+        entityDb = null;
       }
     }
     catch (Exception e) {

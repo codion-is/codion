@@ -929,3 +929,4 @@
   common.db.Database renamed to DatabaseProvider
   common.db.dbms.AbstractDatabase added
   common.db.dbms.Dbms renamed to Database
+  EntityDbLocalProvider, EntityDbRemoteProvider set entityDb instance to null on disconnect

@@ -596,17 +596,19 @@ public class UiUtil {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(new BorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    if (closeEvent != null) {
-      closeEvent.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent e) {
-          dialog.dispose();
-        }
-      });
-    }
     if (defaultButton != null)
       dialog.getRootPane().setDefaultButton(defaultButton);
+
+    final Action disposeActionListener = new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        dialog.dispose();
+      }
+    };
     dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "closeDialog");
+    dialog.getRootPane().getActionMap().put("closeDialog", disposeActionListener);
+    if (closeEvent != null)
+      closeEvent.addListener(disposeActionListener);
 
     dialog.add(componentToShow, BorderLayout.CENTER);
     if (size == null)
