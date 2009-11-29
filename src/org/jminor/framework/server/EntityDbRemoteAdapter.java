@@ -62,7 +62,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   private boolean connected = true;
 
   private final MethodLogger methodLogger;
-  private static final boolean useSecureConnection = Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
+  private static final boolean useSecureConnection = System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "true").equalsIgnoreCase("true");
   private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
   private static final Map<User, EntityDbConnectionPool> connectionPools =
           Collections.synchronizedMap(new HashMap<User, EntityDbConnectionPool>());

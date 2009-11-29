@@ -64,7 +64,7 @@ public class EntityReportUtil {
    */
   public static JasperReport loadJasperReport(final String reportPath) throws JRException {
     try {
-      if (reportPath.toUpperCase().startsWith("HTTP"))
+      if (reportPath.toLowerCase().startsWith("http"))
         return (JasperReport) JRLoader.loadObject(new URL(reportPath));
       else
         return (JasperReport) JRLoader.loadObject(reportPath);

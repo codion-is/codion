@@ -32,8 +32,8 @@ public class H2Database extends AbstractDatabase {
     super(H2, databaseName, null, null, true);
   }
 
-  public H2Database(final String host, final String port, final String sid) {
-    super(H2, host, port, sid, false);
+  public H2Database(final String host, final String port, final String databaseName) {
+    super(H2, host, port, databaseName, false);
   }
 
   /** {@inheritDoc} */

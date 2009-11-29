@@ -28,6 +28,10 @@ public class PostgreSQLDatabase extends AbstractDatabase {
     super(POSTGRESQL);
   }
 
+  public PostgreSQLDatabase(final String host, final String port, final String database) {
+    super(POSTGRESQL, host, port, database, false);
+  }
+
   /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("org.postgresql.Driver");

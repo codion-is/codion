@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -41,7 +42,6 @@ public class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
-
   private static List<Logger> loggers = new ArrayList<Logger>();
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
@@ -59,6 +59,21 @@ public class Util {
       defaultLoggingLevel = Level.FATAL;
     else if (loggingLevel.equals(LOGGING_LEVEL_TRACE))
       defaultLoggingLevel = Level.TRACE;
+  }
+
+  /**
+   * Returns true if the given host is reachable, false if it is not or an exception is thrown while trying
+   * @param host the hostname
+   * @param timeout the timeout in milliseconds
+   * @return true if the host is reachable
+   */
+  public static boolean isHostReachable(final String host, final int timeout) {
+    try {
+      return InetAddress.getByName(host).isReachable(timeout);
+    }
+    catch (IOException e) {
+      return false;
+    }
   }
 
   public static String getUserPreference(final String key, final String defaultValue) {

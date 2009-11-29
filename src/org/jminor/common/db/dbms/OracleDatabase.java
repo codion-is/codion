@@ -10,11 +10,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class OracleDatabase extends AbstractDatabase {
 
-  public static final HashMap<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
+  private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
@@ -49,12 +50,12 @@ public class OracleDatabase extends AbstractDatabase {
   }
 
   public OracleDatabase(final String host, final String port, final String sid) {
-    super(ORACLE, host, port, sid, false);
+    super(ORACLE, host, port, sid);
   }
 
   /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
-    Class.forName("oracle.jdbc.driver.OracleDriver");
+    Class.forName("oracle.jdbc.OracleDriver");
   }
 
   /** {@inheritDoc} */

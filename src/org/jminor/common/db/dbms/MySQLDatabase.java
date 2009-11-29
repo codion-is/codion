@@ -28,6 +28,10 @@ public class MySQLDatabase extends AbstractDatabase {
     super(MYSQL);
   }
 
+  public MySQLDatabase(final String host, final String port, final String dbname) {
+    super(MYSQL, host, port, dbname);
+  }
+
   /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("com.mysql.jdbc.Driver");

@@ -29,6 +29,14 @@ public class HSQLDatabase extends AbstractDatabase {
     super(HSQL);
   }
 
+  public HSQLDatabase(final String databaseName) {
+    super(HSQL, databaseName, null, null, true);
+  }
+
+  public HSQLDatabase(final String host, final String port, final String sid) {
+    super(HSQL, host, port, sid, false);
+  }
+
   /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("org.hsqldb.jdbcDriver");

@@ -44,8 +44,8 @@ public interface Database {
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable
-   * Values: true/false
-   * Default: false
+   * Values: "true"/"false"
+   * Default: "false"
    */
   public static final String DATABASE_EMBEDDED = "jminor.db.embedded";
 
@@ -124,6 +124,11 @@ public interface Database {
   public String getSid();
 
   /**
+   * @return true if this database is an embedded one
+   */
+  public boolean isEmbedded();
+
+  /**
    * Returns a query string for retrieving the last automatically generated id from the given id source
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table
    * @return a query string for retrieving the last auto-increment value from idSource
@@ -161,11 +166,6 @@ public interface Database {
    * f.ex. user=scott;password=tiger, null if none is required
    */
   public String getAuthenticationInfo(final Properties connectionProperties);
-
-  /**
-   * @return true if this database is an embedded one
-   */
-  public boolean isEmbedded();
 
   /**
    * This should shutdown the database in case it is an embedded one

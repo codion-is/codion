@@ -73,7 +73,7 @@ public class Configuration {
   public static final String SERVER_DB_PORT = "jminor.server.db.port";
 
   /**
-   * The initial logging status on the server, either 1 (on) or (0) off
+   * The initial logging status on the server, either true (on) or false (off)
    */
   public static final String SERVER_LOGGING_ON = "jminor.server.logging.status";
 
@@ -83,7 +83,7 @@ public class Configuration {
   public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.logging.clientlogsize";
 
   /**
-   * Specifies whether the server should establish connections using a secure sockets layer, 1 (on) or 0 (off)
+   * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)
    */
   public static final String SERVER_SECURE_CONNECTION = "jminor.server.connection.secure";
 

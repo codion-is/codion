@@ -930,3 +930,4 @@
   common.db.dbms.AbstractDatabase added
   common.db.dbms.Dbms renamed to Database
   EntityDbLocalProvider, EntityDbRemoteProvider set entityDb instance to null on disconnect
+  SERVER_LOGGING_ON and SERVER_SECURE_CONNECTION properties changed from 1/0 to true/false

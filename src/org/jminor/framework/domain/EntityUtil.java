@@ -294,7 +294,7 @@ public class EntityUtil {
    * or "columnName is null" in case sqlStringValue is 'null'
    */
   public static String getQueryString(final String columnName, final String sqlStringValue) {
-    return new StringBuilder(columnName).append(sqlStringValue.toUpperCase().equals("NULL") ?
+    return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
             " is " : " = ").append(sqlStringValue).toString();
   }
 

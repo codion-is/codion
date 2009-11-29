@@ -540,10 +540,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
-    final Properties properties =
-            getModel().getDbProvider().getEntityDb().getUser().getProperties();
+    final Properties properties = getModel().getDbProvider().getEntityDb().getUser().getProperties();
     return frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(Database.DATABASE_SID) : null);//todo EntityDb.getDatabase()?
+            properties != null ? properties.getProperty(Database.DATABASE_SID) : null);
   }
 
   protected JPanel initializeStartupProgressPane(final Icon icon) {

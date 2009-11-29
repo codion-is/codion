@@ -20,6 +20,10 @@ public class DatabaseProvider {
     }
   }
 
+  /**
+   * @return the database type string as specified by the DATABASE_TYPE system property
+   * @see Database#DATABASE_TYPE
+   */
   public static String getDatabaseType() {
     return System.getProperty(Database.DATABASE_TYPE);
   }

@@ -44,9 +44,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
   private static final boolean LOGGING_ENABLED =
-          System.getProperty(Configuration.SERVER_LOGGING_ON, "1").equalsIgnoreCase("1");
+          System.getProperty(Configuration.SERVER_LOGGING_ON, "true").equalsIgnoreCase("true");
   static final boolean SECURE_CONNECTION =
-          Integer.parseInt(System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "1")) == 1;
+          System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "true").equalsIgnoreCase("true");
 
   private static final int SERVER_PORT;
   private static final int SERVER_DB_PORT;
@@ -91,7 +91,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     final String sid = database.getSid();
     if (host == null || host.length() == 0)
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST +")");
-    if (!database.isEmbedded() && (sid == null || sid.length() == 0))//todo is this necessary
+    if (!database.isEmbedded() && (sid == null || sid.length() == 0))
       throw new RuntimeException("Database sid must be specified (" + Database.DATABASE_SID +")");
     if (!database.isEmbedded() && (port == null || port.length() == 0))
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT +")");
@@ -253,7 +253,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     catch (NotBoundException e) {
       log.error(this, e);
     }
-    database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
+    if (database.isEmbedded())
+      database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
   }
 
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {

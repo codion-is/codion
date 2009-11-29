@@ -205,7 +205,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     try {
       final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
       sql = getSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getWhereClause(getDatabase(), !datasource.toUpperCase().contains("WHERE")), criteria.getOrderByClause());
+              criteria.getWhereClause(getDatabase(), !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 

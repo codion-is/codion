@@ -31,6 +31,10 @@ public class SQLServerDatabase extends AbstractDatabase {
     super(SQLSERVER);
   }
 
+  public SQLServerDatabase(final String host, final String port, final String databaseName) {
+    super(SQLSERVER, host, port, databaseName, false);
+  }
+
   /** {@inheritDoc} */
   public void loadDriver() throws ClassNotFoundException {
     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
