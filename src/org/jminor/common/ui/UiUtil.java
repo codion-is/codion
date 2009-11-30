@@ -131,6 +131,9 @@ public class UiUtil {
         setWaitCursor(false, dialogParent);
       }
     }
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
+    fileChooser.setMultiSelectionEnabled(false);
     if (startDir != null && startDir.length() > 0)
       fileChooser.setCurrentDirectory(new File(startDir));
     final int option = fileChooser.showOpenDialog(dialogParent);
@@ -155,6 +158,9 @@ public class UiUtil {
         setWaitCursor(false, dialogParent);
       }
     }
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
+    fileChooser.setMultiSelectionEnabled(false);
     File selectedFile = new File((startDir == null ? System.getProperty("user.home") : startDir)
             + (defaultFileName != null ? (System.getProperty("file.separator") + defaultFileName) : ""));
     boolean fileChosen = false;
