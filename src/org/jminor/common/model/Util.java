@@ -255,7 +255,7 @@ public class Util {
 
       input = new BufferedReader(new InputStreamReader(inputStream));
       String line;
-      while (( line = input.readLine()) != null) {
+      while ((line = input.readLine()) != null) {
         contents.append(line);
         contents.append(System.getProperty("line.separator"));
       }
