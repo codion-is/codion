@@ -387,7 +387,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected JPanel getHelpPanel() {
     try {
       final JPanel panel = new JPanel(new BorderLayout());
-      final String contents = Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
+      final String contents = getHelpText();
       final JTextArea text = new JTextArea(contents);
       final JScrollPane scrollPane = new JScrollPane(text);
       text.setEditable(false);
@@ -401,6 +401,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * @return the text to show in the help panel
+   * @throws IOException in case of an IO exception
+   */
+  protected String getHelpText() throws IOException {
+    return Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
   }
 
   /**

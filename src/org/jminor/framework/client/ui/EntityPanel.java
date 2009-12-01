@@ -1067,7 +1067,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (entities == null || entities.size() == 0)
       throw new RuntimeException("Cannot create an EntityPanel without the entities");
 
-    return createStaticEntityPanel(entities, dbProvider, entities.iterator().next().getEntityID(), true);
+    return createStaticEntityPanel(entities, dbProvider, entities.iterator().next().getEntityID());
   }
 
   /**
@@ -1079,20 +1079,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public static EntityPanel createStaticEntityPanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
                                                     final String entityID) {
-    return createStaticEntityPanel(entities, dbProvider, entityID, true);
-  }
-
-  /**
-   * Creates a static entity panel showing the given entities
-   * @param entities the entities to show in the panel
-   * @param dbProvider the EntityDbProvider, in case the returned panel should require one
-   * @param entityID the entityID
-   * @param includePopupMenu if true then the default popup menu is included in the table panel, otherwise it's hidden
-   * @return a static EntityPanel showing the given entities
-   */
-  public static EntityPanel createStaticEntityPanel(final Collection<Entity> entities, final EntityDbProvider dbProvider,
-                                                    final String entityID, final boolean includePopupMenu) {
-    final EntityModel entityModel = new EntityModel(entityID, dbProvider) {
+    return new EntityPanel(new EntityModel(entityID, dbProvider) {
       @Override
       protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider, false) {
@@ -1102,34 +1089,12 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
           }
         };
       }
-    };
-    final EntityPanel entityPanel = new EntityPanel(entityModel, entityID, true, false, false, EMBEDDED) {
-      @Override
-      protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel, final ControlSet popupMenuControlSet,
-                                                      final boolean rowColoring) {
-        return new EntityTablePanel(tableModel, popupMenuControlSet, false) {
-          @Override
-          protected JPanel initializeSearchPanel() {
-            return null;
-          }
-          @Override
-          protected JToolBar getRefreshToolbar() {
-            return null;
-          }
-        };
-      }
-      @Override
-      protected ControlSet getTablePopupControlSet() {
-        return includePopupMenu ? super.getTablePopupControlSet() : null;
-      }
+    }, entityID, true, false, false, EMBEDDED) {
       @Override
       protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
         return null;
       }
-    };
-    entityPanel.initializePanel();
-
-    return entityPanel;
+    }.initializePanel();
   }
 
   public static EntityPanel createInstance(final EntityPanelProvider panelProvider, final EntityModel model) {
