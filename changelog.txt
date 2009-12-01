@@ -933,3 +933,4 @@
   SERVER_LOGGING_ON and SERVER_SECURE_CONNECTION properties changed from 1/0 to true/false
   EntityApplicationPanel.getHelpText() added
   EntityPanel.createStaticEntityPanel refactored and simplified
+  Property.BooleanProperty.toSQLString() bug fixed, return null value on false

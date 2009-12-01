@@ -803,7 +803,7 @@ public class Property implements Serializable {
      * @return the sql string value of <code>value</code>
      */
     public String toSQLString(final Boolean value) {
-      final Object result = value == null ? nullValue : (value ? trueValue : nullValue);
+      final Object result = value == null ? nullValue : (value ? trueValue : falseValue);
       if (columnType == Type.STRING)
         return "'" + result + "'";
       else
