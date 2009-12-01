@@ -67,7 +67,7 @@ public class EntityUtil {
   /**
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
-   * @return an array containing the values of the property with the given ID from the given entities,
+   * @return a List containing the values of the property with the given ID from the given entities,
    * null values are included
    */
   public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities) {
@@ -78,10 +78,10 @@ public class EntityUtil {
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
-   * @return an array containing the values of the property with the given ID from the given entities
+   * @return a List containing the values of the property with the given ID from the given entities
    */
   public static List<Object> getPropertyValues(final String propertyID, final List<Entity> entities,
-                                           final boolean includeNullValues) {
+                                               final boolean includeNullValues) {
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues)
@@ -100,7 +100,7 @@ public class EntityUtil {
    * @param propertyID the ID of the property for which to retrieve the values
    * @return a Collection containing the distinct property values
    */
-  public static Collection<Object> getPropertyValues(final List<Entity> entities, final String propertyID) {
+  public static Collection<Object> getDistinctPropertyValues(final List<Entity> entities, final String propertyID) {
     final Set<Object> values = new HashSet<Object>();
     if (entities == null)
       return values;
@@ -116,22 +116,13 @@ public class EntityUtil {
    * @param propertyID the ID of the property for which to set the value
    * @param value the value
    * @param entities the entities for which to set the value
-   * @return the old values in the same order as the entities were recieved
+   * @return the old property values mapped to their respective primary key
    */
-  public static List<Object> setPropertyValue(final String propertyID, final Object value,
-                                          final List<Entity> entities) {
-    final List<Object> oldValues = getPropertyValues(propertyID, entities);
+  public static Map<Entity.Key, Object> setPropertyValue(final String propertyID, final Object value,
+                                                         final List<Entity> entities) {
+    final Map<Entity.Key, Object> oldValues = new HashMap<Entity.Key, Object>(entities.size());
     for (final Entity entity : entities)
-      entity.setValue(propertyID, value);
-
-    return oldValues;
-  }
-
-  public static List<Object> setPropertyValue(final String propertyID, final List<Object> values,
-                                          final List<Entity> entities) {
-    final List<Object> oldValues = getPropertyValues(propertyID, entities);
-    for (int i = 0; i < entities.size(); i++)
-      entities.get(i).setValue(propertyID, values.get(i));
+      oldValues.put(entity.getPrimaryKey(), entity.setValue(propertyID, value));
 
     return oldValues;
   }
@@ -142,14 +133,14 @@ public class EntityUtil {
    * @param propertyID the ID of the property which value should be used for mapping
    * @return a Map of entities hashed by property value
    */
-  public static Map<Object, List<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
-    final Map<Object, List<Entity>> entityMap = new HashMap<Object, List<Entity>>(entities.size());
+  public static Map<Object, Collection<Entity>> hashByPropertyValue(final List<Entity> entities, final String propertyID) {
+    final Map<Object, Collection<Entity>> entityMap = new HashMap<Object, Collection<Entity>>(entities.size());
     for (final Entity entity : entities) {
       final Object key = entity.getValue(propertyID);
       if (entityMap.containsKey(key))
         entityMap.get(key).add(entity);
       else {
-        final List<Entity> list = new ArrayList<Entity>();
+        final Collection<Entity> list = new ArrayList<Entity>();
         list.add(entity);
         entityMap.put(key, list);
       }
@@ -170,7 +161,7 @@ public class EntityUtil {
       if (entityMap.containsKey(entityID))
         entityMap.get(entityID).add(entity);
       else {
-        final List<Entity> list = new ArrayList<Entity>();
+        final Collection<Entity> list = new ArrayList<Entity>();
         list.add(entity);
         entityMap.put(entityID, list);
       }
@@ -299,12 +290,12 @@ public class EntityUtil {
   }
 
   /**
-   * Returns the insert properties for this entity, leaving out properties with null values
+   * Returns the properties used when inserting an instance of this entity, leaving out properties with null values
    * @param entity the entity
    * @return the properties used to insert the given entity type
    */
-  public static List<Property> getInsertProperties(final Entity entity) {
-    final List<Property> properties = new ArrayList<Property>();
+  public static Collection<Property> getInsertProperties(final Entity entity) {
+    final Collection<Property> properties = new ArrayList<Property>();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
       if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.getPropertyID()))
@@ -325,6 +316,14 @@ public class EntityUtil {
         properties.add(property);
 
     return properties;
+  }
+
+  public static List<Entity> copyEntities(final List<Entity> entities) {
+    final List<Entity> copies = new ArrayList<Entity>(entities.size());
+    for (final Entity entity : entities)
+      copies.add(entity.getCopy());
+
+    return copies;
   }
 
   private interface ValueProvider {

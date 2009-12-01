@@ -771,20 +771,18 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (!getModel().containsTableModel() || getModel().getTableModel().stSelectionEmpty.isActive())
       return;
 
-    final List<Entity> selectedEntities = getModel().getTableModel().getSelectedEntities();
+    final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedEntities());
     final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, selectedEntities,
             getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
             null, editPanel.getOkButton(), editPanel.evtButtonClicked);
     if (editPanel.isEditAccepted()) {
-      final List<Object> oldValues = EntityUtil.setPropertyValue(
-              propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
+      EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
         getModel().getEditModel().update(selectedEntities);
       }
       catch (Exception e) {
-        EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), oldValues, selectedEntities);
         throw new RuntimeException(e);
       }
       finally {

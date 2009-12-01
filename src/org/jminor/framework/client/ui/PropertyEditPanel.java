@@ -123,7 +123,7 @@ public class PropertyEditPanel extends JPanel {
 
   protected InputManager initializeInputManager(final Property property, final EntityEditModel editModel,
                                                 final List<Entity> entities) {
-    final Collection<Object> values = EntityUtil.getPropertyValues(entities, property.getPropertyID());
+    final Collection<Object> values = EntityUtil.getDistinctPropertyValues(entities, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     switch (property.getPropertyType()) {
       case TIMESTAMP:

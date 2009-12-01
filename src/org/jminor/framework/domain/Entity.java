@@ -166,9 +166,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * Sets the value of the given property
    * @param propertyID the ID of the property
    * @param value the new value
+   * @return the old value
    */
-  public void setValue(final String propertyID, final Object value) {
-    setValue(propertyID, value, true);
+  public Object setValue(final String propertyID, final Object value) {
+    return setValue(propertyID, value, true);
   }
 
   /**
@@ -176,9 +177,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param propertyID the ID of the property
    * @param value the new value
    * @param validateType set to true if basic type validation should be performed on the value
+   * @return the old value
    */
-  public void setValue(final String propertyID, final Object value, final boolean validateType) {
-    setValue(getProperty(propertyID), value, validateType);
+  public Object setValue(final String propertyID, final Object value, final boolean validateType) {
+    return setValue(getProperty(propertyID), value, validateType);
   }
 
   /**
@@ -188,15 +190,16 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @param property the property
    * @param value the new value
    * @param validateType set to true if basic type validation should be performed on the value
+   * @return the old value
    */
-  public void setValue(final Property property, final Object value, final boolean validateType) {
+  public Object setValue(final Property property, final Object value, final boolean validateType) {
     if (validateType)
       validateType(property, value);
 
     final boolean isPrimarKeyProperty = property instanceof Property.PrimaryKeyProperty;
     final boolean initialization = isPrimarKeyProperty ? !primaryKey.hasValue(property.getPropertyID())
             : !values.containsKey(property.getPropertyID());
-    doSetValue(property, value, isPrimarKeyProperty, initialization, true);
+    return doSetValue(property, value, isPrimarKeyProperty, initialization, true);
   }
 
   /**
@@ -651,9 +654,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * can be safely disregarded during the value setting
    * @param propagateReferenceValues if set to true then both reference key values and
    * denormalized values are set in case <code>property</code> is a Property.ForeignKeyProperty.
+   * @return the old value
    * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preventing circular references
    */
-  private void doSetValue(final Property property, final Object newValue, final boolean isPrimaryKeyProperty,
+  private Object doSetValue(final Property property, final Object newValue, final boolean isPrimaryKeyProperty,
                           final boolean initialization, boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
@@ -678,6 +682,8 @@ public final class Entity implements Serializable, Comparable<Entity> {
 
     if (evtPropertyChanged != null && !isEqual(property.getPropertyType(), newValue, oldValue))
       evtPropertyChanged.fire(new Property.Event(this, getEntityID(), property, newValue, oldValue, true, initialization));
+
+    return oldValue;
   }
 
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {

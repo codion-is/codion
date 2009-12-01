@@ -389,7 +389,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
-    final List<Property> insertProperties = EntityUtil.getInsertProperties(entity);
+    final Collection<Property> insertProperties = EntityUtil.getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getPropertyID());

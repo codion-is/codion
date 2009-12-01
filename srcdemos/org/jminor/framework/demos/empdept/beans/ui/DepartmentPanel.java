@@ -39,7 +39,7 @@ public class DepartmentPanel extends EntityPanel {
 
     final String reportPath = System.getProperty(Configuration.REPORT_PATH) + "/empdept_employees.jasper";
     final Collection<Object> departmentNumbers =
-            EntityUtil.getPropertyValues(getModel().getTableModel().getSelectedEntities(), EmpDept.DEPARTMENT_ID);
+            EntityUtil.getDistinctPropertyValues(getModel().getTableModel().getSelectedEntities(), EmpDept.DEPARTMENT_ID);
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
     viewJdbcReport(reportPath, reportParameters, null);

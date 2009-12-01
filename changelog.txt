@@ -934,3 +934,7 @@
   EntityApplicationPanel.getHelpText() added
   EntityPanel.createStaticEntityPanel refactored and simplified
   Property.BooleanProperty.toSQLString() bug fixed, return null value on false
+  Entity.doSetValue()/setValue() now returns the old value
+  EntityUtil.copyEntities() added
+  EntityPanel.updateSelectedEntities() now copies the selected entities before setting the value, hence no resetting the value on exception
+  EntityUtil.getPropertyValues() renamed to getDistinctPropertyValues()

@@ -846,7 +846,7 @@ public class EntityEditModel {
   /**
    * Updates the given entities in the database
    * @param entities the entities to update
-   * @return a list the udpated entities
+   * @return a list containing the updated entities
    * @throws DbException in case of a database exception
    * @throws UserCancelException in case the operation is cancelled
    */
