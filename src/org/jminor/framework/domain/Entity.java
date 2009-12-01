@@ -990,7 +990,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     /**
-     * @return a hash code based on the values of this key, unique among entities of the same type
+     * @return a hash code based on the values of this key
      */
     @Override
     public int hashCode() {
