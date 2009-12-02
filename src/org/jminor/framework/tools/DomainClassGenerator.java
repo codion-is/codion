@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.tools;
 
-import org.jminor.common.db.DatabaseProvider;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;

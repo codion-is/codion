@@ -938,3 +938,4 @@
   EntityUtil.copyEntities() added
   EntityPanel.updateSelectedEntities() now copies the selected entities before setting the value, hence no resetting the value on exception
   EntityUtil.getPropertyValues() renamed to getDistinctPropertyValues()
+  DatabaseProvider moved from common.db to common.db.dbms

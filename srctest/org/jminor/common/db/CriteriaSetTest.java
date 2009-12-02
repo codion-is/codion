@@ -4,6 +4,7 @@
 package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.dbms.DatabaseProvider;
 
 import junit.framework.TestCase;
 

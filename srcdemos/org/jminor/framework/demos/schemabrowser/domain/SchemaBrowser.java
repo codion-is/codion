@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.schemabrowser.domain;
 
-import org.jminor.common.db.DatabaseProvider;
+import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
