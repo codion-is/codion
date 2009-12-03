@@ -346,7 +346,8 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Adds the given buttons to the south toolbar, in the order they are recieved
+   * Adds the given buttons to the south toolbar, in the order they are recieved,
+   * a null value results in a separator
    * @param buttons the buttons to add to the south toolbar
    */
   public void addSouthPanelButtons(final AbstractButton... buttons) {
