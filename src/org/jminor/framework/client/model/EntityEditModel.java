@@ -406,7 +406,7 @@ public class EntityEditModel {
     if (!isInsertAllowed())
       throw new RuntimeException("This model does not allow inserting!");
 
-    log.debug(toString() + " - insert "+ Util.getListContentsAsString(entities, false));
+    log.debug(toString() + " - insert " + Util.getListContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
     validateEntities(entities, INSERT);

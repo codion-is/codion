@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import java.util.ArrayList;
 import java.util.List;
 
+//todo incomplete, no selection model
 public class EntityListModel extends AbstractListModel implements Refreshable {
 
   private static final Logger log = Util.getLogger(EntityListModel.class);
@@ -102,6 +103,23 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
 
   public String getEntityID() {
     return entityID;
+  }
+
+  public List<Entity> getSelectedEntities() {
+    final List<Entity> ret = new ArrayList<Entity>();
+    final ListSelectionModel selectionModel = getSelectionModel();
+    final int min = selectionModel.getMinSelectionIndex();
+    final int max = selectionModel.getMaxSelectionIndex();
+    for (int index = min; index <= max; index++) {
+      if (selectionModel.isSelectedIndex(index))
+        ret.add(getEntityAt(index));
+    }
+
+    return ret;
+  }
+
+  public List<Entity> getAllEntities() {
+    return new ArrayList<Entity>(data);
   }
 
   public Entity getEntityAt(final int index) {
