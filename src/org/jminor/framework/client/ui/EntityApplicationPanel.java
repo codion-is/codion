@@ -553,7 +553,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             properties != null ? properties.getProperty(Database.DATABASE_SID) : null);
   }
 
-  protected JPanel initializeStartupProgressPane(final Icon icon) {
+  protected JPanel initializeStartupProgressPanel(final Icon icon) {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     final JProgressBar prog = new JProgressBar(JProgressBar.HORIZONTAL);
     prog.setIndeterminate(true);
@@ -835,7 +835,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final JDialog initializationDialog = new JDialog(owner, message, false);
     initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    panel.add(applicationPanel.initializeStartupProgressPane(icon));
+    panel.add(applicationPanel.initializeStartupProgressPanel(icon));
     initializationDialog.getContentPane().add(panel, BorderLayout.CENTER);
     initializationDialog.pack();
     UiUtil.centerWindow(initializationDialog);
