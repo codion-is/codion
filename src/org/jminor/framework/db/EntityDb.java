@@ -194,8 +194,7 @@ public interface EntityDb {
    * @return entities of the type <code>entityID</code> according to <code>propertyID</code> and <code>values</code>
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public List<Entity> selectMany(final String entityID, final String propertyID,
-                                 final Object... values) throws Exception;
+  public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws Exception;
 
   /**
    * Selects all the entities of the given type

@@ -13,8 +13,8 @@ import java.util.Date;
 public class EntityTest extends TestCase {
 
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
-                                           final String stringValue, final Date dateValue, final Timestamp timestampValue,
-                                           final Boolean booleanValue, final Entity entityValue) {
+                                       final String stringValue, final Date dateValue, final Timestamp timestampValue,
+                                       final Boolean booleanValue, final Entity entityValue) {
     final Entity entity = new Entity(EntityTestDomain.T_DETAIL);
     entity.setValue(EntityTestDomain.DETAIL_ID, id);
     entity.setValue(EntityTestDomain.DETAIL_INT, intValue);

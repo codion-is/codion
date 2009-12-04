@@ -253,8 +253,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
     String sql = "";
     try {
-      return queryInteger(sql = getSelectSql(
-              EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
+      return queryInteger(sql = getSelectSql(EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
               criteria.getWhereClause(getDatabase()), null));
     }
     catch (SQLException sqle) {

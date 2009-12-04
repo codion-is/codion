@@ -50,7 +50,7 @@ public interface Database {
   public static final String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
-   * Specifies the IDatabase implementation class to use in case of a dbms that is not directly supported
+   * Specifies the Database implementation class to use in case of a dbms that is not directly supported
    * @see Database
    */
   public static final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
