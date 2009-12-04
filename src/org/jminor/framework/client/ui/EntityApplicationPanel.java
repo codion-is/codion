@@ -165,15 +165,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, defaultUser, true);
   }
 
-  public static void startApplication(final String frameCaption,
-                                      final EntityApplicationPanel applicationPanel,
+  public static void startApplication(final String frameCaption, final EntityApplicationPanel applicationPanel,
                                       final String iconName, final boolean maximize, final Dimension frameSize,
                                       final User defaultUser, final boolean northToolBar) {
     startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, defaultUser, northToolBar, true);
   }
 
-  public static void startApplication(final String frameCaption,
-                                      final EntityApplicationPanel applicationPanel,
+  public static void startApplication(final String frameCaption, final EntityApplicationPanel applicationPanel,
                                       final String iconName, final boolean maximize, final Dimension frameSize,
                                       final User defaultUser, final boolean northToolBar, final boolean showFrame) {
     log.info(frameCaption + " starting");
@@ -408,7 +406,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @throws IOException in case of an IO exception
    */
   protected String getHelpText() throws IOException {
-    return Util.getContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
+    return Util.getTextFileContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
   }
 
   /**

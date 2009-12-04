@@ -939,3 +939,6 @@
   EntityPanel.updateSelectedEntities() now copies the selected entities before setting the value, hence no resetting the value on exception
   EntityUtil.getPropertyValues() renamed to getDistinctPropertyValues()
   DatabaseProvider moved from common.db to common.db.dbms
+  Util.getContents() renamed to getTextFileContents() and refactored
+  Util.getTextFileContents() added Charset parameter
+  EntityLookupField now calls the enterAction if the search string is empty

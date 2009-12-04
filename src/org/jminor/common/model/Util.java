@@ -11,12 +11,14 @@ import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -239,21 +241,41 @@ public class Util {
   }
 
   /**
-   * Fetch the entire contents of a resource file, and return it in a String.
-   * @param cls the resource class
+   * Fetch the entire contents of a resource textfile, and return it in a String, using the default Charset.
+   * @param resourceClass the resource class
    * @param resourceName the name of the resource to retrieve
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static String getContents(final Class cls, final String resourceName) throws IOException {
+  public static String getTextFileContents(final Class resourceClass, final String resourceName) throws IOException {
+    return getTextFileContents(resourceClass, resourceName, Charset.defaultCharset());
+  }
+
+  /**
+   * Fetch the entire contents of a resource textfile, and return it in a String.
+   * @param resourceClass the resource class
+   * @param resourceName the name of the resource to retrieve
+   * @param charset the Charset to use when reading the file contents
+   * @return the contents of the resource file
+   * @throws IOException in case an IOException occurs
+   */
+  public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
+    final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
+    if (inputStream == null)
+      throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
+
+    return getTextFileContents(inputStream, charset);
+  }
+
+  public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
+    return getTextFileContents(new FileInputStream(new File(filename)), charset);
+  }
+
+  public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
     final StringBuilder contents = new StringBuilder();
     BufferedReader input = null;
     try {
-      final InputStream inputStream = cls.getResourceAsStream(resourceName);
-      if (inputStream == null)
-        throw new FileNotFoundException("File not found: '" + resourceName + "'");
-
-      input = new BufferedReader(new InputStreamReader(inputStream));
+      input = new BufferedReader(new InputStreamReader(inputStream, charset));
       String line;
       while ((line = input.readLine()) != null) {
         contents.append(line);
@@ -369,7 +391,7 @@ public class Util {
 
   public static String getVersionAndBuildNumber() {
     try {
-      return getContents(Util.class, VERSION_FILE);
+      return getTextFileContents(Util.class, VERSION_FILE);
     }
     catch (IOException e) {
       e.printStackTrace();
