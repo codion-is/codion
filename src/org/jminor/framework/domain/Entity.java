@@ -660,7 +660,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preventing circular references
    */
   private Object doSetValue(final Property property, final Object newValue, final boolean isPrimaryKeyProperty,
-                          final boolean initialization, boolean propagateReferenceValues) {
+                            final boolean initialization, boolean propagateReferenceValues) {
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
     if (newValue != null && newValue instanceof Entity && newValue.equals(this))
