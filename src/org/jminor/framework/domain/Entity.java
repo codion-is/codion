@@ -359,13 +359,15 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Returns a date value formatted with <code>dateFormat</code>
+   * Returns a date value formatted with <code>dateFormat</code>, in case the value is null
+   * and empty string is returned
    * @param propertyID the ID of the property for which to retrieve a formatted value
    * @param dateFormat the DateFormat to use when formatting the value
-   * @return a formatted date value
+   * @return a formatted date value, an empty string in case of a null value
    */
-  public String getDateStringValue(final String propertyID, final DateFormat dateFormat) {
-    return dateFormat.format(getDateValue(propertyID));
+  public String getFormattedDate(final String propertyID, final DateFormat dateFormat) {
+    final Date value = getDateValue(propertyID);
+    return value == null ? "" : dateFormat.format(value);
   }
 
   /**
