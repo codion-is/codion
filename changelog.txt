@@ -943,3 +943,4 @@
   Util.getTextFileContents() added Charset parameter
   EntityLookupField now calls the enterAction if the search string is empty
   Entity.getDateStringValue() renamed to getFormattedDate() and it now returns an empty string in case of a null value
+  EntityApplicationPanel restructured and refactored, startApplication() and prepareFrame() no longer static

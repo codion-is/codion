@@ -263,11 +263,11 @@ public class Configuration {
   public static final String FILTER_QUERY_BY_MASTER = "jminor.client.filterQueryByMaster";
 
   /**
-   * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanel</code> method
+   * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanelDialog</code> method
    * should be persisted, or kept in memory, when the dialog is closed.
    * Value type: Boolean
    * Default value: false
-   * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanel(org.jminor.framework.client.ui.EntityPanelProvider)
+   * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanelDialog(org.jminor.framework.client.ui.EntityPanelProvider)
    */
   public static final String PERSIST_ENTITY_PANELS = "jminor.client.persistEntityPanels";
 

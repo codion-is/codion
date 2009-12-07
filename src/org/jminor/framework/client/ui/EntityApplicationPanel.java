@@ -24,7 +24,6 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Logger;
@@ -71,8 +70,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private final Event evtSelectedEntityPanelChanged = new Event();
   private final Event evtAlwaysOnTopChanged = new Event();
 
-  private static boolean persistEntityPanels;
-  private static Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
+  private final boolean persistEntityPanels;
+  private Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
 
   private static final int DIVIDER_JUMP = 30;
 
@@ -90,30 +89,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   public EntityApplicationPanel() {
     configureApplication();
     persistEntityPanels = (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_PANELS);
-    ToolTipManager.sharedInstance().setInitialDelay(
-            (Integer) Configuration.getValue(Configuration.TOOLTIP_DELAY));
+    ToolTipManager.sharedInstance().setInitialDelay((Integer) Configuration.getValue(Configuration.TOOLTIP_DELAY));
   }
 
   /** {@inheritDoc} */
   public void handleException(final Throwable e, final JComponent component) {
     log.error(this, e);
     DefaultExceptionHandler.get().handleException(e, component);
-  }
-
-  /**
-   * @param user the user used when initializing the application model
-   * @throws org.jminor.common.model.UserCancelException in case the initialization is cancelled
-   */
-  public void initialize(final User user) throws UserCancelException {
-    if (user == null)
-      throw new RuntimeException("Unable to initialize application panel without a user");
-
-    this.applicationModel = initializeApplicationModel(user);
-    setUncaughtExceptionHandler();
-    initializeUI();
-    initializeActiveEntityPanel();
-    initializeResizingAndNavigation();
-    bindEvents();
   }
 
   /**
@@ -152,66 +134,48 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
   }
 
-  public static void startApplication(final String frameCaption,
-                                      final EntityApplicationPanel applicationPanel,
-                                      final String iconName, final boolean maximize, final Dimension frameSize) {
-    startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, null);
+  public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+                               final Dimension frameSize) {
+    startApplication(frameCaption, iconName, maximize, frameSize, null);
   }
 
-  public static void startApplication(final String frameCaption,
-                                      final EntityApplicationPanel applicationPanel,
-                                      final String iconName, final boolean maximize, final Dimension frameSize,
-                                      final User defaultUser) {
-    startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, defaultUser, true);
+  public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+                               final Dimension frameSize, final User defaultUser) {
+    startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
   }
 
-  public static void startApplication(final String frameCaption, final EntityApplicationPanel applicationPanel,
-                                      final String iconName, final boolean maximize, final Dimension frameSize,
-                                      final User defaultUser, final boolean northToolBar) {
-    startApplication(frameCaption, applicationPanel, iconName, maximize, frameSize, defaultUser, northToolBar, true);
-  }
-
-  public static void startApplication(final String frameCaption, final EntityApplicationPanel applicationPanel,
-                                      final String iconName, final boolean maximize, final Dimension frameSize,
-                                      final User defaultUser, final boolean northToolBar, final boolean showFrame) {
+  public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
+                               final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     log.info(frameCaption + " starting");
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(applicationPanel.getClass(), iconName) :
+    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
     frame.setIconImage(applicationIcon.getImage());
     JDialog initializationDialog = null;
     boolean retry = true;
     while (retry) {
       try {
-        final User user = applicationPanel.isLoginRequired() ?
-                applicationPanel.getUser(frameCaption, defaultUser, applicationPanel.getClass().getSimpleName(), applicationIcon) :
+        final User user = isLoginRequired() ? getUser(frameCaption, defaultUser, getClass().getSimpleName(), applicationIcon) :
                 new User("", "");
 
         final long now = System.currentTimeMillis();
-        initializationDialog = showInitializationDialog(frame, applicationPanel, applicationIcon, frameCaption);
+        initializationDialog = showInitializationDialog(frame, applicationIcon, frameCaption);
 
-        applicationPanel.initialize(user);
+        initialize(user);
 
-        final String frameTitle = applicationPanel.getFrameTitle(frameCaption, user);
-        prepareFrame(frame, applicationPanel, frameTitle, maximize, northToolBar, true, frameSize);
-        if (showFrame)
-          frame.setVisible(true);
-
-        initializationDialog.dispose();
+        final String frameTitle = getFrameTitle(frameCaption, user);
+        prepareFrame(frame, frameTitle, maximize, true, frameSize, showFrame);
 
         log.info(frameTitle + ", application started successfully " + "(" + (System.currentTimeMillis() - now) + " ms)");
 
         retry = false;//successful startup
-        applicationPanel.saveDefaultUser(user);
+        saveDefaultUser(user);
       }
       catch (UserCancelException uce) {
         System.exit(0);
       }
       catch (Exception ue) {
-        if (initializationDialog != null)
-          initializationDialog.dispose();
-
         ExceptionDialog.showExceptionDialog(null, Messages.get(Messages.EXCEPTION), ue);
 
         retry = JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,
@@ -221,11 +185,28 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         if (!retry)
           System.exit(0);
       }
+      finally {
+        if (initializationDialog != null)
+          initializationDialog.dispose();
+      }
     }
   }
 
-  public static void exit(final EntityApplicationPanel panel) throws UserCancelException {
-    panel.exit();
+  /**
+   * @param user the user used when initializing the application model
+   * @throws org.jminor.common.model.UserCancelException in case the initialization is cancelled
+   */
+  public void initialize(final User user) throws UserCancelException {
+    if (user == null)
+      throw new RuntimeException("Unable to initialize application panel without a user");
+
+    this.applicationModel = initializeApplicationModel(user);
+    setUncaughtExceptionHandler();
+    initializeUI();
+    initializeActiveEntityPanel();
+    initializeResizingAndNavigation();
+    bindEventsInternal();
+    bindEvents();
   }
 
   public void exit() throws UserCancelException {
@@ -439,13 +420,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected void configureApplication() {}
 
-  protected void bindEvents() {
+  protected void bindEventsInternal() {
     evtSelectedEntityPanelChanged.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         initializeActiveEntityPanel();
       }
     });
   }
+
+  protected void bindEvents() {}
 
   /**
    * @return a List containing EntityPanelProvider objects specifying the main EntityPanels,
@@ -487,7 +470,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       controlSet.add(new Control(panelProvider.getCaption()) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          showEntityPanel(panelProvider);
+          showEntityPanelDialog(panelProvider);
         }
       });
     }
@@ -495,8 +478,53 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return controlSet;
   }
 
-  protected void showEntityPanel(final EntityPanelProvider panelProvider) {
-    showEntityPanelDialog(panelProvider, applicationModel.getDbProvider(), this);
+  protected void showEntityPanelDialog(final EntityPanelProvider panelProvider) {
+    showEntityPanelDialog(panelProvider, false);
+  }
+
+  protected void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
+    final JDialog dialog;
+    try {
+      UiUtil.setWaitCursor(true, this);
+      EntityPanel entityPanel;
+      if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
+        entityPanel = persistentEntityPanels.get(panelProvider);
+        if (entityPanel.isShowing())
+          return;
+      }
+      else {
+        entityPanel = EntityPanel.createInstance(panelProvider, getModel().getDbProvider());
+        entityPanel.initializePanel();
+        if (persistEntityPanels)
+          persistentEntityPanels.put(panelProvider, entityPanel);
+      }
+      dialog = new JDialog(UiUtil.getParentWindow(this), panelProvider.getCaption());
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setLayout(new BorderLayout());
+      dialog.add(entityPanel, BorderLayout.CENTER);
+      final Action closeAction = new AbstractAction(Messages.get(Messages.CLOSE)) {
+        public void actionPerformed(ActionEvent e) {
+          dialog.dispose();
+        }
+      };
+      final JButton btnClose = new JButton(closeAction);
+      btnClose.setMnemonic('L');
+      dialog.getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+              KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
+      dialog.getRootPane().getActionMap().put("close", closeAction);
+      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      buttonPanel.add(btnClose);
+      dialog.add(buttonPanel, BorderLayout.SOUTH);
+      dialog.pack();
+      dialog.setLocationRelativeTo(this);
+      if (modalDialog)
+        dialog.setModal(true);
+      dialog.setResizable(true);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, this);
+    }
+    dialog.setVisible(true);
   }
 
   /**
@@ -545,10 +573,18 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
-  protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
-    final Properties properties = getModel().getDbProvider().getEntityDb().getUser().getProperties();
-    return frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(Database.DATABASE_SID) : null);
+  protected JDialog showInitializationDialog(final JFrame owner, final Icon icon, final String initializationMessage) {
+    final String message = initializationMessage == null ? "Initializing Application" : initializationMessage;
+    final JDialog initializationDialog = new JDialog(owner, message, false);
+    initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    panel.add(initializeStartupProgressPanel(icon));
+    initializationDialog.getContentPane().add(panel, BorderLayout.CENTER);
+    initializationDialog.pack();
+    UiUtil.centerWindow(initializationDialog);
+    initializationDialog.setVisible(true);
+
+    return initializationDialog;
   }
 
   protected JPanel initializeStartupProgressPanel(final Icon icon) {
@@ -563,6 +599,61 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
 
     return panel;
+  }
+
+  protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
+    final Properties properties = getModel().getDbProvider().getEntityDb().getUser().getProperties();
+    return frameCaption + " - " + getUserInfo(user,
+            properties != null ? properties.getProperty(Database.DATABASE_SID) : null);
+  }
+
+  /**
+   * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
+   * @param frame the frame to prepare
+   * @param title the title string for the JFrame
+   * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
+   * @param showMenuBar true if a menubar should be created
+   * @param size if the JFrame is not maximed then it's preferredSize is set to this value
+   * @param setVisible if true then the JFrame is set visible
+   * @return an initialized, but non-visible JFrame
+   * @see #getNorthToolBar()
+   */
+  protected JFrame prepareFrame(final JFrame frame, final String title, final boolean maximize,
+                                final boolean showMenuBar, final Dimension size, final boolean setVisible) {
+    frame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        try {
+          exit();
+        }
+        catch(UserCancelException uc) {/**/}
+      }
+    });
+    frame.setTitle(title);
+    frame.getContentPane().setLayout(new BorderLayout());
+    frame.getContentPane().add(this, BorderLayout.CENTER);
+    if (showMenuBar)
+      frame.setJMenuBar(createMenuBar());
+    final JToolBar toolbar = getNorthToolBar();
+    if (toolbar != null)
+      frame.getContentPane().add(toolbar, BorderLayout.NORTH);
+    if (size != null)
+      frame.setSize(size);
+    else {
+      frame.pack();
+      UiUtil.setSizeWithinScreenBounds(frame);
+    }
+    UiUtil.centerWindow(frame);
+    if (maximize)
+      frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    if (setVisible)
+      frame.setVisible(true);
+
+    return frame;
+  }
+
+  protected JMenuBar createMenuBar() {
+    return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
   protected void initializeResizingAndNavigation() {
@@ -619,58 +710,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
 
     return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  }
-
-  /**
-   * Initializes a JFrame according to the given parameters
-   * @param frame the frame to prepare
-   * @param applicationPanel the EntityApplicationPanel to show in the frame
-   * @param title the title string for the JFrame
-   * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
-   * @param northToolBar true if a toolbar should be included
-   * @param showMenuBar true if a menubar should be created
-   * @param size if the JFrame is not maximed then it's preferredSize is set to this value
-   * @return an initialized, but non-visible JFrame
-   * @see #getNorthToolBar()
-   */
-  private static JFrame prepareFrame(final JFrame frame, final EntityApplicationPanel applicationPanel,
-                                     final String title, final boolean maximize, final boolean northToolBar,
-                                     final boolean showMenuBar, final Dimension size) {
-    frame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        try {
-          applicationPanel.exit();
-        }
-        catch(UserCancelException uc) {/**/}
-      }
-    });
-
-    frame.setTitle(title);
-    frame.getContentPane().setLayout(new BorderLayout());
-    frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
-    if (showMenuBar)
-      frame.setJMenuBar(applicationPanel.createMenuBar());
-    if (northToolBar) {
-      final JToolBar toolbar = applicationPanel.getNorthToolBar();
-      if (toolbar != null)
-        frame.getContentPane().add(toolbar, BorderLayout.NORTH);
-    }
-    if (size != null)
-      frame.setSize(size);
-    else {
-      frame.pack();
-      UiUtil.setSizeWithinScreenBounds(frame);
-    }
-    UiUtil.centerWindow(frame);
-    if (maximize)
-      frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-    return frame;
-  }
-
-  private JMenuBar createMenuBar() {
-    return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
   private void initializeActiveEntityPanel() {
@@ -827,28 +866,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
-  private static JDialog showInitializationDialog(final JFrame owner, final EntityApplicationPanel applicationPanel,
-                                                  final Icon icon, final String initializationMessage) {
-    final String message = initializationMessage == null ? "Initializing Application" : initializationMessage;
-    final JDialog initializationDialog = new JDialog(owner, message, false);
-    initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    panel.add(applicationPanel.initializeStartupProgressPanel(icon));
-    initializationDialog.getContentPane().add(panel, BorderLayout.CENTER);
-    initializationDialog.pack();
-    UiUtil.centerWindow(initializationDialog);
-    initializationDialog.setVisible(true);
-
-    return initializationDialog;
-  }
-
   private static String getUserInfo(final User user, final String dbSid) {
     return getUsername(user.getUsername().toUpperCase()) + (dbSid != null ? "@" + dbSid.toUpperCase() : "");
-  }
-
-  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
-                                            final JPanel owner) {
-    showEntityPanelDialog(panelProvider, dbProvider, owner, false);
   }
 
   private static String getUsername(final String username) {
@@ -857,51 +876,5 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       return username.substring(usernamePrefix.length(), username.length());
 
     return username;
-  }
-
-  private static void showEntityPanelDialog(final EntityPanelProvider panelProvider, final EntityDbProvider dbProvider,
-                                            final JPanel owner, final boolean modalDialog) {
-    final JDialog dialog;
-    try {
-      UiUtil.setWaitCursor(true, owner);
-      EntityPanel entityPanel;
-      if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
-        entityPanel = persistentEntityPanels.get(panelProvider);
-        if (entityPanel.isShowing())
-          return;
-      }
-      else {
-        entityPanel = EntityPanel.createInstance(panelProvider, dbProvider);
-        entityPanel.initializePanel();
-        if (persistEntityPanels)
-          persistentEntityPanels.put(panelProvider, entityPanel);
-      }
-      dialog = new JDialog(UiUtil.getParentWindow(owner), panelProvider.getCaption());
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      dialog.setLayout(new BorderLayout());
-      dialog.add(entityPanel, BorderLayout.CENTER);
-      final Action closeAction = new AbstractAction(Messages.get(Messages.CLOSE)) {
-        public void actionPerformed(ActionEvent e) {
-          dialog.dispose();
-        }
-      };
-      final JButton btnClose = new JButton(closeAction);
-      btnClose.setMnemonic('L');
-      dialog.getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-              KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
-      dialog.getRootPane().getActionMap().put("close", closeAction);
-      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      buttonPanel.add(btnClose);
-      dialog.add(buttonPanel, BorderLayout.SOUTH);
-      dialog.pack();
-      dialog.setLocationRelativeTo(owner);
-      if (modalDialog)
-        dialog.setModal(true);
-      dialog.setResizable(true);
-    }
-    finally {
-      UiUtil.setWaitCursor(false, owner);
-    }
-    dialog.setVisible(true);
   }
 }

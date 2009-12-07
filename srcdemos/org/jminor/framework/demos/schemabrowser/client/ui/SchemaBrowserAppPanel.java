@@ -47,6 +47,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
-    startApplication("Schema Browser", new SchemaBrowserAppPanel(), null, false, UiUtil.getScreenSizeRatio(0.5));
+    new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5));
   }
 }
