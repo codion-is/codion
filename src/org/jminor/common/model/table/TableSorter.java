@@ -50,6 +50,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -126,8 +127,9 @@ public class TableSorter extends AbstractTableModel {
     }
   };
   public static final Comparator LEXICAL_COMPARATOR = new Comparator() {
+    final Collator collator = Collator.getInstance();
     public int compare(Object o1, Object o2) {
-      return o1.toString().compareTo(o2.toString());
+      return collator.compare(o1.toString(), o2.toString());
     }
   };
 
@@ -308,12 +310,13 @@ public class TableSorter extends AbstractTableModel {
   protected Comparator getComparator(int column) {
     Class columnType = tableModel.getColumnClass(column);
     Comparator comparator = columnComparators.get(columnType);
-    if (comparator != null) {
+    if (comparator != null)
       return comparator;
-    }
-    if (Comparable.class.isAssignableFrom(columnType)) {
+    if (columnType.equals(String.class))
+      return LEXICAL_COMPARATOR;
+    if (Comparable.class.isAssignableFrom(columnType))
       return COMPARABLE_COMPARATOR;
-    }
+
     return LEXICAL_COMPARATOR;
   }
 

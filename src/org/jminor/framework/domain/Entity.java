@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.Collator;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1080,6 +1081,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * in entity specific functionality, such as providing toString() and compareTo() implementations
    */
   public static class Proxy {
+    protected final Collator collator = Collator.getInstance();
 
     public Object getValue(final Entity entity, final Property property) {
       if (property instanceof Property.DenormalizedViewProperty)
@@ -1093,7 +1095,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     public int compareTo(final Entity entity, final Entity entityToCompare) {
-      return entity.toString().compareTo(entityToCompare.toString());
+      return collator.compare(entity.toString(), entityToCompare.toString());
     }
 
     public String toString(final Entity entity) {

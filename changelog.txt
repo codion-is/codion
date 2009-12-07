@@ -944,3 +944,5 @@
   EntityLookupField now calls the enterAction if the search string is empty
   Entity.getDateStringValue() renamed to getFormattedDate() and it now returns an empty string in case of a null value
   EntityApplicationPanel restructured and refactored, startApplication() and prepareFrame() no longer static
+  Entity.Proxy.compareTo() by default uses Collator for i18n sorting
+  TableSorter now uses a Collator for String columns for i18n sorting
