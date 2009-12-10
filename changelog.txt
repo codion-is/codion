@@ -946,3 +946,11 @@
   EntityApplicationPanel restructured and refactored, startApplication() and prepareFrame() no longer static
   Entity.Proxy.compareTo() by default uses Collator for i18n sorting
   TableSorter now uses a Collator for String columns for i18n sorting
+  EntityTablePanel, some refactoring/restructuring/renaming
+  EntityPanel, moved a few getButton() methods to EntityTablePanel
+  EntityPanel, removed a couple getButton() methods, renamed others to getControl()
+  EntityEditModel.validate() bug fixed, it allowed null values in non-nullable columns during update, since L921
+  EntityApplicationPanel.savePreferences() added, called during exit()
+  EntityTablePanel.addSouthPanelButtons() removed, initializeSouthPanelToolbar() added
+  EntityPanel.getSouthPanelButtons() renamed to getSouthPanelControls(), result no longer includes update button
+  EntityPanel.getUpdateButton() removed

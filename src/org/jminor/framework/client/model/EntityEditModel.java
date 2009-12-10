@@ -546,7 +546,7 @@ public class EntityEditModel {
   public void validate(final Property property, final Object value, final int action) throws ValidationException {
     if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
       if (!isPropertyNullable(property) && Entity.isValueNull(property.getPropertyType(), value)) {
-        if (action == INSERT && !property.columnHasDefaultValue())
+        if (action == UPDATE || (action == INSERT && !property.columnHasDefaultValue()))
           throw new ValidationException(property, value,
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
       }

@@ -833,13 +833,13 @@ public abstract class EntityEditPanel extends JPanel {
 
   /**
    * Creates a EntityComboBox bound to the property identified by <code>propertyID</code>
-   * @param propertyID the ID of the property to bind
+   * @param foreignKeyPropertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
-  protected final EntityComboBox createEntityComboBox(final String propertyID, final State enabledState) {
+  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID, final State enabledState) {
     return createEntityComboBox((Property.ForeignKeyProperty)
-            EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), enabledState);
+            EntityRepository.getProperty(getEditModel().getEntityID(), foreignKeyPropertyID), enabledState);
   }
 
   /**

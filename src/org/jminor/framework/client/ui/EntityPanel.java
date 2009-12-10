@@ -19,7 +19,6 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -39,19 +38,15 @@ import net.sf.jasperreports.engine.JRException;
 import org.apache.log4j.Logger;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -72,7 +67,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -134,7 +128,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * true if this panel should be compact
    */
-  private final boolean compactLayout;
+  private final boolean compactDetailLayout;
 
   /**
    * true if the data should be refreshed (fetched from the database) during initialization
@@ -309,11 +303,11 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
-   * @param compactLayout true if this panel should be laid out in a compact state
+   * @param compactDetailLayout true if this panel should be laid out in a compact state
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState,
-                     final boolean compactLayout) {
+                     final boolean compactDetailLayout) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
     if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE))
@@ -324,7 +318,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.detailEntityPanels = new ArrayList<EntityPanel>(initializeDetailPanels());
-    this.compactLayout = compactLayout && this.detailEntityPanels.size() > 0;
+    this.compactDetailLayout = compactDetailLayout && this.detailEntityPanels.size() > 0;
     setupControls();
     this.entityTablePanel = model.containsTableModel() ? initializeTablePanel(model.getTableModel(),
             getTablePopupControlSet(), rowColoring) : null;
@@ -401,6 +395,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
+   * @see #initializeTablePanel(org.jminor.framework.client.model.EntityTableModel, org.jminor.common.ui.control.ControlSet, boolean)
    */
   public EntityTablePanel getTablePanel() {
     return entityTablePanel;
@@ -408,6 +403,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * @return the edit control panel
+   * @see #initializeEditControlPanel()
    */
   public JPanel getEditControlPanel() {
     return editControlPanel;
@@ -415,6 +411,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * @return the edit panel
+   * @see #initializeEditPanel(org.jminor.framework.client.model.EntityEditModel)
    */
   public EntityEditPanel getEditPanel() {
     return editPanel;
@@ -422,6 +419,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * @return a List containing the detail EntityPanels, if any
+   * @see #initializeDetailPanels()
    */
   public List<EntityPanel> getDetailPanels() {
     return new ArrayList<EntityPanel>(detailEntityPanels);
@@ -569,14 +567,14 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       disposeEditDialog();
 
     if (state == EMBEDDED) {
-      if (compactLayout)
+      if (compactDetailLayout)
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       else
         add(editControlPanel, BorderLayout.NORTH);
       prepareUI(true, false);
     }
     else if (state == HIDDEN) {
-      if (compactLayout)
+      if (compactDetailLayout)
         compactBase.remove(editControlPanel);
       else
         remove(editControlPanel);
@@ -821,13 +819,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * Prints the table if one is available
    */
   public void printTable() {
-    try {
-      if (entityTablePanel != null)
-        entityTablePanel.getJTable().print();
-    }
-    catch (PrinterException pr) {
-      throw new RuntimeException(pr);
-    }
+    if (entityTablePanel != null)
+      entityTablePanel.printTable();
   }
 
   /**
@@ -1176,7 +1169,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   protected void initializeUI() {
     editControlPanel = initializeEditControlPanel();
     if (entityTablePanel != null) {
-      entityTablePanel.addSouthPanelButtons(getSouthPanelButtons(entityTablePanel));
+      entityTablePanel.initializeSouthPanelToolBar(getTablePanelControlSet(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       entityTablePanel.setMinimumSize(new Dimension(0,0));
     }
@@ -1188,7 +1181,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       add(entityTablePanel, BorderLayout.CENTER);
     }
     else {
-      if (compactLayout) {
+      if (compactDetailLayout) {
         compactBase = new JPanel(new BorderLayout(5,5));
         compactBase.add(entityTablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
@@ -1438,46 +1431,49 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * @param tablePanel the EntityTablePanel
-   * @return an array containing the buttons to include on the south panel toolbar, a null item indicates a separator
+   * @return a ControlSet containing the controls to include on the table panel, usually in a toolbar
    */
-  protected AbstractButton[] getSouthPanelButtons(final EntityTablePanel tablePanel) {
-    final List<AbstractButton> buttons = new ArrayList<AbstractButton>();
+  protected ControlSet getTablePanelControlSet(final EntityTablePanel tablePanel) {
+    final ControlSet controls = new ControlSet();
 
-    AbstractButton tmp = getToggleSummaryPanelButton(tablePanel);
-    if (tmp != null)
-      buttons.add(tmp);
-    tmp = getSearchButton(tablePanel);
-    if (tmp != null)
-      buttons.add(tmp);
-    tmp = getPrintButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    buttons.add(null);
-    tmp = getUpdateButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    tmp = getDeleteButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    tmp = getClearSelectionButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    buttons.add(null);
-    tmp = getMoveSelectionDownButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    tmp = getMoveSelectionUpButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    buttons.add(null);
-    tmp = getToggleEditPanelButton();
-    if (tmp != null)
-      buttons.add(tmp);
-    tmp = getToggleDetaiPanelButton();
-    if (tmp != null)
-      buttons.add(tmp);
+    Control control = tablePanel.getToggleSummaryPanelControl();
+    if (control != null)
+      controls.add(control);
+    control = tablePanel.getToggleSearchPanelControl();
+    if (control != null)
+      controls.add(control);
+    control = tablePanel.getPrintControl();
+    if (control != null) {
+      control.setName("");
+      controls.add(control);
+    }
+    controls.addSeparator();
+    if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed()) {
+      control = getDeleteSelectedControl();
+      if (control != null) {
+        control.setName(null);
+        controls.add(control);
+      }
+    }
+    control = tablePanel.getClearSelectionControl();
+    if (control != null)
+      controls.add(control);
+    controls.addSeparator();
+    control = tablePanel.getMoveSelectionDownControl();
+    if (control != null)
+      controls.add(control);
+    control = tablePanel.getMoveSelectionUpControl();
+    if (control != null)
+      controls.add(control);
+    controls.addSeparator();
+    control = getToggleEditPanelControl();
+    if (control != null)
+      controls.add(control);
+    control = getToggleDetaiPanelControl();
+    if (control != null)
+      controls.add(control);
 
-    return buttons.toArray(new AbstractButton[buttons.size()]);
+    return controls;
   }
 
   /**
@@ -1848,145 +1844,26 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     }
   }
 
-  /**
-   * Initializes the button used to toggle the search panel state (hidden, visible and advanced)
-   * @param tablePanel the table panel
-   * @return a search panel toggle button
-   */
-  private JButton getSearchButton(final EntityTablePanel tablePanel) {
-    if (!tablePanel.getTableModel().isQueryConfigurationAllowed())
-      return null;
-
-    final JButton button = new JButton(new Control() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        tablePanel.toggleSearchPanel();
-      }
-    });
-    button.setIcon(Images.loadImage("Filter16.gif"));
-    button.setToolTipText(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  /**
-   * Initializes a button for updating multiple entities
-   * @return the multiple entity update button
-   */
-  private JButton getUpdateButton() {
-    if (getModel().getEditModel().isReadOnly() || !getModel().getEditModel().isMultipleUpdateAllowed()
-            || !getModel().getEditModel().isUpdateAllowed())
-      return null;
-
-    final ControlSet updateSet = getUpdateSelectedControlSet();
-    final JPopupMenu menu = ControlProvider.createPopupMenu(updateSet);
-    final JButton button = new JButton(Images.loadImage("Modify16.gif"));
-    button.setToolTipText(updateSet.getDescription());
-    UiUtil.linkToEnabledState(updateSet.getEnabledState(), button);
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        menu.show(button, button.getWidth()/2, button.getHeight()/2-menu.getPreferredSize().height);
-      }
-    });
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  private JButton getDeleteButton() {
-    if (getModel().getEditModel().isReadOnly() || !getModel().getEditModel().isDeleteAllowed())
-      return null;
-
-    final Control delete = getDeleteSelectedControl();
-    delete.setName(null);
-    delete.setIcon(Images.loadImage("Delete16.gif"));
-    final JButton button = ControlProvider.createButton(delete);
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  private JButton getClearSelectionButton() {
-    final Control clearSelection = ControlFactory.methodControl(getModel().getTableModel(), "clearSelection", null,
-            getModel().getTableModel().stSelectionEmpty.getReversedState(), null, -1, null,
-            Images.loadImage("ClearSelection16.gif"));
-    clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
-    final JButton button = ControlProvider.createButton(clearSelection);
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  private JButton getMoveSelectionDownButton() {
-    final Control selectionDown = ControlFactory.methodControl(getModel().getTableModel(), "moveSelectionDown",
-            Images.loadImage("Down16.gif"));
-    selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
-    final JButton button = ControlProvider.createButton(selectionDown);
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  private JButton getMoveSelectionUpButton() {
-    final Control selectionUp = ControlFactory.methodControl(getModel().getTableModel(), "moveSelectionUp",
-            Images.loadImage("Up16.gif"));
-    selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
-    final JButton button = ControlProvider.createButton(selectionUp);
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  private JButton getPrintButton() {
-    final Control print = getPrintControl();
-    print.setName("");
-    print.setIcon(Images.loadImage("Print16.gif"));
-    final JButton button = ControlProvider.createButton(print);
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
-  }
-
-  private Dimension getSouthButtonSize() {
-    return new Dimension(20,20);
-  }
-
-  private JButton getToggleEditPanelButton() {
+  private Control getToggleEditPanelControl() {
     if (editControlPanel == null)
       return null;
 
     final Control toggle = ControlFactory.methodControl(this, "toggleEditPanelState",
             Images.loadImage("Form16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
-    final JButton button = ControlProvider.createButton(toggle);
-    button.setPreferredSize(getSouthButtonSize());
 
-    return button;
+    return toggle;
   }
 
-  private JButton getToggleDetaiPanelButton() {
+  private Control getToggleDetaiPanelControl() {
     if (detailEntityPanels.size() == 0)
       return null;
 
     final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
             Images.loadImage("History16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
-    final JButton button = ControlProvider.createButton(toggle);
-    button.setPreferredSize(getSouthButtonSize());
 
-    return button;
-  }
-
-  private JToggleButton getToggleSummaryPanelButton(final EntityTablePanel tablePanel) {
-    final ToggleBeanPropertyLink toggle = ControlFactory.toggleControl(tablePanel, "summaryPanelVisible", null,
-            tablePanel.evtTableSummaryPanelVisibleChanged);
-    toggle.setIcon(Images.loadImage("Sum16.gif"));
-    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
-    final JToggleButton button = ControlProvider.createToggleButton(toggle);
-    button.setPreferredSize(getSouthButtonSize());
-
-    return button;
+    return toggle;
   }
 
   private void disposeEditDialog() {

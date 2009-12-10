@@ -216,10 +216,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         throw new UserCancelException();
     }
     try {
+      savePreferences();
+    }
+    catch (Exception e) {
+      log.debug("Exception while saving preferences", e);
+    }
+    try {
+      savePreferences();
       applicationModel.getDbProvider().disconnect();
     }
     catch (Exception e) {
-      log.debug("Unable to properly log out, no connection");
+      log.debug("Exception while disconnecting from database", e);
     }
     System.exit(0);
   }
@@ -701,6 +708,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected void saveDefaultUser(final User user) {
     Util.setDefaultUserName(getClass().getSimpleName(), user.getUsername());
   }
+
+  /**
+   * Called during the exit() method, override to save user preferences on program exit
+   */
+  protected void savePreferences() {}
 
   private JScrollPane initializeApplicationTree() {
     final JTree tree = new JTree(createApplicationTree(mainApplicationPanels));

@@ -14,9 +14,11 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
+import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.domain.Entity;
@@ -65,6 +67,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -82,12 +85,12 @@ public class EntityTablePanel extends JPanel {
   /**
    * fired when the search panel state is changed
    */
-  public final Event evtSearchPanelVisibleChanged = new Event();
+  public final Event evtSearchPanelVisibilityChanged = new Event();
 
   /**
    * fired when the summary panel state is changed
    */
-  public final Event evtTableSummaryPanelVisibleChanged = new Event();
+  public final Event evtSummaryPanelVisibilityChanged = new Event();
 
   /**
    * the EntityTableModel instance used by this EntityTablePanel
@@ -105,6 +108,11 @@ public class EntityTablePanel extends JPanel {
   private final JScrollPane tableScrollPane;
 
   /**
+   * the horizontal table scroll bar
+   */
+  private JScrollBar horizontalTableScrollBar;
+
+  /**
    * the search panel
    */
   private final JPanel searchPanel;
@@ -115,14 +123,14 @@ public class EntityTablePanel extends JPanel {
   private JScrollPane searchScrollPane;
 
   /**
+   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
+   */
+  private JPanel summaryBasePanel;
+
+  /**
    * the scroll pane used for the summary panel
    */
   private JScrollPane summaryScrollPane;
-
-  /**
-   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
-   */
-  private JPanel summaryPanelBase;
 
   /**
    * the property filter panels
@@ -130,29 +138,21 @@ public class EntityTablePanel extends JPanel {
   private final List<PropertyFilterPanel> propertyFilterPanels;
 
   /**
-   * the horizontal table scroll bar
+   * the toolbar containing the refresh button
    */
-  private JScrollBar horizontalTableScrollBar;
+  private JToolBar refreshToolBar;
 
-  /**
-   * the south tool bar
-   */
-  private JToolBar southToolBar;
+  private JPanel southPanel;
 
   /**
    * the label for showing the status of the table, that is, the number of rows, number of selected rows etc.
    */
-  private JLabel lblStatusMessage;
+  private JLabel statusMessageLabel;
 
   /**
    * the action performed when the table is double clicked
    */
   private Action tableDoubleClickAction;
-
-  /**
-   * the toolbar containing the refresh button
-   */
-  private JToolBar searchRefreshToolBar;
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -267,16 +267,16 @@ public class EntityTablePanel extends JPanel {
     if (summaryScrollPane != null) {
       summaryScrollPane.setVisible(visible);
       if (visible) {
-        summaryPanelBase.add(summaryScrollPane, BorderLayout.NORTH);
-        summaryPanelBase.add(horizontalTableScrollBar, BorderLayout.SOUTH);
+        summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
+        summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
       }
       else {
-        summaryPanelBase.remove(horizontalTableScrollBar);
+        summaryBasePanel.remove(horizontalTableScrollBar);
         tableScrollPane.setHorizontalScrollBar(horizontalTableScrollBar);
       }
 
       revalidate();
-      evtTableSummaryPanelVisibleChanged.fire();
+      evtSummaryPanelVisibilityChanged.fire();
     }
   }
 
@@ -297,9 +297,9 @@ public class EntityTablePanel extends JPanel {
 
     if (searchScrollPane != null) {
       searchScrollPane.getViewport().setView(visible ? searchPanel : null);
-      if (searchRefreshToolBar != null)
-        searchRefreshToolBar.setVisible(visible);
-      evtSearchPanelVisibleChanged.fire();
+      if (refreshToolBar != null)
+        refreshToolBar.setVisible(visible);
+      evtSearchPanelVisibilityChanged.fire();
     }
   }
 
@@ -345,23 +345,17 @@ public class EntityTablePanel extends JPanel {
     return "EntityTablePanel: " + getTableModel().getEntityID();
   }
 
-  /**
-   * Adds the given buttons to the south toolbar, in the order they are recieved,
-   * a null value results in a separator
-   * @param buttons the buttons to add to the south toolbar
-   */
-  public void addSouthPanelButtons(final AbstractButton... buttons) {
-    if (buttons == null || buttons.length == 0)
-      return;
-    if (southToolBar == null)
-      throw new RuntimeException("No south panel");
+  public void initializeSouthPanelToolBar(final ControlSet controls) {
+    if (southPanel == null)
+      throw new RuntimeException("No south panel available for toolbar");
 
-    for (final AbstractButton button : buttons) {
-      if (button != null)
-        southToolBar.add(button);
-      else
-        southToolBar.addSeparator();
-    }
+    final JToolBar southToolBar = ControlProvider.createToolbar(controls, JToolBar.HORIZONTAL);
+    for (final Component component : southToolBar.getComponents())
+      component.setPreferredSize(new Dimension(20, 20));
+    southToolBar.setFocusable(false);
+    southToolBar.setFloatable(false);
+    southToolBar.setRollover(true);
+    southPanel.add(southToolBar, BorderLayout.EAST);
   }
 
   /**
@@ -433,32 +427,78 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Initializes the south panel
-   * @param allowQueryConfiguration true if the underlying query is configurable
-   * @return the south panel
+   * @return a control for printing the table
    */
-  protected JPanel initializeSouthPanel(final boolean allowQueryConfiguration) {
-    southToolBar = new JToolBar(JToolBar.HORIZONTAL);
-    southToolBar.setFocusable(false);
-    southToolBar.setFloatable(false);
-    southToolBar.setRollover(true);
-    final JPanel panel = new JPanel(new BorderLayout());
-    lblStatusMessage = new JLabel("", JLabel.CENTER);
-    if (allowQueryConfiguration) {
-      lblStatusMessage.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseReleased(MouseEvent event) {
-          if (event.getClickCount() == 2) {
-            configureQuery();
-          }
-        }
-      });
-    }
-    lblStatusMessage.setFont(new Font(lblStatusMessage.getFont().getName(), Font.PLAIN, 12));
-    panel.add(lblStatusMessage, BorderLayout.CENTER);
-    panel.add(southToolBar, BorderLayout.EAST);
+  public Control getPrintControl() {
+    final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
+    return ControlFactory.methodControl(this, "printTable", printCaption, null,
+            printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
+  }
 
-    return panel;
+  /**
+   * Prints the table if one is available
+   */
+  public void printTable() {
+    try {
+      getJTable().print();
+    }
+    catch (PrinterException pr) {
+      throw new RuntimeException(pr);
+    }
+  }
+
+  public Control getToggleSummaryPanelControl() {
+    final ToggleBeanPropertyLink toggle = ControlFactory.toggleControl(this, "summaryPanelVisible", null,
+            evtSummaryPanelVisibilityChanged);
+    toggle.setIcon(Images.loadImage("Sum16.gif"));
+    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
+
+    return toggle;
+  }
+
+  /**
+   * Initializes the button used to toggle the search panel state (hidden, visible and advanced)
+   * @return a search panel toggle button
+   */
+  public Control getToggleSearchPanelControl() {
+    if (!getTableModel().isQueryConfigurationAllowed())
+      return null;
+
+    final Control ret = new Control() {
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        toggleSearchPanel();
+      }
+    };
+    ret.setIcon(Images.loadImage("Filter16.gif"));
+    ret.setDescription(FrameworkMessages.get(FrameworkMessages.SEARCH));
+
+    return ret;
+  }
+
+  public Control getClearSelectionControl() {
+    final Control clearSelection = ControlFactory.methodControl(getTableModel(), "clearSelection", null,
+            getTableModel().stSelectionEmpty.getReversedState(), null, -1, null,
+            Images.loadImage("ClearSelection16.gif"));
+    clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
+
+    return clearSelection;
+  }
+
+  public Control getMoveSelectionDownControl() {
+    final Control selectionDown = ControlFactory.methodControl(getTableModel(), "moveSelectionDown",
+            Images.loadImage("Down16.gif"));
+    selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
+
+    return selectionDown;
+  }
+
+  public Control getMoveSelectionUpControl() {
+    final Control selectionUp = ControlFactory.methodControl(getTableModel(), "moveSelectionUp",
+            Images.loadImage("Up16.gif"));
+    selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
+
+    return selectionUp;
   }
 
   /**
@@ -493,7 +533,7 @@ public class EntityTablePanel extends JPanel {
       if (getTableModel().isQueryConfigurationAllowed()) {
         final ControlSet searchControls = ((EntityTableSearchPanel)searchPanel).getControls();
         searchControls.addAt(ControlFactory.toggleControl(this, "searchPanelVisible",
-                FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibleChanged), 0);
+                FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged), 0);
         popupControls.addSeparatorAt(0);
         popupControls.addAt(getClearControl(), 0);
         popupControls.addAt(getRefreshControl(), 0);
@@ -520,21 +560,43 @@ public class EntityTablePanel extends JPanel {
       });
       summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
       summaryScrollPane.setVisible(false);
-      summaryPanelBase = new JPanel(new BorderLayout());
-      base.add(summaryPanelBase, BorderLayout.SOUTH);
+      summaryBasePanel = new JPanel(new BorderLayout());
+      base.add(summaryBasePanel, BorderLayout.SOUTH);
     }
 
-    final JPanel southPanel = initializeSouthPanel(getTableModel().isQueryConfigurationAllowed());
-    if (southPanel != null) {
-      final JPanel southBase = new JPanel(new BorderLayout(5,5));
-      southBase.setBorder(BorderFactory.createEtchedBorder());
-      final JToolBar refreshButton = getRefreshToolbar();
-      if (refreshButton != null)
-        southBase.add(refreshButton, BorderLayout.WEST);
-      southBase.add(southPanel, BorderLayout.CENTER);
-      add(southBase, BorderLayout.SOUTH);
-    }
+    southPanel = initializeSouthPanel();
+    if (southPanel != null)
+      add(southPanel, BorderLayout.SOUTH);
+
     setSearchPanelVisible((Boolean) Configuration.getValue(Configuration.INITIAL_SEARCH_PANEL_STATE));
+  }
+
+  /**
+   * Initializes the south panel
+   * @return the south panel
+   */
+  protected JPanel initializeSouthPanel() {
+    statusMessageLabel = new JLabel("", JLabel.CENTER);
+    if (getTableModel().isQueryConfigurationAllowed()) {
+      statusMessageLabel.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseReleased(MouseEvent event) {
+          if (event.getClickCount() == 2) {
+            configureQuery();
+          }
+        }
+      });
+    }
+    statusMessageLabel.setFont(new Font(statusMessageLabel.getFont().getName(), Font.PLAIN, 12));
+
+    final JPanel panel = new JPanel(new BorderLayout());
+    panel.add(statusMessageLabel, BorderLayout.CENTER);
+    panel.setBorder(BorderFactory.createEtchedBorder());
+    refreshToolBar = initializeRefreshToolbar();
+    if (refreshToolBar != null)
+      panel.add(refreshToolBar, BorderLayout.WEST);
+
+    return panel;
   }
 
   /**
@@ -623,18 +685,7 @@ public class EntityTablePanel extends JPanel {
    * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
    */
   protected JPanel initializeSimpleSearchPanel() {
-    final List<Property> searchableProperties = new ArrayList<Property>();
-    final String[] defaultSearchProperties = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
-    if (defaultSearchProperties != null) {
-      for (final String propertyID : defaultSearchProperties)
-        searchableProperties.add(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID));
-    }
-    else {
-      for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
-        if (property.getPropertyType() == Type.STRING && !property.isHidden())
-          searchableProperties.add(property);
-      }
-    }
+    final List<Property> searchableProperties = getSearchProperties();
     if (searchableProperties.size() == 0)
       throw new RuntimeException("Unable to create a simple search panel for entity: "
               + getTableModel().getEntityID() + ", no STRING based properties found");
@@ -642,27 +693,7 @@ public class EntityTablePanel extends JPanel {
     final JTextField searchField = new JTextField();
     final Action action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent event) {
-        final CriteriaSet.Conjunction conjunction = getTableModel().getSearchModel().getSearchCriteriaConjunction();
-        try {
-          getTableModel().getSearchModel().clearPropertySearchModels();
-          getTableModel().getSearchModel().setSearchConjunction(CriteriaSet.Conjunction.OR);
-          if (searchField.getText().length() > 0) {
-            final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-            final String searchText = wildcard + searchField.getText() + wildcard;
-            for (final Property searchProperty : searchableProperties) {
-              final PropertySearchModel searchModel = getTableModel().getSearchModel().getPropertySearchModel(searchProperty.getPropertyID());
-              searchModel.setCaseSensitive(false);
-              searchModel.setUpperBound(searchText);
-              searchModel.setSearchType(SearchType.LIKE);
-              searchModel.setSearchEnabled(true);
-            }
-          }
-
-          getTableModel().refresh();
-        }
-        finally {
-          getTableModel().getSearchModel().setSearchConjunction(conjunction);
-        }
+        performSimpleSearch(searchField.getText(), searchableProperties);
       }
     };
 
@@ -700,7 +731,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the refresh toolbar
    */
-  protected JToolBar getRefreshToolbar() {
+  protected JToolBar initializeRefreshToolbar() {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
     final Control refresh = ControlFactory.methodControl(getTableModel(), "refresh", null,
@@ -717,14 +748,14 @@ public class EntityTablePanel extends JPanel {
     button.setPreferredSize(new Dimension(20,20));
     button.setFocusable(false);
 
-    searchRefreshToolBar = new JToolBar(JToolBar.HORIZONTAL);
-    searchRefreshToolBar.setFocusable(false);
-    searchRefreshToolBar.setFloatable(false);
-    searchRefreshToolBar.setRollover(true);
+    final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+    toolBar.setFocusable(false);
+    toolBar.setFloatable(false);
+    toolBar.setRollover(true);
 
-    searchRefreshToolBar.add(button);
+    toolBar.add(button);
 
-    return searchRefreshToolBar;
+    return toolBar;
   }
 
   /**
@@ -792,6 +823,48 @@ public class EntityTablePanel extends JPanel {
     return table;
   }
 
+  private void performSimpleSearch(final String searchText, final List<Property> searchProperties) {
+    final EntityTableSearchModel tableSearchModel = getTableModel().getSearchModel();
+    final CriteriaSet.Conjunction conjunction = tableSearchModel.getSearchCriteriaConjunction();
+    try {
+      tableSearchModel.clearPropertySearchModels();
+      tableSearchModel.setSearchConjunction(CriteriaSet.Conjunction.OR);
+      if (searchText.length() > 0) {
+        final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+        final String searchTextWithWildcards = wildcard + searchText + wildcard;
+        for (final Property searchProperty : searchProperties) {
+          final PropertySearchModel propertySearchModel = tableSearchModel.getPropertySearchModel(searchProperty.getPropertyID());
+          propertySearchModel.setCaseSensitive(false);
+          propertySearchModel.setUpperBound(searchTextWithWildcards);
+          propertySearchModel.setSearchType(SearchType.LIKE);
+          propertySearchModel.setSearchEnabled(true);
+        }
+      }
+
+      getTableModel().refresh();
+    }
+    finally {
+      tableSearchModel.setSearchConjunction(conjunction);
+    }
+  }
+
+  private List<Property> getSearchProperties() {
+    final List<Property> searchableProperties = new ArrayList<Property>();
+    final String[] defaultSearchPropertyIDs = EntityRepository.getEntitySearchPropertyIDs(getTableModel().getEntityID());
+    if (defaultSearchPropertyIDs != null) {
+      for (final String propertyID : defaultSearchPropertyIDs)
+        searchableProperties.add(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID));
+    }
+    else {
+      for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
+        if (property.getPropertyType() == Type.STRING && !property.isHidden())
+          searchableProperties.add(property);
+      }
+    }
+
+    return searchableProperties;
+  }
+
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             getTableModel().stSelectionEmpty.getReversedState()) {
@@ -856,10 +929,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void updateStatusMessage() {
-    if (lblStatusMessage != null) {
+    if (statusMessageLabel != null) {
       final String status = getTableModel().getStatusMessage();
-      lblStatusMessage.setText(status);
-      lblStatusMessage.setToolTipText(status);
+      statusMessageLabel.setText(status);
+      statusMessageLabel.setToolTipText(status);
     }
   }
 

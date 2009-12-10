@@ -133,7 +133,7 @@ public class Configuration {
   public static final String ALL_PANELS_ACTIVE = "jminor.client.allPanelsActive";
 
   /**
-   * Indicates whether entity panels should by default by layed out in a compact manner
+   * Indicates whether entity panels containing detail panels should by default by layed out in a compact manner
    * Value type: Boolean
    * Default value: false
    */
