@@ -49,38 +49,36 @@ public class IntField extends TextFieldPlus {
   /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
-    return new IntFieldDocument();
-  }
+    return new PlainDocument() {
+      /** {@inheritDoc} */
+      @Override
+      public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
+        if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength())
+          return;
+        if (string == null || string.equals("")) {
+          super.insertString(offset, string, a);
+          return;
+        }
+        final String text = getText(0, getLength());
+        int value = 0;
+        if (text != null && !text.equals("") && !text.equals("-"))
+          value = Integer.parseInt(text);
+        boolean valueOk = false;
+        char c = string.charAt(0);
+        if (offset == 0 && c == '-')
+          valueOk = value >= 0;
+        else if (Character.isDigit(c))
+          valueOk = !((offset == 0) && (value < 0));
+        // Range check
+        if (valueOk) {
+          StringBuilder sb = new StringBuilder(text);
+          sb.insert(offset, string);
+          valueOk = isWithinRange(Util.getLong(sb.toString()));
+        }
 
-  class IntFieldDocument extends PlainDocument {
-    /** {@inheritDoc} */
-    @Override
-    public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-      if (getMaxLength() >= 0 && getLength() >= getMaxLength())
-        return;
-      if (string == null || string.equals("")) {
-        super.insertString(offset, string, a);
-        return;
+        if (valueOk)
+          super.insertString(offset, string, a);
       }
-      final String text = getText(0, getLength());
-      int value = 0;
-      if (text != null && !text.equals("") && !text.equals("-"))
-        value = Integer.parseInt(text);
-      boolean valueOk = false;
-      char c = string.charAt(0);
-      if (offset == 0 && c == '-')
-        valueOk = value >= 0;
-      else if (Character.isDigit(c))
-        valueOk = !((offset == 0) && (value < 0));
-      // Range check
-      if (valueOk) {
-        StringBuilder sb = new StringBuilder(text);
-        sb.insert(offset, string);
-        valueOk = isWithinRange(Util.getLong(sb.toString()));
-      }
-
-      if (valueOk)
-        super.insertString(offset, string, a);
-    }
+    };
   }
 }

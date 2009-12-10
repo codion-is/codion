@@ -262,8 +262,11 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final LinkType linkType,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    return new TextInputPanel(createTextField(property, linkType, null, immediateUpdate), property.getCaption(),
-            null, buttonFocusable);
+    final TextInputPanel ret = new TextInputPanel(createTextField(property, linkType, null, immediateUpdate),
+            property.getCaption(), null, buttonFocusable);
+    ret.setMaxLength(property.getMaxLength());
+
+    return ret;
   }
 
   /**

@@ -954,3 +954,6 @@
   EntityTablePanel.addSouthPanelButtons() removed, initializeSouthPanelToolbar() added
   EntityPanel.getSouthPanelButtons() renamed to getSouthPanelControls(), result no longer includes update button
   EntityPanel.getUpdateButton() removed
+  TextInputPanel.maxLength field added
+  EntityEditPanel.createTextInputPanel() now uses the above
+  TextFieldPlus, fixed bug, getMaxLength() did not prevent insert in case the content was pasted into the field

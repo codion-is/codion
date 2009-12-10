@@ -73,54 +73,52 @@ public class DoubleField extends IntField {
   /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
-    return new DoubleFieldDocument();
-  }
-
-  class DoubleFieldDocument extends PlainDocument {
-    @Override
-    public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
-      if (getMaxLength() >= 0 && getLength() >= getMaxLength())
-        return;
-      if (string == null || string.equals("")) {
-        super.insertString(offset, string, a);
-        return;
-      }
-      if (getDecimalSymbol().equals(POINT)) {
-        if (string.contains(COMMA))
-          string = string.replace(COMMA, POINT);
-      }
-      else if (string.contains(POINT))
-        string = string.replace(POINT, COMMA);
-
-      //convert "." or "," to "0." before proceeding
-      if (getLength() == 0 && (isDecimalSymbol(string)))
-        string = "0" + getDecimalSymbol();
-
-      final String text = getText(0, getLength());
-      double value = 0;
-      if (text != null && !text.equals("") && !text.equals("-"))
-        value = Util.getDouble(text);
-      boolean valueOk = false;
-      char c = string.charAt(0);
-      if (offset == 0 && c == '-')
-        valueOk = value >= 0;
-      else if (Character.isDigit(c))
-        valueOk = !((offset == 0) && (value < 0));
-      else if (isDecimalSymbol(c) && offset != 0) {
-        if (text != null && (text.contains(POINT) || text.contains(COMMA))) //not allow multiple decimal points
+    return new PlainDocument() {
+      @Override
+      public void insertString(int offset, String string, AttributeSet a) throws BadLocationException {
+        if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength())
           return;
-        valueOk = true;
-        string = getDecimalSymbol();
-      }
-      // Range check
-      if (valueOk) {
-        StringBuilder sb = new StringBuilder(text);
-        sb.insert(offset, string);
-        valueOk = isWithinRange(Util.getDouble(sb.toString()));
-      }
+        if (string == null || string.equals("")) {
+          super.insertString(offset, string, a);
+          return;
+        }
+        if (getDecimalSymbol().equals(POINT)) {
+          if (string.contains(COMMA))
+            string = string.replace(COMMA, POINT);
+        }
+        else if (string.contains(POINT))
+          string = string.replace(POINT, COMMA);
 
-      if (valueOk)
-        super.insertString(offset, string, a);
-    }
+        //convert "." or "," to "0." before proceeding
+        if (getLength() == 0 && (isDecimalSymbol(string)))
+          string = "0" + getDecimalSymbol();
+
+        final String text = getText(0, getLength());
+        double value = 0;
+        if (text != null && !text.equals("") && !text.equals("-"))
+          value = Util.getDouble(text);
+        boolean valueOk = false;
+        char c = string.charAt(0);
+        if (offset == 0 && c == '-')
+          valueOk = value >= 0;
+        else if (Character.isDigit(c))
+          valueOk = !((offset == 0) && (value < 0));
+        else if (isDecimalSymbol(c) && offset != 0) {
+          if (text != null && (text.contains(POINT) || text.contains(COMMA))) //not allow multiple decimal points
+            return;
+          valueOk = true;
+          string = getDecimalSymbol();
+        }
+        // Range check
+        if (valueOk) {
+          final StringBuilder sb = new StringBuilder(text);
+          sb.insert(offset, string);
+          valueOk = isWithinRange(Util.getDouble(sb.toString()));
+        }
+
+        if (valueOk)
+          super.insertString(offset, string, a);
+      }
+    };
   }
 }

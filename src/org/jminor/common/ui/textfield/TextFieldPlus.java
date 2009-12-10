@@ -16,7 +16,7 @@ import javax.swing.text.PlainDocument;
 public class TextFieldPlus extends JTextField {
 
   private boolean upperCase = false;
-  private int maxLength = -1;
+  private int maxLength = 0;
 
   private double min = Double.NEGATIVE_INFINITY;
   private double max = Double.POSITIVE_INFINITY;
@@ -96,16 +96,14 @@ public class TextFieldPlus extends JTextField {
   /** {@inheritDoc} */
   @Override
   protected Document createDefaultModel() {
-    return new DefaultDocument();
-  }
+    return new PlainDocument() {
+      @Override
+      public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
+        if (getMaxLength() > 0 && getLength() + string.length() > getMaxLength())
+          return;
 
-  private class DefaultDocument extends PlainDocument {
-    @Override
-    public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
-      if (getMaxLength() >= 0 && getLength() >= getMaxLength())
-        return;
-
-      super.insertString(offset, upperCase ? string.toUpperCase() : string, a);
-    }
+        super.insertString(offset, upperCase ? string.toUpperCase() : string, a);
+      }
+    };
   }
 }

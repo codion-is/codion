@@ -11,7 +11,11 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.PlainDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -25,6 +29,7 @@ public class TextInputPanel extends JPanel {
   private final JTextComponent textComponent;
   private final String dialogTitle;
   private final Dimension txtAreaSize;
+  private int maxLength = 0;
 
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle) {
     this(textComponent, dialogTitle, null);
@@ -41,6 +46,18 @@ public class TextInputPanel extends JPanel {
     this.textComponent = textComponent;
     this.txtAreaSize = txtAreaSize;
     initializeUI(textComponent, createButton(textComponent, buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE));
+  }
+
+  /**
+   * Sets the maximum length of the string allowed in the text area
+   * @param maxLength the maximum length
+   */
+  public void setMaxLength(final int maxLength) {
+    this.maxLength = maxLength;
+  }
+
+  public int getMaxLength() {
+    return maxLength;
   }
 
   public void setText(final String text) {
@@ -65,7 +82,21 @@ public class TextInputPanel extends JPanel {
                                final Dimension buttonSize) {
     final AbstractAction action = new AbstractAction("...") {
       public void actionPerformed(final ActionEvent e) {
-        final JTextArea txtArea = new JTextArea(textComponent.getText());
+        final JTextArea txtArea = new JTextArea(textComponent.getText()) {
+          /** {@inheritDoc} */
+          @Override
+          protected Document createDefaultModel() {
+            return new PlainDocument() {
+              @Override
+              public void insertString(final int offset, final String string, final AttributeSet a) throws BadLocationException {
+                if (getMaxLength() > 0 && getLength() + (string != null ? string.length() : 0) > getMaxLength())
+                  return;
+
+                super.insertString(offset, string, a);
+              }
+            };
+          }
+        };
         txtArea.setPreferredSize(txtAreaSize == null ? UiUtil.getScreenSizeRatio(0.3) : txtAreaSize);
         txtArea.setLineWrap(true);
         txtArea.setWrapStyleWord(true);
