@@ -309,7 +309,7 @@ public class EntityUiUtil {
                                                           final EntityEditModel editModel,
                                                           final Criteria additionalSearchCriteria,
                                                           final String... searchPropertyIDs) {
-    if (searchPropertyIDs.length == 0)
+    if (searchPropertyIDs == null || searchPropertyIDs.length == 0)
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
