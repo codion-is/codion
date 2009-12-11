@@ -222,7 +222,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       log.debug("Exception while saving preferences", e);
     }
     try {
-      savePreferences();
       applicationModel.getDbProvider().disconnect();
     }
     catch (Exception e) {
