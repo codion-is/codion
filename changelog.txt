@@ -958,3 +958,4 @@
   EntityEditPanel.createTextInputPanel() now uses the above
   TextFieldPlus, fixed bug, getMaxLength() did not prevent insert in case the content was pasted into the field
   EntityApplicationPanel.getSupportModelControlSet() renamed to getSupportTableControlSet()
+  EntityApplicationPanel.showInitializationDialog() renamed to showStartupDialog()

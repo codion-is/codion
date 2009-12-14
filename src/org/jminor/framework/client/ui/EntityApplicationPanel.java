@@ -152,7 +152,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :
             Images.loadImage("jminor_logo32.gif");
     frame.setIconImage(applicationIcon.getImage());
-    JDialog initializationDialog = null;
+    JDialog startupDialog = null;
     boolean retry = true;
     while (retry) {
       try {
@@ -160,7 +160,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
                 new User("", "");
 
         final long now = System.currentTimeMillis();
-        initializationDialog = showInitializationDialog(frame, applicationIcon, frameCaption);
+        startupDialog = showStartupDialog(frame, applicationIcon, frameCaption);
 
         initialize(user);
 
@@ -186,8 +186,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           System.exit(0);
       }
       finally {
-        if (initializationDialog != null)
-          initializationDialog.dispose();
+        if (startupDialog != null)
+          startupDialog.dispose();
       }
     }
   }
@@ -579,8 +579,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     return null;
   }
 
-  protected JDialog showInitializationDialog(final JFrame owner, final Icon icon, final String initializationMessage) {
-    final String message = initializationMessage == null ? "Initializing Application" : initializationMessage;
+  protected JDialog showStartupDialog(final JFrame owner, final Icon icon, final String startupMessage) {
+    final String message = startupMessage == null ? "Initializing Application" : startupMessage;
     final JDialog initializationDialog = new JDialog(owner, message, false);
     initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
