@@ -260,9 +260,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     menuControlSets.add(getFileControlSet());
     menuControlSets.add(getViewControlSet());
     menuControlSets.add(getToolsControlSet());
-    final ControlSet supportModelControlSet = getSupportModelControlSet();
-    if (supportModelControlSet != null)
-      menuControlSets.add(supportModelControlSet);
+    final ControlSet supportTableControlSet = getSupportTableControlSet();
+    if (supportTableControlSet != null)
+      menuControlSets.add(supportTableControlSet);
     final List<ControlSet> additionalMenus = getAdditionalMenuControlSet();
     if (additionalMenus != null) {
       for (final ControlSet set : additionalMenus)
@@ -458,13 +458,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return a List of ControlSet objects which are to be added to the main menu bar
    */
   protected List<ControlSet> getAdditionalMenuControlSet() {
-    return new ArrayList<ControlSet>();
+    return new ArrayList<ControlSet>(0);
   }
 
   /**
    * @return the ControlSet on which the Support Tables menu item is based on
    */
-  protected ControlSet getSupportModelControlSet() {
+  protected ControlSet getSupportTableControlSet() {
     final List<EntityPanelProvider> supportDetailPanelProviders = getSupportEntityPanelProviders();
     if (supportDetailPanelProviders == null || supportDetailPanelProviders.size() == 0)
       return null;
