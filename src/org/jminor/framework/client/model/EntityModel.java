@@ -477,7 +477,7 @@ public class EntityModel implements Refreshable {
   /**
    * Refreshes the EntityComboBoxModels based on the inserted entity type in the detail models
    * and sets the value of the master property to the entity with the primary key found
-   * at index 0 in <code>primaryKeys</code>
+   * at index 0 in <code>insertedPrimaryKeys</code>
    * @param insertedPrimaryKeys the primary keys of the inserted entities
    */
   protected void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
