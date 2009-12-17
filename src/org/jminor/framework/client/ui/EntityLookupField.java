@@ -179,8 +179,17 @@ public class EntityLookupField extends JTextField {
         else {
           if (getModel().searchStringRepresentsSelected() && getEnterAction() != null)
             getEnterAction().actionPerformed(new ActionEvent(EntityLookupField.this, 0, "actionPerformed"));
-          else if (!getModel().searchStringRepresentsSelected())
-            selectEntities(getModel().performQuery());
+          else if (!getModel().searchStringRepresentsSelected()) {
+            List<Entity> queryResult;
+            try {
+              UiUtil.setWaitCursor(true, EntityLookupField.this);
+              queryResult = getModel().performQuery();
+            }
+            finally {
+              UiUtil.setWaitCursor(false, EntityLookupField.this);
+            }
+            selectEntities(queryResult);
+          }
         }
       }
     };

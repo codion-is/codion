@@ -962,3 +962,4 @@
   EntityApplicationPanel.evtApplicationStarted event field added
   StateGroup, fixed ConcurrentModification error by iterating array in updateAccordingToState()
   DbConnection.toString() added, for logging
+  EntityLookupField now uses wait cursor while performing the query
