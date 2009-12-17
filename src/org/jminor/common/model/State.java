@@ -10,7 +10,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * A class encapsulating a simple boolean state, providing a change event
@@ -180,10 +179,10 @@ public class State {
 
     private void updateAccordingToState(final State state) {
       synchronized (members) {
-        for (final ListIterator<WeakReference<State>> iterator = members.listIterator(); iterator.hasNext();) {
-          final State referredState = iterator.next().get();
+        for (final WeakReference reference : members.toArray(new WeakReference[members.size()])) {
+          final State referredState = (State) reference.get();
           if (referredState == null) //remove this dead weak reference
-            iterator.remove();
+            members.remove(reference);
           else if (state.isActive() && referredState != state)
             referredState.setActive(false);
         }

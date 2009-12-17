@@ -959,3 +959,6 @@
   TextFieldPlus, fixed bug, getMaxLength() did not prevent insert in case the content was pasted into the field
   EntityApplicationPanel.getSupportModelControlSet() renamed to getSupportTableControlSet()
   EntityApplicationPanel.showInitializationDialog() renamed to showStartupDialog()
+  EntityApplicationPanel.evtApplicationStarted event field added
+  StateGroup, fixed ConcurrentModification error by iterating array in updateAccordingToState()
+  DbConnection.toString() added, for logging

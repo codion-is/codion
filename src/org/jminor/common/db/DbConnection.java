@@ -86,6 +86,11 @@ public class DbConnection {
     revalidate();
   }
 
+  @Override
+  public String toString() {
+    return "DbConnection: " + getUser().getUsername();
+  }
+
   /**
    * @return the connection user
    */

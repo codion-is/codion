@@ -62,6 +62,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
+  /**
+   * Fired when the application has been successfully started
+   */
+  protected final Event evtApplicationStarted = new Event();
+
   private final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
 
   private EntityApplicationModel applicationModel;
@@ -171,6 +176,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
         retry = false;//successful startup
         saveDefaultUser(user);
+        evtApplicationStarted.fire();
       }
       catch (UserCancelException uce) {
         System.exit(0);
