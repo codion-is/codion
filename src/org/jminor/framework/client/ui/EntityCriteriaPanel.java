@@ -74,9 +74,9 @@ public class EntityCriteriaPanel extends JPanel {
   }
 
   private JList initializePropertyList(final EntityTableSearchModel entityModel, final JPanel editorPanel) {
-    final List<PropertySearchModel> searchCriterias = getSortedCriterias(entityModel);
-    final JList propertyList = new JList(new Vector<AbstractSearchModel>(searchCriterias));
-    for (final AbstractSearchModel model : searchCriterias) {
+    final List<PropertySearchModel> searchCriteria = getSortedCriteria(entityModel);
+    final JList propertyList = new JList(new Vector<AbstractSearchModel>(searchCriteria));
+    for (final AbstractSearchModel model : searchCriteria) {
       model.evtSearchStateChanged.addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           propertyList.repaint();
@@ -115,9 +115,9 @@ public class EntityCriteriaPanel extends JPanel {
     return propertyList;
   }
 
-  private List<PropertySearchModel> getSortedCriterias(final EntityTableSearchModel entityModel) {
-    final List<PropertySearchModel> searchCriterias = entityModel.getPropertySearchModels();
-    Collections.sort(searchCriterias, new Comparator<AbstractSearchModel>() {
+  private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel entityModel) {
+    final List<PropertySearchModel> searchCriteria = entityModel.getPropertySearchModels();
+    Collections.sort(searchCriteria, new Comparator<AbstractSearchModel>() {
       public int compare(final AbstractSearchModel searchModelOne, final AbstractSearchModel searchModelTwo) {
         final Property propertyOne = searchModelOne.getProperty();
         final Property propertyTwo = searchModelTwo.getProperty();
@@ -128,6 +128,6 @@ public class EntityCriteriaPanel extends JPanel {
       }
     });
 
-    return searchCriterias;
+    return searchCriteria;
   }
 }

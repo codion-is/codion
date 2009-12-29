@@ -66,10 +66,10 @@ public class Control extends AbstractAction {
   }
 
   /**
-   * @param desc the description string
+   * @param description the description string
    */
-  public void setDescription(final String desc) {
-    this.putValue(Action.SHORT_DESCRIPTION, desc);
+  public void setDescription(final String description) {
+    this.putValue(Action.SHORT_DESCRIPTION, description);
   }
 
   /**

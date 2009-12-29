@@ -261,7 +261,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return localRegistry;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] arguments) {
     try {
       System.setSecurityManager(new RMISecurityManager());
       new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance(), initializeRegistry()),

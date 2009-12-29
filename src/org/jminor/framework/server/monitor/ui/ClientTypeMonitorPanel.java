@@ -31,7 +31,7 @@ public class ClientTypeMonitorPanel extends JPanel {
 
   private final ClientTypeMonitor model;
 
-  private JComboBox cmbMaintainanceCheck;
+  private JComboBox cmbMaintenanceCheck;
 
   public ClientTypeMonitorPanel(final ClientTypeMonitor model) throws RemoteException {
     this.model = model;
@@ -53,12 +53,12 @@ public class ClientTypeMonitorPanel extends JPanel {
   }
 
   private JComponent initCheckIntervalComponent() throws RemoteException {
-    cmbMaintainanceCheck = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
-    cmbMaintainanceCheck.setSelectedItem(model.getServer().getCheckMaintenanceInterval());
-    cmbMaintainanceCheck.addItemListener(new ItemListener() {
+    cmbMaintenanceCheck = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
+    cmbMaintenanceCheck.setSelectedItem(model.getServer().getCheckMaintenanceInterval());
+    cmbMaintenanceCheck.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         try {
-          model.getServer().setCheckMaintenanceInterval((Integer) cmbMaintainanceCheck.getSelectedItem());
+          model.getServer().setCheckMaintenanceInterval((Integer) cmbMaintenanceCheck.getSelectedItem());
         }
         catch (RemoteException ex) {
           handleException(ex);
@@ -66,7 +66,7 @@ public class ClientTypeMonitorPanel extends JPanel {
       }
     });
 
-    return cmbMaintainanceCheck;
+    return cmbMaintenanceCheck;
   }
 
   private void handleException(final Exception exception) {

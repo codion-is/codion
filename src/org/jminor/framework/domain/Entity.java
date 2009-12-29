@@ -197,10 +197,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
     if (validateType)
       validateType(property, value);
 
-    final boolean isPrimarKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization = isPrimarKeyProperty ? !primaryKey.hasValue(property.getPropertyID())
+    final boolean isPrimaryKeyProperty = property instanceof Property.PrimaryKeyProperty;
+    final boolean initialization = isPrimaryKeyProperty ? !primaryKey.hasValue(property.getPropertyID())
             : !values.containsKey(property.getPropertyID());
-    return doSetValue(property, value, isPrimarKeyProperty, initialization, true);
+    return doSetValue(property, value, isPrimaryKeyProperty, initialization, true);
   }
 
   /**
@@ -772,7 +772,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
-   * Performes a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
+   * Performs a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
    * consistent with the data type of this property, returns the value.
    * For foreign key properties this method also checks if the value entityID fits the key.
    * @param value the value to validate

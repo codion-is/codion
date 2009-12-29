@@ -43,9 +43,9 @@ public class CriteriaSet implements Criteria, Serializable {
   private final Conjunction conjunction;
 
   /**
-   * The criterias in this set
+   * The criterion in this set
    */
-  private final List<Criteria> criterias = new ArrayList<Criteria>();
+  private final List<Criteria> criterionList = new ArrayList<Criteria>();
 
   /**
    * Initializes a new CriteriaSet instance
@@ -58,12 +58,12 @@ public class CriteriaSet implements Criteria, Serializable {
   /**
    * Initializes a new CriteriaSet instance
    * @param conjunction the conjunction to use
-   * @param criterias the Criteria objects to be included in this set
+   * @param criteria the Criteria objects to be included in this set
    */
-  public CriteriaSet(final Conjunction conjunction, final Criteria... criterias) {
+  public CriteriaSet(final Conjunction conjunction, final Criteria... criteria) {
     this.conjunction = conjunction;
-    for (final Criteria criteria : criterias)
-      addCriteria(criteria);
+    for (final Criteria criterion : criteria)
+      addCriteria(criterion);
   }
 
   /**
@@ -72,29 +72,29 @@ public class CriteriaSet implements Criteria, Serializable {
    */
   public void addCriteria(final Criteria criteria) {
     if (criteria != null)
-      this.criterias.add(criteria);
+      this.criterionList.add(criteria);
   }
 
   /**
    * @return the number of criteria in this set
    */
   public int getCriteriaCount() {
-    return criterias.size();
+    return criterionList.size();
   }
 
   /** {@inheritDoc} */
   public String asString(final Database database) {
-    if (criterias.size() == 0)
+    if (criterionList.size() == 0)
       return "";
 
-    final StringBuilder criteriaString = new StringBuilder(criterias.size() > 1 ? "(" : "");
+    final StringBuilder criteriaString = new StringBuilder(criterionList.size() > 1 ? "(" : "");
     int i = 0;
-    for (final Criteria criteria : criterias) {
+    for (final Criteria criteria : criterionList) {
       criteriaString.append(criteria.asString(database));
-      if (i++ < criterias.size()-1)
+      if (i++ < criterionList.size()-1)
         criteriaString.append(conjunction.toString());
     }
 
-    return criteriaString.append(criterias.size() > 1 ? ")" : "").toString();
+    return criteriaString.append(criterionList.size() > 1 ? ")" : "").toString();
   }
 }

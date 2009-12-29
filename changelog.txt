@@ -967,3 +967,4 @@
   EntityEditModel.validate() overloaded with entity parameter
   EntityPropertyLinkTest seperated into multiple test classes
   DoubleTextPropertyLinkTest, added a simple validation test
+  Spelling corrected throughout

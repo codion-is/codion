@@ -48,7 +48,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   private final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
 
   /**
-   * True if this criteria should be case sensitive, only applies to criterias based on string properties
+   * True if this criteria should be case sensitive, only applies to criteria based on string properties
    */
   private boolean caseSensitive = true;
 
@@ -102,7 +102,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /**
-   * Sets whether this criteria should be case sensitive, only applies to criterias based on string properties
+   * Sets whether this criteria should be case sensitive, only applies to criteria based on string properties
    * @param value if true then this criteria is case sensitive, false otherwise
    * @return this PropertyCriteria instance
    */
@@ -112,7 +112,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /**
-   * @return true if this criteria is case sensitive (only applies to criterias based on string properties)
+   * @return true if this criteria is case sensitive (only applies to criteria based on string properties)
    */
   public boolean isCaseSensitive() {
     return caseSensitive;
@@ -120,7 +120,7 @@ public class PropertyCriteria implements Criteria, Serializable {
 
   private String getForeignKeyCriteriaString(final Database database) {
     if (values.size() > 1)
-      return getMultiColumnForeignKeyCriteriaString(database);
+      return getMultipleColumnForeignKeyCriteriaString(database);
 
     final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
     final Entity.Key entityKey = (Entity.Key) values.get(0);
@@ -134,7 +134,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     return set.asString(database);
   }
 
-  private String getMultiColumnForeignKeyCriteriaString(final Database database) {
+  private String getMultipleColumnForeignKeyCriteriaString(final Database database) {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) property).getReferencedEntityID());
     if (primaryKeyProperties.size() > 1) {

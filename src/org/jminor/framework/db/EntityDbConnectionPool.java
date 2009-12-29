@@ -193,7 +193,7 @@ public class EntityDbConnectionPool {
 
   /**
    * @param since the time
-   * @return stats collected since <code>since</code>, the results are not garanteed to be ordered
+   * @return stats collected since <code>since</code>, the results are not guaranteed to be ordered
    */
   public List<ConnectionPoolState> getPoolStatistics(final long since) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();

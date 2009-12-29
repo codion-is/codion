@@ -46,7 +46,7 @@ public class EntityReportUtil {
   /**
    * Takes a path to a JasperReport file and returns an initialized JasperPrint object
    * @param reportPath the path to the report to fill
-   * @param reportParameters the report paramaters
+   * @param reportParameters the report parameters
    * @param dataSource the JRDataSource to use
    * @return an initialized JasperPrint object
    * @throws JRException in case of a report exception

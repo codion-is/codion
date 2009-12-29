@@ -76,11 +76,11 @@ public class ConnectionPoolInstanceMonitor {
     return poolStats;
   }
 
-  public int getPooledConnectionTimout() throws RemoteException {
+  public int getPooledConnectionTimeout() throws RemoteException {
     return server.getConnectionPoolSettings(user).getPooledConnectionTimeout()/1000;
   }
 
-  public void setPooledConnectionTimout(final int value) throws RemoteException {
+  public void setPooledConnectionTimeout(final int value) throws RemoteException {
     final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
     settings.setPooledConnectionTimeout(value*1000);
     server.setConnectionPoolSettings(settings);

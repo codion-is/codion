@@ -32,7 +32,7 @@ public class EntityLookupModelTest extends TestCase {
     assertEquals("Search string should not have changed", lookupModel.getSearchString(), "joh");
 //    lookupModel.setSelectedEntities(result);
 //    assertEquals("Search string should have been updated",//this test fails due to the toString cache, strange?
-//            "john, nojob, TestDept" + lookupModel.getMultiValueSeperator() + "johnson, ajob, TestDept",
+//            "john, nojob, TestDept" + lookupModel.getMultipleValueSeparator() + "johnson, ajob, TestDept",
 //            lookupModel.getSearchString());
 
     lookupModel.setSearchString("jo");
@@ -61,7 +61,7 @@ public class EntityLookupModelTest extends TestCase {
     assertFalse("Result should not contain Andy", contains(result, "Andy"));
     assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
 
-    lookupModel.setMultiValueSeperator(";");
+    lookupModel.setMultipleValueSeparator(";");
     lookupModel.setSearchString("andy;Andrew");
     result = lookupModel.performQuery();
     assertEquals("Result count should be 2", 2, result.size());

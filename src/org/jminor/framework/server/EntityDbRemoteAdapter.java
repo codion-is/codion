@@ -138,9 +138,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws JRException, RemoteException {
+  public JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws JRException, RemoteException {
     try {
-      return loggingEntityDbProxy.fillReport(report, reportParams);
+      return loggingEntityDbProxy.fillReport(report, reportParameters);
     }
     catch (JRException jre) {
       throw jre;
@@ -177,9 +177,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public Object executeStatement(final String statement, final int outParamType) throws DbException, RemoteException {
+  public Object executeStatement(final String statement, final int outParameterType) throws DbException, RemoteException {
     try {
-      return loggingEntityDbProxy.executeStatement(statement, outParamType);
+      return loggingEntityDbProxy.executeStatement(statement, outParameterType);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -217,8 +217,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     try {
       loggingEntityDbProxy.commitTransaction();
     }
-    catch (SQLException sqle) {
-      throw sqle;
+    catch (SQLException exception) {
+      throw exception;
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -230,8 +230,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     try {
       loggingEntityDbProxy.rollbackTransaction();
     }
-    catch (SQLException sqle) {
-      throw sqle;
+    catch (SQLException exception) {
+      throw exception;
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -461,11 +461,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /**
-   * @param timout the number of milliseconds
+   * @param timeout the number of milliseconds
    * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
    */
-  public boolean hasBeenInactive(final long timout) {
-    return System.currentTimeMillis() - methodLogger.lastAccessDate > timout;
+  public boolean hasBeenInactive(final long timeout) {
+    return System.currentTimeMillis() - methodLogger.lastAccessDate > timeout;
   }
 
   /**
@@ -541,15 +541,15 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
     EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
         RequestCounter.requestsPerSecondCounter++;
         final String methodName = method.getName();
         EntityDbConnection connection = null;
         try {
           active.add(EntityDbRemoteAdapter.this);
-          methodLogger.logAccess(methodName, args);
+          methodLogger.logAccess(methodName, arguments);
 
-          return method.invoke(connection = getConnection(clientInfo.getUser()), args);
+          return method.invoke(connection = getConnection(clientInfo.getUser()), arguments);
         }
         catch (InvocationTargetException ie) {
           log.error(this, ie);
@@ -622,11 +622,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return new ArrayList<ServerLogEntry>(logEntries);
     }
 
-    public void logAccess(final String method, final Object[] args) {
+    public void logAccess(final String method, final Object[] arguments) {
       this.lastAccessDate = System.currentTimeMillis();
       this.lastAccessedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
-        this.lastAccessMessage = parameterArrayToString(database, args);
+        this.lastAccessMessage = parameterArrayToString(database, arguments);
         addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false);
       }
     }
@@ -684,29 +684,29 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return logEntries;
     }
 
-    private static String parameterArrayToString(final Database database, final Object[] args) {
-      if (args == null)
+    private static String parameterArrayToString(final Database database, final Object[] arguments) {
+      if (arguments == null)
         return "";
 
-      final StringBuilder stringBuilder = new StringBuilder(args.length*40);//best guess ?
-      for (int i = 0; i < args.length; i++) {
-        parameterToString(database, args[i], stringBuilder);
-        if (i < args.length-1)
+      final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);//best guess ?
+      for (int i = 0; i < arguments.length; i++) {
+        parameterToString(database, arguments[i], stringBuilder);
+        if (i < arguments.length-1)
           stringBuilder.append(", ");
       }
 
       return stringBuilder.toString();
     }
 
-    private static void parameterToString(final Database database, final Object arg, final StringBuilder dest) {
+    private static void parameterToString(final Database database, final Object arg, final StringBuilder destination) {
       if (arg instanceof Object[]) {
         if (((Object[]) arg).length > 0)
-          dest.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");
+          destination.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");
       }
       else if (arg instanceof EntityCriteria)
-        dest.append(((EntityCriteria) arg).asString(database));
+        destination.append(((EntityCriteria) arg).asString(database));
       else
-        dest.append(arg.toString());
+        destination.append(arg.toString());
     }
   }
 

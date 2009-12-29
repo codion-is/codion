@@ -37,7 +37,7 @@ public class EntityDefinition implements Serializable {
    */
   private String orderByClause;
   /**
-   * The source of the entitys id (primary key), i.e. sequence name
+   * The source of the entity's id (primary key), i.e. sequence name
    */
   private String idValueSource;
   /**
@@ -250,18 +250,18 @@ public class EntityDefinition implements Serializable {
   }
 
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
+    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-        Collection<Property.DenormalizedProperty> denormProps = denormalizedProperties.get(denormalizedProperty.getForeignKeyPropertyID());
-        if (denormProps == null)
-          denormalizedProperties.put(denormalizedProperty.getForeignKeyPropertyID(), denormProps = new ArrayList<Property.DenormalizedProperty>());
-        denormProps.add(denormalizedProperty);
+        Collection<Property.DenormalizedProperty> denormalizedProperties = denormalizedPropertiesMap.get(denormalizedProperty.getForeignKeyPropertyID());
+        if (denormalizedProperties == null)
+          denormalizedPropertiesMap.put(denormalizedProperty.getForeignKeyPropertyID(), denormalizedProperties = new ArrayList<Property.DenormalizedProperty>());
+        denormalizedProperties.add(denormalizedProperty);
       }
     }
 
-    return denormalizedProperties;
+    return denormalizedPropertiesMap;
   }
 
   private static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {

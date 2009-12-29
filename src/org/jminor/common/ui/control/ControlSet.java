@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A set of Actions/Controls, includes seperators
+ * A set of Actions/Controls, includes separators
  */
 public class ControlSet extends Control {
 
@@ -98,7 +98,7 @@ public class ControlSet extends Control {
 
   /**
    * Adds the given action to this ControlSet,
-   * adding a null action has the same effect as addSeperator()
+   * adding a null action has the same effect as addSeparator()
    * @param action the action to add
    */
   public void add(final Action action) {
@@ -108,7 +108,7 @@ public class ControlSet extends Control {
 
   /**
    * Adds the given action to this ControlSet at the specified index,
-   * adding a null action has the same effect as addSeperator()
+   * adding a null action has the same effect as addSeparator()
    * @param action the action to add at the specified index
    * @param index the index
    */

@@ -34,7 +34,7 @@ public class DbConnection {
 
   private static final Logger log = Util.getLogger(DbConnection.class);
 
-  public static final String OUT_PARAM_NAME = "procout";
+  public static final String OUT_PARAMETER_NAME = "procout";
 
   private final Properties connectionProperties = new Properties();
   private final Map<String, List> queryCache = new HashMap<String, List>();
@@ -424,16 +424,16 @@ public class DbConnection {
     connection.rollback();
   }
 
-  public Object executeCallableStatement(final String sqlStatement, final int outParamType) throws SQLException {
+  public Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
     requestsPerSecondCounter++;
     final long time = System.currentTimeMillis();
     log.debug(sqlStatement);
     CallableStatement statement = null;
     try {
-      final boolean hasOutParameter = sqlStatement.indexOf(OUT_PARAM_NAME) > 0;
+      final boolean hasOutParameter = sqlStatement.indexOf(OUT_PARAMETER_NAME) > 0;
       statement = connection.prepareCall(sqlStatement);
       if (hasOutParameter)
-        statement.registerOutParameter(1, outParamType);
+        statement.registerOutParameter(1, outParameterType);
 
       statement.execute();
 
@@ -500,7 +500,7 @@ public class DbConnection {
     return database;
   }
 
-  private void revalidate() throws ClassNotFoundException, SQLException {
+  private void revalidate() throws ClassNotFoundException, SQLException {//todo rename
     try {
       if (connection != null) {
         log.info("Revalidating connection: " + user.getUsername());
@@ -525,9 +525,9 @@ public class DbConnection {
         checkConnectionStatement.executeQuery("select 1 from dual");
         return true;
       }
-      catch (SQLException sqle) {
-        sqle.printStackTrace();
-        throw sqle;
+      catch (SQLException exception) {
+        exception.printStackTrace();
+        throw exception;
       }
     }
 

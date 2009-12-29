@@ -145,7 +145,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /**
-   * Adds validation functionality to the given text componect, which is responsible for coloring the
+   * Adds validation functionality to the given text component, which is responsible for coloring the
    * component according to the validity of the value of the linked property and providing a
    * validation message via the components tooltip
    * @param textComponent the text component

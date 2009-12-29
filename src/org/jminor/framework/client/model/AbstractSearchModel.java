@@ -314,7 +314,7 @@ public abstract class AbstractSearchModel {
   }
 
   /**
-   * @param value true if wildcards should automatically be added to strings
+   * @param value true if wildcard should automatically be added to strings
    */
   public void setAutomaticWildcard(final boolean value) {
     automaticWildcard = value;

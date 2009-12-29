@@ -8,7 +8,7 @@ import org.jminor.common.db.dbms.Database;
 /**
  * A generic interface for objects serving as where conditions in database queries
  */
-public interface Criteria {
+public interface Criteria {//todo rename to Criterion
   /**
    * @return a SQL where condition string without the 'where' keyword
    * @param database the Database instance

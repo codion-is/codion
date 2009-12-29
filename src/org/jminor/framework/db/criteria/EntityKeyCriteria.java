@@ -81,7 +81,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
    */
   public String getConditionString(final Database database) {
     final StringBuilder stringBuilder = new StringBuilder();
-    if (keys.get(0).getPropertyCount() > 1) {//multi column key
+    if (keys.get(0).getPropertyCount() > 1) {//multiple column key
       //(a = b and c = d) or (a = g and c = d)
       for (int i = 0; i < keys.size(); i++) {
         stringBuilder.append(getQueryConditionString(database, keys.get(i), getColumnNames()));

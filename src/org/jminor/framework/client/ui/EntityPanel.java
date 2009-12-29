@@ -166,7 +166,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   private JPanel editControlPanel;
 
   /**
-   * The EntityEditPanen instance
+   * The EntityEditPanel instance
    */
   private EntityEditPanel editPanel;
 
@@ -1469,7 +1469,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     control = getToggleEditPanelControl();
     if (control != null)
       controls.add(control);
-    control = getToggleDetaiPanelControl();
+    control = getToggleDetailPanelControl();
     if (control != null)
       controls.add(control);
 
@@ -1513,50 +1513,50 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return the ControlSet on which the table popup menu is based
    */
   protected ControlSet getTablePopupControlSet() {
-    boolean seperatorRequired = false;
+    boolean separatorRequired = false;
     final ControlSet controlSet = new ControlSet("");
     if (detailEntityPanels.size() > 0) {
       controlSet.add(getDetailPanelControls(EMBEDDED));
-      seperatorRequired = true;
+      separatorRequired = true;
     }
-    if (seperatorRequired) {
+    if (separatorRequired) {
       controlSet.addSeparator();
-      seperatorRequired = false;
+      separatorRequired = false;
     }
     if (controlMap.containsKey(UPDATE_SELECTED)) {
       controlSet.add(controlMap.get(UPDATE_SELECTED));
-      seperatorRequired = true;
+      separatorRequired = true;
     }
     if (controlMap.containsKey(MENU_DELETE)) {
       controlSet.add(controlMap.get(MENU_DELETE));
-      seperatorRequired = true;
+      separatorRequired = true;
     }
-    if (seperatorRequired) {
+    if (separatorRequired) {
       controlSet.addSeparator();
-      seperatorRequired = false;
+      separatorRequired = false;
     }
     if (controlMap.containsKey(VIEW_DEPENDENCIES)) {
       controlSet.add(controlMap.get(VIEW_DEPENDENCIES));
-      seperatorRequired = true;
+      separatorRequired = true;
     }
-    if (seperatorRequired) {
+    if (separatorRequired) {
       controlSet.addSeparator();
-      seperatorRequired = false;
+      separatorRequired = false;
     }
     final ControlSet printControls = getPrintControls();
     if (printControls != null) {
       controlSet.add(getPrintControls());
-      seperatorRequired = true;
+      separatorRequired = true;
     }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
-      if (seperatorRequired) {
+      if (separatorRequired) {
         controlSet.addSeparator();
-        seperatorRequired = false;
+        separatorRequired = false;
       }
       controlSet.add(controlMap.get(CONFIGURE_QUERY));
     }
     if (controlMap.containsKey(SELECT_COLUMNS)) {
-      if (seperatorRequired)
+      if (separatorRequired)
         controlSet.addSeparator();
       controlSet.add(controlMap.get(SELECT_COLUMNS));
     }
@@ -1682,7 +1682,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   protected void validateData() throws ValidationException, UserCancelException {}
 
   /**
-   * for overriding, to provide specific input components for multi-entity update
+   * for overriding, to provide specific input components for multiple entity update
    * @param property the property for which to get the InputManager
    * @param toUpdate the entities that are about to be updated
    * @return the InputManager handling input for <code>property</code>
@@ -1706,8 +1706,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_DELETE);
-    final int res = JOptionPane.showConfirmDialog(this, msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
+    final String[] messages = getConfirmationMessages(CONFIRM_TYPE_DELETE);
+    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
@@ -1717,9 +1717,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @return true if the update action should be performed
    */
   protected boolean confirmUpdate() {
-    final String[] msgs = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
-    final int res = JOptionPane.showConfirmDialog(this,
-            msgs[0], msgs[1], JOptionPane.OK_CANCEL_OPTION);
+    final String[] messages = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
+    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
@@ -1855,12 +1854,12 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return toggle;
   }
 
-  private Control getToggleDetaiPanelControl() {
+  private Control getToggleDetailPanelControl() {
     if (detailEntityPanels.size() == 0)
       return null;
 
     final Control toggle = ControlFactory.methodControl(this, "toggleDetailPanelState",
-            Images.loadImage("History16.gif"));
+            Images.loadImage(Images.IMG_HISTORY_16));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
 
     return toggle;
@@ -1896,13 +1895,13 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   private List<Property> getUpdateProperties() {
     final List<Property> properties = EntityRepository.getDatabaseProperties(getModel().getEntityID(), true, false, false);
-    final ListIterator<Property> iter = properties.listIterator();
-    while(iter.hasNext()) {
-      final Property property = iter.next();
+    final ListIterator<Property> iterator = properties.listIterator();
+    while(iterator.hasNext()) {
+      final Property property = iterator.next();
       if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty ||
               (property instanceof Property.PrimaryKeyProperty &&
                       EntityRepository.getIdSource(getModel().getEntityID()) != IdSource.NONE))
-        iter.remove();
+        iterator.remove();
     }
     Collections.sort(properties, new Comparator<Property>() {
       public int compare(final Property propertyOne, final Property propertyTwo) {

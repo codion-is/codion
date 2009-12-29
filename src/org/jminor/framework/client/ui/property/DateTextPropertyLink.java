@@ -29,7 +29,7 @@ public class DateTextPropertyLink extends FormattedTextPropertyLink {
                               final LinkType linkType, final DateFormat dateFormat) {
     super(textField, editModel, property, dateFormat, true, linkType);
     if (dateFormat == null)
-      throw new IllegalArgumentException("DateTextPropertyLink must hava a date format");
+      throw new IllegalArgumentException("DateTextPropertyLink must have a date format");
   }
 
   /** {@inheritDoc} */

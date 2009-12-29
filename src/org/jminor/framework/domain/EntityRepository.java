@@ -78,7 +78,7 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
-   * @return a comma seperated list of columns to use in the order by clause
+   * @return a comma separated list of columns to use in the order by clause
    */
   public static String getOrderByClause(final String entityID) {
     if (!entityDefinitions.containsKey(entityID))
@@ -136,7 +136,7 @@ public class EntityRepository {
   }
 
   /**
-   * Retrive the database properties comprising the entity identified by <code>entityID</code>
+   * Retrieves the database properties comprising the entity identified by <code>entityID</code>
    * @param entityID the entity ID
    * @param includePrimaryKeyProperties if true primary key properties are included
    * @param includeReadOnly if true then properties that are marked as 'read only' are included

@@ -214,10 +214,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       return result;
     }
-    catch (SQLException sqle) {
+    catch (SQLException exception) {
       log.info(sql);
-      log.error(this, sqle);
-      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
+      log.error(this, exception);
+      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
     }
     finally {
       removeCacheQueriesRequest();
@@ -234,8 +234,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       return query(sql, getPropertyResultPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
     }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
+    catch (SQLException exception) {
+      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
     }
   }
 
@@ -244,8 +244,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     try {
       return queryObjects(statement, fetchCount);
     }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, statement, getDatabase().getErrorMessage(sqle));
+    catch (SQLException exception) {
+      throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
     }
   }
 
@@ -256,8 +256,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return queryInteger(sql = getSelectSql(EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
               criteria.getWhereClause(getDatabase()), null));
     }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
+    catch (SQLException exception) {
+      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
     }
   }
 
@@ -291,7 +291,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       if (!isTransactionOpen())
         commit();
     }
-    catch (SQLException sqle) {
+    catch (SQLException exception) {
       try {
         if (!isTransactionOpen())
           rollback();
@@ -300,20 +300,20 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-      throw new DbException(sqle, statement, getDatabase().getErrorMessage(sqle));
+      throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
     }
   }
 
   /** {@inheritDoc} */
-  public Object executeStatement(final String statement, final int outParamType) throws DbException {
+  public Object executeStatement(final String statement, final int outParameterType) throws DbException {
     try {
-      final Object result = executeCallableStatement(statement, outParamType);
+      final Object result = executeCallableStatement(statement, outParameterType);
       if (!isTransactionOpen())
         commit();
 
       return result;
     }
-    catch (SQLException sqle) {
+    catch (SQLException exception) {
       try {
         if (!isTransactionOpen())
           rollback();
@@ -322,13 +322,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         log.info(statement);
         log.error(this, ex);
       }
-      throw new DbException(sqle, statement, getDatabase().getErrorMessage(sqle));
+      throw new DbException(exception, statement, getDatabase().getErrorMessage(exception));
     }
   }
 
   /** {@inheritDoc} */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws JRException {
-    return JasperFillManager.fillReport(report, reportParams, getConnection());
+  public JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws JRException {
+    return JasperFillManager.fillReport(report, reportParameters, getConnection());
   }
 
   /** {@inheritDoc} */
@@ -360,8 +360,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           rollbackTransaction();
       }
     }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, null, getDatabase().getErrorMessage(sqle));
+    catch (SQLException exception) {
+      throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
     }
   }
 
@@ -374,8 +374,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       return readBlobField(EntityRepository.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
               EntityUtil.getWhereCondition(getDatabase(), primaryKey));
     }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, null, getDatabase().getErrorMessage(sqle));
+    catch (SQLException exception) {
+      throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
     }
   }
 
@@ -482,7 +482,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       if (!isTransactionOpen())
         commit();
     }
-    catch (SQLException sqle) {
+    catch (SQLException exception) {
       try {
         if (!isTransactionOpen())
           rollback();
@@ -492,7 +492,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         log.error(this, ex);
       }
 
-      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
+      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
     }
   }
 
@@ -558,8 +558,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     try {
       return queryInteger(sql);
     }
-    catch (SQLException sqle) {
-      throw new DbException(sqle, sql, getDatabase().getErrorMessage(sqle));
+    catch (SQLException exception) {
+      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
     }
   }
 

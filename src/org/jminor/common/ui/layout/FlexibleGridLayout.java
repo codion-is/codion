@@ -10,7 +10,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 
 /**
- * Grid Layout which allows components of differrent sizes
+ * Grid Layout which allows components of different sizes
  * @author unknown
  */
 public class FlexibleGridLayout extends GridLayout {
@@ -45,7 +45,7 @@ public class FlexibleGridLayout extends GridLayout {
   /**
    * @param width the fixed column width to use in this layout
    */
-  public void setFixedColmnWidth(final int width) {
+  public void setFixedColumnWidth(final int width) {
     fixedColumnWidth = width;
   }
 

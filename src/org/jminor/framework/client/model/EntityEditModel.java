@@ -380,7 +380,7 @@ public class EntityEditModel {
   }
 
   /**
-   * Performes a insert on the active entity
+   * Performs a insert on the active entity
    * @throws org.jminor.common.db.DbException in case of a database exception
    * @throws org.jminor.common.model.UserCancelException in case the user cancels the operation
    * @throws ValidationException in case validation fails
@@ -814,7 +814,7 @@ public class EntityEditModel {
 
   /**
    * If this method is overridden then calling super.getDefaultEntity() would be proper
-   * @return the default entity for this EntitModel, it is set as active when no item is selected
+   * @return the default entity for this EntityModel, it is set as active when no item is selected
    * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
   public Entity getDefaultEntity() {

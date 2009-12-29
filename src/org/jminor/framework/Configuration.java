@@ -88,7 +88,7 @@ public class Configuration {
   public static final String SERVER_SECURE_CONNECTION = "jminor.server.connection.secure";
 
   /**
-   * Specifies a comma seperated list of usernames for which to create connection pools on startup
+   * Specifies a comma separated list of usernames for which to create connection pools on startup
    */
   public static final String SERVER_POOLING_INITIAL = "jminor.server.pooling.initial";
 
@@ -133,7 +133,7 @@ public class Configuration {
   public static final String ALL_PANELS_ACTIVE = "jminor.client.allPanelsActive";
 
   /**
-   * Indicates whether entity panels containing detail panels should by default by layed out in a compact manner
+   * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner
    * Value type: Boolean
    * Default value: false
    */
@@ -147,7 +147,7 @@ public class Configuration {
   public static final String USE_KEYBOARD_NAVIGATION = "jminor.client.useKeyboardNavigation";
 
   /**
-   * Indicates whether entity panels should be activated when the panel recieves focus
+   * Indicates whether entity panels should be activated when the panel receives focus
    * Value type: Boolean
    * Default value: true
    * @see #ALL_PANELS_ACTIVE
@@ -197,7 +197,7 @@ public class Configuration {
   public static final String PERSIST_FOREIGN_KEY_VALUES = "jminor.client.persistForeignKeyValues";
 
   /**
-   * Specifies a string prepended to the username field in the login dialog
+   * Specifies a string to prepend to the username field in the login dialog
    * Value type: String
    * Default value: [empty string]
    */
@@ -211,7 +211,7 @@ public class Configuration {
   public static final String AUTHENTICATION_REQUIRED = "jminor.client.authenticationRequired";
 
   /**
-   * Specifies whether focus should be transfered from components on enter,
+   * Specifies whether focus should be transferred from components on enter,
    * this does not work for editable combo boxes, combo boxes with the
    * maximum match functionality enabled or text areas
    * Value type: Boolean

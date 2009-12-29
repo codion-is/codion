@@ -644,7 +644,7 @@ public abstract class EntityEditPanel extends JPanel {
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identitied by <code>propertyID</code>
+   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
@@ -657,7 +657,7 @@ public abstract class EntityEditPanel extends JPanel {
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identitied by <code>propertyID</code>
+   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used

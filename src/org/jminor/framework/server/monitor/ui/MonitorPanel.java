@@ -114,7 +114,7 @@ public class MonitorPanel extends JPanel {
     return ControlFactory.methodControl(this, "exit", "Exit", null, null, 'X');
   }
 
-  public static void main(final String[] args) {
+  public static void main(final String[] arguments) {
     try {
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

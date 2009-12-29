@@ -50,7 +50,7 @@ public class EntityLookupModel {
   private boolean wildcardPrefix;
   private boolean wildcardPostfix;
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-  private String multiValueSeperator = ",";
+  private String multipleValueSeparator = ",";
 
   public EntityLookupModel(final String entityID, final EntityDbProvider dbProvider, final List<Property> lookupProperties) {
     this(entityID, dbProvider, null, lookupProperties);
@@ -154,12 +154,12 @@ public class EntityLookupModel {
     this.wildcard = wildcard;
   }
 
-  public String getMultiValueSeperator() {
-    return multiValueSeperator;
+  public String getMultipleValueSeparator() {
+    return multipleValueSeparator;
   }
 
-  public void setMultiValueSeperator(final String multiValueSeperator) {
-    this.multiValueSeperator = multiValueSeperator;
+  public void setMultipleValueSeparator(final String multipleValueSeparator) {
+    this.multipleValueSeparator = multipleValueSeparator;
     refreshSearchText();
   }
 
@@ -192,7 +192,7 @@ public class EntityLookupModel {
       return new SelectCriteria(getEntityID());
 
     final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
-    final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultiValueSeperator()) : new String[] {getSearchString()};
+    final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultipleValueSeparator()) : new String[] {getSearchString()};
     for (final Property lookupProperty : lookupProperties) {
       for (final String lookupText : lookupTexts) {
         final String modifiedLookupText = (isWildcardPrefix() ? getWildcard() : "") + lookupText
@@ -219,7 +219,7 @@ public class EntityLookupModel {
     for (int i = 0; i < entityList.size(); i++) {
       stringBuilder.append(entityList.get(i).toString());
       if (i < entityList.size()-1)
-        stringBuilder.append(getMultiValueSeperator());
+        stringBuilder.append(getMultipleValueSeparator());
     }
 
     return stringBuilder.toString();

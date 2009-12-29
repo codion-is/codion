@@ -5,8 +5,6 @@ package org.jminor.common.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Array class for primitive integer handling
@@ -24,7 +22,7 @@ public class IntArray extends ArrayList<Integer> implements Serializable {
 
   public IntArray(final int[] data) {
     super(data.length);
-    addAllInts(data);
+    addIntegers(data);
   }
 
   public void addInt(final int integer) {
@@ -39,39 +37,16 @@ public class IntArray extends ArrayList<Integer> implements Serializable {
     return super.get(index);
   }
 
-  public int indexOf(final int integer) {
-    return super.indexOf(new Integer(integer));
-  }
-
-  public List toIntegerList() {
-    return this;
-  }
-
-  public List<Integer> toSortedIntegerList() {
-    final Integer[] integers = toIntegerArray();
-    Arrays.sort(integers);
-
-    return new ArrayList<Integer>(Arrays.asList(integers));
-  }
-
-  public Integer[] toIntegerArray() {
-    return super.toArray(new Integer[size()]);
-  }
-
   public int[] toIntArray() {
-    final int[] ints = new int[size()];
-    for (int i = 0; i < ints.length; i++)
-      ints[i] = getIntAt(i);
+    final int[] integers = new int[size()];
+    for (int i = 0; i < integers.length; i++)
+      integers[i] = getIntAt(i);
 
-    return ints;
+    return integers;
   }
 
-  public void addAllInts(final int[] integers) {
+  public void addIntegers(final int[] integers) {
     for (int integer : integers)
       super.add(integer);
-  }
-
-  public boolean contains(final int integer) {
-    return super.contains(new Integer(integer));
   }
 }

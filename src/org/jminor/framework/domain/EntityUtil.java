@@ -37,8 +37,8 @@ public class EntityUtil {
   }
 
   public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
-    for (final List<Entity> ents : entities.values())
-      if (ents.size() > 0)
+    for (final List<Entity> entityList : entities.values())
+      if (entityList.size() > 0)
         return true;
 
     return false;
@@ -230,7 +230,7 @@ public class EntityUtil {
    * @param database the Database instance
    * @param entityKey the EntityKey instance
    * @return a where clause using this EntityKey instance,
-   * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
+   * e.g. " where (idCol = 42)" or in case of multiple column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
     return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
@@ -247,7 +247,7 @@ public class EntityUtil {
    * @param database the Database instance
    * @param entity the Entity instance
    * @return a where clause specifying this entity instance,
-   * e.g. " where (idCol = 42)" or in case of multi column key " where (idCol1 = 42) and (idCol2 = 24)"
+   * e.g. " where (idCol = 42)" or in case of multiple column key " where (idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity entity) {
     return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {

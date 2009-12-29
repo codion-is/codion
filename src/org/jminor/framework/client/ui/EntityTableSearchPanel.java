@@ -93,7 +93,7 @@ public class EntityTableSearchPanel extends JPanel {
 
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    controlSet.setIcon(Images.loadImage("Filter16.gif"));
+    controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     controlSet.add(ControlFactory.toggleControl(this, "advanced",
             FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
     controlSet.add(ControlFactory.methodControl(this, "clear", FrameworkMessages.get(FrameworkMessages.CLEAR)));

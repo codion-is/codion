@@ -94,8 +94,8 @@ public class Util {
     return getUserPreference(applicationIdentifier + "." + PREF_DEFAULT_USERNAME, defaultName);
   }
 
-  public static void setDefaultUserName(final String applicationClassname, final String username) {
-    putUserPreference(applicationClassname + "." + PREF_DEFAULT_USERNAME, username);
+  public static void setDefaultUserName(final String applicationClassName, final String username) {
+    putUserPreference(applicationClassName + "." + PREF_DEFAULT_USERNAME, username);
   }
 
   public static String padString(final String orig, final int length, final char padChar, final boolean atFront) {

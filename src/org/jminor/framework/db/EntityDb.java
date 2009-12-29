@@ -86,11 +86,11 @@ public interface EntityDb {
    * This method does not handle select statements.
    * Performs a commit unless a transaction is open.
    * @param statement the statement to execute
-   * @param outParamType the type of the output param, if any, java.sql.Types.*
+   * @param outParameterType the type of the output parameter, if any, java.sql.Types.*
    * @throws org.jminor.common.db.DbException in case of a database error
    * @return the return parameter if any, otherwise null
    */
-  public Object executeStatement(final String statement, final int outParamType) throws Exception;
+  public Object executeStatement(final String statement, final int outParameterType) throws Exception;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -223,11 +223,11 @@ public interface EntityDb {
   /**
    * Takes a JasperReport object using a JDBC datasource and returns an initialized JasperPrint object
    * @param report the report to fill
-   * @param reportParams the report parameters
+   * @param reportParameters the report parameters
    * @return an initialized JasperPrint object
    * @throws net.sf.jasperreports.engine.JRException in case of a report exception
    */
-  public JasperPrint fillReport(final JasperReport report, final Map reportParams) throws Exception;
+  public JasperPrint fillReport(final JasperReport report, final Map reportParameters) throws Exception;
 
   /**
    * Executes the given statement and returns the result in a List of rows, where each row

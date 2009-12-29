@@ -176,9 +176,9 @@ public abstract class EntityTestUnit extends TestCase {
    */
   protected void testSelect(final Entity testEntity) throws Exception {
     try {
-      final Entity etmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
       assertTrue("Entity of type " + testEntity.getEntityID() + " failed select comparison",
-              testEntity.propertyValuesEqual(etmp));
+              testEntity.propertyValuesEqual(tmp));
 
       final List<Entity> entityByPrimaryKey = getEntityDb().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
       assertTrue("Entity of type " + testEntity.getEntityID() + " was not found when selecting by primary key",
@@ -268,7 +268,7 @@ public abstract class EntityTestUnit extends TestCase {
 
   /**
    * This method should initialize instances of entities specified by the entityIDs found in the
-   * <code>entityIDs</code> Collection and map them to their respective enitityIDs via the setReferenceEntity method
+   * <code>entityIDs</code> Collection and map them to their respective entityIDs via the setReferenceEntity method
    * @param referenceEntityIDs the IDs of the entities that should be initialized
    * @throws Exception in case of an exception
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
@@ -276,7 +276,7 @@ public abstract class EntityTestUnit extends TestCase {
   protected abstract void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception;
 
   /**
-   * Initializes the given entity, that is, performes an insert on it in case it doesn't
+   * Initializes the given entity, that is, performs an insert on it in case it doesn't
    * already exist in the database, returns the same entity
    * @param entity the entity to initialize
    * @return the entity

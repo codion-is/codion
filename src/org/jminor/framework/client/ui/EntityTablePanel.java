@@ -230,7 +230,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * Shows a dialog for configuring the underlying EntityTableModel query.
    * If the underlying table model does not allow query configuration this
-   * method returns silentry
+   * method returns silently
    * @see EntityTableModel#isQueryConfigurationAllowed()
    */
   public void configureQuery() {
@@ -470,7 +470,7 @@ public class EntityTablePanel extends JPanel {
         toggleSearchPanel();
       }
     };
-    ret.setIcon(Images.loadImage("Filter16.gif"));
+    ret.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     ret.setDescription(FrameworkMessages.get(FrameworkMessages.SEARCH));
 
     return ret;
@@ -487,7 +487,7 @@ public class EntityTablePanel extends JPanel {
 
   public Control getMoveSelectionDownControl() {
     final Control selectionDown = ControlFactory.methodControl(getTableModel(), "moveSelectionDown",
-            Images.loadImage("Down16.gif"));
+            Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
 
     return selectionDown;
@@ -495,7 +495,7 @@ public class EntityTablePanel extends JPanel {
 
   public Control getMoveSelectionUpControl() {
     final Control selectionUp = ControlFactory.methodControl(getTableModel(), "moveSelectionUp",
-            Images.loadImage("Up16.gif"));
+            Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
 
     return selectionUp;
@@ -679,10 +679,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Initializes a simple search panel, with a single search field, which performes a search based on the default
+   * Initializes a simple search panel, with a single search field, which performs a search based on the default
    * search properties or if none are defined all string based properties
    * @return a simple search panel
-   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
+   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String...)
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = getSearchProperties();
@@ -736,7 +736,7 @@ public class EntityTablePanel extends JPanel {
     final String keyName = stroke.toString().replace("pressed ", "");
     final Control refresh = ControlFactory.methodControl(getTableModel(), "refresh", null,
             getTableModel().getSearchModel().stSearchStateChanged, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
-                    + " (" + keyName + ")", 0, null, Images.loadImage("Stop16.gif"));
+                    + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
     final ActionMap actionMap = getActionMap();

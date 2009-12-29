@@ -601,9 +601,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   protected JPanel initializeStartupProgressPanel(final Icon icon) {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
-    final JProgressBar prog = new JProgressBar(JProgressBar.HORIZONTAL);
-    prog.setIndeterminate(true);
-    panel.add(prog, BorderLayout.CENTER);
+    final JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
+    progressBar.setIndeterminate(true);
+    panel.add(progressBar, BorderLayout.CENTER);
     if (icon != null) {
       final JLabel lblIcon = new JLabel(icon);
       lblIcon.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -625,7 +625,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param title the title string for the JFrame
    * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
    * @param showMenuBar true if a menubar should be created
-   * @param size if the JFrame is not maximed then it's preferredSize is set to this value
+   * @param size if the JFrame is not maximized then it's preferredSize is set to this value
    * @param setVisible if true then the JFrame is set visible
    * @return an initialized, but non-visible JFrame
    * @see #getNorthToolBar()

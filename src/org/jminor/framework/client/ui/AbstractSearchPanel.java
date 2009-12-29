@@ -84,7 +84,7 @@ public abstract class AbstractSearchPanel extends JPanel {
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(model, "searchEnabled", null, model.getSearchStateChangedEvent()));
-    toggleSearchEnabled.setIcon(Images.loadImage("Filter16.gif"));
+    toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.evtStateChanged));
     toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));

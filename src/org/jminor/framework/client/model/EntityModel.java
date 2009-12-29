@@ -168,7 +168,7 @@ public class EntityModel implements Refreshable {
   }
 
   /**
-   * @return a String represention of this EntityModel,
+   * @return a String representation of this EntityModel,
    * returns the model class name by default
    */
   @Override

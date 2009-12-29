@@ -108,7 +108,7 @@ public class Property implements Serializable {
 
   /**
    * @param propertyID the property ID, in case of database properties this should be the underlying column name
-   * @param propertyType the datatype of this property
+   * @param propertyType the data type of this property
    */
   public Property(final String propertyID, final Type propertyType) {
     this(propertyID, propertyType, null);
@@ -116,7 +116,7 @@ public class Property implements Serializable {
 
   /**
    * @param propertyID the property ID, in case of database properties this should be the underlying column name
-   * @param propertyType the datatype of this property
+   * @param propertyType the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
   public Property(final String propertyID, final Type propertyType, final String caption) {
@@ -481,7 +481,7 @@ public class Property implements Serializable {
     /**
      * @return true if this reference is based on more than on column
      */
-    public boolean isMultiColumnReference() {
+    public boolean isMultipleColumnReference() {
       return this.referenceProperties.size() > 1;
     }
 
@@ -578,7 +578,7 @@ public class Property implements Serializable {
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
-     * @param type the datatype of this property
+     * @param type the data type of this property
      */
     public TransientProperty(final String propertyID, final Type type) {
       this(propertyID, type, null);
@@ -587,7 +587,7 @@ public class Property implements Serializable {
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
-     * @param type the datatype of this property
+     * @param type the data type of this property
      * @param caption the caption of this property
      */
     public TransientProperty(final String propertyID, final Type type, final String caption) {
@@ -669,7 +669,7 @@ public class Property implements Serializable {
     /**
      * @param propertyID the property ID, since SubqueryProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
-     * @param type the datatype of this property
+     * @param type the data type of this property
      * @param caption the caption of this property
      * @param subquery the sql query
      */
@@ -727,7 +727,7 @@ public class Property implements Serializable {
     private final int falseValueHash;
 
     /**
-     * Instantiates a BooleaProperty based on the INT datatype
+     * Instantiates a BooleanProperty based on the INT data type
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
      * @param caption the caption of this property
      */
@@ -737,7 +737,7 @@ public class Property implements Serializable {
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param columnType the datatype of the underlying column
+     * @param columnType the data type of the underlying column
      * @param caption the caption of this property
      */
     public BooleanProperty(final String propertyID, final Type columnType, final String caption) {
@@ -747,7 +747,7 @@ public class Property implements Serializable {
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param columnType the datatype of the underlying column
+     * @param columnType the data type of the underlying column
      * @param caption the caption of this property
      * @param trueValue the Object value representing 'true'
      * @param falseValue the Object value representing 'false'
@@ -760,7 +760,7 @@ public class Property implements Serializable {
 
     /**
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param columnType the datatype of the underlying column
+     * @param columnType the data type of the underlying column
      * @param caption the caption of this property
      * @param trueValue the Object value representing 'true'
      * @param falseValue the Object value representing 'false'
@@ -778,7 +778,7 @@ public class Property implements Serializable {
     }
 
     /**
-     * @return the datatype of the underlying column
+     * @return the data type of the underlying column
      */
     public Type getColumnType() {
       return columnType;

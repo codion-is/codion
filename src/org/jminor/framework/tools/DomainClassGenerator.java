@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class DomainClassGenerator {
 
-  public static void main(String[] args) {
+  public static void main(String[] arguments) {
     final JTextField txtSchemaName = new JTextField();
     UiUtil.makeUpperCase(txtSchemaName);
     final JTextField txtPackageName = new JTextField();
@@ -46,7 +46,7 @@ public class DomainClassGenerator {
     panel.add(txtSchemaName);
     panel.add(new JLabel("Package name"));
     panel.add(txtPackageName);
-    panel.add(new JLabel("Tables to include (comma seperated)"));
+    panel.add(new JLabel("Tables to include (comma separated)"));
     panel.add(txtTablesToInclude);
 
     final int option = JOptionPane.showConfirmDialog(null, panel, "Settings", JOptionPane.OK_CANCEL_OPTION);

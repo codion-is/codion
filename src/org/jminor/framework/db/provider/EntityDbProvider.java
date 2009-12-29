@@ -14,9 +14,8 @@ import org.jminor.framework.db.EntityDb;
 public interface EntityDbProvider {
 
   /**
-   * Provides a EntityDb object, is responsible for returning a
-   * healthy EntityDb object, that is, it must perform all
-   * reconnections whether remotely or locally
+   * Provides a EntityDb object, is responsible for returning a healthy EntityDb object,
+   * that is, it must reconnect an invalid connection whether remotely or locally
    * @return EntityDb
    */
   public EntityDb getEntityDb();

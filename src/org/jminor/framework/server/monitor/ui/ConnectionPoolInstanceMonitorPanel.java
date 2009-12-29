@@ -128,7 +128,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
   private JPanel getPoolConfigPanel() {
     final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 
-    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerPropertyLink(model, "pooledConnectionTimout", null, null).getSpinnerModel());
+    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerPropertyLink(model, "pooledConnectionTimeout", null, null).getSpinnerModel());
     final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerPropertyLink(model, "maximumPoolSize", null, null).getSpinnerModel());
     final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerPropertyLink(model, "minimumPoolSize", null, null).getSpinnerModel());
 
@@ -150,7 +150,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     configBase.add(spnMinimumSize);
     configBase.add(new JLabel("Maximum size"));
     configBase.add(spnMaximumSize);
-    configBase.add(new JLabel("Idle timout (s)"));
+    configBase.add(new JLabel("Idle timeout (s)"));
     configBase.add(spnTimeout);
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));

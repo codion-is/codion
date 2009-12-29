@@ -30,7 +30,7 @@ public class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   public void addConnectionPool() throws RemoteException {
-    final String usernames = JOptionPane.showInputDialog("User name(s) (comma seperated)");
+    final String usernames = JOptionPane.showInputDialog("User name(s) (comma separated)");
     if (usernames != null && usernames.length() > 0)
       model.addConnectionPools(usernames.split(","));
   }
