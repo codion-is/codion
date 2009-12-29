@@ -152,16 +152,17 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
    * @param editModel the underlying edit model
    * @see Configuration#INVALID_VALUE_BACKGROUND_COLOR
    * @see EntityEditModel#isValid(org.jminor.framework.domain.Property, Object)
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object, int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object,int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property, Object,int)
    */
   protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
     final Color validBackgroundColor = textComponent.getBackground();
     final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
-    final String defaultTooltTip = textComponent.getToolTipText();
-    updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultTooltTip);
+    final String defaultToolTip = textComponent.getToolTipText();
+    updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
     editModel.getPropertyChangeEvent(getProperty()).addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
-        updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultTooltTip);
+        updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
       }
     });
   }

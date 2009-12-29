@@ -963,3 +963,7 @@
   StateGroup, fixed ConcurrentModification error by iterating array in updateAccordingToState()
   DbConnection.toString() added, for logging
   EntityLookupField now uses wait cursor while performing the query
+  EntityEditModel.isPropertyNullable() added entity parameter
+  EntityEditModel.validate() overloaded with entity parameter
+  EntityPropertyLinkTest seperated into multiple test classes
+  DoubleTextPropertyLinkTest, added a simple validation test

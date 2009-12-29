@@ -499,7 +499,8 @@ public class EntityEditModel {
    * @param property the property
    * @param value the value
    * @return true if the value is valid
-   * @see #validate(org.jminor.framework.domain.Property, Object, int)
+   * @see #validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property, Object,int)
+   * @see #validate(org.jminor.framework.domain.Property, Object,int)
    */
   public final boolean isValid(final Property property, final Object value) {
     try {
@@ -518,7 +519,8 @@ public class EntityEditModel {
    * @param action describes the action requiring validation,
    * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException in case the validation fails
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object, int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property, Object,int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object,int)
    * @see #INSERT
    * @see #UPDATE
    * @see #UNKNOWN
@@ -527,7 +529,7 @@ public class EntityEditModel {
   public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-        validate(property, entity.getValue(property), action);
+        validate(entity, property, entity.getValue(property), action);
       }
     }
   }
@@ -544,8 +546,24 @@ public class EntityEditModel {
    * @see Configuration#PERFORM_NULL_VALIDATION
    */
   public void validate(final Property property, final Object value, final int action) throws ValidationException {
+    validate(entity, property, value, action);
+  }
+
+  /**
+   * Checks if the given value is valid for the given property, throws a ValidationException if not,
+   * this default implementation performs a null value validation if the corresponding configuration parameter is set
+   * @param entity the entity to validate
+   * @param property the property
+   * @param value the value
+   * @param action describes the action requiring validation,
+   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * @throws ValidationException if the given value is not valid for the given property
+   * @see Property#setNullable(boolean)
+   * @see Configuration#PERFORM_NULL_VALIDATION
+   */
+  public void validate(final Entity entity, final Property property, final Object value, final int action) throws ValidationException {
     if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
-      if (!isPropertyNullable(property) && Entity.isValueNull(property.getPropertyType(), value)) {
+      if (!isPropertyNullable(entity, property) && Entity.isValueNull(property.getPropertyType(), value)) {
         if (action == UPDATE || (action == INSERT && !property.columnHasDefaultValue()))
           throw new ValidationException(property, value,
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
@@ -766,7 +784,7 @@ public class EntityEditModel {
   /**
    * Creates a default EntityComboBoxModel for the given property, override to provide
    * specific EntityComboBoxModels (filtered for example) for properties.
-   * This method is called when creating a EntitComboBoxModel for entity properties, both
+   * This method is called when creating a EntityComboBoxModel for entity properties, both
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.
    * This default implementation returns a sorted EntityComboBoxModel with the default nullValueItem
@@ -778,7 +796,7 @@ public class EntityEditModel {
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     return new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), getDbProvider(), false,
-            isPropertyNullable(foreignKeyProperty) ?
+            isPropertyNullable(entity, foreignKeyProperty) ?
                     (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null, true);
   }
 
@@ -883,10 +901,11 @@ public class EntityEditModel {
   /**
    * Returns true if the given property accepts a null value, by default this
    * method simply returns <code>property.isNullable()</code>
+   * @param entity the entity being validated
    * @param property the property
    * @return true if the property accepts a null value
    */
-  protected boolean isPropertyNullable(final Property property) {
+  protected boolean isPropertyNullable(final Entity entity, final Property property) {
     return property.isNullable();
   }
 
