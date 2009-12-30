@@ -332,7 +332,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         }
       }
     });
-    bindModelEvents();
   }
 
   public EntityModel getModel() {
@@ -366,6 +365,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         initializeControlPanels();
         bindEventsInternal();
         bindEvents();
+        bindModelEvents();
         bindTableModelEvents();
         initializeUI();
         bindTablePanelEvents();

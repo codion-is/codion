@@ -540,36 +540,36 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
-    EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
-      public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
-        RequestCounter.requestsPerSecondCounter++;
-        final String methodName = method.getName();
-        EntityDbConnection connection = null;
-        try {
-          active.add(EntityDbRemoteAdapter.this);
-          methodLogger.logAccess(methodName, arguments);
+            EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
+              public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
+                RequestCounter.requestsPerSecondCounter++;
+                final String methodName = method.getName();
+                EntityDbConnection connection = null;
+                try {
+                  active.add(EntityDbRemoteAdapter.this);
+                  methodLogger.logAccess(methodName, arguments);
 
-          return method.invoke(connection = getConnection(clientInfo.getUser()), arguments);
-        }
-        catch (InvocationTargetException ie) {
-          log.error(this, ie);
-          throw ie.getTargetException();
-        }
-        finally {
-          try {
-            active.remove(EntityDbRemoteAdapter.this);
-            final long time = methodLogger.logExit(methodName);
-            if (connection != null && !connection.isTransactionOpen())
-              returnConnection(clientInfo.getUser(), connection);
-            if (time > RequestCounter.warningThreshold)
-              RequestCounter.warningTimeExceededCounter++;
-          }
-          catch (Exception e) {
-            log.error(this, e);
-          }
-        }
-      }
-    });
+                  return method.invoke(connection = getConnection(clientInfo.getUser()), arguments);
+                }
+                catch (InvocationTargetException ie) {
+                  log.error(this, ie);
+                  throw ie.getTargetException();
+                }
+                finally {
+                  try {
+                    active.remove(EntityDbRemoteAdapter.this);
+                    final long time = methodLogger.logExit(methodName);
+                    if (connection != null && !connection.isTransactionOpen())
+                      returnConnection(clientInfo.getUser(), connection);
+                    if (time > RequestCounter.warningThreshold)
+                      RequestCounter.warningTimeExceededCounter++;
+                  }
+                  catch (Exception e) {
+                    log.error(this, e);
+                  }
+                }
+              }
+            });
   }
 
   private void returnConnection(final User user, final EntityDbConnection connection) {
@@ -619,7 +619,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     public List<ServerLogEntry> getLogEntries() {
-      return new ArrayList<ServerLogEntry>(logEntries);
+      final ArrayList<ServerLogEntry> entries = new ArrayList<ServerLogEntry>();
+      if (logEntries == null)
+        entries.add(new ServerLogEntry("Server logging is not enabled", "", System.currentTimeMillis()));
+      else
+        entries.addAll(logEntries);
+
+      return entries;
     }
 
     public void logAccess(final String method, final Object[] arguments) {

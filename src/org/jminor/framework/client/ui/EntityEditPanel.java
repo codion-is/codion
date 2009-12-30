@@ -62,7 +62,9 @@ public abstract class EntityEditPanel extends JPanel {
 
   public void setDefaultFocus() {
     final JComponent defaultFocusComponent = getDefaultFocusComponent();
-    if (defaultFocusComponent != null)
+    if (defaultFocusComponent == null)
+      requestFocusInWindow();
+    else
       getDefaultFocusComponent().requestFocusInWindow();
   }
 

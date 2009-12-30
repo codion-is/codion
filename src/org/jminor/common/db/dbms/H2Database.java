@@ -62,7 +62,7 @@ public class H2Database extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      if (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0)
+      if (connectionProperties != null && (!connectionProperties.containsKey("user") || ((String) connectionProperties.get("user")).length() == 0))
         connectionProperties.put("user","sa");
       final String host = getHost();
       if (host == null || host.length() == 0)

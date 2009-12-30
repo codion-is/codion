@@ -970,3 +970,5 @@
   Spelling corrected throughout
   EntityLookupField now uses Entity.compareTo() for lexical ordering of selection list
   Entity.setDefaultProxy() not used in demos, problematic during tests for example, when one proxy overrides another
+  EntityEditPanel.setDefaultFocus() now requests focus for the base panel in case no default focus component is set
+  MethodLogger.getLogEntries() does not fail when logging is not enabled
