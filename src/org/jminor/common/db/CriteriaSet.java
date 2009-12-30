@@ -43,9 +43,9 @@ public class CriteriaSet implements Criteria, Serializable {
   private final Conjunction conjunction;
 
   /**
-   * The criterion in this set
+   * The criteria in this set
    */
-  private final List<Criteria> criterionList = new ArrayList<Criteria>();
+  private final List<Criteria> criteriaList = new ArrayList<Criteria>();
 
   /**
    * Initializes a new CriteriaSet instance
@@ -72,29 +72,29 @@ public class CriteriaSet implements Criteria, Serializable {
    */
   public void addCriteria(final Criteria criteria) {
     if (criteria != null)
-      this.criterionList.add(criteria);
+      this.criteriaList.add(criteria);
   }
 
   /**
    * @return the number of criteria in this set
    */
   public int getCriteriaCount() {
-    return criterionList.size();
+    return criteriaList.size();
   }
 
   /** {@inheritDoc} */
   public String asString(final Database database) {
-    if (criterionList.size() == 0)
+    if (criteriaList.size() == 0)
       return "";
 
-    final StringBuilder criteriaString = new StringBuilder(criterionList.size() > 1 ? "(" : "");
+    final StringBuilder criteriaString = new StringBuilder(criteriaList.size() > 1 ? "(" : "");
     int i = 0;
-    for (final Criteria criteria : criterionList) {
+    for (final Criteria criteria : criteriaList) {
       criteriaString.append(criteria.asString(database));
-      if (i++ < criterionList.size()-1)
+      if (i++ < criteriaList.size()-1)
         criteriaString.append(conjunction.toString());
     }
 
-    return criteriaString.append(criterionList.size() > 1 ? ")" : "").toString();
+    return criteriaString.append(criteriaList.size() > 1 ? ")" : "").toString();
   }
 }
