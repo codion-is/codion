@@ -471,16 +471,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return a deep copy of this Entity
    */
   public Entity getCopy() {
-    try {
-      final Entity copy = new Entity(getEntityID());
-      copy.setAs(this);
+    final Entity copy = new Entity(getEntityID());
+    copy.setAs(this);
 
-      return copy;
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException("Unable to copy entity: " + getEntityID() + ": " + e.getMessage(), e);
-    }
+    return copy;
   }
 
   /**
@@ -810,7 +804,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
         if (!(value instanceof Entity))
           throw new IllegalArgumentException("Entity value expected for property: " + propertyID + " (" + value.getClass() + ")");
         final String requiredEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
-        if (!requiredEntityID.equals(((Entity) value).getEntityID()))
+        if (!(((Entity) value).is(requiredEntityID)))
           throw new IllegalArgumentException("Entity of type " + requiredEntityID + " required, got " + ((Entity) value).getEntityID());
         break;
       case CHAR:

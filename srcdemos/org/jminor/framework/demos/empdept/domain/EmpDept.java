@@ -74,6 +74,14 @@ public class EmpDept {
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
 
+    /*Set a Proxy implementation to provide toString values for the entities*/
+    Entity.setProxy(T_DEPARTMENT, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+          return entity.getStringValue(DEPARTMENT_NAME);
+      }
+    });
+
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
             new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
@@ -99,20 +107,15 @@ public class EmpDept {
 
     /*Set a Proxy implementation to provide toString values for the entities
     * and custom background color for managers*/
-    Entity.setDefaultProxy(new Entity.Proxy() {
+    Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {
       @Override
       public String toString(final Entity entity) {
-        if (entity.is(T_DEPARTMENT))
-          return entity.getStringValue(DEPARTMENT_NAME);
-        else if (entity.is(T_EMPLOYEE))
-          return entity.getStringValue(EMPLOYEE_NAME);
-
-        return super.toString(entity);
+        return entity.getStringValue(EMPLOYEE_NAME);
       }
 
       @Override
       public Color getBackgroundColor(final Entity entity) {
-        if (entity.is(T_EMPLOYEE) && entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
+        if (entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
           return Color.CYAN;
 
         return super.getBackgroundColor(entity);

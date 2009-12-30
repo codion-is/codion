@@ -112,7 +112,7 @@ public class EntityLookupField extends JTextField {
     else {
       Collections.sort(entities, new Comparator<Entity>() {
         public int compare(final Entity e1, final Entity e2) {
-          return e1.toString().compareTo(e2.toString());
+          return e1.compareTo(e2);
         }
       });
       final JList list = new JList(new Vector<Entity>(entities));

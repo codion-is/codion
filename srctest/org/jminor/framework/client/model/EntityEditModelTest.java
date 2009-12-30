@@ -1,8 +1,10 @@
 package org.jminor.framework.client.model;
 
+import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.EntityRepository;
 
 import junit.framework.TestCase;
 
@@ -10,7 +12,7 @@ import java.sql.Timestamp;
 
 public class EntityEditModelTest extends TestCase {
 
-  private EmployeeModel employeeModel;
+  private EmployeeModel employeeModel = new EmployeeModel(EntityDbConnectionTest.dbProvider);
 
   public void test() throws Exception {
     final EntityEditModel editModel = employeeModel.getEditModel();
@@ -35,7 +37,7 @@ public class EntityEditModelTest extends TestCase {
     assertTrue("Active entity is null after selection is made", !editModel.getEntityCopy().isNull());
 
     final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
-    final double commission = 66.7;
+    final double commission = 1500.5;
     final Timestamp originalHiredate = (Timestamp) editModel.getValue(EmpDept.EMPLOYEE_HIREDATE);
     final Timestamp hiredate = new Timestamp(System.currentTimeMillis());
     final String originalName = (String) editModel.getValue(EmpDept.EMPLOYEE_NAME);
@@ -56,12 +58,17 @@ public class EntityEditModelTest extends TestCase {
     assertTrue(editModel.getEntityModifiedState().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);
     assertFalse(editModel.getEntityModifiedState().isActive());
+
+    //test validation
+    try {
+      editModel.validate(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), 50d, EntityEditModel.INSERT);
+      fail("Validation should fail on invalid commission value");
+    }
+    catch (ValidationException e) {
+      assertEquals("Validation message should fit", EmpDept.getString(EmpDept.EMPLOYEE_COMMISSION_VALIDATION), e.getMessage());
+    }
+
     editModel.clear();
     assertTrue("Active entity is not null after model is cleared", employeeModel.getEditModel().getEntityCopy().isNull());
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    employeeModel = new EmployeeModel(EntityDbConnectionTest.dbProvider);
   }
 }

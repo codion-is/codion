@@ -87,6 +87,15 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2));
 
+    Entity.setProxy(T_ADDRESS, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+          return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)
+                  + ", " + entity.getStringValue(ADDRESS_CITY) + " " + entity.getValueAsString(ADDRESS_ZIP) + ", "
+                  + entity.getStringValue(ADDRESS_STATE);
+      }
+    });
+
     EntityRepository.add(new EntityDefinition(T_CATEGORY, "petstore.category",
             new Property.PrimaryKeyProperty(CATEGORY_ID),
             new Property(CATEGORY_NAME, Type.STRING, "Name").setMaxLength(25).setNullable(false),
@@ -94,6 +103,13 @@ public class Petstore {
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL").setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(CATEGORY_NAME));
+
+    Entity.setProxy(T_CATEGORY, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getStringValue(CATEGORY_NAME);
+      }
+    });
 
     EntityRepository.add(new EntityDefinition(T_ITEM, "petstore.item",
             new Property.PrimaryKeyProperty(ITEM_ID),
@@ -112,6 +128,13 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME));
 
+    Entity.setProxy(T_ITEM, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getValueAsString(ITEM_PRODUCT_FK) + " - " + entity.getStringValue(ITEM_NAME);
+      }
+    });
+
     EntityRepository.add(new EntityDefinition(T_PRODUCT, "petstore.product",
             new Property.PrimaryKeyProperty(PRODUCT_ID),
             new Property.ForeignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
@@ -122,6 +145,13 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(PRODUCT_NAME));
 
+    Entity.setProxy(T_PRODUCT, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getValueAsString(PRODUCT_CATEGORY_FK) + " - " + entity.getStringValue(PRODUCT_NAME);
+      }
+    });
+
     EntityRepository.add(new EntityDefinition(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
             new Property.PrimaryKeyProperty(SELLER_CONTACT_INFO_ID),
             new Property(SELLER_CONTACT_INFO_FIRST_NAME, Type.STRING, "First name").setMaxLength(24).setNullable(false),
@@ -129,6 +159,13 @@ public class Petstore {
             new Property(SELLER_CONTACT_INFO_EMAIL, Type.STRING, "Email").setMaxLength(24).setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME));
+
+    Entity.setProxy(T_SELLER_CONTACT_INFO, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getStringValue(SELLER_CONTACT_INFO_LAST_NAME) + ", " + entity.getStringValue(SELLER_CONTACT_INFO_FIRST_NAME);
+      }
+    });
 
     EntityRepository.add(new EntityDefinition(T_TAG, "petstore.tag",
             new Property.PrimaryKeyProperty(TAG_ID),
@@ -139,33 +176,23 @@ public class Petstore {
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag"));
 
+    Entity.setProxy(T_TAG, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getStringValue(TAG_TAG);
+      }
+    });
+
     EntityRepository.add(new EntityDefinition(T_TAG_ITEM, "petstore.tag_item",
             new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT).setIndex(0)).setNullable(false),
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT).setIndex(1)).setNullable(false)));
 
-    Entity.setDefaultProxy(new Entity.Proxy() {
+    Entity.setProxy(T_TAG_ITEM, new Entity.Proxy() {
       @Override
       public String toString(final Entity entity) {
-        if (entity.is(T_ADDRESS))
-          return entity.getStringValue(ADDRESS_STREET_1) + " " + entity.getStringValue(ADDRESS_STREET_2)
-                  + ", " + entity.getStringValue(ADDRESS_CITY) + " " + entity.getValueAsString(ADDRESS_ZIP) + ", "
-                  + entity.getStringValue(ADDRESS_STATE);
-        else if (entity.is(T_CATEGORY))
-          return entity.getStringValue(CATEGORY_NAME);
-        else if (entity.is(T_ITEM))
-          return entity.getValueAsString(ITEM_PRODUCT_FK) + " - " + entity.getStringValue(ITEM_NAME);
-        else if (entity.is(T_PRODUCT))
-          return entity.getValueAsString(PRODUCT_CATEGORY_FK) + " - " + entity.getStringValue(PRODUCT_NAME);
-        else if (entity.is(T_SELLER_CONTACT_INFO))
-          return entity.getStringValue(SELLER_CONTACT_INFO_LAST_NAME) + ", " + entity.getStringValue(SELLER_CONTACT_INFO_FIRST_NAME);
-        else if (entity.is(T_TAG))
-          return entity.getStringValue(TAG_TAG);
-        else if (entity.is(T_TAG_ITEM))
-          return entity.getEntityValue(TAG_ITEM_ITEM_FK) + " - " + entity.getEntityValue(TAG_ITEM_TAG_FK);
-
-        return super.toString(entity);
+        return entity.getEntityValue(TAG_ITEM_ITEM_FK) + " - " + entity.getEntityValue(TAG_ITEM_TAG_FK);
       }
     });
   }

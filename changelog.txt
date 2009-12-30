@@ -968,3 +968,5 @@
   EntityPropertyLinkTest seperated into multiple test classes
   DoubleTextPropertyLinkTest, added a simple validation test
   Spelling corrected throughout
+  EntityLookupField now uses Entity.compareTo() for lexical ordering of selection list
+  Entity.setDefaultProxy() not used in demos, problematic during tests for example, when one proxy overrides another

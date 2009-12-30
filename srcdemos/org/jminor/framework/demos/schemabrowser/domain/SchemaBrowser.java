@@ -55,12 +55,26 @@ public class SchemaBrowser {
             .setOrderByClause(SCHEMA_NAME)
             .setReadOnly(true));
 
+    Entity.setProxy(T_SCHEMA, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getStringValue(SCHEMA_NAME);
+      }
+    });
+
     EntityRepository.add(new EntityDefinition(T_TABLE, bundle.getString("t_table"),
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING).setIndex(0)),
             new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true));
+
+    Entity.setProxy(T_TABLE, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getValueAsString(TABLE_SCHEMA_FK) + "." + entity.getStringValue(TABLE_NAME);
+      }
+    });
 
     EntityRepository.add(new EntityDefinition(T_COLUMN, bundle.getString("t_column"),
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
@@ -71,6 +85,13 @@ public class SchemaBrowser {
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true));
 
+    Entity.setProxy(T_COLUMN, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getValueAsString(COLUMN_TABLE_FK) + "." + entity.getStringValue(COLUMN_NAME);
+      }
+    });
+
     EntityRepository.add(new EntityDefinition(T_CONSTRAINT, bundle.getString("t_constraint"),
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Type.STRING).setIndex(0),
@@ -79,6 +100,13 @@ public class SchemaBrowser {
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true).setLargeDataset(true));
+
+    Entity.setProxy(T_CONSTRAINT, new Entity.Proxy() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getValueAsString(CONSTRAINT_TABLE_FK) + "." + entity.getStringValue(CONSTRAINT_NAME);
+      }
+    });
 
     EntityRepository.add(new EntityDefinition(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
@@ -89,21 +117,5 @@ public class SchemaBrowser {
             new Property(COLUMN_CONSTRAINT_POSITION, Type.INT, "Position"))
             .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)
             .setReadOnly(true));
-
-    Entity.setDefaultProxy(new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-        if (entity.is(T_COLUMN))
-          return entity.getValueAsString(COLUMN_TABLE_FK) + "." + entity.getStringValue(COLUMN_NAME);
-        else if (entity.is(T_CONSTRAINT))
-          return entity.getValueAsString(CONSTRAINT_TABLE_FK) + "." + entity.getStringValue(CONSTRAINT_NAME);
-        else if (entity.is(T_SCHEMA))
-          return entity.getStringValue(SCHEMA_NAME);
-        else if (entity.is(T_TABLE))
-          return entity.getValueAsString(TABLE_SCHEMA_FK) + "." + entity.getStringValue(TABLE_NAME);
-
-        return super.toString(entity);
-      }
-    });
   }
 }
