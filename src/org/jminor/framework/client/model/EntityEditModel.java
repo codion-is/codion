@@ -497,14 +497,13 @@ public class EntityEditModel {
   /**
    * Returns true if the given value is valid for the given property, using the <code>validate</code> method
    * @param property the property
-   * @param value the value
    * @return true if the value is valid
-   * @see #validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property, Object,int)
-   * @see #validate(org.jminor.framework.domain.Property, Object,int)
+   * @see #validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property,int)
+   * @see #validate(org.jminor.framework.domain.Property,int)
    */
-  public final boolean isValid(final Property property, final Object value) {
+  public final boolean isValid(final Property property) {
     try {
-      validate(property, value, isEntityNull() ? INSERT : UPDATE);
+      validate(property, isEntityNull() ? INSERT : UPDATE);
       return true;
     }
     catch (ValidationException e) {
@@ -514,13 +513,12 @@ public class EntityEditModel {
 
   /**
    * Validates the given Entity objects.
-   * The default implementation forwards the validation to the underlying EntityEditModel
    * @param entities the entities to validate
    * @param action describes the action requiring validation,
    * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException in case the validation fails
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property, Object,int)
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object,int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property,int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property,int)
    * @see #INSERT
    * @see #UPDATE
    * @see #UNKNOWN
@@ -529,43 +527,41 @@ public class EntityEditModel {
   public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-        validate(entity, property, entity.getValue(property), action);
+        validate(entity, property, action);
       }
     }
   }
 
   /**
-   * Checks if the given value is valid for the given property, throws a ValidationException if not,
+   * Checks if the value of the given property is valid, throws a ValidationException if not,
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param property the property
-   * @param value the value
    * @param action describes the action requiring validation,
    * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException if the given value is not valid for the given property
    * @see Property#setNullable(boolean)
    * @see Configuration#PERFORM_NULL_VALIDATION
    */
-  public void validate(final Property property, final Object value, final int action) throws ValidationException {
-    validate(entity, property, value, action);
+  public void validate(final Property property, final int action) throws ValidationException {
+    validate(entity, property, action);
   }
 
   /**
-   * Checks if the given value is valid for the given property, throws a ValidationException if not,
+   * Checks if the value of the given property is valid, throws a ValidationException if not,
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param entity the entity to validate
    * @param property the property
-   * @param value the value
    * @param action describes the action requiring validation,
    * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException if the given value is not valid for the given property
    * @see Property#setNullable(boolean)
    * @see Configuration#PERFORM_NULL_VALIDATION
    */
-  public void validate(final Entity entity, final Property property, final Object value, final int action) throws ValidationException {
+  public void validate(final Entity entity, final Property property, final int action) throws ValidationException {
     if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
-      if (!isPropertyNullable(entity, property) && Entity.isValueNull(property.getPropertyType(), value)) {
+      if (!isPropertyNullable(entity, property) && entity.isValueNull(property.getPropertyID())) {
         if (action == UPDATE || (action == INSERT && !property.columnHasDefaultValue()))
-          throw new ValidationException(property, value,
+          throw new ValidationException(property, null,
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
       }
     }

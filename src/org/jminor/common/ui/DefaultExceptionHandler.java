@@ -40,8 +40,9 @@ public class DefaultExceptionHandler implements ExceptionHandler {
   }
 
   private static Throwable unwrapRuntimeException(final Throwable exception) {
-    if (exception.getClass().equals(RuntimeException.class) && exception.getCause() != null
-            && exception.getCause().getClass().equals(RuntimeException.class))
+    final boolean isRuntimeException = exception.getClass().equals(RuntimeException.class);
+    final boolean cyclicalCause = exception.getCause() == exception;
+    if (isRuntimeException && !cyclicalCause)
       return unwrapRuntimeException(exception.getCause());
 
     return exception;

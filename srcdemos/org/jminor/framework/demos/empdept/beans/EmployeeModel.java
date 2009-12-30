@@ -49,7 +49,8 @@ public class EmployeeModel extends EntityModel {
 
       /** Implementing validation for the salary and commission properties */
       @Override
-      public void validate(final Entity entity, final Property property, final Object value, final int action) throws ValidationException {
+      public void validate(final Entity entity, final Property property, final int action) throws ValidationException {
+        final Object value = entity.getValue(property);
         if (property.is(EmpDept.EMPLOYEE_SALARY)) {
           final Double salary = (Double) value;
           if (salary != null && (salary < 1000 || salary > 10000))
@@ -60,7 +61,7 @@ public class EmployeeModel extends EntityModel {
           if (commission != null && (commission < 100 || commission > 2000))
             throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_COMMISSION_VALIDATION));
         }
-        super.validate(entity, property, value, action);
+        super.validate(entity, property, action);
       }
     };
   }

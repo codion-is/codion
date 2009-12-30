@@ -151,9 +151,9 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
    * @param textComponent the text component
    * @param editModel the underlying edit model
    * @see Configuration#INVALID_VALUE_BACKGROUND_COLOR
-   * @see EntityEditModel#isValid(org.jminor.framework.domain.Property, Object)
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property, Object,int)
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property, Object,int)
+   * @see EntityEditModel#isValid(org.jminor.framework.domain.Property)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Property,int)
+   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property,int)
    */
   protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
     final Color validBackgroundColor = textComponent.getBackground();

@@ -972,3 +972,5 @@
   Entity.setDefaultProxy() not used in demos, problematic during tests for example, when one proxy overrides another
   EntityEditPanel.setDefaultFocus() now requests focus for the base panel in case no default focus component is set
   MethodLogger.getLogEntries() does not fail when logging is not enabled
+  EntityEditModel.validate() removed value parameter
+  DefaultExceptionHandler.unwrapRuntimeException() now works properly

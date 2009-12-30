@@ -61,7 +61,8 @@ public class EntityEditModelTest extends TestCase {
 
     //test validation
     try {
-      editModel.validate(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), 50d, EntityEditModel.INSERT);
+      editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
+      editModel.validate(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), EntityEditModel.INSERT);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {
