@@ -974,3 +974,4 @@
   MethodLogger.getLogEntries() does not fail when logging is not enabled
   EntityEditModel.validate() removed value parameter
   DefaultExceptionHandler.unwrapRuntimeException() now works properly
+  DefaultExceptionHandler.unwrapRuntimeException() bug fixed
