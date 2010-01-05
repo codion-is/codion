@@ -621,12 +621,20 @@ public final class Entity implements Serializable, Comparable<Entity> {
   }
 
   /**
+   * Sets the global default static proxy instance
    * @param proxy sets the default Entity.Proxy instance used if no entity specific one is specified
+   * @see org.jminor.framework.domain.Entity.Proxy
    */
   public static void setDefaultProxy(final Proxy proxy) {
     defaultProxy = proxy;
   }
 
+  /**
+   * Sets a entity specific proxy instance
+   * @param entityID the ID of the entity for which this proxy instance is used
+   * @param entityProxy the proxy instance to link to the given entity ID
+   * @see org.jminor.framework.domain.Entity.Proxy
+   */
   public static void setProxy(final String entityID, final Proxy entityProxy) {
     if (proxies == null)
       proxies = new HashMap<String, Proxy>();
@@ -634,6 +642,12 @@ public final class Entity implements Serializable, Comparable<Entity> {
     proxies.put(entityID, entityProxy);
   }
 
+  /**
+   * Returns the proxy instance assigned to the given entity ID or the default proxy if none has been assigned
+   * @param entityID the entity ID for which to retrieve the proxy
+   * @return the proxy instance assigned to the given entity ID
+   * @see org.jminor.framework.domain.Entity.Proxy
+   */
   public static Proxy getProxy(final String entityID) {
     if (proxies != null && proxies.containsKey(entityID))
       return proxies.get(entityID);
