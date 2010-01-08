@@ -111,25 +111,25 @@ public class DateUtil {
   }
 
   public static Date getFirstDayOfLastMonth() {
-    final Calendar c = Calendar.getInstance();
-    c.add(Calendar.MONTH, -1);
-    c.set(Calendar.DAY_OF_MONTH, 1);
-
-    return c.getTime();
+    return getFirstDayOfMonth(-1);
   }
 
   public static Date getLastDayOfLastMonth() {
-    final Calendar c = Calendar.getInstance();
-    c.add(Calendar.MONTH, -1);
-    c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-    return c.getTime();
+    return getLastDayOfMonth(-1);
   }
 
   public static Date getFirstDayOfMonth(final int toAdd) {
     final Calendar c = Calendar.getInstance();
     c.add(Calendar.MONTH, toAdd);
     c.set(Calendar.DAY_OF_MONTH, 1);
+
+    return c.getTime();
+  }
+
+  public static Date getLastDayOfMonth(final int toAdd) {
+    final Calendar c = Calendar.getInstance();
+    c.add(Calendar.MONTH, toAdd);
+    c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
 
     return c.getTime();
   }
