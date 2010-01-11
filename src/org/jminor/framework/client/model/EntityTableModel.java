@@ -970,11 +970,20 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
     try {
       return getEntityDb().selectMany(new SelectCriteria(getEntityID(), criteria,
-              EntityRepository.getOrderByClause(getEntityID())));
+              EntityRepository.getOrderByClause(getEntityID()), getFetchCount()));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Returns the maximum number of records to fetch via the underlying query,
+   * by default this returns -1, meaning all records should be fetched
+   * @return the fetch count
+   */
+  protected int getFetchCount() {
+    return -1;
   }
 
   /**

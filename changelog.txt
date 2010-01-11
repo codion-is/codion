@@ -975,3 +975,4 @@
   EntityEditModel.validate() removed value parameter
   DefaultExceptionHandler.unwrapRuntimeException() now works properly
   DefaultExceptionHandler.unwrapRuntimeException() bug fixed
+  EntityTableModel.getFetchCount() added
