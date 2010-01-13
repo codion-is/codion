@@ -682,7 +682,7 @@ public class EntityTablePanel extends JPanel {
    * Initializes a simple search panel, with a single search field, which performs a search based on the default
    * search properties or if none are defined all string based properties
    * @return a simple search panel
-   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String...)
+   * @see org.jminor.framework.domain.EntityDefinition#setSearchPropertyIDs(String[])
    */
   protected JPanel initializeSimpleSearchPanel() {
     final List<Property> searchableProperties = getSearchProperties();
