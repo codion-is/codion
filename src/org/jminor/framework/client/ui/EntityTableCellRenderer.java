@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.util.DateUtil;
-import org.jminor.framework.domain.Type;
+import org.jminor.framework.domain.Property;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -15,8 +15,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
+import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -68,29 +68,26 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
   protected TableCellRenderer getRenderer(final int columnIndex) {
     TableCellRenderer renderer = renderers.get(columnIndex);
-    if (renderer == null) {
-      final Type propType = tableModel.getTableColumnProperties().get(columnIndex).getPropertyType();
-      switch (propType) {
-        case BOOLEAN:
-          renderer = new BooleanRenderer();
-          break;
-        case DOUBLE:
-        case INT:
-          renderer = new NumberRenderer(true);
-          break;
-        case DATE:
-          renderer = new DateRenderer();
-          break;
-        case TIMESTAMP:
-          renderer = new TimestampRenderer();
-          break;
-        default:
-          renderer = new DefaultTableCellRenderer();
-      }
-      renderers.put(columnIndex, renderer);
-    }
+    if (renderer == null)
+      renderers.put(columnIndex, renderer = createRenderer(tableModel.getTableColumnProperties().get(columnIndex)));
 
     return renderer;
+  }
+
+  protected TableCellRenderer createRenderer(final Property property) {
+    switch (property.getPropertyType()) {
+        case BOOLEAN:
+          return new BooleanRenderer();
+        case DOUBLE:
+        case INT:
+          return new NumberRenderer(true);
+        case DATE:
+          return new DateRenderer();
+        case TIMESTAMP:
+          return new TimestampRenderer();
+        default:
+          return new DefaultTableCellRenderer();
+      }
   }
 
   /**
@@ -117,9 +114,14 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class DateRenderer extends DefaultTableCellRenderer {
-    private final SimpleDateFormat format = DateUtil.getDefaultDateFormat();
+    private final DateFormat format;
 
     public DateRenderer() {
+      this(DateUtil.getDefaultDateFormat());
+    }
+
+    public DateRenderer(final DateFormat format) {
+      this.format =  format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
@@ -137,9 +139,14 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   public static class TimestampRenderer extends DefaultTableCellRenderer {
-    private final SimpleDateFormat format = DateUtil.getDefaultTimestampFormat();
+    private final DateFormat format;
 
     public TimestampRenderer() {
+      this(DateUtil.getDefaultTimestampFormat());
+    }
+
+    public TimestampRenderer(final DateFormat format) {
+      this.format = format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 

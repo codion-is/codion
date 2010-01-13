@@ -976,3 +976,6 @@
   DefaultExceptionHandler.unwrapRuntimeException() now works properly
   DefaultExceptionHandler.unwrapRuntimeException() bug fixed
   EntityTableModel.getFetchCount() added
+  EntityTableCellRenderer.DateRenderer(DateFormat) added
+  EntityTableCellRenderer.TimestampRenderer(DateFormat) added
+  EntityTableCellRenderer.createRenderer(Property) added
