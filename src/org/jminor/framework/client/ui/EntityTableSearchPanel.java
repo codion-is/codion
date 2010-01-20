@@ -15,9 +15,11 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class EntityTableSearchPanel extends JPanel {
@@ -25,15 +27,13 @@ public class EntityTableSearchPanel extends JPanel {
   public final Event evtAdvancedChanged = new Event();
 
   private final EntityTableSearchModel searchModel;
-  private final List<Property> tableColumnProperties;
 
   private final List<JPanel> searchPanels;
 
-  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final List<Property> tableColumnProperties) {
+  public EntityTableSearchPanel(final EntityTableSearchModel searchModel) {
     if (searchModel == null)
       throw new IllegalArgumentException("EntityTableSearchPanel requires a non-null EntityTableSearchModel instance");
     this.searchModel = searchModel;
-    this.tableColumnProperties = tableColumnProperties;
     this.searchPanels = initializeSearchPanels();
     initializeUI();
   }
@@ -117,8 +117,10 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   private List<JPanel> initializeSearchPanels() {
-    final List<JPanel> panels = new ArrayList<JPanel>(tableColumnProperties.size());
-    for (final Property property : tableColumnProperties) {
+    final List<JPanel> panels = new ArrayList<JPanel>();
+    final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
       final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
       if (propertySearchModel != null)
         panels.add(new PropertySearchPanel(propertySearchModel, true, false));

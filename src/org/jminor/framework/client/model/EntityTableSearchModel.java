@@ -13,10 +13,13 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +47,7 @@ public class EntityTableSearchModel {
   public final State stSearchStateChanged = new State();
 
   private final String entityID;
-  private final List<Property> tableColumnProperties;
+  private final TableColumnModel tableColumnModel;
   private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
   private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
@@ -56,27 +59,22 @@ public class EntityTableSearchModel {
   /**
    * Instantiates a new EntityTableSearchModel
    * @param entityID the ID of the underlying entity
-   * @param tableColumnProperties the properties constituting the table columns,
+   * @param tableColumnModel the underlying TableColumnModel
    * assumed to belong to the entity identified by <code>entityID</code>
-   * @param searchableProperties properties that are searchable via the database, that is,
-   * properties that map to database columns, assumed to belong to the entity identified by <code>entityID</code>
    * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
-  public EntityTableSearchModel(final String entityID, final List<Property> tableColumnProperties,
-                                final List<Property> searchableProperties, final EntityDbProvider dbProvider,
-                                final boolean simpleSearch) {
+  public EntityTableSearchModel(final String entityID, final TableColumnModel tableColumnModel,
+                                final EntityDbProvider dbProvider, final boolean simpleSearch) {
     if (entityID == null)
       throw new IllegalArgumentException("entityID must be specified");
-    if (tableColumnProperties == null)
-      throw new IllegalArgumentException("tableColumnProperties must be specified");
-    if (searchableProperties == null)
-      throw new IllegalArgumentException("searchableProperties must be specified");
+    if (tableColumnModel == null)
+      throw new IllegalArgumentException("tableColumnModel must be specified");
     this.entityID = entityID;
-    this.tableColumnProperties = tableColumnProperties;
+    this.tableColumnModel = tableColumnModel;
     this.propertyFilterModels = initPropertyFilterModels();
-    this.propertySearchModels = initPropertySearchModels(searchableProperties, dbProvider);
+    this.propertySearchModels = initPropertySearchModels(dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
     this.simpleSearch = simpleSearch;
   }
@@ -87,6 +85,10 @@ public class EntityTableSearchModel {
 
   public boolean isSimpleSearch() {
     return simpleSearch;
+  }
+
+  public TableColumnModel getTableColumnModel() {
+    return tableColumnModel;
   }
 
   /**
@@ -187,7 +189,8 @@ public class EntityTableSearchModel {
    * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled
    */
   public boolean isSearchEnabled(final int columnIndex) {
-    final PropertySearchModel model = getPropertySearchModel(tableColumnProperties.get(columnIndex).getPropertyID());
+    final PropertySearchModel model =
+            getPropertySearchModel(((Property)tableColumnModel.getColumn(columnIndex).getIdentifier()).getPropertyID());
 
     return model != null && model.isSearchEnabled();
   }
@@ -268,36 +271,39 @@ public class EntityTableSearchModel {
   }
 
   /**
-   * @param properties the properties for which to initialize PropertySearchModels
    * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
    * @return a list of PropertySearchModels initialized according to the properties in <code>properties</code>
    */
-  private List<PropertySearchModel> initPropertySearchModels(final List<Property> properties, final EntityDbProvider dbProvider) {
+  private List<PropertySearchModel> initPropertySearchModels(final EntityDbProvider dbProvider) {
     final List<PropertySearchModel> searchModels = new ArrayList<PropertySearchModel>();
-    for (final Property property : properties) {
-      PropertySearchModel searchModel;
-      if (property instanceof Property.ForeignKeyProperty) {
-        if (EntityRepository.isLargeDataset(((Property.ForeignKeyProperty) property).getReferencedEntityID())) {
-          final EntityLookupModel lookupModel = new EntityLookupModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
-                  dbProvider, getSearchProperties(((Property.ForeignKeyProperty) property).getReferencedEntityID()));
-          lookupModel.setMultipleSelectionAllowed(true);
-          searchModel = new PropertySearchModel(property, lookupModel);
+    final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+      if (property.isSearchable()) {
+        PropertySearchModel searchModel;
+        if (property instanceof Property.ForeignKeyProperty) {
+          if (EntityRepository.isLargeDataset(((Property.ForeignKeyProperty) property).getReferencedEntityID())) {
+            final EntityLookupModel lookupModel = new EntityLookupModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
+                    dbProvider, getSearchProperties(((Property.ForeignKeyProperty) property).getReferencedEntityID()));
+            lookupModel.setMultipleSelectionAllowed(true);
+            searchModel = new PropertySearchModel(property, lookupModel);
+          }
+          else {
+            propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
+                    dbProvider, false, "", true));
+            searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
+          }
         }
         else {
-          propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
-                  dbProvider, false, "", true));
-          searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
+          searchModel = new PropertySearchModel(property);
         }
+        searchModel.evtSearchStateChanged.addListener(new ActionListener() {
+          public void actionPerformed(final ActionEvent event) {
+            stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
+          }
+        });
+        searchModels.add(searchModel);
       }
-      else {
-        searchModel = new PropertySearchModel(property);
-      }
-      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
-        public void actionPerformed(final ActionEvent event) {
-          stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-        }
-      });
-      searchModels.add(searchModel);
     }
 
     return searchModels;
@@ -307,9 +313,11 @@ public class EntityTableSearchModel {
    * @return a list of PropertyFilterModels initialized according to the model
    */
   private List<PropertyFilterModel> initPropertyFilterModels() {
-    final List<PropertyFilterModel> filters = new ArrayList<PropertyFilterModel>(tableColumnProperties.size());
+    final List<PropertyFilterModel> filters = new ArrayList<PropertyFilterModel>(tableColumnModel.getColumnCount());
     int i = 0;
-    for (final Property property : tableColumnProperties) {
+    final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
       final PropertyFilterModel filterModel = new PropertyFilterModel(property, i++);
       filterModel.evtSearchStateChanged.addListener(evtFilterStateChanged);
       filters.add(filterModel);

@@ -48,7 +48,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -710,8 +709,7 @@ public class EntityTablePanel extends JPanel {
    * @return an initialized EntityTableSearchPanel
    */
   protected JPanel initializeAdvancedSearchPanel() {
-    final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel(),
-            getTableModel().getTableColumnProperties());
+    final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel());
     searchPanel.bindToColumnSizes(getJTable());
 
     final JLabel scrollBarBuffer = new JLabel();
@@ -795,8 +793,16 @@ public class EntityTablePanel extends JPanel {
    * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable(final boolean rowColoring) {
-    final JTable table = new JTable(getTableModel().getTableSorter(), initializeTableColumnModel(rowColoring),
-            getTableModel().getSelectionModel());
+    final TableColumnModel columnModel = getTableModel().getTableColumnModel();
+    final JTable table = new JTable(getTableModel().getTableSorter(), columnModel, getTableModel().getSelectionModel());
+    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer(rowColoring);
+    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      column.setCellRenderer(tableCellRenderer);
+      column.setResizable(true);
+    }
+
     table.addMouseListener(initializeTableMouseListener());
 
     final JTableHeader header = table.getTableHeader();
@@ -914,18 +920,6 @@ public class EntityTablePanel extends JPanel {
       data[i] = line.toArray(new String[line.size()]);
     }
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
-  }
-
-  private TableColumnModel initializeTableColumnModel(final boolean rowColoring) {
-    final TableColumnModel columnModel = new DefaultTableColumnModel();
-    final List<TableColumn> columns = getTableColumns(getTableModel().getTableColumnProperties());
-    for (final TableColumn column : columns) {
-      column.setResizable(true);
-      column.setCellRenderer(initializeTableCellRenderer(rowColoring));
-      columnModel.addColumn(column);
-    }
-
-    return columnModel;
   }
 
   private void updateStatusMessage() {
@@ -1048,20 +1042,5 @@ public class EntityTablePanel extends JPanel {
       val = val.substring(1);
 
     column.setHeaderValue(val);
-  }
-
-  private static List<TableColumn> getTableColumns(final List<Property> columnProperties) {
-    final ArrayList<TableColumn> columns = new ArrayList<TableColumn>(columnProperties.size());
-    int i = 0;
-    for (final Property property : columnProperties) {
-      final TableColumn column = new TableColumn(i++);
-      column.setIdentifier(property);
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0)
-        column.setPreferredWidth(property.getPreferredColumnWidth());
-      columns.add(column);
-    }
-
-    return columns;
   }
 }

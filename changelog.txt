@@ -979,3 +979,7 @@
   EntityTableCellRenderer.DateRenderer(DateFormat) added
   EntityTableCellRenderer.TimestampRenderer(DateFormat) added
   EntityTableCellRenderer.createRenderer(Property) added
+  EntityTableModel.tableColumnProperties replaced by TableColumnModel
+  EntityTableSearchModel.tableColumnProperties replaced by TableColumnModel
+  EntityTableSearchPanel.tableColumnProperties removed
+  Property.searchable added

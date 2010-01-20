@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The default TableCellRenderer implementation used by EntityTablePanel
@@ -28,7 +29,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private final EntityTableModel tableModel;
   private final boolean rowColoring;
 
-  private final HashMap<Integer, TableCellRenderer> renderers = new HashMap<Integer, TableCellRenderer>();
+  private final Map<Property, TableCellRenderer> renderers = new HashMap<Property, TableCellRenderer>();
 
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
@@ -67,14 +68,15 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   protected TableCellRenderer getRenderer(final int columnIndex) {
-    TableCellRenderer renderer = renderers.get(columnIndex);
+    final Property columnProperty = tableModel.getColumnProperty(columnIndex);
+    TableCellRenderer renderer = renderers.get(columnProperty);
     if (renderer == null)
-      renderers.put(columnIndex, renderer = createRenderer(tableModel.getTableColumnProperties().get(columnIndex)));
+      renderers.put(columnProperty, renderer = initializeRenderer(columnProperty));
 
     return renderer;
   }
 
-  protected TableCellRenderer createRenderer(final Property property) {
+  protected TableCellRenderer initializeRenderer(final Property property) {
     switch (property.getPropertyType()) {
         case BOOLEAN:
           return new BooleanRenderer();

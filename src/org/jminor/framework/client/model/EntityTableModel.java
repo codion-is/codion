@@ -29,6 +29,9 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -116,9 +120,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   private final List<Entity> hiddenEntities = new ArrayList<Entity>();
 
   /**
-   * The properties on which to base the table columns
+   * The TableColumnModel
    */
-  private final List<Property> tableColumnProperties;
+  private final TableColumnModel tableColumnModel;
 
   /**
    * The search model
@@ -224,7 +228,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.queryConfigurationAllowed = queryConfigurationAllowed;
-    this.tableColumnProperties = initializeColumnProperties();
+    this.tableColumnModel = initializeTableColumnModel();
     this.tableSearchModel = initializeSearchModel();
     this.tableSorter = new TableSorter(this);
     bindEventsInternal();
@@ -235,7 +239,12 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the underlying table column properties
    */
   public List<Property> getTableColumnProperties() {
-    return new ArrayList<Property>(tableColumnProperties);
+    final ArrayList<Property> propertyList = new ArrayList<Property>(tableColumnModel.getColumnCount());
+    final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
+    while (columnEnumeration.hasMoreElements())
+      propertyList.add((Property) columnEnumeration.nextElement().getIdentifier());
+
+    return propertyList;
   }
 
   /**
@@ -438,13 +447,14 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   /** {@inheritDoc} */
   @Override
   public Class<?> getColumnClass(final int columnIndex) {
-    return getValueClass(tableColumnProperties.get(columnIndex).getPropertyType(),
-            getEntityAtViewIndex(0).getValue(tableColumnProperties.get(columnIndex).getPropertyID()));
+    final Property columnProperty = (Property) getTableColumnModel().getColumn(columnIndex).getIdentifier();
+
+    return getValueClass(columnProperty.getPropertyType(), getEntityAtViewIndex(0).getValue(columnProperty.getPropertyID()));
   }
 
   /** {@inheritDoc} */
   public int getColumnCount() {
-    return tableColumnProperties.size();
+    return getTableColumnModel().getColumnCount();
   }
 
   /** {@inheritDoc} */
@@ -454,7 +464,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   /** {@inheritDoc} */
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    return visibleEntities.get(rowIndex).getTableValue(tableColumnProperties.get(columnIndex));
+    return visibleEntities.get(rowIndex).getTableValue((Property) tableColumnModel.getColumn(columnIndex).getIdentifier());
   }
 
   /**
@@ -959,6 +969,29 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     return propertySummaryModels.get(property.getPropertyID());
   }
 
+  public Property getColumnProperty(final int columnIndex) {
+    return (Property) tableColumnModel.getColumn(columnIndex).getIdentifier();
+  }
+
+  public TableColumnModel getTableColumnModel() {
+    return tableColumnModel;
+  }
+
+  protected TableColumnModel initializeTableColumnModel() {
+    final TableColumnModel columnModel = new DefaultTableColumnModel();
+    int i = 0;
+    for (final Property property : initializeColumnProperties()) {
+      final TableColumn column = new TableColumn(i++);
+      column.setIdentifier(property);
+      column.setHeaderValue(property.getCaption());
+      if (property.getPreferredColumnWidth() > 0)
+        column.setPreferredWidth(property.getPreferredColumnWidth());
+      columnModel.addColumn(column);
+    }
+
+    return columnModel;
+  }
+
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed
    * @param criteria a criteria
@@ -987,25 +1020,11 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   /**
-   * @return a list containing the properties for which this EntityTableModel
-   * should provide PropertySearchModels, the default implementation returns all
-   * table column based properties which are visible in this table model
-   */
-  protected List<Property> getSearchableProperties() {
-    final List<Property> searchableProperties = new ArrayList<Property>();
-    for (final Property property : EntityRepository.getProperties(getEntityID(), false))
-      if (property.isDatabaseProperty())
-        searchableProperties.add(property);
-
-    return searchableProperties;
-  }
-
-  /**
    * Initializes a EntityTableSearchModel based on the properties constituting this EntityTableModel
    * @return a EntityTableSearchModel for this EntityTableModel
    */
   protected EntityTableSearchModel initializeSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), tableColumnProperties, getSearchableProperties(), getDbProvider(), false);
+    return new EntityTableSearchModel(getEntityID(), getTableColumnModel(), getDbProvider(), false);
   }
 
   /**

@@ -71,7 +71,12 @@ public class Property implements Serializable {
   /**
    * True if the value of this property is allowed to be null
    */
-  private boolean isNullable = true;
+  private boolean nullable = true;
+
+  /**
+   * True if this property should be included when searching for entities
+   */
+  private boolean searchable = true;
 
   /**
    * True if the underlying column has a default value
@@ -221,7 +226,7 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setNullable(final boolean nullable) {
-    isNullable = nullable;
+    this.nullable = nullable;
     return this;
   }
 
@@ -229,7 +234,23 @@ public class Property implements Serializable {
    * @return true if this property accepts a null value
    */
   public boolean isNullable() {
-    return isNullable;
+    return nullable;
+  }
+
+  /**
+   * @param searchable specifies whether or not this property should be included when searching for entities
+   * @return this Property instance
+   */
+  public Property setSearchable(final boolean searchable) {
+    this.searchable = searchable;
+    return this;
+  }
+
+  /**
+   * @return true if this property shuld be included in search criteria
+   */
+  public boolean isSearchable() {
+    return searchable;
   }
 
   /**
@@ -593,11 +614,17 @@ public class Property implements Serializable {
     public TransientProperty(final String propertyID, final Type type, final String caption) {
       super(propertyID, type, caption);
       super.setUpdatable(false);
+      super.setSearchable(false);
     }
 
     @Override
     public Property setUpdatable(final boolean updatable) {
       throw new IllegalArgumentException("TransientProperty can not be updatable");
+    }
+
+    @Override
+    public Property setSearchable(final boolean searchable) {
+      throw new IllegalArgumentException("TransientProperty can not be searchable");
     }
 
     /**
