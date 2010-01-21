@@ -44,7 +44,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /** {@inheritDoc} */
   public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
-    final Component component = getRenderer(column).getTableCellRendererComponent(
+    final Component component = getRenderer(tableModel.getColumnProperty(column)).getTableCellRendererComponent(
             table, value, isSelected, hasFocus, row, column);
 
     if (isSelected)
@@ -67,8 +67,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     return component;
   }
 
-  protected TableCellRenderer getRenderer(final int columnIndex) {
-    final Property columnProperty = tableModel.getColumnProperty(columnIndex);
+  protected TableCellRenderer getRenderer(final Property columnProperty) {
     TableCellRenderer renderer = renderers.get(columnProperty);
     if (renderer == null)
       renderers.put(columnProperty, renderer = initializeRenderer(columnProperty));

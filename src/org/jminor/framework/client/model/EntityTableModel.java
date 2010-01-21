@@ -464,7 +464,28 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   /** {@inheritDoc} */
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    return visibleEntities.get(rowIndex).getTableValue((Property) tableColumnModel.getColumn(columnIndex).getIdentifier());
+    return visibleEntities.get(rowIndex).getTableValue((Property) tableColumnModel.getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
+  }
+
+  /**
+   * Maps the index of the column in the table model at
+   * <code>modelColumnIndex</code> to the index of the column
+   * in the view.  Returns the index of the
+   * corresponding column in the view; returns -1 if this column is not
+   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
+   * returns <code>modelColumnIndex</code>.
+   * @param modelColumnIndex the index of the column in the model
+   * @return the index of the corresponding column in the view
+   */
+  public int convertColumnIndexToView(final int modelColumnIndex) {
+    if (modelColumnIndex < 0)
+      return modelColumnIndex;
+
+    for (int index = 0; index < tableColumnModel.getColumnCount(); index++)
+      if (tableColumnModel.getColumn(index).getModelIndex() == modelColumnIndex)
+        return index;
+
+    return -1;
   }
 
   /**

@@ -983,3 +983,6 @@
   EntityTableSearchModel.tableColumnProperties replaced by TableColumnModel
   EntityTableSearchPanel.tableColumnProperties removed
   Property.searchable added
+  EntityTableModel.convertColumnIndexToView() added, basically copied from JTable
+  EntityTableModel now handles dynamic column positioning
+  EntityTableCellRenderer.getRenderer() now takes Property as parameter instead of column index
