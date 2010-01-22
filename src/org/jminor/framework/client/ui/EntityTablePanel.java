@@ -56,7 +56,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -67,7 +66,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.ListIterator;
@@ -102,6 +104,11 @@ public class EntityTablePanel extends JPanel {
   private final JTable entityTable;
 
   /**
+   * Contains columns that have been hidden
+   */
+  private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
+
+  /**
    * the scroll pane used by the JTable instance
    */
   private final JScrollPane tableScrollPane;
@@ -120,6 +127,11 @@ public class EntityTablePanel extends JPanel {
    * the scroll pane used for the search panel
    */
   private JScrollPane searchScrollPane;
+
+  /**
+   * the summary panel
+   */
+  private final EntityTableSummaryPanel summaryPanel;
 
   /**
    * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
@@ -176,6 +188,7 @@ public class EntityTablePanel extends JPanel {
     this.entityTable = initializeJTable(rowColoring);
     this.tableScrollPane = new JScrollPane(entityTable);
     this.searchPanel = initializeSearchPanel();
+    this.summaryPanel = initializeSummaryPanel();
     this.propertyFilterPanels = initializeFilterPanels();
     initializeUI(popupControls);
     bindEventsInternal();
@@ -361,42 +374,38 @@ public class EntityTablePanel extends JPanel {
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectTableColumns() {
-    final JPanel togglePanel = new JPanel(new GridLayout(getJTable().getColumnCount(), 1));
-    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
+    final Enumeration<TableColumn> columns = getTableModel().getTableColumnModel().getColumns();
+    final List<TableColumn> allColumns = new ArrayList<TableColumn>();
+    while (columns.hasMoreElements())
+      allColumns.add(columns.nextElement());
+    allColumns.addAll(hiddenColumns);
+    Collections.sort(allColumns, new Comparator<TableColumn>() {
+      public int compare(final TableColumn colOne, final TableColumn colTwo) {
+        return Collator.getInstance().compare(colOne.getIdentifier().toString(), colTwo.getIdentifier().toString());
+      }
+    });
+
+    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(15, allColumns.size()), 0));
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), column.getPreferredWidth() > 0);
+    for (final TableColumn column : allColumns) {
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), !hiddenColumns.contains(column));
       buttonList.add(chkColumn);
       togglePanel.add(chkColumn);
     }
     final JScrollPane scroller = new JScrollPane(togglePanel);
-    scroller.setPreferredSize(new Dimension(200, 400));
     final int result = JOptionPane.showOptionDialog(this, scroller,
             FrameworkMessages.get(FrameworkMessages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (result == JOptionPane.OK_OPTION) {
-      final TableColumnModel columnModel = getJTable().getColumnModel();
       for (final JCheckBox chkButton : buttonList) {
-        final TableColumn column = columnModel.getColumn(buttonList.indexOf(chkButton));
+        final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
         setPropertyColumnVisible((Property) column.getIdentifier(), chkButton.isSelected());
       }
     }
   }
 
   /**
-   * @param property the property for which to query if its column is visible or hidden
-   * @return true if the column is visible, false if it is hidden
-   */
-  public boolean isPropertyColumnVisible(final Property property) {
-    return getJTable() != null && getJTable().getColumn(property).getPreferredWidth() > 0;
-  }
-
-  /**
-   * Toggles the visibility of the column representing the given property.
-   * This is done by setting the column width to 0 when hiding and setting it to the default width when showing.
-   * This method does not prevent the column from being selected while traversing the table grid
-   * with the arrow keys, something we'll call a *known bug*.
+   * Toggles the visibility of the column representing the given property
    * Hiding a column removes it from the query criteria, by disabling the underlying search model (PropertySearchModel)
    * @param property the property
    * @param visible if true the column is shown, otherwise it is hidden
@@ -407,20 +416,14 @@ public class EntityTablePanel extends JPanel {
 
     if (visible) {
       if (!isPropertyColumnVisible(property)) {
-        final TableColumn column = getJTable().getColumn(property);
-        column.setMaxWidth(Integer.MAX_VALUE);
-        column.setMinWidth(15);
-        column.setPreferredWidth(property.getPreferredColumnWidth() < 0 ? 80 : property.getPreferredColumnWidth());
+        getTableModel().getTableColumnModel().addColumn(showColumn(property));
       }
     }
     else {
       if (isPropertyColumnVisible(property)) {
         //disable the search model for the column to be hidden, to prevent confusion
         getTableModel().getSearchModel().setSearchEnabled(property.getPropertyID(), false);
-        final TableColumn column = getJTable().getColumn(property);
-        column.setMinWidth(0);
-        column.setPreferredWidth(0);
-        column.setMaxWidth(0);
+        hideColumn(property);
       }
     }
   }
@@ -546,9 +549,8 @@ public class EntityTablePanel extends JPanel {
 
     base.add(tableScrollPane, BorderLayout.CENTER);
     add(base, BorderLayout.CENTER);
-    final JPanel tableSummaryPanel = initializeSummaryPanel();
-    if (tableSummaryPanel != null) {
-      summaryScrollPane = new JScrollPane(tableSummaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+    if (summaryPanel != null) {
+      summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
       tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
@@ -610,6 +612,8 @@ public class EntityTablePanel extends JPanel {
     final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
+    if (table.getParent() != null)
+      ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     table.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_G,
             KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "showPopupMenu");
     table.getActionMap().put("showPopupMenu", new AbstractAction() {
@@ -642,32 +646,13 @@ public class EntityTablePanel extends JPanel {
    * Initializes the panel containing the table column summary panels
    * @return the summary panel
    */
-  protected JPanel initializeSummaryPanel() {
-    final List<JPanel> panels = new ArrayList<JPanel>();
-    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-    final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final Property property = (Property) columns.nextElement().getIdentifier();
-      final PropertySummaryPanel summaryPanel = initializeSummaryPanel(property);
-      panels.add(summaryPanel);
-      panel.add(summaryPanel);
-    }
-    UiUtil.bindColumnAndPanelSizes(getJTable().getColumnModel(), panels);
+  protected EntityTableSummaryPanel initializeSummaryPanel() {
+    final EntityTableSummaryPanel panel = new EntityTableSummaryPanel(getTableModel());
+    panel.bindToColumnSizes(getJTable());
 
-    final JLabel scrollBarBuffer = new JLabel();
-    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
-    panel.add(scrollBarBuffer);
+    addScrollBarBuffer(panel);
 
     return panel;
-  }
-
-  /**
-   * Initializes a PropertySummaryPanel for the given property
-   * @param property the property for which to create a summary panel
-   * @return a PropertySummaryPanel for the given property
-   */
-  protected PropertySummaryPanel initializeSummaryPanel(final Property property) {
-    return new PropertySummaryPanel(getTableModel().getPropertySummaryModel(property));
   }
 
   /**
@@ -712,9 +697,7 @@ public class EntityTablePanel extends JPanel {
     final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel());
     searchPanel.bindToColumnSizes(getJTable());
 
-    final JLabel scrollBarBuffer = new JLabel();
-    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
-    searchPanel.add(scrollBarBuffer);
+    addScrollBarBuffer(searchPanel);
 
     return searchPanel;
   }
@@ -820,7 +803,7 @@ public class EntityTablePanel extends JPanel {
       }
     });
     header.setFocusable(false);
-    header.setReorderingAllowed(false);
+    header.setReorderingAllowed(true);
 
     table.setColumnSelectionAllowed(false);
     table.setAutoResizeMode((Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE));
@@ -1008,6 +991,38 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
+  private TableColumn showColumn(final Property property) {
+    final ListIterator<TableColumn> iterator = hiddenColumns.listIterator();
+    while (iterator.hasNext()) {
+      final TableColumn column = iterator.next();
+      if (column.getIdentifier().equals(property)) {
+        iterator.remove();
+        return column;
+      }
+    }
+
+    return null;
+  }
+
+  private void hideColumn(final Property property) {
+    final TableColumn column = getTableModel().getTableColumn(property);
+    getTableModel().getTableColumnModel().removeColumn(column);
+    hiddenColumns.add(column);
+  }
+
+  /**
+   * @param property the property for which to query if its column is visible or hidden
+   * @return true if the column is visible, false if it is hidden
+   */
+  private boolean isPropertyColumnVisible(final Property property) {
+    for (final TableColumn column : hiddenColumns) {
+      if (column.getIdentifier().equals(property))
+        return false;
+    }
+
+    return true;
+  }
+
   private void toggleColumnFilterPanel(final MouseEvent event) {
     toggleFilterPanel(event.getLocationOnScreen(),
             propertyFilterPanels.get(getJTable().getColumnModel().getColumnIndexAtX(event.getX())), getJTable());
@@ -1017,6 +1032,12 @@ public class EntityTablePanel extends JPanel {
     searchScrollPane.getViewport().setView(null);
     searchScrollPane.getViewport().setView(searchPanel);
     revalidate();
+  }
+
+  private void addScrollBarBuffer(final JPanel panel) {
+    final JLabel scrollBarBuffer = new JLabel();
+    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
+    panel.add(scrollBarBuffer);
   }
 
   private static void toggleFilterPanel(final Point position, final PropertyFilterPanel columnFilterPanel,

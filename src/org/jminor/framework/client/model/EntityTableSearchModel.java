@@ -20,9 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: Björn Darri
@@ -50,7 +48,6 @@ public class EntityTableSearchModel {
   private final TableColumnModel tableColumnModel;
   private final List<PropertyFilterModel> propertyFilterModels;
   private final List<PropertySearchModel> propertySearchModels;
-  private final Map<Property, EntityComboBoxModel> propertySearchComboBoxModels = new HashMap<Property, EntityComboBoxModel>();
   /** When active the search should be simplified */
   private final boolean simpleSearch;
   private CriteriaSet.Conjunction searchConjunction = CriteriaSet.Conjunction.AND;
@@ -145,16 +142,20 @@ public class EntityTableSearchModel {
    * Refreshes all combo box models associated with PropertySearchModels
    */
   public void refreshSearchComboBoxModels() {
-    for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
-      model.refresh();
+    for (final PropertySearchModel model : propertySearchModels) {
+      if (model.getEntityComboBoxModel() != null)
+        model.getEntityComboBoxModel().refresh();
+    }
   }
 
   /**
    * Clears the contents from all combo box models associated with PropertySearchModels
    */
   public void clearSearchComboBoxModels() {
-    for (final EntityComboBoxModel model : propertySearchComboBoxModels.values())
-      model.clear();
+    for (final PropertySearchModel model : propertySearchModels) {
+      if (model.getEntityComboBoxModel() != null)
+        model.getEntityComboBoxModel().clear();
+    }
   }
 
   /**
@@ -173,6 +174,19 @@ public class EntityTableSearchModel {
   }
 
   /**
+   * @param propertyID the id of the property for which to check for the PropertySearchModel
+   * @return true if this EntityTableSearchModel contains a PropertySearchModel associated
+   * with the property identified by <code>propertyID</code>
+   */
+  public boolean containsPropertySearchModel(final String propertyID) {
+    for (final PropertySearchModel searchModel : propertySearchModels)
+      if (searchModel.getProperty().is(propertyID))
+        return true;
+
+    return false;
+  }
+
+  /**
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
    * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
    */
@@ -181,7 +195,7 @@ public class EntityTableSearchModel {
       if (searchModel.getProperty().is(propertyID))
         return searchModel;
 
-    return null;
+    throw new RuntimeException("PropertySearchModel not found for property with ID: " + propertyID);
   }
 
   /**
@@ -189,10 +203,9 @@ public class EntityTableSearchModel {
    * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled
    */
   public boolean isSearchEnabled(final int columnIndex) {
-    final PropertySearchModel model =
-            getPropertySearchModel(((Property)tableColumnModel.getColumn(columnIndex).getIdentifier()).getPropertyID());
+    final String propertyID = ((Property)tableColumnModel.getColumn(columnIndex).getIdentifier()).getPropertyID();
 
-    return model != null && model.isSearchEnabled();
+    return containsPropertySearchModel(propertyID) && getPropertySearchModel(propertyID).isSearchEnabled();
   }
 
   /**
@@ -211,8 +224,8 @@ public class EntityTableSearchModel {
    */
   public boolean setSearchValues(final String propertyID, final Collection<?> values) {
     final String searchState = getSearchModelState();
-    final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
-    if (searchModel != null) {
+    if (containsPropertySearchModel(propertyID)) {
+      final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
       searchModel.initialize();
       searchModel.setSearchEnabled(values != null && values.size() > 0);
       searchModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
@@ -267,7 +280,8 @@ public class EntityTableSearchModel {
    * @param value if true the search is enabled, otherwise it is disabled
    */
   public void setSearchEnabled(final String propertyID, final boolean value) {
-    getPropertySearchModel(propertyID).setSearchEnabled(value);
+    if (containsPropertySearchModel(propertyID))
+      getPropertySearchModel(propertyID).setSearchEnabled(value);
   }
 
   /**
@@ -289,9 +303,8 @@ public class EntityTableSearchModel {
             searchModel = new PropertySearchModel(property, lookupModel);
           }
           else {
-            propertySearchComboBoxModels.put(property, new EntityComboBoxModel(((Property.ForeignKeyProperty) property).getReferencedEntityID(),
-                    dbProvider, false, "", true));
-            searchModel = new PropertySearchModel(property, propertySearchComboBoxModels.get(property));
+            searchModel = new PropertySearchModel(property, new EntityComboBoxModel(((Property.ForeignKeyProperty)
+                    property).getReferencedEntityID(), dbProvider, false, "", true));
           }
         }
         else {
@@ -300,6 +313,7 @@ public class EntityTableSearchModel {
         searchModel.evtSearchStateChanged.addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent event) {
             stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
+            stSearchStateChanged.evtStateChanged.fire();
           }
         });
         searchModels.add(searchModel);

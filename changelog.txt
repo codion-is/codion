@@ -986,3 +986,12 @@
   EntityTableModel.convertColumnIndexToView() added, basically copied from JTable
   EntityTableModel now handles dynamic column positioning
   EntityTableCellRenderer.getRenderer() now takes Property as parameter instead of column index
+  EntityTablePanel show/hide table column functionality improved
+  EntityTableSummaryPanel added
+  EntityTablePanel.summaryPanel added
+  EntityTablePanel table popup menu now added to the JTable parent as well, works for empty tables with no columns showing
+  EntityTablePanel column reording allowed
+  UiUtil.bindColumnAndPanelSizes() now takes column movement in account
+  EntityTableModel.getTableColumn(Property) added
+  EntityTableModel.getColumnClass() and getValueAt() both use convertColumnIndexToView
+  EntityTableSearchPanel now handles column movement

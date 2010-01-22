@@ -15,12 +15,16 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityTableSearchPanel extends JPanel {
 
@@ -28,11 +32,11 @@ public class EntityTableSearchPanel extends JPanel {
 
   private final EntityTableSearchModel searchModel;
 
-  private final List<JPanel> searchPanels;
+  private final Map<String, JPanel> searchPanels;
 
   public EntityTableSearchPanel(final EntityTableSearchModel searchModel) {
     if (searchModel == null)
-      throw new IllegalArgumentException("EntityTableSearchPanel requires a non-null EntityTableSearchModel instance");
+      throw new IllegalArgumentException("EntityTableSearchPanel requires a EntityTableSearchModel instance");
     this.searchModel = searchModel;
     this.searchPanels = initializeSearchPanels();
     initializeUI();
@@ -42,14 +46,14 @@ public class EntityTableSearchPanel extends JPanel {
    * @param value true if wildcards should automatically be added to strings
    */
   public void setAutomaticWildcard(final boolean value) {
-    for (final JPanel searchPanel : searchPanels) {
+    for (final JPanel searchPanel : searchPanels.values()) {
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).getModel().setAutomaticWildcard(value);
     }
   }
 
   public void clear() {
-    for (final JPanel searchPanel : searchPanels) {
+    for (final JPanel searchPanel : searchPanels.values()) {
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).getModel().clear();
     }
@@ -59,7 +63,7 @@ public class EntityTableSearchPanel extends JPanel {
    * @param value true if advanced search should be enabled
    */
   public void setAdvanced(final boolean value) {
-    for (final JPanel searchPanel : searchPanels)
+    for (final JPanel searchPanel : searchPanels.values())
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).setAdvancedSearchOn(value);
 
@@ -70,7 +74,7 @@ public class EntityTableSearchPanel extends JPanel {
    * @return true if advanced search is enabled
    */
   public boolean isAdvanced() {
-    for (final JPanel searchPanel : searchPanels)
+    for (final JPanel searchPanel : searchPanels.values())
       if (searchPanel instanceof PropertySearchPanel)
         return ((PropertySearchPanel)searchPanel).isAdvancedSearchOn();
 
@@ -84,11 +88,11 @@ public class EntityTableSearchPanel extends JPanel {
   /** {@inheritDoc} */
   @Override
   public Dimension getPreferredSize() {
-    for (final JPanel searchPanel : searchPanels)
+    for (final JPanel searchPanel : searchPanels.values())
       if (searchPanel instanceof PropertySearchPanel)
         return new Dimension(super.getPreferredSize().width, searchPanel.getPreferredSize().height);
 
-    return new Dimension(super.getPreferredSize().width, searchPanels.get(0).getPreferredSize().height);
+    return new Dimension(super.getPreferredSize().width, searchPanels.values().iterator().next().getPreferredSize().height);
   }
 
   public ControlSet getControls() {
@@ -102,35 +106,60 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
-    for (final JPanel panel : searchPanels) {
-      if (panel instanceof PropertySearchPanel && ((PropertySearchPanel)panel).getModel().getProperty().is(propertyID))
-        return (PropertySearchPanel) panel;
-    }
+    final JPanel panel = searchPanels.get(propertyID);
+    if (panel instanceof PropertySearchPanel)
+      return (PropertySearchPanel) panel;
 
     return null;
   }
 
   protected void initializeUI() {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
-    for (final JPanel searchPanel : searchPanels)
-      add(searchPanel);
+    resetPanel();
+    searchModel.getTableColumnModel().addColumnModelListener(new TableColumnModelListener() {
+      public void columnAdded(final TableColumnModelEvent e) {
+        resetPanel();
+      }
+
+      public void columnRemoved(final TableColumnModelEvent e) {
+        resetPanel();
+      }
+
+      public void columnMoved(final TableColumnModelEvent e) {
+        resetPanel();
+      }
+
+      public void columnMarginChanged(final ChangeEvent e) {}
+
+      public void columnSelectionChanged(final ListSelectionEvent e) {}
+    });
   }
 
-  private List<JPanel> initializeSearchPanels() {
-    final List<JPanel> panels = new ArrayList<JPanel>();
+  private Map<String, JPanel> initializeSearchPanels() {
+    final Map<String, JPanel> panels = new HashMap<String, JPanel>();
     final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
-      final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
-      if (propertySearchModel != null)
-        panels.add(new PropertySearchPanel(propertySearchModel, true, false));
+      if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
+        final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
+        panels.put(property.getPropertyID(), new PropertySearchPanel(propertySearchModel, true, false));
+      }
       else {
         final JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
-        panels.add(panel);
+        panels.put(property.getPropertyID(), panel);
       }
     }
 
     return panels;
+  }
+
+  private void resetPanel() {
+    removeAll();
+    final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements())
+      add(searchPanels.get(((Property) columnEnumeration.nextElement().getIdentifier()).getPropertyID()));
+
+    repaint();
   }
 }

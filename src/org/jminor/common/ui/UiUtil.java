@@ -8,6 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.ui.textfield.TextFieldPlus;
+import org.jminor.framework.domain.Property;
 
 import com.toedter.calendar.JCalendar;
 
@@ -26,6 +27,10 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.RootPaneContainer;
 import javax.swing.TransferHandler;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.AttributeSet;
@@ -63,6 +68,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -243,19 +249,36 @@ public class UiUtil {
     }
   }
 
-  public static void bindColumnAndPanelSizes(final TableColumnModel columnModel, final List<JPanel> panelList) {
-    if (columnModel.getColumnCount() != panelList.size())
+  public static void bindColumnAndPanelSizes(final TableColumnModel columnModel, final Map<String, JPanel> panelMap) {
+    if (columnModel.getColumnCount() != panelMap.size())
       throw new IllegalArgumentException("An equal number of columns and panels is required when binding sizes");
 
-    for (int columnIndex = 0; columnIndex < columnModel.getColumnCount(); columnIndex++) {
-      final JPanel panel = panelList.get(columnIndex);
-      final TableColumn column = columnModel.getColumn(columnIndex);
+    columnModel.addColumnModelListener(new TableColumnModelListener() {
+      public void columnAdded(final TableColumnModelEvent e) {
+        syncPanelWidths(columnModel, panelMap);
+      }
+
+      public void columnRemoved(final TableColumnModelEvent e) {
+        syncPanelWidths(columnModel, panelMap);
+      }
+
+      public void columnMoved(final TableColumnModelEvent e) {
+        syncPanelWidths(columnModel, panelMap);
+      }
+
+      public void columnMarginChanged(final ChangeEvent e) {}
+
+      public void columnSelectionChanged(final ListSelectionEvent e) {}
+    });
+    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      final JPanel panel = panelMap.get(((Property) column.getIdentifier()).getPropertyID());
       panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
       column.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getPropertyName().equals("width")) {
-            panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
-            panel.revalidate();
+            syncPanelWidth(panel, column);
           }
         }
       });
@@ -694,5 +717,19 @@ public class UiUtil {
     }
 
     return null;
+  }
+
+  private static void syncPanelWidths(final TableColumnModel columnModel, final Map<String, JPanel> panelMap) {
+    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      final JPanel panel = panelMap.get(((Property) column.getIdentifier()).getPropertyID());
+      syncPanelWidth(panel, column);
+    }
+  }
+
+  private static void syncPanelWidth(final JPanel panel, final TableColumn column) {
+    panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
+    panel.revalidate();
   }
 }
