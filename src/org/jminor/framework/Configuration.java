@@ -183,6 +183,13 @@ public class Configuration {
   public static final String TAB_PLACEMENT = "jminor.client.tabPlacement";
 
   /**
+   * Specifies whether or not columns can be rearranged in tables
+   * Value type: Boolean
+   * Default value: true
+   */
+  public static final String ALLOW_COLUMN_REORDERING = "jminor.client.allowColumnReordering";
+
+  /**
    * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar
    * Value type: Boolean
    * Default value: false
@@ -383,6 +390,7 @@ public class Configuration {
     setValue(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
     setValue(PERFORM_NULL_VALIDATION, true);
     setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
+    setValue(ALLOW_COLUMN_REORDERING, true);
   }
 
   public static void setValue(final String key, final Object value) {

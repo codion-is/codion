@@ -803,13 +803,23 @@ public class EntityTablePanel extends JPanel {
       }
     });
     header.setFocusable(false);
-    header.setReorderingAllowed(true);
+    header.setReorderingAllowed(allowColumnReordering());
 
     table.setColumnSelectionAllowed(false);
     table.setAutoResizeMode((Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE));
     getTableModel().getTableSorter().setTableHeader(header);
 
     return table;
+  }
+
+  /**
+   * Specifies whether or not column reordering is allowed in this table, called during JTable initialization.
+   * By default this method returns the configuration value ALLOW_COLUMN_REORDERING
+   * @return true if this table should allow column reordering
+   * @see org.jminor.framework.Configuration#ALLOW_COLUMN_REORDERING
+   */
+  protected boolean allowColumnReordering() {
+    return (Boolean) Configuration.getValue(Configuration.ALLOW_COLUMN_REORDERING);
   }
 
   private void performSimpleSearch(final String searchText, final List<Property> searchProperties) {

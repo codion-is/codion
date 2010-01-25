@@ -995,3 +995,5 @@
   EntityTableModel.getTableColumn(Property) added
   EntityTableModel.getColumnClass() and getValueAt() both use convertColumnIndexToView
   EntityTableSearchPanel now handles column movement
+  Configuration.ALLOW_COLUMN_REORDERING added
+  EntityTablePanel.allowColumnReordering() added, returns the above value by default, used in initializeJTable()
