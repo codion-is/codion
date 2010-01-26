@@ -71,8 +71,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 public class EntityTablePanel extends JPanel {
 
@@ -146,13 +148,16 @@ public class EntityTablePanel extends JPanel {
   /**
    * the property filter panels
    */
-  private final List<PropertyFilterPanel> propertyFilterPanels;
+  private final Map<String, PropertyFilterPanel> propertyFilterPanels;
 
   /**
    * the toolbar containing the refresh button
    */
   private JToolBar refreshToolBar;
 
+  /**
+   * The south panel
+   */
   private JPanel southPanel;
 
   /**
@@ -231,7 +236,7 @@ public class EntityTablePanel extends JPanel {
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(final boolean value) {
-    for (final PropertyFilterPanel columnFilterPanel : propertyFilterPanels) {
+    for (final PropertyFilterPanel columnFilterPanel : propertyFilterPanels.values()) {
       if (value)
         columnFilterPanel.showDialog();
       else
@@ -797,7 +802,8 @@ public class EntityTablePanel extends JPanel {
                                                      final boolean hasFocus, final int row, final int column) {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
-        label.setFont(getTableModel().getSearchModel().isSearchEnabled(column) ? searchFont : defaultFont);
+        label.setFont(getTableModel().getSearchModel().isSearchEnabled(
+                tableModel.getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
 
         return label;
       }
@@ -923,9 +929,9 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private List<PropertyFilterPanel> initializeFilterPanels() {
-    final List<PropertyFilterPanel> propertyFilterPanels =
-            new ArrayList<PropertyFilterPanel>(getTableModel().getSearchModel().getPropertyFilterModels().size());
+  private Map<String, PropertyFilterPanel> initializeFilterPanels() {
+    final Map<String, PropertyFilterPanel> propertyFilterPanels =
+            new HashMap<String, PropertyFilterPanel>(getTableModel().getSearchModel().getPropertyFilterModels().size());
     final Enumeration<TableColumn> columns = getJTable().getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
@@ -943,7 +949,7 @@ public class EntityTablePanel extends JPanel {
       if (model.isSearchEnabled())
         addFilterIndicator(column);
 
-      propertyFilterPanels.add(new PropertyFilterPanel(model, true, true));
+      propertyFilterPanels.put(model.getPropertyID(), new PropertyFilterPanel(model, true, true));
     }
 
     return propertyFilterPanels;
@@ -1034,8 +1040,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    toggleFilterPanel(event.getLocationOnScreen(),
-            propertyFilterPanels.get(getJTable().getColumnModel().getColumnIndexAtX(event.getX())), getJTable());
+    final Property property = getTableModel().getColumnProperty(getTableModel().getTableColumnModel().getColumnIndexAtX(event.getX()));
+
+    toggleFilterPanel(event.getLocationOnScreen(), propertyFilterPanels.get(property.getPropertyID()), getJTable());
   }
 
   private void revalidateAndShowSearchPanel() {

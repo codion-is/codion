@@ -29,14 +29,14 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private final EntityTableModel tableModel;
   private final boolean rowColoring;
 
-  private final Map<Property, TableCellRenderer> renderers = new HashMap<Property, TableCellRenderer>();
+  private final Map<String, TableCellRenderer> renderers = new HashMap<String, TableCellRenderer>();
 
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
   public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
     if (tableModel == null)
-      throw new IllegalArgumentException("EntityTableCellRenderer requires a non-null EntityTableModel instance");
+      throw new IllegalArgumentException("EntityTableCellRenderer requires a EntityTableModel instance");
     this.rowColoring = rowColoring;
     this.tableModel = tableModel;
   }
@@ -44,14 +44,15 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /** {@inheritDoc} */
   public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
-    final Component component = getRenderer(tableModel.getColumnProperty(column)).getTableCellRendererComponent(
-            table, value, isSelected, hasFocus, row, column);
+    final Property property = tableModel.getColumnProperty(column);
+    final Component component =
+            getRenderer(property).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
     if (isSelected)
       return component;
 
-    final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(column);
-    final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(column);
+    final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
+    final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(property.getPropertyID());
     final Color rowColor = rowColoring ? tableModel.getRowBackgroundColor(row) : null;
     if (rowColor == null && !(propertySearchEnabled || propertyFilterEnabled)) {
       component.setBackground(table.getBackground());
@@ -68,9 +69,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   protected TableCellRenderer getRenderer(final Property columnProperty) {
-    TableCellRenderer renderer = renderers.get(columnProperty);
+    TableCellRenderer renderer = renderers.get(columnProperty.getPropertyID());
     if (renderer == null)
-      renderers.put(columnProperty, renderer = initializeRenderer(columnProperty));
+      renderers.put(columnProperty.getPropertyID(), renderer = initializeRenderer(columnProperty));
 
     return renderer;
   }

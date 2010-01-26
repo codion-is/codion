@@ -991,9 +991,13 @@
   EntityTablePanel.summaryPanel added
   EntityTablePanel table popup menu now added to the JTable parent as well, works for empty tables with no columns showing
   EntityTablePanel column reording allowed
-  UiUtil.bindColumnAndPanelSizes() now takes column movement in account
+  UiUtil.bindColumnAndPanelSizes() now takes column reordering in account
   EntityTableModel.getTableColumn(Property) added
   EntityTableModel.getColumnClass() and getValueAt() both use convertColumnIndexToView
-  EntityTableSearchPanel now handles column movement
+  EntityTableSearchPanel now handles column reordering
   Configuration.ALLOW_COLUMN_REORDERING added
   EntityTablePanel.allowColumnReordering() added, returns the above value by default, used in initializeJTable()
+  EntityTableSearchModel refactored
+  EntityTableCellRenderer, EntityTablePanel changed according to the above
+  PropertyFilterModel.columnIndex field removed
+  EntityTablePanel, fixed column filter panel bugs introduced by allowing column reordering

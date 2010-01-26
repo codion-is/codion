@@ -15,18 +15,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unchecked"})
 public class PropertyFilterModel extends AbstractSearchModel {
 
-  private final int columnIndex;
-
-  public PropertyFilterModel(final Property property, final int columnIndex) {
+  public PropertyFilterModel(final Property property) {
     super(property);
-    this.columnIndex = columnIndex;
-  }
-
-  /**
-   * @return the index of the column this filter model filters
-   */
-  public int getColumnIndex() {
-    return columnIndex;
   }
 
   /** {@inheritDoc} */
