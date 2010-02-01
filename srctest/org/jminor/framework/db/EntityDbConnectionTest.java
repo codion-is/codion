@@ -6,6 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -16,6 +17,7 @@ import org.jminor.framework.domain.EntityTestDomain;
 import junit.framework.TestCase;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -88,5 +90,40 @@ public class EntityDbConnectionTest extends TestCase {
   public void testGenerateSelectSql() throws Exception {
     final String generated = EntityDbConnection.getSelectSql("table", "col, col2", "where col = 1", "col2");
     assertEquals("Generate select should be working", "select col, col2 from table where col = 1 order by col2", generated);
+  }
+
+  public void testOptimisticLocking() throws Exception {
+    final Database database = DatabaseProvider.createInstance();
+    String oldLocation = null;
+    Entity updatedDeparment = null;
+    final EntityDbConnection baseDb = new EntityDbConnection(database, new User("scott", "tiger"));
+    final EntityDbConnection optimisticDb = new EntityDbConnection(database, new User("scott", "tiger"));
+    optimisticDb.setOptimisticLocking(true);
+    try {
+      final Entity department = baseDb.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+      oldLocation = (String) department.setValue(EmpDept.DEPARTMENT_LOCATION, "NEWLOC");
+      updatedDeparment = baseDb.update(Arrays.asList(department)).get(0);
+      try {
+        optimisticDb.update(Arrays.asList(department));
+        fail("EntityModifiedException should have been thrown");
+      }
+      catch (EntityModifiedException e) {
+        assertTrue(e.getModifiedEntity().propertyValuesEqual(updatedDeparment));
+        assertTrue(e.getEntity().propertyValuesEqual(department));
+      }
+    }
+    finally {
+      try {
+        if (updatedDeparment != null && oldLocation != null) {
+          updatedDeparment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
+          baseDb.update(Arrays.asList(updatedDeparment));
+        }
+        baseDb.disconnect();
+        optimisticDb.disconnect();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 package org.jminor.framework.db.exception;
 
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.i18n.FrameworkMessages;
 
 /**
  * User: Björn Darri
@@ -9,10 +10,17 @@ import org.jminor.framework.domain.Entity;
  */
 public class EntityModifiedException extends Exception {
 
+  private final Entity entity;
   private final Entity modifiedEntity;
 
-  public EntityModifiedException(final Entity entity) {
-    this.modifiedEntity = entity;
+  public EntityModifiedException(final Entity entity, final Entity modifiedEntity) {
+    super(FrameworkMessages.get(FrameworkMessages.ENTITY_MODIFIED_EXCEPTION));
+    this.entity = entity;
+    this.modifiedEntity = modifiedEntity;
+  }
+
+  public Entity getEntity() {
+    return entity;
   }
 
   public Entity getModifiedEntity() {

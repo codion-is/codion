@@ -51,7 +51,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Type, ResultPacker> propertyResultPackers = new HashMap<Type, ResultPacker>();
-  private boolean optimisticLockingEnabled = (Boolean) Configuration.getValue(Configuration.USE_OPTIMISTIC_LOCKING);
+  private boolean optimisticLocking = (Boolean) Configuration.getValue(Configuration.USE_OPTIMISTIC_LOCKING);
 
   /**Used by the EntityDbConnectionPool class*/
   long poolTime = -1;
@@ -65,6 +65,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   public EntityDbConnection(final Database database, final User user) throws SQLException, ClassNotFoundException {
     super(database, user);
+  }
+
+  public boolean isOptimisticLocking() {
+    return optimisticLocking;
+  }
+
+  public void setOptimisticLocking(final boolean optimisticLocking) {
+    this.optimisticLocking = optimisticLocking;
   }
 
   /** {@inheritDoc} */
@@ -122,8 +130,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         throw new DbException("Can not update a read only entity");
       if (!entity.isModified())
         throw new DbException("Trying to update non-modified entity: " + entity);
-      if (optimisticLockingEnabled && hasChanged(entity))
-        throw new EntityModifiedException(entity);
+      if (optimisticLocking)
+        checkIfModified(entity);
       else
         statements.add(getUpdateSQL(getDatabase(), entity));
     }
@@ -496,8 +504,16 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
   }
 
-  private boolean hasChanged(final Entity entity) throws DbException {
-    return !selectSingle(entity.getPrimaryKey()).propertyValuesEqual(entity.getOriginalCopy());
+  /**
+   * Checks if the given entity has been modified by comparing the property values to the values in the database
+   * @param entity the entity to check
+   * @throws DbException in case of a database exception
+   * @throws EntityModifiedException in case the entity has been modified
+   */
+  private void checkIfModified(final Entity entity) throws DbException, EntityModifiedException {
+    final Entity current = selectSingle(entity.getPrimaryKey());
+    if (!current.propertyValuesEqual(entity.getOriginalCopy()))
+      throw new EntityModifiedException(entity, current);
   }
 
   /**
