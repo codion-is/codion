@@ -1004,3 +1004,4 @@
   EntityDbConnection.optimisticLockingEnabled renamed to optimisticLocking, getter/setter added
   EntityDbConnectionTest, testOptimisticLocking() added
   EntityModifiedException improved
+  EntityUiUtil.createEntityComboBoxFilterPanel() added

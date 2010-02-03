@@ -40,7 +40,7 @@ public class TagItemPanel extends EntityPanel {
         box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
         add(createControlPanel(Petstore.TAG_ITEM_ITEM_FK, box));
         box = createEntityComboBox(Petstore.TAG_ITEM_TAG_FK);
-        add(createControlPanel(Petstore.TAG_ITEM_TAG_FK, EntityUiUtil.createEntityComboBoxPanel(box,
+        add(createControlPanel(Petstore.TAG_ITEM_TAG_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
                 new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false)));
       }
     };

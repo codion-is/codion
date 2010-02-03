@@ -9,6 +9,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
@@ -575,8 +576,8 @@ public class EntityUiUtil {
     txtField.getActionMap().put("valueLookup", new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
-          if (value != null)
-            txtField.setText(value.toString());
+        if (value != null)
+          txtField.setText(value.toString());
       }
     });
   }
@@ -600,11 +601,22 @@ public class EntityUiUtil {
     return panel;
   }
 
-  public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
-                                                 final boolean newRecordButtonTakesFocus) {
+  public static JPanel createEntityComboBoxNewRecordPanel(final EntityComboBox entityComboBox,
+                                                          final EntityPanelProvider panelProvider,
+                                                          final boolean newRecordButtonTakesFocus) {
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(entityComboBox, BorderLayout.CENTER);
     panel.add(initializeNewRecordButton(entityComboBox, panelProvider, newRecordButtonTakesFocus), BorderLayout.EAST);
+
+    return panel;
+  }
+
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox,
+                                                       final Property.ForeignKeyProperty foreignKeyProperty,
+                                                       final boolean filterButtonTakesFocus) {
+    final JPanel panel = new JPanel(new BorderLayout());
+    panel.add(entityComboBox, BorderLayout.CENTER);
+    panel.add(initializeFilterButton(entityComboBox, foreignKeyProperty, filterButtonTakesFocus), BorderLayout.EAST);
 
     return panel;
   }
@@ -642,11 +654,49 @@ public class EntityUiUtil {
     return field;
   }
 
+  private static JButton initializeFilterButton(final EntityComboBox comboBox,
+                                                final Property.ForeignKeyProperty foreignKeyProperty,
+                                                final boolean filterButtonFocusable) {
+    final JButton button = new JButton(initializeFilterAction(comboBox, foreignKeyProperty));
+    button.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    button.setFocusable(filterButtonFocusable);
+
+    return button;
+  }
+
+  private static AbstractAction initializeFilterAction(final EntityComboBox comboBox,
+                                                       final Property.ForeignKeyProperty foreignKeyProperty) {
+    return new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        final EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(),
+                comboBox.getModel().getDbProvider(), true, "-", true);
+        foreignKeyModel.refresh();
+        final int result = JOptionPane.showOptionDialog(comboBox, new JComboBox(foreignKeyModel), "Select filter criteria",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if (result == JOptionPane.OK_OPTION) {
+          final Entity selected = foreignKeyModel.getSelectedEntity();
+          if (selected != null) {
+            comboBox.getModel().setFilterCriteria(new FilterCriteria() {
+              public boolean include(final Object item) {
+                final Entity foreignKeyValue = ((Entity)item).getEntityValue(foreignKeyProperty.getPropertyID());
+                return foreignKeyValue != null && foreignKeyValue.equals(selected);
+              }
+            });
+          }
+          else {
+            comboBox.getModel().setFilterCriteria(null);
+          }
+        }
+      }
+    };
+  }
+
   private static JButton initializeNewRecordButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider,
                                                    final boolean newRecordButtonFocusable) {
     final JButton button = new JButton(initializeNewRecordAction(comboBox, panelProvider));
     button.setIcon(Images.loadImage(Images.IMG_ADD_16));
-    button.setPreferredSize(new Dimension(18, UiUtil.getPreferredTextFieldHeight()));
+    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     button.setFocusable(newRecordButtonFocusable);
 
     return button;

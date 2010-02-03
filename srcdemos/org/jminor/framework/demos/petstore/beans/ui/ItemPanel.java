@@ -56,12 +56,12 @@ public class ItemPanel extends EntityPanel {
         box = createEntityComboBox(Petstore.ITEM_C0NTACT_INFO_FK);
         box.setPopupWidth(200);
         box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-        add(createControlPanel(Petstore.ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxPanel(box,
+        add(createControlPanel(Petstore.ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
                 new EntityPanelProvider(ContactInfoModel.class, ContactInfoPanel.class), false)));
         box = createEntityComboBox(Petstore.ITEM_ADDRESS_FK);
         box.setPopupWidth(200);
         box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-        add(createControlPanel(Petstore.ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxPanel(box,
+        add(createControlPanel(Petstore.ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
                 new EntityPanelProvider(AddressModel.class, AddressPanel.class), false)));
         add(createControlPanel(Petstore.ITEM_IMAGE_URL, createTextField(Petstore.ITEM_IMAGE_URL)));
         add(createControlPanel(Petstore.ITEM_IMAGE_THUMB_URL, createTextField(Petstore.ITEM_IMAGE_THUMB_URL)));
