@@ -89,6 +89,19 @@ public class Property implements Serializable {
   private int maxLength = 0;
 
   /**
+   * The maximum number of fraction digits to show for this property.
+   * Only applicable to DOUBLE properties
+   */
+  private int maximumFractionDigits = -1;
+
+  /**
+   * Specifies whether or not to use number format grouping in table views,
+   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
+   * Only applicable to numerical properties
+   */
+  private boolean useNumberFormatGrouping = (Boolean) Configuration.getValue(Configuration.USE_NUMBER_FORMAT_GROUPING);
+
+  /**
    * A string describing this property
    */
   private String description;
@@ -301,6 +314,42 @@ public class Property implements Serializable {
    */
   public int getMaxLength() {
     return maxLength;
+  }
+
+  /**
+   * Sets the maximum fraction digits to show for this property, only applicable to DOUBLE properties
+   * @param maximumFractionDigits the maximum fraction digits
+   * @return this Property instance
+   */
+  public Property setMaximumFractionDigits(final int maximumFractionDigits) {
+    this.maximumFractionDigits = maximumFractionDigits;
+    return this;
+  }
+
+  /**
+   * @return the maximum number of fraction digits to show for this property value
+   */
+  public int getMaximumFractionDigits() {
+    return maximumFractionDigits;
+  }
+
+  /**
+   * Specifies whether to use number grouping when presenting this value.
+   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
+   * Only applicable to numerical properties
+   * @param useGrouping if true then number grouping is used
+   * @return this Property instance
+   */
+  public Property setUseNumberFormatGrouping(final boolean useGrouping) {
+    this.useNumberFormatGrouping = useGrouping;
+    return this;
+  }
+
+  /**
+   * @return whether or not number grouping is used when this property value is presented
+   */
+  public boolean useNumberFormatGrouping() {
+    return useNumberFormatGrouping;
   }
 
   /**

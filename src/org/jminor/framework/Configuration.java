@@ -301,9 +301,11 @@ public class Configuration {
 
   /**
    * Specifies whether or not to use number format grouping in table views,
-   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale
+   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
+   * This can be overridden on Property basis via Property.setUseNumberFormatGrouping()
    * Value type: Boolean
    * Default value: true
+   * @see org.jminor.framework.domain.Property#setUseNumberFormatGrouping(boolean)
    */
   public static final String USE_NUMBER_FORMAT_GROUPING = "jminor.client.useNumberFormatGrouping";
 

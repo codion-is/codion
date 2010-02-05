@@ -20,6 +20,7 @@ public class DoubleTextPropertyLinkTest extends TestCase {
 
   public void test() throws Exception {
     final DoubleField txt = new DoubleField();
+    txt.setDecimalSymbol(DoubleField.POINT);
     new DoubleTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
             true, LinkType.READ_WRITE);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
@@ -31,5 +32,7 @@ public class DoubleTextPropertyLinkTest extends TestCase {
     assertNull("ToolTip should not contain invalid message", txt.getToolTipText());
     txt.setText("");
     assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
+    model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950d);
+    assertEquals("Text field should contain value", "950.0", txt.getText());
   }
 }

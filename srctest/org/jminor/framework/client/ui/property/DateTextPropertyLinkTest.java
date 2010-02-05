@@ -35,5 +35,7 @@ public class DateTextPropertyLinkTest extends TestCase {
     assertEquals("Date value should be 'dateValue'", dateValue, model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     txtDate.setText("");
     assertNull("Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    model.setValue(EmpDept.EMPLOYEE_HIREDATE, dateValue);
+    assertEquals("Text field should contain value", "03-10-1975", txtDate.getText());
   }
 }

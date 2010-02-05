@@ -83,7 +83,7 @@ public class DbConnection {
     this.user = user;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
-    revalidate();
+    connect();
   }
 
   @Override
@@ -500,10 +500,10 @@ public class DbConnection {
     return database;
   }
 
-  private void revalidate() throws ClassNotFoundException, SQLException {//todo rename
+  private void connect() throws ClassNotFoundException, SQLException {
     try {
       if (connection != null) {
-        log.info("Revalidating connection: " + user.getUsername());
+        log.info("Establishing connection: " + user.getUsername());
         connection.rollback();
         connection.close();
       }

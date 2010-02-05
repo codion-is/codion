@@ -239,7 +239,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the underlying table column properties
    */
   public List<Property> getTableColumnProperties() {
-    final ArrayList<Property> propertyList = new ArrayList<Property>(tableColumnModel.getColumnCount());
+    final List<Property> propertyList = new ArrayList<Property>(tableColumnModel.getColumnCount());
     final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
     while (columnEnumeration.hasMoreElements())
       propertyList.add((Property) columnEnumeration.nextElement().getIdentifier());
@@ -954,7 +954,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID()))
-      propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
+      propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(property,
+              new PropertySummaryModel.PropertyValueProvider() {
         public void bindValuesChangedEvent(final Event event) {
           evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
           evtRefreshDone.addListener(event);
@@ -962,12 +963,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
           evtSelectionChanged.addListener(event);
         }
 
-        public Collection<Object> getValues() {
+        public Collection<?> getValues() {
           return EntityTableModel.this.getValues(property, isValueSubset());
-        }
-
-        public Type getValueType() {
-          return property.getPropertyType();
         }
 
         public boolean isValueSubset() {

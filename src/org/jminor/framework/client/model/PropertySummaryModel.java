@@ -1,9 +1,11 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,18 +31,16 @@ public class PropertySummaryModel {
   public final Event evtSummaryTypeChanged = new Event();
   public final Event evtSummaryChanged = new Event();
 
+  private final Property property;
   private final PropertyValueProvider valueProvider;
-  private final NumberFormat numberFormat = NumberFormat.getInstance();
+  private final Format format;
 
   private Summary summaryType = NONE;
 
-  public PropertySummaryModel(final PropertyValueProvider valueProvider) {
-    this(valueProvider, 4);
-  }
-
-  public PropertySummaryModel(final PropertyValueProvider valueProvider, final int maximumFractionDigits) {
+  public PropertySummaryModel(final Property property, final PropertyValueProvider valueProvider) {
+    this.property = property;
     this.valueProvider = valueProvider;
-    this.numberFormat.setMaximumFractionDigits(maximumFractionDigits);
+    this.format = initializeFormat(property);
     this.valueProvider.bindValuesChangedEvent(evtSummaryChanged);
     evtSummaryTypeChanged.addListener(evtSummaryChanged);
   }
@@ -62,26 +62,36 @@ public class PropertySummaryModel {
   }
 
   public List<Summary> getSummaryTypes() {
-    if (valueProvider.getValueType() == Type.INT || valueProvider.getValueType() == Type.DOUBLE)
+    if (property.getPropertyType() == Type.INT || property.getPropertyType() == Type.DOUBLE)
       return Arrays.asList(NONE, SUM, AVERAGE, MINIMUM, MAXIMUM, MINIMUM_MAXIMUM);
 
     return new ArrayList<Summary>();
   }
 
   public String getSummaryText() {
-    final String summaryTxt = summaryType.getSummary(valueProvider.getValues(), valueProvider.getValueType(), numberFormat);
+    final String summaryTxt = summaryType.getSummary(valueProvider.getValues(), property.getPropertyType(), format);
     return summaryTxt.length() > 0 ? summaryTxt + (valueProvider.isValueSubset() ? "*" : "") : summaryTxt;
   }
 
+  protected Format initializeFormat(final Property property) {
+    final NumberFormat format = NumberFormat.getInstance();
+    if (property.getMaximumFractionDigits() != -1)
+      format.setMaximumFractionDigits(property.getMaximumFractionDigits());
+    else
+      format.setMaximumFractionDigits(4);
+    format.setGroupingUsed(property.useNumberFormatGrouping());
+
+    return format;
+  }
+
   public interface PropertyValueProvider {
-    public Collection<Object> getValues();
+    public Collection<?> getValues();
     public boolean isValueSubset();
-    public Type getValueType();
     public void bindValuesChangedEvent(final Event event);
   }
 
   public interface Summary {
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format);
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format);
   }
 
   private static class None implements Summary {
@@ -91,7 +101,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.NONE);
     }
 
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format) {
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
       return "";
     }
   }
@@ -103,7 +113,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.SUM);
     }
 
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format) {
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
       String txt = "";
       if (propertyType == Type.INT) {
         int sum = 0;
@@ -129,7 +139,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.AVERAGE);
     }
 
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format) {
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
       String txt = "";
       if (propertyType == Type.INT) {
         double sum = 0;
@@ -163,7 +173,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM);
     }
 
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format) {
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
       String txt = "";
       if (propertyType == Type.INT) {
         int min = Integer.MAX_VALUE;
@@ -191,7 +201,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
     }
 
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format) {
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
       String txt = "";
       if (propertyType == Type.INT) {
         int max = Integer.MIN_VALUE;
@@ -219,7 +229,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
     }
 
-    public String getSummary(final Collection<Object> values, final Type propertyType, final NumberFormat format) {
+    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
       String txt = "";
       if (propertyType == Type.INT) {
         int min = Integer.MAX_VALUE;

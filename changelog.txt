@@ -1005,3 +1005,9 @@
   EntityDbConnectionTest, testOptimisticLocking() added
   EntityModifiedException improved
   EntityUiUtil.createEntityComboBoxFilterPanel() added
+  Property.maximumFractionDigits field added
+  Property.useNumberFormatGrouping field added
+  EntityUiUtil.createEntityComboBoxFilterPanel(), remembers the filter criteria
+  EntityTableCellRenderer.NumberRenderer.formatValue field removed
+  PropertySummaryModel refactored, now uses number formatting based on the underlying property
+  EntityTablePanel.setTableCellRenderer() removed

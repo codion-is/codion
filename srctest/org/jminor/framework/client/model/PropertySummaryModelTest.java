@@ -1,11 +1,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -15,49 +16,25 @@ import java.util.Collection;
  */
 public class PropertySummaryModelTest extends TestCase {
 
-  final PropertySummaryModel testIntModel = new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
-    public Collection<Object> getValues() {
-      final Collection<Object> values = new ArrayList<Object>();
-      values.add(1);
-      values.add(2);
-      values.add(3);
-      values.add(4);
-      values.add(5);
-
-      return values;
+  final PropertySummaryModel testIntModel = new PropertySummaryModel(new Property("TestProperty", Type.INT),
+          new PropertySummaryModel.PropertyValueProvider() {
+    public Collection<?> getValues() {
+      return Arrays.asList(1,2,3,4,5);
     }
-
     public boolean isValueSubset() {
       return false;
     }
-
-    public Type getValueType() {
-      return Type.INT;
-    }
-
     public void bindValuesChangedEvent(Event event) {}
   });
 
-  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new PropertySummaryModel.PropertyValueProvider() {
-    public Collection<Object> getValues() {
-      final Collection<Object> values = new ArrayList<Object>();
-      values.add(1.1);
-      values.add(2.2);
-      values.add(3.3);
-      values.add(4.4);
-      values.add(5.5);
-
-      return values;
+  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new Property("TestProperty", Type.DOUBLE),
+          new PropertySummaryModel.PropertyValueProvider() {
+    public Collection<?> getValues() {
+      return Arrays.asList(1.1, 2.2, 3.3, 4.4, 5.5);
     }
-
     public boolean isValueSubset() {
       return false;
     }
-
-    public Type getValueType() {
-      return Type.DOUBLE;
-    }
-
     public void bindValuesChangedEvent(Event event) {}
   });
 

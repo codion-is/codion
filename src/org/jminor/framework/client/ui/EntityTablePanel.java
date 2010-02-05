@@ -209,15 +209,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Sets the TableCellRenderer for the property with the given property ID
-   * @param propertyID the ID of the property for which to set the renderer
-   * @param renderer the renderer to use for presenting column values for the given property
-   */
-  public void setTableCellRenderer(final String propertyID, final TableCellRenderer renderer) {
-    getJTable().getColumn(EntityRepository.getProperty(getTableModel().getEntityID(), propertyID)).setCellRenderer(renderer);
-  }
-
-  /**
    * @param doubleClickAction the action to perform when a double click is performed on the table
    */
   public void setTableDoubleClickAction(final Action doubleClickAction) {

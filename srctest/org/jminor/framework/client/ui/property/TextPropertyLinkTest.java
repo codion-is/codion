@@ -28,5 +28,7 @@ public class TextPropertyLinkTest extends TestCase {
     assertEquals("String value should be 'darri", "darri", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("");
     assertEquals("String value should be empty", "", model.getValue(EmpDept.EMPLOYEE_NAME));
+    model.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
+    assertEquals("Text field should contain value", "Björn", txt.getText());
   }
 }

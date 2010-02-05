@@ -128,6 +128,7 @@ public class FrameworkMessages {
   public static final String PREFIX_WILDCARD = "prefix_wildcard";
   public static final String PROPERTY_VALUE_IS_REQUIRED = "property_value_is_required";
   public static final String ENTITY_MODIFIED_EXCEPTION = "entity_modified_exception";
+  public static final String FILTER_BY = "filter_by";
 
   public static String get(final String key) {
     return bundle.getString(key);

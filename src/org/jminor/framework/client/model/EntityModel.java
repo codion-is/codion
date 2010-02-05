@@ -410,7 +410,7 @@ public class EntityModel implements Refreshable {
       getTableModel().filterByReference(masterEntityID, selectedMasterEntities);
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
-      getEditModel().setValue(foreignKeyProperty, selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);//todo
+      getEditModel().setValue(foreignKeyProperty, selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
   }
 
   /**

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Property;
@@ -82,7 +81,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
           return new BooleanRenderer();
         case DOUBLE:
         case INT:
-          return new NumberRenderer(true);
+          return new NumberRenderer(property);
         case DATE:
           return new DateRenderer();
         case TIMESTAMP:
@@ -96,13 +95,13 @@ public class EntityTableCellRenderer implements TableCellRenderer {
    * Default Renderers
    */
   public static class NumberRenderer extends DefaultTableCellRenderer {
-    private final NumberFormat formatter;
-    private final boolean formatValue;
+    private final NumberFormat format;
 
-    public NumberRenderer(final boolean formatValue) {
-      this.formatter = NumberFormat.getInstance();
-      this.formatter.setGroupingUsed((Boolean) Configuration.getValue(Configuration.USE_NUMBER_FORMAT_GROUPING));
-      this.formatValue = formatValue;
+    public NumberRenderer(final Property property) {
+      this.format = NumberFormat.getInstance();
+      if (property.getMaximumFractionDigits() != -1)
+        this.format.setMaximumFractionDigits(property.getMaximumFractionDigits());
+      this.format.setGroupingUsed(property.useNumberFormatGrouping());
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
@@ -111,7 +110,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       if (value instanceof String)
         setText((String) value);
       else
-        setText((value == null) ? "" : (formatValue ? formatter.format(value) : value.toString()));
+        setText((value == null) ? "" : format.format(value));
     }
   }
 

@@ -27,5 +27,7 @@ public class IntTextPropertyLinkTest extends TestCase {
     assertEquals("Integer value should be 42", 42, model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setText("");
     assertNull("Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
+    model.setValue(EmpDept.EMPLOYEE_ID, 33);
+    assertEquals("Text field should contain value", "33", txt.getText());
   }
 }
