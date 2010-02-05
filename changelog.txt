@@ -1011,3 +1011,5 @@
   EntityTableCellRenderer.NumberRenderer.formatValue field removed
   PropertySummaryModel refactored, now uses number formatting based on the underlying property
   EntityTablePanel.setTableCellRenderer() removed
+  EntityDbConnection, bug fixed, update was not performed if optimistic locking was enabled
+  EntityDbRemoteAdapter now rethrows EntityModifiedException when caught during update()

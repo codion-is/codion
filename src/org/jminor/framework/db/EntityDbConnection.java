@@ -132,8 +132,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         throw new DbException("Trying to update non-modified entity: " + entity);
       if (optimisticLocking)
         checkIfModified(entity);
-      else
-        statements.add(getUpdateSQL(getDatabase(), entity));
+
+      statements.add(getUpdateSQL(getDatabase(), entity));
     }
 
     execute(statements);

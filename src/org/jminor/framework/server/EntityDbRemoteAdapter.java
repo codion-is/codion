@@ -19,6 +19,7 @@ import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
 
 import net.sf.jasperreports.engine.JRException;
@@ -217,6 +218,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     try {
       loggingEntityDbProxy.commitTransaction();
     }
+    catch (IllegalStateException is) {
+      throw is;
+    }
     catch (SQLException exception) {
       throw exception;
     }
@@ -229,6 +233,9 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   public void rollbackTransaction() throws IllegalStateException, SQLException, RemoteException {
     try {
       loggingEntityDbProxy.rollbackTransaction();
+    }
+    catch (IllegalStateException is) {
+      throw is;
     }
     catch (SQLException exception) {
       throw exception;
@@ -262,12 +269,15 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<Entity> update(final List<Entity> entities) throws DbException, RemoteException {
+  public List<Entity> update(final List<Entity> entities) throws DbException, EntityModifiedException, RemoteException {
     try {
       return loggingEntityDbProxy.update(entities);
     }
     catch (DbException dbe) {
       throw dbe;
+    }
+    catch (EntityModifiedException eme) {
+      throw eme;
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);

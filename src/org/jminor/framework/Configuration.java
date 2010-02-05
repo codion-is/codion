@@ -393,6 +393,13 @@ public class Configuration {
     setValue(PERFORM_NULL_VALIDATION, true);
     setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
     setValue(ALLOW_COLUMN_REORDERING, true);
+    parseSystemSettings();
+  }
+
+  private static void parseSystemSettings() {
+    String value = System.getProperty(USE_OPTIMISTIC_LOCKING);
+    if (value != null)
+      setValue(USE_OPTIMISTIC_LOCKING, value.equalsIgnoreCase("true"));
   }
 
   public static void setValue(final String key, final Object value) {
