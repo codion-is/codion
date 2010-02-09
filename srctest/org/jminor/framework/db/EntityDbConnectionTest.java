@@ -10,6 +10,7 @@ import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTest;
 import org.jminor.framework.domain.EntityTestDomain;
@@ -31,6 +32,7 @@ public class EntityDbConnectionTest extends TestCase {
           EntityDbProviderFactory.createEntityDbProvider(new User("scott", "tiger"), "JMinor Unit Tests");
 
   static {
+    new Petstore();
     new EmpDept();
   }
 

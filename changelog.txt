@@ -1013,3 +1013,12 @@
   EntityTablePanel.setTableCellRenderer() removed
   EntityDbConnection, bug fixed, update was not performed if optimistic locking was enabled
   EntityDbRemoteAdapter now rethrows EntityModifiedException when caught during update()
+  ComboBoxPropertyLinkTest added
+  LookupModelPropertyLinkTest added
+  BooleanPropertyLinkTest added
+  BooleanPropertyLink bug fixed, doClick() was required on the actual JButton, setSelected() on the model did not suffice
+  BooleanPropertyLink, ButtonModel constructor parameter added
+  BooleanPropertyLink.getButtonModel() removed
+  BeanPropertyLinkTest separated into multiple tests
+  ToggleBeanPropertyLink, ButtonModel constructor parameter added
+  ControlFactory.toggleControl() uses a ToggleButtonControl when constructing a ToggleBeanPropertyLink

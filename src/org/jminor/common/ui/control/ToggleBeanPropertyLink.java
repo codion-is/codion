@@ -5,12 +5,15 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
+import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.lang.reflect.Method;
 
 public class ToggleBeanPropertyLink extends BeanPropertyLink {
 
-  private final JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+  private final ButtonModel buttonModel;
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
                                 final String caption) {
@@ -19,13 +22,28 @@ public class ToggleBeanPropertyLink extends BeanPropertyLink {
 
   public ToggleBeanPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
                                 final String caption, final LinkType linkType) {
+    this(new JToggleButton.ToggleButtonModel(), owner, propertyName, propertyChangeEvent, caption, linkType);
+  }
+
+  public ToggleBeanPropertyLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
+                                final Event propertyChangeEvent, final String caption) {
+    this(buttonModel, owner, propertyName, propertyChangeEvent, caption, LinkType.READ_WRITE);
+  }
+
+  public ToggleBeanPropertyLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
+                                final Event propertyChangeEvent, final String caption, final LinkType linkType) {
     super(owner, propertyName, boolean.class, propertyChangeEvent, linkType);
-    this.buttonModel.addActionListener(this);
+    this.buttonModel = buttonModel;
+    this.buttonModel.addItemListener(new ItemListener() {
+      public void itemStateChanged(final ItemEvent e) {
+        updateModel();
+      }
+    });
     setName(caption);
     updateUI();
   }
 
-  public JToggleButton.ToggleButtonModel getButtonModel() {
+  public ButtonModel getButtonModel() {
     return buttonModel;
   }
 

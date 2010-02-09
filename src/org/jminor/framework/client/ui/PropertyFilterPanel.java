@@ -6,12 +6,12 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.DoubleBeanPropertyLink;
 import org.jminor.common.ui.control.FormattedTextBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
+import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.PropertyFilterModel;
@@ -204,9 +204,9 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-    ControlProvider.bindToggleButtonAndProperty(checkBox, model,
+    new ToggleBeanPropertyLink(checkBox.getModel(), model, 
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-            null, isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
+            isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
   }
 
   private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {

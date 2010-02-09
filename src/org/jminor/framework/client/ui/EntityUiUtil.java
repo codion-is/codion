@@ -211,7 +211,7 @@ public class EntityUiUtil {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
       checkBox.setToolTipText(property.getCaption());
-    checkBox.setModel(new BooleanPropertyLink(editModel, property).getButtonModel());
+    new BooleanPropertyLink(checkBox.getModel(), editModel, property);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
     if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))

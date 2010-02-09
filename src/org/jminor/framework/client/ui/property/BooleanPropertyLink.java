@@ -7,27 +7,30 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 
-import javax.swing.JToggleButton;
+import javax.swing.ButtonModel;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * A class for linking a UI component to a boolean value
  */
 public class BooleanPropertyLink extends AbstractEntityPropertyLink {
 
-  private final JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+  private final ButtonModel buttonModel;
 
-  public BooleanPropertyLink(final EntityEditModel editModel, final Property property) {
-    this(editModel, property, LinkType.READ_WRITE);
+  public BooleanPropertyLink(final ButtonModel buttonModel, final EntityEditModel editModel, final Property property) {
+    this(buttonModel, editModel, property, LinkType.READ_WRITE);
   }
 
-  public BooleanPropertyLink(final EntityEditModel editModel, final Property property, final LinkType linkType) {
+  public BooleanPropertyLink(final ButtonModel buttonModel, final EntityEditModel editModel, final Property property, final LinkType linkType) {
     super(editModel, property, linkType);
-    this.buttonModel.addActionListener(this);
+    this.buttonModel = buttonModel;
+    this.buttonModel.addItemListener(new ItemListener() {
+      public void itemStateChanged(final ItemEvent e) {
+        updateModel();
+      }
+    });
     updateUI();
-  }
-
-  public JToggleButton.ToggleButtonModel getButtonModel() {
-    return buttonModel;
   }
 
   /** {@inheritDoc} */

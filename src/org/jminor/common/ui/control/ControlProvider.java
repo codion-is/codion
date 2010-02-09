@@ -35,14 +35,6 @@ public class ControlProvider {
     new SelectedItemBeanPropertyLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);
   }
 
-  public static void bindToggleButtonAndProperty(final JToggleButton toggleButton, final Object owner, final String property,
-                                                 final String label, final Event changedEvent) {
-    final ToggleBeanPropertyLink propertyLink = new ToggleBeanPropertyLink(owner, property, changedEvent,
-            label, LinkType.READ_WRITE);
-    toggleButton.setModel(propertyLink.getButtonModel());
-    toggleButton.setText(label);
-  }
-
   public static JButton createButton(final Control control) {
     return new JButton(control);
   }
