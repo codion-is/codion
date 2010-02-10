@@ -14,56 +14,44 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.event.TableColumnModelListener;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityTableSearchPanel extends JPanel {
+public class EntityTableSearchPanel extends EntityTableColumnPanel {
 
   public final Event evtAdvancedChanged = new Event();
 
   private final EntityTableSearchModel searchModel;
 
-  private final Map<String, JPanel> searchPanels;
-
   public EntityTableSearchPanel(final EntityTableSearchModel searchModel) {
-    if (searchModel == null)
-      throw new IllegalArgumentException("EntityTableSearchPanel requires a EntityTableSearchModel instance");
+    super(searchModel.getTableColumnModel());
     this.searchModel = searchModel;
-    this.searchPanels = initializeSearchPanels();
-    initializeUI();
+    resetPanel();
   }
 
   /**
    * @param value true if wildcards should automatically be added to strings
    */
   public void setAutomaticWildcard(final boolean value) {
-    for (final JPanel searchPanel : searchPanels.values()) {
+    for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).getModel().setAutomaticWildcard(value);
-    }
   }
 
   public void clear() {
-    for (final JPanel searchPanel : searchPanels.values()) {
+    for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).getModel().clear();
-    }
   }
 
   /**
    * @param value true if advanced search should be enabled
    */
   public void setAdvanced(final boolean value) {
-    for (final JPanel searchPanel : searchPanels.values())
+    for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
         ((PropertySearchPanel)searchPanel).setAdvancedSearchOn(value);
 
@@ -74,25 +62,11 @@ public class EntityTableSearchPanel extends JPanel {
    * @return true if advanced search is enabled
    */
   public boolean isAdvanced() {
-    for (final JPanel searchPanel : searchPanels.values())
+    for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
         return ((PropertySearchPanel)searchPanel).isAdvancedSearchOn();
 
     return false;
-  }
-
-  public void bindToColumnSizes(final JTable table) {
-    UiUtil.bindColumnAndPanelSizes(table.getColumnModel(), searchPanels);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Dimension getPreferredSize() {
-    for (final JPanel searchPanel : searchPanels.values())
-      if (searchPanel instanceof PropertySearchPanel)
-        return new Dimension(super.getPreferredSize().width, searchPanel.getPreferredSize().height);
-
-    return new Dimension(super.getPreferredSize().width, searchPanels.values().iterator().next().getPreferredSize().height);
   }
 
   public ControlSet getControls() {
@@ -106,43 +80,22 @@ public class EntityTableSearchPanel extends JPanel {
   }
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
-    final JPanel panel = searchPanels.get(propertyID);
+    final JPanel panel = getColumnPanels().get(propertyID);
     if (panel instanceof PropertySearchPanel)
       return (PropertySearchPanel) panel;
 
     return null;
   }
 
-  protected void initializeUI() {
-    setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
-    resetPanel();
-    searchModel.getTableColumnModel().addColumnModelListener(new TableColumnModelListener() {
-      public void columnAdded(final TableColumnModelEvent e) {
-        resetPanel();
-      }
-
-      public void columnRemoved(final TableColumnModelEvent e) {
-        resetPanel();
-      }
-
-      public void columnMoved(final TableColumnModelEvent e) {
-        resetPanel();
-      }
-
-      public void columnMarginChanged(final ChangeEvent e) {}
-
-      public void columnSelectionChanged(final ListSelectionEvent e) {}
-    });
-  }
-
-  private Map<String, JPanel> initializeSearchPanels() {
+  @Override
+  protected Map<String, JPanel> initializeColumnPanels() {
     final Map<String, JPanel> panels = new HashMap<String, JPanel>();
     final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
       if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
         final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
-        panels.put(property.getPropertyID(), new PropertySearchPanel(propertySearchModel, true, false));
+        panels.put(property.getPropertyID(), initializePropertySearchPanel(propertySearchModel));
       }
       else {
         final JPanel panel = new JPanel();
@@ -154,12 +107,12 @@ public class EntityTableSearchPanel extends JPanel {
     return panels;
   }
 
-  private void resetPanel() {
-    removeAll();
-    final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements())
-      add(searchPanels.get(((Property) columnEnumeration.nextElement().getIdentifier()).getPropertyID()));
-
-    repaint();
+  /**
+   * Initializes a PropertySearchPanel for the given model
+   * @param propertySearchModel the PropertySearchModel for which to create a search panel
+   * @return a PropertySearchPanel based on the given model
+   */
+  protected PropertySearchPanel initializePropertySearchPanel(final PropertySearchModel propertySearchModel) {
+    return new PropertySearchPanel(propertySearchModel, true, false);
   }
 }

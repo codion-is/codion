@@ -36,14 +36,6 @@ public class EntityUtil {
     return modifiedEntities;
   }
 
-  public static boolean activeDependencies(final Map<String, List<Entity>> entities) {
-    for (final List<Entity> entityList : entities.values())
-      if (entityList.size() > 0)
-        return true;
-
-    return false;
-  }
-
   public static Map<Entity.Key, Entity> hashByPrimaryKey(final List<Entity> entities) {
     final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
     for (final Entity entity : entities)

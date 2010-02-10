@@ -643,12 +643,10 @@ public class EntityTablePanel extends JPanel {
    * @return the summary panel
    */
   protected EntityTableSummaryPanel initializeSummaryPanel() {
-    final EntityTableSummaryPanel panel = new EntityTableSummaryPanel(getTableModel());
-    panel.bindToColumnSizes(getJTable());
+    final EntityTableSummaryPanel summaryPanel = new EntityTableSummaryPanel(getTableModel());
+    addScrollBarBuffer(summaryPanel);
 
-    addScrollBarBuffer(panel);
-
-    return panel;
+    return summaryPanel;
   }
 
   /**
@@ -691,8 +689,6 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeAdvancedSearchPanel() {
     final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel());
-    searchPanel.bindToColumnSizes(getJTable());
-
     addScrollBarBuffer(searchPanel);
 
     return searchPanel;

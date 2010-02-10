@@ -1022,3 +1022,7 @@
   BeanPropertyLinkTest separated into multiple tests
   ToggleBeanPropertyLink, ButtonModel constructor parameter added
   ControlFactory.toggleControl() uses a ToggleButtonControl when constructing a ToggleBeanPropertyLink
+  EntityUiUtil refactored
+  EntityTableColumnPanel refactored from EntityTableSearchPanel and EntityTableSummaryPanel
+  EntityUiUtil.createEastButtonPanel() added
+  EntityUtil.activeDependencies() removed

@@ -500,6 +500,22 @@ public class EntityUiUtil {
     return comboBox;
   }
 
+  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityEditModel editModel) {
+    addLookupDialog(txtField, editModel.getEntityID(), property, editModel.getDbProvider());
+  }
+
+  public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
+                                     final EntityDbProvider dbProvider) {
+    txtField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK), "valueLookup");
+    txtField.getActionMap().put("valueLookup", new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
+        if (value != null)
+          txtField.setText(value.toString());
+      }
+    });
+  }
+
   public static Object lookupPropertyValue(final JComponent dialogOwner, final String entityID,
                                            final Property property, final EntityDbProvider dbProvider) {
     try {
@@ -565,22 +581,6 @@ public class EntityUiUtil {
     }
   }
 
-  public static void addLookupDialog(final JTextField txtField, final Property property, final EntityEditModel editModel) {
-    addLookupDialog(txtField, editModel.getEntityID(), property, editModel.getDbProvider());
-  }
-
-  public static void addLookupDialog(final JTextField txtField, final String entityID, final Property property,
-                                     final EntityDbProvider dbProvider) {
-    txtField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK), "valueLookup");
-    txtField.getActionMap().put("valueLookup", new AbstractAction() {
-      public void actionPerformed(final ActionEvent e) {
-        final Object value = lookupPropertyValue(txtField, entityID, property, dbProvider);
-        if (value != null)
-          txtField.setText(value.toString());
-      }
-    });
-  }
-
   public static JPanel createLookupFieldPanel(final EntityLookupField lookupField, final EntityTableModel tableModel) {
     final JButton btn = new JButton(new AbstractAction("...") {
       public void actionPerformed(ActionEvent e) {
@@ -603,19 +603,26 @@ public class EntityUiUtil {
   public static JPanel createEntityComboBoxNewRecordPanel(final EntityComboBox entityComboBox,
                                                           final EntityPanelProvider panelProvider,
                                                           final boolean newRecordButtonTakesFocus) {
-    final JPanel panel = new JPanel(new BorderLayout());
-    panel.add(entityComboBox, BorderLayout.CENTER);
-    panel.add(initializeNewRecordButton(entityComboBox, panelProvider, newRecordButtonTakesFocus), BorderLayout.EAST);
-
-    return panel;
+    return createEastButtonPanel(entityComboBox, initializeNewRecordAction(entityComboBox, panelProvider),
+            newRecordButtonTakesFocus);
   }
 
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox,
                                                        final String foreignKeyPropertyID,
                                                        final boolean filterButtonTakesFocus) {
+    return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
+            filterButtonTakesFocus);
+  }
+
+  private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
+                                              final boolean buttonFocusable) {
     final JPanel panel = new JPanel(new BorderLayout());
-    panel.add(entityComboBox, BorderLayout.CENTER);
-    panel.add(initializeFilterButton(entityComboBox, foreignKeyPropertyID, filterButtonTakesFocus), BorderLayout.EAST);
+    final JButton button = new JButton(buttonAction);
+    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    button.setFocusable(buttonFocusable);
+
+    panel.add(centerComponent, BorderLayout.CENTER);
+    panel.add(button, BorderLayout.EAST);
 
     return panel;
   }
@@ -653,27 +660,8 @@ public class EntityUiUtil {
     return field;
   }
 
-  private static JButton initializeFilterButton(final EntityComboBox comboBox, final String foreignKeyPropertyID,
-                                                final boolean filterButtonFocusable) {
-    final JButton button = new JButton(comboBox.createForeignKeyFilterAction(foreignKeyPropertyID));
-    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    button.setFocusable(filterButtonFocusable);
-
-    return button;
-  }
-
-  private static JButton initializeNewRecordButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider,
-                                                   final boolean newRecordButtonFocusable) {
-    final JButton button = new JButton(initializeNewRecordAction(comboBox, panelProvider));
-    button.setIcon(Images.loadImage(Images.IMG_ADD_16));
-    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    button.setFocusable(newRecordButtonFocusable);
-
-    return button;
-  }
-
   private static AbstractAction initializeNewRecordAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-    return new AbstractAction() {
+    return new AbstractAction("", Images.loadImage(Images.IMG_ADD_16)) {
       public void actionPerformed(ActionEvent e) {
         final EntityPanel entityPanel = EntityPanel.createInstance(panelProvider, comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();

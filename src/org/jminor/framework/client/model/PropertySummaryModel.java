@@ -46,6 +46,13 @@ public class PropertySummaryModel {
   }
 
   /**
+   * @return the Property this summary model is based on
+   */
+  public Property getProperty() {
+    return property;
+  }
+
+  /**
    * @param summaryType the type of summary to show
    */
   public void setSummaryType(final Summary summaryType) {

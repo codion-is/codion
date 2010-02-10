@@ -645,7 +645,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * Saves the active entity, that is, if no entity is selected it performs a insert otherwise the user
-   * is asked whether to update the selected record or insert a new one
+   * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
     if ((getModel().containsTableModel() && getModel().getTableModel().getSelectionModel().isSelectionEmpty())
@@ -790,7 +790,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   /**
-   * Shows a dialog containing lists of entities which depend on the selected entities
+   * Shows a dialog containing lists of entities depending on the selected entities via foreign key
    */
   public void viewSelectionDependencies() {
     try {
@@ -802,7 +802,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       finally {
         UiUtil.setWaitCursor(false, this);
       }
-      if (EntityUtil.activeDependencies(dependencies)) {
+      if (dependencies.size() > 0) {
         showDependenciesDialog(dependencies, getModel().getDbProvider(), this);
       }
       else {

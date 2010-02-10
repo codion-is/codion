@@ -210,7 +210,7 @@ public interface EntityDb {
    * @return the entities that depend on <code>entities</code>
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public Map<String,List<Entity>> selectDependentEntities(final List<Entity> entities) throws Exception;
+  public Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws Exception;
 
   /**
    * Selects the number of rows returned according to the given criteria
