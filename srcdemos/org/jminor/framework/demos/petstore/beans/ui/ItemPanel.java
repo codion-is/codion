@@ -45,27 +45,27 @@ public class ItemPanel extends EntityPanel {
         setLayout(new FlexibleGridLayout(3,3,5,5));
         EntityComboBox box = createEntityComboBox(Petstore.ITEM_PRODUCT_FK);
         setDefaultFocusComponent(box);
-        add(createControlPanel(Petstore.ITEM_PRODUCT_FK, box));
+        add(createPropertyPanel(Petstore.ITEM_PRODUCT_FK, box));
         JTextField txt = createTextField(Petstore.ITEM_NAME);
         txt.setColumns(12);
-        add(createControlPanel(Petstore.ITEM_NAME, txt));
+        add(createPropertyPanel(Petstore.ITEM_NAME, txt));
         txt = createTextField(Petstore.ITEM_DESCRIPTION);
         txt.setColumns(16);
-        add(createControlPanel(Petstore.ITEM_DESCRIPTION, txt));
-        add(createControlPanel(Petstore.ITEM_PRICE, createTextField(Petstore.ITEM_PRICE)));
+        add(createPropertyPanel(Petstore.ITEM_DESCRIPTION, txt));
+        add(createPropertyPanel(Petstore.ITEM_PRICE, createTextField(Petstore.ITEM_PRICE)));
         box = createEntityComboBox(Petstore.ITEM_C0NTACT_INFO_FK);
         box.setPopupWidth(200);
         box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-        add(createControlPanel(Petstore.ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+        add(createPropertyPanel(Petstore.ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
                 new EntityPanelProvider(ContactInfoModel.class, ContactInfoPanel.class), false)));
         box = createEntityComboBox(Petstore.ITEM_ADDRESS_FK);
         box.setPopupWidth(200);
         box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-        add(createControlPanel(Petstore.ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+        add(createPropertyPanel(Petstore.ITEM_ADDRESS_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
                 new EntityPanelProvider(AddressModel.class, AddressPanel.class), false)));
-        add(createControlPanel(Petstore.ITEM_IMAGE_URL, createTextField(Petstore.ITEM_IMAGE_URL)));
-        add(createControlPanel(Petstore.ITEM_IMAGE_THUMB_URL, createTextField(Petstore.ITEM_IMAGE_THUMB_URL)));
-        add(createControlPanel(Petstore.ITEM_DISABLED, createCheckBox(Petstore.ITEM_DISABLED, null, false)));
+        add(createPropertyPanel(Petstore.ITEM_IMAGE_URL, createTextField(Petstore.ITEM_IMAGE_URL)));
+        add(createPropertyPanel(Petstore.ITEM_IMAGE_THUMB_URL, createTextField(Petstore.ITEM_IMAGE_THUMB_URL)));
+        add(createPropertyPanel(Petstore.ITEM_DISABLED, createCheckBox(Petstore.ITEM_DISABLED, null, false)));
       }
     };
   }

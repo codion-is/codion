@@ -97,8 +97,8 @@ public abstract class EntityEditPanel extends JPanel {
    * @param inputComponent a component bound to the property with id <code>propertyID</code>
    * @return a panel containing a label and a component
    */
-  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent) {
-    return createControlPanel(propertyID, inputComponent, true);
+  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent) {
+    return createPropertyPanel(propertyID, inputComponent, true);
   }
 
   /**
@@ -110,9 +110,9 @@ public abstract class EntityEditPanel extends JPanel {
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @return a panel containing a label and a component
    */
-  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
-                                            final boolean labelOnTop) {
-    return createControlPanel(propertyID, inputComponent, labelOnTop, 5, 5);
+  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
+                                             final boolean labelOnTop) {
+    return createPropertyPanel(propertyID, inputComponent, labelOnTop, 5, 5);
   }
 
   /**
@@ -126,9 +126,9 @@ public abstract class EntityEditPanel extends JPanel {
    * @param vgap the vertical gap between components
    * @return a panel containing a label and a component
    */
-  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
-                                            final boolean labelOnTop, final int hgap, final int vgap) {
-    return createControlPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
+  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
+                                             final boolean labelOnTop, final int hgap, final int vgap) {
+    return createPropertyPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
   }
 
   /**
@@ -143,10 +143,10 @@ public abstract class EntityEditPanel extends JPanel {
    * @param labelAlignment the text alignment to use for the label
    * @return a panel containing a label and a component
    */
-  protected final JPanel createControlPanel(final String propertyID, final JComponent inputComponent,
-                                            final boolean labelOnTop, final int hgap, final int vgap,
-                                            final int labelAlignment) {
-    return createControlPanel(EntityUiUtil.createLabel(EntityRepository.getProperty(getEditModel().getEntityID(),
+  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
+                                             final boolean labelOnTop, final int hgap, final int vgap,
+                                             final int labelAlignment) {
+    return createPropertyPanel(EntityUiUtil.createLabel(EntityRepository.getProperty(getEditModel().getEntityID(),
             propertyID), labelAlignment), inputComponent, labelOnTop, hgap, vgap);
   }
 
@@ -160,8 +160,8 @@ public abstract class EntityEditPanel extends JPanel {
    * @param vgap the vertical gap between components
    * @return a panel containing a label and a component
    */
-  protected final JPanel createControlPanel(final JComponent labelComponent, final JComponent inputComponent,
-                                            final boolean labelOnTop, final int hgap, final int vgap) {
+  protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
+                                             final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel panel = new JPanel(labelOnTop ?
             new FlexibleGridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
     if (labelComponent instanceof JLabel)
@@ -673,7 +673,7 @@ public abstract class EntityEditPanel extends JPanel {
             comboBoxModel, maximumMatch, enabledState);
   }
 
-/**
+  /**
    * Creates a SteppedComboBox bound to the given property
    * @param property the property to bind
    * @param comboBoxModel the ComboBoxModel

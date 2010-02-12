@@ -41,11 +41,11 @@ public class CategoryPanel extends EntityPanel {
         final JTextField txtName = createTextField(Petstore.CATEGORY_NAME);
         setDefaultFocusComponent(txtName);
         txtName.setColumns(10);
-        add(createControlPanel(Petstore.CATEGORY_NAME, txtName));
+        add(createPropertyPanel(Petstore.CATEGORY_NAME, txtName));
         final JTextField txtDesc = createTextField(Petstore.CATEGORY_DESCRIPTION);
         txtDesc.setColumns(18);
-        add(createControlPanel(Petstore.CATEGORY_DESCRIPTION, txtDesc));
-        add(createControlPanel(Petstore.CATEGORY_IMAGE_URL, createTextField(Petstore.CATEGORY_IMAGE_URL)));
+        add(createPropertyPanel(Petstore.CATEGORY_DESCRIPTION, txtDesc));
+        add(createPropertyPanel(Petstore.CATEGORY_IMAGE_URL, createTextField(Petstore.CATEGORY_IMAGE_URL)));
       }
     };
   }

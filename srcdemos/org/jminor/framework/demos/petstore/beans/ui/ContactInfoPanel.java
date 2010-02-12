@@ -41,9 +41,9 @@ public class ContactInfoPanel extends EntityPanel {
         final JTextField txt = createTextField(Petstore.SELLER_CONTACT_INFO_LAST_NAME);
         setDefaultFocusComponent(txt);
         txt.setColumns(10);
-        add(createControlPanel(Petstore.SELLER_CONTACT_INFO_LAST_NAME, txt));
-        add(createControlPanel(Petstore.SELLER_CONTACT_INFO_FIRST_NAME, createTextField(Petstore.SELLER_CONTACT_INFO_FIRST_NAME)));
-        add(createControlPanel(Petstore.SELLER_CONTACT_INFO_EMAIL, createTextField(Petstore.SELLER_CONTACT_INFO_EMAIL)));
+        add(createPropertyPanel(Petstore.SELLER_CONTACT_INFO_LAST_NAME, txt));
+        add(createPropertyPanel(Petstore.SELLER_CONTACT_INFO_FIRST_NAME, createTextField(Petstore.SELLER_CONTACT_INFO_FIRST_NAME)));
+        add(createPropertyPanel(Petstore.SELLER_CONTACT_INFO_EMAIL, createTextField(Petstore.SELLER_CONTACT_INFO_EMAIL)));
       }
     };
   }

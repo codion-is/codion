@@ -1026,3 +1026,4 @@
   EntityTableColumnPanel refactored from EntityTableSearchPanel and EntityTableSummaryPanel
   EntityUiUtil.createEastButtonPanel() added
   EntityUtil.activeDependencies() removed
+  EntityEditPanel.createControlPanel() renamed to createPropertyPanel()

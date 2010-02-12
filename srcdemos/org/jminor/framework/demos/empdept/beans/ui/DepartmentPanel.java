@@ -86,9 +86,9 @@ public class DepartmentPanel extends EntityPanel {
         });
 
         setLayout(new GridLayout(3,1,5,5));
-        add(createControlPanel(EmpDept.DEPARTMENT_ID, txtDepartmentNumber));
-        add(createControlPanel(EmpDept.DEPARTMENT_NAME, txtDepartmentName));
-        add(createControlPanel(EmpDept.DEPARTMENT_LOCATION, txtDepartmentLocation));
+        add(createPropertyPanel(EmpDept.DEPARTMENT_ID, txtDepartmentNumber));
+        add(createPropertyPanel(EmpDept.DEPARTMENT_NAME, txtDepartmentName));
+        add(createPropertyPanel(EmpDept.DEPARTMENT_LOCATION, txtDepartmentLocation));
       }
     };
   }

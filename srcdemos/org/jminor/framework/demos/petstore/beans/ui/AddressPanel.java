@@ -33,22 +33,22 @@ public class AddressPanel extends EntityPanel {
         JTextField txt = createTextField(Petstore.ADDRESS_CITY);
         setDefaultFocusComponent(txt);
         txt.setColumns(12);
-        add(createControlPanel(Petstore.ADDRESS_CITY, txt));
+        add(createPropertyPanel(Petstore.ADDRESS_CITY, txt));
         txt = createTextField(Petstore.ADDRESS_STATE);
         txt.setColumns(12);
-        add(createControlPanel(Petstore.ADDRESS_STATE, txt));
+        add(createPropertyPanel(Petstore.ADDRESS_STATE, txt));
         add(new JLabel());
         txt = createTextField(Petstore.ADDRESS_ZIP);
         txt.setColumns(12);
-        add(createControlPanel(Petstore.ADDRESS_ZIP, txt));
+        add(createPropertyPanel(Petstore.ADDRESS_ZIP, txt));
         txt = createTextField(Petstore.ADDRESS_STREET_1);
         txt.setColumns(12);
-        add(createControlPanel(Petstore.ADDRESS_STREET_1, txt));
+        add(createPropertyPanel(Petstore.ADDRESS_STREET_1, txt));
         txt = createTextField(Petstore.ADDRESS_STREET_2);
         txt.setColumns(12);
-        add(createControlPanel(Petstore.ADDRESS_STREET_2, txt));
-        add(createControlPanel(Petstore.ADDRESS_LATITUDE, createTextField(Petstore.ADDRESS_LATITUDE)));
-        add(createControlPanel(Petstore.ADDRESS_LONGITUDE, createTextField(Petstore.ADDRESS_LONGITUDE)));
+        add(createPropertyPanel(Petstore.ADDRESS_STREET_2, txt));
+        add(createPropertyPanel(Petstore.ADDRESS_LATITUDE, createTextField(Petstore.ADDRESS_LATITUDE)));
+        add(createPropertyPanel(Petstore.ADDRESS_LONGITUDE, createTextField(Petstore.ADDRESS_LONGITUDE)));
       }
     };
   }

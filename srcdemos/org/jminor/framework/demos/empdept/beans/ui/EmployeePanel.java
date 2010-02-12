@@ -48,15 +48,15 @@ public class EmployeePanel extends EntityPanel {
 
         setLayout(new FlexibleGridLayout(3,3,5,5,true,false));
 
-        add(createControlPanel(EmpDept.EMPLOYEE_NAME, txtName));
-        add(createControlPanel(EmpDept.EMPLOYEE_JOB, txtJob));
-        add(createControlPanel(EmpDept.EMPLOYEE_DEPARTMENT_FK, boxDepartment));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_NAME, txtName));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_JOB, txtJob));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_DEPARTMENT_FK, boxDepartment));
 
-        add(createControlPanel(EmpDept.EMPLOYEE_MGR_FK, boxManager));
-        add(createControlPanel(EmpDept.EMPLOYEE_SALARY, txtSalary));
-        add(createControlPanel(EmpDept.EMPLOYEE_COMMISSION, txtCommission));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_MGR_FK, boxManager));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_SALARY, txtSalary));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_COMMISSION, txtCommission));
 
-        add(createControlPanel(EmpDept.EMPLOYEE_HIREDATE, pnlHiredate));
+        add(createPropertyPanel(EmpDept.EMPLOYEE_HIREDATE, pnlHiredate));
         add(new JLabel());
         add(new JLabel());
       }
