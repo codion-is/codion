@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.text.Collator;
 
 /**
  * A ComboBoxModel implementation that allows filtering via FilterCriteria objects
@@ -53,12 +54,13 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    */
   public FilteredComboBoxModel(final boolean sortContents, final String nullValueString) {
     this(sortContents, nullValueString, new Comparator<Object>() {
+      private final Collator collator = Collator.getInstance();
       @SuppressWarnings({"unchecked"})
       public int compare(final Object objectOne, final Object objectTwo) {
         if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
           return ((Comparable) objectOne).compareTo(objectTwo);
         else
-          return objectOne.toString().compareTo(objectTwo.toString());
+          return collator.compare(objectOne.toString(), objectTwo.toString());
       }
     });
   }
@@ -94,21 +96,31 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * Resets the contents of this model using the values found in <code>contents</code>
    * @param contents the contents to be used by this model
    */
-  public final void setContents(final Collection contents) {
+  public final void setContents(final Collection<?> contents) {
     filteredItems.clear();
     visibleItems.clear();
-    if (contents != null) {
-      for (final Object object : contents) {
-        if (filterCriteria != null && !filterCriteria.include(object))
-          filteredItems.add(object);
-        else
-          visibleItems.add(object);
-      }
+    if (contents != null)
+      visibleItems.addAll(contents);
+    filterContents();
+  }
+
+  /**
+   * Filters the contents of this model according to the <code>include</code> method
+   * @see #include(Object)
+   */
+  public void filterContents() {
+    final List<Object> allItems = new ArrayList<Object>(visibleItems);
+    allItems.addAll(filteredItems);
+    visibleItems.clear();
+    filteredItems.clear();
+    for (final Object item : allItems) {
+      if (include(item))
+        visibleItems.add(item);
+      else
+        filteredItems.add(item);
     }
     if (sortContents)
       Collections.sort(visibleItems, sortComparator);
-    if (nullValueString != null)
-      visibleItems.add(0, nullValueString);
 
     fireContentsChanged();
   }
@@ -122,7 +134,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    */
   public void setFilterCriteria(final FilterCriteria criteria) {
     this.filterCriteria = criteria;
-    resetContents();
+    filterContents();
   }
 
   public void fireContentsChanged() {
@@ -211,12 +223,18 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   /** {@inheritDoc} */
   public Object getElementAt(final int index) {
-    return visibleItems.get(index);
+    if (nullValueString == null)
+      return visibleItems.get(index);
+
+    return index == 0 ? nullValueString : visibleItems.get(index-1);
   }
 
   /** {@inheritDoc} */
   public int getSize() {
-    return visibleItems.size();
+    if (nullValueString == null)
+      return visibleItems.size();
+
+    return visibleItems.size() + 1;
   }
 
   /**
@@ -227,8 +245,6 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   protected List<?> getContents() {
     final List<Object> contents = new ArrayList<Object>(filteredItems);
     contents.addAll(visibleItems);
-    if (nullValueString != null)
-      contents.remove(nullValueString);
 
     return contents;
   }
@@ -239,5 +255,15 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   protected List<Object> getVisibleItems() {
     return new ArrayList<Object>(visibleItems);
+  }
+
+  /**
+   * Returns true if the given object should be included or filtered out of this model
+   * @param object the object
+   * @return true if the object should be included
+   * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
+   */
+  protected boolean include(final Object object) {
+    return filterCriteria == null || filterCriteria.include(object);
   }
 }

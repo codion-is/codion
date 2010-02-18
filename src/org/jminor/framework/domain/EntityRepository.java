@@ -297,7 +297,7 @@ public class EntityRepository {
       if (foreignKeyProperty.is(propertyID))
         return foreignKeyProperty;
 
-    throw new RuntimeException("Entity property with id: " + propertyID + " not found in entity of type: " + entityID);
+    throw new RuntimeException("Foreign key property with id: " + propertyID + " not found in entity of type: " + entityID);
   }
 
   /**

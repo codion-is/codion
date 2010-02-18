@@ -4,16 +4,28 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Arrays;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table
@@ -56,6 +68,24 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * the SelectCriteria used to filter the data
    */
   private SelectCriteria selectCriteria;
+
+  /**
+   * A map of entities used to filter the contents of this model
+   */
+  private Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
+
+  private final FilterCriteria foreignKeyFilterCriteria = new FilterCriteria() {
+    public boolean include(final Object item) {
+      for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
+        final Entity foreignKeyValue = ((Entity)item).getEntityValue(entry.getKey());
+        final Set<Entity> filterValues = entry.getValue();
+        if (filterValues.size() > 0 && !filterValues.contains(foreignKeyValue))
+          return false;
+      }
+
+      return true;
+    }
+  };
 
   /**
    * @param entityID the ID of the entity this combo box model should represent
@@ -209,6 +239,42 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     this.selectCriteria = selectCriteria;
   }
 
+  public void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
+    final Set<Entity> filterEntities = new HashSet<Entity>(entities.size());
+    filterEntities.addAll(entities);
+    foreignKeyFilterEntities.put(foreignKeyPropertyID, filterEntities);
+
+    filterContents();
+  }
+
+  public Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID) {
+    final Collection<Entity> filterEntities = new ArrayList<Entity>();
+    if (foreignKeyFilterEntities.containsKey(foreignKeyPropertyID))
+      filterEntities.addAll(foreignKeyFilterEntities.get(foreignKeyPropertyID));
+
+    return filterEntities;
+  }
+
+  public EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
+    final Property.ForeignKeyProperty foreignKeyProperty =
+            EntityRepository.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
+    final EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(),
+            getDbProvider(), true, "-", true);
+    foreignKeyModel.refresh();
+    final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
+    if (filterEntities != null && filterEntities.size() > 0)
+      foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
+    foreignKeyModel.evtSelectionChanged.addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
+        setForeignKeyFilterEntities(foreignKeyPropertyID,
+                selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
+      }
+    });
+
+    return foreignKeyModel;
+  }
+
   /**
    * @return the SelectCriteria used by this EntityComboBoxModel
    */
@@ -223,8 +289,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * @return true if the Entity should be included, false otherwise
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected boolean include(final Entity entity) {
+  protected boolean includeEntity(final Entity entity) {
     return true;
+  }
+
+  @Override
+  protected boolean include(final Object object) {
+    return super.include(object) && foreignKeyFilterCriteria.include(object);
   }
 
   /**
@@ -240,7 +311,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
       final List<Entity> entities = performQuery();
       final ListIterator<Entity> iterator = entities.listIterator();
       while (iterator.hasNext())
-        if (!include(iterator.next()))
+        if (!includeEntity(iterator.next()))
           iterator.remove();
 
       return entities;

@@ -1027,3 +1027,8 @@
   EntityUiUtil.createEastButtonPanel() added
   EntityUtil.activeDependencies() removed
   EntityEditPanel.createControlPanel() renamed to createPropertyPanel()
+  EntityComboBoxModel.include(Entity) renamed to includeEntity
+  FilteredComboBoxModel refactored, filterContents() added, different handling of nullValueString, uses Collator when sorting
+  EntityComboBoxModel.foreignKeyFilterEntities and foreignKeyFilterCriteria fields added
+  EntityComboBoxModel.get/setForeignKeyFilterEntities() and createForeignKeyFilterComboBoxModel() added
+  EntityComboBox.createForeignKeyFilterComboBox() added
