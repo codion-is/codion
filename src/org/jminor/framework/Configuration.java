@@ -16,7 +16,7 @@ import java.util.Map;
  * Settings used throughout the framework.
  * These settings are used during initialization and should be set before
  * the application is initialized, before EntityApplicationPanel.startApplication is called.
- * EntityApplicationPanel.initializeSettings is a convenience method for this purpose,
+ * EntityApplicationPanel.initializeSettings() is a convenience method for this purpose,
  * override and use it to set configuration properties.
  */
 public class Configuration {
@@ -348,7 +348,7 @@ public class Configuration {
 
   /**
    * Specifies the default horizontal alignment used in labels
-   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER);
+   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)
    * Default value: JLabel.LEFT
    * @see JLabel#LEFT
    * @see JLabel#RIGHT
@@ -397,9 +397,52 @@ public class Configuration {
   }
 
   private static void parseSystemSettings() {
-    String value = System.getProperty(USE_OPTIMISTIC_LOCKING);
+    parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
+    parseStringSetting(DEFAULT_DATE_FORMAT);
+    parseBooleanSetting(ALL_PANELS_ACTIVE);
+    parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
+    parseBooleanSetting(USE_KEYBOARD_NAVIGATION);
+    parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
+    parseBooleanSetting(CONFIRM_EXIT);
+    parseBooleanSetting(PROPERTY_DEBUG_OUTPUT);
+    parseIntegerSetting(TAB_PLACEMENT);
+    parseBooleanSetting(TOOLBAR_BUTTONS);
+    parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
+    parseStringSetting(USERNAME_PREFIX);
+    parseBooleanSetting(AUTHENTICATION_REQUIRED);
+    parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
+    parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
+    parseIntegerSetting(TOOLTIP_DELAY);
+    parseBooleanSetting(FILTER_QUERY_BY_MASTER);
+    parseBooleanSetting(PERSIST_ENTITY_PANELS);
+    parseBooleanSetting(INITIAL_SEARCH_PANEL_STATE);
+    parseStringSetting(SERVER_NAME_PREFIX);
+    parseStringSetting(WILDCARD_CHARACTER);
+    parseBooleanSetting(USE_NUMBER_FORMAT_GROUPING);
+    parseStringSetting(REMOTE_CONNECTION_PROVIDER);
+    parseStringSetting(LOCAL_CONNECTION_PROVIDER);
+    parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);
+    parseBooleanSetting(PERFORM_NULL_VALIDATION);
+    parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
+    parseBooleanSetting(ALLOW_COLUMN_REORDERING);
+  }
+
+  private static void parseIntegerSetting(final String setting) {
+    final String value = System.getProperty(setting);
     if (value != null)
-      setValue(USE_OPTIMISTIC_LOCKING, value.equalsIgnoreCase("true"));
+      setValue(setting, Integer.parseInt(value));
+  }
+
+  private static void parseBooleanSetting(final String setting) {
+    final String value = System.getProperty(setting);
+    if (value != null)
+      setValue(setting, value.equalsIgnoreCase("true"));
+  }
+
+  private static void parseStringSetting(final String setting) {
+    final String value = System.getProperty(setting);
+    if (value != null)
+      setValue(setting, value);
   }
 
   public static void setValue(final String key, final Object value) {

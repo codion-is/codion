@@ -1035,3 +1035,4 @@
   EntityTableColumnPanel.setVerticalFillerWidth() added
   Property.columnName field added
   framework/db package classes changed according to the above
+  Configuration now reads most settings from system properties
