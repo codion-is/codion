@@ -152,7 +152,7 @@ public class PropertyCriteria implements Criteria, Serializable {
       return set.asString(database);
     }
     else
-      return getInList(database, ((Property.ForeignKeyProperty) property).getReferenceProperties().get(0).getPropertyID(),
+      return getInList(database, ((Property.ForeignKeyProperty) property).getReferenceProperties().get(0).getColumnName(),
               searchType == SearchType.NOT_LIKE);
   }
 
@@ -223,7 +223,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (property instanceof Property.SubqueryProperty)
       columnName = "("+((Property.SubqueryProperty)property).getSubQuery()+")";
     else
-      columnName = property.getPropertyID();
+      columnName = property.getColumnName();
 
     if (!isNullCriteria && property.getPropertyType() == Type.STRING && !caseSensitive)
       columnName = "upper(" + columnName + ")";

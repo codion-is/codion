@@ -94,8 +94,8 @@ public class EntityKeyCriteria implements Criteria, Serializable {
       if (keys.size() == 1)
         stringBuilder.append(getQueryConditionString(database, keys.get(0), getColumnNames()));
       else //a in (c, v, d, s)
-        appendInCondition(database, properties != null ? properties.get(0).getPropertyID()
-                : keys.get(0).getFirstKeyProperty().getPropertyID(), stringBuilder, keys);
+        appendInCondition(database, properties != null ? properties.get(0).getColumnName()
+                : keys.get(0).getFirstKeyProperty().getColumnName(), stringBuilder, keys);
     }
 
     return stringBuilder.toString();
@@ -107,7 +107,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
 
     final List<String> columnNames = new ArrayList<String>(properties.size());
     for (final Property property : properties)
-      columnNames.add(property.getPropertyID());
+      columnNames.add(property.getColumnName());
 
     return columnNames;
   }
@@ -124,7 +124,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
-      stringBuilder.append(EntityUtil.getQueryString(columnNames == null ? property.getPropertyID() : columnNames.get(i),
+      stringBuilder.append(EntityUtil.getQueryString(columnNames == null ? property.getColumnName() : columnNames.get(i),
               EntityUtil.getSQLStringValue(database, property, key.getValue(property.getPropertyID()))));
       if (i++ < key.getPropertyCount() -1)
         stringBuilder.append(" and ");

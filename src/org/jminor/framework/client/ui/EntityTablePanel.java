@@ -76,6 +76,31 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+/**
+ * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities
+ *
+ * The default layout is as follows
+ * <pre>
+ *  ____________________________________________________
+ * |                searchPanel                         |
+ * |____________________________________________________|
+ * |                                                    |
+ * |                                                    |
+ * |                                                    |
+ * |                                                    |
+ * |                entityTable (JTable)                |
+ * |                                                    |
+ * |                                                    |
+ * |                                                    |
+ * |                                                    |
+ * |____________________________________________________|
+ * |                summaryPanel                        |
+ * |____________________________________________________|
+ * |                southPanel                          |
+ * |____________________________________________________|
+ * </pre>
+ * The search and summary panels can be hidden
+ */
 public class EntityTablePanel extends JPanel {
 
   public final static char FILTER_INDICATOR = '*';
@@ -644,7 +669,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected EntityTableSummaryPanel initializeSummaryPanel() {
     final EntityTableSummaryPanel summaryPanel = new EntityTableSummaryPanel(getTableModel());
-    addScrollBarBuffer(summaryPanel);
+    summaryPanel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
 
     return summaryPanel;
   }
@@ -689,7 +714,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeAdvancedSearchPanel() {
     final EntityTableSearchPanel searchPanel = new EntityTableSearchPanel(getTableModel().getSearchModel());
-    addScrollBarBuffer(searchPanel);
+    searchPanel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
 
     return searchPanel;
   }
@@ -1036,12 +1061,6 @@ public class EntityTablePanel extends JPanel {
     searchScrollPane.getViewport().setView(null);
     searchScrollPane.getViewport().setView(searchPanel);
     revalidate();
-  }
-
-  private void addScrollBarBuffer(final JPanel panel) {
-    final JLabel scrollBarBuffer = new JLabel();
-    scrollBarBuffer.setPreferredSize(new Dimension(15,20));
-    panel.add(scrollBarBuffer);
   }
 
   private static void toggleFilterPanel(final Point position, final PropertyFilterPanel columnFilterPanel,

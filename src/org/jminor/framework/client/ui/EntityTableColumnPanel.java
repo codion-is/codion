@@ -2,6 +2,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.framework.domain.Property;
 
+import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -22,11 +23,14 @@ import java.util.Map;
 public abstract class EntityTableColumnPanel extends JPanel {
 
   private final TableColumnModel tableColumnModel;
+  private final Box.Filler verticalFiller;
   private Map<String, JPanel> columnPanels;
 
   public EntityTableColumnPanel(final TableColumnModel tableColumnModel) {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     this.tableColumnModel = tableColumnModel;
+    final Dimension fillerSize = new Dimension();
+    this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
   }
 
   public Map<String, JPanel> getColumnPanels() {
@@ -48,6 +52,16 @@ public abstract class EntityTableColumnPanel extends JPanel {
     return new Dimension(super.getPreferredSize().width, getColumnPanels().values().iterator().next().getPreferredSize().height);
   }
 
+  /**
+   * Sets the width of the rightmost vertical filler
+   * @param width the required width
+   */
+  public void setVerticalFillerWidth(final int width) {
+    final Dimension dimension = new Dimension(width, verticalFiller.getHeight());
+    verticalFiller.changeShape(dimension, dimension, dimension);
+    resetPanel();
+  }
+
   protected abstract Map<String, JPanel> initializeColumnPanels();
 
   protected void resetPanel() {
@@ -55,6 +69,7 @@ public abstract class EntityTableColumnPanel extends JPanel {
     final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
     while (columnEnumeration.hasMoreElements())
       add(getColumnPanels().get(((Property) columnEnumeration.nextElement().getIdentifier()).getPropertyID()));
+    add(verticalFiller);
 
     syncPanelWidths(tableColumnModel, columnPanels);
     repaint();

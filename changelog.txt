@@ -1032,3 +1032,6 @@
   EntityComboBoxModel.foreignKeyFilterEntities and foreignKeyFilterCriteria fields added
   EntityComboBoxModel.get/setForeignKeyFilterEntities() and createForeignKeyFilterComboBoxModel() added
   EntityComboBox.createForeignKeyFilterComboBox() added
+  EntityTableColumnPanel.setVerticalFillerWidth() added
+  Property.columnName field added
+  framework/db package classes changed according to the above

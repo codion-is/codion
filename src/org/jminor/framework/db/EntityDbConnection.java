@@ -354,7 +354,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
         final String whereCondition = EntityUtil.getWhereCondition(getDatabase(), primaryKey);
 
-        execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getPropertyID())
+        execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' ").append(whereCondition).toString());
 
         writeBlobField(blobData, EntityRepository.getTableName(primaryKey.getEntityID()),
@@ -399,7 +399,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final Collection<Property> insertProperties = EntityUtil.getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
-      sql.append(property.getPropertyID());
+      sql.append(property.getColumnName());
       columnValues.append(EntityUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
@@ -427,7 +427,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException("No modified updateable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      sql.append(property.getPropertyID()).append(" = ").append(
+      sql.append(property.getColumnName()).append(" = ").append(
               EntityUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
@@ -559,7 +559,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
-        sql = new StringBuilder("select max(").append(EntityRepository.getPrimaryKeyProperties(entityID).get(0).getPropertyID())
+        sql = new StringBuilder("select max(").append(EntityRepository.getPrimaryKeyProperties(entityID).get(0).getColumnName())
                 .append(") + 1 from ").append(EntityRepository.getTableName(entityID)).toString();
         break;
       case QUERY:

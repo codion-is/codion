@@ -21,6 +21,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -85,6 +86,7 @@ public class UiUtil {
    * A text field used by getPreferredTextFieldSize and getPreferredTextFieldHeight
    */
   private static JTextField textField;
+  private static JScrollBar verticalScrollBar;
 
   private UiUtil() {}
 
@@ -365,6 +367,13 @@ public class UiUtil {
         root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
       }
     }
+  }
+
+  public static int getPreferredScrollBarWidth() {
+    if (verticalScrollBar == null)
+      verticalScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+
+    return verticalScrollBar.getPreferredSize().width;
   }
 
   public static Dimension getPreferredTextFieldSize() {

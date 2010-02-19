@@ -22,7 +22,7 @@ public class Property implements Serializable {
 
   /**
    * The property identifier, should be unique within an Entity.
-   * Serves as column name for database properties.
+   * This ID serves as column name for database properties.
    * @see #getPropertyID
    */
   private final String propertyID;
@@ -36,6 +36,12 @@ public class Property implements Serializable {
    * The caption to use when this property is presented
    */
   private final String caption;
+
+  /**
+   * The name of the underlying column
+   * Only applicable to properties that map to an underlying table column
+   */
+  private final String columnName;
 
   /**
    * A reference to a parent foreign key property, if one exists
@@ -118,14 +124,14 @@ public class Property implements Serializable {
 
   /**
    * Instantiates a new property of the type Type.INT
-   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyID the property ID, this is used as the underlying column name
    */
   public Property(final String propertyID) {
     this(propertyID, Type.INT);
   }
 
   /**
-   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyID the property ID, this is used as the underlying column name
    * @param propertyType the data type of this property
    */
   public Property(final String propertyID, final Type propertyType) {
@@ -133,7 +139,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyID the property ID, this is used as the underlying column name
    * @param propertyType the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
@@ -146,6 +152,7 @@ public class Property implements Serializable {
     this.propertyID = propertyID;
     this.propertyType = propertyType;
     this.caption = caption;
+    this.columnName = propertyID;
   }
 
   /**
@@ -173,7 +180,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * @return the columnName/property identifier of this property
+   * @return the property identifier of this property
    */
   public String getPropertyID() {
     return this.propertyID;
@@ -184,6 +191,13 @@ public class Property implements Serializable {
    */
   public Type getPropertyType() {
     return propertyType;
+  }
+
+  /**
+   * @return the name of the underlying column
+   */
+  public String getColumnName() {
+    return this.columnName;
   }
 
   /**
@@ -572,6 +586,11 @@ public class Property implements Serializable {
       this.lazyLoading = lazyLoading;
       return this;
     }
+
+    @Override
+    public final String getColumnName() {
+      throw new RuntimeException("Foreign key properties do not have column names");
+    }
   }
 
   /**
@@ -667,12 +686,12 @@ public class Property implements Serializable {
     }
 
     @Override
-    public Property setUpdatable(final boolean updatable) {
+    public final Property setUpdatable(final boolean updatable) {
       throw new IllegalArgumentException("TransientProperty can not be updatable");
     }
 
     @Override
-    public Property setSearchable(final boolean searchable) {
+    public final Property setSearchable(final boolean searchable) {
       throw new IllegalArgumentException("TransientProperty can not be searchable");
     }
 
@@ -680,8 +699,13 @@ public class Property implements Serializable {
      * @return true if this property maps to a database column
      */
     @Override
-    public boolean isDatabaseProperty() {
+    public final boolean isDatabaseProperty() {
       return false;
+    }
+
+    @Override
+    public final String getColumnName() {
+      throw new RuntimeException("Transient properties do not have column names");
     }
   }
 
@@ -771,6 +795,11 @@ public class Property implements Serializable {
      */
     public String getSubQuery() {
       return subquery;
+    }
+
+    @Override
+    public final String getColumnName() {
+      throw new RuntimeException("Subquery properties do not have column names");
     }
   }
 
