@@ -99,7 +99,7 @@ public class Configuration {
   public static final String PROFILING_THINKTIME = "jminor.profiling.thinktime";
 
   /**
-   * Specifies the number time which the max think time is multiplied with when initializing the clients
+   * Specifies the number which the max think time is multiplied with when initializing the clients
    */
   public static final String PROFILING_LOGIN_WAIT = "jminor.profiling.loginwait";
 
@@ -110,109 +110,109 @@ public class Configuration {
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when
-   * creating default timestamp input fields
-   * Value type: String
+   * creating default timestamp input fields<br>
+   * Value type: String<br>
    * Default value: dd-MM-yyyy HH:mm
    */
   public static final String DEFAULT_TIMESTAMP_FORMAT = "jminor.client.defaultTimestampFormat";
 
   /**
    * The date format pattern to use when showing date values in tables and when
-   * creating default date input fields
-   * Value type: String
+   * creating default date input fields<br>
+   * Value type: String<br>
    * Default value: dd-MM-yyyy
    */
   public static final String DEFAULT_DATE_FORMAT = "jminor.client.defaultDateFormat";
 
   /**
-   * Indicates whether all entity panels should be enabled and receiving input by default
-   * Value type: Boolean
+   * Indicates whether all entity panels should be enabled and receiving input by default<br>
+   * Value type: Boolean<br>
    * Default value: false
    * @see #USE_FOCUS_ACTIVATION
    */
   public static final String ALL_PANELS_ACTIVE = "jminor.client.allPanelsActive";
 
   /**
-   * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner
-   * Value type: Boolean
+   * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
+   * Value type: Boolean<br>
    * Default value: false
    */
   public static final String COMPACT_ENTITY_PANEL_LAYOUT = "jminor.client.compactEntityPanelLayout";
 
   /**
-   * Indicates whether keyboard navigation will be enabled
-   * Value type: Boolean
+   * Indicates whether keyboard navigation will be enabled<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
   public static final String USE_KEYBOARD_NAVIGATION = "jminor.client.useKeyboardNavigation";
 
   /**
-   * Indicates whether entity panels should be activated when the panel receives focus
-   * Value type: Boolean
+   * Indicates whether entity panels should be activated when the panel receives focus<br>
+   * Value type: Boolean<br>
    * Default value: true
    * @see #ALL_PANELS_ACTIVE
    */
   public static final String USE_FOCUS_ACTIVATION = "jminor.client.useFocusActivation";
 
   /**
-   * Specifies the default table column resize mode for tables in the application
-   * Value type: Integer (JTable.AUTO_RESIZE_*)
+   * Specifies the default table column resize mode for tables in the application<br>
+   * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
    * Default value: JTable.AUTO_RESIZE_OFF
    */
   public static final String TABLE_AUTO_RESIZE_MODE = "jminor.client.tableautoResizeMode";
 
   /**
-   * Indicates whether the application should ask for confirmation when exiting
-   * Value type: Boolean
+   * Indicates whether the application should ask for confirmation when exiting<br>
+   * Value type: Boolean<br>
    * Default value: false
    */
   public static final String CONFIRM_EXIT = "jminor.client.confirmExit";
 
   /**
-   * Specifies whether the framework should output verbose debug output regarding property changes in entities
-   * Value type: Boolean
+   * Specifies whether the framework should output verbose debug output regarding property changes in entities<br>
+   * Value type: Boolean<br>
    * Default value: false
    */
   public static final String PROPERTY_DEBUG_OUTPUT = "jminor.client.propertyDebugOutput";
 
   /**
-   * Specifies the tab placement
-   * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)
+   * Specifies the tab placement<br>
+   * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)<br>
    * Default value: JTabbedPane.TOP
    */
   public static final String TAB_PLACEMENT = "jminor.client.tabPlacement";
 
   /**
-   * Specifies whether or not columns can be rearranged in tables
-   * Value type: Boolean
+   * Specifies whether or not columns can be rearranged in tables<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
   public static final String ALLOW_COLUMN_REORDERING = "jminor.client.allowColumnReordering";
 
   /**
-   * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar
-   * Value type: Boolean
+   * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
+   * Value type: Boolean<br>
    * Default value: false
    */
   public static final String TOOLBAR_BUTTONS = "jminor.client.toolbarButtons";
 
   /**
-   * Specifies whether foreign key values should persist when the UI is cleared or be reset to null
-   * Value type: Boolean
+   * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
   public static final String PERSIST_FOREIGN_KEY_VALUES = "jminor.client.persistForeignKeyValues";
 
   /**
-   * Specifies a string to prepend to the username field in the login dialog
-   * Value type: String
+   * Specifies a string to prepend to the username field in the login dialog<br>
+   * Value type: String<br>
    * Default value: [empty string]
    */
   public static final String USERNAME_PREFIX = "jminor.client.usernamePrefix";
 
   /**
-   * Specifies whether user authentication is required
-   * Value type: Boolean
+   * Specifies whether user authentication is required<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
   public static final String AUTHENTICATION_REQUIRED = "jminor.client.authenticationRequired";
@@ -220,81 +220,74 @@ public class Configuration {
   /**
    * Specifies whether focus should be transferred from components on enter,
    * this does not work for editable combo boxes, combo boxes with the
-   * maximum match functionality enabled or text areas
-   * Value type: Boolean
+   * maximum match functionality enabled or text areas<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
   public static final String TRANSFER_FOCUS_ON_ENTER = "jminor.client.transferFocusOnEnter";
 
   /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
-   * be checked for modification before being updated
-   * Value type: Boolean
+   * be checked for modification before being updated<br>
+   * Value type: Boolean<br>
    * Default value: false
    */
   public static final String USE_OPTIMISTIC_LOCKING = "jminor.db.useOptimisticLocking";
 
   /**
-   * Specifies the global tooltip delay in milliseconds
-   * Value type: Integer
+   * Specifies the global tooltip delay in milliseconds<br>
+   * Value type: Integer<br>
    * Default value: 500
    */
   public static final String TOOLTIP_DELAY = "jminor.client.tooltipDelay";
 
   /**
-   * Specifies the value used to denote a boolean false in the database
-   * Value type: Any Object
+   * Specifies the value used to denote a boolean false in the database<br>
+   * Value type: Any Object<br>
    * Default value: 0
    */
   public static final String SQL_BOOLEAN_VALUE_FALSE = "jminor.client.sqlBooleanValueFalse";
 
   /**
-   * Specifies the value used to denote a boolean true in the database
-   * Value type: Any Object
+   * Specifies the value used to denote a boolean true in the database<br>
+   * Value type: Any Object<br>
    * Default value: 1
    */
   public static final String SQL_BOOLEAN_VALUE_TRUE = "jminor.client.sqlBooleanValueTrue";
 
   /**
-   * Specifies the value used to denote a null boolean value in the database
-   * Value type: Any Object
+   * Specifies the value used to denote a null boolean value in the database<br>
+   * Value type: Any Object<br>
    * Default value: null
    */
   public static final String SQL_BOOLEAN_VALUE_NULL = "jminor.client.sqlBooleanValueNull";
 
   /**
-   * Specifies if the default filtering behaviour should be to filter the underlying query
-   * Value type: Boolean
-   * Default value: true
-   */
-  public static final String FILTER_QUERY_BY_MASTER = "jminor.client.filterQueryByMaster";
-
-  /**
    * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanelDialog</code> method
-   * should be persisted, or kept in memory, when the dialog is closed.
-   * Value type: Boolean
+   * should be persisted, or kept in memory, when the dialog is closed.<br>
+   * Value type: Boolean<br>
    * Default value: false
    * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanelDialog(org.jminor.framework.client.ui.EntityPanelProvider)
    */
   public static final String PERSIST_ENTITY_PANELS = "jminor.client.persistEntityPanels";
 
   /**
-   * Specifies the initial search panel state, whether it should be visible or not by default
-   * Value type: Boolean
+   * Specifies the default search panel state, whether it should be visible or not<br>
+   * Value type: Boolean<br>
    * Default value: false
    */
-  public static final String INITIAL_SEARCH_PANEL_STATE = "jminor.client.initalSearchPanelState";
+  public static final String DEFAULT_SEARCH_PANEL_STATE = "jminor.client.defaultSearchPanelState";
 
   /**
-   * Specifies the prefix used when exporting/looking up the JMinor server
-   * Value type: String
+   * Specifies the prefix used when exporting/looking up the JMinor server<br>
+   * Value type: String<br>
    * Default value: JMinor Server
    */
   public static final String SERVER_NAME_PREFIX = "jminor.server.namePrefix";
 
   /**
-   * Specifies the wildcard character used by the framework
-   * Value type: String
+   * Specifies the wildcard character used by the framework<br>
+   * Value type: String<br>
    * Default value: %
    */
   public static final String WILDCARD_CHARACTER = "jminor.wildcardCharacter";
@@ -302,53 +295,54 @@ public class Configuration {
   /**
    * Specifies whether or not to use number format grouping in table views,
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
-   * This can be overridden on Property basis via Property.setUseNumberFormatGrouping()
-   * Value type: Boolean
+   * This can be overridden on Property basis via Property.setUseNumberFormatGrouping()<br>
+   * Value type: Boolean<br>
    * Default value: true
    * @see org.jminor.framework.domain.Property#setUseNumberFormatGrouping(boolean)
    */
   public static final String USE_NUMBER_FORMAT_GROUPING = "jminor.client.useNumberFormatGrouping";
 
   /**
-   * Specifies the class providing remote db connections
-   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)
+   * Specifies the class providing remote db connections<br>
+   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)<br>
    * Default value: org.jminor.framework.server.EntityDbRemoteProvider
    */
   public static final String REMOTE_CONNECTION_PROVIDER = "jminor.client.remoteConnectionProvider";
 
   /**
-   * Specifies the class providing local db connections
-   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)
+   * Specifies the class providing local db connections<br>
+   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityDbProvider)<br>
    * Default value: org.jminor.framework.db.provider.EntityDbLocalProvider
    */
   public static final String LOCAL_CONNECTION_PROVIDER = "jminor.client.localConnectionProvider";
 
   /**
    * Specifies the value used by default to represent a null value in combo box models.
-   * Using the value null indicates that no null value item should be used (the default).
-   * Value type: String
+   * Using the value null indicates that no null value item should be used.<br>
+   * Value type: String<br>
    * Default value: -
    */
   public static final String DEFAULT_COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.defaultComboBoxNullValueItem";
 
   /**
-   * Specifies the color to use as background in input fields containing invalid values
-   * Value type: Color
+   * Specifies the color to use as background in input fields containing invalid values<br>
+   * Value type: Color<br>
    * Default value: Color.LIGHT_GRAY
    */
   public static final String INVALID_VALUE_BACKGROUND_COLOR = "jminor.client.invalidValueBackgroundColor";
 
   /**
    * Specifies whether the client layer should perform null validation on entities
-   * before update/insert actions are performed
-   * Value type: Boolean
+   * before update/insert actions are performed<br>
+   * Value type: Boolean<br>
    * Default value: true
+   * @see org.jminor.framework.domain.Property#setNullable(boolean)
    */
   public static final String PERFORM_NULL_VALIDATION = "jminor.client.performNullValidation";
 
   /**
-   * Specifies the default horizontal alignment used in labels
-   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)
+   * Specifies the default horizontal alignment used in labels<br>
+   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
    * @see JLabel#LEFT
    * @see JLabel#RIGHT
@@ -380,9 +374,8 @@ public class Configuration {
     setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
     setValue(SQL_BOOLEAN_VALUE_TRUE, 1);
     setValue(SQL_BOOLEAN_VALUE_NULL, null);
-    setValue(FILTER_QUERY_BY_MASTER, true);
     setValue(PERSIST_ENTITY_PANELS, false);
-    setValue(INITIAL_SEARCH_PANEL_STATE, false);
+    setValue(DEFAULT_SEARCH_PANEL_STATE, false);
     setValue(SERVER_NAME_PREFIX, "JMinor Server");
     setValue(WILDCARD_CHARACTER, "%");
     setValue(USE_NUMBER_FORMAT_GROUPING, true);
@@ -413,9 +406,8 @@ public class Configuration {
     parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
     parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
     parseIntegerSetting(TOOLTIP_DELAY);
-    parseBooleanSetting(FILTER_QUERY_BY_MASTER);
     parseBooleanSetting(PERSIST_ENTITY_PANELS);
-    parseBooleanSetting(INITIAL_SEARCH_PANEL_STATE);
+    parseBooleanSetting(DEFAULT_SEARCH_PANEL_STATE);
     parseStringSetting(SERVER_NAME_PREFIX);
     parseStringSetting(WILDCARD_CHARACTER);
     parseBooleanSetting(USE_NUMBER_FORMAT_GROUPING);

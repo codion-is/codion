@@ -8,7 +8,6 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -528,12 +527,11 @@ public class EntityModel implements Refreshable {
   }
 
   private void addDetailModels() {
-    final boolean filterQueryByMaster = (Boolean) Configuration.getValue(Configuration.FILTER_QUERY_BY_MASTER);
     for (final EntityModel detailModel : initializeDetailModels()) {
       detailModels.add(detailModel);
       detailModel.setMasterModel(this);
       if (detailModel.containsTableModel())
-        detailModel.getTableModel().setQueryFilteredByMaster(filterQueryByMaster);
+        detailModel.getTableModel().setQueryFilteredByMaster(true);
     }
   }
 
