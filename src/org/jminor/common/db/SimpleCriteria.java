@@ -1,0 +1,16 @@
+package org.jminor.common.db;
+
+import org.jminor.common.db.dbms.Database;
+
+public class SimpleCriteria implements Criteria {
+
+  private final String criteriaString;
+
+  public SimpleCriteria(final String criteriaString) {
+    this.criteriaString = criteriaString;
+  }
+
+  public String asString(final Database database) {
+    return criteriaString;
+  }
+}

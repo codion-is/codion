@@ -1038,3 +1038,4 @@
   Configuration now reads most settings from system properties
   Configuration.FILTER_QUERY_BY_MASTER removed
   Configuration.INITIAL_SEARCH_PANEL_STATE renamed to DEFAULT_SEARCH_PANEL_STATE
+  common.db.SimpleCriteria added
