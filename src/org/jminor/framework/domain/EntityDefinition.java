@@ -1,6 +1,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.IdSource;
+import org.jminor.common.model.ValueMap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,7 +53,11 @@ public class EntityDefinition implements Serializable {
    * The largeDataset value
    */
   private boolean largeDataset;
-
+  /**
+   * The StringProvider used when toString() is called for this entity
+   * @see org.jminor.common.model.ValueMap.ToString
+   */
+  private ValueMap.ToString stringProvider;
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
@@ -158,6 +163,15 @@ public class EntityDefinition implements Serializable {
 
   public EntityDefinition setTableName(final String tableName) {
     this.tableName = tableName;
+    return this;
+  }
+
+  public ValueMap.ToString getStringProvider() {
+    return stringProvider;
+  }
+
+  public EntityDefinition setStringProvider(final ValueMap.ToString stringProvider) {
+    this.stringProvider = stringProvider;
     return this;
   }
 

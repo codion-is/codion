@@ -4,6 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.IdSource;
+import org.jminor.common.model.ValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,6 +134,18 @@ public class EntityRepository {
       throw new RuntimeException("No id source defined for entity: " + entityID);
 
     return entityDefinitions.get(entityID).getIdSource();
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @return the StringProvider used in case toString() is called for the given entity
+   * @throws RuntimeException if none is defined
+   */
+  public static ValueMap.ToString getStringProvider(final String entityID) {
+    if (!entityDefinitions.containsKey(entityID))
+      throw new RuntimeException("Entity not defined: " + entityID);
+
+    return entityDefinitions.get(entityID).getStringProvider();
   }
 
   /**

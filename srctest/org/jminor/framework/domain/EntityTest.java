@@ -4,10 +4,14 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.formats.DateFormats;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import junit.framework.TestCase;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EntityTest extends TestCase {
@@ -164,5 +168,28 @@ public class EntityTest extends TestCase {
       fail("Should not be able to set the state of the modified state");
     }
     catch (Exception e) {}
+  }
+
+  public void testStringProvider() {
+    new EmpDept();
+    final Entity department = new Entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, -10);
+    department.setValue(EmpDept.DEPARTMENT_LOCATION, "Reykjavik");
+    department.setValue(EmpDept.DEPARTMENT_NAME, "Sales");
+
+    final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
+    final Date hiredate = new Date();
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
+    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+
+    final DateFormat dateFormat = new SimpleDateFormat(DateFormats.SHORT_DOT);
+
+    final Entity.StringProvider employeeToString = new Entity.StringProvider(EmpDept.EMPLOYEE_NAME)
+            .addText(" (department: ").addValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
+            .addReferencedValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, EmpDept.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addFormattedValue(EmpDept.EMPLOYEE_HIREDATE, dateFormat).addText(")");
+
+    assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
   }
 }

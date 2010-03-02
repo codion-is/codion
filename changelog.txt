@@ -1039,3 +1039,12 @@
   Configuration.FILTER_QUERY_BY_MASTER removed
   Configuration.INITIAL_SEARCH_PANEL_STATE renamed to DEFAULT_SEARCH_PANEL_STATE
   common.db.SimpleCriteria added
+  EntityTablePanel.getAutoResizeMode() added for overriding
+  common.model.ValueMap added
+  Entity now implements ValueMap
+  common.model.ValueMap.StringProvider added
+  domain.Entity.StringProvider added
+  EntityDefinition.stringProvider field+setter+getter added
+  EntityRepository.getStringProvider() added
+  Entity.Proxy.toString() changed according to the above
+  Entity.hasValue() renamed to containsValue()

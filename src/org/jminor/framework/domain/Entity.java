@@ -6,12 +6,14 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.ValueMap;
 
 import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Collator;
 import java.text.DateFormat;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,7 +24,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table
  */
-public final class Entity implements Serializable, Comparable<Entity> {
+public final class Entity implements Serializable, Comparable<Entity>, ValueMap {
 
   private static final long serialVersionUID = 1;
 
@@ -395,7 +397,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
    * @return true if this entity contains a value for the property
    * N.B. does not include the primary key properties
    */
-  public boolean hasValue(final String propertyID) {
+  public boolean containsValue(final String propertyID) {
     return values.containsKey(propertyID);
   }
 
@@ -638,6 +640,9 @@ public final class Entity implements Serializable, Comparable<Entity> {
   public static void setProxy(final String entityID, final Proxy entityProxy) {
     if (proxies == null)
       proxies = new HashMap<String, Proxy>();
+
+    if (proxies.containsKey(entityID))
+      throw new RuntimeException("Proxy already defined for: " + entityID);
 
     proxies.put(entityID, entityProxy);
   }
@@ -1096,7 +1101,7 @@ public final class Entity implements Serializable, Comparable<Entity> {
         throw new IllegalArgumentException("Entity.Proxy.getValue does not handle denormalized view properties (Property.DenormalizedViewProperty)");
       else if (property instanceof Property.PrimaryKeyProperty)
         return entity.getPrimaryKey().getValue(property.getPropertyID());
-      else if (entity.hasValue(property.getPropertyID()))
+      else if (entity.containsValue(property.getPropertyID()))
         return entity.getRawValue(property.getPropertyID());
       else
         return property.getDefaultValue();
@@ -1107,7 +1112,10 @@ public final class Entity implements Serializable, Comparable<Entity> {
     }
 
     public String toString(final Entity entity) {
-      return entity.getEntityID() + ": " + entity.getPrimaryKey().toString();
+      final String entityID = entity.getEntityID();
+      final ToString stringProvider = EntityRepository.getStringProvider(entityID);
+
+      return stringProvider == null ? entityID + ": " + entity.getPrimaryKey().toString() : stringProvider.toString(entity);
     }
 
     public String getValueAsString(final Entity entity, final Property property) {
@@ -1121,6 +1129,173 @@ public final class Entity implements Serializable, Comparable<Entity> {
     @SuppressWarnings({"UnusedDeclaration"})
     public Color getBackgroundColor(final Entity entity) {
       return null;
+    }
+  }
+
+  /**
+   * Provides String representations of ValueMap objects.<br>
+   * Given a ValueMap named valueMap containing the following mappings:
+   * <pre>
+   * "key1" -> value1
+   * "key2" -> value2
+   * "key3" -> value3
+   * "key4" -> {ValueMap instance with a single mapping "refKey" -> refValue}
+   * </pre>
+   * <code>
+   * StringProvider provider = new StringProvider();<br>
+   * provider.addText("key1=");<br>
+   * provider.addValue("key1");<br>
+   * provider.addText(", key3='");<br>
+   * provider.addValue("key3");<br>
+   * provider.addText("' referenced value=");<br>
+   * provider.addReferencedValue("key4", "refKey");<br>
+   * System.out.println(provider.toString(valueMap));<br>
+   * </code>
+   * <br>
+   * outputs the following String:<br><br>
+   * <code>key1=value1, key3='value3' referenced value=refValue</code>
+   */
+  public static class StringProvider implements ToString, Serializable {
+
+    /**
+     * Holds the ValueProviders used when constructing the String representation
+     */
+    private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
+
+    /**
+     * Instantiates a new StringProvider instance
+     */
+    public StringProvider() {}
+
+    /**
+     * Instantiates a new StringProvider instance, with the value mapped to the given propertyID
+     * @param propertyID the propertyID
+     */
+    public StringProvider(final String propertyID) {
+      addValue(propertyID);
+    }
+
+    /** {@inheritDoc} */
+    public String toString(final ValueMap valueMap) {
+      final StringBuilder builder = new StringBuilder();
+      for (final ValueProvider valueProvider : valueProviders)
+        builder.append(valueProvider.toString(valueMap));
+
+      return builder.toString();
+    }
+
+    /**
+     * Adds the value mapped to the given propertyID to this StringProvider
+     * @param propertyID the propertyID
+     * @return this StringProvider instance
+     */
+    public StringProvider addValue(final String propertyID) {
+      valueProviders.add(new StringValueProvider(propertyID));
+      return this;
+    }
+
+    /**
+     * Adds the value mapped to the given propertyID to this StringProvider
+     * @param propertyID the propertyID
+     * @param format the Format to use when appending the value
+     * @return this StringProvider instance
+     */
+    public StringProvider addFormattedValue(final String propertyID, final Format format) {
+      valueProviders.add(new FormattedValueProvider(propertyID, format));
+      return this;
+    }
+
+    /**
+     * Adds the value mapped to the given propertyID in the Entity instance mapped to the given foreignKeyPropertyID
+     * to this StringProvider
+     * @param foreignKeyPropertyID the ID of the foreign key property
+     * @param propertyID the propertyID
+     * @return this StringProvider instance
+     */
+    public StringProvider addReferencedValue(final String foreignKeyPropertyID, final String propertyID) {
+      valueProviders.add(new ReferencedValueProvider(foreignKeyPropertyID, propertyID));
+      return this;
+    }
+
+    /**
+     * Adds the given static text to this StringProvider
+     * @param text the text to add
+     * @return this StringProvider instance
+     */
+    public StringProvider addText(final String text) {
+      valueProviders.add(new StaticTextProvider(text));
+      return this;
+    }
+
+    private static interface ValueProvider {
+      public String toString(final ValueMap valueMap);
+    }
+
+    private static class FormattedValueProvider implements ValueProvider, Serializable {
+      private final String propertyID;
+      private final Format format;
+
+      public FormattedValueProvider(final String propertyID, final Format format) {
+        this.propertyID = propertyID;
+        this.format = format;
+      }
+
+      public String toString(final ValueMap valueMap) {
+        if (valueMap.isValueNull(propertyID))
+          return "";
+
+        return format.format(valueMap.getValue(propertyID));
+      }
+    }
+
+    private static class ReferencedValueProvider implements ValueProvider, Serializable {
+      private final String foreignKeyPropertyID;
+      private final String propertyID;
+
+      public ReferencedValueProvider(final String foreignKeyPropertyID, final String propertyID) {
+        this.foreignKeyPropertyID = foreignKeyPropertyID;
+        this.propertyID = propertyID;
+      }
+
+      public String toString(final ValueMap valueMap) {
+        if (valueMap.isValueNull(foreignKeyPropertyID))
+          return "";
+        final Object referencedValue = valueMap.getValue(foreignKeyPropertyID);
+        if (!(referencedValue instanceof Entity))
+          throw new RuntimeException(foreignKeyPropertyID + " does not refer to a Entity instance");
+        final Entity foreignKeyEntity = (Entity) referencedValue;
+        if (foreignKeyEntity.isValueNull(propertyID))
+          return "";
+
+        return foreignKeyEntity.getValue(propertyID).toString();
+      }
+    }
+
+    private static class StringValueProvider implements ValueProvider, Serializable {
+      private final String propertyID;
+
+      public StringValueProvider(final String propertyID) {
+        this.propertyID = propertyID;
+      }
+
+      public String toString(final ValueMap valueMap) {
+        if (valueMap.isValueNull(propertyID))
+          return "";
+
+        return valueMap.getValue(propertyID).toString();
+      }
+    }
+
+    private static class StaticTextProvider implements ValueProvider, Serializable {
+      private final String text;
+
+      public StaticTextProvider(final String text) {
+        this.text = text;
+      }
+
+      public String toString(final ValueMap valueMap) {
+        return text;
+      }
     }
   }
 }

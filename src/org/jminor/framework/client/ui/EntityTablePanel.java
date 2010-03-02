@@ -824,10 +824,18 @@ public class EntityTablePanel extends JPanel {
     header.setReorderingAllowed(allowColumnReordering());
 
     table.setColumnSelectionAllowed(false);
-    table.setAutoResizeMode((Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE));
+    table.setAutoResizeMode(getAutoResizeMode());
     getTableModel().getTableSorter().setTableHeader(header);
 
     return table;
+  }
+
+  /**
+   * @return the auto resize mode to use for the JTable, by default this returns the value of Configuration.TABLE_AUTO_RESIZE_MODE
+   * @see Configuration#TABLE_AUTO_RESIZE_MODE
+   */
+  protected int getAutoResizeMode() {
+    return (Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE);
   }
 
   /**

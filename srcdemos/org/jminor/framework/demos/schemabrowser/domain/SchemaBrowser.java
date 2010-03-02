@@ -67,14 +67,8 @@ public class SchemaBrowser {
                     new Property.PrimaryKeyProperty(TABLE_SCHEMA, Type.STRING).setIndex(0)),
             new Property.PrimaryKeyProperty(TABLE_NAME, Type.STRING, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
-            .setReadOnly(true));
-
-    Entity.setProxy(T_TABLE, new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getValueAsString(TABLE_SCHEMA_FK) + "." + entity.getStringValue(TABLE_NAME);
-      }
-    });
+            .setReadOnly(true)
+            .setStringProvider(new Entity.StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_COLUMN, bundle.getString("t_column"),
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
@@ -83,14 +77,8 @@ public class SchemaBrowser {
             new Property.PrimaryKeyProperty(COLUMN_NAME, Type.STRING, "Column name").setIndex(2),
             new Property(COLUMN_DATA_TYPE, Type.STRING, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
-            .setReadOnly(true));
-
-    Entity.setProxy(T_COLUMN, new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getValueAsString(COLUMN_TABLE_FK) + "." + entity.getStringValue(COLUMN_NAME);
-      }
-    });
+            .setReadOnly(true)
+            .setStringProvider(new Entity.StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_CONSTRAINT, bundle.getString("t_constraint"),
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
@@ -99,14 +87,8 @@ public class SchemaBrowser {
             new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Type.STRING, "Constraint name").setIndex(2),
             new Property(CONSTRAINT_TYPE, Type.STRING, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
-            .setReadOnly(true).setLargeDataset(true));
-
-    Entity.setProxy(T_CONSTRAINT, new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getValueAsString(CONSTRAINT_TABLE_FK) + "." + entity.getStringValue(CONSTRAINT_NAME);
-      }
-    });
+            .setReadOnly(true).setLargeDataset(true)
+            .setStringProvider(new Entity.StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,

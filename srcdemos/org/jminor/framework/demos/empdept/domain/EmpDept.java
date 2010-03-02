@@ -72,15 +72,8 @@ public class EmpDept {
             new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME))
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
-                    .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME));
-
-    /*Set a Proxy implementation to provide toString values for the entities*/
-    Entity.setProxy(T_DEPARTMENT, new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-          return entity.getStringValue(DEPARTMENT_NAME);
-      }
-    });
+                    .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME)
+            .setStringProvider(new Entity.StringProvider(DEPARTMENT_NAME)));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
@@ -103,16 +96,11 @@ public class EmpDept {
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
-            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME));
+            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
+            .setStringProvider(new Entity.StringProvider(EMPLOYEE_NAME)));
 
-    /*Set a Proxy implementation to provide toString values for the entities
-    * and custom background color for managers*/
+    /*Set a Proxy implementation to provide a custom background color for managers*/
     Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getStringValue(EMPLOYEE_NAME);
-      }
-
       @Override
       public Color getBackgroundColor(final Entity entity) {
         if (entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
