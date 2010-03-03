@@ -93,7 +93,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /** Constructs a new EntityApplicationPanel. */
   public EntityApplicationPanel() {
     configureApplication();
-    persistEntityPanels = (Boolean) Configuration.getValue(Configuration.PERSIST_ENTITY_PANELS);
+    persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
     ToolTipManager.sharedInstance().setInitialDelay((Integer) Configuration.getValue(Configuration.TOOLTIP_DELAY));
   }
 
@@ -216,7 +216,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public void exit() throws UserCancelException {
-    if ((Boolean) Configuration.getValue(Configuration.CONFIRM_EXIT)) {
+    if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT)) {
       if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
               FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
         throw new UserCancelException();
@@ -578,7 +578,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected boolean isLoginRequired() {
-    return (Boolean) Configuration.getValue(Configuration.AUTHENTICATION_REQUIRED);
+    return Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
   }
 
   protected JPanel initializeSouthPanel() {
@@ -675,7 +675,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final EntityPanel panel = (EntityPanel) ((DefaultMutableTreeNode) enumeration.nextElement()).getUserObject();
       if (panel != null) {
         initializeResizing(panel);
-        if ((Boolean) Configuration.getValue(Configuration.USE_KEYBOARD_NAVIGATION))
+        if (Configuration.getBooleanValue(Configuration.USE_KEYBOARD_NAVIGATION))
           initializeNavigation(panel);
       }
     }

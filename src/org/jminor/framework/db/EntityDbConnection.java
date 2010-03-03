@@ -51,7 +51,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Type, ResultPacker> propertyResultPackers = new HashMap<Type, ResultPacker>();
-  private boolean optimisticLocking = (Boolean) Configuration.getValue(Configuration.USE_OPTIMISTIC_LOCKING);
+  private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
 
   /**Used by the EntityDbConnectionPool class*/
   long poolTime = -1;

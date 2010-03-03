@@ -1048,3 +1048,5 @@
   EntityRepository.getStringProvider() added
   Entity.Proxy.toString() changed according to the above
   Entity.hasValue() renamed to containsValue()
+  EntityDbConnectionPool.collectStatistics field added
+  Configuration.getBooleanValue() added, used throughout

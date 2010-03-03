@@ -9,6 +9,7 @@ import org.jminor.common.db.ConnectionPoolStatistics;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 
 import org.apache.log4j.Logger;
 
@@ -40,6 +41,7 @@ public class EntityDbConnectionPool {
   private final Date creationDate = new Date();
   private Date resetDate = new Date();
   private ConnectionPoolSettings connectionPoolSettings;
+  private boolean collectStatistics = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_POOL_STATISTICS);
   private int connectionPoolStatisticsIndex = 0;
   private int liveConnections = 0;
   private int connectionsCreated = 0;
@@ -209,6 +211,14 @@ public class EntityDbConnectionPool {
     return poolStates;
   }
 
+  public boolean isCollectStatistics() {
+    return collectStatistics;
+  }
+
+  public void setCollectStatistics(final boolean value) {
+    this.collectStatistics = value;
+  }
+
   public void resetPoolStatistics() {
     connectionsCreated = 0;
     connectionsDestroyed = 0;
@@ -221,7 +231,8 @@ public class EntityDbConnectionPool {
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         final int connectionsInPool = connectionPool.size();
-        addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
+        if (collectStatistics)
+          addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
         final EntityDbConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
         if (dbConnection != null)
           connectionsInUse.add(dbConnection);

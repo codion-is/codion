@@ -30,6 +30,7 @@ public class ConnectionPoolInstanceMonitor {
 
   public final Event evtStatsUpdated = new Event();
   public final Event evtStatsUpdateIntervalChanged = new Event();
+  public final Event evtCollectStatsChanged = new Event();
   public final Event evtRefresh = new Event();
 
   private final User user;
@@ -143,6 +144,15 @@ public class ConnectionPoolInstanceMonitor {
     poolSizeSeries.clear();
     minimumPoolSizeSeries.clear();
     maximumPoolSizeSeries.clear();
+  }
+
+  public void setCollectStats(final boolean value) throws RemoteException {
+    server.setCollectPoolStatistics(user, value);
+    evtCollectStatsChanged.fire();
+  }
+
+  public boolean isCollectStats() throws RemoteException {
+    return server.isCollectPoolStatistics(user);
   }
 
   public void setStatsUpdateInterval(final int value) {

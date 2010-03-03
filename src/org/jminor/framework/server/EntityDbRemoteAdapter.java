@@ -522,6 +522,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     connectionPools.get(user).resetPoolStatistics();
   }
 
+  public static boolean isCollectPoolStatistics(final User user) {
+    return connectionPools.get(user).isCollectStatistics();
+  }
+
+  public static void setCollectPoolStatistics(final User user, final boolean value) {
+    connectionPools.get(user).setCollectStatistics(value);
+  }
+
   public static int getRequestsPerSecond() {
     return RequestCounter.requestsPerSecond;
   }

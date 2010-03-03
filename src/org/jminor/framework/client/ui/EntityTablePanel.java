@@ -590,7 +590,7 @@ public class EntityTablePanel extends JPanel {
     if (southPanel != null)
       add(southPanel, BorderLayout.SOUTH);
 
-    setSearchPanelVisible((Boolean) Configuration.getValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
+    setSearchPanelVisible(Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE));
   }
 
   /**
@@ -845,7 +845,7 @@ public class EntityTablePanel extends JPanel {
    * @see org.jminor.framework.Configuration#ALLOW_COLUMN_REORDERING
    */
   protected boolean allowColumnReordering() {
-    return (Boolean) Configuration.getValue(Configuration.ALLOW_COLUMN_REORDERING);
+    return Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING);
   }
 
   private void performSimpleSearch(final String searchText, final List<Property> searchProperties) {

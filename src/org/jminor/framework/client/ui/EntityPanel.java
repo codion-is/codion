@@ -121,7 +121,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  protected final State stActive = new State((Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE));
+  protected final State stActive = new State(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
 
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
@@ -291,7 +291,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState) {
     this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState,
-            (Boolean) Configuration.getValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT));
+            Configuration.getBooleanValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT));
   }
 
   /**
@@ -310,7 +310,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
                      final boolean compactDetailLayout) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
-    if (!(Boolean) Configuration.getValue(Configuration.ALL_PANELS_ACTIVE))
+    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE))
       activeStateGroup.addState(stActive);
     this.model = model;
     this.caption = caption;
@@ -1195,7 +1195,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     setDetailPanelState(detailPanelState);
     setEditPanelState(editPanelState);
     setupKeyboardActions();
-    if ((Boolean) Configuration.getValue(Configuration.USE_FOCUS_ACTIVATION))
+    if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION))
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner",
               new WeakPropertyChangeListener(focusPropertyListener));
   }
@@ -1272,10 +1272,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
     propertyBase.add(editPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
-    final JComponent controlPanel = (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
+    final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
             initializeControlToolBar() : initializeControlPanel();
     if (controlPanel != null)
-      panel.add(controlPanel, (Boolean) Configuration.getValue(Configuration.TOOLBAR_BUTTONS) ?
+      panel.add(controlPanel, Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.NORTH : BorderLayout.WEST) :
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 

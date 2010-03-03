@@ -9,6 +9,7 @@ import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
+import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -18,6 +19,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -128,6 +130,9 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
   private JPanel getPoolConfigPanel() {
     final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 
+    final JCheckBox chkCollectStats = new JCheckBox("Collect statistics");
+    chkCollectStats.setModel(new ToggleBeanPropertyLink(model, "collectStats", model.evtCollectStatsChanged, null).getButtonModel());
+
     final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerPropertyLink(model, "pooledConnectionTimeout", null, null).getSpinnerModel());
     final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerPropertyLink(model, "maximumPoolSize", null, null).getSpinnerModel());
     final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerPropertyLink(model, "minimumPoolSize", null, null).getSpinnerModel());
@@ -144,6 +149,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     txtPoolSize.setColumns(3);
     txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
 
+    configBase.add(chkCollectStats);
     configBase.add(new JLabel("Pool size"));
     configBase.add(txtPoolSize);
     configBase.add(new JLabel("Minimum size"));

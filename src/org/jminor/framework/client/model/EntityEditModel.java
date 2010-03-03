@@ -558,7 +558,7 @@ public class EntityEditModel {
    * @see Configuration#PERFORM_NULL_VALIDATION
    */
   public void validate(final Entity entity, final Property property, final int action) throws ValidationException {
-    if ((Boolean) Configuration.getValue(Configuration.PERFORM_NULL_VALIDATION)) {
+    if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION)) {
       if (!isPropertyNullable(entity, property) && entity.isValueNull(property.getPropertyID())) {
         if (action == UPDATE || (action == INSERT && !property.columnHasDefaultValue()))
           throw new ValidationException(property, null,
@@ -930,7 +930,7 @@ public class EntityEditModel {
    */
   protected boolean persistValueOnClear(final Property property) {
     return property instanceof Property.ForeignKeyProperty
-            && (Boolean) Configuration.getValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+            && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
   /**
@@ -950,7 +950,7 @@ public class EntityEditModel {
           propertyEvent.fire(event);
       }
     });
-    if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
+    if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
       entity.addPropertyListener(new Property.Listener() {
         @Override
         protected void propertyChanged(final Property.Event event) {
@@ -976,7 +976,7 @@ public class EntityEditModel {
   }
 
   private void notifyPropertyValueSet(final Property.Event event) {
-    if ((Boolean) Configuration.getValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
+    if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
       final String msg = getPropertyChangeDebugString(event);
       System.out.println(msg);
       log.trace(msg);

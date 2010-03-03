@@ -194,5 +194,9 @@ public interface EntityDbServerAdmin extends Remote {
 
   public void resetConnectionPoolStatistics(final User user) throws RemoteException;
 
+  public boolean isCollectPoolStatistics(final User user) throws RemoteException;
+
+  public void setCollectPoolStatistics(final User user, final boolean value) throws RemoteException;
+
   public String getSystemProperties() throws RemoteException;
 }

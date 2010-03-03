@@ -105,7 +105,7 @@ public class Property implements Serializable {
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
    * Only applicable to numerical properties
    */
-  private boolean useNumberFormatGrouping = (Boolean) Configuration.getValue(Configuration.USE_NUMBER_FORMAT_GROUPING);
+  private boolean useNumberFormatGrouping = Configuration.getBooleanValue(Configuration.USE_NUMBER_FORMAT_GROUPING);
 
   /**
    * A string describing this property

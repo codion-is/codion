@@ -225,7 +225,7 @@ public class DomainClassGenerator {
         return Type.BOOLEAN;
     }
 
-    throw new IllegalArgumentException("Unsupported sql type: " + sqlType);
+    return null;
   }
 
   static class Schema {
@@ -346,10 +346,13 @@ public class DomainClassGenerator {
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> columns = new ArrayList<Column>();
       int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount))
-        columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME"), translateType(resultSet.getInt("DATA_TYPE")),
-                resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("NULLABLE"), resultSet.getObject("COLUMN_DEF") != null));
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        final Type translatedType = translateType(resultSet.getInt("DATA_TYPE"));
+        if (translatedType != null)
+          columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
+                  resultSet.getString("COLUMN_NAME"), translatedType,
+                  resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("NULLABLE"), resultSet.getObject("COLUMN_DEF") != null));
+      }
 
       return columns;
     }

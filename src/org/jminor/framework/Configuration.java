@@ -93,6 +93,11 @@ public class Configuration {
   public static final String SERVER_POOLING_INITIAL = "jminor.server.pooling.initial";
 
   /**
+   * Specifies whether or not connection pools should collect performance/usage statistics by default, true or false
+   */
+  public static final String SERVER_CONNECTION_POOL_STATISTICS = "jminor.server.pooling.collectStatistics";
+
+  /**
    * Specifies the initial think time setting for the profiling client
    * (max think time = thinktime, min think time = max think time / 2)
    */
@@ -386,6 +391,7 @@ public class Configuration {
     setValue(PERFORM_NULL_VALIDATION, true);
     setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
     setValue(ALLOW_COLUMN_REORDERING, true);
+    setValue(SERVER_CONNECTION_POOL_STATISTICS, true);
     parseSystemSettings();
   }
 
@@ -443,6 +449,10 @@ public class Configuration {
 
   public static Object getValue(final String key) {
     return settings.get(key);
+  }
+
+  public static boolean getBooleanValue(final String key) {
+    return (Boolean) getValue(key);
   }
 
   /**

@@ -164,6 +164,16 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   /** {@inheritDoc} */
+  public boolean isCollectPoolStatistics(User user) throws RemoteException {
+    return EntityDbRemoteAdapter.isCollectPoolStatistics(user);
+  }
+
+  /** {@inheritDoc} */
+  public void setCollectPoolStatistics(final User user, final boolean value) throws RemoteException {
+    EntityDbRemoteAdapter.setCollectPoolStatistics(user, value);
+  }
+
+  /** {@inheritDoc} */
   public int getRequestsPerSecond() throws RemoteException {
     return EntityDbRemoteAdapter.getRequestsPerSecond();
   }

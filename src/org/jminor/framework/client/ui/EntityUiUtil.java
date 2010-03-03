@@ -214,7 +214,7 @@ public class EntityUiUtil {
     new BooleanPropertyLink(checkBox.getModel(), editModel, property);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
-    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(checkBox);
 
     return checkBox;
@@ -247,7 +247,7 @@ public class EntityUiUtil {
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
-    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
 
     return comboBox;
@@ -319,7 +319,7 @@ public class EntityUiUtil {
     final EntityLookupField lookupField =
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     additionalSearchCriteria, searchProperties),
-                    (Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
+                    Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
     new LookupModelPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
@@ -341,7 +341,7 @@ public class EntityUiUtil {
     new ComboBoxPropertyLink(comboBox, editModel, property);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
-    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(comboBox);
     }
@@ -649,7 +649,7 @@ public class EntityUiUtil {
         throw new RuntimeException("Unable to create text field for property type: " + property.getPropertyType());
     }
     UiUtil.linkToEnabledState(enabledState, field);
-    if ((Boolean) Configuration.getValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(field);
     field.setToolTipText(property.getDescription());
     if (field instanceof TextFieldPlus && property.getMaxLength() > 0)
