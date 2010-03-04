@@ -68,7 +68,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private final Registry registry;
   private final String serverName;
-  private final Date startDate = new Date();private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
+  private final Date startDate = new Date();
+  private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
           Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
 
   private Timer connectionMaintenanceTimer;

@@ -18,6 +18,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -79,6 +80,7 @@ public class ServerMonitorPanel extends JPanel {
     controlPanel.add(spnConnectionTimeout);
 
     final JPanel performancePanel = new JPanel(new BorderLayout());
+    requestsPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     performancePanel.add(controlPanel, BorderLayout.NORTH);
     performancePanel.add(requestsPerSecondChartPanel, BorderLayout.CENTER);
 

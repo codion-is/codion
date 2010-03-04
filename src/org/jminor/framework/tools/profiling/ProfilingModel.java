@@ -14,11 +14,9 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,7 +41,7 @@ public abstract class ProfilingModel {
   private boolean pause = false;
   private boolean stopped = false;
 
-  private final List<EntityApplicationModel> activeClients = Collections.synchronizedList(new ArrayList<EntityApplicationModel>(0));
+  private final Stack<EntityApplicationModel> clients = new Stack<EntityApplicationModel>();
   private User user;
   private boolean working = false;
   private boolean relentless = true;
@@ -84,7 +82,7 @@ public abstract class ProfilingModel {
       public void run() {
         updateRequestsPerSecond();
         updateChart();
-        if (stopped && activeClients.size() == 0)
+        if (stopped && clients.size() == 0)
           evtDoneExiting.fire();
       }
     }, new Date(), 2000);
@@ -125,7 +123,7 @@ public abstract class ProfilingModel {
    * @return the number of active clients
    */
   public int getClientCount() {
-    return activeClients.size();
+    return clients.size();
   }
 
   public int getBatchSize() {
@@ -137,24 +135,14 @@ public abstract class ProfilingModel {
     evtBatchSizeChanged.fire();
   }
 
-  /**
-   * @param clientCount the required number of active clients
-   * @throws java.rmi.RemoteException in case of a remote exception
-   */
-  public void setClientCount(int clientCount) throws Exception {
-    if (clientCount < 0)
-      clientCount = 0;
-
-    if (activeClients.size() != clientCount)
-      adjustClientCount(clientCount);
-  }
-
   public void addClients() throws Exception {
-    setClientCount(activeClients.size() + batchSize);
+    for (int i = 0; i < batchSize; i++)
+      addClient();
   }
 
   public void removeClients() throws Exception {
-    setClientCount(activeClients.size() - batchSize);
+    for (int i = 0; i < batchSize && clients.size() > 0; i++)
+      removeClient();
   }
 
   public boolean isRelentless() {
@@ -184,6 +172,10 @@ public abstract class ProfilingModel {
   public void exit() {
     pause = false;
     stopped = true;
+    synchronized (clients) {
+      while (clients.size() > 0)
+        removeClient();
+    }
   }
 
   /**
@@ -254,46 +246,33 @@ public abstract class ProfilingModel {
     model.setSelectedItemIndexes(indexes.toIntArray());
   }
 
-  private synchronized void adjustClientCount(final int clientCount) {
-    final EntityApplicationModel[] models = activeClients.toArray(new EntityApplicationModel[activeClients.size()]);
-    final int activeCount = activeClients.size();
-    if (activeCount > clientCount)
-      for (int i = 0; i < activeCount - clientCount; i++)
-        removeClient(models[i]);
-    else if (activeCount < clientCount)
-      for (int i = 0; i < clientCount - activeCount; i++)
-        addClient();
-  }
-
   private synchronized void addClient() {
     final Runnable clientRunner = new Runnable() {
       public void run() {
         try {
           final EntityApplicationModel applicationModel = initApplicationModel();
-          activeClients.add(applicationModel);
-          evtClientCountChanged.fire();
-          while (activeClients.contains(applicationModel)) {
+          clients.push(applicationModel);
+          try {
+            evtClientCountChanged.fire();
+          }
+          catch (Exception e) {
+            e.printStackTrace();
+          }
+          while (clients.contains(applicationModel)) {
             try {
-              if (!stopped)
-                Thread.sleep(getClientThinkTime(false));
-              if (!pause && applicationModel.getDbProvider().getEntityDb().isConnected()) {
-                if (relentless || !working) {
-                  if (stopped)
-                    removeClient(applicationModel);
-                  else {
-                    final long currentTime = System.currentTimeMillis();
-                    try {
-                      working = true;
-                      workRequestsPerSecondCounter++;
-                      performWork(applicationModel);
-                    }
-                    finally {
-                      working = false;
-                      final long workTime = System.currentTimeMillis() - currentTime;
-                      if (workTime > warningTime)
-                        delayedWorkRequestsPerSecondCounter++;
-                    }
-                  }
+              Thread.sleep(getClientThinkTime(false));
+              if (!pause && (relentless || !working) && (clients.contains(applicationModel))) {
+                final long currentTime = System.currentTimeMillis();
+                try {
+                  working = true;
+                  workRequestsPerSecondCounter++;
+                  performWork(applicationModel);
+                }
+                finally {
+                  working = false;
+                  final long workTime = System.currentTimeMillis() - currentTime;
+                  if (workTime > warningTime)
+                    delayedWorkRequestsPerSecondCounter++;
                 }
               }
             }
@@ -301,6 +280,7 @@ public abstract class ProfilingModel {
               e.printStackTrace();
             }
           }
+          disconnectClient(applicationModel);
         }
         catch (Exception e) {
           System.out.println("Exception " + e.getMessage());
@@ -309,6 +289,10 @@ public abstract class ProfilingModel {
       }
     };
     new Thread(clientRunner).start();
+  }
+
+  private void disconnectClient(final EntityApplicationModel applicationModel) {
+    applicationModel.getDbProvider().disconnect();
   }
 
   private int getClientThinkTime(final boolean isLoggingIn) {
@@ -320,12 +304,11 @@ public abstract class ProfilingModel {
     }
   }
 
-  private synchronized void removeClient(EntityApplicationModel applicationModel) {
+  private synchronized void removeClient() {
+    EntityApplicationModel applicationModel = null;
     try {
-      activeClients.remove(applicationModel);
+      applicationModel = clients.pop();
       evtClientCountChanged.fire();
-      applicationModel.getDbProvider().getEntityDb().disconnect();
-      System.out.println(applicationModel + " logged out and removed");
     }
     catch (Exception e) {
       System.out.println(applicationModel + " exception while logging out");
@@ -354,7 +337,7 @@ public abstract class ProfilingModel {
     delayedWorkRequestsSeries.add(time, delayedWorkRequestsPerSecond);
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
-    numberOfClientsSeries.add(time, activeClients.size());
+    numberOfClientsSeries.add(time, clients.size());
   }
 
   private void updateRequestsPerSecond() {

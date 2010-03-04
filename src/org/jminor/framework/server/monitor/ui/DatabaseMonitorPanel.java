@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -65,6 +66,7 @@ public class DatabaseMonitorPanel extends JPanel {
             ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
+    queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.NORTH);
 

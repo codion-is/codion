@@ -85,16 +85,19 @@ public class ProfilingPanel extends JPanel {
             null, null, getModel().getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
     workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel workRequestsChartPanel = new ChartPanel(workRequestsChart);
+    workRequestsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
             null, null, getModel().getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     thinkTimeChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
+    thinkTimeChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart numberOfClientsChart = ChartFactory.createXYStepChart(null,
             null, null, getModel().getNumberOfClientsDataset(), PlotOrientation.VERTICAL, true, true, false);
     numberOfClientsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final ChartPanel numberOfClientsChartPanel = new ChartPanel(numberOfClientsChart);
+    numberOfClientsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final ToggleBeanPropertyLink pauseControl =
             ControlFactory.toggleControl(getModel(), "pause", "Pause activity", getModel().evtPauseChanged);

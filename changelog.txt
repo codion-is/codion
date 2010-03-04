@@ -1056,3 +1056,5 @@
   EntityRepository.getSelectQuery() added
   EntityDbConnection.selectMany(), selectPropertyValues() and selectRowCount() changed to take the above into account
   EntityDbConnectionTest improved
+  ProfilingModel/Panel improvements
+  ServerMonitor improvements
