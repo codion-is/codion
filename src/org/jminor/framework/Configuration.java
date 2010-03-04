@@ -423,6 +423,7 @@ public class Configuration {
     parseBooleanSetting(PERFORM_NULL_VALIDATION);
     parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
     parseBooleanSetting(ALLOW_COLUMN_REORDERING);
+    parseBooleanSetting(SERVER_CONNECTION_POOL_STATISTICS);
   }
 
   private static void parseIntegerSetting(final String setting) {
