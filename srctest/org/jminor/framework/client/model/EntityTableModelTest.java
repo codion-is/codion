@@ -70,32 +70,32 @@ public class EntityTableModelTest extends TestCase {
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
     testModel.addSelectedItemIndex(1);
     assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
-    assertEquals("selected indexes should fit", new IntArray(new int[]{0, 1}), new IntArray(testModel.getSelectedViewIndexes()));
+    assertEquals("selected indexes should fit", Arrays.asList(0, 1), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
     testModel.addSelectedItemIndex(4);
-    assertEquals("selected indexes should fit", new IntArray(new int[]{0, 1, 4}), new IntArray(testModel.getSelectedViewIndexes()));
+    assertEquals("selected indexes should fit", Arrays.asList(0, 1, 4), testModel.getSelectedViewIndexes());
     testModel.getSelectionModel().removeIndexInterval(1, 4);
-    assertEquals("selected indexes should fit", new IntArray(new int[]{0}), new IntArray(testModel.getSelectedViewIndexes()));
+    assertEquals("selected indexes should fit", Arrays.asList(0), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
     testModel.getSelectionModel().clearSelection();
-    assertEquals("selected indexes should fit", new IntArray(new int[]{}), new IntArray(testModel.getSelectedViewIndexes()));
+    assertEquals("selected indexes should fit", new IntArray(), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
-    testModel.addSelectedItemIndexes(new int[]{0, 3, 4});
-    assertEquals("selected indexes should fit", new IntArray(new int[]{0, 3, 4}), new IntArray(testModel.getSelectedViewIndexes()));
+    testModel.addSelectedItemIndexes(Arrays.asList(0, 3, 4));
+    assertEquals("selected indexes should fit", Arrays.asList(0, 3, 4), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
     testModel.getSelectionModel().removeSelectionInterval(0, 0);
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
     testModel.getSelectionModel().removeSelectionInterval(3, 3);
     assertEquals("current index should fit", 4, testModel.getSelectionModel().getMinSelectionIndex());
 
-    testModel.addSelectedItemIndexes(new int[]{0, 3, 4});
+    testModel.addSelectedItemIndexes(Arrays.asList(0, 3, 4));
     assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
     testModel.getSelectionModel().removeSelectionInterval(3, 3);
     assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
     testModel.getSelectionModel().clearSelection();
     assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
 
-    testModel.addSelectedItemIndexes(new int[]{0, 1, 2, 3, 4});
+    testModel.addSelectedItemIndexes(Arrays.asList(0, 1, 2, 3, 4));
     assertEquals("current index should fit", 0, testModel.getSelectionModel().getMinSelectionIndex());
     testModel.getSelectionModel().removeSelectionInterval(0, 0);
     assertEquals("current index should fit", 1, testModel.getSelectionModel().getMinSelectionIndex());
@@ -109,20 +109,20 @@ public class EntityTableModelTest extends TestCase {
     assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
 
     //test selection and filtering together
-    testModel.addSelectedItemIndexes(new int[]{3});
+    testModel.addSelectedItemIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
 
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("d");
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected indexes should fit", new IntArray(new int[]{0}), new IntArray(testModel.getSelectedViewIndexes()));
+    assertEquals("selected indexes should fit", Arrays.asList(0), testModel.getSelectedViewIndexes());
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected item should fit", testEntities[3], testModel.getSelectedEntity());
 
     //test selection and sorting together
-    testModel.setSelectedItemIndexes(new int[]{3});
+    testModel.setSelectedItemIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedEntity());
 
@@ -131,13 +131,13 @@ public class EntityTableModelTest extends TestCase {
     assertEquals("current index should fit", 2,
             testModel.getSelectionModel().getMinSelectionIndex());
 
-    testModel.setSelectedItemIndexes(new int[]{0});
+    testModel.setSelectedItemIndexes(Arrays.asList(0));
     assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedEntity());
     testModel.getTableSorter().setSortingStatus(2, TableSorter.DESCENDING);
     assertEquals("current index should fit", 4,
             testModel.getSelectionModel().getMinSelectionIndex());
 
-    assertEquals("selected indexes should fit", new IntArray(new int[]{4}), new IntArray(testModel.getSelectedViewIndexes()));
+    assertEquals("selected indexes should fit", Arrays.asList(4), testModel.getSelectedViewIndexes());
     assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedEntity());
     assertEquals("current index should fit", 4,
             testModel.getSelectionModel().getMinSelectionIndex());

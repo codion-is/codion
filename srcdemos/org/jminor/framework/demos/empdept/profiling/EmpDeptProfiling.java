@@ -42,7 +42,8 @@ public class EmpDeptProfiling extends ProfilingModel {
   protected void performWork(final EntityApplicationModel applicationModel) {
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     try {
-      model.getTableModel().setSelectedItemIndexes(new int[0]);
+      if (model.getTableModel().getRowCount() > 0)
+        model.getTableModel().setSelectedItemIndexes(Arrays.asList(0));
       model.refresh();
       selectRandomRow(model.getTableModel());
     }

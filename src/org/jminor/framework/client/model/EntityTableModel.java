@@ -362,10 +362,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       if (getSelectionModel().isSelectionEmpty())
         getSelectionModel().setSelectionInterval(visibleEntities.size()-1, visibleEntities.size()-1);
       else {
-        final int[] selected = getSelectedViewIndexes();
-        final int[] newSelected = new int[selected.length];
-        for (int i = 0; i < selected.length; i++)
-          newSelected[i] = selected[i] == 0 ? visibleEntities.size()-1 : selected[i] - 1;
+        final Collection<Integer> selected = getSelectedViewIndexes();
+        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
+        for (final Integer index : selected)
+          newSelected.add(index == 0 ? visibleEntities.size()-1 : index-1);
 
         setSelectedItemIndexes(newSelected);
       }
@@ -381,10 +381,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       if (getSelectionModel().isSelectionEmpty())
         getSelectionModel().setSelectionInterval(0,0);
       else {
-        final int[] selected = getSelectedViewIndexes();
-        final int[] newSelected = new int[selected.length];
-        for (int i = 0; i < selected.length; i++)
-          newSelected[i] = selected[i] == visibleEntities.size()-1 ? 0 : selected[i] + 1;
+        final Collection<Integer> selected = getSelectedViewIndexes();
+        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
+        for (final Integer index : selected)
+          newSelected.add(index == visibleEntities.size()-1 ? 0 : index+1);
 
         setSelectedItemIndexes(newSelected);
       }
@@ -521,13 +521,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     final int hiddenCount = getHiddenCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
-            Integer.toString(getSelectedModelIndexes().length)).append(" ").append(
+            Integer.toString(getSelectedModelIndexes().size())).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
             hiddenCount > 0 ? ", " + hiddenCount + " "
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
   }
 
-  public int[] getSelectedViewIndexes() {
+  public Collection<Integer> getSelectedViewIndexes() {
     final IntArray intArray = new IntArray();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
@@ -535,10 +535,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       if (selectionModel.isSelectedIndex(i))
         intArray.add(i);
 
-    return intArray.toIntArray();
+    return intArray;
   }
 
-  public int[] getSelectedModelIndexes() {
+  public Collection<Integer> getSelectedModelIndexes() {
     final IntArray intArray = new IntArray();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
@@ -548,7 +548,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
           intArray.add(tableSorter.modelIndex(i));
     }
 
-    return intArray.toIntArray();
+    return intArray;
   }
 
   /**
@@ -724,7 +724,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a list containing the selected entities
    */
   public List<Entity> getSelectedEntities() {
-    final int[] selectedModelIndexes = getSelectedModelIndexes();
+    final Collection<Integer> selectedModelIndexes = getSelectedModelIndexes();
     final List<Entity> selectedEntities = new ArrayList<Entity>();
     for (final int modelIndex : selectedModelIndexes)
       selectedEntities.add(visibleEntities.get(modelIndex));
@@ -744,7 +744,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         indexArray.add(index);
     }
 
-    setSelectedItemIndexes(indexArray.toIntArray());
+    setSelectedItemIndexes(indexArray);
   }
 
   /**
@@ -780,7 +780,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       }
     }
 
-    setSelectedItemIndexes(indexArray.toIntArray());
+    setSelectedItemIndexes(indexArray);
   }
 
   /**
@@ -803,7 +803,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * Selects the given indexes
    * @param indexes the indexes to select
    */
-  public void setSelectedItemIndexes(final int[] indexes) {
+  public void setSelectedItemIndexes(final List<Integer> indexes) {
     selectionModel.clearSelection();
     addSelectedItemIndexes(indexes);
   }
@@ -812,16 +812,20 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * Adds these indexes to the selection
    * @param indexes the indexes to add to the selection
    */
-  public void addSelectedItemIndexes(final int[] indexes) {
+  public void addSelectedItemIndexes(final List<Integer> indexes) {
     try {
       isUpdatingSelection = true;
-      for (int i = 0; i < indexes.length-1; i++)
-        selectionModel.addSelectionInterval(indexes[i], indexes[i]);
+      for (int i = 0; i < indexes.size()-1; i++) {
+        final int index = indexes.get(i);
+        selectionModel.addSelectionInterval(index, index);
+      }
     }
     finally {
       isUpdatingSelection = false;
-      if (indexes.length > 0)
-        selectionModel.addSelectionInterval(indexes[indexes.length-1], indexes[indexes.length-1]);
+      if (indexes.size() > 0) {
+        final int lastIndex = indexes.get(indexes.size()-1);
+        selectionModel.addSelectionInterval(lastIndex, lastIndex);
+      }
     }
   }
 
@@ -956,21 +960,21 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     if (!propertySummaryModels.containsKey(property.getPropertyID()))
       propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(property,
               new PropertySummaryModel.PropertyValueProvider() {
-        public void bindValuesChangedEvent(final Event event) {
-          evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
-          evtRefreshDone.addListener(event);
-          evtSelectionChangedAdjusting.addListener(event);
-          evtSelectionChanged.addListener(event);
-        }
+                public void bindValuesChangedEvent(final Event event) {
+                  evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
+                  evtRefreshDone.addListener(event);
+                  evtSelectionChangedAdjusting.addListener(event);
+                  evtSelectionChanged.addListener(event);
+                }
 
-        public Collection<?> getValues() {
-          return EntityTableModel.this.getValues(property, isValueSubset());
-        }
+                public Collection<?> getValues() {
+                  return EntityTableModel.this.getValues(property, isValueSubset());
+                }
 
-        public boolean isValueSubset() {
-          return !stSelectionEmpty.isActive();
-        }
-      }));
+                public boolean isValueSubset() {
+                  return !stSelectionEmpty.isActive();
+                }
+              }));
 
     return propertySummaryModels.get(property.getPropertyID());
   }

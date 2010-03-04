@@ -46,9 +46,11 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
   @Override
   protected void setUIPropertyValue(final Object propertyValue) {
     try {
-      document.remove(0, document.getLength());
-      if (propertyValue != null)
-        document.insertString(0, getPropertyValueAsString(propertyValue), null);
+      synchronized (document) {
+        document.remove(0, document.getLength());
+        if (propertyValue != null)
+          document.insertString(0, getPropertyValueAsString(propertyValue), null);
+      }
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);

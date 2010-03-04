@@ -231,7 +231,7 @@ public abstract class ProfilingModel {
     for (int i = 0; i < count; i++)
       indexes.add(random.nextInt(model.getRowCount()));
 
-    model.setSelectedItemIndexes(indexes.toIntArray());
+    model.setSelectedItemIndexes(indexes);
   }
 
   protected void selectRandomRows(final EntityTableModel model, final double ratio) {
@@ -243,7 +243,7 @@ public abstract class ProfilingModel {
     for (int i = 0; i < toSelect; i++)
       indexes.add(i);
 
-    model.setSelectedItemIndexes(indexes.toIntArray());
+    model.setSelectedItemIndexes(indexes);
   }
 
   private synchronized void addClient() {

@@ -1058,3 +1058,6 @@
   EntityDbConnectionTest improved
   ProfilingModel/Panel improvements
   ServerMonitor improvements
+  TextBeanPropertyLink now synchronizes document during setUIPropertyValue()
+  EntityTableModel.getSelectedView/ModelIndexes() now return Collection<Integer> instead of int[]
+  EntityTableModel.add/setSelectedItemIndexes() now takes List<Integer> as parameter

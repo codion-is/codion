@@ -56,6 +56,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -122,7 +123,7 @@ public class EntityUiUtil {
       public void actionPerformed(ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
-          lookupModel.setSelectedItemIndexes(new int[] {0});
+          lookupModel.setSelectedItemIndexes(Arrays.asList(0));
           entityTablePanel.getJTable().requestFocusInWindow();
         }
         else {
