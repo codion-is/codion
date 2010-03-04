@@ -172,7 +172,7 @@ public interface EntityDbServerAdmin extends Remote {
 
   public Collection<String> getClientTypes() throws RemoteException;
 
-  public List<ConnectionPoolSettings> getActiveConnectionPools() throws RemoteException;
+  public List<ConnectionPoolSettings> getEnabledConnectionPools() throws RemoteException;
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException;
 

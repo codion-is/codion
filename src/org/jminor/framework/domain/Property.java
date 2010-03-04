@@ -8,6 +8,7 @@ import org.jminor.framework.Configuration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.text.Format;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -121,6 +122,11 @@ public class Property implements Serializable {
    * Cached select column index
    */
   private int selectIndex = -1;
+
+  /**
+   * The Format used when presenting this Property value
+   */
+  private Format format;
 
   /**
    * Instantiates a new property of the type Type.INT
@@ -413,6 +419,23 @@ public class Property implements Serializable {
    */
   public Property setMnemonic(final Character mnemonic) {
     this.mnemonic = mnemonic;
+    return this;
+  }
+
+  /**
+   * @return the Format object used to format the value of properties when being presented
+   */
+  public Format getFormat() {
+    return format;
+  }
+
+  /**
+   * Sets the Format to use when presenting property values
+   * @param format the format to use
+   * @return this Property instance
+   */
+  public Property setFormat(final Format format) {
+    this.format = format;
     return this;
   }
 

@@ -59,6 +59,10 @@ public class EntityDefinition implements Serializable {
    */
   private ValueMap.ToString stringProvider;
   /**
+   * A custom sql query used when selecting entities of this type
+   */
+  private String selectQuery;
+  /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
   private List<String> searchPropertyIDs;
@@ -163,6 +167,15 @@ public class EntityDefinition implements Serializable {
 
   public EntityDefinition setTableName(final String tableName) {
     this.tableName = tableName;
+    return this;
+  }
+
+  public String getSelectQuery() {
+    return selectQuery;
+  }
+
+  public EntityDefinition setSelectQuery(final String selectQuery) {
+    this.selectQuery = selectQuery;
     return this;
   }
 

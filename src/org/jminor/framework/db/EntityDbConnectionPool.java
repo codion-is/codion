@@ -95,7 +95,7 @@ public class EntityDbConnectionPool {
           liveConnections++;
           connectionsCreated++;
           if (log.isDebugEnabled())
-            log.debug("$$$$ creating a new connection for " + user);
+            log.debug("$$$$ adding a new connection to connection pool " + user);
           checkInConnection(new EntityDbConnection(database, user));
         }
       }

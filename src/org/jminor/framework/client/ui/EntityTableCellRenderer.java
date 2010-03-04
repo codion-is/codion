@@ -77,31 +77,33 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
   protected TableCellRenderer initializeRenderer(final Property property) {
     switch (property.getPropertyType()) {
-        case BOOLEAN:
-          return new BooleanRenderer();
-        case DOUBLE:
-        case INT:
-          return new NumberRenderer(property);
-        case DATE:
-          return new DateRenderer();
-        case TIMESTAMP:
-          return new TimestampRenderer();
-        default:
-          return new DefaultTableCellRenderer();
-      }
+      case BOOLEAN:
+        return new BooleanRenderer();
+      case DOUBLE:
+        return new DoubleRenderer(property);
+      case INT:
+        return new IntegerRenderer(property);
+      case DATE:
+        return new DateRenderer(property);
+      case TIMESTAMP:
+        return new TimestampRenderer(property);
+      default:
+        return new DefaultTableCellRenderer();
+    }
   }
 
-  /**
+  /*
    * Default Renderers
    */
-  public static class NumberRenderer extends DefaultTableCellRenderer {
+  public static class DoubleRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
 
-    public NumberRenderer(final Property property) {
-      this.format = NumberFormat.getInstance();
-      if (property.getMaximumFractionDigits() != -1)
-        this.format.setMaximumFractionDigits(property.getMaximumFractionDigits());
-      this.format.setGroupingUsed(property.useNumberFormatGrouping());
+    public DoubleRenderer(final Property property) {
+      this(initNumberFormat(property));
+    }
+
+    public DoubleRenderer(final NumberFormat format) {
+      this.format = format;
       setHorizontalAlignment(JLabel.RIGHT);
     }
 
@@ -112,13 +114,56 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       else
         setText((value == null) ? "" : format.format(value));
     }
+
+    private static NumberFormat initNumberFormat(final Property property) {
+      if (property.getFormat() != null)
+        return (NumberFormat) property.getFormat();
+
+      final NumberFormat format = NumberFormat.getInstance();
+      if (property.getMaximumFractionDigits() != -1)
+        format.setMaximumFractionDigits(property.getMaximumFractionDigits());
+      format.setGroupingUsed(property.useNumberFormatGrouping());
+
+      return format;
+    }
+  }
+
+  public static class IntegerRenderer extends DefaultTableCellRenderer {
+    private final NumberFormat format;
+
+    public IntegerRenderer(final Property property) {
+      this(initNumberFormat(property));
+    }
+
+    public IntegerRenderer(final NumberFormat format) {
+      this.format = format;
+      setHorizontalAlignment(JLabel.RIGHT);
+    }
+
+    @Override
+    public void setValue(final Object value) {
+      if (value instanceof String)
+        setText((String) value);
+      else
+        setText((value == null) ? "" : format.format(value));
+    }
+
+    private static NumberFormat initNumberFormat(final Property property) {
+      if (property.getFormat() != null)
+        return (NumberFormat) property.getFormat();
+
+      final NumberFormat format = NumberFormat.getIntegerInstance();
+      format.setGroupingUsed(property.useNumberFormatGrouping());
+
+      return format;
+    }
   }
 
   public static class DateRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
-    public DateRenderer() {
-      this(DateUtil.getDefaultDateFormat());
+    public DateRenderer(final Property property) {
+      this(initDateFormat(property));
     }
 
     public DateRenderer(final DateFormat format) {
@@ -137,13 +182,17 @@ public class EntityTableCellRenderer implements TableCellRenderer {
 
       setText(txt);
     }
+
+    private static DateFormat initDateFormat(final Property property) {
+      return property.getFormat() == null ? DateUtil.getDefaultDateFormat() : (DateFormat) property.getFormat();
+    }
   }
 
   public static class TimestampRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
-    public TimestampRenderer() {
-      this(DateUtil.getDefaultTimestampFormat());
+    public TimestampRenderer(final Property property) {
+      this(initTimestampFormat(property));
     }
 
     public TimestampRenderer(final DateFormat format) {
@@ -161,6 +210,10 @@ public class EntityTableCellRenderer implements TableCellRenderer {
         txt = (String) value;
 
       setText(txt);
+    }
+
+    private static DateFormat initTimestampFormat(final Property property) {
+      return property.getFormat() == null ? DateUtil.getDefaultTimestampFormat() : (DateFormat) property.getFormat();
     }
   }
 

@@ -209,8 +209,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   /** {@inheritDoc} */
-  public List<ConnectionPoolSettings> getActiveConnectionPools() throws RemoteException {
-    return EntityDbRemoteAdapter.getActiveConnectionPoolSettings();
+  public List<ConnectionPoolSettings> getEnabledConnectionPools() throws RemoteException {
+    return EntityDbRemoteAdapter.getEnabledConnectionPoolSettings();
   }
 
   /** {@inheritDoc} */

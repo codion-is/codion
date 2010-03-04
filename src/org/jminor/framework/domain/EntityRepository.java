@@ -26,6 +26,10 @@ public class EntityRepository {
     entityDefinitions.putAll(repository);
   }
 
+  public static boolean isDefined(final String entityID) {
+    return entityDefinitions.containsKey(entityID);
+  }
+
   /**
    * @param entityID the entity ID
    * @return a String array containing the IDs of the properties used as default search properties
@@ -110,6 +114,18 @@ public class EntityRepository {
       throw new RuntimeException("Undefined entity: " + entityID);
 
     return entityDefinitions.get(entityID).getTableName();
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @return the sql query used when selecting entities identified by <code>entityID</code>
+   * @throws RuntimeException if none is defined
+   */
+  public static String getSelectQuery(final String entityID) {
+    if (!entityDefinitions.containsKey(entityID))
+      throw new RuntimeException("Undefined entity: " + entityID);
+
+    return entityDefinitions.get(entityID).getSelectQuery();
   }
 
   /**

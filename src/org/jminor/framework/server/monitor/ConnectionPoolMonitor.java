@@ -28,7 +28,7 @@ public class ConnectionPoolMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final ConnectionPoolSettings settings : server.getActiveConnectionPools())
+    for (final ConnectionPoolSettings settings : server.getEnabledConnectionPools())
       connectionPoolInstanceMonitors.add(new ConnectionPoolInstanceMonitor(settings.getUser(), server));
   }
 

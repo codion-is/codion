@@ -137,7 +137,7 @@ public interface EntityDb {
    * @return the values in the given column (Property) in the given table (Entity)
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
-  public List<?> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws Exception;
+  public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws Exception;
 
   /**
    * Selects a single entity

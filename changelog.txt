@@ -1050,3 +1050,9 @@
   Entity.hasValue() renamed to containsValue()
   EntityDbConnectionPool.collectStatistics field added
   Configuration.getBooleanValue() added, used throughout
+  Property.format field added
+  EntityTableCellRenderer changed according to the above
+  EntityDefinition.selectQuery field added
+  EntityRepository.getSelectQuery() added
+  EntityDbConnection.selectMany(), selectPropertyValues() and selectRowCount() changed to take the above into account
+  EntityDbConnectionTest improved

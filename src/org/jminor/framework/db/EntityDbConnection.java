@@ -211,9 +211,15 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     String sql = null;
     try {
-      final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-      sql = getSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getWhereClause(getDatabase(), !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
+      final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
+      if (selectQuery == null) {
+        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+        sql = getSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
+                criteria.getWhereClause(getDatabase(), !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
+      }
+      else {
+        sql = selectQuery + " " + criteria.getWhereClause(getDatabase(), !selectQuery.toLowerCase().contains("where"));
+      }
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
@@ -233,14 +239,20 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<?> selectPropertyValues(final String entityID, final String columnName, final boolean order) throws DbException {
+  public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DbException {
     String sql = null;
     try {
+      if (EntityRepository.getSelectQuery(entityID) != null)
+        throw new RuntimeException("selectPropertyValues is not implemented for entities with custom select queries");
+
+      final Property property = EntityRepository.getProperty(entityID, propertyID);
+      final String columnName = property.getColumnName();
       sql = getSelectSql(EntityRepository.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
-      return query(sql, getPropertyResultPacker(EntityRepository.getProperty(entityID, columnName).getPropertyType()), -1);
+      //noinspection unchecked
+      return query(sql, getPropertyResultPacker(property.getPropertyType()), -1);
     }
     catch (SQLException exception) {
       throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
@@ -259,10 +271,21 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
-    String sql = "";
+    String sql = null;
     try {
-      return queryInteger(sql = getSelectSql(EntityRepository.getSelectTableName(criteria.getEntityID()), "count(*)",
-              criteria.getWhereClause(getDatabase()), null));
+      final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
+      if (selectQuery == null) {
+        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+        sql = getSelectSql(datasource, "count(*)", criteria.getWhereClause(getDatabase(),
+                !datasource.toLowerCase().contains("where")), null);
+
+      }
+      else {
+        sql = getSelectSql("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(),
+                !selectQuery.toLowerCase().contains("where")) + ")", "count(*)", null, null);
+      }
+
+      return queryInteger(sql);
     }
     catch (SQLException exception) {
       throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));

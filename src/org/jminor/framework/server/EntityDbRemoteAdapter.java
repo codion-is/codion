@@ -52,19 +52,49 @@ import java.util.TimerTask;
 public class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteAdapter.class);
-
-  public final Event evtLoggingOut = new Event();
-
+  /**
+   * Fired when this EntityDbRemoteAdapter is logging out
+   */
+  public final Event evtLogout = new Event();
+  /**
+   * Contains information about the client using this connection
+   */
   private final ClientInfo clientInfo;
+  /**
+   * Contains information about the underlying database
+   */
   private final Database database;
-  private final long creationDate = System.currentTimeMillis();
+  /**
+   * A Proxy for logging method calls
+   */
   private final EntityDb loggingEntityDbProxy;
+  /**
+   * The db connection used if connection pooling is not enabled
+   */
   private EntityDbConnection entityDbConnection;
+  /**
+   * Indicates whether or not this remote connection is enabled
+   */
   private boolean connected = true;
-
+  /**
+   * The date and time when this remote connection was established
+   */
+  private final long creationDate = System.currentTimeMillis();
+  /**
+   * The object containing the method call log
+   */
   private final MethodLogger methodLogger;
+  /**
+   * Indicates whether or not a SSL client socket factory should be used when establishing the connection
+   */
   private static final boolean useSecureConnection = System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "true").equalsIgnoreCase("true");
+  /**
+   * Contains the active remote connections, that is, those connections that are in the middle of serving a request
+   */
   private static final List<EntityDbRemoteAdapter> active = Collections.synchronizedList(new ArrayList<EntityDbRemoteAdapter>());
+  /**
+   * The available connection pools
+   */
   private static final Map<User, EntityDbConnectionPool> connectionPools =
           Collections.synchronizedMap(new HashMap<User, EntityDbConnectionPool>());
 
@@ -77,19 +107,27 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }, new Date(), 15000);
   }
 
-  public EntityDbRemoteAdapter(final Database database, final ClientInfo clientInfo, final int dbRemotePort,
+  /**
+   * Instantiates a new EntityDbRemoteAdapter and exports it on the given port number
+   * @param database defines the underlying database
+   * @param clientInfo information about the client requesting the connection
+   * @param port the port to use when exporting this remote connection
+   * @param loggingEnabled specifies whether or not method logging is enabled
+   * @throws RemoteException in case of an exception
+   */
+  public EntityDbRemoteAdapter(final Database database, final ClientInfo clientInfo, final int port,
                                final boolean loggingEnabled) throws RemoteException {
-    super(dbRemotePort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+    super(port, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (connectionPools.containsKey(clientInfo.getUser()))
       connectionPools.get(clientInfo.getUser()).setPassword(clientInfo.getUser().getPassword());
     this.database = database;
-    this.methodLogger = new MethodLogger(database);
     this.clientInfo = clientInfo;
     final String sid = database.getSid();
     if (sid != null && sid.length() != 0)
       this.clientInfo.getUser().setProperty(Database.DATABASE_SID, sid);
     this.loggingEntityDbProxy = initializeProxy();
+    this.methodLogger = new MethodLogger(database);
     this.methodLogger.setLoggingEnabled(loggingEnabled);
   }
 
@@ -118,7 +156,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       connected = false;
 
       UnicastRemoteObject.unexportObject(this, true);
-      evtLoggingOut.fire();
+      evtLogout.fire();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -311,8 +349,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<?> selectPropertyValues(final String entityID, final String propertyID,
-                                      final boolean order) throws DbException, RemoteException {
+  public List<Object> selectPropertyValues(final String entityID, final String propertyID,
+                                           final boolean order) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectPropertyValues(entityID, propertyID, order);
     }
@@ -456,16 +494,26 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
+  /**
+   * @return information on the client using this remote connection
+   */
   public ClientInfo getClientInfo() {
     return clientInfo;
   }
 
+  /**
+   * @return a ServerLog instance containing information about this connections recent activity
+   * @see Configuration#SERVER_CONNECTION_LOG_SIZE
+   */
   public ServerLog getServerLog() {
     return new ServerLog(getClientInfo().getClientID(), creationDate, methodLogger.getLogEntries(),
             methodLogger.lastAccessDate, methodLogger.lastExitDate,methodLogger.lastAccessedMethod,
             methodLogger.lastAccessMessage, methodLogger.lastExitedMethod);
   }
 
+  /**
+   * @return the object containing the method call log
+   */
   public MethodLogger getMethodLogger() {
     return methodLogger;
   }
@@ -492,7 +540,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     return active.size();
   }
 
-  public static List<ConnectionPoolSettings> getActiveConnectionPoolSettings() {
+  /**
+   * @return a List containing the settings of the enabled connection pools
+   */
+  public static List<ConnectionPoolSettings> getEnabledConnectionPoolSettings() {
     final List<ConnectionPoolSettings> poolSettings = new ArrayList<ConnectionPoolSettings>();
     for (final EntityDbConnectionPool pool : connectionPools.values()) {
       if (pool.getConnectionPoolSettings().isEnabled())
@@ -550,7 +601,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     final String initialPoolUsers = System.getProperty(Configuration.SERVER_POOLING_INITIAL);
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
-        final User user = new User(username, null);
+        final User user = new User(username.trim(), null);
         setConnectionPoolSettings(database, user, ConnectionPoolSettings.getDefault(user));
       }
     }
@@ -591,21 +642,21 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   private void returnConnection(final User user, final EntityDbConnection connection) {
-    if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled())
-      connectionPools.get(user).checkInConnection(connection);
+    final EntityDbConnectionPool connectionPool = connectionPools.get(user);
+    if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled())
+      connectionPool.checkInConnection(connection);
   }
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, SQLException {
-    if (connectionPools.containsKey(user) && connectionPools.get(user).getConnectionPoolSettings().isEnabled()) {
-      final EntityDbConnection dbConnection = connectionPools.get(user).checkOutConnection();
-      if (dbConnection != null) {
-        if (entityDbConnection != null) {//pool has been turned on since this one was created
-          entityDbConnection.disconnect();//discard
-          entityDbConnection = null;
-        }
-
-        return dbConnection;
+    final EntityDbConnectionPool connectionPool = connectionPools.get(user);
+    if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
+      final EntityDbConnection pooledDbConnection = connectionPool.checkOutConnection();
+      if (entityDbConnection != null) {//pool has been turned on since this one was created
+        entityDbConnection.disconnect();//discard
+        entityDbConnection = null;
       }
+
+      return pooledDbConnection;
     }
 
     if (entityDbConnection == null)
@@ -616,7 +667,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   static class MethodLogger {
 
-    private static final int logSize = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
+    private static final int LOG_SIZE = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
     private static final int IS_CONNECTED = "isConnected".hashCode();
     private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
     private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
@@ -701,8 +752,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     private static List<ServerLogEntry> initializeLogEntryList() {
-      final List<ServerLogEntry> logEntries = new ArrayList<ServerLogEntry>(logSize);
-      for (int i = 0; i < logSize; i++)
+      final List<ServerLogEntry> logEntries = new ArrayList<ServerLogEntry>(LOG_SIZE);
+      for (int i = 0; i < LOG_SIZE; i++)
         logEntries.add(new ServerLogEntry());
 
       return logEntries;
