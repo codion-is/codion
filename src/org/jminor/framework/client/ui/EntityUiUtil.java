@@ -177,7 +177,7 @@ public class EntityUiUtil {
    * @see org.jminor.framework.Configuration#DEFAULT_LABEL_TEXT_ALIGNMENT
    */
   public static JLabel createLabel(final Property property) {
-    return createLabel(property, (Integer) Configuration.getValue(Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT));
+    return createLabel(property, Configuration.getIntValue(Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT));
   }
 
   /**

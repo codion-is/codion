@@ -835,7 +835,7 @@ public class EntityTablePanel extends JPanel {
    * @see Configuration#TABLE_AUTO_RESIZE_MODE
    */
   protected int getAutoResizeMode() {
-    return (Integer) Configuration.getValue(Configuration.TABLE_AUTO_RESIZE_MODE);
+    return Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE);
   }
 
   /**

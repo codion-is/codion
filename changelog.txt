@@ -1063,3 +1063,4 @@
   EntityTableModel.add/setSelectedItemIndexes() now takes List<Integer> as parameter
   EntityDbRemoteServer no longer keeps a reference to the Registry
   ServerMonitor improved
+  Configuration.getIntValue() added

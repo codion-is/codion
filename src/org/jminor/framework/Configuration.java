@@ -452,6 +452,10 @@ public class Configuration {
     return settings.get(key);
   }
 
+  public static Integer getIntValue(final String key) {
+    return (Integer) getValue(key);
+  }
+
   public static boolean getBooleanValue(final String key) {
     return (Boolean) getValue(key);
   }

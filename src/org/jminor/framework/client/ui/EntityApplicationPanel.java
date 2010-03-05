@@ -94,7 +94,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   public EntityApplicationPanel() {
     configureApplication();
     persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
-    ToolTipManager.sharedInstance().setInitialDelay((Integer) Configuration.getValue(Configuration.TOOLTIP_DELAY));
+    ToolTipManager.sharedInstance().setInitialDelay(Configuration.getIntValue(Configuration.TOOLTIP_DELAY));
   }
 
   /** {@inheritDoc} */
@@ -551,7 +551,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected void initializeUI() {
     setLayout(new BorderLayout());
-    applicationTabPane = new JTabbedPane((Integer) Configuration.getValue(Configuration.TAB_PLACEMENT));
+    applicationTabPane = new JTabbedPane(Configuration.getIntValue(Configuration.TAB_PLACEMENT));
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(new BorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
