@@ -42,6 +42,7 @@ public class ServerMonitor {
   private final UserMonitor userMonitor;
 
   private int connectionCount = 0;
+  private boolean shutdown = false;
 
   private String memoryUsage;
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Service requests per second");
@@ -62,7 +63,8 @@ public class ServerMonitor {
       @Override
       public void run() {
         try {
-          updateStats();
+          if (!shutdown)
+            updateStats();
         }
         catch (RemoteException e) {
           e.printStackTrace();
@@ -72,6 +74,7 @@ public class ServerMonitor {
   }
 
   public void shutdown() {
+    shutdown = true;
     if (updateTimer != null)
       updateTimer.cancel();
     databaseMonitor.shutdown();

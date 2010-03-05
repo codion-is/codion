@@ -95,6 +95,11 @@ public class HostMonitor {
       System.out.println(message);
       log.info(message);
       final String[] boundNames = getEntityServers(registry);
+      if (boundNames.length == 0) {
+        message = "HostMonitor found no server bound in registry: " + registry;
+        System.out.println(message);
+        log.info(message);
+      }
       for (final String name : boundNames) {
         message = "HostMonitor found server '" + name + "'";
         System.out.println(message);

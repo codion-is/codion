@@ -12,6 +12,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,6 +38,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
   private final JTextArea txtLog = new JTextArea();
 
   private ClientInstanceMonitor model;
+  private JCheckBox chkLoggingEnabled;
 
   public ClientInstanceMonitorPanel() throws RemoteException {
     initUI();
@@ -45,6 +47,8 @@ public class ClientInstanceMonitorPanel extends JPanel {
 
   public void setModel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = model;
+    if (model != null)
+      chkLoggingEnabled.setModel(model.getLoggingEnabledButtonModel());
     updateView();
   }
 
@@ -71,6 +75,15 @@ public class ClientInstanceMonitorPanel extends JPanel {
     txtLog.setText(log.toString());
   }
 
+  public boolean isLoggingOn() throws RemoteException {
+    return model != null && model.isLoggingOn();
+  }
+
+  public void setLoggingOn(final boolean status) throws RemoteException {
+    if (model != null)
+      model.setLoggingOn(status);
+  }
+
   private List<ServerLogEntry> sortAndRemoveNullEntries(final List<ServerLogEntry> log) {
     Collections.sort(log);
     final ListIterator<ServerLogEntry> iterator = log.listIterator();
@@ -90,8 +103,12 @@ public class ClientInstanceMonitorPanel extends JPanel {
     final JPanel infoBase = new JPanel(new BorderLayout(5,5));
     infoBase.setBorder(BorderFactory.createTitledBorder("Connection info"));
     infoBase.add(infoPanel, BorderLayout.CENTER);
-    infoBase.add(ControlProvider.createButton(
-            ControlFactory.methodControl(this, "updateView", "Refresh log")), BorderLayout.EAST);
+    chkLoggingEnabled = new JCheckBox("Logging enabled");
+    final JPanel pnlSettings = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    pnlSettings.add(chkLoggingEnabled);
+    pnlSettings.add(ControlProvider.createButton(
+            ControlFactory.methodControl(this, "updateView", "Refresh log")));
+    infoBase.add(pnlSettings, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
     txtLog.setLineWrap(false);
