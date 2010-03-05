@@ -19,6 +19,7 @@ public class ClientInfo implements Serializable {
   private final String clientID;
   private final String clientTypeID;
   private final User user;
+  private String clientHost = "unknown host";
 
   public ClientInfo(final String clientID) {
     this(clientID, null, null);
@@ -42,6 +43,14 @@ public class ClientInfo implements Serializable {
     return clientTypeID;
   }
 
+  public String getClientHost() {
+    return clientHost;
+  }
+
+  public void setClientHost(final String clientHost) {
+    this.clientHost = clientHost;
+  }
+
   @Override
   public int hashCode() {
     return getClass().hashCode() + clientID.hashCode();
@@ -54,6 +63,6 @@ public class ClientInfo implements Serializable {
 
   @Override
   public String toString() {
-    return user != null ? user + " - " + clientID : clientID;
+    return user != null ? user + "@" + getClientHost() + " - " + clientID : clientID;
   }
 }

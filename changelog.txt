@@ -1064,3 +1064,5 @@
   EntityDbRemoteServer no longer keeps a reference to the Registry
   ServerMonitor improved
   Configuration.getIntValue() added
+  PetstoreTest and EmpDeptTest now use createEntity() exclusively
+  ClientInfo.clientHost field added

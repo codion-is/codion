@@ -36,6 +36,7 @@ import java.lang.reflect.Proxy;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.rmi.server.ServerNotActiveException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,6 +130,12 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     this.loggingEntityDbProxy = initializeProxy();
     this.methodLogger = new MethodLogger(database);
     this.methodLogger.setLoggingEnabled(loggingEnabled);
+    try {
+      clientInfo.setClientHost(getClientHost());
+    }
+    catch (ServerNotActiveException e) {
+      e.printStackTrace();
+    }
   }
 
   /** {@inheritDoc} */

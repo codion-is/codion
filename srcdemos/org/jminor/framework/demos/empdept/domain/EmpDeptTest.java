@@ -34,7 +34,7 @@ public class EmpDeptTest extends EntityTestUnit {
   @Override
   protected void initializeReferenceEntities(final Collection<String> entityIDs) throws Exception {
     if (entityIDs.contains(EmpDept.T_DEPARTMENT)) {
-      final Entity department = new Entity(EmpDept.T_DEPARTMENT);
+      final Entity department = createEntity(EmpDept.T_DEPARTMENT);
       department.setValue(EmpDept.DEPARTMENT_ID, 98);
       department.setValue(EmpDept.DEPARTMENT_LOCATION, "Abyss");
       department.setValue(EmpDept.DEPARTMENT_NAME, "Marketing");
@@ -42,10 +42,7 @@ public class EmpDeptTest extends EntityTestUnit {
       setReferenceEntity(EmpDept.T_DEPARTMENT, department);
     }
     if (entityIDs.contains(EmpDept.T_EMPLOYEE)) {
-      final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
-      final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
-      employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-      employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department.getValue(EmpDept.DEPARTMENT_ID));
+      final Entity employee = createEntity(EmpDept.T_EMPLOYEE);
       employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       employee.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
       employee.setValue(EmpDept.EMPLOYEE_JOB, "SrSlacker");
@@ -59,7 +56,7 @@ public class EmpDeptTest extends EntityTestUnit {
   @Override
   protected Entity initializeTestEntity(final String entityID) {
     if (entityID.equals(EmpDept.T_DEPARTMENT)) {
-      final Entity department = new Entity(EmpDept.T_DEPARTMENT);
+      final Entity department = createEntity(EmpDept.T_DEPARTMENT);
       department.setValue(EmpDept.DEPARTMENT_ID, 99);
       department.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
       department.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
@@ -67,14 +64,10 @@ public class EmpDeptTest extends EntityTestUnit {
       return department;
     }
     else if (entityID.equals(EmpDept.T_EMPLOYEE)) {
-      final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
-      final Entity department = getReferenceEntity(EmpDept.T_DEPARTMENT);
-      final Entity manager = getReferenceEntity(EmpDept.T_EMPLOYEE);
-      employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+      final Entity employee = createEntity(EmpDept.T_EMPLOYEE);
       employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
       employee.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
       employee.setValue(EmpDept.EMPLOYEE_JOB, "Slacker");
-      employee.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
       employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
       employee.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
