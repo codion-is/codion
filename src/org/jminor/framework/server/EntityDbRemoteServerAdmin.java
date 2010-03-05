@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -128,10 +127,6 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     server.shutdown();
-    try {
-      server.getRegistry().unbind(getServerName() + "-admin");
-    }
-    catch (NotBoundException e) {/**/}
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
@@ -258,23 +253,22 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     server.setConnectionTimeout(timeout);
   }
 
-  private static Registry initializeRegistry() throws RemoteException {
+  private static void initializeRegistry() throws RemoteException {
     Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
-      try {
-        localRegistry.list();
-      }
-      catch (Exception e) {
-        log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
-        localRegistry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-      }
-
-    return localRegistry;
+    try {
+      localRegistry.list();
+    }
+    catch (Exception e) {
+      log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
+      LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    }
   }
 
   public static void main(String[] arguments) {
     try {
       System.setSecurityManager(new RMISecurityManager());
-      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance(), initializeRegistry()),
+      initializeRegistry();
+      new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
               SERVER_ADMIN_PORT, EntityDbRemoteServer.SECURE_CONNECTION);
     }
     catch (Exception e) {

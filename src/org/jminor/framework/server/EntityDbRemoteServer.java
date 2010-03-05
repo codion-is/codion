@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
@@ -66,7 +67,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
   }
 
-  private final Registry registry;
   private final String serverName;
   private final Date startDate = new Date();
   private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
@@ -79,10 +79,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   /**
    * Constructs a new EntityDbRemoteServer and binds it to the given registry
    * @param database the Database implementation
-   * @param registry the Registry to bind to
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  EntityDbRemoteServer(final Database database, final Registry registry) throws RemoteException {
+  EntityDbRemoteServer(final Database database) throws RemoteException {
     super(SERVER_PORT, SECURE_CONNECTION ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SECURE_CONNECTION ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.database = database;
@@ -101,15 +100,14 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
             + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
     startConnectionCheckTimer();
-    this.registry = registry;
-    this.registry.rebind(getServerName(), this);
+    getRegistry().rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";
     log.info(connectInfo);
     System.out.println(connectInfo);
   }
 
-  public Registry getRegistry() {
-    return registry;
+  public Registry getRegistry() throws RemoteException {
+    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
   }
 
   public Database getDatabase() {
