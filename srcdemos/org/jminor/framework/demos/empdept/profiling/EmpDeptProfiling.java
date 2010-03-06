@@ -9,6 +9,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
@@ -40,12 +41,26 @@ public class EmpDeptProfiling extends ProfilingModel {
 
   @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
-    final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
+    final EntityModel departmentModel = applicationModel.getMainApplicationModels().iterator().next();
     try {
-      if (model.getTableModel().getRowCount() > 0)
-        model.getTableModel().setSelectedItemIndexes(Arrays.asList(0));
-      model.refresh();
-      selectRandomRow(model.getTableModel());
+      if (departmentModel.getTableModel().getRowCount() > 0)
+        departmentModel.getTableModel().setSelectedItemIndexes(Arrays.asList(0));
+      departmentModel.refresh();
+      selectRandomRow(departmentModel.getTableModel());
+      final String objString = new Object().toString();
+      departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, objString.substring(objString.indexOf("@"), objString.length()-1));
+      departmentModel.getEditModel().update();
+      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+      if (employeeModel.getTableModel().getRowCount() > 0) {
+        selectRandomRow(employeeModel.getTableModel());
+        final double randomDouble = random.nextDouble();
+        if (randomDouble < 0.5)
+          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, 100 + randomDouble * 1900);
+        else
+          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, 1000 + randomDouble * 9000);
+
+        employeeModel.getEditModel().update();
+      }
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -61,37 +76,6 @@ public class EmpDeptProfiling extends ProfilingModel {
     model.setLinkedDetailModel(model.getDetailModels().get(0));
 
     return applicationModel;
-  }
-
-  private void updateEmployeeSalary(EntityModel model) {
-    try {
-      model.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, random.nextDouble()*3000);
-      model.getEditModel().update();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void updateEmployeeCommission(EntityModel model) {
-    try {
-      model.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, random.nextDouble()*1500);
-      model.getEditModel().update();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void updateDepartmentName(EntityModel model) {
-    try {
-      final String objString = new Object().toString();
-      model.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, objString.substring(objString.indexOf("@"), objString.length()-1));
-      model.getEditModel().update();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private void loadTestRMIServer() {

@@ -44,10 +44,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
-  private static final boolean LOGGING_ENABLED =
-          System.getProperty(Configuration.SERVER_LOGGING_ON, "true").equalsIgnoreCase("true");
-  static final boolean SECURE_CONNECTION =
-          System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "true").equalsIgnoreCase("true");
+  private static final boolean CLIENT_LOGGING_ENABLED =
+          System.getProperty(Configuration.SERVER_CLIENT_LOGGING_ENABLED, "true").equalsIgnoreCase("true");
+  static final boolean SSL_CONNECTION_ENABLED =
+          System.getProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true").equalsIgnoreCase("true");
 
   private static final int SERVER_PORT;
   private static final int SERVER_DB_PORT;
@@ -82,8 +82,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   EntityDbRemoteServer(final Database database) throws RemoteException {
-    super(SERVER_PORT, SECURE_CONNECTION ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            SECURE_CONNECTION ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+    super(SERVER_PORT, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.database = database;
     EntityDbRemoteAdapter.initConnectionPools(database);
     final String host = database.getHost();
@@ -193,9 +193,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   public ServerLog getServerLog(final String connectionKey) {
     synchronized (connections) {
       final ClientInfo client = new ClientInfo(connectionKey);
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        if (adapter.getClientInfo().equals(client))
-          return adapter.getServerLog();
+      if (connections.containsKey(client))
+        return connections.get(client).getServerLog();
     }
 
     return null;
@@ -303,7 +302,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   private EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, LOGGING_ENABLED);
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
     remoteAdapter.evtLogout.addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {

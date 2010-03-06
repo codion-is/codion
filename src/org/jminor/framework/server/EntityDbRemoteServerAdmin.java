@@ -269,7 +269,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
       System.setSecurityManager(new RMISecurityManager());
       initializeRegistry();
       new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
-              SERVER_ADMIN_PORT, EntityDbRemoteServer.SECURE_CONNECTION);
+              SERVER_ADMIN_PORT, EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
     }
     catch (Exception e) {
       e.printStackTrace();

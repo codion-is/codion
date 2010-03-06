@@ -35,8 +35,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 import java.rmi.server.ServerNotActiveException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +88,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * Indicates whether or not a SSL client socket factory should be used when establishing the connection
    */
-  private static final boolean useSecureConnection = System.getProperty(Configuration.SERVER_SECURE_CONNECTION, "true").equalsIgnoreCase("true");
+  private static final boolean SSL_CONNECTION_ENABLED = System.getProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true").equalsIgnoreCase("true");
   /**
    * Contains the active remote connections, that is, those connections that are in the middle of serving a request
    */
@@ -118,8 +118,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    */
   public EntityDbRemoteAdapter(final Database database, final ClientInfo clientInfo, final int port,
                                final boolean loggingEnabled) throws RemoteException {
-    super(port, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+    super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (connectionPools.containsKey(clientInfo.getUser()))
       connectionPools.get(clientInfo.getUser()).setPassword(clientInfo.getUser().getPassword());
     this.database = database;
@@ -605,7 +605,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   static void initConnectionPools(final Database database) {
-    final String initialPoolUsers = System.getProperty(Configuration.SERVER_POOLING_INITIAL);
+    final String initialPoolUsers = System.getProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
         final User user = new User(username.trim(), null);

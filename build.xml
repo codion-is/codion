@@ -460,7 +460,7 @@
       <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
       <jvmarg value="-Djminor.server.pooling.initial=scott"/>
-      <jvmarg value="-Djminor.server.logging.status=1"/>
+      <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>
       <jvmarg value="-Djminor.server.db.port=3333"/>

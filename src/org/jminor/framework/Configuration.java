@@ -75,22 +75,22 @@ public class Configuration {
   /**
    * The initial logging status on the server, either true (on) or false (off)
    */
-  public static final String SERVER_LOGGING_ON = "jminor.server.logging.status";
+  public static final String SERVER_CLIENT_LOGGING_ENABLED = "jminor.server.clientLoggingEnabled";
 
   /**
    * Specifies the size of the (circular) log the server keeps in memory for each connected client
    */
-  public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.logging.clientlogsize";
+  public static final String SERVER_CONNECTION_LOG_SIZE = "jminor.server.clientLogSize";
 
   /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)
    */
-  public static final String SERVER_SECURE_CONNECTION = "jminor.server.connection.secure";
+  public static final String SERVER_CONNECTION_SSL_ENABLED = "jminor.server.connection.sslEnabled";
 
   /**
    * Specifies a comma separated list of usernames for which to create connection pools on startup
    */
-  public static final String SERVER_POOLING_INITIAL = "jminor.server.pooling.initial";
+  public static final String SERVER_CONNECTION_POOLING_INITIAL = "jminor.server.pooling.initial";
 
   /**
    * Specifies whether or not connection pools should collect performance/usage statistics by default, true or false
