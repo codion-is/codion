@@ -7,7 +7,6 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -64,7 +63,7 @@ public class DepartmentPanel extends EntityPanel {
     return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
-        final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID, LinkType.READ_WRITE, true, null);
+        final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID);
         final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
         final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
