@@ -8,14 +8,15 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  * User: Björn Darri
  * Date: 29.7.2009
  * Time: 18:07:24
  */
-public class PropertySearchModelTest extends TestCase {
+public class PropertySearchModelTest {
 
   private static final Database database = DatabaseProvider.createInstance();
 
@@ -23,7 +24,8 @@ public class PropertySearchModelTest extends TestCase {
     new EmpDept();
   }
 
-  public void testPropertySearchModel() throws Exception {
+  @Test
+  public void propertySearchModel() throws Exception {
     final Property property = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final PropertySearchModel model = new PropertySearchModel(property);
     assertEquals(property, model.getProperty());

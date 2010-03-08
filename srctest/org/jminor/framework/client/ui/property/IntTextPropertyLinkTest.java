@@ -8,9 +8,11 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
-public class IntTextPropertyLinkTest extends TestCase {
+public class IntTextPropertyLinkTest {
 
   private EntityEditModel model;
 
@@ -18,6 +20,7 @@ public class IntTextPropertyLinkTest extends TestCase {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
+  @Test
   public void test() throws Exception {
     final IntField txt = new IntField();
     new IntTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),

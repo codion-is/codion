@@ -3,10 +3,13 @@
  */
 package org.jminor.common.model.combobox;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
-public class BooleanComboBoxModelTest extends TestCase {
+public class BooleanComboBoxModelTest {
 
+  @Test
   public void test() throws Exception {
     final BooleanComboBoxModel model = new BooleanComboBoxModel();
 

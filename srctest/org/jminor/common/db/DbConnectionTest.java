@@ -6,7 +6,8 @@ package org.jminor.common.db;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * This test relies on the emp/dept schema
  */
-public class DbConnectionTest extends TestCase {
+public class DbConnectionTest {
 
   private final Database database = DatabaseProvider.createInstance();
 
@@ -49,7 +50,8 @@ public class DbConnectionTest extends TestCase {
     }
   }*/
 
-  public void testQueryObjects() throws Exception {
+  @Test
+  public void queryObjects() throws Exception {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(database, new User("scott", "tiger"));
@@ -67,7 +69,8 @@ public class DbConnectionTest extends TestCase {
     }
   }
 
-  public void testQuery() throws Exception {
+  @Test
+  public void query() throws Exception {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(database, new User("scott", "tiger"));
@@ -93,7 +96,8 @@ public class DbConnectionTest extends TestCase {
     }
   }
 
-  public void testQueryInt() throws Exception {
+  @Test
+  public void queryInt() throws Exception {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(database, new User("scott", "tiger"));
@@ -106,7 +110,8 @@ public class DbConnectionTest extends TestCase {
     }
   }
 
-  public void testQueryIntegers() throws Exception {
+  @Test
+  public void queryIntegers() throws Exception {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(database, new User("scott", "tiger"));
@@ -119,7 +124,8 @@ public class DbConnectionTest extends TestCase {
     }
   }
 
-  public void testQueryStrings() throws Exception {
+  @Test
+  public void queryStrings() throws Exception {
     DbConnection dbConnection = null;
     try {
       dbConnection = new DbConnection(database, new User("scott", "tiger"));

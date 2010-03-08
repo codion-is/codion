@@ -7,12 +7,14 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 
-public class BooleanPropertyLinkTest extends TestCase {
+public class BooleanPropertyLinkTest {
 
   private EntityEditModel model;
 
@@ -20,6 +22,7 @@ public class BooleanPropertyLinkTest extends TestCase {
     model = new ItemModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
+  @Test
   public void test() throws Exception {
     final Property disabledProperty = EntityRepository.getProperty(Petstore.T_ITEM, Petstore.ITEM_DISABLED);
     final JCheckBox chkBox = new JCheckBox();

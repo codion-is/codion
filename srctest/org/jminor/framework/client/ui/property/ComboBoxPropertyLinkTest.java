@@ -10,9 +10,11 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-public class ComboBoxPropertyLinkTest extends TestCase {
+public class ComboBoxPropertyLinkTest {
 
   private EntityEditModel model;
 
@@ -20,6 +22,7 @@ public class ComboBoxPropertyLinkTest extends TestCase {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
+  @Test
   public void test() throws Exception {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final EntityComboBoxModel comboBoxModel = model.createEntityComboBoxModel(fkProperty);

@@ -12,14 +12,18 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
-public class EntityModelTest extends TestCase {
+public class EntityModelTest {
   private DepartmentModel departmentModel;
 
-  public void testDetailModel() throws Exception {
+  @Test
+  public void detailModel() throws Exception {
     assertTrue("DepartmentModel should contain EmployeeModel detail", departmentModel.containsDetailModel(EmployeeModel.class));
     assertEquals("Only one detail model should be in DepartmentModel", 1, departmentModel.getDetailModels().size());
     departmentModel.setLinkedDetailModel(departmentModel.getDetailModels().get(0));
@@ -37,8 +41,8 @@ public class EntityModelTest extends TestCase {
     assertTrue("Filtered list should contain all employees for department", containsAll(employees, employeesFromDetailModel));
   }
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     departmentModel = new DepartmentModel(EntityDbConnectionTest.dbProvider);
   }
 

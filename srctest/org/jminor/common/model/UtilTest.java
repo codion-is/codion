@@ -3,36 +3,42 @@
  */
 package org.jminor.common.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UtilTest extends TestCase {
+public class UtilTest {
 
-  public void testEqual() throws Exception {
+  @Test
+  public void equal() throws Exception {
     assertTrue("Two null values should be equal", Util.equal(null, null));
   }
 
-  public void testGetArrayContentsAsString() throws Exception {
+  @Test
+  public void getArrayContentsAsString() throws Exception {
     final String res = Util.getArrayContentsAsString(new Integer[] {1,2,3,4}, false);
     assertEquals("Integer array as string should work", "1, 2, 3, 4", res);
   }
 
-  public void testGetDouble() throws Exception {
-    assertEquals("getDouble should work with comma", 4.22, Util.getDouble("4,22"));
-    assertEquals("getDouble should work with period", 4.22, Util.getDouble("4.22"));
-    assertEquals("getDouble should work with single minus sign", -1d, Util.getDouble("-"));
+  @Test
+  public void getDouble() throws Exception {
+    assertEquals("getDouble should work with comma", new Double(4.22), Util.getDouble("4,22"));
+    assertEquals("getDouble should work with period", new Double(4.22), Util.getDouble("4.22"));
+    assertEquals("getDouble should work with single minus sign", new Double(-1), Util.getDouble("-"));
     assertNull("getDouble should work with an empty string", Util.getDouble(""));
   }
 
-  public void testGetInt() throws Exception {
+  @Test
+  public void getInt() throws Exception {
     assertEquals("getInt should work with a digit string", new Integer(4), Util.getInt("4"));
     assertEquals("getInt should work with single minus sign", new Integer(-1), Util.getInt("-"));
     assertNull("getInt should work with an empty string", Util.getInt(""));
   }
 
-  public void testGetListContentsAsString() throws Exception {
+  @Test
+  public void getListContentsAsString() throws Exception {
     final List<Integer> list = new ArrayList<Integer>();
     list.add(1);
     list.add(2);
@@ -42,13 +48,15 @@ public class UtilTest extends TestCase {
     assertEquals("Integer list as string should work", "1, 2, 3, 4", res);
   }
 
-  public void testGetLong() throws Exception {
+  @Test
+  public void getLong() throws Exception {
     assertEquals("getLong should work with a digit string", new Long(4), Util.getLong("4"));
     assertEquals("getLong should work with single minus sign", new Long(-1), Util.getLong("-"));
     assertNull("getLong should work with an empty string", Util.getLong(""));
   }
 
-  public void testNotNull() throws Exception {
+  @Test
+  public void notNull() throws Exception {
     assertTrue(Util.notNull(new Object(), new Object(), new Object()));
     assertTrue(Util.notNull(new Object()));
     assertFalse(Util.notNull(new Object(), null, new Object()));

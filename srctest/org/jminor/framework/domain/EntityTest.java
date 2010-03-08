@@ -7,14 +7,15 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EntityTest extends TestCase {
+public class EntityTest {
 
   public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
                                        final String stringValue, final Date dateValue, final Timestamp timestampValue,
@@ -36,7 +37,8 @@ public class EntityTest extends TestCase {
     new EntityTestDomain();
   }
 
-  public void testEntity() throws Exception {
+  @Test
+  public void entity() throws Exception {
     final int detailId = 1;
     final int detailInt = 2;
     final double detailDouble = 1.2;
@@ -170,7 +172,8 @@ public class EntityTest extends TestCase {
     catch (Exception e) {}
   }
 
-  public void testStringProvider() {
+  @Test
+  public void stringProvider() {
     new EmpDept();
     final Entity department = new Entity(EmpDept.T_DEPARTMENT);
     department.setValue(EmpDept.DEPARTMENT_ID, -10);

@@ -3,13 +3,16 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.textfield.IntField;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
-public class IntBeanPropertyLinkTest extends TestCase {
+public class IntBeanPropertyLinkTest {
 
   private Integer intValue;
   private Event evtIntValueChanged = new Event();
 
+  @Test
   public void test() throws Exception {
     final IntField txtInt = new IntField();
     new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged);

@@ -8,6 +8,8 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
+import org.junit.Test;
+
 import java.util.Collection;
 
 /**
@@ -17,31 +19,38 @@ import java.util.Collection;
  */
 public class PetstoreTest extends EntityTestUnit {
 
-  public void testAddress() throws Exception {
+  @Test
+  public void address() throws Exception {
     testEntity(Petstore.T_ADDRESS);
   }
 
-  public void testCategory() throws Exception {
+  @Test
+  public void category() throws Exception {
     testEntity(Petstore.T_CATEGORY);
   }
 
-  public void testItem() throws Exception {
+  @Test
+  public void item() throws Exception {
     testEntity(Petstore.T_ITEM);
   }
 
-  public void testProduct() throws Exception {
+  @Test
+  public void product() throws Exception {
     testEntity(Petstore.T_PRODUCT);
   }
 
-  public void testSellerInfo() throws Exception {
+  @Test
+  public void sellerInfo() throws Exception {
     testEntity(Petstore.T_SELLER_CONTACT_INFO);
   }
 
-  public void testTag() throws Exception {
+  @Test
+  public void tag() throws Exception {
     testEntity(Petstore.T_TAG);
   }
 
-  public void testTagItem() throws Exception {
+  @Test
+  public void tagItem() throws Exception {
     testEntity(Petstore.T_TAG_ITEM);
   }
 

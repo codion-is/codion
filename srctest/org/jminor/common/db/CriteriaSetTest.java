@@ -6,12 +6,14 @@ package org.jminor.common.db;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
-public class CriteriaSetTest extends TestCase {
+public class CriteriaSetTest {
 
   private static final Database database = DatabaseProvider.createInstance();
 
+  @Test
   public void test() throws Exception {
     final CriteriaSet andSet = new CriteriaSet(CriteriaSet.Conjunction.AND,
             new Criteria(), new Criteria());

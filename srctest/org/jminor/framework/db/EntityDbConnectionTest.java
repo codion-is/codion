@@ -23,7 +23,8 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import java.util.Map;
  * Date: 31.3.2009
  * Time: 21:02:43
  */
-public class EntityDbConnectionTest extends TestCase {
+public class EntityDbConnectionTest {
 
   public static final EntityDbProvider dbProvider =
           EntityDbProviderFactory.createEntityDbProvider(new User("scott", "tiger"), "JMinor Unit Tests");
@@ -57,14 +58,16 @@ public class EntityDbConnectionTest extends TestCase {
     new EntityTestDomain();
   }
 
-  public void testSelectAll() throws Exception {
+  @Test
+  public void selectAll() throws Exception {
     final List<Entity> depts = dbProvider.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
     assertEquals(depts.size(), 4);
     List<Entity> emps = dbProvider.getEntityDb().selectAll(COMBINED_ENTITY_ID);
     assertTrue(emps.size() > 0);
   }
 
-  public void testSelectDependentEntities() throws Exception {
+  @Test
+  public void selectDependentEntities() throws Exception {
     final List<Entity> accounting = dbProvider.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
     final Map<String, List<Entity>> emps = dbProvider.getEntityDb().selectDependentEntities(accounting);
     assertEquals(1, emps.size());
@@ -72,7 +75,8 @@ public class EntityDbConnectionTest extends TestCase {
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
   }
 
-  public void testSelectMany() throws Exception {
+  @Test
+  public void selectMany() throws Exception {
     List<Entity> result = dbProvider.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
     result = dbProvider.getEntityDb().selectMany(EntityUtil.getPrimaryKeys(result));
@@ -83,14 +87,16 @@ public class EntityDbConnectionTest extends TestCase {
     assertTrue(result.size() > 0);
   }
 
-  public void testSelectRowCount() throws Exception {
+  @Test
+  public void selectRowCount() throws Exception {
     int rowCount = dbProvider.getEntityDb().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
     assertEquals(4, rowCount);
     rowCount = dbProvider.getEntityDb().selectRowCount(new EntityCriteria(COMBINED_ENTITY_ID));
     assertEquals(16, rowCount);
   }
 
-  public void testSelectSingle() throws Exception {
+  @Test
+  public void selectSingle() throws Exception {
     Entity sales = dbProvider.getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
     sales = dbProvider.getEntityDb().selectSingle(sales.getPrimaryKey());
@@ -99,7 +105,8 @@ public class EntityDbConnectionTest extends TestCase {
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 
-  public void testSelectPropertyValues() throws Exception {
+  @Test
+  public void selectPropertyValues() throws Exception {
     final List<Object> result = dbProvider.getEntityDb().selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
     assertTrue(result.contains("ACCOUNTING"));
     assertTrue(result.contains("SALES"));
@@ -107,7 +114,8 @@ public class EntityDbConnectionTest extends TestCase {
     assertTrue(result.contains("OPERATIONS"));
   }
 
-  public void testGetInsertSQL() throws Exception {
+  @Test
+  public void getInsertSQL() throws Exception {
     final int idValue = 1;
     final int intValue = 2;
     final double doubleValue = 1.2;
@@ -120,7 +128,7 @@ public class EntityDbConnectionTest extends TestCase {
     final Entity referencedEntityValue = new Entity(EntityTestDomain.T_MASTER);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, referenceId);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, stringValue);
-    
+
     final Entity testEntity = EntityTest.getDetailEntity(idValue, intValue, null,
             stringValue, null, null, booleanValue, referencedEntityValue);
 
@@ -140,7 +148,8 @@ public class EntityDbConnectionTest extends TestCase {
             EntityDbConnection.getInsertSQL(database, testEntity));
   }
 
-  public void testGetDeleteSQL() throws Exception {
+  @Test
+  public void getDeleteSQL() throws Exception {
     final Entity testEntity = new Entity(EntityTestDomain.T_DETAIL);
     testEntity.setValue(EntityTestDomain.DETAIL_ID, 1);
 
@@ -148,7 +157,8 @@ public class EntityDbConnectionTest extends TestCase {
             EntityDbConnection.getDeleteSQL(database, testEntity.getPrimaryKey()));
   }
 
-  public void testGetUpdateSQL() throws Exception {
+  @Test
+  public void getUpdateSQL() throws Exception {
     final int idValue = 1;
     final int intValue = 2;
     final double doubleValue = 1.2;
@@ -181,12 +191,14 @@ public class EntityDbConnectionTest extends TestCase {
             EntityDbConnection.getUpdateSQL(database, testEntity));
   }
 
-  public void testGetSelectSql() throws Exception {
+  @Test
+  public void getSelectSql() throws Exception {
     final String generated = EntityDbConnection.getSelectSql("table", "col, col2", "where col = 1", "col2");
     assertEquals("Generate select should be working", "select col, col2 from table where col = 1 order by col2", generated);
   }
 
-  public void testOptimisticLocking() throws Exception {
+  @Test
+  public void optimisticLocking() throws Exception {
     final Database database = DatabaseProvider.createInstance();
     String oldLocation = null;
     Entity updatedDeparment = null;
