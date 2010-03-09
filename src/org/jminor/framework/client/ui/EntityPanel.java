@@ -780,6 +780,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         UiUtil.setWaitCursor(true, this);
         getModel().getEditModel().update(selectedEntities);
       }
+      catch (RuntimeException re) {
+        throw re;
+      }
       catch (Exception e) {
         throw new RuntimeException(e);
       }

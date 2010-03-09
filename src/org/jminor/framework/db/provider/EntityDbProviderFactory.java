@@ -59,10 +59,10 @@ public class EntityDbProviderFactory {
 
       throw new RuntimeException("Exception while initializing db provider", ite);
     }
+    catch (RuntimeException re) {
+      throw re;
+    }
     catch (Exception e) {
-      if (e instanceof RuntimeException)
-        throw (RuntimeException) e;
-
       throw new RuntimeException("Exception while initializing db provider", e);
     }
   }

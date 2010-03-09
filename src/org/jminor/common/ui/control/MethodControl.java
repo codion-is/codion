@@ -41,6 +41,9 @@ public class MethodControl extends Control {
     catch (InvocationTargetException ite) {
       throw new RuntimeException(ite.getTargetException());
     }
+    catch (RuntimeException re) {
+      throw re;
+    }
     catch (Exception ex) {
       throw new RuntimeException(ex);
     }
