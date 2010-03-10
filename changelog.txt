@@ -1076,3 +1076,4 @@
   EntityEditModel null validation did not handle non-auto generated primary keys
   UiUtil.setWaitCursor() now works with multiple frames/dialogs
   Unit tests migrated to Junit 4
+  EntityTableModel.setSortingStatus() simplified
