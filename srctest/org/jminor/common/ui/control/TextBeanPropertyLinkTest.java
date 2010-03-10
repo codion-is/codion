@@ -2,15 +2,17 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 import javax.swing.JTextField;
 
-public class TextBeanPropertyLinkTest extends TestCase {
+public class TextBeanPropertyLinkTest {
 
   private String stringValue;
   private Event evtStringValueChanged = new Event();
 
+  @Test
   public void test() throws Exception {
     final JTextField txtString = new JTextField();
     new TextBeanPropertyLink(txtString, this, "stringValue", String.class, evtStringValueChanged);

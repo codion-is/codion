@@ -3,15 +3,17 @@
  */
 package org.jminor.common.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StateTest extends TestCase {
+public class StateTest {
 
   private int stateChanged = 0;
 
+  @Test
   public void test() {
     final State state = new State();
     state.evtStateChanged.addListener(new ActionListener() {

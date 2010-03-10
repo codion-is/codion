@@ -5,7 +5,9 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
 import javax.swing.JComboBox;
 
@@ -14,11 +16,12 @@ import javax.swing.JComboBox;
  * Date: 13.1.2008
  * Time: 12:15:13
  */
-public class SelectedItemBeanPropertyLinkTest extends TestCase {
+public class SelectedItemBeanPropertyLinkTest {
 
   private String selectedItem;
   private Event evtSelectedItemChanged = new Event();
 
+  @Test
   public void test() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
     new SelectedItemBeanPropertyLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);

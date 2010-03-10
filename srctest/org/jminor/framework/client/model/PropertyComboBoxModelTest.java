@@ -5,14 +5,15 @@ import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * User: Björn Darri
  * Date: 11.10.2009
  * Time: 21:44:41
  */
-public class PropertyComboBoxModelTest extends TestCase {
+public class PropertyComboBoxModelTest {
 
   private final PropertyComboBoxModel comboBoxModel;
   private final Event refreshEvent = new Event();
@@ -24,6 +25,7 @@ public class PropertyComboBoxModelTest extends TestCase {
             EntityDbConnectionTest.dbProvider, null, refreshEvent);
   }
 
+  @Test
   public void test() {
     assertTrue(comboBoxModel.getSize() == 0);
     refreshEvent.fire();

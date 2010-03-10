@@ -93,7 +93,7 @@ public class Configuration {
   public static final String SERVER_CONNECTION_POOLING_INITIAL = "jminor.server.pooling.initial";
 
   /**
-   * Specifies whether or not connection pools should collect performance/usage statistics by default, true or false
+   * Specifies whether or not connection pools should collect fine grained performance/usage statistics by default, true or false
    */
   public static final String SERVER_CONNECTION_POOL_STATISTICS = "jminor.server.pooling.collectStatistics";
 

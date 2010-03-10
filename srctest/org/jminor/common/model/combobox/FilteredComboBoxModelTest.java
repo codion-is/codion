@@ -5,11 +5,15 @@ package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.FilterCriteria;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Vector;
 
-public class FilteredComboBoxModelTest extends TestCase {
+public class FilteredComboBoxModelTest {
 
   private FilteredComboBoxModel testModel;
 
@@ -19,7 +23,8 @@ public class FilteredComboBoxModelTest extends TestCase {
   private static final String TOMAS = "tomas";
   private static final String BJORN = "björn";
 
-  public void testSelection() {
+  @Test
+  public void setSelectedItem() {
     testModel.setEmptyStringIsNull(false);
     testModel.setSelectedItem("");
     assertFalse(testModel.isNullValueItemSelected());
@@ -27,7 +32,8 @@ public class FilteredComboBoxModelTest extends TestCase {
     assertTrue(testModel.isNullValueItemSelected());
   }
 
-  public void testSort() {
+  @Test
+  public void setSortContents() {
     testModel.setSortContents(true);
     assertTrue(ANNA + " should be at index 0, got " + testModel.getElementAt(0), testModel.getElementAt(0).equals(ANNA));
     assertTrue(BJORN + " should be at index 1, got " + testModel.getElementAt(1), testModel.getElementAt(1).equals(BJORN));
@@ -36,7 +42,8 @@ public class FilteredComboBoxModelTest extends TestCase {
     assertTrue(TOMAS + " should be at index 4, got " + testModel.getElementAt(4), testModel.getElementAt(4).equals(TOMAS));
   }
 
-  public void testFiltering() {
+  @Test
+  public void setFilterCriteria() {
     testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
         return false;
@@ -65,7 +72,8 @@ public class FilteredComboBoxModelTest extends TestCase {
     assertTrue("The mopel should only contain '" + ANNA + "'", modelContains(ANNA));
   }
 
-  public void testRemove() {
+  @Test
+  public void testRemoveItem() {
     //remove filtered item
     testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
@@ -81,16 +89,14 @@ public class FilteredComboBoxModelTest extends TestCase {
     assertFalse(KALLI + " should no longer be in the model", modelContains(KALLI));
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     testModel = new FilteredComboBoxModel();
     testModel.setContents(initContents());
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     testModel = null;
   }
 

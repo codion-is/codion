@@ -2,15 +2,18 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import javax.swing.JCheckBox;
 
-public class ToggleBeanPropertyLinkTest extends TestCase {
+public class ToggleBeanPropertyLinkTest {
 
   private boolean booleanValue;
   private Event evtBooleanValueChanged = new Event();
 
+  @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
     new ToggleBeanPropertyLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged, "");

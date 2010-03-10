@@ -310,17 +310,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
    */
   public void setSortingStatus(final String propertyID, final int status) {
-    int idx = 0;
-    int columnIndex = -1;
-    for (final Property property : EntityRepository.getVisibleProperties(getEntityID())) {
-      if (property.is(propertyID)) {
-        columnIndex = idx;
-        break;
-      }
-      idx++;
-    }
+    final int columnIndex = getTableColumnModel().getColumnIndex(EntityRepository.getProperty(getEntityID(), propertyID));
     if (columnIndex == -1)
-      throw new RuntimeException("Property not found '" + propertyID + "' for sorting");
+      throw new RuntimeException("Column based on property '" + propertyID + " not found");
 
     tableSorter.setSortingStatus(columnIndex, status);
   }
@@ -552,7 +544,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   /**
-   * Refreshes this table model
+   * Refreshes the data in this table model, keeping the selected items
    * @see #evtRefreshStarted
    * @see #evtRefreshDone
    */

@@ -204,7 +204,6 @@
   <component name="DBNavigator.Project.GenericSettings">
     <settings />
   </component>
-  <component name="DataSourceManagerImpl" compressed="false" />
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
@@ -452,6 +451,54 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$/../..">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="svn://stofuhilla/jminor/branches">
+                    <value>
+                      <list>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1200164061000" />
+                          <option name="revision" value="6871" />
+                          <option name="url" value="svn://stofuhilla/jminor/branches/darri" />
+                        </SvnBranchItem>
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="svn://stofuhilla/jminor/tags">
+                    <value>
+                      <list>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1200192557000" />
+                          <option name="revision" value="6887" />
+                          <option name="url" value="svn://stofuhilla/jminor/tags/jminor-1-0a" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1200164062000" />
+                          <option name="revision" value="6873" />
+                          <option name="url" value="svn://stofuhilla/jminor/tags/v1-0" />
+                        </SvnBranchItem>
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="branchUrls">
+                <list>
+                  <option value="svn://stofuhilla/jminor/branches" />
+                  <option value="svn://stofuhilla/jminor/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="svn://stofuhilla/jminor/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="myVersion" value="123" />
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
@@ -462,11 +509,7 @@
   <component name="com.sixrr.metrics.MetricsReloaded">
     <option name="selectedProfile" value="Class count metrics" />
     <option name="autoscroll" value="false" />
-    <option name="calculateMetrics" value="true" />
-    <option name="includeTestClasses" value="false" />
-    <option name="flattenInnerClasses" value="true" />
-    <option name="cycleTableSpecificationString" value="" />
-    <option name="shortCycleTableSpecificationString" value="" />
+    <option name="showOnlyWarnings" value="false" />
   </component>
   <component name="copyright">
     <Base>

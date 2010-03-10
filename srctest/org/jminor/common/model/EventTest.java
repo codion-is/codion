@@ -3,15 +3,17 @@
  */
 package org.jminor.common.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventTest extends TestCase {
+public class EventTest {
 
+  @Test
   public void test() throws Exception {
     final Event event = new Event();
     final List<Object> res = new ArrayList<Object>();

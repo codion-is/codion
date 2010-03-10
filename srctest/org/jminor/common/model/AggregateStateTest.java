@@ -3,10 +3,13 @@
  */
 package org.jminor.common.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-public class AggregateStateTest extends TestCase {
+public class AggregateStateTest {
 
+  @Test
   public void test() {
     final AggregateState orState = new AggregateState(AggregateState.Type.OR);
     final AggregateState andState = new AggregateState(AggregateState.Type.AND);

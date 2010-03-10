@@ -18,7 +18,9 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +32,7 @@ import java.util.Map;
 /**
  * A class for unit testing domain entities
  */
-public abstract class EntityTestUnit extends TestCase {
+public abstract class EntityTestUnit {
 
   private EntityDb entityDb;
   private final Map<String, Entity> referencedEntities = new HashMap<String, Entity>();
@@ -39,15 +41,13 @@ public abstract class EntityTestUnit extends TestCase {
     loadDomainModel();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     entityDb = initializeDbConnectionProvider().getEntityDb();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     if (entityDb != null)
       entityDb.disconnect();
   }

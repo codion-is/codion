@@ -334,10 +334,16 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     });
   }
 
+  /**
+   * @return the EntityModel
+   */
   public EntityModel getModel() {
     return model;
   }
 
+  /**
+   * @return the EntityEditModel
+   */
   public EntityEditModel getEditModel() {
     return getModel().getEditModel();
   }
@@ -779,6 +785,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       try {
         UiUtil.setWaitCursor(true, this);
         getModel().getEditModel().update(selectedEntities);
+      }
+      catch (RuntimeException re) {
+        throw re;
       }
       catch (Exception e) {
         throw new RuntimeException(e);

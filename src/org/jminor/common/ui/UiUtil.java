@@ -59,7 +59,9 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -77,7 +79,7 @@ public class UiUtil {
   public final static Dimension DIMENSION_TEXT_FIELD_SQUARE =
           new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
-  private static int waitCursorRequests = 0;
+  private static final Map<RootPaneContainer, Integer> waitCursorRequests = new HashMap<RootPaneContainer, Integer>();
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
    */
@@ -353,19 +355,29 @@ public class UiUtil {
   }
 
   public static void setWaitCursor(final boolean on, final JComponent component) {
-    if (on)
-      waitCursorRequests++;
-    else
-      waitCursorRequests--;
-    if ((waitCursorRequests == 1 && on) || (waitCursorRequests == 0 && !on)) {
-      RootPaneContainer root = getParentDialog(component);
-      if (root != null) {
-        root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
-      }
+    RootPaneContainer root = getParentDialog(component);
+    if (root == null)
       root = getParentFrame(component);
-      if (root != null) {
+    if (root == null)
+      return;
+
+    synchronized (waitCursorRequests) {
+      if (!waitCursorRequests.containsKey(root))
+        waitCursorRequests.put(root, 0);
+
+      int requests = waitCursorRequests.get(root);
+      if (on)
+        requests++;
+      else
+        requests--;
+
+      if ((requests == 1 && on) || (requests == 0 && !on)) {
         root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
       }
+      if (requests == 0)
+        waitCursorRequests.remove(root);
+      else
+        waitCursorRequests.put(root, requests);
     }
   }
 
@@ -681,5 +693,4 @@ public class UiUtil {
 
     return null;
   }
-
 }

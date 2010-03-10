@@ -10,11 +10,12 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
-public class EntityCriteriaTest extends TestCase {
+public class EntityCriteriaTest {
 
+  @Test
   public void test() {
     final Database database = DatabaseProvider.createInstance();
     final CriteriaSet set1 = new CriteriaSet(
@@ -22,7 +23,7 @@ public class EntityCriteriaTest extends TestCase {
             new PropertyCriteria(new Property("stringProperty", Type.STRING), SearchType.LIKE, "value"),
             new PropertyCriteria(new Property("intProperty", Type.INT), SearchType.LIKE, 666)
     );
-    Assert.assertEquals("where (stringProperty = 'value' and intProperty = 666)",
+    assertEquals("where (stringProperty = 'value' and intProperty = 666)",
             new EntityCriteria("entityID", set1).getWhereClause(database));
     final CriteriaSet set2 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,

@@ -13,12 +13,13 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PropertyCriteriaTest extends TestCase {
+public class PropertyCriteriaTest {
 
   private static final Database database = DatabaseProvider.createInstance();
 
@@ -26,7 +27,8 @@ public class PropertyCriteriaTest extends TestCase {
     new EmpDept();
   }
 
-  public void testConditionEntity() {
+  @Test
+  public void conditionEntity() {
     final Property property = new Property.ForeignKeyProperty("colName", "entity", EmpDept.T_DEPARTMENT,
             new Property("entityId", Type.INT));
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
@@ -42,7 +44,8 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "entityId <> 42", testCrit.asString(database));
   }
 
-  public void testConditionString() {
+  @Test
+  public void conditionString() {
     //string, is null
     final Property property = new Property("colName", Type.STRING);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
@@ -144,7 +147,8 @@ public class PropertyCriteriaTest extends TestCase {
             + "'), upper('" + value3 + "')))", testCrit.asString(database));
   }
 
-  public void testConditionInt() {
+  @Test
+  public void conditionInt() {
     //int, =
     final Property property = new Property("colName", Type.INT);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
@@ -171,9 +175,8 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "(colName in (2, 3, 4))", testCrit.asString(database));
   }
 
-
-
-  public void testConditionDouble() {
+  @Test
+  public void conditionDouble() {
     //int, =
     final Property property = new Property("colName", Type.DOUBLE);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
@@ -200,8 +203,8 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "(colName in (2.2, 3.2, 4.2))", testCrit.asString(database));
   }
 
-
-  public void testConditionChar() {
+  @Test
+  public void conditionChar() {
     final Property property = new Property("colName", Type.CHAR);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
     assertEquals("Condition should fit", "colName is null", testCrit.asString(database));
@@ -227,7 +230,8 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "(colName in ('a', 'b', 'c'))", testCrit.asString(database));
   }
 
-  public void testConditionBoolean() {
+  @Test
+  public void conditionBoolean() {
     //string, =
     final Property property = new Property("colName", Type.BOOLEAN);
     PropertyCriteria testCrit = new PropertyCriteria(property, SearchType.LIKE, new Object[] {null});
@@ -242,7 +246,8 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", "colName <> 1", testCrit.asString(database));
   }
 
-  public void testConditionDate() throws Exception {
+  @Test
+  public void conditionDate() throws Exception {
     final SimpleDateFormat dateFormat = new SimpleDateFormat(DateFormats.SHORT_DASH);
 
     final Database database = DatabaseProvider.createInstance();
@@ -288,7 +293,8 @@ public class PropertyCriteriaTest extends TestCase {
     assertEquals("Condition should fit", requiredValue, testCrit.asString(database));
   }
 
-  public void testConditionSet() {
+  @Test
+  public void conditionSet() {
     final Property property1 = new Property("colName1", Type.STRING);
     final Property property2 = new Property("colName2", Type.INT);
     final PropertyCriteria criteria1 = new PropertyCriteria(property1, SearchType.LIKE, "value");

@@ -159,13 +159,13 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   /** {@inheritDoc} */
-  public boolean isCollectPoolStatistics(User user) throws RemoteException {
-    return EntityDbRemoteAdapter.isCollectPoolStatistics(user);
+  public boolean isCollectFineGrainedPoolStatistics(User user) throws RemoteException {
+    return EntityDbRemoteAdapter.isCollectFineGrainedPoolStatistics(user);
   }
 
   /** {@inheritDoc} */
-  public void setCollectPoolStatistics(final User user, final boolean value) throws RemoteException {
-    EntityDbRemoteAdapter.setCollectPoolStatistics(user, value);
+  public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) throws RemoteException {
+    EntityDbRemoteAdapter.setCollectFineGrainedPoolStatistics(user, value);
   }
 
   /** {@inheritDoc} */

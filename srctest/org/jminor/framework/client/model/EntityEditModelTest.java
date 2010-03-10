@@ -6,14 +6,16 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 
-public class EntityEditModelTest extends TestCase {
+public class EntityEditModelTest {
 
   private EmployeeModel employeeModel = new EmployeeModel(EntityDbConnectionTest.dbProvider);
 
+  @Test
   public void test() throws Exception {
     final EntityEditModel editModel = employeeModel.getEditModel();
 

@@ -30,7 +30,7 @@ public class ConnectionPoolInstanceMonitor {
 
   public final Event evtStatsUpdated = new Event();
   public final Event evtStatsUpdateIntervalChanged = new Event();
-  public final Event evtCollectStatsChanged = new Event();
+  public final Event evtCollectFineGrainedStatsChanged = new Event();
   public final Event evtRefresh = new Event();
 
   private final User user;
@@ -146,13 +146,13 @@ public class ConnectionPoolInstanceMonitor {
     maximumPoolSizeSeries.clear();
   }
 
-  public void setCollectStats(final boolean value) throws RemoteException {
-    server.setCollectPoolStatistics(user, value);
-    evtCollectStatsChanged.fire();
+  public void setCollectFineGrainedStats(final boolean value) throws RemoteException {
+    server.setCollectFineGrainedPoolStatistics(user, value);
+    evtCollectFineGrainedStatsChanged.fire();
   }
 
-  public boolean isCollectStats() throws RemoteException {
-    return server.isCollectPoolStatistics(user);
+  public boolean isCollectFineGrainedStats() throws RemoteException {
+    return server.isCollectFineGrainedPoolStatistics(user);
   }
 
   public void setStatsUpdateInterval(final int value) {

@@ -3,10 +3,13 @@
  */
 package org.jminor.common.model.combobox;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-public class ItemComboBoxModelTest extends TestCase {
+public class ItemComboBoxModelTest {
 
+  @Test
   public void test() throws Exception {
     final ItemComboBoxModel.Item[] items = new ItemComboBoxModel.Item[] {
             new ItemComboBoxModel.Item<Integer>(1, "One"),

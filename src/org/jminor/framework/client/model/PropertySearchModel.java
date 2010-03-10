@@ -130,7 +130,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   private String toString(final Object object) {
-    final StringBuilder stringBuilder = new StringBuilder(getSearchType().toString());
+    final StringBuilder stringBuilder = new StringBuilder();
     if (object instanceof Collection)
       for (final Object obj : ((Collection) object))
         stringBuilder.append(toString(obj));

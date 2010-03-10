@@ -10,12 +10,13 @@ import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class EntityTableModelTest extends TestCase {
+public class EntityTableModelTest {
 
   private static final Entity[] testEntities;
 
@@ -36,7 +37,8 @@ public class EntityTableModelTest extends TestCase {
     return testEntities;
   }
 
-  public void testEntityTableModel() throws Exception {
+  @Test
+  public void entityTableModel() throws Exception {
     testModel.refresh();
     assertTrue("Model should contain all entities", tableModelContainsAll(testEntities, false, testModel));
 
@@ -144,8 +146,8 @@ public class EntityTableModelTest extends TestCase {
     assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
   }
 
-  public boolean tableModelContainsAll(final Entity[] entities, final boolean includeFiltered,
-                                       final EntityTableModel model) {
+  private boolean tableModelContainsAll(final Entity[] entities, final boolean includeFiltered,
+                                        final EntityTableModel model) {
     for (final Entity entity : entities) {
       if (!model.contains(entity, includeFiltered))
         return false;

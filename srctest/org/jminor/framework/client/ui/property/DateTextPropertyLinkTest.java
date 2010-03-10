@@ -10,13 +10,15 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
 import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateTextPropertyLinkTest extends TestCase {
+public class DateTextPropertyLinkTest {
 
   private EntityEditModel model;
 
@@ -24,6 +26,7 @@ public class DateTextPropertyLinkTest extends TestCase {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
+  @Test
   public void test() throws Exception {
     final SimpleDateFormat format = new SimpleDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);

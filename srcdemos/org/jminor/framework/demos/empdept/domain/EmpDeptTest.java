@@ -8,16 +8,20 @@ import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
+import org.junit.Test;
+
 import java.util.Collection;
 import java.util.Date;
 
 public class EmpDeptTest extends EntityTestUnit {
 
-  public void testDepartment() throws Exception {
+  @Test
+  public void department() throws Exception {
     testEntity(EmpDept.T_DEPARTMENT);
   }
 
-  public void testEmployee() throws Exception {
+  @Test
+  public void employee() throws Exception {
     testEntity(EmpDept.T_EMPLOYEE);
   }
 

@@ -4,7 +4,9 @@ import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.Arrays;
 
@@ -13,7 +15,7 @@ import java.util.Arrays;
  * Date: 11.10.2009
  * Time: 21:44:41
  */
-public class EntityComboBoxModelTest extends TestCase {
+public class EntityComboBoxModelTest {
 
   private final EntityComboBoxModel comboBoxModel;
 
@@ -22,6 +24,7 @@ public class EntityComboBoxModelTest extends TestCase {
     comboBoxModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider);
   }
 
+  @Test
   public void test() throws Exception {
     assertTrue(comboBoxModel.getSize() == 0);
     comboBoxModel.refresh();

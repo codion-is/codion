@@ -167,7 +167,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     txtCreatedDestroyedResetTime.setHorizontalAlignment(JLabel.CENTER);
 
     final JCheckBox chkCollectStats = new JCheckBox();
-    chkCollectStats.setModel(new ToggleBeanPropertyLink(model, "collectStats", model.evtCollectStatsChanged, null).getButtonModel());
+    chkCollectStats.setModel(new ToggleBeanPropertyLink(model, "collectFineGrainedStats", model.evtCollectFineGrainedStatsChanged, null).getButtonModel());
 
     statsBase.add(new JLabel("Fine grained statistics"));
     statsBase.add(chkCollectStats);

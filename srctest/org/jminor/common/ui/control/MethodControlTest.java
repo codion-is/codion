@@ -5,7 +5,8 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import javax.swing.JButton;
 
@@ -14,7 +15,7 @@ import javax.swing.JButton;
  * Date: 13.1.2008
  * Time: 13:05:09
  */
-public class MethodControlTest extends TestCase {
+public class MethodControlTest {
 
   private int callCount = 0;
 
@@ -22,6 +23,7 @@ public class MethodControlTest extends TestCase {
     callCount++;
   }
 
+  @Test
   public void test() throws Exception {
     final State stEnabled = new State();
     final Control control = new MethodControl("test", this, "method", stEnabled);

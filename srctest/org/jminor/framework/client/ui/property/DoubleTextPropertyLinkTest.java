@@ -8,9 +8,10 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
-public class DoubleTextPropertyLinkTest extends TestCase {
+public class DoubleTextPropertyLinkTest {
 
   private EntityEditModel model;
 
@@ -18,6 +19,7 @@ public class DoubleTextPropertyLinkTest extends TestCase {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
+  @Test
   public void test() throws Exception {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);

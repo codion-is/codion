@@ -7,11 +7,13 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
 import javax.swing.JTextField;
 
-public class TextPropertyLinkTest extends TestCase {
+public class TextPropertyLinkTest {
 
   private EntityEditModel model;
 
@@ -19,6 +21,7 @@ public class TextPropertyLinkTest extends TestCase {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
+  @Test
   public void test() throws Exception {
     final JTextField txt = new JTextField();
     new TextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
