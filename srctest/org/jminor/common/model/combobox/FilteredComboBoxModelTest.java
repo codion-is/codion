@@ -89,14 +89,12 @@ public class FilteredComboBoxModelTest {
     assertFalse(KALLI + " should no longer be in the model", modelContains(KALLI));
   }
 
-  /** {@inheritDoc} */
   @Before
   public void setUp() throws Exception {
     testModel = new FilteredComboBoxModel();
     testModel.setContents(initContents());
   }
 
-  /** {@inheritDoc} */
   @After
   public void tearDown() throws Exception {
     testModel = null;

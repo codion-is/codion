@@ -41,13 +41,11 @@ public abstract class EntityTestUnit {
     loadDomainModel();
   }
 
-  /** {@inheritDoc} */
   @Before
   public void setUp() throws Exception {
     entityDb = initializeDbConnectionProvider().getEntityDb();
   }
 
-  /** {@inheritDoc} */
   @After
   public void tearDown() throws Exception {
     if (entityDb != null)

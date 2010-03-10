@@ -204,7 +204,6 @@
   <component name="DBNavigator.Project.GenericSettings">
     <settings />
   </component>
-  <component name="DataSourceManagerImpl" compressed="false" />
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
@@ -462,11 +461,7 @@
   <component name="com.sixrr.metrics.MetricsReloaded">
     <option name="selectedProfile" value="Class count metrics" />
     <option name="autoscroll" value="false" />
-    <option name="calculateMetrics" value="true" />
-    <option name="includeTestClasses" value="false" />
-    <option name="flattenInnerClasses" value="true" />
-    <option name="cycleTableSpecificationString" value="" />
-    <option name="shortCycleTableSpecificationString" value="" />
+    <option name="showOnlyWarnings" value="false" />
   </component>
   <component name="copyright">
     <Base>
