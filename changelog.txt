@@ -1,4 +1,4 @@
-1.0b
+0.4.9
   Improved default about dialog text and layout
   Some javadoc improvements
   Added tests to org.jminor.common.ui.control, TestBeanPropertyLink and TestMethodControl
@@ -1077,3 +1077,4 @@
   UiUtil.setWaitCursor() now works with multiple frames/dialogs
   Unit tests migrated to Junit 4
   EntityTableModel.setSortingStatus() simplified
+0.5
