@@ -84,7 +84,7 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="compile_reports" description="Compile the demo jasper reports">
+  <target name="compile_demo_reports" description="Compile the demo jasper reports">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
 	  <classpath>
         <fileset dir="${lib}" includes="**/*.jar"/>
@@ -184,23 +184,7 @@
   <target name="javadoc" depends="build"
           description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true" />
-    <delete dir="${docstestapi}" includeEmptyDirs="true" />
     <mkdir dir="${docsapi}" />
-    <mkdir dir="${docstestapi}" />
-    <javadoc destdir="${docstestapi}" sourcepath="${srctest}" packagenames="org.jminor.*"
-             author="true" version="true" use="true" windowtitle="JMinor Test API docs"
-             link="http://java.sun.com/javase/6/docs/api/"
-             group="Common org.jminor.common*,
-                    Client org.jminor.framework.client*,
-                    Db org.jminor.framework.db*,
-                    Domain org.jminor.framework.domain*,
-                    Demos org.jminor.framework.demos*">
-      <classpath>
-        <path refid="libraries" />
-        <path location="${build.base}" />
-        <path location="${build.demos}" />
-      </classpath>
-    </javadoc>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*"
              author="true" version="true" use="true" windowtitle="JMinor API docs"
              link="http://java.sun.com/javase/6/docs/api/"
@@ -256,7 +240,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="create_derby_db, create_h2_db, compile_reports"
+  <target name="deploy_demos" depends="create_derby_db, create_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}" />
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
@@ -380,11 +364,11 @@
         <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
-      <jvmarg value="-Djminor.db.type=${run.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${run.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${run.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
-      <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
+      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
     </java>
   </target>
 
@@ -417,11 +401,11 @@
         <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
-      <jvmarg value="-Djminor.db.type=${run.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${run.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${run.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
-      <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
+      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
     </java>
   </target>
 
@@ -454,11 +438,11 @@
         <pathelement location="${lib.jasperreports.logging}"/>
         <pathelement location="${lib.jasperreports.collections}"/>
       </classpath>
-      <jvmarg value="-Djminor.db.type=${run.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${run.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${run.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${run.db.sid}"/>
-      <jvmarg value="-Djminor.db.embedded=${run.db.embedded}"/>
+      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
       <jvmarg value="-Djminor.server.pooling.initial=scott"/>
       <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>

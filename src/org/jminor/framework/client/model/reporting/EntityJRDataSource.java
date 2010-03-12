@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model.reporting;
 
 import org.jminor.framework.domain.Entity;
