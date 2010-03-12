@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.framework.client.model.EntityEditModel;

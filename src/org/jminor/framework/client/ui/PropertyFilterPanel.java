@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.client.ui;
 
@@ -204,7 +204,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-    new ToggleBeanPropertyLink(checkBox.getModel(), model, 
+    new ToggleBeanPropertyLink(checkBox.getModel(), model,
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
             isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
   }

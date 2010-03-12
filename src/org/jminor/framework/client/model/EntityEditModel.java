@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.client.model;
 
