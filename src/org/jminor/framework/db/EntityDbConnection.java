@@ -90,7 +90,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
         final IdSource idSource = EntityRepository.getIdSource(entityID);
         if (idSource.isQueried() && entity.getPrimaryKey().isNull())
-          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNextIdValue(entityID, idSource), false);
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNewIdValue(entityID, idSource), false);
 
         execute(sql = getInsertSQL(getDatabase(), entity));
 
@@ -447,7 +447,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
     final Collection<Property> properties = EntityUtil.getUpdateProperties(entity);
     if (properties.size() == 0)
-      throw new DbException("No modified updateable properties found in entity: " + entity);
+      throw new DbException("No modified updatable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.getColumnName()).append(" = ").append(
@@ -578,7 +578,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return new ArrayList<Entity.Key>(keySet);
   }
 
-  private int queryNextIdValue(final String entityID, final IdSource idSource) throws DbException {
+  private int queryNewIdValue(final String entityID, final IdSource idSource) throws DbException {
     String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:

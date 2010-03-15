@@ -437,7 +437,7 @@ public class EntityTablePanel extends JPanel {
 
     if (visible) {
       if (!isPropertyColumnVisible(property)) {
-        getTableModel().getTableColumnModel().addColumn(showColumn(property));
+        showColumn(property);
       }
     }
     else {
@@ -932,7 +932,7 @@ public class EntityTablePanel extends JPanel {
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
-      final ArrayList<String> line = new ArrayList<String>(15);
+      final List<String> line = new ArrayList<String>(15);
       for (final Property property : properties)
         line.add(entities.get(i).getValueAsString(property));
 
@@ -1027,17 +1027,15 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
-  private TableColumn showColumn(final Property property) {
-    final ListIterator<TableColumn> iterator = hiddenColumns.listIterator();
-    while (iterator.hasNext()) {
-      final TableColumn column = iterator.next();
-      if (column.getIdentifier().equals(property)) {
-        iterator.remove();
-        return column;
+  private void showColumn(final Property property) {
+    final ListIterator<TableColumn> hiddenColumnIterator = hiddenColumns.listIterator();
+    while (hiddenColumnIterator.hasNext()) {
+      final TableColumn hiddenColumn = hiddenColumnIterator.next();
+      if (hiddenColumn.getIdentifier().equals(property)) {
+        hiddenColumnIterator.remove();
+        getTableModel().getTableColumnModel().addColumn(hiddenColumn);
       }
     }
-
-    return null;
   }
 
   private void hideColumn(final Property property) {
