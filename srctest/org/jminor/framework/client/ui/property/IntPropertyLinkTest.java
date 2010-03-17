@@ -15,18 +15,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
-public class IntTextPropertyLinkTest {
+public class IntPropertyLinkTest {
 
   private EntityEditModel model;
 
-  public IntTextPropertyLinkTest() {
+  public IntPropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
   @Test
   public void test() throws Exception {
     final IntField txt = new IntField();
-    new IntTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
+    new IntPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_ID),
             true, LinkType.READ_WRITE);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setInt(42);

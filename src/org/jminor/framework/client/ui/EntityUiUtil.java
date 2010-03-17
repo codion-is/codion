@@ -27,11 +27,11 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.client.ui.property.BooleanPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
-import org.jminor.framework.client.ui.property.DateTextPropertyLink;
-import org.jminor.framework.client.ui.property.DoubleTextPropertyLink;
-import org.jminor.framework.client.ui.property.FormattedTextPropertyLink;
-import org.jminor.framework.client.ui.property.IntTextPropertyLink;
-import org.jminor.framework.client.ui.property.LookupModelPropertyLink;
+import org.jminor.framework.client.ui.property.DatePropertyLink;
+import org.jminor.framework.client.ui.property.DoublePropertyLink;
+import org.jminor.framework.client.ui.property.FormattedPropertyLink;
+import org.jminor.framework.client.ui.property.IntPropertyLink;
+import org.jminor.framework.client.ui.property.LookupPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -322,7 +322,7 @@ public class EntityUiUtil {
                     additionalSearchCriteria, searchProperties),
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     lookupField.setBorder(BorderFactory.createEtchedBorder());
-    new LookupModelPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
+    new LookupPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     UiUtil.selectAllOnFocusGained(lookupField);
 
@@ -427,19 +427,19 @@ public class EntityUiUtil {
     switch (property.getPropertyType()) {
       case STRING:
         if (formatMaskString != null)
-          new FormattedTextPropertyLink((JFormattedTextField) textField, editModel, property, null, immediateUpdate, linkType);
+          new FormattedPropertyLink((JFormattedTextField) textField, editModel, property, null, immediateUpdate, linkType);
         else
           new TextPropertyLink(textField, editModel, property, immediateUpdate, linkType);
         break;
       case INT:
-        new IntTextPropertyLink((IntField) textField, editModel, property, immediateUpdate, linkType);
+        new IntPropertyLink((IntField) textField, editModel, property, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoubleTextPropertyLink((DoubleField) textField, editModel, property, immediateUpdate, linkType);
+        new DoublePropertyLink((DoubleField) textField, editModel, property, immediateUpdate, linkType);
         break;
       case DATE:
       case TIMESTAMP:
-        new DateTextPropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat);
+        new DatePropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);

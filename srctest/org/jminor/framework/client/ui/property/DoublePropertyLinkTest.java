@@ -14,11 +14,11 @@ import org.jminor.framework.domain.EntityRepository;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class DoubleTextPropertyLinkTest {
+public class DoublePropertyLinkTest {
 
   private EntityEditModel model;
 
-  public DoubleTextPropertyLinkTest() {
+  public DoublePropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
@@ -26,7 +26,7 @@ public class DoubleTextPropertyLinkTest {
   public void test() throws Exception {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    new DoubleTextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
+    new DoublePropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION),
             true, LinkType.READ_WRITE);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);

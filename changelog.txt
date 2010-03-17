@@ -1079,3 +1079,4 @@
   EntityTableModel.setSortingStatus() simplified
 0.5
   EntityTablePanel.showColumn() refactored
+  framework.client.ui.property renamings

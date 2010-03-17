@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * A class for linking an EntityLookupModel to a EntityModel foreign key property value
  */
-public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
+public class LookupPropertyLink extends AbstractEntityPropertyLink {
 
   private final EntityLookupModel lookupModel;
 
@@ -27,8 +27,8 @@ public class LookupModelPropertyLink extends AbstractEntityPropertyLink {
    * @param editModel the EntityEditModel instance
    * @param foreignKeyProperty the foreign key property to link
    */
-  public LookupModelPropertyLink(final EntityLookupModel lookupModel, final EntityEditModel editModel,
-                                 final Property.ForeignKeyProperty foreignKeyProperty) {
+  public LookupPropertyLink(final EntityLookupModel lookupModel, final EntityEditModel editModel,
+                            final Property.ForeignKeyProperty foreignKeyProperty) {
     super(editModel, foreignKeyProperty, LinkType.READ_WRITE);
     this.lookupModel = lookupModel;
     updateUI();

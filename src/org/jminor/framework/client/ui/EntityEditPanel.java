@@ -68,7 +68,7 @@ public abstract class EntityEditPanel extends JPanel {
     if (defaultFocusComponent == null)
       requestFocusInWindow();
     else
-      getDefaultFocusComponent().requestFocusInWindow();
+      defaultFocusComponent.requestFocusInWindow();
   }
 
   public void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {

@@ -17,7 +17,7 @@ import java.awt.Color;
 import java.text.Format;
 import java.text.ParseException;
 
-public class FormattedTextPropertyLink extends TextPropertyLink {
+public class FormattedPropertyLink extends TextPropertyLink {
 
   private final Format format;
   private final JFormattedTextField.AbstractFormatter formatter;
@@ -31,9 +31,9 @@ public class FormattedTextPropertyLink extends TextPropertyLink {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * @param linkType the link type
    */
-  public FormattedTextPropertyLink(final JFormattedTextField textComponent, final EntityEditModel editModel,
-                                   final Property property, final Format format, final boolean immediateUpdate,
-                                   final LinkType linkType) {
+  public FormattedPropertyLink(final JFormattedTextField textComponent, final EntityEditModel editModel,
+                               final Property property, final Format format, final boolean immediateUpdate,
+                               final LinkType linkType) {
     super(textComponent, editModel, property, immediateUpdate, linkType);
     this.format = format;
     this.formatter = textComponent.getFormatter();

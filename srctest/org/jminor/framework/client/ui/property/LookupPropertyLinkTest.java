@@ -18,11 +18,11 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-public class LookupModelPropertyLinkTest {
+public class LookupPropertyLinkTest {
 
   private EntityEditModel model;
 
-  public LookupModelPropertyLinkTest() {
+  public LookupPropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
@@ -31,7 +31,7 @@ public class LookupModelPropertyLinkTest {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final Property deptName = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final EntityLookupModel lookupModel = model.createEntityLookupModel(fkProperty.getReferencedEntityID(), null, Arrays.asList(deptName));
-    new LookupModelPropertyLink(lookupModel, model, fkProperty);
+    new LookupPropertyLink(lookupModel, model, fkProperty);
     assertTrue(lookupModel.getSelectedEntities().size() == 0);
     Entity department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);

@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * A class for linking a formatted text field to a EntityModel date property value
  */
-public class DateTextPropertyLink extends FormattedTextPropertyLink {
+public class DatePropertyLink extends FormattedPropertyLink {
 
   /**
    * Instantiates a new DateTextPropertyLink
@@ -25,11 +25,11 @@ public class DateTextPropertyLink extends FormattedTextPropertyLink {
    * @param linkType the link type
    * @param dateFormat the date format to use
    */
-  public DateTextPropertyLink(final JFormattedTextField textField, final EntityEditModel editModel, final Property property,
-                              final LinkType linkType, final DateFormat dateFormat) {
+  public DatePropertyLink(final JFormattedTextField textField, final EntityEditModel editModel, final Property property,
+                          final LinkType linkType, final DateFormat dateFormat) {
     super(textField, editModel, property, dateFormat, true, linkType);
     if (dateFormat == null)
-      throw new IllegalArgumentException("DateTextPropertyLink must have a date format");
+      throw new IllegalArgumentException("DatePropertyLink must have a date format");
   }
 
   /** {@inheritDoc} */

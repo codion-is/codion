@@ -21,11 +21,11 @@ import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateTextPropertyLinkTest {
+public class DatePropertyLinkTest {
 
   private EntityEditModel model;
 
-  public DateTextPropertyLinkTest() {
+  public DatePropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
   }
 
@@ -33,7 +33,7 @@ public class DateTextPropertyLinkTest {
   public void test() throws Exception {
     final SimpleDateFormat format = new SimpleDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
-    new DateTextPropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
+    new DatePropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
             LinkType.READ_WRITE, format);
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date dateValue = format.parse("03-10-1975");
