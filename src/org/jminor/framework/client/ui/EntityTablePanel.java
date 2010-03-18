@@ -5,9 +5,9 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.CriteriaSet;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -27,25 +27,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
@@ -909,12 +891,12 @@ public class EntityTablePanel extends JPanel {
         try {
           copyTableAsDelimitedString();
         }
-        catch (UserCancelException ex) {/**/}
+        catch (CancelException ex) {/**/}
       }
     };
   }
 
-  private void copyTableAsDelimitedString() throws UserCancelException {
+  private void copyTableAsDelimitedString() throws CancelException {
     final List<String> headerValues = new ArrayList<String>();
     final List<Property> properties = new ArrayList<Property>(getTableModel().getTableColumnProperties());
     final ListIterator<Property> iterator = properties.listIterator();

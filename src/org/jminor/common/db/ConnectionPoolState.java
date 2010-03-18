@@ -16,7 +16,7 @@ public class ConnectionPoolState implements Serializable, Comparable<ConnectionP
 
   public long time;
   public int connectionCount;
-  public int inUse;
+  public int connectionsInUse;
 
   public ConnectionPoolState(final long time, final int connectionCount, final int connectionsInUse) {
     set(time, connectionCount, connectionsInUse);
@@ -25,7 +25,7 @@ public class ConnectionPoolState implements Serializable, Comparable<ConnectionP
   public void set(final long time, final int connectionCount, final int connectionsInUse) {
     this.time = time;
     this.connectionCount = connectionCount;
-    this.inUse = connectionsInUse;
+    this.connectionsInUse = connectionsInUse;
   }
 
   public int compareTo(final ConnectionPoolState poolState) {

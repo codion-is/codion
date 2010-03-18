@@ -5,8 +5,8 @@ package org.jminor.common.ui;
 
 import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -186,7 +186,7 @@ public class ExceptionDialog extends JDialog {
     try {
       Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }
-    catch (UserCancelException e) {
+    catch (CancelException e) {
       //cancelled
     }
   }

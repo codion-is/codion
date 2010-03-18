@@ -4,29 +4,14 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.KeyStroke;
-import javax.swing.RootPaneContainer;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -92,12 +77,12 @@ public class UiUtil {
 
   private UiUtil() {}
 
-  public static File selectDirectory(final JComponent dialogParent, final String startDir) throws UserCancelException {
+  public static File selectDirectory(final JComponent dialogParent, final String startDir) throws CancelException {
     return selectDirectory(dialogParent, startDir, null);
   }
 
   public static File selectDirectory(final JComponent dialogParent, final String startDir,
-                                     final String dialogTitle) throws UserCancelException {
+                                     final String dialogTitle) throws CancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -118,10 +103,10 @@ public class UiUtil {
     if (ret == JFileChooser.APPROVE_OPTION)
       return fileChooser.getSelectedFile();
     else
-      throw new UserCancelException();
+      throw new CancelException();
   }
 
-  public static File selectFile(final JComponent dialogParent, final String startDir) throws UserCancelException {
+  public static File selectFile(final JComponent dialogParent, final String startDir) throws CancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -144,11 +129,11 @@ public class UiUtil {
       }
     }
 
-    throw new UserCancelException();
+    throw new CancelException();
   }
 
   public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName)
-          throws UserCancelException {
+          throws CancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -178,13 +163,13 @@ public class UiUtil {
           if (option == JOptionPane.YES_OPTION)
             fileChosen = true;
           else if (option == JOptionPane.CANCEL_OPTION)
-            throw new UserCancelException();
+            throw new CancelException();
         }
         else
           fileChosen = true;
       }
       else
-        throw new UserCancelException();
+        throw new CancelException();
     }
 
     return selectedFile;

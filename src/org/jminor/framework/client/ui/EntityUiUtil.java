@@ -5,9 +5,9 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.Criteria;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.ui.DateInputPanel;
@@ -75,13 +75,13 @@ public class EntityUiUtil {
   }
 
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
-                                            final boolean singleSelection, final String dialogTitle) throws UserCancelException {
+                                            final boolean singleSelection, final String dialogTitle) throws CancelException {
     return selectEntities(lookupModel, owner, singleSelection, dialogTitle, null, false);
   }
 
   public static List<Entity> selectEntities(final EntityTableModel lookupModel, final Window owner,
                                             final boolean singleSelection, final String dialogTitle,
-                                            final Dimension preferredSize, final boolean simpleSearchPanel) throws UserCancelException {
+                                            final Dimension preferredSize, final boolean simpleSearchPanel) throws CancelException {
     final List<Entity> selected = new ArrayList<Entity>();
     final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -165,7 +165,7 @@ public class EntityUiUtil {
     dialog.setVisible(true);
 
     if (selected.size() == 1 && selected.contains(null))
-      throw new UserCancelException();
+      throw new CancelException();
     else
       return selected;
   }
@@ -265,7 +265,7 @@ public class EntityUiUtil {
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
           editModel.setValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
         }
-        catch (UserCancelException ex) {/**/}
+        catch (CancelException ex) {/**/}
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
@@ -589,7 +589,7 @@ public class EntityUiUtil {
           lookupField.getModel().setSelectedEntities(selectEntities(tableModel, UiUtil.getParentWindow(lookupField),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false));
         }
-        catch (UserCancelException ex) {/**/}
+        catch (CancelException ex) {/**/}
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);

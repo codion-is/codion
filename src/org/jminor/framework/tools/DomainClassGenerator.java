@@ -7,7 +7,7 @@ import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.DatabaseProvider;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
@@ -59,7 +59,7 @@ public class DomainClassGenerator {
                 user.getUsername(), user.getPassword(), txtTablesToInclude.getText()),
                 UiUtil.chooseFileToSave(null, null, domainClassName + ".java"));
       }
-      catch (UserCancelException uce) {/**/}
+      catch (CancelException uce) {/**/}
       catch (Exception e) {
         e.printStackTrace();
       }

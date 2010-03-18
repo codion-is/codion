@@ -5,7 +5,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Icon;
@@ -46,18 +46,18 @@ public class LoginPanel extends JPanel {
     return new User(usernameField.getText(), new String(passwordField.getPassword()));
   }
 
-  public static User showLoginPanel(final JComponent parent, final User defaultUser) throws UserCancelException {
+  public static User showLoginPanel(final JComponent parent, final User defaultUser) throws CancelException {
     return showLoginPanel(parent, defaultUser, null);
   }
 
   public static User showLoginPanel(final JComponent parent, final User defaultUser, final Icon icon)
-          throws UserCancelException {
+          throws CancelException {
     return showLoginPanel(parent, defaultUser, icon, null, null, null);
   }
 
   public static User showLoginPanel(final JComponent parent, final User defaultUser,
                                     final Icon icon, final String dialogTitle,
-                                    final String usernameLabel, final String passwordLabel) throws UserCancelException {
+                                    final String usernameLabel, final String passwordLabel) throws CancelException {
     final LoginPanel panel = new LoginPanel(defaultUser, false, usernameLabel, passwordLabel);
     final JOptionPane pane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
     final JDialog dialog = pane.createDialog(parent, dialogTitle == null ? Messages.get(Messages.LOGIN) : dialogTitle);
@@ -70,7 +70,7 @@ public class LoginPanel extends JPanel {
     if (pane.getValue() != null && pane.getValue().equals(0))
       return panel.getUser();
     else
-      throw new UserCancelException();
+      throw new CancelException();
   }
 
   public JPasswordField getPasswordField() {
@@ -81,7 +81,7 @@ public class LoginPanel extends JPanel {
     return usernameField;
   }
 
-  public static User getUser(final JComponent parent, final User defaultUser) throws UserCancelException {
+  public static User getUser(final JComponent parent, final User defaultUser) throws CancelException {
     return showLoginPanel(parent, defaultUser);
   }
 

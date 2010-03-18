@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
@@ -26,7 +26,7 @@ public class EmpDeptTest extends EntityTestUnit {
   }
 
   @Override
-  protected User getTestUser() throws UserCancelException {
+  protected User getTestUser() throws CancelException {
     return new User("scott", "tiger");
   }
 

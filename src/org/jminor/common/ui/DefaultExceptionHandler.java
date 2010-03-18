@@ -5,7 +5,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.db.DbException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 
 import javax.swing.JComponent;
 import java.io.FileNotFoundException;
@@ -19,7 +19,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
   }
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {
-    if (exception instanceof UserCancelException)
+    if (exception instanceof CancelException)
       return;
 
     final Throwable rootCause = unwrapRuntimeException(exception);

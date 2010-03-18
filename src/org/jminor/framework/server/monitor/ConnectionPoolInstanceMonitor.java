@@ -189,7 +189,7 @@ public class ConnectionPoolInstanceMonitor {
       final XYSeries inUseSeries = new XYSeries("Connections in active use");
       for (final ConnectionPoolState inPool : stats) {
         inPoolSeries.add(inPool.time, inPool.connectionCount);
-        inUseSeries.add(inPool.time, inPool.inUse);
+        inUseSeries.add(inPool.time, inPool.connectionsInUse);
       }
 
       this.statsCollection.removeAllSeries();

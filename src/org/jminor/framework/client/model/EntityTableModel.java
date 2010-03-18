@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.Criteria;
 import org.jminor.common.db.DbException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.IntArray;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
@@ -520,27 +519,27 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   public Collection<Integer> getSelectedViewIndexes() {
-    final IntArray intArray = new IntArray();
+    final List<Integer> indexes = new ArrayList<Integer>();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     for (int i = min; i <= max; i++)
       if (selectionModel.isSelectedIndex(i))
-        intArray.add(i);
+        indexes.add(i);
 
-    return intArray;
+    return indexes;
   }
 
   public Collection<Integer> getSelectedModelIndexes() {
-    final IntArray intArray = new IntArray();
+    final Collection<Integer> indexes = new ArrayList<Integer>();
     final int min = selectionModel.getMinSelectionIndex();
     final int max = selectionModel.getMaxSelectionIndex();
     if (min >= 0 && max >= 0) {
       for (int i = min; i <= max; i++)
         if (selectionModel.isSelectedIndex(i))
-          intArray.add(tableSorter.modelIndex(i));
+          indexes.add(tableSorter.modelIndex(i));
     }
 
-    return intArray;
+    return indexes;
   }
 
   /**
@@ -729,14 +728,14 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @param entities the entities to select
    */
   public void setSelectedEntities(final List<Entity> entities) {
-    final IntArray indexArray = new IntArray();
+    final List<Integer> indexes = new ArrayList<Integer>();
     for (final Entity entity : entities) {
       final int index = viewIndexOf(entity);
       if (index >= 0)
-        indexArray.add(index);
+        indexes.add(index);
     }
 
-    setSelectedItemIndexes(indexArray);
+    setSelectedItemIndexes(indexes);
   }
 
   /**
@@ -763,16 +762,16 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @param primaryKeys the primary keys of the entities to select
    */
   public void setSelectedByPrimaryKeys(final List<Entity.Key> primaryKeys) {
-    final IntArray indexArray = new IntArray(primaryKeys.size());
+    final List<Integer> indexes = new ArrayList<Integer>();
     for (final Entity visibleEntity : visibleEntities) {
       final int index = primaryKeys.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
-        indexArray.add(viewIndexOf(visibleEntity));
+        indexes.add(viewIndexOf(visibleEntity));
         primaryKeys.remove(index);
       }
     }
 
-    setSelectedItemIndexes(indexArray);
+    setSelectedItemIndexes(indexes);
   }
 
   /**

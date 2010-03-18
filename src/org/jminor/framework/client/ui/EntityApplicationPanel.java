@@ -6,8 +6,8 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -178,7 +178,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         saveDefaultUser(user);
         evtApplicationStarted.fire();
       }
-      catch (UserCancelException uce) {
+      catch (CancelException uce) {
         System.exit(0);
       }
       catch (Exception ue) {
@@ -200,9 +200,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * @param user the user used when initializing the application model
-   * @throws org.jminor.common.model.UserCancelException in case the initialization is cancelled
+   * @throws CancelException in case the initialization is cancelled
    */
-  public void initialize(final User user) throws UserCancelException {
+  public void initialize(final User user) throws CancelException {
     if (user == null)
       throw new RuntimeException("Unable to initialize application panel without a user");
 
@@ -215,11 +215,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     bindEvents();
   }
 
-  public void exit() throws UserCancelException {
+  public void exit() throws CancelException {
     if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT)) {
       if (JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
               FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
-        throw new UserCancelException();
+        throw new CancelException();
     }
     try {
       savePreferences();
@@ -638,7 +638,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         try {
           exit();
         }
-        catch(UserCancelException uc) {/**/}
+        catch(CancelException uc) {/**/}
       }
     });
     frame.setTitle(title);
@@ -692,10 +692,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     });
   }
 
-  protected abstract EntityApplicationModel initializeApplicationModel(final User user) throws UserCancelException;
+  protected abstract EntityApplicationModel initializeApplicationModel(final User user) throws CancelException;
 
   protected User getUser(final String frameCaption, final User defaultUser, final String applicationIdentifier,
-                         final ImageIcon applicationIcon) throws UserCancelException {
+                         final ImageIcon applicationIcon) throws CancelException {
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
             new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);

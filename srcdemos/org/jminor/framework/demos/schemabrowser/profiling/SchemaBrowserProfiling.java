@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.schemabrowser.profiling;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
@@ -46,7 +46,7 @@ public class SchemaBrowserProfiling extends ProfilingModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
+  protected EntityApplicationModel initializeApplicationModel() throws CancelException {
     final EntityApplicationModel applicationModel =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();

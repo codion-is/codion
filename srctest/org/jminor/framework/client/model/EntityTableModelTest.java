@@ -4,7 +4,6 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.Criteria;
-import org.jminor.common.model.IntArray;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entity;
@@ -13,6 +12,7 @@ import org.jminor.framework.domain.EntityTestDomain;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class EntityTableModelTest {
     assertEquals("selected indexes should fit", Arrays.asList(0), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
     testModel.getSelectionModel().clearSelection();
-    assertEquals("selected indexes should fit", new IntArray(), testModel.getSelectedViewIndexes());
+    assertEquals("selected indexes should fit", new ArrayList<Integer>(), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", -1, testModel.getSelectionModel().getMinSelectionIndex());
     testModel.addSelectedItemIndexes(Arrays.asList(0, 3, 4));
     assertEquals("selected indexes should fit", Arrays.asList(0, 3, 4), testModel.getSelectedViewIndexes());

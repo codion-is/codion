@@ -71,7 +71,9 @@ public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentLi
 
   protected String getText() {
     try {
-      return document.getText(0, document.getLength());
+      synchronized (document) {
+        return document.getText(0, document.getLength());
+      }
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);

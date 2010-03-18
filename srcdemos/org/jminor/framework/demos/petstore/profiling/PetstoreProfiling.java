@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.petstore.profiling;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
@@ -42,7 +42,7 @@ public class PetstoreProfiling extends ProfilingModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws UserCancelException {
+  protected EntityApplicationModel initializeApplicationModel() throws CancelException {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();

@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.petstore.client.ui;
 
 import org.jminor.common.db.User;
-import org.jminor.common.model.UserCancelException;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.Configuration;
@@ -52,7 +52,7 @@ public class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final User user) throws UserCancelException {
+  protected EntityApplicationModel initializeApplicationModel(final User user) throws CancelException {
     return new PetstoreAppModel(user);
   }
 

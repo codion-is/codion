@@ -7,8 +7,8 @@ import org.jminor.common.db.Criteria;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.State;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
@@ -763,7 +763,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     try {
       updateSelectedEntities(getPropertyToUpdate());
     }
-    catch (UserCancelException e) {/**/}
+    catch (CancelException e) {/**/}
   }
 
   /**
@@ -1686,9 +1686,9 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * for overriding, called before insert/update
    * @throws ValidationException in case of a validation failure
-   * @throws UserCancelException in case the user cancels the action during validation
+   * @throws CancelException in case the user cancels the action during validation
    */
-  protected void validateData() throws ValidationException, UserCancelException {}
+  protected void validateData() throws ValidationException, CancelException {}
 
   /**
    * for overriding, to provide specific input components for multiple entity update
@@ -1890,7 +1890,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     }
   }
 
-  private Property getPropertyToUpdate() throws UserCancelException {
+  private Property getPropertyToUpdate() throws CancelException {
     final JComboBox box = new JComboBox(new Vector<Property>(getUpdateProperties()));
     final int ret = JOptionPane.showOptionDialog(this, box,
             FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
@@ -1899,7 +1899,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (ret == JOptionPane.OK_OPTION)
       return (Property) box.getSelectedItem();
     else
-      throw new UserCancelException();
+      throw new CancelException();
   }
 
   private List<Property> getUpdateProperties() {

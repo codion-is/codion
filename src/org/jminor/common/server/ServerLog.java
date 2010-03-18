@@ -35,8 +35,8 @@ public class ServerLog implements Serializable {
   public final long connectionCreationDate;
 
   public ServerLog(final String connectionKey, final long connectionCreationDate, final List<ServerLogEntry> log,
-               final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
-               final String lastAccessedMessage, final String lastExitedMethod) {
+                   final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
+                   final String lastAccessedMessage, final String lastExitedMethod) {
     this.connectionKey = connectionKey;
     this.connectionCreationDate = connectionCreationDate;
     this.log = log == null ? new ArrayList<ServerLogEntry>(0) : log;

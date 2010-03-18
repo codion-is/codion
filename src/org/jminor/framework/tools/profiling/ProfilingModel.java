@@ -4,9 +4,8 @@
 package org.jminor.framework.tools.profiling;
 
 import org.jminor.common.db.User;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.IntArray;
-import org.jminor.common.model.UserCancelException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -14,7 +13,9 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
@@ -212,7 +213,7 @@ public abstract class ProfilingModel {
 
   protected abstract void performWork(final EntityApplicationModel applicationModel);
 
-  protected abstract EntityApplicationModel initializeApplicationModel() throws UserCancelException;
+  protected abstract EntityApplicationModel initializeApplicationModel() throws CancelException;
 
   protected void initializeSettings() {/**/}
 
@@ -227,7 +228,7 @@ public abstract class ProfilingModel {
     if (model.getRowCount() == 0)
       return;
 
-    final IntArray indexes = new IntArray();
+    final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = 0; i < count; i++)
       indexes.add(random.nextInt(model.getRowCount()));
 
@@ -239,7 +240,7 @@ public abstract class ProfilingModel {
       return;
 
     final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount()/ratio) : 1;
-    final IntArray indexes = new IntArray();
+    final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = 0; i < toSelect; i++)
       indexes.add(i);
 
@@ -316,7 +317,7 @@ public abstract class ProfilingModel {
     }
   }
 
-  private EntityApplicationModel initApplicationModel() throws UserCancelException {
+  private EntityApplicationModel initApplicationModel() throws CancelException {
     try {
       final int sleepyTime = getClientThinkTime(true);
       System.out.println("AppModel delaying login for " + sleepyTime + " ms");
