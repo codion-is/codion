@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
@@ -170,6 +171,67 @@ public class EntityTest {
       fail("Should not be able to set the state of the modified state");
     }
     catch (Exception e) {}
+  }
+
+  @Test
+  public void setValue() {
+    new EmpDept();
+
+    final Entity department = new Entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, -10);
+
+    final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_NAME, 1);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_NAME, 1d);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_NAME, false);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_NAME, 'c');
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_NAME, department);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_NAME, new Timestamp(System.currentTimeMillis()));
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      employee.setValue(EmpDept.EMPLOYEE_SALARY, "test");
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+
+    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1200d);
+    assertEquals(employee.getValue(EmpDept.EMPLOYEE_COMMISSION), 1200d);
+
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+    assertEquals(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), department);
+
+    final Timestamp date = new Timestamp(DateUtil.floorDate(new Date()).getTime());
+    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, date);
+    assertEquals(employee.getValue(EmpDept.EMPLOYEE_HIREDATE), date);
+
+    employee.setValue(EmpDept.EMPLOYEE_ID, 123);
+    assertEquals(employee.getValue(EmpDept.EMPLOYEE_ID), 123);
+
+    employee.setValue(EmpDept.EMPLOYEE_NAME, "noname");
+    assertEquals(employee.getValue(EmpDept.EMPLOYEE_NAME), "noname");
   }
 
   @Test

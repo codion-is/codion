@@ -8,6 +8,8 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -41,6 +43,16 @@ public class PropertySummaryModelTest {
     }
     public void bindValuesChangedEvent(Event event) {}
   });
+
+  @Test
+  public void test() {
+    testIntModel.setSummaryType(PropertySummaryModel.SUM);
+    assertEquals("TestProperty", testIntModel.getProperty().getPropertyID());
+    assertEquals(PropertySummaryModel.SUM, testIntModel.getSummaryType());
+    assertTrue(testIntModel.getSummaryTypes().size() > 0);
+    assertNotNull(testIntModel.eventSummaryChanged());
+    assertNotNull(testIntModel.eventSummaryTypeChanged());
+  }
 
   @Test
   public void intSum() {

@@ -842,7 +842,7 @@ public class EntityTablePanel extends JPanel {
 
   private void performSimpleSearch(final String searchText, final List<Property> searchProperties) {
     final EntityTableSearchModel tableSearchModel = getTableModel().getSearchModel();
-    final CriteriaSet.Conjunction conjunction = tableSearchModel.getSearchCriteriaConjunction();
+    final CriteriaSet.Conjunction conjunction = tableSearchModel.getSearchConjunction();
     try {
       tableSearchModel.clearPropertySearchModels();
       tableSearchModel.setSearchConjunction(CriteriaSet.Conjunction.OR);

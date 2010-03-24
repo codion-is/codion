@@ -1086,3 +1086,5 @@
   DateUtil.floorDate() added
   Unit test coverage improved somewhat
 0.5.1
+  EntityTableSearchModel.getSearchCriteriaConjunction() renamed to getSearchConjunction()
+  Unit test coverage improved

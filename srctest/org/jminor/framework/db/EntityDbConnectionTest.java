@@ -23,12 +23,16 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +60,15 @@ public class EntityDbConnectionTest {
 
   public EntityDbConnectionTest() {
     new EntityTestDomain();
+  }
+
+  @Test
+  public void fillReport() throws Exception {
+    final JasperReport report = (JasperReport) JRLoader.loadObject("resources/demos/empdept/reports/empdept_employees.jasper");
+    final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+    reportParameters.put("DEPTNO", Arrays.asList(10, 20));
+    final JasperPrint print = dbProvider.getEntityDb().fillReport(report, reportParameters);
+    assertNotNull(print);
   }
 
   @Test

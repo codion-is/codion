@@ -227,7 +227,7 @@ public class EntityTableSearchModel {
    * @return the current criteria based on the state of the search models
    */
   public Criteria getSearchCriteria() {
-    final CriteriaSet criteriaSet = new CriteriaSet(getSearchCriteriaConjunction());
+    final CriteriaSet criteriaSet = new CriteriaSet(getSearchConjunction());
     for (final AbstractSearchModel criteria : propertySearchModels.values())
       if (criteria.isSearchEnabled())
         criteriaSet.addCriteria(((PropertySearchModel) criteria).getPropertyCriteria());
@@ -240,7 +240,7 @@ public class EntityTableSearchModel {
    * the default is <code>CriteriaSet.Conjunction.AND</code>
    * @see org.jminor.common.db.CriteriaSet.Conjunction
    */
-  public CriteriaSet.Conjunction getSearchCriteriaConjunction() {
+  public CriteriaSet.Conjunction getSearchConjunction() {
     return searchConjunction;
   }
 
