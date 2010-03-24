@@ -98,13 +98,13 @@ public class Util {
     putUserPreference(applicationClassName + "." + PREF_DEFAULT_USERNAME, username);
   }
 
-  public static String padString(final String orig, final int length, final char padChar, final boolean atFront) {
+  public static String padString(final String orig, final int length, final char padChar, final boolean left) {
     if (orig.length() == length)
       return orig;
 
     final StringBuilder stringBuilder = new StringBuilder(orig);
     while (stringBuilder.length() < length) {
-      if (atFront)
+      if (left)
         stringBuilder.insert(0, padChar);
       else
         stringBuilder.append(padChar);

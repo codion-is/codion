@@ -93,6 +93,22 @@ public class DateUtil {
   }
 
   /**
+   * @param date the Date object to floor
+   * @return a Date object with the same time as <code>timestamp</code>
+   * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
+   */
+  public static Date floorDate(final Date date) {
+    final Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+
+    return cal.getTime();
+  }
+
+  /**
    * @param timestamp the Timestamp object to floor
    * @return a Timestamp object with the same time as <code>timestamp</code>
    * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero

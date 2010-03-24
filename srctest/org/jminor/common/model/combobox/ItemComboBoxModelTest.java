@@ -25,6 +25,7 @@ public class ItemComboBoxModelTest {
 
     model.setSelectedItem(1);
     assertTrue("The item representing 1 should be selected", model.getSelectedItem().equals(items[0]));
+    assertEquals("The item representing 1 should be selected", "One", model.getSelectedItem().toString());
     model.setSelectedItem(2);
     assertTrue("The item representing 2 should be selected", model.getSelectedItem().equals(items[1]));
     model.setSelectedItem(4);

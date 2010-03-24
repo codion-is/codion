@@ -313,6 +313,10 @@ public abstract class AbstractSearchModel {
     automaticWildcard = value;
   }
 
+  public boolean isAutomaticWildcard() {
+    return automaticWildcard;
+  }
+
   public void clear() {
     setSearchEnabled(false);
     setUpperBound((Object) null);

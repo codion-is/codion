@@ -158,7 +158,7 @@ public class EntityModel implements Refreshable {
   /**
    * @return true if a refresh on this model should trigger a refresh in its detail models
    */
-  public boolean getCascadeRefresh() {
+  public boolean isCascadeRefresh() {
     return stCascadeRefresh.isActive();
   }
 
@@ -352,7 +352,7 @@ public class EntityModel implements Refreshable {
    * Refreshes this EntityModel
    * @see #evtRefreshStarted
    * @see #evtRefreshDone
-   * @see #getCascadeRefresh
+   * @see #isCascadeRefresh
    */
   public void refresh() {
     if (isRefreshing)
@@ -366,7 +366,7 @@ public class EntityModel implements Refreshable {
         tableModel.refresh();
 
       getEditModel().refreshComboBoxModels();
-      if (getCascadeRefresh())
+      if (isCascadeRefresh())
         refreshDetailModels();
 
       updateDetailModelsByActiveEntity();

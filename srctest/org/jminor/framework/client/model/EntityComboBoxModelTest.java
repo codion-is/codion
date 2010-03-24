@@ -9,9 +9,8 @@ import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
@@ -32,8 +31,23 @@ public class EntityComboBoxModelTest {
   @Test
   public void test() throws Exception {
     assertTrue(comboBoxModel.getSize() == 0);
+    comboBoxModel.setSelectedItem("test");
+    assertNull(comboBoxModel.getSelectedItem());
     comboBoxModel.refresh();
     assertTrue(comboBoxModel.getSize() > 0);
+    assertTrue(comboBoxModel.isDataInitialized());
+
+    try {
+      comboBoxModel.setSelectedItem("test");
+      fail("Should not be able to select a string");
+    }
+    catch (IllegalArgumentException e) {}
+
+    try {
+      comboBoxModel.setSelectCriteria(new SelectCriteria(EmpDept.T_DEPARTMENT));
+      fail("Criteria entityID mismatch");
+    }
+    catch (RuntimeException e) {}
 
     final Entity clark = comboBoxModel.getDbProvider().getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);

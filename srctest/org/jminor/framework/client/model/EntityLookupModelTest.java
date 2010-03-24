@@ -26,6 +26,7 @@ public class EntityLookupModelTest {
   @Test
   public void lookupModel() throws Exception {
     lookupModel.setMultipleSelectionAllowed(true);
+    lookupModel.setWildcard("%");
     lookupModel.setSearchString("joh");
     List<Entity> result = lookupModel.performQuery();
     assertTrue("Result should not be empty", result.size() > 0);
@@ -70,6 +71,8 @@ public class EntityLookupModelTest {
     assertEquals("Result count should be 2", 2, result.size());
     assertTrue("Result should contain Andy", contains(result, "Andy"));
     assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+    lookupModel.setSelectedEntities(result);
+    assertTrue("Search string should represent the selected items", lookupModel.searchStringRepresentsSelected());
 
     lookupModel.setSearchString("and;rew");
     lookupModel.setWildcardPrefix(true);

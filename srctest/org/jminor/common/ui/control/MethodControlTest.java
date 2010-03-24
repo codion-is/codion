@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * User: Björn Darri
@@ -18,6 +20,7 @@ import javax.swing.JButton;
 public class MethodControlTest {
 
   private int callCount = 0;
+  private int actionPerformedCount = 0;
 
   public void method() {
     callCount++;
@@ -26,12 +29,25 @@ public class MethodControlTest {
   @Test
   public void test() throws Exception {
     final State stEnabled = new State();
-    final Control control = new MethodControl("test", this, "method", stEnabled);
+    final MethodControl control = new MethodControl("test", this, "method", stEnabled);
     final JButton btn = ControlProvider.createButton(control);
     assertFalse("Button should be disabled", btn.isEnabled());
     stEnabled.setActive(true);
     assertTrue("Button should be enabled", btn.isEnabled());
     btn.doClick();
     assertEquals("Button click should have resulted in a method call", 1, callCount);
+    control.eventActionPerformed().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        actionPerformedCount++;
+      }
+    });
+    control.actionPerformed(null);
+    assertEquals("Action performed should have resulted in a method call", 2, callCount);
+    assertEquals("Action performed should have resulted in a action performed count", 1, actionPerformedCount);
+    try {
+      new MethodControl("test", this, "none", null);
+      fail();
+    }
+    catch (Exception e) {}
   }
 }

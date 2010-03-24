@@ -35,6 +35,7 @@ public class FilteredComboBoxModelTest {
   @Test
   public void setSortContents() {
     testModel.setSortContents(true);
+    assertTrue(testModel.isSortContents());
     assertTrue(ANNA + " should be at index 0, got " + testModel.getElementAt(0), testModel.getElementAt(0).equals(ANNA));
     assertTrue(BJORN + " should be at index 1, got " + testModel.getElementAt(1), testModel.getElementAt(1).equals(BJORN));
     assertTrue(KALLI + " should be at index 2, got " + testModel.getElementAt(2), testModel.getElementAt(2).equals(KALLI));
@@ -73,7 +74,7 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  public void testRemoveItem() {
+  public void removeItem() {
     //remove filtered item
     testModel.setFilterCriteria(new FilterCriteria() {
       public boolean include(Object item) {
@@ -87,6 +88,18 @@ public class FilteredComboBoxModelTest {
     //remove visible item
     testModel.removeItem(KALLI);
     assertFalse(KALLI + " should no longer be in the model", modelContains(KALLI));
+  }
+
+  @Test
+  public void setEmptyStringIsNull() throws Exception {
+    testModel.setEmptyStringIsNull(true);
+    assertTrue(testModel.isEmptyStringIsNull());
+  }
+
+  @Test
+  public void setNullValueString() throws Exception {
+    testModel.setNullValueString("nullValueString");
+    assertTrue(testModel.getNullValueString().equals("nullValueString"));
   }
 
   @Before

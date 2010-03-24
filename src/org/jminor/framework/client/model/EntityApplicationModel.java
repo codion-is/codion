@@ -63,7 +63,7 @@ public abstract class EntityApplicationModel {
    * @return true if cascade refresh is active
    */
   public boolean isCascadeRefresh() {
-    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().getCascadeRefresh();
+    return mainApplicationModels.size() > 0 && mainApplicationModels.iterator().next().isCascadeRefresh();
   }
 
   /**

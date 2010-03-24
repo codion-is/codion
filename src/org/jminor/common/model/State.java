@@ -148,7 +148,7 @@ public class State {
 
     @Override
     public String toString() {
-      return referenceState + " reversed";
+      return isActive() ? "active reversed" : "inactive reversed";
     }
   }
 

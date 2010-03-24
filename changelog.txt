@@ -1083,3 +1083,6 @@
   IntArray removed
   UserCancelException renamed to CancelException
   Event objects privatized behind a eventXXX() method
+  DateUtil.floorDate() added
+  Unit test coverage improved somewhat
+0.5.1

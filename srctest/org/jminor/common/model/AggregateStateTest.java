@@ -3,25 +3,24 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class AggregateStateTest {
 
   @Test
   public void test() {
     final AggregateState orState = new AggregateState(AggregateState.Type.OR);
-    final AggregateState andState = new AggregateState(AggregateState.Type.AND);
     final State stateOne = new State();
     final State stateTwo = new State();
     final State stateThree = new State();
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
-    andState.addState(stateOne);
-    andState.addState(stateTwo);
-    andState.addState(stateThree);
+
+    final AggregateState andState = new AggregateState(AggregateState.Type.AND, stateOne, stateTwo, stateThree);
+    assertEquals("Aggregate AND inactive, inactive, inactive, inactive", andState.toString());
+
     assertFalse("Or state should be inactive", orState.isActive());
     assertFalse("And state should be inactive", andState.isActive());
 
@@ -44,5 +43,14 @@ public class AggregateStateTest {
 
     assertTrue("Or state should be active when two component states are active", orState.isActive());
     assertFalse("And state should be inactive when only two of three component states is active", andState.isActive());
+
+    andState.removeState(stateOne);
+    assertTrue(andState.isActive());
+
+    try {
+      andState.setActive(false);
+      fail("Can not set active on an aggregate state");
+    }
+    catch (Exception e) {}
   }
 }

@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -19,7 +20,8 @@ public class ToggleBeanPropertyLinkTest {
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    new ToggleBeanPropertyLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged, "");
+    final ToggleBeanPropertyLink link = new ToggleBeanPropertyLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged, "");
+    assertEquals(checkBox.getModel(), link.getButtonModel());
     assertFalse("Boolean value should be false on initialization", checkBox.isSelected());
     setBooleanValue(true);
     assertTrue("Boolean value should be true", checkBox.isSelected());

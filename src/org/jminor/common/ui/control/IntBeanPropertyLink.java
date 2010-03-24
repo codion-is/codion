@@ -11,7 +11,7 @@ public class IntBeanPropertyLink extends TextBeanPropertyLink {
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,
                              final Event propertyChangeEvent) {
-    this(intField, owner, propertyName, propertyChangeEvent,LinkType.READ_WRITE);
+    this(intField, owner, propertyName, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,
