@@ -71,7 +71,7 @@ public class DepartmentPanel extends EntityPanel {
         txtDepartmentNumber.setColumns(10);
 
         //we don't allow editing of the department number since it's a primary key
-        getEditModel().getEntityNullState().evtStateChanged.addListener(new ActionListener() {
+        getEditModel().getEntityNullState().eventStateChanged().addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (getEditModel().isEntityNull()) {
               txtDepartmentNumber.setEnabled(true);

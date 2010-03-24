@@ -28,10 +28,10 @@ import java.util.TimerTask;
  */
 public class ConnectionPoolInstanceMonitor {
 
-  public final Event evtStatsUpdated = new Event();
-  public final Event evtStatsUpdateIntervalChanged = new Event();
-  public final Event evtCollectFineGrainedStatsChanged = new Event();
-  public final Event evtRefresh = new Event();
+  private final Event evtStatsUpdated = new Event();
+  private final Event evtStatsUpdateIntervalChanged = new Event();
+  private final Event evtCollectFineGrainedStatsChanged = new Event();
+  private final Event evtRefresh = new Event();
 
   private final User user;
   private final EntityDbServerAdmin server;
@@ -171,6 +171,22 @@ public class ConnectionPoolInstanceMonitor {
     System.out.println("ConnectionPoolInstanceMonitor shutdown: " + user);
     if (updateTimer != null)
       updateTimer.cancel();
+  }
+
+  public Event eventCollectFineGrainedStatsChanged() {
+    return evtCollectFineGrainedStatsChanged;
+  }
+
+  public Event eventRefresh() {
+    return evtRefresh;
+  }
+
+  public Event eventStatsUpdated() {
+    return evtStatsUpdated;
+  }
+
+  public Event eventStatsUpdateIntervalChanged() {
+    return evtStatsUpdateIntervalChanged;
   }
 
   private void updateStats() throws RemoteException {

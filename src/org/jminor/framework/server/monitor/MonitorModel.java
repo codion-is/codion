@@ -17,8 +17,8 @@ import java.util.Collection;
  */
 public class MonitorModel {
 
-  public final Event evtHostAdded = new Event();
-  public final Event evtHostRemoved = new Event();
+  private final Event evtHostAdded = new Event();
+  private final Event evtHostRemoved = new Event();
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<HostMonitor>();
 

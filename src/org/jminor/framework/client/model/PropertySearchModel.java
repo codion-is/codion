@@ -143,7 +143,7 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.evtSelectedEntitiesChanged.addListener(new ActionListener() {
+    entityLookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         try {
           updatingModel = true;
@@ -154,7 +154,7 @@ public class PropertySearchModel extends AbstractSearchModel {
         }
       }
     });
-    evtUpperBoundChanged.addListener(new ActionListener() {
+    eventUpperBoundChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!updatingModel)//noinspection unchecked
           entityLookupModel.setSelectedEntities((List<Entity>) getUpperBound());
@@ -163,13 +163,13 @@ public class PropertySearchModel extends AbstractSearchModel {
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.evtSelectionChanged.addListener(new ActionListener() {
+    entityComboBoxModel.eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!updatingModel)
           setUpperBound(entityComboBoxModel.getSelectedEntity());
       }
     });
-    evtUpperBoundChanged.addListener(new ActionListener() {
+    eventUpperBoundChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         try {
           updatingModel = true;
@@ -185,7 +185,7 @@ public class PropertySearchModel extends AbstractSearchModel {
       }
     });
 
-    entityComboBoxModel.evtRefreshDone.addListener(new ActionListener() {
+    entityComboBoxModel.eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         final Object upper = getUpperBound();
         if ((upper instanceof Collection && ((Collection) upper).size() > 0))

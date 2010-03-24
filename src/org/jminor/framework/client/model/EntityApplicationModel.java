@@ -13,8 +13,8 @@ import java.util.List;
 
 public abstract class EntityApplicationModel {
 
-  public final Event evtSelectionFiltersDetailChanged = new Event();
-  public final Event evtCascadeRefreshChanged = new Event();
+  private final Event evtSelectionFiltersDetailChanged = new Event();
+  private final Event evtCascadeRefreshChanged = new Event();
 
   private final EntityDbProvider dbProvider;
   private final List<? extends EntityModel> mainApplicationModels;
@@ -125,6 +125,14 @@ public abstract class EntityApplicationModel {
         return model;
 
     return null;
+  }
+
+  public Event eventCascadeRefreshChanged() {
+    return evtCascadeRefreshChanged;
+  }
+
+  public Event eventSelectionFiltersDetailChanged() {
+    return evtSelectionFiltersDetailChanged;
   }
 
   /**

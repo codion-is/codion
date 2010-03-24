@@ -52,51 +52,16 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
 
-  /**
-   * Fired when the model is about to be refreshed
-   */
-  public final Event evtRefreshStarted = new Event();
+  private final Event evtRefreshStarted = new Event();
+  private final Event evtRefreshDone = new Event();
+  private final Event evtFilteringStarted = new Event();
+  private final Event evtFilteringDone = new Event();
+  private final Event evtTableDataChanged = new Event();
+  private final Event evtSelectedIndexChanged = new Event();
+  private final Event evtSelectionChangedAdjusting = new Event();
+  private final Event evtSelectionChanged = new Event();
 
-  /**
-   * Fired when the model has been refreshed, N.B. this event
-   * is fired even if the refresh results in an exception
-   */
-  public final Event evtRefreshDone = new Event();
-
-  /**
-   * Fired when the model is about to be filtered
-   */
-  public final Event evtFilteringStarted = new Event();
-
-  /**
-   * Fired when the model has been filtered
-   */
-  public final Event evtFilteringDone = new Event();
-
-  /**
-   * Fired after the table data has changed
-   */
-  public final Event evtTableDataChanged = new Event();
-
-  /**
-   * Fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
-   */
-  public final Event evtSelectedIndexChanged = new Event();
-
-  /**
-   * Fired when the selection is changing
-   */
-  public final Event evtSelectionChangedAdjusting = new Event();
-
-  /**
-   * Fired after the selection has changed
-   */
-  public final Event evtSelectionChanged = new Event();
-
-  /**
-   * Active when the selection is empty
-   */
-  public final State stSelectionEmpty = new State(true);
+  private final State stSelectionEmpty = new State(true);
 
   /**
    * The entity ID
@@ -978,6 +943,70 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     return tableColumnModel;
   }
 
+  /**
+   * @return a State active when the selection is empty
+   */
+  public State stateSelectionEmpty() {
+    return stSelectionEmpty;
+  }
+
+  /**
+   * @return an Event fired when the model has been filtered
+   */
+  public Event eventFilteringDone() {
+    return evtFilteringDone;
+  }
+
+  /**
+   * @return an Event fired when the model is about to be filtered
+   */
+  public Event eventFilteringStarted() {
+    return evtFilteringStarted;
+  }
+
+  /**
+   * @return an Event fired when the model has been refreshed, N.B. this event
+   * is fired even if the refresh results in an exception
+   */
+  public Event eventRefreshDone() {
+    return evtRefreshDone;
+  }
+
+  /**
+   * @return an Event fired when the model is about to be refreshed
+   */
+  public Event eventRefreshStarted() {
+    return evtRefreshStarted;
+  }
+
+  /**
+   * @return an event fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
+   */
+  public Event eventSelectedIndexChanged() {
+    return evtSelectedIndexChanged;
+  }
+
+  /**
+   * @return an Event fired after the selection has changed
+   */
+  public Event eventSelectionChanged() {
+    return evtSelectionChanged;
+  }
+
+  /**
+   * @return an Event fired when the selection is changing
+   */
+  public Event eventSelectionChangedAdjusting() {
+    return evtSelectionChangedAdjusting;
+  }
+
+  /**
+   * @return an Event fired after the table data has changed
+   */
+  public Event eventTableDataChanged() {
+    return evtTableDataChanged;
+  }
+
   protected TableColumnModel initializeTableColumnModel() {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     int i = 0;
@@ -1109,7 +1138,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   private void bindEventsInternal() {
-    tableSearchModel.evtFilterStateChanged.addListener(new ActionListener() {
+    tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         filterTable();
       }
@@ -1124,13 +1153,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         evtTableDataChanged.fire();
       }
     });
-    tableSorter.evtBeforeSort.addListener(new ActionListener() {
+    tableSorter.eventBeforeSort().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         isSorting = true;
         selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       }
     });
-    tableSorter.evtAfterSort.addListener(new ActionListener() {
+    tableSorter.eventAfterSort().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         setSelectedByPrimaryKeys(selectedPrimaryKeys);
         isSorting = false;

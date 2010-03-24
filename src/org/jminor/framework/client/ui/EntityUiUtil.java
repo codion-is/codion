@@ -103,7 +103,7 @@ public class EntityUiUtil {
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, null, false) {
       @Override
       protected void bindEvents() {
-        evtTableDoubleClicked.addListener(new ActionListener() {
+        eventTableDoubleClicked().addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (!getTableModel().getSelectionModel().isSelectionEmpty())
               okAction.actionPerformed(e);
@@ -667,7 +667,7 @@ public class EntityUiUtil {
         final EntityPanel entityPanel = EntityPanel.createInstance(panelProvider, comboBox.getModel().getDbProvider());
         entityPanel.initializePanel();
         final List<Entity.Key> lastInsertedPrimaryKeys = new ArrayList<Entity.Key>();
-        entityPanel.getModel().getEditModel().evtAfterInsert.addListener(new ActionListener() {
+        entityPanel.getModel().getEditModel().eventAfterInsert().addListener(new ActionListener() {
           public void actionPerformed(final ActionEvent e) {
             lastInsertedPrimaryKeys.clear();
             lastInsertedPrimaryKeys.addAll(((InsertEvent) e).getInsertedKeys());

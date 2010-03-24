@@ -124,6 +124,14 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     return dialog;
   }
 
+  public State stateIsDialogActive() {
+    return stIsDialogActive;
+  }
+
+  public State stateIsDialogShowing() {
+    return stIsDialogShowing;
+  }
+
   /** {@inheritDoc} */
   @Override
   protected boolean isLowerBoundFieldRequired(Type type) {
@@ -189,7 +197,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
     dialog.getContentPane().add(searchPanel);
     dialog.pack();
 
-    stAdvancedSearch.evtStateChanged.addListener(new ActionListener() {
+    stateAdvancedSearch().eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         dialog.pack();
       }
@@ -206,7 +214,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
     new ToggleBeanPropertyLink(checkBox.getModel(), model,
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-            isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
+            isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), null);
   }
 
   private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
@@ -214,17 +222,17 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       case INT:
         return new IntBeanPropertyLink((IntField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
+                isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), null);
       case DOUBLE:
         return new DoubleBeanPropertyLink((DoubleField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, null);
+                isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), null);
       case DATE:
       case TIMESTAMP:
         return new FormattedTextBeanPropertyLink((JFormattedTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 model.getPropertyType() == Type.TIMESTAMP ? Timestamp.class : Date.class,
-                isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, LinkType.READ_WRITE, format) {
+                isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), LinkType.READ_WRITE, format) {
           @Override
           protected Object getUIPropertyValue() {
             final Date date = (Date) super.getUIPropertyValue();
@@ -237,7 +245,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
       default:
         return new TextBeanPropertyLink((JTextField) component, model,
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                String.class, isUpper ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
+                String.class, isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
     }
   }
 }

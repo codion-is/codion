@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 public class DatabaseMonitor {
 
-  public final Event evtStatsUpdateIntervalChanged = new Event();
+  private final Event evtStatsUpdateIntervalChanged = new Event();
 
   private final EntityDbServerAdmin server;
   private final ConnectionPoolMonitor connectionPoolMonitor;
@@ -71,6 +71,10 @@ public class DatabaseMonitor {
 
   public XYSeriesCollection getQueriesPerSecondCollection() {
     return queriesPerSecondCollection;
+  }
+
+  public Event eventStatsUpdateIntervalChanged() {
+    return evtStatsUpdateIntervalChanged;
   }
 
   private void startUpdateTimer(final int delay) {

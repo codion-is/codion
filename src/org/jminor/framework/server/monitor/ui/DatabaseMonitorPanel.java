@@ -52,7 +52,7 @@ public class DatabaseMonitorPanel extends JPanel {
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerPropertyLink(model, "statsUpdateInterval",
-            model.evtStatsUpdateIntervalChanged, null).getSpinnerModel());
+            model.eventStatsUpdateIntervalChanged(), null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);

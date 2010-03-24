@@ -54,76 +54,19 @@ public class EntityEditModel {
    */
   public static final int UNKNOWN = 3;
 
-  /**
-   * Fired before an insert is performed
-   */
-  public final Event evtBeforeInsert = new Event();
+  private final Event evtBeforeInsert = new Event();
+  private final Event evtAfterInsert = new Event();
+  private final Event evtBeforeUpdate = new Event();
+  private final Event evtAfterUpdate = new Event();
+  private final Event evtBeforeDelete = new Event();
+  private final Event evtAfterDelete = new Event();
+  private final Event evtEntityChanged = new Event();
+  private final Event evtEntitiesChanged = new Event();
+  private final Event evtModelCleared = new Event();
 
-  /**
-   * Fired after a successful insert
-   */
-  public final Event evtAfterInsert = new Event();
-
-  /**
-   * Fired before an update is performed
-   */
-  public final Event evtBeforeUpdate = new Event();
-
-  /**
-   * Fired after a successful update
-   */
-  public final Event evtAfterUpdate = new Event();
-
-  /**
-   * Fired before a delete is performed
-   */
-  public final Event evtBeforeDelete = new Event();
-
-  /**
-   * Fired after a successful delete
-   */
-  public final Event evtAfterDelete = new Event();
-
-  /**
-   * Fired when the active entity has changed
-   */
-  public final Event evtEntityChanged = new Event();
-
-  /**
-   * An event fired when the underlying table has undergone changes,
-   * such as insert, update or delete
-   */
-  public final Event evtEntitiesChanged = new Event();
-
-  /**
-   * Fired when the model has been cleared
-   */
-  public final Event evtModelCleared = new Event();
-
-  /**
-   * Active when a null entity is active
-   */
   private final State stEntityNull = new State(true);
-
-  /**
-   * This state determines whether this model allows records to be inserted
-   * @see #setInsertAllowed(boolean)
-   * @see #isInsertAllowed()
-   */
   private final State stAllowInsert = new State(true);
-
-  /**
-   * This state determines whether this model allows records to be updated
-   * @see #setUpdateAllowed(boolean)
-   * @see #isUpdateAllowed()
-   */
   private final State stAllowUpdate = new State(true);
-
-  /**
-   * This state determines whether this model allows records to be deleted
-   * @see #setDeleteAllowed(boolean)
-   * @see #isDeleteAllowed()
-   */
   private final State stAllowDelete = new State(true);
 
   /**
@@ -204,7 +147,7 @@ public class EntityEditModel {
    * @see #isInsertAllowed()
    * @see #setInsertAllowed(boolean)
    */
-  public State getInsertAllowedState() {
+  public State stateAllowInsert() {
     return stAllowInsert;
   }
 
@@ -227,7 +170,7 @@ public class EntityEditModel {
    * @see #isUpdateAllowed()
    * @see #setUpdateAllowed(boolean)
    */
-  public State getUpdateAllowedState() {
+  public State stateAllowUpdate() {
     return stAllowUpdate;
   }
 
@@ -250,7 +193,7 @@ public class EntityEditModel {
    * @see #isDeleteAllowed()
    * @see #setDeleteAllowed(boolean)
    */
-  public State getDeleteAllowedState() {
+  public State stateAllowDelete() {
     return stAllowDelete;
   }
 
@@ -602,7 +545,7 @@ public class EntityEditModel {
   /**
    * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified EntityModel.evtEntitiesChanged is used
+   * if none is specified EntityModel.eventEntitiesChanged is used
    * @param nullValue the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
    * @return a PropertyComboBoxModel representing <code>property</code>, if no combo box model
@@ -624,7 +567,7 @@ public class EntityEditModel {
   /**
    * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified EntityModel.evtEntitiesChanged is used
+   * if none is specified EntityModel.eventEntitiesChanged is used
    * @param nullValue the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
    * @return a new PropertyComboBoxModel based on the given property
@@ -845,6 +788,70 @@ public class EntityEditModel {
    */
   public Object getDefaultValue(final Property property) {
     return persistValueOnClear(property) ? getValue(property) : property.getDefaultValue();
+  }
+
+  /**
+   * @return an Event fired after a successful delete
+   */
+  public Event eventAfterDelete() {
+    return evtAfterDelete;
+  }
+
+  /**
+   * @return an Event fired after a successful insert
+   */
+  public Event eventAfterInsert() {
+    return evtAfterInsert;
+  }
+
+  /**
+   * @return an Event fired after a successful update
+   */
+  public Event eventAfterUpdate() {
+    return evtAfterUpdate;
+  }
+
+  /**
+   * @return an Event fired before a delete
+   */
+  public Event eventBeforeDelete() {
+    return evtBeforeDelete;
+  }
+
+  /**
+   * @return an Event fired before a insert
+   */
+  public Event eventBeforeInsert() {
+    return evtBeforeInsert;
+  }
+
+  /**
+   * @return an Event fired before a update
+   */
+  public Event eventBeforeUpdate() {
+    return evtBeforeUpdate;
+  }
+
+  /**
+   * @return an Event fired when the underlying table has undergone changes,
+   * such as insert, update or delete
+   */
+  public Event eventEntitiesChanged() {
+    return evtEntitiesChanged;
+  }
+
+  /**
+   * @return an Event fired when the active entity has been changed
+   */
+  public Event eventEntityChanged() {
+    return evtEntityChanged;
+  }
+
+  /**
+   * @return an Event fired when the model has been cleared
+   */
+  public Event eventModelCleared() {
+    return evtModelCleared;
   }
 
   /**

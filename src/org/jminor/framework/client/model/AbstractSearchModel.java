@@ -27,13 +27,13 @@ public abstract class AbstractSearchModel {
   public static final String UPPER_BOUND_PROPERTY = "upperBound";
   public static final String LOWER_BOUND_PROPERTY = "lowerBound";
 
-  public final Event evtUpperBoundChanged = new Event();
-  public final Event evtLowerBoundChanged = new Event();
-  public final Event evtSearchTypeChanged = new Event();
-  public final Event evtSearchStateChanged = new Event();
-  public final Event evtSearchModelCleared = new Event();
+  private final Event evtUpperBoundChanged = new Event();
+  private final Event evtLowerBoundChanged = new Event();
+  private final Event evtSearchTypeChanged = new Event();
+  private final Event evtSearchStateChanged = new Event();
+  private final Event evtSearchModelCleared = new Event();
 
-  public final State stLocked = new State();
+  private final State stLocked = new State();
 
   private final State stSearchEnabled = new State();
   private final Property property;
@@ -94,13 +94,6 @@ public abstract class AbstractSearchModel {
    */
   public void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
-  }
-
-  /**
-   * @return the event fired when the search state changes
-   */
-  public Event getSearchStateChangedEvent() {
-    return stSearchEnabled.evtStateChanged;
   }
 
   /**
@@ -328,6 +321,34 @@ public abstract class AbstractSearchModel {
     evtSearchModelCleared.fire();
   }
 
+  public State stateLocked() {
+    return stLocked;
+  }
+
+  public State stateSearchEnabled() {
+    return stSearchEnabled;
+  }
+
+  public Event eventLowerBoundChanged() {
+    return evtLowerBoundChanged;
+  }
+
+  public Event eventSearchModelCleared() {
+    return evtSearchModelCleared;
+  }
+
+  public Event eventSearchStateChanged() {
+    return evtSearchStateChanged;
+  }
+
+  public Event eventSearchTypeChanged() {
+    return evtSearchTypeChanged;
+  }
+
+  public Event eventUpperBoundChanged() {
+    return evtUpperBoundChanged;
+  }
+
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
       case LIKE:
@@ -347,6 +368,6 @@ public abstract class AbstractSearchModel {
     evtUpperBoundChanged.addListener(evtSearchStateChanged);
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
-    stSearchEnabled.evtStateChanged.addListener(evtSearchStateChanged);
+    stSearchEnabled.eventStateChanged().addListener(evtSearchStateChanged);
   }
 }

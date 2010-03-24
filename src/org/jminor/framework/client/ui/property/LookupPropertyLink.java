@@ -32,7 +32,7 @@ public class LookupPropertyLink extends AbstractEntityPropertyLink {
     super(editModel, foreignKeyProperty, LinkType.READ_WRITE);
     this.lookupModel = lookupModel;
     updateUI();
-    lookupModel.evtSelectedEntitiesChanged.addListener(new ActionListener() {
+    lookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateModel();
       }

@@ -35,10 +35,6 @@ import java.text.SimpleDateFormat;
  */
 public abstract class AbstractSearchPanel extends JPanel {
 
-  public final State stAdvancedSearch = new State();
-
-  public final State stTwoSearchFields = new State();
-
   protected static final SearchType[] searchTypes = new SearchType[] {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
           SearchType.AT_MOST, SearchType.WITHIN_RANGE, SearchType.OUTSIDE_RANGE};
@@ -69,6 +65,9 @@ public abstract class AbstractSearchPanel extends JPanel {
   protected final JComponent upperBoundField;
   protected final JComponent lowerBoundField;
 
+  private final State stAdvancedSearch = new State();
+  private final State stTwoSearchFields = new State();
+
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
@@ -83,10 +82,10 @@ public abstract class AbstractSearchPanel extends JPanel {
     this.lowerBoundField = isLowerBoundFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(model, "searchEnabled", null, model.getSearchStateChangedEvent()));
+            ControlFactory.toggleControl(model, "searchEnabled", null, model.stateSearchEnabled().eventStateChanged()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.evtStateChanged));
+            ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.eventStateChanged()));
     toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     linkComponentsToLockedState();
     initUI();
@@ -129,11 +128,19 @@ public abstract class AbstractSearchPanel extends JPanel {
     return lowerBoundField;
   }
 
+  public State stateAdvancedSearch() {
+    return stAdvancedSearch;
+  }
+
+  public State stateTwoSearchFields() {
+    return stTwoSearchFields;
+  }
+
   /**
    * Binds events to relevant GUI actions
    */
   protected void bindEvents() {
-    stAdvancedSearch.evtStateChanged.addListener(new ActionListener() {
+    stAdvancedSearch.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         initializePanel();
         if (toggleSearchAdvanced != null)
@@ -142,13 +149,13 @@ public abstract class AbstractSearchPanel extends JPanel {
           upperBoundField.requestFocusInWindow();
       }
     });
-    model.evtSearchTypeChanged.addListener(new ActionListener() {
+    model.eventSearchTypeChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         stTwoSearchFields.setActive(model.getSearchType() == SearchType.WITHIN_RANGE
                 || model.getSearchType() == SearchType.OUTSIDE_RANGE);
       }
     });
-    stTwoSearchFields.evtStateChanged.addListener(new ActionListener() {
+    stTwoSearchFields.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         initializePanel();
         revalidate();
@@ -205,7 +212,7 @@ public abstract class AbstractSearchPanel extends JPanel {
 
   private JComboBox initSearchTypeComboBox() {
     final JComboBox comboBox = new SteppedComboBox(initSearchTypeModel());
-    ControlProvider.bindItemSelector(comboBox, model, "searchType", SearchType.class, model.evtSearchTypeChanged);
+    ControlProvider.bindItemSelector(comboBox, model, "searchType", SearchType.class, model.eventSearchTypeChanged());
 
     return comboBox;
   }
@@ -272,7 +279,7 @@ public abstract class AbstractSearchPanel extends JPanel {
   }
 
   private void linkComponentsToLockedState() {
-    final State stUnlocked = model.stLocked.getReversedState();
+    final State stUnlocked = model.stateLocked().getReversedState();
     UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
     UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
     if (lowerBoundField != null)

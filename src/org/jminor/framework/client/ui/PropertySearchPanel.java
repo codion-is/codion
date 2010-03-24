@@ -119,7 +119,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       case DATE:
         new FormattedTextBeanPropertyLink((JFormattedTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                Timestamp.class,  isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged,
+                Timestamp.class,  isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(),
                 LinkType.READ_WRITE, format) {
           @Override
           protected Object getUIPropertyValue() {
@@ -131,24 +131,24 @@ public class PropertySearchPanel extends AbstractSearchPanel {
       case DOUBLE:
         new DoubleBeanPropertyLink((DoubleField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
+                isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
         break;
       case INT:
         new IntBeanPropertyLink((IntField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
+                isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
         break;
       case BOOLEAN:
         new SelectedItemBeanPropertyLink((JComboBox) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                Object.class, isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged, LinkType.READ_WRITE);
+                Object.class, isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), LinkType.READ_WRITE);
         break;
       case ENTITY:
         break;//property is bound in the model
       default: {
         new TextBeanPropertyLink((JTextField) field, model,
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY, String.class,
-                isUpperBound ? model.evtUpperBoundChanged : model.evtLowerBoundChanged);
+                isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
       }
     }
   }

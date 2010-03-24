@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class EntityTableSearchPanel extends EntityTableColumnPanel {
 
-  public final Event evtAdvancedChanged = new Event();
+  private final Event evtAdvancedChanged = new Event();
 
   private final EntityTableSearchModel searchModel;
 
@@ -85,6 +85,10 @@ public class EntityTableSearchPanel extends EntityTableColumnPanel {
       return (PropertySearchPanel) panel;
 
     return null;
+  }
+
+  public Event eventAdvancedChanged() {
+    return evtAdvancedChanged;
   }
 
   @Override

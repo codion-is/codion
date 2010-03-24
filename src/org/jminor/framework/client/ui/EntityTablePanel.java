@@ -87,20 +87,9 @@ public class EntityTablePanel extends JPanel {
 
   public final static char FILTER_INDICATOR = '*';
 
-  /**
-   * fired when the table is double clicked
-   */
-  public final Event evtTableDoubleClicked = new Event();
-
-  /**
-   * fired when the search panel state is changed
-   */
-  public final Event evtSearchPanelVisibilityChanged = new Event();
-
-  /**
-   * fired when the summary panel state is changed
-   */
-  public final Event evtSummaryPanelVisibilityChanged = new Event();
+  private final Event evtTableDoubleClicked = new Event();
+  private final Event evtSearchPanelVisibilityChanged = new Event();
+  private final Event evtSummaryPanelVisibilityChanged = new Event();
 
   /**
    * the EntityTableModel instance used by this EntityTablePanel
@@ -483,7 +472,7 @@ public class EntityTablePanel extends JPanel {
 
   public Control getClearSelectionControl() {
     final Control clearSelection = ControlFactory.methodControl(getTableModel(), "clearSelection", null,
-            getTableModel().stSelectionEmpty.getReversedState(), null, -1, null,
+            getTableModel().stateSelectionEmpty().getReversedState(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
 
@@ -504,6 +493,27 @@ public class EntityTablePanel extends JPanel {
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
 
     return selectionUp;
+  }
+
+  /**
+   * @return an Event fired when the search panel state is changed
+   */
+  public Event eventSearchPanelVisibilityChanged() {
+    return evtSearchPanelVisibilityChanged;
+  }
+
+  /**
+   * @return an Event fired when the summary panel state is changed
+   */
+  public Event eventSummaryPanelVisibilityChanged() {
+    return evtSummaryPanelVisibilityChanged;
+  }
+
+  /**
+   * @return an Event fired when the table is double clicked
+   */
+  public Event eventTableDoubleClicked() {
+    return evtTableDoubleClicked;
   }
 
   /**
@@ -528,7 +538,7 @@ public class EntityTablePanel extends JPanel {
 
     final ControlSet popupControls = tablePopupControls == null ? new ControlSet() : tablePopupControls;
     if (searchPanel instanceof EntityTableSearchPanel) {
-      ((EntityTableSearchPanel)searchPanel).evtAdvancedChanged.addListener(new ActionListener() {
+      ((EntityTableSearchPanel)searchPanel).eventAdvancedChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent event) {
           if (isSearchPanelVisible()) {
             revalidateAndShowSearchPanel();
@@ -715,7 +725,7 @@ public class EntityTablePanel extends JPanel {
     final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = stroke.toString().replace("pressed ", "");
     final Control refresh = ControlFactory.methodControl(getTableModel(), "refresh", null,
-            getTableModel().getSearchModel().stSearchStateChanged, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            getTableModel().getSearchModel().stateSearchStateChanged(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -874,7 +884,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getTableModel().stSelectionEmpty.getReversedState()) {
+            getTableModel().stateSelectionEmpty().getReversedState()) {
       @Override
       public void actionPerformed(final ActionEvent event) {
         final JTable table = getJTable();
@@ -938,7 +948,7 @@ public class EntityTablePanel extends JPanel {
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
       final PropertyFilterModel model = getTableModel().getSearchModel().getPropertyFilterModel(((Property) column.getIdentifier()).getPropertyID());
-      model.evtSearchStateChanged.addListener(new ActionListener() {
+      model.eventSearchStateChanged().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
           if (model.isSearchEnabled())
             addFilterIndicator(column);
@@ -958,12 +968,12 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void bindEventsInternal() {
-    getTableModel().evtRefreshStarted.addListener(new ActionListener() {
+    getTableModel().eventRefreshStarted().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(true, EntityTablePanel.this);
       }
     });
-    getTableModel().evtRefreshDone.addListener(new ActionListener() {
+    getTableModel().eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(false, EntityTablePanel.this);
       }
@@ -981,9 +991,9 @@ public class EntityTablePanel extends JPanel {
         updateStatusMessage();
       }
     };
-    getTableModel().evtSelectionChanged.addListener(statusListener);
-    getTableModel().evtFilteringDone.addListener(statusListener);
-    getTableModel().evtTableDataChanged.addListener(statusListener);
+    getTableModel().eventSelectionChanged().addListener(statusListener);
+    getTableModel().eventFilteringDone().addListener(statusListener);
+    getTableModel().eventTableDataChanged().addListener(statusListener);
 
     getJTable().getTableHeader().addMouseListener(new MouseAdapter() {
       @Override
@@ -993,15 +1003,15 @@ public class EntityTablePanel extends JPanel {
       }
     });
 
-    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
+    getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        if (!getTableModel().stSelectionEmpty.isActive())
+        if (!getTableModel().stateSelectionEmpty().isActive())
           getJTable().scrollRectToVisible(getJTable().getCellRect(
                   getTableModel().getSelectedIndex(), getJTable().getSelectedColumn(), true));
       }
     });
 
-    getTableModel().getSearchModel().stSearchStateChanged.evtStateChanged.addListener(new ActionListener() {
+    getTableModel().getSearchModel().stateSearchStateChanged().eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();

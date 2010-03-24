@@ -20,8 +20,8 @@ import java.util.List;
 
 public class EntityLookupModel {
 
-  public final Event evtSelectedEntitiesChanged = new Event();
-  public final Event evtSearchStringChanged = new Event();
+  private final Event evtSelectedEntitiesChanged = new Event();
+  private final Event evtSearchStringChanged = new Event();
 
   /**
    * The ID of the entity this lookup model is based on
@@ -212,6 +212,14 @@ public class EntityLookupModel {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public Event eventSearchStringChanged() {
+    return evtSearchStringChanged;
+  }
+
+  public Event eventSelectedEntitiesChanged() {
+    return evtSelectedEntitiesChanged;
   }
 
   private String toString(final List<Entity> entityList) {

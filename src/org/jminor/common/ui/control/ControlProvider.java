@@ -168,7 +168,7 @@ public class ControlProvider {
       final State enabledState = controlSet.getEnabledState();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
-        enabledState.evtStateChanged.addListener(new ActionListener() {
+        enabledState.eventStateChanged().addListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             menu.setEnabled(enabledState.isActive());
           }

@@ -35,7 +35,7 @@ public class Control extends AbstractAction {
   public Control(String name, final State enabledState, final Icon icon) {
     super(name);
     this.enabledState = enabledState == null ? new State(true) : enabledState;
-    this.enabledState.evtStateChanged.addListener(new ActionListener() {
+    this.enabledState.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         firePropertyChange("enabled", !Control.this.enabledState.isActive(), Control.this.enabledState.isActive());
       }

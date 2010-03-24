@@ -39,30 +39,10 @@ public class EntityModel implements Refreshable {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
-  /**
-   * Fired when an entity is deleted, inserted or updated via this EntityModel
-   */
-  public final Event evtEntitiesChanged = new Event();
-
-  /**
-   * Fired when the model is about to be refreshed
-   */
-  public final Event evtRefreshStarted = new Event();
-
-  /**
-   * Fired when the model has been refreshed, N.B. this event
-   * is fired even if the refresh results in an exception
-   */
-  public final Event evtRefreshDone = new Event();
-
-  /**
-   * Fired when detail models are linked or unlinked
-   */
-  public final Event evtLinkedDetailModelsChanged = new Event();
-
-  /**
-   * If this state is active a refresh of this model triggers a refresh in all detail models
-   */
+  private final Event evtEntitiesChanged = new Event();
+  private final Event evtRefreshStarted = new Event();
+  private final Event evtRefreshDone = new Event();
+  private final Event evtLinkedDetailModelsChanged = new Event();
   private final State stCascadeRefresh = new State();
 
   /**
@@ -413,6 +393,35 @@ public class EntityModel implements Refreshable {
   }
 
   /**
+   * @return an Event fired when an entity is deleted, inserted or updated via this EntityModel
+   */
+  public Event eventEntitiesChanged() {
+    return evtEntitiesChanged;
+  }
+
+  /**
+   * @return an Event fired when detail models are linked or unlinked
+   */
+  public Event eventLinkedDetailModelsChanged() {
+    return evtLinkedDetailModelsChanged;
+  }
+
+  /**
+   * @return an Event fired when the model has been refreshed, N.B. this event
+   * is fired even if the refresh results in an exception
+   */
+  public Event eventRefreshDone() {
+    return evtRefreshDone;
+  }
+
+  /**
+   * @return an Event fired when the model is about to be refreshed
+   */
+  public Event eventRefreshStarted() {
+    return evtRefreshStarted;
+  }
+
+  /**
    * @return a List of EntityModels serving as detail models
    */
   protected List<? extends EntityModel> initializeDetailModels() {
@@ -520,7 +529,7 @@ public class EntityModel implements Refreshable {
 
   protected void updateDetailModelsByActiveEntity() {
     final List<Entity> activeEntities = containsTableModel() ?
-            (getTableModel().stSelectionEmpty.isActive() ? null : getTableModel().getSelectedEntities()) :
+            (getTableModel().stateSelectionEmpty().isActive() ? null : getTableModel().getSelectedEntities()) :
             (getEditModel().isEntityNull() ? null : Arrays.asList(getEditModel().getEntityCopy()));
     for (final EntityModel detailModel : linkedDetailModels)
       detailModel.masterSelectionChanged(getEntityID(), activeEntities);
@@ -540,7 +549,7 @@ public class EntityModel implements Refreshable {
   }
 
   private void bindEventsInternal() {
-    getEditModel().evtAfterInsert.addListener(new ActionListener() {
+    getEditModel().eventAfterInsert().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         try {
           final List<Entity.Key> primaryKeys = ((InsertEvent) e).getInsertedKeys();
@@ -556,7 +565,7 @@ public class EntityModel implements Refreshable {
         }
       }
     });
-    getEditModel().evtAfterUpdate.addListener(new ActionListener() {
+    getEditModel().eventAfterUpdate().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final List<Entity> updatedEntities = ((UpdateEvent) e).getUpdatedEntities();
         if (containsTableModel()) {
@@ -576,13 +585,13 @@ public class EntityModel implements Refreshable {
         refreshDetailModelsAfterUpdate(updatedEntities);
       }
     });
-    getEditModel().evtBeforeDelete.addListener(new ActionListener() {
+    getEditModel().eventBeforeDelete().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         if (containsTableModel())
           getTableModel().getSelectionModel().clearSelection();
       }
     });
-    getEditModel().evtAfterDelete.addListener(new ActionListener() {
+    getEditModel().eventAfterDelete().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final List<Entity> entities = ((DeleteEvent) e).getDeletedEntities();
         if (containsTableModel())
@@ -610,13 +619,13 @@ public class EntityModel implements Refreshable {
     if (!containsTableModel())
       return;
 
-    getTableModel().evtSelectionChanged.addListener(new ActionListener() {
+    getTableModel().eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         updateDetailModelsByActiveEntity();
       }
     });
 
-    getTableModel().evtSelectedIndexChanged.addListener(new ActionListener() {
+    getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         getEditModel().setEntity(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedEntity());
       }

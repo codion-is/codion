@@ -118,8 +118,8 @@ public class TableSorter extends AbstractTableModel {
   public static final int NOT_SORTED = 0;
   public static final int ASCENDING = 1;
 
-  public final Event evtBeforeSort = new Event();
-  public final Event evtAfterSort = new Event();
+  private final Event evtBeforeSort = new Event();
+  private final Event evtAfterSort = new Event();
 
   public static final Comparator COMPARABLE_COMPARATOR = new Comparator() {
     public int compare(Object o1, Object o2) {
@@ -297,6 +297,20 @@ public class TableSorter extends AbstractTableModel {
   @Override
   public void setValueAt(Object aValue, int row, int column) {
     tableModel.setValueAt(aValue, modelIndex(row), column);
+  }
+
+  /**
+   * @return an Event fired after a sort has been performed
+   */
+  public Event eventAfterSort() {
+    return evtAfterSort;
+  }
+
+  /**
+   * @return an Event fired before a sort is performed
+   */
+  public Event eventBeforeSort() {
+    return evtBeforeSort;
   }
 
   protected Icon getHeaderRendererIcon(int column, int size) {

@@ -77,7 +77,7 @@ public class EntityCriteriaPanel extends JPanel {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(entityModel);
     final JList propertyList = new JList(new Vector<AbstractSearchModel>(searchCriteria));
     for (final AbstractSearchModel model : searchCriteria) {
-      model.evtSearchStateChanged.addListener(new ActionListener() {
+      model.eventSearchStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           propertyList.repaint();
         }

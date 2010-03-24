@@ -16,8 +16,7 @@ import java.util.List;
  */
 public class State {
 
-  /** Fired each time the state changes */
-  public final Event evtStateChanged = new Event();
+  private final Event evtStateChanged = new Event();
 
   private LinkedState linkedState = null;
   private ReverseState reversedState = null;
@@ -90,15 +89,22 @@ public class State {
     return reversedState;
   }
 
+  /**
+   * @return an Event fired each time the state changes
+   */
+  public Event eventStateChanged() {
+    return evtStateChanged;
+  }
+
   private static class LinkedState extends State {
 
     protected final State referenceState;
 
     private LinkedState(final State referenceState) {
       this.referenceState = referenceState;
-      this.referenceState.evtStateChanged.addListener(new ActionListener() {
+      this.referenceState.eventStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          LinkedState.this.evtStateChanged.fire();
+          LinkedState.this.eventStateChanged().fire();
         }
       });
     }

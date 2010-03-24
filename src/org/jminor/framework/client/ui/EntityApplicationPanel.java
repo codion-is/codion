@@ -62,16 +62,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
 
-  /**
-   * Fired when the application has been successfully started
-   */
-  protected final Event evtApplicationStarted = new Event();
-
   private final List<EntityPanel> mainApplicationPanels = new ArrayList<EntityPanel>();
 
   private EntityApplicationModel applicationModel;
   private JTabbedPane applicationTabPane;
 
+  private final Event evtApplicationStarted = new Event();
   private final Event evtSelectedEntityPanelChanged = new Event();
   private final Event evtAlwaysOnTopChanged = new Event();
 
@@ -261,6 +257,18 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     dialog.setVisible(true);
   }
 
+  public Event eventAlwaysOnTopChanged() {
+    return evtAlwaysOnTopChanged;
+  }
+
+  public Event eventApplicationStarted() {
+    return evtApplicationStarted;
+  }
+
+  public Event eventSelectedEntityPanelChanged() {
+    return evtSelectedEntityPanelChanged;
+  }
+
   protected ControlSet getMainMenuControlSet() {
     final ControlSet menuControlSets = new ControlSet();
     menuControlSets.add(getFileControlSet());
@@ -298,13 +306,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected ControlSet getSettingsControlSet() {
     final ImageIcon selectionFiltersDetailIcon = Images.loadImage(Images.ICON_SELECTION_FILTERS_DETAIL);
     final Control ctrSelectDetail = ControlFactory.toggleControl(applicationModel, "selectionFiltersDetail",
-            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), applicationModel.evtSelectionFiltersDetailChanged);
+            FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER), applicationModel.eventSelectionFiltersDetailChanged());
     ctrSelectDetail.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_FILTER_DESC));
     ctrSelectDetail.setIcon(selectionFiltersDetailIcon);
 
     final ImageIcon cascadeRefreshIcon = Images.loadImage(Images.ICON_CASCADE_REFRESH);
     final Control ctrCascadeRefresh = ControlFactory.toggleControl(applicationModel, "cascadeRefresh",
-            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.evtCascadeRefreshChanged);
+            FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH), applicationModel.eventCascadeRefreshChanged());
     ctrCascadeRefresh.setDescription(FrameworkMessages.get(FrameworkMessages.CASCADE_REFRESH_DESC));
     ctrCascadeRefresh.setIcon(cascadeRefreshIcon);
 

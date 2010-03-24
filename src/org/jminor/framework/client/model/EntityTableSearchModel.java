@@ -35,16 +35,8 @@ import java.util.Map;
  */
 public class EntityTableSearchModel {
 
-  /**
-   * Fired when the state of a filter model changes
-   */
-  public final Event evtFilterStateChanged = new Event();
-
-  /**
-   * Activated each time the search state differs from the state at last reset
-   * @see #setSearchModelState()
-   */
-  public final State stSearchStateChanged = new State();
+  private final Event evtFilterStateChanged = new Event();
+  private final State stSearchStateChanged = new State();
 
   private final String entityID;
   private final TableColumnModel tableColumnModel;
@@ -271,6 +263,21 @@ public class EntityTableSearchModel {
   }
 
   /**
+   * @return a State activated each time the search state differs from the state at last reset
+   * @see #setSearchModelState()
+   */
+  public State stateSearchStateChanged() {
+    return stSearchStateChanged;
+  }
+
+  /**
+   * @return an Event fired when the state of a filter model changes
+   */
+  public Event eventFilterStateChanged() {
+    return evtFilterStateChanged;
+  }
+
+  /**
    * @param tableColumnModel the TableColumnModel to base the search models on
    * @param dbProvider the EntityDbProvider to use for foreign key based fields, such as combo boxes
    * @return a map of PropertySearchModels mapped to their respective propertyIDs
@@ -328,7 +335,7 @@ public class EntityTableSearchModel {
     while (columnEnumeration.hasMoreElements()) {
       final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
       final PropertyFilterModel filterModel = initializePropertyFilterModel(property);
-      filterModel.evtSearchStateChanged.addListener(evtFilterStateChanged);
+      filterModel.eventSearchStateChanged().addListener(evtFilterStateChanged);
       filters.put(property.getPropertyID(), filterModel);
     }
 
@@ -346,10 +353,10 @@ public class EntityTableSearchModel {
 
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
-      searchModel.evtSearchStateChanged.addListener(new ActionListener() {
+      searchModel.eventSearchStateChanged().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
           stSearchStateChanged.setActive(!searchStateOnRefresh.equals(getSearchModelState()));
-          stSearchStateChanged.evtStateChanged.fire();
+          stSearchStateChanged.eventStateChanged().fire();
         }
       });
     }

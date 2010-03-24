@@ -27,11 +27,11 @@ public class ServerMonitor {
 
   private static final Logger log = Util.getLogger(ServerMonitor.class);
 
-  public final Event evtServerShutDown = new Event();
-  public final Event evtStatsUpdated = new Event();
+  private final Event evtServerShutDown = new Event();
+  private final Event evtStatsUpdated = new Event();
+  private final Event evtWarningThresholdChanged = new Event();
+  private final Event evtConnectionTimeoutChanged = new Event();
 
-  public final Event evtWarningThresholdChanged = new Event();
-  public final Event evtConnectionTimeoutChanged = new Event();
   private final String hostName;
   private final String serverName;
   private final EntityDbServerAdmin server;
@@ -146,6 +146,22 @@ public class ServerMonitor {
 
   public String getServerName() {
     return serverName;
+  }
+
+  public Event eventConnectionTimeoutChanged() {
+    return evtConnectionTimeoutChanged;
+  }
+
+  public Event eventServerShutDown() {
+    return evtServerShutDown;
+  }
+
+  public Event eventStatsUpdated() {
+    return evtStatsUpdated;
+  }
+
+  public Event eventWarningThresholdChanged() {
+    return evtWarningThresholdChanged;
   }
 
   private EntityDbServerAdmin connectServer(final String serverName) throws RemoteException {

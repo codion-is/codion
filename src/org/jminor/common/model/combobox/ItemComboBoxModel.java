@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.combobox;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 
 import javax.swing.DefaultComboBoxModel;
@@ -13,8 +12,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 
 public class ItemComboBoxModel extends DefaultComboBoxModel {
-
-  public final Event evtSelectedItemChanged = new Event();
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {
@@ -36,8 +33,6 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
       super.setSelectedItem(getElementAt(indexOf(item)));
     else
       super.setSelectedItem(item);
-
-    evtSelectedItemChanged.fire();
   }
 
   public int getIndexOfItem(final Object item) {

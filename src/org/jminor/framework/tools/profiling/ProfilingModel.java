@@ -23,16 +23,16 @@ import java.util.TimerTask;
 
 public abstract class ProfilingModel {
 
-  public final Event evtPauseChanged = new Event();
-  public final Event evtRelentlessChanged = new Event();
-  public final Event evtMaximumThinkTimeChanged = new Event();
-  public final Event evtMinimumThinkTimeChanged = new Event();
-  public final Event evtWarningTimeChanged = new Event();
-  public final Event evtClientCountChanged = new Event();
-  public final Event evtBatchSizeChanged = new Event();
-  public final Event evtDoneExiting = new Event();
-
   protected static final Random random = new Random();
+
+  private final Event evtPauseChanged = new Event();
+  private final Event evtRelentlessChanged = new Event();
+  private final Event evtMaximumThinkTimeChanged = new Event();
+  private final Event evtMinimumThinkTimeChanged = new Event();
+  private final Event evtWarningTimeChanged = new Event();
+  private final Event evtClientCountChanged = new Event();
+  private final Event evtBatchSizeChanged = new Event();
+  private final Event evtDoneExiting = new Event();
 
   private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME, "20000"));
   private int minimumThinkTime = maximumThinkTime/2;
@@ -207,6 +207,38 @@ public abstract class ProfilingModel {
   public void setMinimumThinkTime(int minimumThinkTime) {
     this.minimumThinkTime = minimumThinkTime;
     evtMinimumThinkTimeChanged.fire();
+  }
+
+  public Event eventBatchSizeChanged() {
+    return evtBatchSizeChanged;
+  }
+
+  public Event eventClientCountChanged() {
+    return evtClientCountChanged;
+  }
+
+  public Event eventDoneExiting() {
+    return evtDoneExiting;
+  }
+
+  public Event eventMaximumThinkTimeChanged() {
+    return evtMaximumThinkTimeChanged;
+  }
+
+  public Event eventMinimumThinkTimeChanged() {
+    return evtMinimumThinkTimeChanged;
+  }
+
+  public Event eventPauseChanged() {
+    return evtPauseChanged;
+  }
+
+  public Event eventRelentlessChanged() {
+    return evtRelentlessChanged;
+  }
+
+  public Event eventWarningTimeChanged() {
+    return evtWarningTimeChanged;
   }
 
   protected abstract void loadDomainModel();

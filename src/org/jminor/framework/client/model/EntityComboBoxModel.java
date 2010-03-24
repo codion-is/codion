@@ -34,10 +34,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   private static final Logger log = Util.getLogger(EntityComboBoxModel.class);
 
-  /**
-   * fired when a refresh has been performed
-   */
-  public final Event evtRefreshDone = new Event();
+  private final Event evtRefreshDone = new Event();
 
   /**
    * the ID of the underlying entity
@@ -240,8 +237,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   public void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
-    final Set<Entity> filterEntities = new HashSet<Entity>(entities.size());
-    filterEntities.addAll(entities);
+    final Set<Entity> filterEntities = new HashSet<Entity>();
+    if (entities != null)
+      filterEntities.addAll(entities);
     foreignKeyFilterEntities.put(foreignKeyPropertyID, filterEntities);
 
     filterContents();
@@ -264,7 +262,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
     if (filterEntities != null && filterEntities.size() > 0)
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
-    foreignKeyModel.evtSelectionChanged.addListener(new ActionListener() {
+    foreignKeyModel.eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         final Entity selectedEntity = foreignKeyModel.getSelectedEntity();
         setForeignKeyFilterEntities(foreignKeyPropertyID,
@@ -273,6 +271,13 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
     });
 
     return foreignKeyModel;
+  }
+
+  /**
+   * @return an Event fired when a refresh has been performed
+   */
+  public Event eventRefreshDone() {
+    return evtRefreshDone;
   }
 
   /**

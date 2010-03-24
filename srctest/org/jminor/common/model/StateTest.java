@@ -16,7 +16,7 @@ public class StateTest {
   @Test
   public void test() {
     final State state = new State();
-    state.evtStateChanged.addListener(new ActionListener() {
+    state.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         stateChanged++;
       }

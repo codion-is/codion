@@ -1082,3 +1082,4 @@
   framework.client.ui.property renamings
   IntArray removed
   UserCancelException renamed to CancelException
+  Event objects privatized behind a eventXXX() method

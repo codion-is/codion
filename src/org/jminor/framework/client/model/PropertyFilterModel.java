@@ -58,7 +58,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
     if (isSearchEnabled() != on)
       setSearchEnabled(on);
     else
-      evtUpperBoundChanged.fire();
+      eventUpperBoundChanged().fire();
   }
 
   protected boolean includeLike(final Comparable comparable) {

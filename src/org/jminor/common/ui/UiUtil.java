@@ -231,7 +231,7 @@ public class UiUtil {
   public static Action linkToEnabledState(final State enabledState, final Action action) {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.evtStateChanged.addListener(new ActionListener() {
+      enabledState.eventStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           action.setEnabled(enabledState.isActive());
         }
@@ -244,7 +244,7 @@ public class UiUtil {
   public static JComponent linkToEnabledState(final State enabledState, final JComponent component) {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
-      enabledState.evtStateChanged.addListener(new ActionListener() {
+      enabledState.eventStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           component.setEnabled(enabledState.isActive());
         }

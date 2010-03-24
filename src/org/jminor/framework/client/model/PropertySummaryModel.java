@@ -31,8 +31,8 @@ public class PropertySummaryModel {
   public static final Summary MAXIMUM = new Maximum();
   public static final Summary MINIMUM_MAXIMUM = new MinimumMaximum();
 
-  public final Event evtSummaryTypeChanged = new Event();
-  public final Event evtSummaryChanged = new Event();
+  private final Event evtSummaryTypeChanged = new Event();
+  private final Event evtSummaryChanged = new Event();
 
   private final Property property;
   private final PropertyValueProvider valueProvider;
@@ -81,6 +81,14 @@ public class PropertySummaryModel {
   public String getSummaryText() {
     final String summaryTxt = summaryType.getSummary(valueProvider.getValues(), property.getPropertyType(), format);
     return summaryTxt.length() > 0 ? summaryTxt + (valueProvider.isValueSubset() ? "*" : "") : summaryTxt;
+  }
+
+  public Event eventSummaryChanged() {
+    return evtSummaryChanged;
+  }
+
+  public Event eventSummaryTypeChanged() {
+    return evtSummaryTypeChanged;
   }
 
   protected Format initializeFormat(final Property property) {

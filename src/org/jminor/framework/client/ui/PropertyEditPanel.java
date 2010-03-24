@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class PropertyEditPanel extends JPanel {
 
-  public final Event evtButtonClicked = new Event();
+  private final Event evtButtonClicked = new Event();
 
   private final InputManager inputManager;
 
@@ -110,6 +110,10 @@ public class PropertyEditPanel extends JPanel {
    */
   public Object getValue() {
     return inputManager.getValue();
+  }
+
+  public Event eventButtonClicked() {
+    return evtButtonClicked;
   }
 
   protected void initUI(final String propertyID) {

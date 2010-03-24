@@ -68,13 +68,13 @@ public class ServerMonitorPanel extends JPanel {
     final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     controlPanel.add(new JLabel("Warning threshold (ms)"));
     final JSpinner spnWarningThreshold = new JSpinner(
-            new IntBeanSpinnerPropertyLink(model, "warningThreshold", model.evtWarningThresholdChanged, null).getSpinnerModel());
+            new IntBeanSpinnerPropertyLink(model, "warningThreshold", model.eventWarningThresholdChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
     controlPanel.add(spnWarningThreshold);
     controlPanel.add(new JLabel("Connection timeout (ms)"));
     final JSpinner spnConnectionTimeout = new JSpinner(
-            new IntBeanSpinnerPropertyLink(model, "connectionTimeout", model.evtConnectionTimeoutChanged, null).getSpinnerModel());
+            new IntBeanSpinnerPropertyLink(model, "connectionTimeout", model.eventConnectionTimeoutChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
     controlPanel.add(spnConnectionTimeout);
@@ -124,7 +124,7 @@ public class ServerMonitorPanel extends JPanel {
     final JTextField txtConnectionCount = new JTextField(6);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanPropertyLink(txtConnectionCount, model, "connectionCount", Integer.class, model.evtStatsUpdated,
+    new TextBeanPropertyLink(txtConnectionCount, model, "connectionCount", Integer.class, model.eventStatsUpdated(),
             LinkType.READ_ONLY);
 
     return txtConnectionCount;
@@ -134,7 +134,7 @@ public class ServerMonitorPanel extends JPanel {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanPropertyLink(txtMemory, model, "memoryUsage", String.class, model.evtStatsUpdated,
+    new TextBeanPropertyLink(txtMemory, model, "memoryUsage", String.class, model.eventStatsUpdated(),
             LinkType.READ_ONLY);
 
     return txtMemory;

@@ -24,12 +24,10 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
 
   private static final Logger log = Util.getLogger(EntityListModel.class);
 
-  public final Event evtRefreshDone = new Event();
-
-  public final State stSelectionEmpty = new State();
-
-  public final Event evtSelectionChangedAdjusting = new Event();
-  public final Event evtSelectionChanged = new Event();
+  private final State stSelectionEmpty = new State();
+  private final Event evtRefreshDone = new Event();
+  private final Event evtSelectionChangedAdjusting = new Event();
+  private final Event evtSelectionChanged = new Event();
 
   private final String entityID;
   private final EntityDbProvider dbProvider;

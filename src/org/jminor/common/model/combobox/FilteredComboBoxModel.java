@@ -24,7 +24,7 @@ import java.text.Collator;
  */
 public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
-  public final Event evtSelectionChanged = new Event();
+  private final Event evtSelectionChanged = new Event();
 
   private final List<Object> visibleItems = new ArrayList<Object>();
   private final List<Object> filteredItems = new ArrayList<Object>();
@@ -235,6 +235,10 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
       return visibleItems.size();
 
     return visibleItems.size() + 1;
+  }
+
+  public Event eventSelectionChanged() {
+    return evtSelectionChanged;
   }
 
   /**

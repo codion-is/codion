@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
  */
 public class MethodControl extends Control {
 
-  public final Event evtActionPerformed = new Event();
+  private final Event evtActionPerformed = new Event();
 
   private final Object owner;
   private final Method method;
@@ -50,5 +50,9 @@ public class MethodControl extends Control {
     finally {
       evtActionPerformed.fire();
     }
+  }
+
+  public Event eventActionPerformed() {
+    return evtActionPerformed;
   }
 }

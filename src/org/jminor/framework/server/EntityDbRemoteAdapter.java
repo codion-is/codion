@@ -56,7 +56,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * Fired when this EntityDbRemoteAdapter is logging out
    */
-  public final Event evtLogout = new Event();
+  private final Event evtLogout = new Event();
   /**
    * Contains information about the client using this connection
    */
@@ -538,6 +538,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    */
   public boolean isActive() {
     return active.contains(this);
+  }
+
+  /**
+   * @return an Event fired when a logout has been performed
+   */
+  public Event eventLogout() {
+    return evtLogout;
   }
 
   /**

@@ -58,7 +58,7 @@ public class ProfilingPanel extends JPanel {
   public void showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + profilingModel.getClass().getSimpleName();
-    getModel().evtDoneExiting.addListener(new ActionListener() {
+    getModel().eventDoneExiting().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (frame != null) {
           frame.setVisible(false);
@@ -100,10 +100,10 @@ public class ProfilingPanel extends JPanel {
     numberOfClientsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final ToggleBeanPropertyLink pauseControl =
-            ControlFactory.toggleControl(getModel(), "pause", "Pause activity", getModel().evtPauseChanged);
+            ControlFactory.toggleControl(getModel(), "pause", "Pause activity", getModel().eventPauseChanged());
     pauseControl.setMnemonic('P');
     final ToggleBeanPropertyLink relentlessControl =
-            ControlFactory.toggleControl(getModel(), "relentless", "Relentless", getModel().evtRelentlessChanged);
+            ControlFactory.toggleControl(getModel(), "relentless", "Relentless", getModel().eventRelentlessChanged());
     relentlessControl.setMnemonic('E');
     final Control addClientsControl = ControlFactory.methodControl(getModel(), "addClients", "Add client batch");
     addClientsControl.setMnemonic('A');
@@ -112,18 +112,18 @@ public class ProfilingPanel extends JPanel {
 
     final IntField clientCountField = new IntField();
     clientCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().evtClientCountChanged, LinkType.READ_ONLY);
+    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().eventClientCountChanged(), LinkType.READ_ONLY);
 
     final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
-            getModel().evtMaximumThinkTimeChanged, null).getSpinnerModel());
+            getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
     final JSpinner spnMinThinkTimeField = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "minimumThinkTime",
-            getModel().evtMinimumThinkTimeChanged, null).getSpinnerModel());
+            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
     final JSpinner spnWarningTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "warningTime",
-            getModel().evtWarningTimeChanged, null).getSpinnerModel());
+            getModel().eventWarningTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
 
     FlexibleGridLayout layout = new FlexibleGridLayout(8,1,5,5,true,false);
@@ -140,7 +140,7 @@ public class ProfilingPanel extends JPanel {
     activityPanel.add(ControlProvider.createToggleButton(relentlessControl));
 
     final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "batchSize",
-            getModel().evtMinimumThinkTimeChanged, null).getSpinnerModel());
+            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
 

@@ -303,7 +303,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    remoteAdapter.evtLogout.addListener(new ActionListener() {
+    remoteAdapter.eventLogout().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
           removeConnection(client, false);

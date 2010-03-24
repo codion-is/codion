@@ -322,7 +322,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     setupControls();
     this.entityTablePanel = model.containsTableModel() ? initializeTablePanel(model.getTableModel(),
             getTablePopupControlSet(), rowColoring) : null;
-    this.stActive.evtStateChanged.addListener(new ActionListener() {
+    this.stActive.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         if (isActive()) {
           initializePanel();
@@ -772,14 +772,14 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
-    if (!getModel().containsTableModel() || getModel().getTableModel().stSelectionEmpty.isActive())
+    if (!getModel().containsTableModel() || getModel().getTableModel().stateSelectionEmpty().isActive())
       return;
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedEntities());
     final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, selectedEntities,
             getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
-            null, editPanel.getOkButton(), editPanel.evtButtonClicked);
+            null, editPanel.getOkButton(), editPanel.eventButtonClicked());
     if (editPanel.isEditAccepted()) {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
       try {
@@ -898,7 +898,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public Control getViewDependenciesControl() {
     return ControlFactory.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            getModel().getTableModel().stSelectionEmpty.getReversedState(),
+            getModel().getTableModel().stateSelectionEmpty().getReversedState(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -917,8 +917,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public Control getDeleteSelectedControl() {
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
-                    getModel().getEditModel().getDeleteAllowedState(),
-                    getModel().getTableModel().stSelectionEmpty.getReversedState()),
+                    getModel().getEditModel().stateAllowDelete(),
+                    getModel().getTableModel().stateSelectionEmpty().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -940,8 +940,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ControlFactory.methodControl(this, "updateSelectedEntities",
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             new AggregateState(AggregateState.Type.AND,
-                    getModel().getEditModel().getUpdateAllowedState(),
-                    getModel().getTableModel().stSelectionEmpty.getReversedState()),
+                    getModel().getEditModel().stateAllowUpdate(),
+                    getModel().getTableModel().stateSelectionEmpty().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP), 0,
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -952,8 +952,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public ControlSet getUpdateSelectedControlSet() {
     final State enabled = new AggregateState(AggregateState.Type.AND,
-            getModel().getEditModel().getUpdateAllowedState(),
-            getModel().getTableModel().stSelectionEmpty.getReversedState());
+            getModel().getEditModel().stateAllowUpdate(),
+            getModel().getTableModel().stateSelectionEmpty().getReversedState());
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -977,7 +977,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ControlFactory.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
-                    getModel().getEditModel().getDeleteAllowedState(),
+                    getModel().getEditModel().stateAllowDelete(),
                     getEditModel().getEntityNullState().getReversedState()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -1001,7 +1001,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     return ControlFactory.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
             new AggregateState(AggregateState.Type.AND,
                     stActive,
-                    getModel().getEditModel().getUpdateAllowedState(),
+                    getModel().getEditModel().stateAllowUpdate(),
                     getEditModel().getEntityNullState().getReversedState(),
                     getEditModel().getEntityModifiedState()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
@@ -1014,7 +1014,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return ControlFactory.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
-            new AggregateState(AggregateState.Type.AND, stActive, getModel().getEditModel().getInsertAllowedState()),
+            new AggregateState(AggregateState.Type.AND, stActive, getModel().getEditModel().stateAllowInsert()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + " (ALT-" + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
@@ -1024,8 +1024,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getEditModel().getInsertAllowedState(),
-            new AggregateState(AggregateState.Type.AND, getModel().getEditModel().getUpdateAllowedState(),
+    final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getEditModel().stateAllowInsert(),
+            new AggregateState(AggregateState.Type.AND, getModel().getEditModel().stateAllowUpdate(),
                     getEditModel().getEntityModifiedState()));
     return ControlFactory.methodControl(this, "save", insertCaption,
             new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
@@ -1648,12 +1648,12 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       entityTablePanel.getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent event) {
-          if (event.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stSelectionEmpty.isActive())
+          if (event.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stateSelectionEmpty().isActive())
             delete();
         }
       });
     }
-    getModel().evtEntitiesChanged.addListener(new ActionListener() {
+    getModel().eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         entityTablePanel.getJTable().repaint();
       }
@@ -1922,12 +1922,12 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   private void bindModelEvents() {
-    getModel().evtRefreshStarted.addListener(new ActionListener() {
+    getModel().eventRefreshStarted().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    getModel().evtRefreshDone.addListener(new ActionListener() {
+    getModel().eventRefreshDone().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }

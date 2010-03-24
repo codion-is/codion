@@ -19,7 +19,7 @@ import java.rmi.RemoteException;
  */
 public class ClientInstanceMonitor {
 
-  public final Event evtLogginStatusChanged = new Event();
+  private final Event evtLogginStatusChanged = new Event();
 
   private final ClientInfo client;
   private final EntityDbServerAdmin server;
