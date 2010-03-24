@@ -5,15 +5,14 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class AbstractSearchModelTest {
 
   @Test
   public void test() throws Exception {
+    new EmpDept();
     final Property property = EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME);
     final AbstractSearchModel model = new AbstractSearchModel(property) {
       @Override
