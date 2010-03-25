@@ -99,7 +99,7 @@ public class Util {
   }
 
   public static String padString(final String orig, final int length, final char padChar, final boolean left) {
-    if (orig.length() == length)
+    if (orig.length() >= length)
       return orig;
 
     final StringBuilder stringBuilder = new StringBuilder(orig);

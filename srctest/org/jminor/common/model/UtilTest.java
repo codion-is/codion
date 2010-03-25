@@ -12,6 +12,27 @@ import java.util.List;
 public class UtilTest {
 
   @Test
+  public void roundDouble() {
+    final Double d = 5.1234567;
+    assertEquals(new Double(5.1), new Double(Util.roundDouble(d, 1)));
+    assertEquals(new Double(5.12), new Double(Util.roundDouble(d, 2)));
+    assertEquals(new Double(5.123), new Double(Util.roundDouble(d, 3)));
+    assertEquals(new Double(5.1235), new Double(Util.roundDouble(d, 4)));
+    assertEquals(new Double(5.12346), new Double(Util.roundDouble(d, 5)));
+    assertEquals(new Double(5.123457), new Double(Util.roundDouble(d, 6)));
+    assertEquals(new Double(5.1234567), new Double(Util.roundDouble(d, 7)));
+  }
+
+  @Test
+  public void padString() {
+    final String string = "hello";
+    assertEquals("hello", Util.padString(string, 4, '*', true));
+    assertEquals("hello", Util.padString(string, 5, '*', true));
+    assertEquals("***hello", Util.padString(string, 8, '*', true));
+    assertEquals("hello***", Util.padString(string, 8, '*', false));
+  }
+
+  @Test
   public void equal() throws Exception {
     assertTrue("Two null values should be equal", Util.equal(null, null));
   }
