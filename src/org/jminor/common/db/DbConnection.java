@@ -103,7 +103,7 @@ public class DbConnection {
    */
   public boolean isConnectionValid() {
     try {
-      return database.supportsIsValid() ? connection.isValid(0) : checkConnection();
+      return connection != null && database.supportsIsValid() ? connection.isValid(0) : checkConnection();
     }
     catch (SQLException e) {
       log.error(this, e);

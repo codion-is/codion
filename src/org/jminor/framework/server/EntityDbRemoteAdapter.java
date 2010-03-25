@@ -571,10 +571,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     return connectionPools.get(user).getConnectionPoolSettings();
   }
 
-  public static void setConnectionPoolSettings(final Database database, final User user, final ConnectionPoolSettings settings) {
-    EntityDbConnectionPool pool = connectionPools.get(user);
+  public static void setConnectionPoolSettings(final Database database, final ConnectionPoolSettings settings) {
+    EntityDbConnectionPool pool = connectionPools.get(settings.getUser());
     if (pool == null)
-      connectionPools.put(user, new EntityDbConnectionPool(database, user, settings));
+      connectionPools.put(settings.getUser(), new EntityDbConnectionPool(database, settings));
     else
       pool.setConnectionPoolSettings(settings);
   }
@@ -616,7 +616,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     if (initialPoolUsers != null && initialPoolUsers.length() > 0) {
       for (final String username : initialPoolUsers.split(",")) {
         final User user = new User(username.trim(), null);
-        setConnectionPoolSettings(database, user, ConnectionPoolSettings.getDefault(user));
+        setConnectionPoolSettings(database, ConnectionPoolSettings.getDefault(user));
       }
     }
   }

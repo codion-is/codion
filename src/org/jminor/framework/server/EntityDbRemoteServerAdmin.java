@@ -210,7 +210,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   /** {@inheritDoc} */
   public void setConnectionPoolSettings(final ConnectionPoolSettings settings) throws RemoteException {
-    EntityDbRemoteAdapter.setConnectionPoolSettings(server.getDatabase(), settings.getUser(), settings);
+    EntityDbRemoteAdapter.setConnectionPoolSettings(server.getDatabase(), settings);
   }
 
   /** {@inheritDoc} */

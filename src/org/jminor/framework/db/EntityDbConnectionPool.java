@@ -59,9 +59,9 @@ public class EntityDbConnectionPool {
   private boolean closed = false;
   private int poolStatisticsSize = 1000;
 
-  public EntityDbConnectionPool(final Database database, final User user, final ConnectionPoolSettings settings) {
+  public EntityDbConnectionPool(final Database database, final ConnectionPoolSettings settings) {
     this.database = database;
-    this.user = user;
+    this.user = settings.getUser();
     final String sid = database.getSid();
     if (sid != null && sid.length() != 0)
       this.user.setProperty(Database.DATABASE_SID, sid);

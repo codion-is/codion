@@ -197,6 +197,16 @@
     </javadoc>
   </target>
 
+  <target name="javancss">
+    <taskdef name="javancss" classname="javancss.JavancssAntTask">
+      <classpath>
+        <fileset dir="/home/stofa/darri/data/apps/javancss-32.53/lib" includes="**/*.jar"/>
+      </classpath>
+    </taskdef>
+
+    <javancss srcdir="${src}" includes="**/*.java" generateReport="true" outputfile="${test}/javancss_metrics.xml" format="xml"/>
+  </target>
+
   <target name="deploy_server" depends="create_derby_db, create_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}" />
