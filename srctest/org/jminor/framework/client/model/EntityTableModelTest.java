@@ -7,14 +7,20 @@ import org.jminor.common.db.Criteria;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityTestDomain;
+import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EntityTableModelTest {
 
@@ -35,6 +41,79 @@ public class EntityTableModelTest {
     }
 
     return testEntities;
+  }
+
+  @Test
+  public void testConstructor() {
+    try {
+      new EntityTableModel(null, EntityDbConnectionTest.dbProvider);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      new EntityTableModel("entityID", null);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      new EntityTableModel(null, null);
+      fail();
+    }
+    catch (Exception e) {}
+  }
+
+  @Test
+  public void testBasics() {
+    final List<Property> columnProperties = testModel.getTableColumnProperties();
+    assertEquals(testModel.getColumnCount(), columnProperties.size());
+    assertTrue(testModel.isQueryConfigurationAllowed());
+    testModel.refresh();
+    testModel.setSortingStatus(EntityTestDomain.DETAIL_STRING, TableSorter.DESCENDING);
+    assertEquals("e", testModel.getEntityAtViewIndex(0).getValue(EntityTestDomain.DETAIL_STRING));
+    testModel.setSelectedItemIndex(2);
+    assertEquals(2, testModel.getSelectedIndex());
+    testModel.moveSelectionDown();
+    assertEquals(3, testModel.getSelectedIndex());
+    testModel.moveSelectionUp();
+    testModel.moveSelectionUp();
+    assertEquals(1, testModel.getSelectedIndex());
+    testModel.selectAll();
+    assertEquals(5, testModel.getSelectedEntities().size());
+    testModel.clearSelection();
+    assertEquals(0, testModel.getSelectedEntities().size());
+    assertFalse(testModel.isCellEditable(0,0));
+
+    final Property property = EntityRepository.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
+    final TableColumn column = testModel.getTableColumn(property);
+    assertEquals(property, column.getIdentifier());
+
+    final Collection<Object> values = testModel.getValues(property, false);
+    assertEquals(5, values.size());
+    assertTrue(values.contains("a"));
+    assertTrue(values.contains("b"));
+    assertTrue(values.contains("c"));
+    assertTrue(values.contains("d"));
+    assertTrue(values.contains("e"));
+
+    Entity tmpEnt = new Entity(EntityTestDomain.T_DETAIL);
+    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3);
+    assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
+    final List<Entity.Key> keys = new ArrayList<Entity.Key>();
+    keys.add(tmpEnt.getPrimaryKey());
+    tmpEnt = new Entity(EntityTestDomain.T_DETAIL);
+    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2);
+    keys.add(tmpEnt.getPrimaryKey());
+    tmpEnt = new Entity(EntityTestDomain.T_DETAIL);
+    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1);
+    keys.add(tmpEnt.getPrimaryKey());
+
+    final List<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
+    assertEquals(3, entities.size());
+
+    final Map<String, Object> propValues = new HashMap<String, Object>();
+    propValues.put(EntityTestDomain.DETAIL_STRING, "b");
+    final Entity[] entityArray = testModel.getEntitiesByPropertyValues(propValues);
+    assertEquals(1, entityArray.length);
   }
 
   @Test

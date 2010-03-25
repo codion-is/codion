@@ -103,9 +103,9 @@ public class EntityEditModel {
    */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
     if (entityID == null)
-      throw new RuntimeException("entityID is null");
+      throw new IllegalArgumentException("entityID is null");
     if (dbProvider == null)
-      throw new RuntimeException("dbProvider is null");
+      throw new IllegalArgumentException("dbProvider is null");
     this.dbProvider = dbProvider;
     this.entity = new Entity(entityID);
     this.entity.setAs(getDefaultEntity());

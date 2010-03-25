@@ -1091,3 +1091,5 @@
   EntityDbConnectionPoolTest added
   EntityDbRemoteServerTest added
   Tests added to common.db.dbms package
+  Tests added to framework.client.model.reporting
+  Unit test coverage improved

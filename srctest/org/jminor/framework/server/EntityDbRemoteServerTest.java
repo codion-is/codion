@@ -6,7 +6,6 @@ package org.jminor.framework.server;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
@@ -61,8 +60,8 @@ public class EntityDbRemoteServerTest {
     assertTrue(remoteDbTwo.isConnectionValid());
     assertEquals(2, server.getConnectionCount());
 
-    final ServerLog log = server.getServerLog("UnitTestConnection1");
-    assertNotNull(log);
+    assertNotNull(server.getServerLog("UnitTestConnection1"));
+    assertNotNull(admin.getDatabaseStatistics());
 
     final Collection<ClientInfo> clients = admin.getClients(new User("scott", null));
     assertEquals(2, clients.size());

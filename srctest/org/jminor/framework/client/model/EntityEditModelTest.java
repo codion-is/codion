@@ -31,6 +31,22 @@ public class EntityEditModelTest {
 
   @Test
   public void test() throws Exception {
+    try {
+      new EntityEditModel(null, EntityDbConnectionTest.dbProvider);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityEditModel("entityID", null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityEditModel(null, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+
     final EntityEditModel editModel = employeeModel.getEditModel();
     final State entityNullState = editModel.getEntityNullState();
 
@@ -88,6 +104,8 @@ public class EntityEditModelTest {
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {
+      assertEquals(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), e.getProperty());
+      assertEquals(50d, e.getValue());
       assertEquals("Validation message should fit", EmpDept.getString(EmpDept.EMPLOYEE_COMMISSION_VALIDATION), e.getMessage());
     }
 

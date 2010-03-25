@@ -12,18 +12,37 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import java.util.List;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 public class EntityModelTest {
 
   private DepartmentModel departmentModel;
   private int eventCount = 0;
+
+  @Test
+  public void testConstructor() {
+    try {
+      new EntityModel(null, EntityDbConnectionTest.dbProvider);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityModel(EmpDept.T_EMPLOYEE, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityModel(null, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+  }
 
   @Test
   public void test() throws Exception {

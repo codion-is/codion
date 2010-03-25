@@ -9,12 +9,14 @@ import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,30 @@ import java.util.List;
 public class EntityLookupModelTest {
 
   private EntityLookupModel lookupModel;
+
+  @Test
+  public void testConstructor() {
+    try {
+      new EntityLookupModel(null, EntityDbConnectionTest.dbProvider, new ArrayList<Property>());
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property>());
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityLookupModel(null, null, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+  }
 
   @Test
   public void lookupModel() throws Exception {

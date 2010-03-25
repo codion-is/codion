@@ -9,8 +9,8 @@ import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 
@@ -26,6 +26,25 @@ public class EntityComboBoxModelTest {
   public EntityComboBoxModelTest() {
     new EmpDept();
     comboBoxModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider);
+  }
+
+  @Test
+  public void testConstructor() {
+    try {
+      new EntityComboBoxModel(null, EntityDbConnectionTest.dbProvider);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityComboBoxModel(EmpDept.T_EMPLOYEE, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      new EntityComboBoxModel(null, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
   }
 
   @Test
