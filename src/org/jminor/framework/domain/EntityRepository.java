@@ -378,7 +378,7 @@ public class EntityRepository {
    * @return true if any one of the entities in the group have already initialized, hmm?
    */
   public static boolean contains(final Map<String, EntityDefinition> entityGroup) {
-    return entityDefinitions.containsKey(entityGroup.keySet().iterator().next());
+    return entityGroup.size() == 0 || entityDefinitions.containsKey(entityGroup.keySet().iterator().next());
   }
 
   /**

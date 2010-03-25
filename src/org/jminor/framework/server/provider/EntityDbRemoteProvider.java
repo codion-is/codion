@@ -14,7 +14,6 @@ import org.jminor.framework.server.EntityDbServer;
 import org.apache.log4j.Logger;
 
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,10 +28,6 @@ import java.util.List;
 public class EntityDbRemoteProvider implements EntityDbProvider {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteProvider.class);
-
-  static {
-    System.setSecurityManager(new RMISecurityManager());
-  }
 
   private final String serverHostName = System.getProperty(Configuration.SERVER_HOST_NAME);
   private final User user;

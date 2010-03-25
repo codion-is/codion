@@ -15,15 +15,12 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
@@ -39,11 +36,10 @@ import java.util.Set;
  */
 public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 
-  private static final Logger log = Util.getLogger(EntityDbRemoteServerAdmin.class);
-
   private static final int SERVER_ADMIN_PORT;
 
   static {
+    System.setSecurityManager(new RMISecurityManager());
     final String serverAdminPortProperty = System.getProperty(Configuration.SERVER_ADMIN_PORT);
 
     if (serverAdminPortProperty == null)
@@ -253,21 +249,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     server.setConnectionTimeout(timeout);
   }
 
-  private static void initializeRegistry() throws RemoteException {
-    Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
-    try {
-      localRegistry.list();
-    }
-    catch (Exception e) {
-      log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
-      LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-    }
-  }
-
   public static void main(String[] arguments) {
     try {
-      System.setSecurityManager(new RMISecurityManager());
-      initializeRegistry();
       new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
               SERVER_ADMIN_PORT, EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
     }

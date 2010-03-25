@@ -65,6 +65,13 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
     SERVER_PORT = Integer.parseInt(serverPortProperty);
     SERVER_DB_PORT = Integer.parseInt(serverDbPortProperty);
+
+    try {
+      initializeRegistry();
+    }
+    catch (RemoteException re) {
+      throw new RuntimeException(re);
+    }
   }
 
   private final String serverName;
@@ -317,5 +324,16 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     log.info("Connection added: " + client);
 
     return remoteAdapter;
+  }
+
+  private static void initializeRegistry() throws RemoteException {
+    Registry localRegistry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+    try {
+      localRegistry.list();
+    }
+    catch (Exception e) {
+      log.info("Server creating registry on port: " + Registry.REGISTRY_PORT);
+      LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    }
   }
 }

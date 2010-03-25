@@ -1089,3 +1089,4 @@
   EntityTableSearchModel.getSearchCriteriaConjunction() renamed to getSearchConjunction()
   Unit test coverage improved
   EntityDbConnectionPoolTest added
+  EntityDbRemoteServerTest added
