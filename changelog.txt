@@ -1090,3 +1090,4 @@
   Unit test coverage improved
   EntityDbConnectionPoolTest added
   EntityDbRemoteServerTest added
+  Tests added to common.db.dbms package

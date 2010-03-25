@@ -54,8 +54,8 @@ public class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "PARSEDATETIME('" + ((DateFormat) timestampFormat.get()).format(value) + "','yyyy-MM-dd HH:mm:ss')" :
-            "PARSEDATETIME('" + ((DateFormat) dateFormat.get()).format(value) + "','yyyy-MM-dd')";
+            "PARSEDATETIME('" + ((DateFormat) timestampFormat.get()).format(value) + "', 'yyyy-MM-dd HH:mm:ss')" :
+            "PARSEDATETIME('" + ((DateFormat) dateFormat.get()).format(value) + "', 'yyyy-MM-dd')";
   }
 
   /** {@inheritDoc} */

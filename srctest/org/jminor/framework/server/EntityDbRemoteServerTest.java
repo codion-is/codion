@@ -5,15 +5,18 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Collection;
 
 public class EntityDbRemoteServerTest {
 
@@ -24,6 +27,7 @@ public class EntityDbRemoteServerTest {
     defaultManager = System.getSecurityManager();
     System.setProperty(Configuration.SERVER_PORT, "2222");
     System.setProperty(Configuration.SERVER_DB_PORT, "2223");
+    System.setProperty(Configuration.SERVER_ADMIN_PORT, "3334");
     System.setProperty(Configuration.SERVER_HOST_NAME, "localhost");
     System.setProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true");
     System.setProperty("java.rmi.server.hostname", "localhost");
@@ -41,6 +45,8 @@ public class EntityDbRemoteServerTest {
   @Test
   public void test() throws Exception {
     final EntityDbRemoteServer server = new EntityDbRemoteServer(DatabaseProvider.createInstance());
+    final EntityDbRemoteServerAdmin admin = new EntityDbRemoteServerAdmin(server, EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
+
     final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(new User("scott", "tiger"),
             "UnitTestConnection0", "EntityDbRemoteServerTest");
     final EntityDb remoteDbOne = providerOne.getEntityDb();
@@ -55,12 +61,18 @@ public class EntityDbRemoteServerTest {
     assertTrue(remoteDbTwo.isConnectionValid());
     assertEquals(2, server.getConnectionCount());
 
+    final ServerLog log = server.getServerLog("UnitTestConnection1");
+    assertNotNull(log);
+
+    final Collection<ClientInfo> clients = admin.getClients(new User("scott", null));
+    assertEquals(2, clients.size());
+
     providerOne.disconnect();
     assertEquals(1, server.getConnectionCount());
 
     providerTwo.disconnect();
     assertEquals(0, server.getConnectionCount());
 
-    server.shutdown();
+    admin.shutdown();
   }
 }

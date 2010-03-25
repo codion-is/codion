@@ -50,9 +50,8 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   private final EntityDbRemoteServer server;
 
-  public EntityDbRemoteServerAdmin(final EntityDbRemoteServer server, final int adminPort,
-                                   final boolean useSecureConnection) throws RemoteException {
-    super(adminPort, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+  public EntityDbRemoteServerAdmin(final EntityDbRemoteServer server, final boolean useSecureConnection) throws RemoteException {
+    super(SERVER_ADMIN_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     server.getRegistry().rebind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX, this);
@@ -252,7 +251,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   public static void main(String[] arguments) {
     try {
       new EntityDbRemoteServerAdmin(new EntityDbRemoteServer(DatabaseProvider.createInstance()),
-              SERVER_ADMIN_PORT, EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
+              EntityDbRemoteServer.SSL_CONNECTION_ENABLED);
     }
     catch (Exception e) {
       e.printStackTrace();
