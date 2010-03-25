@@ -41,6 +41,7 @@ public class EntityJRDataSourceTest {
     public boolean hasProperties() {return false;}
     public JRPropertiesMap getPropertiesMap() {return null;}
     public JRPropertiesHolder getParentProperties() {return null;}
-    @Override public Object clone() throws CloneNotSupportedException {return super.clone();}
+    @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException", "CloneDoesntCallSuperClone"})
+    @Override public Object clone() {return null;}
   }
 }
