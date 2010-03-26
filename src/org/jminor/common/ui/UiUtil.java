@@ -11,7 +11,22 @@ import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.KeyStroke;
+import javax.swing.RootPaneContainer;
+import javax.swing.TransferHandler;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -54,14 +69,14 @@ import java.util.StringTokenizer;
  */
 public class UiUtil {
 
-  public final static Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
-  public final static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+  public static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
+  public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.
    * This comes in handy when f.ex. adding "..." lookup buttons next to text fields.
    */
-  public final static Dimension DIMENSION_TEXT_FIELD_SQUARE =
+  public static final Dimension DIMENSION_TEXT_FIELD_SQUARE =
           new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
   private static final Map<RootPaneContainer, Integer> waitCursorRequests = new HashMap<RootPaneContainer, Integer>();

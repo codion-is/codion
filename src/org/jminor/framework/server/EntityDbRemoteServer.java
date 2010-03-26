@@ -97,11 +97,11 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     final String port = database.getPort();
     final String sid = database.getSid();
     if (host == null || host.length() == 0)
-      throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST +")");
+      throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
     if (!database.isEmbedded() && (sid == null || sid.length() == 0))
-      throw new RuntimeException("Database sid must be specified (" + Database.DATABASE_SID +")");
+      throw new RuntimeException("Database sid must be specified (" + Database.DATABASE_SID + ")");
     if (!database.isEmbedded() && (port == null || port.length() == 0))
-      throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT +")");
+      throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
 
     serverName = Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
             + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
@@ -268,7 +268,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       for (final ClientInfo client : clients) {
         final EntityDbRemoteAdapter adapter = connections.get(client);
         if (inactiveOnly) {
-          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout()*1000))
+          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
             adapter.disconnect();
         }
         else

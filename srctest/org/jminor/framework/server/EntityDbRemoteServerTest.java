@@ -100,8 +100,8 @@ public class EntityDbRemoteServerTest {
     assertNotNull(log.getLastExitDateFormatted());
     assertNotNull(log.getLastExitDate());
 
-    final ServerLogEntry entry = log.log.get(0);
-    assertEquals("selectAll", entry.method);
+    final ServerLogEntry entry = log.getLog().get(0);
+    assertEquals("selectAll", entry.getMethod());
     assertNotNull(entry.getEntryKey());
     assertNotNull(entry.getDelta());
     assertNotNull(entry.getEntryTimeFormatted());

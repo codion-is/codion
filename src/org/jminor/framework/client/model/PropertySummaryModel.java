@@ -103,13 +103,13 @@ public class PropertySummaryModel {
   }
 
   public interface PropertyValueProvider {
-    public Collection<?> getValues();
-    public boolean isValueSubset();
-    public void bindValuesChangedEvent(final Event event);
+    Collection<?> getValues();
+    boolean isValueSubset();
+    void bindValuesChangedEvent(final Event event);
   }
 
   public interface Summary {
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format);
+    String getSummary(final Collection<?> values, final Type propertyType, final Format format);
   }
 
   private static class None implements Summary {
@@ -167,7 +167,7 @@ public class PropertySummaryModel {
           count++;
         }
         if (count > 0)
-          txt = format.format(sum/count);
+          txt = format.format(sum / count);
       }
       else if (propertyType == Type.DOUBLE) {
         double sum = 0;
@@ -177,7 +177,7 @@ public class PropertySummaryModel {
           count++;
         }
         if (count > 0)
-          txt = format.format(sum/count);
+          txt = format.format(sum / count);
       }
 
       return txt;

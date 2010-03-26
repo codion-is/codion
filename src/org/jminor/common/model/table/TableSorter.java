@@ -112,7 +112,7 @@ import java.util.Map;
 
 @SuppressWarnings({"unchecked"})
 public class TableSorter extends AbstractTableModel {
-  protected TableModel tableModel;
+  private TableModel tableModel;
 
   public static final int DESCENDING = -1;
   public static final int NOT_SORTED = 0;
@@ -127,7 +127,7 @@ public class TableSorter extends AbstractTableModel {
     }
   };
   public static final Comparator LEXICAL_COMPARATOR = new Comparator() {
-    final Collator collator = Collator.getInstance();
+    private final Collator collator = Collator.getInstance();
     public int compare(Object o1, Object o2) {
       return collator.compare(o1.toString(), o2.toString());
     }

@@ -20,24 +20,24 @@ public interface EntityDbServer extends Remote {
 
   public final String SERVER_ADMIN_SUFFIX = "-admin";
 
-  public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
+  EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
                                 final Map<String, EntityDefinition> repository) throws RemoteException;
 
   /**
    * @return the server name
    * @throws RemoteException in case of a communication error
    */
-  public String getServerName() throws RemoteException;
+  String getServerName() throws RemoteException;
 
   /**
    * @return the server port
    * @throws java.rmi.RemoteException in case of a RemoteException
    */
-  public int getServerPort() throws RemoteException;
+  int getServerPort() throws RemoteException;
 
   /**
    * @return the server load as number of service requests per second
    * @throws RemoteException in case of an exception
    */
-  public Integer getServerLoad() throws RemoteException;
+  Integer getServerLoad() throws RemoteException;
 }

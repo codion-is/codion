@@ -85,8 +85,8 @@ public class EntityPanelProvider implements Comparable {//todo rename
   /** {@inheritDoc} */
   public int compareTo(final Object object) {
     final String thisCompare = getCaption() == null ? entityPanelClass.getSimpleName() : getCaption();
-    final String thatCompare = ((EntityPanelProvider)object).getCaption() == null
-            ? ((EntityPanelProvider)object).entityPanelClass.getSimpleName() : ((EntityPanelProvider)object).getCaption();
+    final String thatCompare = ((EntityPanelProvider) object).getCaption() == null
+            ? ((EntityPanelProvider) object).entityPanelClass.getSimpleName() : ((EntityPanelProvider) object).getCaption();
 
     return thisCompare.compareTo(thatCompare);
   }

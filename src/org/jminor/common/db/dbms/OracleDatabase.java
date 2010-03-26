@@ -107,7 +107,7 @@ public class OracleDatabase extends AbstractDatabase {
   public String getErrorMessage(final SQLException exception) {
     if (exception.getErrorCode() == 1400 || exception.getErrorCode() == 1407) {
       final String errorMsg = exception.getMessage();
-      final String columnName = errorMsg.substring(errorMsg.lastIndexOf('.')+2, errorMsg.lastIndexOf(')')-1);
+      final String columnName = errorMsg.substring(errorMsg.lastIndexOf('.') + 2, errorMsg.lastIndexOf(')') - 1);
 
       return Messages.get(Messages.VALUE_MISSING) + ": " + columnName;
     }

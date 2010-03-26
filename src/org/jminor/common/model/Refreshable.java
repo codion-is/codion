@@ -4,5 +4,5 @@
 package org.jminor.common.model;
 
 public interface Refreshable {
-  public void refresh();
+  void refresh();
 }

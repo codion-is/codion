@@ -8,5 +8,5 @@ public interface FilterCriteria {
    * @param item the item
    * @return true if <code>item</code> should be included
    */
-  public boolean include(Object item);
+  boolean include(Object item);
 }

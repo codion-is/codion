@@ -91,7 +91,7 @@ public class CriteriaSet implements Criteria, Serializable {
     int i = 0;
     for (final Criteria criteria : criteriaList) {
       criteriaString.append(criteria.asString(database));
-      if (i++ < criteriaList.size()-1)
+      if (i++ < criteriaList.size() - 1)
         criteriaString.append(conjunction.toString());
     }
 

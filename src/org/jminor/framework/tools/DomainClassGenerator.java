@@ -115,7 +115,7 @@ public class DomainClassGenerator {
         builder.append("    EntityRepository.add(new EntityDefinition(").append(getEntityID(table)).append(",\n");
         for (final Column column : table.getColumns()) {
           builder.append(getPropertyDefinition(table, column))
-                  .append(table.getColumns().indexOf(column) < table.getColumns().size()-1 ? ", " : "").append("\n");
+                  .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? ", " : "").append("\n");
         }
         builder.append("    ));\n\n");
       }
@@ -147,7 +147,7 @@ public class DomainClassGenerator {
   private static String getPropertyDefinition(final Table table, final Column column) {
     String ret;
     if (column.foreignKey != null) {
-      ret = "        new Property.ForeignKeyProperty(" + getPropertyID(table, column, true) + ", \"Caption\", "+ getEntityID(column.foreignKey.getReferencedTable()) + ",\n"
+      ret = "        new Property.ForeignKeyProperty(" + getPropertyID(table, column, true) + ", \"Caption\", " + getEntityID(column.foreignKey.getReferencedTable()) + ",\n"
               + "                new Property(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + "))";
     }
     else if (column.primaryKey != null) {

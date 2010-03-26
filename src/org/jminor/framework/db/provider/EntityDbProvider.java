@@ -18,10 +18,10 @@ public interface EntityDbProvider {
    * that is, it must reconnect an invalid connection whether remotely or locally
    * @return EntityDb
    */
-  public EntityDb getEntityDb();
+  EntityDb getEntityDb();
 
   /**
    * Logs out, disconnects and performs cleanup if required
    */
-  public void disconnect();
+  void disconnect();
 }

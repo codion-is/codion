@@ -26,7 +26,7 @@ public class ConnectionPoolSettings implements Serializable {
     setEnabled(enabled);
     setPooledConnectionTimeout(pooledConnectionTimeout);
     setMinimumPoolSize(minimumPoolSize);
-    setMaximumPoolSize(minimumPoolSize*2);
+    setMaximumPoolSize(minimumPoolSize * 2);
   }
 
   public User getUser() {

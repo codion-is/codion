@@ -54,7 +54,7 @@ public class DerbyDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return "DATE('" + (isTimestamp ? ((DateFormat)timestampFormat.get()).format(value) : ((DateFormat)dateFormat.get()).format(value)) + "')";
+    return "DATE('" + (isTimestamp ? ((DateFormat) timestampFormat.get()).format(value) : ((DateFormat) dateFormat.get()).format(value)) + "')";
   }
 
   /** {@inheritDoc} */

@@ -57,7 +57,7 @@ public class PropertySummaryPanel extends JPanel {
     lblSummary.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(final MouseEvent e) {
-        menu.show(lblSummary, e.getX(), e.getY()-menu.getPreferredSize().height);
+        menu.show(lblSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
       }
     });
     lblSummary.setBorder(BorderFactory.createEtchedBorder());

@@ -203,7 +203,7 @@ public class EntityDbConnectionPool {
       final ListIterator<ConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
-        if (state.time > since)
+        if (state.getTime() > since)
           poolStates.add(state);
       }
     }
@@ -264,7 +264,7 @@ public class EntityDbConnectionPool {
         if (disconnectAll || idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
           if (log.isDebugEnabled())
-            log.debug(user + " removing connection from pool, idle for " + idleTime/1000
+            log.debug(user + " removing connection from pool, idle for " + idleTime / 1000
                   + " seconds, " + connectionPool.size() + " available");
           disconnect(connection);
         }
@@ -280,11 +280,11 @@ public class EntityDbConnectionPool {
 
   private void updateRequestsPerSecond() {
     final long current = System.currentTimeMillis();
-    final double seconds = (current - requestsPerSecondTime)/1000;
+    final double seconds = (current - requestsPerSecondTime) / 1000;
     if (seconds > 5) {
-      requestsPerSecond = (int) ((double) requestsPerSecondCounter/seconds);
+      requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
       requestsPerSecondCounter = 0;
-      requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter/seconds);
+      requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);
       requestsDelayedPerSecondCounter = 0;
       requestsPerSecondTime = current;
     }

@@ -13,5 +13,5 @@ public interface Criteria {
    * @return a SQL where condition string without the 'where' keyword
    * @param database the Database instance
    */
-  public String asString(final Database database);
+  String asString(final Database database);
 }

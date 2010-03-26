@@ -98,7 +98,7 @@ public class State {
 
   private static class LinkedState extends State {
 
-    protected final State referenceState;
+    private final State referenceState;
 
     private LinkedState(final State referenceState) {
       this.referenceState = referenceState;
@@ -123,6 +123,10 @@ public class State {
     public String toString() {
       return referenceState + " linked";
     }
+
+    public State getReferenceState() {
+      return referenceState;
+    }
   }
 
   private static class ReverseState extends LinkedState {
@@ -133,12 +137,12 @@ public class State {
 
     @Override
     public boolean isActive() {
-      return !referenceState.isActive();
+      return !getReferenceState().isActive();
     }
 
     @Override
     public State getReversedState() {
-      return referenceState;
+      return getReferenceState();
     }
 
     @Override

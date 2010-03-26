@@ -65,7 +65,7 @@ public class FlexibleGridLayout extends GridLayout {
       }
       int[] columnWidths = new int[numberOfColumns];
       int[] rowHeights = new int[numberOfRows];
-      for (int i = 0; i < numberOfComponents; i ++) {
+      for (int i = 0; i < numberOfComponents; i++) {
         int row = i / numberOfColumns;
         int column = i % numberOfColumns;
         Component comp = parent.getComponent(i);
@@ -81,11 +81,11 @@ public class FlexibleGridLayout extends GridLayout {
       arrangeFixedSizes(columnWidths, rowHeights);
       //
       int newWidth = 0;
-      for (int j = 0; j < numberOfColumns; j ++) {
+      for (int j = 0; j < numberOfColumns; j++) {
         newWidth += columnWidths[j];
       }
       int newHeight = 0;
-      for (int i = 0; i < numberOfRows; i ++) {
+      for (int i = 0; i < numberOfRows; i++) {
         newHeight += rowHeights[i];
       }
       return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
@@ -109,7 +109,7 @@ public class FlexibleGridLayout extends GridLayout {
       }
       int[] columnWidths = new int[numberOfColumns];
       int[] rowHeights = new int[numberOfRows];
-      for (int i = 0; i < numberOfComponents; i ++) {
+      for (int i = 0; i < numberOfComponents; i++) {
         int row = i / numberOfColumns;
         int column = i % numberOfColumns;
         Component comp = parent.getComponent(i);
@@ -125,11 +125,11 @@ public class FlexibleGridLayout extends GridLayout {
       arrangeFixedSizes(columnWidths, rowHeights);
       //
       int newWidth = 0;
-      for (int j = 0; j < numberOfColumns; j ++) {
+      for (int j = 0; j < numberOfColumns; j++) {
         newWidth += columnWidths[j];
       }
       int newHeight = 0;
-      for (int i = 0; i < numberOfRows; i ++) {
+      for (int i = 0; i < numberOfRows; i++) {
         newHeight += rowHeights[i];
       }
       return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
@@ -163,7 +163,7 @@ public class FlexibleGridLayout extends GridLayout {
       // scale
       int[] columnWidths = new int[numberOfColumns];
       int[] rowHeights = new int[numberOfRows];
-      for (int i = 0; i < numberOfComponents; i ++) {
+      for (int i = 0; i < numberOfComponents; i++) {
         int row = i / numberOfColumns;
         int column = i % numberOfColumns;
         Component currentComponent = parent.getComponent(i);
@@ -180,8 +180,8 @@ public class FlexibleGridLayout extends GridLayout {
       //
       arrangeFixedSizes(columnWidths, rowHeights);
       //
-      for (int c = 0, x = insets.left; c < numberOfColumns; c ++) {
-        for (int r = 0, y = insets.top; r < numberOfRows; r ++) {
+      for (int c = 0, x = insets.left; c < numberOfColumns; c++) {
+        for (int r = 0, y = insets.top; r < numberOfRows; r++) {
           int i = r * numberOfColumns + c;
           if (i < numberOfComponents) {
             parent.getComponent(i).setBounds(x, y, columnWidths[c], rowHeights[r]);

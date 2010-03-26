@@ -204,7 +204,7 @@ public class ExceptionDialog extends JDialog {
         return;
     }
     try {
-      final String ctr = "ctr.exe /C start mailto:"+ errorReportEmailAddressTo +
+      final String ctr = "ctr.exe /C start mailto:" + errorReportEmailAddressTo +
               "?subject=\"" + errorReportEmailSubjectPrefix + descriptionLabel.getText() + "\"";
       copyErrorReport();
       JOptionPane.showMessageDialog(this, Messages.get(Messages.EXC_DLG_EMAIL_INSTRUCTIONS),

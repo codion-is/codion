@@ -14,9 +14,9 @@ public class ConnectionPoolState implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  public long time;
-  public int connectionCount;
-  public int connectionsInUse;
+  private long time;
+  private int connectionCount;
+  private int connectionsInUse;
 
   public ConnectionPoolState(final long time, final int connectionCount, final int connectionsInUse) {
     set(time, connectionCount, connectionsInUse);
@@ -26,5 +26,17 @@ public class ConnectionPoolState implements Serializable {
     this.time = time;
     this.connectionCount = connectionCount;
     this.connectionsInUse = connectionsInUse;
+  }
+
+  public int getConnectionCount() {
+    return connectionCount;
+  }
+
+  public int getConnectionsInUse() {
+    return connectionsInUse;
+  }
+
+  public long getTime() {
+    return time;
   }
 }

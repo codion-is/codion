@@ -18,11 +18,11 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   private static final long serialVersionUID = 1;
   private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP);
 
-  public String method;
-  public String message;
-  public long entryTime;
-  public long exitTime;
-  public long delta;
+  private String method;
+  private String message;
+  private long entryTime;
+  private long exitTime;
+  private long delta;
 
   public ServerLogEntry() {
     this("", "", 0);
@@ -38,6 +38,22 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
     this.entryTime = time;
     this.exitTime = 0;
     this.delta = 0;
+  }
+
+  public long getEntryTime() {
+    return entryTime;
+  }
+
+  public long getExitTime() {
+    return exitTime;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public String getMethod() {
+    return method;
   }
 
   public int compareTo(final ServerLogEntry entry) {

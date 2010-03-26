@@ -758,7 +758,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       }
       else {//add to last log entry
         final ServerLogEntry lastEntry = logEntries.get(currentLogEntryIndex);
-        assert lastEntry.method.equals(method);
+        assert lastEntry.getMethod().equals(method);
         currentLogEntryIndex++;
 
         return lastEntry.setExitTime(time);

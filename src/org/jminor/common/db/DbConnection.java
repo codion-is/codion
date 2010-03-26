@@ -148,7 +148,7 @@ public class DbConnection {
    * Begins a transaction on this connection
    * @throws IllegalStateException in case a transaction is already open
    */
-  public void beginTransaction() throws IllegalStateException {
+  public void beginTransaction() {
     if (transactionOpen)
       throw new IllegalStateException("Transaction already open");
 
@@ -160,7 +160,7 @@ public class DbConnection {
    * @throws SQLException in case anything goes wrong during the rollback action
    * @throws IllegalStateException in case transaction is not open
    */
-  public void rollbackTransaction() throws SQLException, IllegalStateException {
+  public void rollbackTransaction() throws SQLException {
     try {
       if (!transactionOpen)
         throw new IllegalStateException("Transaction is not open");
@@ -177,7 +177,7 @@ public class DbConnection {
    * @throws SQLException in case anything goes wrong during the commit action
    * @throws IllegalStateException in case transaction is not open
    */
-  public void commitTransaction() throws SQLException, IllegalStateException {
+  public void commitTransaction() throws SQLException {
     try {
       if (!transactionOpen)
         throw new IllegalStateException("Transaction is not open");
@@ -267,7 +267,7 @@ public class DbConnection {
     requestsPerSecondCounter++;
     if (cacheQueriesRequests > 0 && fetchCount < 0) {
       if (queryCache.containsKey(sql)) {
-        log.debug(user.getUsername() + " (cached): " + sql.toUpperCase()+";");
+        log.debug(user.getUsername() + " (cached): " + sql.toUpperCase() + ";");
         lastResultCached = true;
         cachedPerSecondCounter++;
         return queryCache.get(sql);
@@ -282,12 +282,12 @@ public class DbConnection {
       if (cacheQueriesRequests > 0 && fetchCount < 0)
         queryCache.put(sql, result);
 
-      log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
+      log.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + "ms)");
 
       return result;
     }
     catch (SQLException e) {
-      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
+      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis() - time) + "ms): " + sql + ";", e);
       throw e;
     }
     finally {

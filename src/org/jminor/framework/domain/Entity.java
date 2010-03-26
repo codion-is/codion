@@ -963,7 +963,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       int i = 0;
       for (final Property.PrimaryKeyProperty property : getProperties()) {
         stringBuilder.append(property.getPropertyID()).append("=").append(getValue(property.getPropertyID()));
-        if (i++ < getPropertyCount()-1)
+        if (i++ < getPropertyCount() - 1)
           stringBuilder.append(", ");
       }
 

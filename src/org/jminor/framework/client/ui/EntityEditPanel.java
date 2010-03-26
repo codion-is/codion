@@ -168,7 +168,7 @@ public abstract class EntityEditPanel extends JPanel {
     final JPanel panel = new JPanel(labelOnTop ?
             new FlexibleGridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
     if (labelComponent instanceof JLabel)
-      ((JLabel)labelComponent).setLabelFor(inputComponent);
+      ((JLabel) labelComponent).setLabelFor(inputComponent);
     panel.add(labelComponent);
     panel.add(inputComponent);
 

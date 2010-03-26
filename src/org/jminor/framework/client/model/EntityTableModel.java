@@ -316,12 +316,12 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   public void moveSelectionUp() {
     if (visibleEntities.size() > 0) {
       if (getSelectionModel().isSelectionEmpty())
-        getSelectionModel().setSelectionInterval(visibleEntities.size()-1, visibleEntities.size()-1);
+        getSelectionModel().setSelectionInterval(visibleEntities.size() - 1, visibleEntities.size() - 1);
       else {
         final Collection<Integer> selected = getSelectedViewIndexes();
         final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected)
-          newSelected.add(index == 0 ? visibleEntities.size()-1 : index-1);
+          newSelected.add(index == 0 ? visibleEntities.size() - 1 : index - 1);
 
         setSelectedItemIndexes(newSelected);
       }
@@ -340,7 +340,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
         final Collection<Integer> selected = getSelectedViewIndexes();
         final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected)
-          newSelected.add(index == visibleEntities.size()-1 ? 0 : index+1);
+          newSelected.add(index == visibleEntities.size() - 1 ? 0 : index + 1);
 
         setSelectedItemIndexes(newSelected);
       }
@@ -352,7 +352,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @see #evtSelectionChanged
    */
   public void selectAll() {
-    getSelectionModel().setSelectionInterval(0, visibleEntities.size()-1);
+    getSelectionModel().setSelectionInterval(0, visibleEntities.size() - 1);
   }
 
   /**

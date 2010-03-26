@@ -79,12 +79,12 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public int getPooledConnectionTimeout() throws RemoteException {
-    return server.getConnectionPoolSettings(user).getPooledConnectionTimeout()/1000;
+    return server.getConnectionPoolSettings(user).getPooledConnectionTimeout() / 1000;
   }
 
   public void setPooledConnectionTimeout(final int value) throws RemoteException {
     final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
-    settings.setPooledConnectionTimeout(value*1000);
+    settings.setPooledConnectionTimeout(value * 1000);
     server.setConnectionPoolSettings(settings);
     this.poolSettings = settings;
   }
@@ -160,7 +160,7 @@ public class ConnectionPoolInstanceMonitor {
     if (value != this.statsUpdateInterval) {
       this.statsUpdateInterval = value;
       evtStatsUpdateIntervalChanged.fire();
-      startUpdateTimer(value*1000);
+      startUpdateTimer(value * 1000);
     }
   }
 
@@ -205,8 +205,8 @@ public class ConnectionPoolInstanceMonitor {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");
       final XYSeries inUseSeries = new XYSeries("Connections in active use");
       for (final ConnectionPoolState inPool : stats) {
-        inPoolSeries.add(inPool.time, inPool.connectionCount);
-        inUseSeries.add(inPool.time, inPool.connectionsInUse);
+        inPoolSeries.add(inPool.getTime(), inPool.getConnectionCount());
+        inUseSeries.add(inPool.getTime(), inPool.getConnectionsInUse());
       }
 
       this.statsCollection.removeAllSeries();
@@ -220,16 +220,16 @@ public class ConnectionPoolInstanceMonitor {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
     Collections.sort(poolStates, new Comparator<ConnectionPoolState>() {
       public int compare(final ConnectionPoolState stateOne, final ConnectionPoolState stateTwo) {
-        return ((Long) stateOne.time).compareTo(stateTwo.time);
+        return ((Long) stateOne.getTime()).compareTo(stateTwo.getTime());
       }
     });
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
-      if (state.time != time)
+      if (state.getTime() != time)
         poolStates.add(state);
 
-      time = state.time;
+      time = state.getTime();
     }
 
     return poolStates;

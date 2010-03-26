@@ -20,5 +20,5 @@ public interface ResultPacker<T> {
    * @return a List containing the data from the query result
    * @throws SQLException thrown if anything goes wrong during the packing
    */
-  public List<T> pack(final ResultSet resultSet, final int fetchCount) throws SQLException;
+  List<T> pack(final ResultSet resultSet, final int fetchCount) throws SQLException;
 }

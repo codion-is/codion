@@ -61,7 +61,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
     if (model != null) {
       final ServerLog serverLog = model.getLog();
       if (serverLog != null)
-        for (final ServerLogEntry logEntry : sortAndRemoveNullEntries(serverLog.log))
+        for (final ServerLogEntry logEntry : sortAndRemoveNullEntries(serverLog.getLog()))
           log.append(logEntry.toString());
       else
         log.append("Disconnected!");
@@ -88,7 +88,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
     Collections.sort(log);
     final ListIterator<ServerLogEntry> iterator = log.listIterator();
     while (iterator.hasNext())
-      if (iterator.next().entryTime == 0)
+      if (iterator.next().getEntryTime() == 0)
         iterator.remove();
 
     return log;

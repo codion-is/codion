@@ -5,7 +5,7 @@ package org.jminor.common.model.formats;
 
 public class DateFormats {
 
-  public final static String COMPACT_DASH = "dd-MM-yy";
+  public static final String COMPACT_DASH = "dd-MM-yy";
   public static final String COMPACT = "ddMMyy";
   public static final String COMPACT_DOT = "dd.MM.yy";
   public static final String SHORT_DASH = "dd-MM-yyyy";

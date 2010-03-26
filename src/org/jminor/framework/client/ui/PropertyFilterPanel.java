@@ -105,7 +105,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   public void showDialog() {
     if (isDialogActive() && !isDialogShowing()) {
       dialog.setVisible(true);
-      upperBoundField.requestFocusInWindow();
+      getUpperBoundField().requestFocusInWindow();
       stIsDialogShowing.setActive(true);
     }
   }
@@ -149,7 +149,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   protected JComponent getInputField(final boolean isUpperBound) {
     final SimpleDateFormat format = getInputFormat();
     final JComponent field = initField(format);
-    if (model.getPropertyType() == Type.BOOLEAN)
+    if (getModel().getPropertyType() == Type.BOOLEAN)
       createToggleProperty((JCheckBox) field, isUpperBound);
     else
       createTextProperty(field, isUpperBound, format);
@@ -167,7 +167,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private JComponent initField(final SimpleDateFormat format) {
-    switch (model.getPropertyType()) {
+    switch (getModel().getPropertyType()) {
       case DATE:
       case TIMESTAMP:
         return UiUtil.createFormattedField(DateUtil.getDateMask(format));
@@ -188,9 +188,9 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
     final JDialog dlgParent = UiUtil.getParentDialog(parent);
     if (dlgParent != null)
-      dialog = new JDialog(dlgParent, model.getCaption(), false);
+      dialog = new JDialog(dlgParent, getModel().getCaption(), false);
     else
-      dialog = new JDialog(UiUtil.getParentFrame(parent), model.getCaption(), false);
+      dialog = new JDialog(UiUtil.getParentFrame(parent), getModel().getCaption(), false);
 
     final JPanel searchPanel = new JPanel(new BorderLayout());
     searchPanel.add(this, BorderLayout.NORTH);
@@ -212,40 +212,40 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-    new ToggleBeanPropertyLink(checkBox.getModel(), model,
+    new ToggleBeanPropertyLink(checkBox.getModel(), getModel(),
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-            isUpperBound ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), null);
+            isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
   }
 
   private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
-    switch(model.getPropertyType()) {
+    switch(getModel().getPropertyType()) {
       case INT:
-        return new IntBeanPropertyLink((IntField) component, model,
+        return new IntBeanPropertyLink((IntField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), null);
+                isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
       case DOUBLE:
-        return new DoubleBeanPropertyLink((DoubleField) component, model,
+        return new DoubleBeanPropertyLink((DoubleField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), null);
+                isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
       case DATE:
       case TIMESTAMP:
-        return new FormattedTextBeanPropertyLink((JFormattedTextField) component, model,
+        return new FormattedTextBeanPropertyLink((JFormattedTextField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                model.getPropertyType() == Type.TIMESTAMP ? Timestamp.class : Date.class,
-                isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged(), LinkType.READ_WRITE, format) {
+                getModel().getPropertyType() == Type.TIMESTAMP ? Timestamp.class : Date.class,
+                isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE, format) {
           @Override
           protected Object getUIPropertyValue() {
             final Date date = (Date) super.getUIPropertyValue();
             if (date != null)
-              return model.getPropertyType() == Type.TIMESTAMP ? new Timestamp(date.getTime()) : date;
+              return getModel().getPropertyType() == Type.TIMESTAMP ? new Timestamp(date.getTime()) : date;
 
             return null;
           }
         };
       default:
-        return new TextBeanPropertyLink((JTextField) component, model,
+        return new TextBeanPropertyLink((JTextField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-                String.class, isUpper ? model.eventUpperBoundChanged() : model.eventLowerBoundChanged());
+                String.class, isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
     }
   }
 }

@@ -10,12 +10,12 @@ import org.jminor.common.model.Refreshable;
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.text.Collator;
 
 /**
  * A ComboBoxModel implementation that allows filtering via FilterCriteria objects
@@ -226,7 +226,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
     if (nullValueString == null)
       return visibleItems.get(index);
 
-    return index == 0 ? nullValueString : visibleItems.get(index-1);
+    return index == 0 ? nullValueString : visibleItems.get(index - 1);
   }
 
   /** {@inheritDoc} */

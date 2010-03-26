@@ -27,7 +27,25 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
@@ -85,7 +103,7 @@ import java.util.Map;
  */
 public class EntityTablePanel extends JPanel {
 
-  public final static char FILTER_INDICATOR = '*';
+  public static final char FILTER_INDICATOR = '*';
 
   private final Event evtTableDoubleClicked = new Event();
   private final Event evtSearchPanelVisibilityChanged = new Event();

@@ -35,35 +35,35 @@ import java.text.SimpleDateFormat;
  */
 public abstract class AbstractSearchPanel extends JPanel {
 
-  protected static final SearchType[] searchTypes = new SearchType[] {
+  private static final SearchType[] searchTypes = new SearchType[] {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
           SearchType.AT_MOST, SearchType.WITHIN_RANGE, SearchType.OUTSIDE_RANGE};
 
-  protected static final String[] searchTypeImageNames = new String[] {
+  private static final String[] searchTypeImageNames = new String[] {
           "Equals60x16.gif", "NotEquals60x16.gif", "LessThanOrEquals60x16.gif",
           "LargerThanOrEquals60x16.gif", "Inclusive60x16.gif", "Exclusive60x16.gif"};
 
   /**
    * The AbstractSearchModel this AbstractSearchPanel represents
    */
-  protected final AbstractSearchModel model;
+  private final AbstractSearchModel model;
 
   /**
    * A JToggleButton for enabling/disabling the filter
    */
-  protected final JToggleButton toggleSearchEnabled;
+  private final JToggleButton toggleSearchEnabled;
 
   /**
    * A JToggleButton for toggling advanced/simple search
    */
-  protected final JToggleButton toggleSearchAdvanced;
+  private final JToggleButton toggleSearchAdvanced;
 
   /**
    * A JComboBox for selecting the search type
    */
-  protected final JComboBox searchTypeCombo;
-  protected final JComponent upperBoundField;
-  protected final JComponent lowerBoundField;
+  private final JComboBox searchTypeCombo;
+  private final JComponent upperBoundField;
+  private final JComponent lowerBoundField;
 
   private final State stAdvancedSearch = new State();
   private final State stTwoSearchFields = new State();
@@ -273,7 +273,7 @@ public abstract class AbstractSearchPanel extends JPanel {
     add(controlPanel);
     add(inputPanel);
 
-    setPreferredSize(new Dimension(getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()*2));
+    setPreferredSize(new Dimension(getPreferredSize().width, UiUtil.getPreferredTextFieldHeight() * 2));
 
     revalidate();
   }

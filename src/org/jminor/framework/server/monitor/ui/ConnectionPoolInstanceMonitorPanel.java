@@ -77,7 +77,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
     txtCreatedDestroyedResetTime.setText(new SimpleDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetDate()));
     txtRequested.setText(format.format(stats.getConnectionRequests()));
-    final double prc = (double) stats.getConnectionRequestsDelayed()/(double) stats.getConnectionRequests()*100;
+    final double prc = (double) stats.getConnectionRequestsDelayed() / (double) stats.getConnectionRequests() * 100;
     txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
     if (model.datasetContainsData())

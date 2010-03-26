@@ -95,7 +95,7 @@ public class PropertyCriteria implements Criteria, Serializable {
       case WITHIN_RANGE:
         return "(" + columnIdentifier + " >= " + sqlValue + " and " + columnIdentifier +  " <= " + sqlValue2 + ")";
       case OUTSIDE_RANGE:
-        return "(" + columnIdentifier + " <= "+ sqlValue + " or " + columnIdentifier + " >= " + sqlValue2 + ")";
+        return "(" + columnIdentifier + " <= " + sqlValue + " or " + columnIdentifier + " >= " + sqlValue2 + ")";
     }
 
     throw new IllegalArgumentException("Unknown search type" + searchType);
@@ -181,11 +181,11 @@ public class PropertyCriteria implements Criteria, Serializable {
         stringBuilder.append("upper(").append(sqlValue).append(")");
       else
         stringBuilder.append(sqlValue);
-      if (cnt++ == 1000 && i < values.size()-1) {//Oracle limit
+      if (cnt++ == 1000 && i < values.size() - 1) {//Oracle limit
         stringBuilder.append(notIn ? ") and " : ") or ").append(whereColumn).append(" in (");
         cnt = 1;
       }
-      else if (i < values.size()-1)
+      else if (i < values.size() - 1)
         stringBuilder.append(", ");
     }
     stringBuilder.append("))");
@@ -221,7 +221,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   private String initColumnIdentifier(final boolean isNullCriteria) {
     String columnName;
     if (property instanceof Property.SubqueryProperty)
-      columnName = "("+((Property.SubqueryProperty)property).getSubQuery()+")";
+      columnName = "(" + ((Property.SubqueryProperty) property).getSubQuery() + ")";
     else
       columnName = property.getColumnName();
 

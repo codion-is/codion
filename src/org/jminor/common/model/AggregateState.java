@@ -32,7 +32,7 @@ public class AggregateState extends State {
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
     stringBuilder.append(type == Type.AND ? "AND " : "OR ").append(isActive() ? "active" : "inactive");
-    for (final State state: states)
+    for (final State state : states)
       stringBuilder.append(", ").append(state);
 
     return stringBuilder.toString();

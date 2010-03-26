@@ -35,7 +35,7 @@ public abstract class ProfilingModel {
   private final Event evtDoneExiting = new Event();
 
   private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME, "20000"));
-  private int minimumThinkTime = maximumThinkTime/2;
+  private int minimumThinkTime = maximumThinkTime / 2;
   private int loginWaitFactor = Integer.parseInt(System.getProperty(Configuration.PROFILING_LOGIN_WAIT, "2"));
   private int batchSize = Integer.parseInt(System.getProperty(Configuration.PROFILING_BATCH_SIZE, "10"));
 

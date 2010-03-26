@@ -219,7 +219,7 @@ public class Util {
       if (item instanceof Object[])
         stringBuilder.append(getArrayContentsAsString((Object[]) item, onePerLine));
       else if (!onePerLine)
-        stringBuilder.append(item).append(i < items.length-1 ? ", " : "");
+        stringBuilder.append(item).append(i < items.length - 1 ? ", " : "");
       else
         stringBuilder.append(item).append("\n");
     }
@@ -237,7 +237,7 @@ public class Util {
   }
 
   public static String getMemoryUsageString() {
-    return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024 + " KB";
+    return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 + " KB";
   }
 
   /**
@@ -384,7 +384,7 @@ public class Util {
   public static String getVersion() {
     final String versionString = getVersionAndBuildNumber();
     if (versionString.toLowerCase().contains("build"))
-      return versionString.substring(0, versionString.toLowerCase().indexOf("build")-1);
+      return versionString.substring(0, versionString.toLowerCase().indexOf("build") - 1);
 
     return "N/A";
   }

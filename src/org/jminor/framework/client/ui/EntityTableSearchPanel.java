@@ -38,13 +38,13 @@ public class EntityTableSearchPanel extends EntityTableColumnPanel {
   public void setAutomaticWildcard(final boolean value) {
     for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
-        ((PropertySearchPanel)searchPanel).getModel().setAutomaticWildcard(value);
+        ((PropertySearchPanel) searchPanel).getModel().setAutomaticWildcard(value);
   }
 
   public void clear() {
     for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
-        ((PropertySearchPanel)searchPanel).getModel().clear();
+        ((PropertySearchPanel) searchPanel).getModel().clear();
   }
 
   /**
@@ -53,7 +53,7 @@ public class EntityTableSearchPanel extends EntityTableColumnPanel {
   public void setAdvanced(final boolean value) {
     for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
-        ((PropertySearchPanel)searchPanel).setAdvancedSearchOn(value);
+        ((PropertySearchPanel) searchPanel).setAdvancedSearchOn(value);
 
     evtAdvancedChanged.fire();
   }
@@ -64,7 +64,7 @@ public class EntityTableSearchPanel extends EntityTableColumnPanel {
   public boolean isAdvanced() {
     for (final JPanel searchPanel : getColumnPanels().values())
       if (searchPanel instanceof PropertySearchPanel)
-        return ((PropertySearchPanel)searchPanel).isAdvancedSearchOn();
+        return ((PropertySearchPanel) searchPanel).isAdvancedSearchOn();
 
     return false;
   }

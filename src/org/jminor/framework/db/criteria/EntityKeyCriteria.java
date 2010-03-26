@@ -126,7 +126,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
       stringBuilder.append(EntityUtil.getQueryString(columnNames == null ? property.getColumnName() : columnNames.get(i),
               EntityUtil.getSQLStringValue(database, property, key.getValue(property.getPropertyID()))));
-      if (i++ < key.getPropertyCount() -1)
+      if (i++ < key.getPropertyCount() - 1)
         stringBuilder.append(" and ");
     }
 
@@ -138,7 +138,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     final Property property = keys.get(0).getFirstKeyProperty();
     for (int i = 0, cnt = 1; i < keys.size(); i++, cnt++) {
       stringBuilder.append(EntityUtil.getSQLStringValue(database, property, keys.get(i).getFirstKeyValue()));
-      if (cnt == 1000 && i < keys.size()-1) {//Oracle limit
+      if (cnt == 1000 && i < keys.size() - 1) {//Oracle limit
         stringBuilder.append(") or ").append(whereColumn).append(" in (");
         cnt = 1;
       }

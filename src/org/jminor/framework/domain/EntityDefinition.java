@@ -100,7 +100,7 @@ public class EntityDefinition implements Serializable {
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     final String[] selectColumnNames = initSelectColumnNames(getDatabaseProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++)
-      properties.get(selectColumnNames[idx]).setSelectIndex(idx+1);
+      properties.get(selectColumnNames[idx]).setSelectIndex(idx + 1);
   }
 
   public String getEntityID() {

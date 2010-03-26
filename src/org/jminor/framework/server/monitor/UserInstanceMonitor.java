@@ -20,7 +20,7 @@ public class UserInstanceMonitor {
   private final EntityDbServerAdmin server;
   private final User user;
 
-  final DefaultListModel clientListModel = new DefaultListModel();
+  private final DefaultListModel clientListModel = new DefaultListModel();
 
   public UserInstanceMonitor(final EntityDbServerAdmin server, final User user) throws RemoteException {
     this.server = server;

@@ -226,7 +226,7 @@ public class EntityLookupModel {
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < entityList.size(); i++) {
       stringBuilder.append(entityList.get(i).toString());
-      if (i < entityList.size()-1)
+      if (i < entityList.size() - 1)
         stringBuilder.append(getMultipleValueSeparator());
     }
 

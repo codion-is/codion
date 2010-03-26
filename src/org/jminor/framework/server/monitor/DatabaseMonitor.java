@@ -40,7 +40,7 @@ public class DatabaseMonitor {
     if (value != this.statsUpdateInterval) {
       this.statsUpdateInterval = value;
       evtStatsUpdateIntervalChanged.fire();
-      startUpdateTimer(value*1000);
+      startUpdateTimer(value * 1000);
     }
   }
 

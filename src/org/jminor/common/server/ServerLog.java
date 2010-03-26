@@ -21,18 +21,15 @@ public class ServerLog implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  public final Date logCreationDate = new Date();
-
-  public final List<ServerLogEntry> log;
-
+  private final Date logCreationDate = new Date();
+  private final List<ServerLogEntry> log;
   private final String connectionKey;
-
-  public final long lastAccessDate;
-  public final long lastExitDate;
-  public final String lastAccessedMethod;
-  public final String lastAccessMessage;
-  public final String lastExitedMethod;
-  public final long connectionCreationDate;
+  private final long lastAccessDate;
+  private final long lastExitDate;
+  private final String lastAccessedMethod;
+  private final String lastAccessMessage;
+  private final String lastExitedMethod;
+  private final long connectionCreationDate;
 
   public ServerLog(final String connectionKey, final long connectionCreationDate, final List<ServerLogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
@@ -45,6 +42,20 @@ public class ServerLog implements Serializable {
     this.lastAccessedMethod = lastAccessedMethod;
     this.lastAccessMessage = lastAccessedMessage;
     this.lastExitedMethod = lastExitedMethod;
+  }
+
+  /**
+   * @return the log entry list
+   */
+  public List<ServerLogEntry> getLog() {
+    return log;
+  }
+
+  /**
+   * @return the date this log was created
+   */
+  public Date getLogCreationDate() {
+    return logCreationDate;
   }
 
   /**
