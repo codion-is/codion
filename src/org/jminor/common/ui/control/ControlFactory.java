@@ -21,10 +21,8 @@ public class ControlFactory {
 
   public static ToggleBeanPropertyLink toggleControl(final Object owner, final String propertyName, final String caption,
                                                      final Event changeEvent, final String description) {
-    final ToggleBeanPropertyLink link = new ToggleBeanPropertyLink(owner, propertyName, changeEvent, caption,
-                    LinkType.READ_WRITE);
-
-    return (ToggleBeanPropertyLink) setControlDescription(link, description);
+    return (ToggleBeanPropertyLink) new ToggleBeanPropertyLink(owner, propertyName, changeEvent, caption,
+            LinkType.READ_WRITE).setDescription(description);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final Icon icon) {
@@ -42,46 +40,22 @@ public class ControlFactory {
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final State state, final String description) {
-    return (MethodControl) setControlDescription(methodControl(owner, method, name, state), description);
+    return (MethodControl) methodControl(owner, method, name, state).setDescription(description);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final State state, final String description, final int mnemonic) {
-    return (MethodControl) setControlMnemonic(methodControl(owner, method, name, state, description), mnemonic);
+    return (MethodControl) methodControl(owner, method, name, state, description).setMnemonic(mnemonic);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final State state, final String description, final int mnemonic, final KeyStroke ks) {
-    return (MethodControl) setControlKeyStroke(methodControl(owner, method, name, state, description, mnemonic), ks);
+    return (MethodControl) methodControl(owner, method, name, state, description, mnemonic).setKeyStroke(ks);
   }
 
   public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final State state, final String description, final int mnemonic,
                                             final KeyStroke ks, final Icon icon) {
-    return (MethodControl) setControlIcon(methodControl(owner, method, name, state, description, mnemonic, ks), icon);
-  }
-
-  public static Control setControlDescription(final Control control, final String description) {
-    control.setDescription(description);
-
-    return control;
-  }
-
-  public static Control setControlMnemonic(final Control control, final int mnemonic) {
-    control.setMnemonic(mnemonic);
-
-    return control;
-  }
-
-  public static Control setControlKeyStroke(final Control control, final KeyStroke keyStroke) {
-    control.setKeyStroke(keyStroke);
-
-    return control;
-  }
-
-  public static Control setControlIcon(final Control control, final Icon icon) {
-    control.setIcon(icon);
-
-    return control;
+    return (MethodControl) methodControl(owner, method, name, state, description, mnemonic, ks).setIcon(icon);
   }
 }

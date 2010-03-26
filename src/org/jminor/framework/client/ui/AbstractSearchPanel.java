@@ -178,7 +178,7 @@ public abstract class AbstractSearchPanel extends JPanel {
     final ItemComboBoxModel comboBoxModel = new ItemComboBoxModel();
     for (int i = 0; i < searchTypes.length; i++)
       if (searchTypeAllowed(searchTypes[i]))
-        comboBoxModel.addElement(new ItemComboBoxModel.IconItem(searchTypes[i],Images.loadImage(searchTypeImageNames[i])));
+        comboBoxModel.addElement(new ItemComboBoxModel.IconItem(searchTypes[i], Images.loadImage(searchTypeImageNames[i])));
 
     return comboBoxModel;
   }

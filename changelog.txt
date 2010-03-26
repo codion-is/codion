@@ -1093,3 +1093,9 @@
   Tests added to common.db.dbms package
   Tests added to framework.client.model.reporting
   Unit test coverage improved
+  CancelExceptionTest added
+  WeakPropertyChangeListenerTest added
+  ControlFactory, removed setControlXXX(Control) methods
+  Control, setXXX() methods now return the Control instance allowing chained method calls
+  EntityApplicationPanelTest added
+  MonitorModelTest and MonitorPanelTest added

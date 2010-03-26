@@ -177,7 +177,7 @@ public class ControlProvider {
       final Icon icon = controlSet.getIcon();
       if (icon != null)
         menu.setIcon(icon);
-      final char mnemonic = controlSet.getMnemonic();
+      final int mnemonic = controlSet.getMnemonic();
       if (mnemonic != -1)
         menu.setMnemonic(mnemonic);
     }

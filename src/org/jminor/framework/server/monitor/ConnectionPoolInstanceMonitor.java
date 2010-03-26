@@ -17,6 +17,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -217,7 +218,11 @@ public class ConnectionPoolInstanceMonitor {
 
   private List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
     final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
-    Collections.sort(poolStates);
+    Collections.sort(poolStates, new Comparator<ConnectionPoolState>() {
+      public int compare(final ConnectionPoolState stateOne, final ConnectionPoolState stateTwo) {
+        return ((Long) stateOne.time).compareTo(stateTwo.time);
+      }
+    });
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);

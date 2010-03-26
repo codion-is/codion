@@ -67,9 +67,11 @@ public class Control extends AbstractAction {
 
   /**
    * @param description the description string
+   * @return this control instance
    */
-  public void setDescription(final String description) {
+  public Control setDescription(final String description) {
     this.putValue(Action.SHORT_DESCRIPTION, description);
+    return this;
   }
 
   /**
@@ -81,9 +83,11 @@ public class Control extends AbstractAction {
 
   /**
    * @param name the name of this Control instance
+   * @return this Control instance
    */
-  public void setName(final String name) {
+  public Control setName(final String name) {
     this.putValue(NAME, name);
+    return this;
   }
 
   /**
@@ -95,30 +99,36 @@ public class Control extends AbstractAction {
 
   /**
    * @param key the mnemonic to associate with this Control instance
+   * @return this Control instance
    */
-  public void setMnemonic(final int key) {
+  public Control setMnemonic(final int key) {
     this.putValue(MNEMONIC_KEY, key);
+    return this;
   }
 
   /**
    * @return the mnemonic
    */
-  public char getMnemonic() {
-    return (Character) this.getValue(MNEMONIC_KEY);
+  public int getMnemonic() {
+    return (Integer) this.getValue(MNEMONIC_KEY);
   }
 
   /**
    * @param ks the KeyStroke to associate with this Control
+   * @return this Control instance
    */
-  public void setKeyStroke(final KeyStroke ks) {
+  public Control setKeyStroke(final KeyStroke ks) {
     this.putValue(ACCELERATOR_KEY, ks);
+    return this;
   }
 
   /**
    * @param icon the icon to associate with this Control
+   * @return this Control instance
    */
-  public void setIcon(final Icon icon) {
+  public Control setIcon(final Icon icon) {
     this.putValue(SMALL_ICON, icon);
+    return this;
   }
 
   /**

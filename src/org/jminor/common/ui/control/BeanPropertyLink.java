@@ -29,9 +29,7 @@ public abstract class BeanPropertyLink extends AbstractPropertyLink {
       this.getMethod = getGetMethod();
     }
     catch (NoSuchMethodException e) {
-      e.printStackTrace();
-      System.out.println("Bean property methods for " + propertyName + " not found in class " + owner.getClass().getName());
-      throw new RuntimeException(e);
+      throw new RuntimeException("Bean property methods for " + propertyName + " not found in class " + owner.getClass().getName(), e);
     }
   }
 

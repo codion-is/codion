@@ -10,7 +10,7 @@ import java.io.Serializable;
 * Date: 8.12.2007
 * Time: 16:17:01
 */
-public class ConnectionPoolState implements Serializable, Comparable<ConnectionPoolState> {
+public class ConnectionPoolState implements Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -26,14 +26,5 @@ public class ConnectionPoolState implements Serializable, Comparable<ConnectionP
     this.time = time;
     this.connectionCount = connectionCount;
     this.connectionsInUse = connectionsInUse;
-  }
-
-  public int compareTo(final ConnectionPoolState poolState) {
-    if (this.time < poolState.time)
-      return -1;
-    else if (this.time > poolState.time)
-      return 1;
-    else
-      return 0;
   }
 }

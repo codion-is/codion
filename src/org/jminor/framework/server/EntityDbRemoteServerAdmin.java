@@ -19,6 +19,7 @@ import org.apache.log4j.Level;
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
@@ -121,6 +122,10 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
+    try {
+      server.getRegistry().unbind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX);
+    }
+    catch (NotBoundException e) {/**/}
     server.shutdown();
     try {
       UnicastRemoteObject.unexportObject(this, true);

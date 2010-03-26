@@ -3,9 +3,13 @@
  */
 package org.jminor.common.model.combobox;
 
+import org.jminor.common.ui.images.Images;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
+import javax.swing.ImageIcon;
 
 public class ItemComboBoxModelTest {
 
@@ -30,5 +34,13 @@ public class ItemComboBoxModelTest {
     assertTrue("The item representing 2 should be selected", model.getSelectedItem().equals(items[1]));
     model.setSelectedItem(4);
     assertTrue("The item representing 4 should be selected", model.getSelectedItem().equals(items[3]));
+
+    final ImageIcon icon = Images.loadImage("Equals60x16.gif");
+    final ItemComboBoxModel iconModel = new ItemComboBoxModel(new ItemComboBoxModel.IconItem("test", icon));
+    iconModel.setSelectedItem("test");
+    final ItemComboBoxModel.IconItem item = (ItemComboBoxModel.IconItem) iconModel.getSelectedItem();
+    assertEquals(icon.getIconHeight(), item.getIconHeight());
+    assertEquals(icon.getIconWidth(), item.getIconWidth());
+    assertEquals("test", item.toString());
   }
 }

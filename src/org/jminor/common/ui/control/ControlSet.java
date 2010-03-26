@@ -17,8 +17,6 @@ public class ControlSet extends Control {
 
   private final List<Action> actions = new ArrayList<Action>();
 
-  private String description;
-
   /** Constructs a new ControlSet. */
   public ControlSet() {
     this("");
@@ -78,22 +76,6 @@ public class ControlSet extends Control {
 
   public List<Action> getActions() {
     return actions;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setDescription(final String description) {
-    this.description = description;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  public void setMnemonic(final char mnemonic) {
-    putValue(MNEMONIC_KEY, mnemonic);
   }
 
   /**

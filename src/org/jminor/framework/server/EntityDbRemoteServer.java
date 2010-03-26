@@ -246,18 +246,18 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   public void shutdown() throws RemoteException {
     try {
+      getRegistry().unbind(serverName);
+    }
+    catch (NotBoundException e) {
+      log.error(this, e);
+    }
+    try {
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (NoSuchObjectException e) {
       log.warn(e);
     }
     removeConnections(false);
-    try {
-      getRegistry().unbind(serverName);
-    }
-    catch (NotBoundException e) {
-      log.error(this, e);
-    }
     if (database.isEmbedded())
       database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
   }
