@@ -203,7 +203,7 @@ public class EntityDbConnectionPool {
       final ListIterator<ConnectionPoolState> iterator = connectionPoolStatistics.listIterator();
       while (iterator.hasNext()) {//NB. the stat log is circular, result should be sorted
         final ConnectionPoolState state = iterator.next();
-        if (state.getTime() > since)
+        if (state.getTime() >= since)
           poolStates.add(state);
       }
     }
