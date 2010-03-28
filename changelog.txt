@@ -1100,3 +1100,7 @@
   EntityApplicationPanelTest added
   MonitorModelTest and MonitorPanelTest added
   Checkstyle run plus lots of minor fixes
+  DbConnectionProvider interface added to common.db
+  ConnectionPool interface added to common.db
+  EntityDbConnectionPool now implements ConnectionPool
+  EntityDbConnectionPool renamed to DbConnectionPool and moved to common.db along with test class

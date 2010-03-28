@@ -1,27 +1,31 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.common.db;
 
-import org.jminor.common.db.ConnectionPoolSettings;
-import org.jminor.common.db.ConnectionPoolStatistics;
-import org.jminor.common.db.User;
+import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.Date;
 
-public class EntityDbConnectionPoolTest {
+public class DbConnectionPoolTest {
 
   @Test
   public void test() throws Exception {
     final Date startDate = new Date();
     final ConnectionPoolSettings settings = ConnectionPoolSettings.getDefault(new User("scott", null));
     assertEquals(60000, settings.getPooledConnectionTimeout());
-    final EntityDbConnectionPool pool = new EntityDbConnectionPool(DatabaseProvider.createInstance(), settings);
-    pool.setPassword("tiger");
+    final DbConnectionPool pool = new DbConnectionPool(new DbConnectionProvider() {
+      final Database database = DatabaseProvider.createInstance();
+      public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+        return new DbConnection(database, user);
+      }
+    }, settings);
+    pool.getConnectionPoolSettings().getUser().setPassword("tiger");
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
     ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startDate.getTime());
@@ -33,7 +37,7 @@ public class EntityDbConnectionPoolTest {
     assertEquals(0, statistics.getAvailableInPool());
     assertEquals(0, statistics.getConnectionsInUse());
 
-    final EntityDbConnection dbConnectionOne = pool.checkOutConnection();
+    final DbConnection dbConnectionOne = pool.checkOutConnection();
     assertTrue(dbConnectionOne.isConnectionValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(1, statistics.getConnectionRequests());
@@ -42,7 +46,7 @@ public class EntityDbConnectionPoolTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(1, statistics.getLiveConnectionCount());
 
-    final EntityDbConnection dbConnectionTwo = pool.checkOutConnection();
+    final DbConnection dbConnectionTwo = pool.checkOutConnection();
     assertTrue(dbConnectionTwo.isConnectionValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(2, statistics.getConnectionRequests());
@@ -59,7 +63,7 @@ public class EntityDbConnectionPoolTest {
     assertEquals(1, statistics.getConnectionsInUse());
     assertEquals(2, statistics.getLiveConnectionCount());
 
-    final EntityDbConnection dbConnectionThree = pool.checkOutConnection();
+    final DbConnection dbConnectionThree = pool.checkOutConnection();
     assertTrue(dbConnectionThree.isConnectionValid());
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(3, statistics.getConnectionRequests());
@@ -86,7 +90,7 @@ public class EntityDbConnectionPoolTest {
 
     assertTrue(statistics.getPoolStatistics().size() > 0);
 
-    final EntityDbConnection dbConnectionFour = pool.checkOutConnection();
+    final DbConnection dbConnectionFour = pool.checkOutConnection();
     statistics = pool.getConnectionPoolStatistics(startDate.getTime());
     assertEquals(4, statistics.getConnectionRequests());
     assertEquals(2, statistics.getConnectionsCreated());

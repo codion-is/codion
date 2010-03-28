@@ -50,6 +50,8 @@ public class DbConnection {
   private int cacheQueriesRequests = 0;
   private boolean lastResultCached = false;
 
+  private long poolTime = -1;
+
   private static long requestsPerSecondTime = System.currentTimeMillis();
   private static int queriesPerSecond = 0;
   private static int requestsPerSecondCounter = 0;
@@ -84,6 +86,21 @@ public class DbConnection {
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
     connect();
+  }
+
+  /**
+   * Sets the time this connection was checked into a connection pool
+   * @param time the time this connection was pooled
+   */
+  public void setPoolTime(final long time) {
+    this.poolTime = time;
+  }
+
+  /**
+   * @return the time at which this connection was pooled
+   */
+  public long getPoolTime() {
+    return poolTime;
   }
 
   @Override

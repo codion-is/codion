@@ -56,6 +56,11 @@ public interface Database {
   static final String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
+   * Specifies whether or not connection pools should collect fine grained performance/usage statistics by default, true or false
+   */
+  public static final String DATABASE_POOL_STATISTICS = "jminor.db.pooling.collectStatistics";
+
+  /**
    * The constant used to denote the Oracle database type
    * @see Database#DATABASE_TYPE
    */

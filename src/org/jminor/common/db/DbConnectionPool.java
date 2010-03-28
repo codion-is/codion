@@ -1,15 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.common.db;
 
-import org.jminor.common.db.ConnectionPoolSettings;
-import org.jminor.common.db.ConnectionPoolState;
-import org.jminor.common.db.ConnectionPoolStatistics;
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 
 import org.apache.log4j.Logger;
 
@@ -30,18 +25,18 @@ import java.util.TimerTask;
  * Date: 7.12.2007
  * Time: 00:04:08
  */
-public class EntityDbConnectionPool {
+public class DbConnectionPool implements ConnectionPool {
 
-  private static final Logger log = Util.getLogger(EntityDbConnectionPool.class);
+  private static final Logger log = Util.getLogger(DbConnectionPool.class);
 
-  private final Stack<EntityDbConnection> connectionPool = new Stack<EntityDbConnection>();
-  private final Set<EntityDbConnection> connectionsInUse = new HashSet<EntityDbConnection>();
+  private final Stack<DbConnection> connectionPool = new Stack<DbConnection>();
+  private final Set<DbConnection> connectionsInUse = new HashSet<DbConnection>();
 
   private final List<ConnectionPoolState> connectionPoolStatistics = new ArrayList<ConnectionPoolState>(1000);
   private final Date creationDate = new Date();
   private Date resetDate = new Date();
   private ConnectionPoolSettings connectionPoolSettings;
-  private boolean collectFineGrainedStatistics = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_POOL_STATISTICS);
+  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
   private int connectionPoolStatisticsIndex = 0;
   private int liveConnections = 0;
   private int connectionsCreated = 0;
@@ -54,17 +49,12 @@ public class EntityDbConnectionPool {
   private int requestsPerSecondCounter = 0;
   private long requestsPerSecondTime = System.currentTimeMillis();
 
-  private final User user;
-  private final Database database;
+  private final DbConnectionProvider dbConnectionProvider;
   private boolean closed = false;
   private int poolStatisticsSize = 1000;
 
-  public EntityDbConnectionPool(final Database database, final ConnectionPoolSettings settings) {
-    this.database = database;
-    this.user = settings.getUser();
-    final String sid = database.getSid();
-    if (sid != null && sid.length() != 0)
-      this.user.setProperty(Database.DATABASE_SID, sid);
+  public DbConnectionPool(final DbConnectionProvider dbConnectionProvider, final ConnectionPoolSettings settings) {
+    this.dbConnectionProvider = dbConnectionProvider;
     this.connectionPoolSettings = settings;
     new Timer(true).schedule(new TimerTask() {
       @Override
@@ -80,13 +70,13 @@ public class EntityDbConnectionPool {
     }, new Date(), 2550);
   }
 
-  public EntityDbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
+  public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
     connectionRequests++;
     requestsPerSecondCounter++;
-    EntityDbConnection connection = getConnectionFromPool();
+    DbConnection connection = getConnectionFromPool();
     if (connection == null) {
       connectionRequestsDelayed++;
       requestsDelayedPerSecondCounter++;
@@ -95,8 +85,8 @@ public class EntityDbConnectionPool {
           liveConnections++;
           connectionsCreated++;
           if (log.isDebugEnabled())
-            log.debug("$$$$ adding a new connection to connection pool " + user);
-          checkInConnection(new EntityDbConnection(database, user));
+            log.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
+          checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
         }
       }
       int retryCount = 0;
@@ -110,7 +100,7 @@ public class EntityDbConnectionPool {
             retryCount++;
           }
           if (connection != null && log.isDebugEnabled())
-            log.debug("##### " + user + " got connection"
+            log.debug("##### " + getConnectionPoolSettings().getUser() + " got connection"
                     + " after " + (System.currentTimeMillis() - time) + "ms (retries: " + retryCount + ")");
         }
         catch (InterruptedException e) {
@@ -122,7 +112,7 @@ public class EntityDbConnectionPool {
     return connection;
   }
 
-  public void checkInConnection(final EntityDbConnection connection) {
+  public void checkInConnection(final DbConnection connection) {
     if (closed)
       throw new IllegalStateException("Trying to check a connection into a closed connection pool!");
 
@@ -138,20 +128,20 @@ public class EntityDbConnectionPool {
         catch (SQLException e) {
           log.error(this, e);
         }
-        connection.poolTime = System.currentTimeMillis();
+        connection.setPoolTime(System.currentTimeMillis());
         connectionPool.push(connection);
         connectionPool.notify();
       }
       else {
         if (log.isDebugEnabled())
-          log.debug(user + " connection invalid upon check in");
+          log.debug(getConnectionPoolSettings().getUser() + " connection invalid upon check in");
         disconnect(connection);
       }
     }
   }
 
-  public void setPassword(final String password) {
-    this.user.setPassword(password);
+  public User getUser() {
+    return getConnectionPoolSettings().getUser();
   }
 
   public void close() {
@@ -170,7 +160,7 @@ public class EntityDbConnectionPool {
   }
 
   public ConnectionPoolStatistics getConnectionPoolStatistics(final long since) {
-    final ConnectionPoolStatistics statistics = new ConnectionPoolStatistics(user);
+    final ConnectionPoolStatistics statistics = new ConnectionPoolStatistics(getConnectionPoolSettings().getUser());
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         statistics.setConnectionsInUse(connectionsInUse.size());
@@ -227,13 +217,13 @@ public class EntityDbConnectionPool {
     resetDate = new Date();
   }
 
-  private EntityDbConnection getConnectionFromPool() {
+  private DbConnection getConnectionFromPool() {
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
         final int connectionsInPool = connectionPool.size();
         if (collectFineGrainedStatistics)
           addInPoolStats(connectionsInPool, connectionsInUse.size(), System.currentTimeMillis());
-        final EntityDbConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
+        final DbConnection dbConnection = connectionsInPool > 0 ? connectionPool.pop() : null;
         if (dbConnection != null)
           connectionsInUse.add(dbConnection);
 
@@ -257,14 +247,14 @@ public class EntityDbConnectionPool {
   private void cleanPool(final boolean disconnectAll) {
     synchronized (connectionPool) {
       final long currentTime = System.currentTimeMillis();
-      final ListIterator<EntityDbConnection> iterator = connectionPool.listIterator();
+      final ListIterator<DbConnection> iterator = connectionPool.listIterator();
       while (iterator.hasNext() && connectionPool.size() > connectionPoolSettings.getMinimumPoolSize()) {
-        final EntityDbConnection connection = iterator.next();
-        final long idleTime = currentTime - connection.poolTime;
+        final DbConnection connection = iterator.next();
+        final long idleTime = currentTime - connection.getPoolTime();
         if (disconnectAll || idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
           if (log.isDebugEnabled())
-            log.debug(user + " removing connection from pool, idle for " + idleTime / 1000
+            log.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
                   + " seconds, " + connectionPool.size() + " available");
           disconnect(connection);
         }
@@ -272,7 +262,7 @@ public class EntityDbConnectionPool {
     }
   }
 
-  private void disconnect(final EntityDbConnection connection) {
+  private void disconnect(final DbConnection connection) {
     connectionsDestroyed++;
     liveConnections--;
     connection.disconnect();

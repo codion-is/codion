@@ -3,8 +3,11 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.db.ConnectionPool;
 import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.ConnectionPoolStatistics;
+import org.jminor.common.db.DbConnectionPool;
+import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
@@ -16,7 +19,6 @@ import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
-import org.jminor.framework.db.EntityDbConnectionPool;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.exception.EntityModifiedException;
@@ -96,8 +98,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * The available connection pools
    */
-  private static final Map<User, EntityDbConnectionPool> connectionPools =
-          Collections.synchronizedMap(new HashMap<User, EntityDbConnectionPool>());
+  private static final Map<User, ConnectionPool> connectionPools =
+          Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
 
   static {
     new Timer(true).schedule(new TimerTask() {
@@ -121,7 +123,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     super(port, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     if (connectionPools.containsKey(clientInfo.getUser()))
-      connectionPools.get(clientInfo.getUser()).setPassword(clientInfo.getUser().getPassword());
+      connectionPools.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
     this.database = database;
     this.clientInfo = clientInfo;
     final String sid = database.getSid();
@@ -559,7 +561,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    */
   public static List<ConnectionPoolSettings> getEnabledConnectionPoolSettings() {
     final List<ConnectionPoolSettings> poolSettings = new ArrayList<ConnectionPoolSettings>();
-    for (final EntityDbConnectionPool pool : connectionPools.values()) {
+    for (final ConnectionPool pool : connectionPools.values()) {
       if (pool.getConnectionPoolSettings().isEnabled())
         poolSettings.add(pool.getConnectionPoolSettings());
     }
@@ -572,9 +574,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   public static void setConnectionPoolSettings(final Database database, final ConnectionPoolSettings settings) {
-    EntityDbConnectionPool pool = connectionPools.get(settings.getUser());
-    if (pool == null)
-      connectionPools.put(settings.getUser(), new EntityDbConnectionPool(database, settings));
+    ConnectionPool pool = connectionPools.get(settings.getUser());
+    if (pool == null) {
+      connectionPools.put(settings.getUser(), new DbConnectionPool(new DbConnectionProvider() {
+        public EntityDbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+          return new EntityDbConnection(database, user);
+        }
+      }, settings));
+    }
     else
       pool.setConnectionPoolSettings(settings);
   }
@@ -656,15 +663,15 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   private void returnConnection(final User user, final EntityDbConnection connection) {
-    final EntityDbConnectionPool connectionPool = connectionPools.get(user);
+    final ConnectionPool connectionPool = connectionPools.get(user);
     if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled())
       connectionPool.checkInConnection(connection);
   }
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, SQLException {
-    final EntityDbConnectionPool connectionPool = connectionPools.get(user);
+    final ConnectionPool connectionPool = connectionPools.get(user);
     if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
-      final EntityDbConnection pooledDbConnection = connectionPool.checkOutConnection();
+      final EntityDbConnection pooledDbConnection = (EntityDbConnection) connectionPool.checkOutConnection();
       if (entityDbConnection != null) {//pool has been turned on since this one was created
         entityDbConnection.disconnect();//discard
         entityDbConnection = null;

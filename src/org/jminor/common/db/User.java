@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.dbms.Database;
+
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -22,6 +24,9 @@ public class User implements Serializable {
     this.username = username;
     this.password = password;
     this.hashCode = username.hashCode();
+    final String sid = System.getProperty(Database.DATABASE_SID);
+    if (sid != null)
+      setProperty(Database.DATABASE_SID, sid);
   }
 
   /**
