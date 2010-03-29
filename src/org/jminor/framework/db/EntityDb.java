@@ -250,7 +250,7 @@ public interface EntityDb {
    * @throws org.jminor.common.db.DbException in case of a db exception
    */
   void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
-                        final byte[] blobData) throws Exception;
+                 final byte[] blobData) throws Exception;
 
   /**
    * Reads the blob specified by the property identified by <code>propertyID</code> from the given entity
