@@ -634,6 +634,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
               public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
                 RequestCounter.requestsPerSecondCounter++;
                 final String methodName = method.getName();
+                Throwable ex = null;
                 EntityDbConnection connection = null;
                 try {
                   active.add(EntityDbRemoteAdapter.this);
@@ -643,12 +644,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                 }
                 catch (InvocationTargetException ie) {
                   log.error(this, ie);
+                  ex = ie.getCause();
                   throw ie.getTargetException();
                 }
                 finally {
                   try {
                     active.remove(EntityDbRemoteAdapter.this);
-                    final long time = methodLogger.logExit(methodName);
+                    final long time = methodLogger.logExit(methodName, ex);
                     if (connection != null && !connection.isTransactionOpen())
                       returnConnection(clientInfo.getUser(), connection);
                     if (time > RequestCounter.warningThreshold)
@@ -711,7 +713,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     public List<ServerLogEntry> getLogEntries() {
       final ArrayList<ServerLogEntry> entries = new ArrayList<ServerLogEntry>();
       if (logEntries == null)
-        entries.add(new ServerLogEntry("Server logging is not enabled", "", System.currentTimeMillis()));
+        entries.add(new ServerLogEntry("Server logging is not enabled", "", System.currentTimeMillis(), null));
       else
         entries.addAll(logEntries);
 
@@ -723,15 +725,15 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       this.lastAccessedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
         this.lastAccessMessage = parameterArrayToString(database, arguments);
-        addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false);
+        addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false, null);
       }
     }
 
-    public long logExit(final String method) {
+    public long logExit(final String method, final Throwable exception) {
       this.lastExitDate = System.currentTimeMillis();
       this.lastExitedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastExitedMethod.hashCode()))
-        return addLogEntry(lastExitedMethod, lastAccessMessage, lastExitDate, true);
+        return addLogEntry(lastExitedMethod, lastAccessMessage, lastExitDate, true, exception);
 
       return -1;
     }
@@ -754,12 +756,13 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return hashCode != IS_CONNECTED && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
     }
 
-    private long addLogEntry(final String method, final String message, final long time, final boolean isExit) {
+    private long addLogEntry(final String method, final String message, final long time, final boolean isExit,
+                             final Throwable exception) {
       if (!isExit) {
         if (currentLogEntryIndex > logEntries.size()-1)
           currentLogEntryIndex = 0;
 
-        logEntries.get(currentLogEntryIndex).set(method, message, time);
+        logEntries.get(currentLogEntryIndex).set(method, message, time, exception);
 
         return -1;
       }
@@ -768,7 +771,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         assert lastEntry.getMethod().equals(method);
         currentLogEntryIndex++;
 
-        return lastEntry.setExitTime(time);
+        return lastEntry.setException(exception).setExitTime(time);
       }
     }
 

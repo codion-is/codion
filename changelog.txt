@@ -1104,3 +1104,5 @@
   ConnectionPool interface added to common.db
   EntityDbConnectionPool now implements ConnectionPool
   EntityDbConnectionPool renamed to DbConnectionPool and moved to common.db along with test class
+  ServerLogEntry.exception field added, included in toString()
+  EntityDbRemoteAdapter uses the above

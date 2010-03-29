@@ -5,7 +5,9 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.formats.DateFormats;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,21 +25,23 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   private long entryTime;
   private long exitTime;
   private long delta;
+  private Throwable exception;
 
   public ServerLogEntry() {
-    this("", "", 0);
+    this("", "", 0, null);
   }
 
-  public ServerLogEntry(final String method, final String message, final long time) {
-    set(method, message, time);
+  public ServerLogEntry(final String method, final String message, final long time, final Throwable exception) {
+    set(method, message, time, exception);
   }
 
-  public void set(final String method, final String message, final long time) {
+  public void set(final String method, final String message, final long time, final Throwable exception) {
     this.method = method;
     this.message = message;
     this.entryTime = time;
     this.exitTime = 0;
     this.delta = 0;
+    this.exception = exception;
   }
 
   public long getEntryTime() {
@@ -56,6 +60,10 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
     return method;
   }
 
+  public Throwable getException() {
+    return exception;
+  }
+
   public int compareTo(final ServerLogEntry entry) {
     if (this.entryTime < entry.entryTime)
       return -1;
@@ -72,6 +80,11 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
       stringBuilder.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
       stringBuilder.append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
+      if (exception != null) {
+        final StringWriter sw = new StringWriter();
+        exception.printStackTrace(new PrintWriter(sw));
+        stringBuilder.append(sw.toString());
+      }
     }
     else {
       stringBuilder.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
@@ -97,6 +110,11 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
     this.delta = this.exitTime - this.entryTime;
 
     return delta;
+  }
+
+  public ServerLogEntry setException(final Throwable exception) {
+    this.exception = exception;
+    return this;
   }
 
   /**

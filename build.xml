@@ -144,6 +144,7 @@
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/**,
                 org/jminor/framework/domain/*,
+                org/jminor/framework/i18n/**,
                 org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class,
                 org/jminor/framework/server/*Skel.class"/>
