@@ -36,6 +36,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -112,6 +113,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public static final String UPDATE_SELECTED = "updateSelected";
   public static final String CONFIGURE_QUERY = "configureQuery";
   public static final String SELECT_COLUMNS = "selectTableColumns";
+  public static final String EXPORT_JSON = "exportJSON";
 
   public static final int UP = 0;
   public static final int DOWN = 1;
@@ -825,6 +827,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   /**
+   * Exports the selected records as a JSON file
+   * @throws CancelException in case the action is cancelled
+   * @throws JSONException in case of a JSON exception
+   */
+  public void exportSelected() throws CancelException, JSONException {
+    final List<Entity> selected = getModel().getTableModel().getSelectedEntities();
+    Util.writeFile(EntityUtil.getJSONString(selected), UiUtil.chooseFileToSave(this, null, null));
+    JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
+  }
+
+  /**
    * Prints the table if one is available
    */
   public void printTable() {
@@ -909,6 +922,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
     return ControlFactory.methodControl(this, "printTable", printCaption, null,
             printCaption, printCaption.charAt(0));
+  }
+
+  /**
+   * @return a control for exporting the selected records to file
+   */
+  public Control getExportControl() {
+    return ControlFactory.methodControl(this, "exportSelected",
+            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + "...",
+            getModel().getTableModel().stateSelectionEmpty().getReversedState(),
+            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
+            Images.loadImage(Images.IMG_SAVE_16));
   }
 
   /**
@@ -1511,6 +1535,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed())
         setControl(MENU_DELETE, getDeleteSelectedControl());
       setControl(PRINT, getPrintControl());
+      setControl(EXPORT_JSON, getExportControl());
       setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
       if (getModel().getTableModel().isQueryConfigurationAllowed())
         setControl(CONFIGURE_QUERY, getConfigureQueryControl());
@@ -1538,6 +1563,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     }
     if (controlMap.containsKey(MENU_DELETE)) {
       controlSet.add(controlMap.get(MENU_DELETE));
+      separatorRequired = true;
+    }
+    if (controlMap.containsKey(EXPORT_JSON)) {
+      controlSet.add(controlMap.get(EXPORT_JSON));
       separatorRequired = true;
     }
     if (separatorRequired) {

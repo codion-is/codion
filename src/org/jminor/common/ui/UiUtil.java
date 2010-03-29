@@ -173,8 +173,8 @@ public class UiUtil {
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooser.getSelectedFile();
         if (selectedFile.exists()) {
-          option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.FILE_EXISTS),
-                  Messages.get(Messages.OVERWRITE_FILE), JOptionPane.YES_NO_CANCEL_OPTION);
+          option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.OVERWRITE_FILE),
+                  Messages.get(Messages.FILE_EXISTS), JOptionPane.YES_NO_CANCEL_OPTION);
           if (option == JOptionPane.YES_OPTION)
             fileChosen = true;
           else if (option == JOptionPane.CANCEL_OPTION)

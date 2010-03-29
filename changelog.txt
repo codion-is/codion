@@ -1106,3 +1106,9 @@
   EntityDbConnectionPool renamed to DbConnectionPool and moved to common.db along with test class
   ServerLogEntry.exception field added, included in toString()
   EntityDbRemoteAdapter uses the above
+  EntityDbRemoteAdapter logs more detailed info about entity parameters used in method calls
+  EntityUtil.get/parseJSONString() added
+  Entity.initializeEntity() added, package protected
+  EntityPanel.exportSelected() added, included as control action
+  DefaultExceptionHandler.handleException() now handles a CancelException wrapped in a RuntimeException correctly
+  JSON library from json.org added

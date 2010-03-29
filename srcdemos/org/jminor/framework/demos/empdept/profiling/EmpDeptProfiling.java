@@ -63,7 +63,7 @@ public class EmpDeptProfiling extends ProfilingModel {
       }
     }
     catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.toString());
     }
   }
 

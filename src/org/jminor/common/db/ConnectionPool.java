@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.db;
 
 import java.sql.SQLException;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 28.3.2010
  * Time: 13:06:20
  */

@@ -19,10 +19,10 @@ public class DefaultExceptionHandler implements ExceptionHandler {
   }
 
   public void handleException(final Throwable exception, final JComponent dialogParent) {
-    if (exception instanceof CancelException)
+    final Throwable rootCause = unwrapRuntimeException(exception);
+    if (rootCause instanceof CancelException)
       return;
 
-    final Throwable rootCause = unwrapRuntimeException(exception);
     if (rootCause instanceof DbException)
       handleDbException((DbException) rootCause, dialogParent);
     else {

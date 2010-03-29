@@ -660,6 +660,20 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     return defaultProxy;
   }
 
+  static Entity initializeEntity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
+    final Entity entity = new Entity(entityID);
+    for (final Map.Entry<String, Object> entry : values.entrySet()) {
+      final Property property = EntityRepository.getProperty(entityID, entry.getKey());
+      entity.initializeValue(property, entry.getValue());
+    }
+    if (originalValues != null) {
+      entity.originalValues = new HashMap<String, Object>(originalValues);
+      entity.originalValues.putAll(originalValues);
+    }
+
+    return entity;
+  }
+
   /**
    * Performs the actual value setting, minding all the stuff that needs minding here
    * @param property the property
@@ -962,9 +976,9 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       final StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
       for (final Property.PrimaryKeyProperty property : getProperties()) {
-        stringBuilder.append(property.getPropertyID()).append("=").append(getValue(property.getPropertyID()));
+        stringBuilder.append(property.getPropertyID()).append(":").append(getValue(property.getPropertyID()));
         if (i++ < getPropertyCount() - 1)
-          stringBuilder.append(", ");
+          stringBuilder.append(",");
       }
 
       return stringBuilder.toString();

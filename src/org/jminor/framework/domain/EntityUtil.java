@@ -7,6 +7,11 @@ import org.jminor.common.db.IdSource;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.Configuration;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -21,7 +26,95 @@ import java.util.Set;
  */
 public class EntityUtil {
 
+  private static final SimpleDateFormat jsonDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  private static final SimpleDateFormat jsonTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
   private EntityUtil() {}
+
+  public static List<Entity> parseJSONString(final String jsonString) throws JSONException, ParseException {
+    final JSONObject jsonObject = new JSONObject(jsonString);
+    final List<Entity> entities = new ArrayList<Entity>();
+    for (int i = 0; i < jsonObject.names().length(); i++) {
+      final JSONObject entityObject = jsonObject.getJSONObject(jsonObject.names().get(i).toString());
+      final Map<String, Object> propertyValueMap = new HashMap<String, Object>();
+      Map<String, Object> originalValueMap = null;
+      final String entityID = entityObject.getString("entityID");
+      final JSONObject propertyValues = entityObject.getJSONObject("propertyValues");
+      for (int j = 0; j < propertyValues.names().length(); j++) {
+        final String propertyID = propertyValues.names().get(j).toString();
+        propertyValueMap.put(propertyID, getValue(entityID, propertyID, propertyValues));
+      }
+      if (!entityObject.isNull("originalValues")) {
+        originalValueMap = new HashMap<String, Object>();
+        final JSONObject originalValues = entityObject.getJSONObject("originalValues");
+        for (int j = 0; j < originalValues.names().length(); j++) {
+          final String propertyID = originalValues.names().get(j).toString();
+          originalValueMap.put(propertyID, getValue(entityID, propertyID, originalValues));
+        }
+      }
+      entities.add(Entity.initializeEntity(entityID, propertyValueMap, originalValueMap));
+    }
+
+    return entities;
+  }
+
+  public static String getJSONString(final Collection<Entity> entities) throws JSONException {
+    final JSONObject jsonEntities = new JSONObject();
+    for (final Entity entity : entities) {
+      final JSONObject jsonEntity = new JSONObject();
+      jsonEntity.put("entityID", entity.getEntityID());
+      final JSONObject propertyValues = new JSONObject();
+      for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
+        if (!(property instanceof Property.ForeignKeyProperty)) {
+          if (entity.isValueNull(property.getPropertyID())) {
+            propertyValues.put(property.getPropertyID(), "");
+          }
+          else {
+            if (property.getPropertyType() == Type.STRING) {
+              propertyValues.put(property.getPropertyID(), entity.getStringValue(property.getPropertyID()));
+            }
+            else if (property.getPropertyType() == Type.DATE || property.getPropertyType() == Type.TIMESTAMP) {
+              propertyValues.put(property.getPropertyID(), entity.getFormattedDate(property.getPropertyID(),
+                      property.getPropertyType() == Type.DATE ? jsonDateFormat : jsonTimestampFormat));
+            }
+            else {
+              propertyValues.put(property.getPropertyID(), entity.getValue(property.getPropertyID()));
+            }
+          }
+        }
+      }
+      jsonEntity.put("propertyValues", propertyValues);
+      if (entity.isModified()) {
+        final JSONObject originalValues = new JSONObject();
+        for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
+          if (!(property instanceof Property.ForeignKeyProperty)) {
+            if (entity.isModified(property.getPropertyID())) {
+              if (Entity.isValueNull(property.getPropertyType(), entity.getOriginalValue(property.getPropertyID()))) {
+                originalValues.put(property.getPropertyID(), "");
+              }
+              else {
+                if (property.getPropertyType() == Type.STRING) {
+                  originalValues.put(property.getPropertyID(), entity.getOriginalValue(property.getPropertyID()));
+                }
+                else if (property.getPropertyType() == Type.DATE || property.getPropertyType() == Type.TIMESTAMP) {
+                  final Date date = (Date) entity.getOriginalValue(property.getPropertyID());
+                  originalValues.put(property.getPropertyID(), property.getPropertyType() == Type.DATE ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date));
+                }
+                else {
+                  originalValues.put(property.getPropertyID(), entity.getOriginalValue(property.getPropertyID()));
+                }
+              }
+            }
+          }
+        }
+        jsonEntity.put("originalValues", originalValues);
+      }
+      final String key = entity.getEntityID() + " PK[" + entity.getPrimaryKey() + "]";
+      jsonEntities.put(key, jsonEntity);
+    }
+
+    return jsonEntities.toString();
+  }
 
   /**
    * @param entities the entities
@@ -316,6 +409,26 @@ public class EntityUtil {
       copies.add(entity.getCopy());
 
     return copies;
+  }
+
+  private static Object getValue(final String entityID, final String propertyID, final JSONObject propertyValues) throws JSONException, ParseException {
+    final Property property = EntityRepository.getProperty(entityID, propertyID);
+    switch (property.getPropertyType()) {
+      case STRING:
+        return propertyValues.getString(propertyID);
+      case BOOLEAN:
+        return Boolean.parseBoolean(propertyValues.getString(propertyID));
+      case DATE:
+        return jsonDateFormat.parse(propertyValues.getString(propertyID));
+      case TIMESTAMP:
+        return jsonTimestampFormat.parse(propertyValues.getString(propertyID));
+      case DOUBLE:
+        return propertyValues.getDouble(propertyID);
+      case INT:
+        return propertyValues.getInt(propertyID);
+    }
+
+    return propertyValues.getString(propertyID);
   }
 
   private interface ValueProvider {

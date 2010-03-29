@@ -23,6 +23,8 @@ import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -41,6 +43,7 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -802,10 +805,35 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         if (((Object[]) arg).length > 0)
           destination.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");
       }
+      else if (arg instanceof Collection) {
+        if (((Collection) arg).size() > 0)
+          destination.append("[").append(parameterArrayToString(database, ((Collection) arg).toArray())).append("]");
+      }
       else if (arg instanceof EntityCriteria)
         destination.append(((EntityCriteria) arg).asString(database));
+      else if (arg instanceof Entity)
+        destination.append(getEntityParameterString((Entity) arg));
       else
         destination.append(arg.toString());
+    }
+
+    private static String getEntityParameterString(final Entity entity) {
+      final StringBuilder builder = new StringBuilder();
+      builder.append(entity.getEntityID()).append(" {");
+      for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
+        final boolean modified = entity.isModified(property.getPropertyID());
+        if (property instanceof Property.PrimaryKeyProperty || modified || entity.isValueNull(property.getPropertyID())) {
+          final StringBuilder valueString = new StringBuilder();
+          if (modified) {
+            valueString.append(entity.getOriginalValue(property.getPropertyID())).append("->");
+          }
+          valueString.append(entity.getValue(property.getPropertyID()));
+          builder.append(property.getPropertyID()).append(":").append(valueString).append(",");
+        }
+      }
+      builder.deleteCharAt(builder.length() - 1);
+
+      return builder.append("}").toString();
     }
   }
 

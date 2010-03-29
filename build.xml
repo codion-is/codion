@@ -152,6 +152,8 @@
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
+                org/jminor/framework/db/exception/**,
+                org/jminor/framework/domain/**,
                 org/jminor/framework/server/monitor/**,
                 org/jminor/framework/server/EntityDbServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
@@ -216,6 +218,7 @@
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.derby}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib" />
+    <copy file="${lib.json}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib" />
     <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib" />
@@ -260,6 +263,7 @@
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.derby}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.h2}" todir="${deploy.demos.path}/lib" />
+    <copy file="${lib.json}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.path}/lib" />
     <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.path}/lib" />
@@ -373,6 +377,7 @@
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.h2}"/>
+        <pathelement location="${lib.json}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
@@ -391,6 +396,7 @@
         <pathelement path="${build.demos}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
+        <pathelement location="${lib.json}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
@@ -410,6 +416,7 @@
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.h2}"/>
+        <pathelement location="${lib.json}"/>
         <pathelement location="${lib.log4j}"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
@@ -429,6 +436,7 @@
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.log4j}"/>
+        <pathelement location="${lib.json}"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -444,6 +452,7 @@
         <pathelement path="${build.base}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.h2}"/>
+        <pathelement location="${lib.json}"/>
         <pathelement location="${lib.log4j}"/>
         <pathelement location="${lib.jasperreports.base}"/>
         <pathelement location="${lib.jasperreports.logging}"/>

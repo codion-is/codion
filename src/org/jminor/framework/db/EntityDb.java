@@ -87,6 +87,7 @@ public interface EntityDb {
    * Performs a commit unless a transaction is open.
    * @param statement the statement to execute
    * @param outParameterType the type of the output parameter, if any, java.sql.Types.*
+   * User Types.NULL to indicate no output parameter.
    * @throws org.jminor.common.db.DbException in case of a database error
    * @return the return parameter if any, otherwise null
    */

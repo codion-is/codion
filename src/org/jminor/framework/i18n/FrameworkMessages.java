@@ -130,6 +130,10 @@ public class FrameworkMessages {
   public static final String ENTITY_MODIFIED_EXCEPTION = "entity_modified_exception";
   public static final String FILTER_BY = "filter_by";
 
+  public static final String EXPORT_SELECTED = "export_selected";
+  public static final String EXPORT_SELECTED_TIP = "export_selected_tip";
+  public static final String EXPORT_SELECTED_DONE = "export_selected_done";
+
   public static String get(final String key) {
     return bundle.getString(key);
   }

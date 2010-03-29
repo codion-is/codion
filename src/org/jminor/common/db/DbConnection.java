@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,8 +34,6 @@ import java.util.TimerTask;
 public class DbConnection {
 
   private static final Logger log = Util.getLogger(DbConnection.class);
-
-  public static final String OUT_PARAMETER_NAME = "procout";
 
   private final Properties connectionProperties = new Properties();
   private final Map<String, List> queryCache = new HashMap<String, List>();
@@ -447,7 +446,7 @@ public class DbConnection {
     log.debug(sqlStatement);
     CallableStatement statement = null;
     try {
-      final boolean hasOutParameter = sqlStatement.indexOf(OUT_PARAMETER_NAME) > 0;
+      final boolean hasOutParameter = outParameterType == Types.NULL;
       statement = connection.prepareCall(sqlStatement);
       if (hasOutParameter)
         statement.registerOutParameter(1, outParameterType);
