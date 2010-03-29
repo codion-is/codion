@@ -372,7 +372,7 @@ public class DbConnection {
 
   public final byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
     //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
-    final String sql = "select " + columnName + " from " + tableName + " " + whereClause;
+    final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
 
     final List result = query(sql, new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
@@ -395,7 +395,7 @@ public class DbConnection {
     final long time = System.currentTimeMillis();
     ByteArrayInputStream inputStream = null;
     PreparedStatement statement = null;
-    final String sql = "update " + tableName + " set " + columnName + " = ? " + whereClause;
+    final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
     try {
       statement = connection.prepareStatement(sql);
       inputStream = new ByteArrayInputStream(blobData);

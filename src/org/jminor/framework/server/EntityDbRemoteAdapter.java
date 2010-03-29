@@ -813,6 +813,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         destination.append(((EntityCriteria) arg).asString(database));
       else if (arg instanceof Entity)
         destination.append(getEntityParameterString((Entity) arg));
+      else if (arg instanceof JasperReport)
+        destination.append(((JasperReport) arg).getName());
       else
         destination.append(arg.toString());
     }
@@ -822,11 +824,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       builder.append(entity.getEntityID()).append(" {");
       for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
         final boolean modified = entity.isModified(property.getPropertyID());
-        if (property instanceof Property.PrimaryKeyProperty || modified || entity.isValueNull(property.getPropertyID())) {
+        if (property instanceof Property.PrimaryKeyProperty || modified) {
           final StringBuilder valueString = new StringBuilder();
-          if (modified) {
+          if (modified)
             valueString.append(entity.getOriginalValue(property.getPropertyID())).append("->");
-          }
           valueString.append(entity.getValue(property.getPropertyID()));
           builder.append(property.getPropertyID()).append(":").append(valueString).append(",");
         }

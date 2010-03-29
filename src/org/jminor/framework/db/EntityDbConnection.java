@@ -8,6 +8,7 @@ import org.jminor.common.db.DbException;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.SimpleCriteria;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
@@ -375,7 +376,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         final String whereCondition = EntityUtil.getWhereCondition(getDatabase(), primaryKey);
 
         execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
-                .append(" = '").append(dataDescription).append("' ").append(whereCondition).toString());
+                .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString());
 
         writeBlobField(blobData, EntityRepository.getTableName(primaryKey.getEntityID()),
                 property.getBlobColumnName(), whereCondition);
@@ -453,7 +454,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         sql.append(", ");
     }
 
-    return sql.append(EntityUtil.getWhereCondition(database, entity)).toString();
+    return sql.append(" where ").append(EntityUtil.getWhereCondition(database, entity)).toString();
   }
 
   /**
@@ -463,11 +464,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   static String getDeleteSQL(final Database database, final Entity.Key entityKey) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
-            .append(EntityUtil.getWhereCondition(database, entityKey)).toString();
+            .append(" where ").append(EntityUtil.getWhereCondition(database, entityKey)).toString();
   }
 
   /**
-   *
    * @param database the Database instance
    * @param criteria the EntityCriteria instance
    * @return a query for deleting the entities specified by the given criteria
@@ -528,10 +528,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * Checks if the given entity has been modified by comparing the property values to the values in the database
    * @param entity the entity to check
    * @throws DbException in case of a database exception
+   * @throws RecordNotFoundException in case the entity has been deleted
    * @throws EntityModifiedException in case the entity has been modified
    */
   private void checkIfModified(final Entity entity) throws DbException, EntityModifiedException {
-    final Entity current = selectSingle(entity.getPrimaryKey());
+    final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
+            new SimpleCriteria(EntityUtil.getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))
       throw new EntityModifiedException(entity, current);
   }

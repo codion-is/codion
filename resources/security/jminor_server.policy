@@ -1,8 +1,6 @@
 grant {
   //CodeBase "file:./jminor-server.jar"
-  permission java.io.FilePermission "${user.home}/jminor.log", "read,write";
-  permission java.io.FilePermission "${user.home}/jminor.log*", "read,write";
-  permission java.io.FilePermission "${user.home}/jminor.log.*", "read,write";
+  permission java.io.FilePermission "${user.home}/*", "read,write";
   //the following two lines are for an embedded derby database residing in the server directory
   permission java.io.FilePermission "-", "read,write,delete";
   permission java.lang.RuntimePermission "createClassLoader";

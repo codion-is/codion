@@ -314,8 +314,8 @@ public class EntityUtil {
    * Constructs a where condition based on the given primary key
    * @param database the Database instance
    * @param entityKey the EntityKey instance
-   * @return a where clause using this EntityKey instance,
-   * e.g. " where (idCol = 42)" or in case of multiple column key " where (idCol1 = 42) and (idCol2 = 24)"
+   * @return a where clause using this EntityKey instance, without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
     return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
@@ -331,8 +331,8 @@ public class EntityUtil {
    * a primary key property value has changed, hence using the original value.
    * @param database the Database instance
    * @param entity the Entity instance
-   * @return a where clause specifying this entity instance,
-   * e.g. " where (idCol = 42)" or in case of multiple column key " where (idCol1 = 42) and (idCol2 = 24)"
+   * @return a where clause specifying this entity instance, without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity entity) {
     return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {
@@ -348,10 +348,12 @@ public class EntityUtil {
    * @param properties the properties to use when constructing the condition
    * @param valueProvider the value provider
    * @return a where clause according to the given properties and the values provided by <code>valueProvider</code>,
-   * e.g. " where (idCol = 42)" or in case of multiple properties " where (idCol1 = 42) and (idCol2 = 24)"
+   * without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple properties "(idCol1 = 42) and (idCol2 = 24)"
    */
-  public static String getWhereCondition(final Database database, final List<Property.PrimaryKeyProperty> properties, final ValueProvider valueProvider) {
-    final StringBuilder stringBuilder = new StringBuilder(" where (");
+  public static String getWhereCondition(final Database database, final List<Property.PrimaryKeyProperty> properties,
+                                         final ValueProvider valueProvider) {
+    final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
       stringBuilder.append(getQueryString(property.getPropertyID(),

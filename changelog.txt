@@ -1112,3 +1112,6 @@
   EntityPanel.exportSelected() added, included as control action
   DefaultExceptionHandler.handleException() now handles a CancelException wrapped in a RuntimeException correctly
   JSON library from json.org added
+  EntityDbConnection.checkIfModified() did not query by original key values, which could have changed since the entity was loaded
+  EntityUtil.getWhereClause() result does not include where keyword anymore
+  EntityDbRemoteAdapter logs the name of JasperReport parameters used in method calls
