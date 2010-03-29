@@ -417,4 +417,38 @@ public class Util {
 
     return true;
   }
+
+  public static byte[] getBytesFromFile(final File file) throws IOException {
+    InputStream inputStream = null;
+    try {
+      inputStream = new FileInputStream(file);
+
+      // Get the size of the file
+      final long length = file.length();
+
+      // Create the byte array to hold the data
+      final byte[] bytes = new byte[(int) length];
+
+      // Read in the bytes
+      int offset = 0;
+      int numRead;
+      while (offset < bytes.length && (numRead = inputStream.read(bytes, offset, bytes.length - offset)) >= 0)
+        offset += numRead;
+
+      // Ensure all the bytes have been read in
+      if (offset < bytes.length)
+        throw new IOException("Could not completely read file " + file.getName());
+
+      return bytes;
+    }
+    finally {
+      try {
+        if (inputStream != null)
+          inputStream.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
 }

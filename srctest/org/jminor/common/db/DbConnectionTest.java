@@ -6,8 +6,8 @@ package org.jminor.common.db;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 
-import static org.junit.Assert.*;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class DbConnectionTest {
 
       File file = new File("/home/stofa/darri/data/downloads/NavigableImagePanel.zip");
 
-      dbConnection.writeBlobField(DbUtil.getBytesFromFile(file), "blob_test", "data", "where id = 1");
+      dbConnection.writeBlobField(Util.getBytesFromFile(file), "blob_test", "data", "where id = 1");
 
       final byte[] data = dbConnection.readBlobField("blob_test", "data", "where id = 1");
 

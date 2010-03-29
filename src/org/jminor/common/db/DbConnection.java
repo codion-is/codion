@@ -324,7 +324,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   public final List<String> queryStrings(final String sql) throws SQLException {
-    final List res = query(sql, DbUtil.STRING_PACKER, -1);
+    final List res = query(sql, STRING_PACKER, -1);
     final List<String> strings = new ArrayList<String>(res.size());
     for (final Object object : res)
       strings.add((String) object);
@@ -357,7 +357,7 @@ public class DbConnection {
    */
   @SuppressWarnings({"unchecked"})
   public final List<Integer> queryIntegers(final String sql) throws SQLException {
-    return (List<Integer>) query(sql, DbUtil.INT_PACKER, -1);
+    return (List<Integer>) query(sql, INT_PACKER, -1);
   }
 
   /**
@@ -578,4 +578,26 @@ public class DbConnection {
       return result;
     }
   }
+
+  private static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
+    public List<Integer> pack(final ResultSet rs, final int fetchCount) throws SQLException {
+      final List<Integer> integers = new ArrayList<Integer>();
+      int counter = 0;
+      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
+        integers.add(rs.getInt(1));
+
+      return integers;
+    }
+  };
+
+  private static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
+    public List<String> pack(final ResultSet rs, final int fetchCount) throws SQLException {
+      final List<String> strings = new ArrayList<String>();
+      int counter = 0;
+      while (rs.next() && (fetchCount < 0 || counter++ < fetchCount))
+        strings.add(rs.getString(1));
+
+      return strings;
+    }
+  };
 }
