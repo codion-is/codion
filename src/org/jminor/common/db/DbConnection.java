@@ -4,6 +4,7 @@
 package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -337,7 +338,7 @@ public class DbConnection {
    * subsequent columns are disregarded
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution
-   * @throws DbException thrown if no record is found
+   * @throws org.jminor.common.db.exception.DbException thrown if no record is found
    */
   public final int queryInteger(final String sql) throws SQLException, DbException {
     final List<Integer> integers = queryIntegers(sql);

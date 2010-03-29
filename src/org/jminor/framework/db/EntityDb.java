@@ -77,7 +77,7 @@ public interface EntityDb {
    * This method does not handle select statements.
    * Performs a commit unless a transaction is open.
    * @param statement the statement to execute
-   * @throws org.jminor.common.db.DbException in case of a database exception
+   * @throws org.jminor.common.db.exception.DbException in case of a database exception
    */
   void executeStatement(final String statement) throws Exception;
 
@@ -88,7 +88,7 @@ public interface EntityDb {
    * @param statement the statement to execute
    * @param outParameterType the type of the output parameter, if any, java.sql.Types.*
    * User Types.NULL to indicate no output parameter.
-   * @throws org.jminor.common.db.DbException in case of a database error
+   * @throws org.jminor.common.db.exception.DbException in case of a database error
    * @return the return parameter if any, otherwise null
    */
   Object executeStatement(final String statement, final int outParameterType) throws Exception;
@@ -100,7 +100,7 @@ public interface EntityDb {
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<Entity.Key> insert(final List<Entity> entities) throws Exception;
 
@@ -109,7 +109,7 @@ public interface EntityDb {
    * Performs a commit unless a transaction is open.
    * @param entities the entities to update
    * @return the updated entities
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    * @throws org.jminor.framework.db.exception.EntityModifiedException in case an entity has been modified by another user
    */
   List<Entity> update(final List<Entity> entities) throws Exception;
@@ -118,7 +118,7 @@ public interface EntityDb {
    * Deletes the entities according to the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   void delete(final List<Entity.Key> entityKeys) throws Exception;
 
@@ -126,7 +126,7 @@ public interface EntityDb {
    * Deletes the entities specified by the given criteria
    * Performs a commit unless a transaction is open.
    * @param criteria the criteria specifying the entities to delete
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   void delete(final EntityCriteria criteria) throws Exception;
 
@@ -136,7 +136,7 @@ public interface EntityDb {
    * @param propertyID the ID of the property
    * @param order if true then the result is ordered
    * @return the values in the given column (Property) in the given table (Entity)
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws Exception;
 
@@ -147,8 +147,8 @@ public interface EntityDb {
    * @param value the value to use in the condition
    * @return an entity of the type <code>entityID</code>, having the
    * value of <code>propertyID</code> as <code>value</code>
-   * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   Entity selectSingle(final String entityID, final String propertyID, final Object value) throws Exception;
 
@@ -156,8 +156,8 @@ public interface EntityDb {
    * Selects a single entity by key
    * @param key the key of the entity to select
    * @return an entity of the type <code>entityID</code>, having the key <code>key</code>
-   * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   Entity selectSingle(final Entity.Key key) throws Exception;
 
@@ -166,8 +166,8 @@ public interface EntityDb {
    * if the criteria results in more than one entity
    * @param criteria the criteria specifying the entity to select
    * @return the entities according to the given criteria
-   * @throws org.jminor.common.db.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.DbException if an exception occurs
+   * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.DbException if an exception occurs
    */
   Entity selectSingle(final SelectCriteria criteria) throws Exception;
 
@@ -175,7 +175,7 @@ public interface EntityDb {
    * Returns entities according to <code>keys</code>
    * @param keys the keys used in the condition
    * @return entities according to <code>keys</code>
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<Entity> selectMany(final List<Entity.Key> keys) throws Exception;
 
@@ -183,7 +183,7 @@ public interface EntityDb {
    * Selects entities according to the specified criteria
    * @param criteria the criteria specifying which entities to select
    * @return entities according to the given criteria
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<Entity> selectMany(final SelectCriteria criteria) throws Exception;
 
@@ -193,7 +193,7 @@ public interface EntityDb {
    * @param propertyID the ID of the condition property
    * @param values the property values to use as condition
    * @return entities of the type <code>entityID</code> according to <code>propertyID</code> and <code>values</code>
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws Exception;
 
@@ -201,7 +201,7 @@ public interface EntityDb {
    * Selects all the entities of the given type
    * @param entityID the Class of the entities to select
    * @return all entities of the given type
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<Entity> selectAll(final String entityID) throws Exception;
 
@@ -209,7 +209,7 @@ public interface EntityDb {
    * Returns the entities that depend on the given entities via foreign keys
    * @param entities the entities for which to retrieve dependencies, mapped to corresponding entityIDs
    * @return the entities that depend on <code>entities</code>
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   Map<String, List<Entity>> selectDependentEntities(final List<Entity> entities) throws Exception;
 
@@ -217,7 +217,7 @@ public interface EntityDb {
    * Selects the number of rows returned according to the given criteria
    * @param criteria the search criteria
    * @return the number of rows fitting the given criteria
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   int selectRowCount(final EntityCriteria criteria) throws Exception;
 
@@ -236,7 +236,7 @@ public interface EntityDb {
    * @param statement the sql statement to execute
    * @param fetchCount the maximum number of records to retrieve, -1 for all
    * @return a List of rows represented by a List of Objects
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   List<List> selectRows(final String statement, final int fetchCount) throws Exception;
 
@@ -247,7 +247,7 @@ public interface EntityDb {
    * @param blobPropertyID the ID of the blob property
    * @param dataDescription the value to insert into the blob description column
    * @param blobData the blob data
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                  final byte[] blobData) throws Exception;
@@ -257,7 +257,7 @@ public interface EntityDb {
    * @param primaryKey the primary key of the entity
    * @param blobPropertyID the ID of the blob property
    * @return a byte array containing the blob data
-   * @throws org.jminor.common.db.DbException in case of a db exception
+   * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception;
 }

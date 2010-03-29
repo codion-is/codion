@@ -4,13 +4,13 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.DbException;
 import org.jminor.common.db.IdSource;
-import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;

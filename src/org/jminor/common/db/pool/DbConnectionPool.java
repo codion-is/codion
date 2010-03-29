@@ -68,7 +68,7 @@ public class DbConnectionPool implements ConnectionPool {
     new Timer(true).schedule(new TimerTask() {
       @Override
       public void run() {
-        updateRequestsPerSecond();
+        updateStatistics();
       }
     }, new Date(), 2550);
   }
@@ -77,16 +77,13 @@ public class DbConnectionPool implements ConnectionPool {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
-    connectionRequests++;
-    requestsPerSecondCounter++;
+    incrementRequestCounter();
     DbConnection connection = getConnectionFromPool();
     if (connection == null) {
-      connectionRequestsDelayed++;
-      requestsDelayedPerSecondCounter++;
+      incrementDelayedRequestCounter();
       synchronized (connectionPool) {
         if (liveConnections < connectionPoolSettings.getMaximumPoolSize()) {
-          liveConnections++;
-          connectionsCreated++;
+          incrementConnectionsCreatedCounter();
           if (log.isDebugEnabled())
             log.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
           checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
@@ -271,7 +268,7 @@ public class DbConnectionPool implements ConnectionPool {
     connection.disconnect();
   }
 
-  private void updateRequestsPerSecond() {
+  private void updateStatistics() {
     final long current = System.currentTimeMillis();
     final double seconds = (current - requestsPerSecondTime) / 1000;
     if (seconds > 5) {
@@ -281,5 +278,20 @@ public class DbConnectionPool implements ConnectionPool {
       requestsDelayedPerSecondCounter = 0;
       requestsPerSecondTime = current;
     }
+  }
+
+  private void incrementConnectionsCreatedCounter() {
+    liveConnections++;
+    connectionsCreated++;
+  }
+
+  private void incrementDelayedRequestCounter() {
+    connectionRequestsDelayed++;
+    requestsDelayedPerSecondCounter++;
+  }
+
+  private void incrementRequestCounter() {
+    connectionRequests++;
+    requestsPerSecondCounter++;
   }
 }

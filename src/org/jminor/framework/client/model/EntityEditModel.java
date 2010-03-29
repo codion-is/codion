@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.DbException;
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
@@ -327,7 +327,7 @@ public class EntityEditModel {
 
   /**
    * Performs a insert on the active entity
-   * @throws org.jminor.common.db.DbException in case of a database exception
+   * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws ValidationException in case validation fails
    * @see #validateEntities(java.util.List, int)

@@ -4,9 +4,9 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DbConnectionProvider;
-import org.jminor.common.db.DbException;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;

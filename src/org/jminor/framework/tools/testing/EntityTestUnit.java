@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.tools.testing;
 
-import org.jminor.common.db.DbException;
-import org.jminor.common.db.RecordNotFoundException;
 import org.jminor.common.db.User;
+import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
