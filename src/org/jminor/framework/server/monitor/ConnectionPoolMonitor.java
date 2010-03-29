@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.ConnectionPoolSettings;
 import org.jminor.common.db.User;
+import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import java.rmi.RemoteException;

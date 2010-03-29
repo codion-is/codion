@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.db.pool;
+
+import org.jminor.common.db.DbConnection;
+import org.jminor.common.db.User;
 
 import java.sql.SQLException;
 

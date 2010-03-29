@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.ConnectionPool;
-import org.jminor.common.db.ConnectionPoolSettings;
-import org.jminor.common.db.ConnectionPoolStatistics;
-import org.jminor.common.db.DbConnectionPool;
 import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.DbException;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPoolSettings;
+import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.DbConnectionPool;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;

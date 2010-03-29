@@ -1115,3 +1115,4 @@
   EntityDbConnection.checkIfModified() did not query by original key values, which could have changed since the entity was loaded
   EntityUtil.getWhereClause() result does not include where keyword anymore
   EntityDbRemoteAdapter logs the name of JasperReport parameters used in method calls
+  common.db.pool package created and populated with relevant classes

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.db.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
