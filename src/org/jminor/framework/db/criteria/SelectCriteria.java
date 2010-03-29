@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.Criteria;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
@@ -27,7 +27,7 @@ public class SelectCriteria extends EntityCriteria {
    * Instantiates a new EntityCriteria
    * @param entityID the ID of the entity to select
    * @param criteria the Criteria object
-   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.common.db.criteria.CriteriaSet
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
@@ -40,7 +40,7 @@ public class SelectCriteria extends EntityCriteria {
    * @param entityID the ID of the entity to select
    * @param criteria the Criteria object
    * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
-   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.common.db.criteria.CriteriaSet
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
@@ -53,7 +53,7 @@ public class SelectCriteria extends EntityCriteria {
    * @param entityID the ID of the entity to select
    * @param criteria the Criteria object
    * @param fetchCount the maximum number of records to fetch from the result
-   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.common.db.criteria.CriteriaSet
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
@@ -67,7 +67,7 @@ public class SelectCriteria extends EntityCriteria {
    * @param criteria the Criteria object
    * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
    * @param fetchCount the maximum number of records to fetch from the result
-   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.common.db.criteria.CriteriaSet
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */

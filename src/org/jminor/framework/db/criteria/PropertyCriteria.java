@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.Criteria;
-import org.jminor.common.db.CriteriaSet;
+import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.SimpleCriteria;
+import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;

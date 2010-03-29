@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.Criteria;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.domain.Entity;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.Criteria;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;

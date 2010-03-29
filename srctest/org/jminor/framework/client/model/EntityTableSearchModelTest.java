@@ -1,6 +1,6 @@
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.CriteriaSet;
+import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 

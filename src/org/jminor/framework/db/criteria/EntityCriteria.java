@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.Criteria;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
@@ -32,7 +32,7 @@ public class EntityCriteria implements Serializable {
    * Instantiates a new EntityCriteria
    * @param entityID the ID of the entity to select
    * @param criteria the Criteria object
-   * @see org.jminor.common.db.CriteriaSet
+   * @see org.jminor.common.db.criteria.CriteriaSet
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.db.criteria;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
@@ -30,7 +30,7 @@ public class CriteriaSetTest {
     assertEquals("AND OR OR critera set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.asString(database));
   }
 
-  private static class Criteria implements org.jminor.common.db.Criteria {
+  private static class Criteria implements org.jminor.common.db.criteria.Criteria {
     public String asString(final Database database) {
       return "criteria";
     }

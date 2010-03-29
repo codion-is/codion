@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.Criteria;
-import org.jminor.common.db.CriteriaSet;
+import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -238,7 +238,7 @@ public class EntityTableSearchModel {
   /**
    * @return the conjunction to be used when more than one column search criteria is active,
    * the default is <code>CriteriaSet.Conjunction.AND</code>
-   * @see org.jminor.common.db.CriteriaSet.Conjunction
+   * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
    */
   public CriteriaSet.Conjunction getSearchConjunction() {
     return searchConjunction;
@@ -246,7 +246,7 @@ public class EntityTableSearchModel {
 
   /**
    * @param searchConjunction the conjunction to be used when more than one column search criteria is active
-   * @see org.jminor.common.db.CriteriaSet.Conjunction
+   * @see org.jminor.common.db.criteria.CriteriaSet.Conjunction
    */
   public void setSearchConjunction(final CriteriaSet.Conjunction searchConjunction) {
     this.searchConjunction = searchConjunction;
