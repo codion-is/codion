@@ -20,8 +20,12 @@ public class DatabaseMonitor {
 
   private final EntityDbServerAdmin server;
   private final ConnectionPoolMonitor connectionPoolMonitor;
-  private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
-  private final XYSeries cachedQueriesPerSecond = new XYSeries("Cached queries per second");
+  private final XYSeries queriesPerSecond = new XYSeries("Total per second");
+  private final XYSeries cachedQueriesPerSecond = new XYSeries("Cached selects per second");
+  private final XYSeries selectsPerSecond = new XYSeries("Selects per second");
+  private final XYSeries insertsPerSecond = new XYSeries("Inserts per second");
+  private final XYSeries updatesPerSecond = new XYSeries("Updates per second");
+  private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
 
   private Timer updateTimer;
@@ -32,6 +36,10 @@ public class DatabaseMonitor {
     this.connectionPoolMonitor = new ConnectionPoolMonitor(server);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);
     this.queriesPerSecondCollection.addSeries(cachedQueriesPerSecond);
+    this.queriesPerSecondCollection.addSeries(selectsPerSecond);
+    this.queriesPerSecondCollection.addSeries(insertsPerSecond);
+    this.queriesPerSecondCollection.addSeries(updatesPerSecond);
+    this.queriesPerSecondCollection.addSeries(deletesPerSecond);
     updateStats();
     setStatsUpdateInterval(3);
   }
@@ -67,6 +75,10 @@ public class DatabaseMonitor {
     final DatabaseStatistics dbStats = server.getDatabaseStatistics();
     queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
     cachedQueriesPerSecond.add(dbStats.getTimestamp(), dbStats.getCachedQueriesPerSecond());
+    selectsPerSecond.add(dbStats.getTimestamp(), dbStats.getSelectsPerSecond());
+    insertsPerSecond.add(dbStats.getTimestamp(), dbStats.getInsertsPerSecond());
+    updatesPerSecond.add(dbStats.getTimestamp(), dbStats.getUpdatesPerSecond());
+    deletesPerSecond.add(dbStats.getTimestamp(), dbStats.getDeletesPerSecond());
   }
 
   public XYSeriesCollection getQueriesPerSecondCollection() {

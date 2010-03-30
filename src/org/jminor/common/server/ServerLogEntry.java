@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -18,7 +17,7 @@ import java.util.Date;
 public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> {
 
   private static final long serialVersionUID = 1;
-  private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP);
+  private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
 
   private String method;
   private String message;

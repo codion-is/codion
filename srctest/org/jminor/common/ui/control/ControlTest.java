@@ -2,10 +2,8 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class ControlTest {
 

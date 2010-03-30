@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.UiUtil;
@@ -15,7 +16,6 @@ import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.PropertyFilterModel;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Type;
 
 import javax.swing.JCheckBox;

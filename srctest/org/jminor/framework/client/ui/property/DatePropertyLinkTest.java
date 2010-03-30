@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.ui.property;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -31,7 +31,7 @@ public class DatePropertyLinkTest {
 
   @Test
   public void test() throws Exception {
-    final SimpleDateFormat format = new SimpleDateFormat(DateFormats.SHORT_DASH);
+    final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
     new DatePropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
             LinkType.READ_WRITE, format);

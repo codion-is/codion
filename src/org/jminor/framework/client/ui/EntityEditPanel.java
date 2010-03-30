@@ -10,9 +10,9 @@ import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
@@ -303,7 +303,7 @@ public abstract class EntityEditPanel extends JPanel {
    * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
-    return createDateInputPanel(propertyID, DateUtil.getDefaultDateFormat(), includeButton, null);
+    return createDateInputPanel(propertyID, Configuration.getDefaultDateFormat(), includeButton, null);
   }
 
   /**

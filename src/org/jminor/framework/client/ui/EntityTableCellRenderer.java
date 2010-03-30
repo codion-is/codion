@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.JCheckBox;
@@ -184,7 +184,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     private static DateFormat initDateFormat(final Property property) {
-      return property.getFormat() == null ? DateUtil.getDefaultDateFormat() : (DateFormat) property.getFormat();
+      return property.getFormat() == null ? Configuration.getDefaultDateFormat() : (DateFormat) property.getFormat();
     }
   }
 
@@ -213,7 +213,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     private static DateFormat initTimestampFormat(final Property property) {
-      return property.getFormat() == null ? DateUtil.getDefaultTimestampFormat() : (DateFormat) property.getFormat();
+      return property.getFormat() == null ? Configuration.getDefaultTimestampFormat() : (DateFormat) property.getFormat();
     }
   }
 

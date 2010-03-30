@@ -1127,3 +1127,10 @@
 0.5.2
   EntityUtil JSON functionality improved, now exports whole entity object graph and formats the output for readability
   EmpDeptAppPanel example action for importing JSON file added
+  DateUtil.getDefaultTimestamp/DateFormat() moved to Configuration
+  DateUtil.isDateValid() now requires a format argument
+  DateUtil moved to common.model
+  client.model.util package removed
+  DateFormats.getDateFormat() added and used throughout
+  DbConnection.QueryCounter added
+  DbConnection added more statistics

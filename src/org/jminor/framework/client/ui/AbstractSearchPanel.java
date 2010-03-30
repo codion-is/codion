@@ -12,8 +12,8 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.AbstractSearchModel;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Type;
 
 import javax.swing.JComboBox;
@@ -203,9 +203,9 @@ public abstract class AbstractSearchPanel extends JPanel {
 
   protected SimpleDateFormat getInputFormat() {
     if (model.getPropertyType() == Type.TIMESTAMP)
-      return DateUtil.getDefaultTimestampFormat();
+      return Configuration.getDefaultTimestampFormat();
     if (model.getPropertyType() == Type.DATE)
-      return DateUtil.getDefaultDateFormat();
+      return Configuration.getDefaultDateFormat();
 
     return null;
   }

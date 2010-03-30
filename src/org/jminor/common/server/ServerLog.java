@@ -6,7 +6,7 @@ package org.jminor.common.server;
 import org.jminor.common.model.formats.DateFormats;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +30,8 @@ public class ServerLog implements Serializable {
   private final String lastAccessMessage;
   private final String lastExitedMethod;
   private final long connectionCreationDate;
+
+  private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
 
   public ServerLog(final String connectionKey, final long connectionCreationDate, final List<ServerLogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
@@ -125,14 +127,14 @@ public class ServerLog implements Serializable {
    * @return a formatted last access date
    */
   public String getLastAccessDateFormatted() {
-    return new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP).format(getLastAccessDate());
+    return TIMESTAMP_FORMAT.format(getLastAccessDate());
   }
 
   /**
    * @return a formatted last exit date
    */
   public String getLastExitDateFormatted() {
-    return new SimpleDateFormat(DateFormats.EXACT_TIMESTAMP).format(getLastExitDate());
+    return TIMESTAMP_FORMAT.format(getLastExitDate());
   }
 
   /** {@inheritDoc} */

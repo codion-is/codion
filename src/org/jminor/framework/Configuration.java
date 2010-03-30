@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -461,5 +462,21 @@ public class Configuration {
     final String preferredUserName = Util.getDefaultUserName(applicationIdentifier,
             getValue(USERNAME_PREFIX) + System.getProperty("user.name"));
     return System.getProperty(DEFAULT_USERNAME, preferredUserName);
+  }
+
+  /**
+   * @return A SimpleDateFormat based on Configuration.DEFAULT_DATE_FORMAT
+   * @see Configuration#DEFAULT_DATE_FORMAT
+   */
+  public static SimpleDateFormat getDefaultDateFormat() {
+    return new SimpleDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
+  }
+
+  /**
+   * @return A SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
+   * @see org.jminor.framework.Configuration#DEFAULT_TIMESTAMP_FORMAT
+   */
+  public static SimpleDateFormat getDefaultTimestampFormat() {
+    return new SimpleDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
   }
 }

@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model.formats;
 
+import java.text.SimpleDateFormat;
+
 public class DateFormats {
 
   public static final String COMPACT_DASH = "dd-MM-yy";
@@ -16,4 +18,8 @@ public class DateFormats {
   public static final String SHORT_TIMESTAMP = "dd-MM-yy HH:mm";
   public static final String EXACT_TIMESTAMP = "dd-MM-yyyy HH:mm:ss.SSS";
   public static final String FULL_TIMESTAMP = "dd-MM-yyyy HH:mm:ss";
+
+  public static SimpleDateFormat getDateFormat(final String formatString) {
+    return new SimpleDateFormat(formatString);
+  }
 }

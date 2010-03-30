@@ -1,9 +1,9 @@
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.framework.client.model.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -20,7 +20,7 @@ public class FormattedTextBeanPropertyLinkTest {
 
   @Test
   public void test() throws Exception {
-    final SimpleDateFormat format = new SimpleDateFormat(DateFormats.SHORT_DOT);
+    final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
     new FormattedTextBeanPropertyLink(txtString, this, "dateValue", Date.class, evtDateValueChanged, LinkType.READ_WRITE, format);

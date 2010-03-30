@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.State;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.exception.ValidationException;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;

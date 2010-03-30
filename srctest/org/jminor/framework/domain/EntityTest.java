@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EntityTest {
@@ -248,7 +247,7 @@ public class EntityTest {
     employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
     employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
 
-    final DateFormat dateFormat = new SimpleDateFormat(DateFormats.SHORT_DOT);
+    final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final Entity.StringProvider employeeToString = new Entity.StringProvider(EmpDept.EMPLOYEE_NAME)
             .addText(" (department: ").addValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")

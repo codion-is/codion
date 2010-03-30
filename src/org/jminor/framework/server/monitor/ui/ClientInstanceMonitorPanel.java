@@ -21,7 +21,6 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -66,7 +65,7 @@ public class ClientInstanceMonitorPanel extends JPanel {
       else
         log.append("Disconnected!");
 
-      txtCreationDate.setText(new SimpleDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
+      txtCreationDate.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
     }
     else {
       txtCreationDate.setText("");

@@ -11,9 +11,9 @@ import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -131,9 +131,9 @@ public class PropertyEditPanel extends JPanel {
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     switch (property.getPropertyType()) {
       case TIMESTAMP:
-        return new DateInputManager((Date) currentValue, DateUtil.getDefaultTimestampFormat());
+        return new DateInputManager((Date) currentValue, Configuration.getDefaultTimestampFormat());
       case DATE:
-        return new DateInputManager((Date) currentValue, DateUtil.getDefaultDateFormat());
+        return new DateInputManager((Date) currentValue, Configuration.getDefaultDateFormat());
       case DOUBLE:
         return new DoubleInputManager((Double) currentValue);
       case INT:

@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model.util;
-
-import org.jminor.framework.Configuration;
+package org.jminor.common.model;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -19,39 +17,13 @@ import java.util.Date;
  */
 public class DateUtil {
 
-  private static final DateFormat DEFAULT_DATE_FORMAT = getDefaultDateFormat();
-  private static final DateFormat DEFAULT_TIMESTAMP_FORMAT = getDefaultTimestampFormat();
-
   /**
    * @param date the date to check for validity
    * @return true if the date is valid, using the default short date format
    * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
-  public static boolean isDateValid(final String date) {
-    return isDateValid(date, false);
-  }
-
-  /**
-   * @param date the date to check for validity
-   * @param emptyStringOk if true then an empty string is regarded as a valid date
-   * @return true if the date is valid, using the default short date format
-   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
-   */
-  public static boolean isDateValid(final String date, final boolean emptyStringOk) {
-    return isDateValid(date, emptyStringOk, false);
-  }
-
-  /**
-   * @param date the date to check for validity
-   * @param emptyStringOk if true then an empty string is regarded as a valid date
-   * @param isTimestamp if true then the default timestamp format is used, otherwise
-   * the default date format is used
-   * @return true if the date is valid, using the default date format
-   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
-   * @see org.jminor.framework.Configuration#DEFAULT_TIMESTAMP_FORMAT
-   */
-  public static boolean isDateValid(final String date, final boolean emptyStringOk, final boolean isTimestamp) {
-    return isDateValid(date, emptyStringOk, isTimestamp ? DEFAULT_TIMESTAMP_FORMAT : DEFAULT_DATE_FORMAT);
+  public static boolean isDateValid(final String date, final DateFormat... formats) {
+    return isDateValid(date, false, formats);
   }
 
   /**
@@ -61,6 +33,8 @@ public class DateUtil {
    * @return true if the date is valid, using the given date format
    */
   public static boolean isDateValid(final String date, final boolean emptyStringOk, final DateFormat... formats) {
+    if (formats == null || formats.length == 0)
+      throw new RuntimeException("Date format is required");
     if (date == null || date.length() == 0)
       return emptyStringOk;
 
@@ -74,22 +48,6 @@ public class DateUtil {
     }
 
     return false;
-  }
-
-  /**
-   * @return A SimpleDateFormat based on Configuration.DEFAULT_DATE_FORMAT
-   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
-   */
-  public static SimpleDateFormat getDefaultDateFormat() {
-    return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_DATE_FORMAT));
-  }
-
-  /**
-   * @return A SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
-   * @see Configuration#DEFAULT_TIMESTAMP_FORMAT
-   */
-  public static SimpleDateFormat getDefaultTimestampFormat() {
-    return new SimpleDateFormat((String) Configuration.getValue(Configuration.DEFAULT_TIMESTAMP_FORMAT));
   }
 
   /**

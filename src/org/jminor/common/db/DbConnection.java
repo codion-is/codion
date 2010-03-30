@@ -53,20 +53,7 @@ public class DbConnection {
 
   private long poolTime = -1;
 
-  private static long requestsPerSecondTime = System.currentTimeMillis();
-  private static int queriesPerSecond = 0;
-  private static int requestsPerSecondCounter = 0;
-  private static int cachedQueriesPerSecond = 0;
-  private static int cachedPerSecondCounter = 0;
-
-  static {
-    new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        updateRequestsPerSecond();
-      }
-    }, new Date(), 2000);
-  }
+  private static final QueryCounter counter = new QueryCounter();
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
@@ -290,12 +277,12 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during the query execution
    */
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
-    requestsPerSecondCounter++;
+    counter.count(sql);
     if (cacheQueriesRequests > 0 && fetchCount < 0) {
       if (queryCache.containsKey(sql)) {
         log.debug(user.getUsername() + " (cached): " + sql.toUpperCase() + ";");
         lastResultCached = true;
-        cachedPerSecondCounter++;
+        counter.incrementCachedQueriesPerSecondCounter();
         return queryCache.get(sql);
       }
     }
@@ -401,11 +388,11 @@ public class DbConnection {
 
   public final void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
                                    final String whereClause) throws SQLException {
-    requestsPerSecondCounter++;
     final long time = System.currentTimeMillis();
     ByteArrayInputStream inputStream = null;
     PreparedStatement statement = null;
     final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
+    counter.count(sql);
     try {
       statement = connection.prepareStatement(sql);
       inputStream = new ByteArrayInputStream(blobData);
@@ -451,7 +438,7 @@ public class DbConnection {
   }
 
   public Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
-    requestsPerSecondCounter++;
+    counter.count(sqlStatement);
     final long time = System.currentTimeMillis();
     log.debug(sqlStatement);
     CallableStatement statement = null;
@@ -486,7 +473,7 @@ public class DbConnection {
    * @throws SQLException thrown if anything goes wrong during execution
    */
   public final void execute(final String sql) throws SQLException {
-    requestsPerSecondCounter++;
+    counter.count(sql);
     final long time = System.currentTimeMillis();
     log.debug(sql);
     Statement statement = null;
@@ -507,14 +494,6 @@ public class DbConnection {
     }
   }
 
-  public static int getQueriesPerSecond() {
-    return queriesPerSecond;
-  }
-
-  public static int getCachedQueriesPerSecond() {
-    return cachedQueriesPerSecond;
-  }
-
   /**
    * @return the underlying Connection object
    */
@@ -524,6 +503,12 @@ public class DbConnection {
 
   public Database getDatabase() {
     return database;
+  }
+
+  public static DatabaseStatistics getDatabaseStatistics() {
+    return new DatabaseStatistics(counter.getQueriesPerSecond(), counter.getCachedQueriesPerSecond(),
+            counter.getSelectsPerSecond(), counter.getInsertsPerSecond(), 
+            counter.getDeletesPerSecond(), counter.getUpdatesPerSecond());
   }
 
   private void connect() throws ClassNotFoundException, SQLException {
@@ -575,18 +560,6 @@ public class DbConnection {
     return properties;
   }
 
-  private static void updateRequestsPerSecond() {
-    final long current = System.currentTimeMillis();
-    final double seconds = (current - requestsPerSecondTime)/1000;
-    if (seconds > 5) {
-      queriesPerSecond = (int) ((double) requestsPerSecondCounter/seconds);
-      cachedQueriesPerSecond = (int) ((double) cachedPerSecondCounter/seconds);
-      cachedPerSecondCounter = 0;
-      requestsPerSecondCounter = 0;
-      requestsPerSecondTime = current;
-    }
-  }
-
   private static class MixedResultPacker implements ResultPacker<List> {
     public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<List> result = new ArrayList<List>();
@@ -624,4 +597,89 @@ public class DbConnection {
       return strings;
     }
   };
+
+  private static class QueryCounter {
+    private long queriesPerSecondTime = System.currentTimeMillis();
+    private int queriesPerSecond = 0;
+    private int queriesPerSecondCounter = 0;
+    private int cachedQueriesPerSecond = 0;
+    private int cachedPerSecondCounter = 0;
+    private int selectsPerSecond = 0;
+    private int selectsPerSecondCounter = 0;
+    private int insertsPerSecond = 0;
+    private int insertsPerSecondCounter = 0;
+    private int updatesPerSecond = 0;
+    private int updatesPerSecondCounter = 0;
+    private int deletesPerSecond = 0;
+    private int deletesPerSecondCounter = 0;
+
+    public QueryCounter() {
+      new Timer(true).schedule(new TimerTask() {
+        @Override
+        public void run() {
+          updateQueriesPerSecond();
+        }
+      }, new Date(), 2000);
+    }
+
+    public void count(final String sql) {//todo handle uppercase queries
+      queriesPerSecondCounter++;
+      if (sql.startsWith("s"))
+        selectsPerSecondCounter++;
+      else if (sql.startsWith("i"))
+        insertsPerSecondCounter++;
+      else if (sql.startsWith("u"))
+        updatesPerSecondCounter++;
+      else if (sql.startsWith("d"))
+        deletesPerSecondCounter++;
+    }
+
+    public void incrementCachedQueriesPerSecondCounter() {
+      cachedPerSecondCounter++;
+    }
+
+    public int getQueriesPerSecond() {
+      return queriesPerSecond;
+    }
+
+    public int getSelectsPerSecond() {
+      return selectsPerSecond;
+    }
+
+    public int getDeletesPerSecond() {
+      return deletesPerSecond;
+    }
+
+    public int getInsertsPerSecond() {
+      return insertsPerSecond;
+    }
+
+    public int getUpdatesPerSecond() {
+      return updatesPerSecond;
+    }
+
+    public int getCachedQueriesPerSecond() {
+      return cachedQueriesPerSecond;
+    }
+
+    private void updateQueriesPerSecond() {
+      final long current = System.currentTimeMillis();
+      final double seconds = (current - queriesPerSecondTime)/ 1000;
+      if (seconds > 5) {
+        queriesPerSecond = (int) ((double) queriesPerSecondCounter / seconds);
+        selectsPerSecond = (int) ((double) selectsPerSecondCounter / seconds);
+        insertsPerSecond = (int) ((double) insertsPerSecondCounter / seconds);
+        deletesPerSecond = (int) ((double) deletesPerSecondCounter / seconds);
+        updatesPerSecond = (int) ((double) updatesPerSecondCounter / seconds);
+        cachedQueriesPerSecond = (int) ((double) cachedPerSecondCounter / seconds);
+        cachedPerSecondCounter = 0;
+        queriesPerSecondCounter = 0;
+        selectsPerSecondCounter = 0;
+        insertsPerSecondCounter = 0;
+        deletesPerSecondCounter = 0;
+        updatesPerSecondCounter = 0;
+        queriesPerSecondTime = current;
+      }
+    }
+  }
 }

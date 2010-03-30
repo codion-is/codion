@@ -31,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * User: Björn Darri
@@ -75,7 +74,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     txtPoolSize.setText(format.format(stats.getLiveConnectionCount()));
     txtCreated.setText(format.format(stats.getConnectionsCreated()));
     txtDestroyed.setText(format.format(stats.getConnectionsDestroyed()));
-    txtCreatedDestroyedResetTime.setText(new SimpleDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetDate()));
+    txtCreatedDestroyedResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetDate()));
     txtRequested.setText(format.format(stats.getConnectionRequests()));
     final double prc = (double) stats.getConnectionRequestsDelayed() / (double) stats.getConnectionRequests() * 100;
     txtDelayed.setText(format.format(stats.getConnectionRequestsDelayed())

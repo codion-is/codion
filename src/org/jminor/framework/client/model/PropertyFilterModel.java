@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.client.model.util.DateUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;

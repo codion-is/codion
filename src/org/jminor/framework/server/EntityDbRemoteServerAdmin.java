@@ -200,7 +200,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
 
   /** {@inheritDoc} */
   public DatabaseStatistics getDatabaseStatistics() throws RemoteException {
-    return new DatabaseStatistics(EntityDbConnection.getQueriesPerSecond(), EntityDbConnection.getCachedQueriesPerSecond());
+    return EntityDbConnection.getDatabaseStatistics();
   }
 
   /** {@inheritDoc} */

@@ -16,7 +16,7 @@ import org.jminor.framework.domain.Type;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Date;
 
 public class PropertyCriteriaTest {
@@ -248,7 +248,7 @@ public class PropertyCriteriaTest {
 
   @Test
   public void conditionDate() throws Exception {
-    final SimpleDateFormat dateFormat = new SimpleDateFormat(DateFormats.SHORT_DASH);
+    final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
 
     final Database database = DatabaseProvider.createInstance();
     //string, =
