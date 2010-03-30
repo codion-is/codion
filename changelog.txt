@@ -1121,3 +1121,6 @@
   DbConnectionPool refactored a bit
   DbUtil.getBytesFromFile() moved to Util
   DbUtil removed
+  User.properties field removed
+  EntityDb.getProperties() added
+0.5.2

@@ -49,9 +49,6 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     this.database = database;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
-    final String sid = database.getSid();
-    if (sid != null)
-      user.setProperty(Database.DATABASE_SID, sid);
   }
 
   /** {@inheritDoc} */
