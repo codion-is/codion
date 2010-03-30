@@ -357,7 +357,7 @@ public class EntityEditModel {
     evtBeforeInsert.fire();
     validateEntities(entities, INSERT);
 
-    final List<Entity.Key> primaryKeys = Entity.Key.copyEntityKeys(doInsert(entities));
+    final List<Entity.Key> primaryKeys = Entity.Key.copy(doInsert(entities));
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
   }
 

@@ -1012,14 +1012,6 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     }
 
     /**
-     * @param key the key to compare with
-     * @return true if key is equal to this key
-     */
-    public boolean equals(final Key key) {
-      return key.entityID.equals(entityID) && hashCode() == key.hashCode();
-    }
-
-    /**
      * @return a hash code based on the values of this key
      */
     @Override
@@ -1053,7 +1045,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       return false;
     }
 
-    public static List<Key> copyEntityKeys(final List<Key> entityKeys) {
+    public static List<Key> copy(final List<Key> entityKeys) {
       final List<Key> copies = new ArrayList<Key>(entityKeys.size());
       for (final Key key : entityKeys)
         copies.add(key.copy());

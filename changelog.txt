@@ -1136,3 +1136,6 @@
   DbConnection added more statistics
   DbConnectionPool.cleanPool() removed parameter
   DbConnectionPool.emptyPool() added
+  Entity.Key.copyEntityKeys() renamed to copy
+  Entity.Key.equals(Key) removed
+  db.EntityDbUtil refactored out of domain.EntityUtil

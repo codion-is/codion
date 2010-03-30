@@ -8,6 +8,7 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -80,8 +81,8 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (isNullCriteria)
       return columnIdentifier + (searchType == SearchType.LIKE ? " is null" : " is not null");
 
-    final String sqlValue = getSqlValue(EntityUtil.getSQLStringValue(database, property, values.get(0)));
-    final String sqlValue2 = values.size() == 2 ? getSqlValue(EntityUtil.getSQLStringValue(database, property, values.get(1))) : null;
+    final String sqlValue = getSqlValue(EntityDbUtil.getSQLStringValue(database, property, values.get(0)));
+    final String sqlValue2 = values.size() == 2 ? getSqlValue(EntityDbUtil.getSQLStringValue(database, property, values.get(1))) : null;
 
     switch(searchType) {
       case LIKE:
@@ -176,7 +177,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     final StringBuilder stringBuilder = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < values.size(); i++) {
-      final String sqlValue = EntityUtil.getSQLStringValue(database, property, values.get(i));
+      final String sqlValue = EntityDbUtil.getSQLStringValue(database, property, values.get(i));
       if (property.getPropertyType() == Type.STRING && !caseSensitive)
         stringBuilder.append("upper(").append(sqlValue).append(")");
       else

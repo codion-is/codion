@@ -373,7 +373,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         final Property.BlobProperty property =
                 (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-        final String whereCondition = EntityUtil.getWhereCondition(getDatabase(), primaryKey);
+        final String whereCondition = EntityDbUtil.getWhereCondition(getDatabase(), primaryKey);
 
         execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString());
@@ -401,7 +401,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
       return readBlobField(EntityRepository.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
-              EntityUtil.getWhereCondition(getDatabase(), primaryKey));
+              EntityDbUtil.getWhereCondition(getDatabase(), primaryKey));
     }
     catch (SQLException exception) {
       throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
@@ -417,11 +417,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
-    final Collection<Property> insertProperties = EntityUtil.getInsertProperties(entity);
+    final Collection<Property> insertProperties = EntityDbUtil.getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getColumnName());
-      columnValues.append(EntityUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
+      columnValues.append(EntityDbUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -443,18 +443,18 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
-    final Collection<Property> properties = EntityUtil.getUpdateProperties(entity);
+    final Collection<Property> properties = EntityDbUtil.getUpdateProperties(entity);
     if (properties.size() == 0)
       throw new DbException("No modified updatable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.getColumnName()).append(" = ").append(
-              EntityUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
+              EntityDbUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
 
-    return sql.append(" where ").append(EntityUtil.getWhereCondition(database, entity)).toString();
+    return sql.append(" where ").append(EntityDbUtil.getWhereCondition(database, entity)).toString();
   }
 
   /**
@@ -464,7 +464,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   static String getDeleteSQL(final Database database, final Entity.Key entityKey) {
     return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
-            .append(" where ").append(EntityUtil.getWhereCondition(database, entityKey)).toString();
+            .append(" where ").append(EntityDbUtil.getWhereCondition(database, entityKey)).toString();
   }
 
   /**
@@ -533,7 +533,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   private void checkIfModified(final Entity entity) throws DbException, EntityModifiedException {
     final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
-            new SimpleCriteria(EntityUtil.getWhereCondition(getDatabase(), entity))));
+            new SimpleCriteria(EntityDbUtil.getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))
       throw new EntityModifiedException(entity, current);
   }
