@@ -833,7 +833,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public void exportSelected() throws CancelException, JSONException {
     final List<Entity> selected = getModel().getTableModel().getSelectedEntities();
-    Util.writeFile(EntityUtil.getJSONString(selected), UiUtil.chooseFileToSave(this, null, null));
+    Util.writeFile(EntityUtil.getJSONString(selected, 2), UiUtil.chooseFileToSave(this, null, null));
     JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
   }
 

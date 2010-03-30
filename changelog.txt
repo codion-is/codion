@@ -1125,3 +1125,5 @@
   EntityDb.getProperties() added
   ServerLogEntry.exception field replaced with stackTrace
 0.5.2
+  EntityUtil JSON functionality improved, now exports whole entity object graph and formats the output for readability
+  EmpDeptAppPanel example action for importing JSON file added

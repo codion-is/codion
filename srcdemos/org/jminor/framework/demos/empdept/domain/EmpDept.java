@@ -27,6 +27,7 @@ public class EmpDept {
   public static final String EMPLOYEE_SALARY_VALIDATION = "employee_salary_validation";
   public static final String EMPLOYEE_COMMISSION_VALIDATION = "employee_commission_validation";
   public static final String EMPLOYEE_REPORT = "employee_report";
+  public static final String IMPORT_JSON = "import_json";
 
   /**Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "department";
