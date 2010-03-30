@@ -1123,4 +1123,5 @@
   DbUtil removed
   User.properties field removed
   EntityDb.getProperties() added
+  ServerLogEntry.exception field replaced with stackTrace
 0.5.2

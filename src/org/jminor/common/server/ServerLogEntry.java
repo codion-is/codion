@@ -25,7 +25,7 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   private long entryTime;
   private long exitTime;
   private long delta;
-  private Throwable exception;
+  private String stackTrace;
 
   public ServerLogEntry() {
     this("", "", 0, null);
@@ -41,7 +41,7 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
     this.entryTime = time;
     this.exitTime = 0;
     this.delta = 0;
-    this.exception = exception;
+    setException(exception);
   }
 
   public long getEntryTime() {
@@ -60,8 +60,8 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
     return method;
   }
 
-  public Throwable getException() {
-    return exception;
+  public String getStackTrace() {
+    return stackTrace;
   }
 
   public int compareTo(final ServerLogEntry entry) {
@@ -80,11 +80,8 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
       stringBuilder.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               message != null && message.length() > 0 ? (": " + message) : "").append("\n");
       stringBuilder.append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms").append("\n");
-      if (exception != null) {
-        final StringWriter sw = new StringWriter();
-        exception.printStackTrace(new PrintWriter(sw));
-        stringBuilder.append(sw.toString());
-      }
+      if (stackTrace != null)
+        stringBuilder.append(stackTrace);
     }
     else {
       stringBuilder.append(getEntryTimeFormatted()).append(" @ ").append(method).append(
@@ -113,7 +110,7 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
   }
 
   public ServerLogEntry setException(final Throwable exception) {
-    this.exception = exception;
+    this.stackTrace = getStackTrace(exception);
     return this;
   }
 
@@ -136,5 +133,15 @@ public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> 
    */
   public String getExitTimeFormatted() {
     return TIMESTAMP_FORMAT.format(new Date(exitTime));
+  }
+
+  private String getStackTrace(final Throwable exception) {
+    if (exception == null)
+      return null;
+
+    final StringWriter sw = new StringWriter();
+    exception.printStackTrace(new PrintWriter(sw));
+
+    return sw.toString();
   }
 }
