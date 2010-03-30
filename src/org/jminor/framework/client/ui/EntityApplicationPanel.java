@@ -622,9 +622,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
-    final Properties properties = getModel().getDbProvider().getEntityDb().getUser().getProperties();
+    final Properties properties = getModel().getDbProvider().getEntityDb().getProperties();
     return frameCaption + " - " + getUserInfo(user,
-            properties != null ? properties.getProperty(Database.DATABASE_SID) : null);
+            properties.containsKey(Database.DATABASE_SID) ? properties.getProperty(Database.DATABASE_SID) : null);
   }
 
   /**

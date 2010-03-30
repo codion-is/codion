@@ -40,6 +40,7 @@ public class DbConnection {
   private final Map<String, List> queryCache = new HashMap<String, List>();
   private final User user;
   private final Database database;
+  private final Properties properties;
 
   private Connection connection;
   private Statement checkConnectionStatement;
@@ -85,6 +86,7 @@ public class DbConnection {
     this.user = user;
     this.connectionProperties.put("user", user.getUsername());
     this.connectionProperties.put("password", user.getPassword());
+    this.properties = initializeProperties(database);
     connect();
   }
 
@@ -113,6 +115,13 @@ public class DbConnection {
    */
   public User getUser() {
     return user;
+  }
+
+  /**
+   * @return the db connection properties
+   */
+  public Properties getProperties() {
+    return properties;
   }
 
   /**
@@ -549,6 +558,21 @@ public class DbConnection {
     }
 
     return false;
+  }
+
+  private Properties initializeProperties(final Database database) {
+    final Properties properties = new Properties();
+    properties.put(Database.DATABASE_EMBEDDED, database.isEmbedded());
+    if (database.getHost() != null)
+      properties.put(Database.DATABASE_HOST, database.getHost());
+    if (database.getPort() != null)
+      properties.put(Database.DATABASE_PORT, database.getPort());
+    if (database.getSid() != null)
+      properties.put(Database.DATABASE_SID, database.getSid());
+    if (database.getDatabaseType() != null)
+      properties.put(Database.DATABASE_TYPE, database.getDatabaseType());
+
+    return properties;
   }
 
   private static void updateRequestsPerSecond() {

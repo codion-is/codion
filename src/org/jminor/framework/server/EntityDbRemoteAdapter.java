@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -129,9 +130,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       connectionPools.get(clientInfo.getUser()).getConnectionPoolSettings().getUser().setPassword(clientInfo.getUser().getPassword());
     this.database = database;
     this.clientInfo = clientInfo;
-    final String sid = database.getSid();
-    if (sid != null && sid.length() != 0)
-      this.clientInfo.getUser().setProperty(Database.DATABASE_SID, sid);
     this.loggingEntityDbProxy = initializeProxy();
     this.methodLogger = new MethodLogger(database);
     this.methodLogger.setLoggingEnabled(loggingEnabled);
@@ -500,6 +498,16 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
     catch (DbException dbe) {
       throw dbe;
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  public Properties getProperties() throws Exception {
+    try {
+      return loggingEntityDbProxy.getProperties();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);

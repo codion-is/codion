@@ -13,6 +13,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Defines the database methods the db layer offers
@@ -260,4 +261,11 @@ public interface EntityDb {
    * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception;
+
+  /**
+   * Returns a Properties object containing database connection properties
+   * @return the connection properties
+   * @throws Exception in case of an exception
+   */
+  Properties getProperties() throws Exception;
 }
