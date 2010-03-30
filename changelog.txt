@@ -1134,3 +1134,5 @@
   DateFormats.getDateFormat() added and used throughout
   DbConnection.QueryCounter added
   DbConnection added more statistics
+  DbConnectionPool.cleanPool() removed parameter
+  DbConnectionPool.emptyPool() added

@@ -62,7 +62,7 @@ public class DbConnectionPool implements ConnectionPool {
     new Timer(true).schedule(new TimerTask() {
       @Override
       public void run() {
-        cleanPool(false);
+        cleanPool();
       }
     }, new Date(), settings.getPoolCleanupInterval());
     new Timer(true).schedule(new TimerTask() {
@@ -146,7 +146,7 @@ public class DbConnectionPool implements ConnectionPool {
 
   public void close() {
     closed = true;
-    cleanPool(true);
+    emptyPool();
   }
 
   public void setConnectionPoolSettings(final ConnectionPoolSettings poolSettings) {
@@ -244,14 +244,14 @@ public class DbConnectionPool implements ConnectionPool {
     }
   }
 
-  private void cleanPool(final boolean disconnectAll) {
+  private void cleanPool() {
     synchronized (connectionPool) {
       final long currentTime = System.currentTimeMillis();
       final ListIterator<DbConnection> iterator = connectionPool.listIterator();
       while (iterator.hasNext() && connectionPool.size() > connectionPoolSettings.getMinimumPoolSize()) {
         final DbConnection connection = iterator.next();
         final long idleTime = currentTime - connection.getPoolTime();
-        if (disconnectAll || idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
+        if (idleTime > connectionPoolSettings.getPooledConnectionTimeout()) {
           iterator.remove();
           if (log.isDebugEnabled())
             log.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
@@ -259,6 +259,13 @@ public class DbConnectionPool implements ConnectionPool {
           disconnect(connection);
         }
       }
+    }
+  }
+
+  private void emptyPool() {
+    synchronized (connectionPool) {
+      while (connectionPool.size() > 0)
+        disconnect(connectionPool.pop());
     }
   }
 
