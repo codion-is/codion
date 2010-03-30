@@ -21,7 +21,7 @@ public interface EntityDbServer extends Remote {
   public final String SERVER_ADMIN_SUFFIX = "-admin";
 
   EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                final Map<String, EntityDefinition> repository) throws RemoteException;
+                         final Map<String, EntityDefinition> entityDefinitions) throws RemoteException;
 
   /**
    * @return the server name
