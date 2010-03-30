@@ -152,8 +152,6 @@
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/db/exception/**,
-                org/jminor/framework/domain/**,
                 org/jminor/framework/server/monitor/**,
                 org/jminor/framework/server/EntityDbServerAdmin.class,
                 org/jminor/framework/server/EntityDbRemoteServerAdmin_Stub.class"/>
