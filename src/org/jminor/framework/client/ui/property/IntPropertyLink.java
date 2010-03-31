@@ -10,7 +10,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 
 /**
- * A class for linking a IntField to a EntityModel int property value
+ * A class for linking a IntField to a EntityEditModel int property value
  */
 public class IntPropertyLink extends TextPropertyLink {
 

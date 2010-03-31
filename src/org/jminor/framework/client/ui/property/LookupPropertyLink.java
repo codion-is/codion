@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class for linking an EntityLookupModel to a EntityModel foreign key property value
+ * A class for linking an EntityLookupModel to a EntityEditModel foreign key property value
  */
 public class LookupPropertyLink extends AbstractEntityPropertyLink {
 

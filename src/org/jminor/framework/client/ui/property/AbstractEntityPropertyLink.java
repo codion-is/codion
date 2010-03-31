@@ -10,7 +10,7 @@ import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.domain.Property;
 
 /**
- * An abstract class for linking a UI component to a EntityModel property value
+ * An abstract class for linking a UI component to a EntityEditModel property value
  */
 public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
 

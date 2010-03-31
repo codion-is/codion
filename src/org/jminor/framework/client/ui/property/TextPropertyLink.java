@@ -21,7 +21,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 /**
- * A class for linking a text component to a EntityModel text property value
+ * A class for linking a text component to a EntityEditModel text property value
  */
 public class TextPropertyLink extends AbstractEntityPropertyLink implements DocumentListener {
 

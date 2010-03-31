@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * A class for linking a formatted text field to a EntityModel date property value
+ * A class for linking a formatted text field to a EntityEditModel date property value
  */
 public class DatePropertyLink extends FormattedPropertyLink {
 

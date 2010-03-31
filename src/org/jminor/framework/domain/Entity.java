@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a row in a database table
+ * Represents a row in a database table, providing access to the
+ * column values via the ValueMap interface.
  */
 public final class Entity implements Serializable, Comparable<Entity>, ValueMap {
 
