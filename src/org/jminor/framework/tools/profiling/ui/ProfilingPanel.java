@@ -36,6 +36,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * A UI component based on the ProfilingModel class.
+ * @see ProfilingModel
+ */
 public class ProfilingPanel extends JPanel {
 
   private final ProfilingModel profilingModel;

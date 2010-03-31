@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
- * Works for SQL Server 2000 and higher
+ * A Database implementation based on the SQL Server (2000 or higher) database.
  */
 public class SQLServerDatabase extends AbstractDatabase {
 

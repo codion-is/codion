@@ -8,6 +8,9 @@ import org.jminor.framework.domain.Entity;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+/**
+ * An event describing a delete action.
+ */
 public class DeleteEvent extends ActionEvent {
 
   private final List<Entity> deletedEntities;

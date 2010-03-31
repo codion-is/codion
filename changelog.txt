@@ -1139,3 +1139,7 @@
   Entity.Key.copyEntityKeys() renamed to copy
   Entity.Key.equals(Key) removed
   db.EntityDbUtil refactored out of domain.EntityUtil
+  EntityJRDataSource.getCurrentEntity() protected
+  Lots of minor JavaDoc improvements
+  FilteredComboBoxModel removed unused constructor and added protected initializeComparator()
+  package-info.java added to all packages as well as overview.html to source root, javadoc ant target updated accordingly

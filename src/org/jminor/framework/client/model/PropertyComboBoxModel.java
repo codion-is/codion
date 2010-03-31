@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * A combo box model based on a single property
+ * A combo box model based on a single entity property.
  */
 public class PropertyComboBoxModel extends FilteredComboBoxModel {
 

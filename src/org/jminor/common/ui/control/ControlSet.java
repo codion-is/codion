@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A set of Actions/Controls, includes separators
+ * A set of Actions/Controls, includes separators.
  */
 public class ControlSet extends Control {
 

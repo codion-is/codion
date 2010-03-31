@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 13.1.2008
  * Time: 13:05:09
  */

@@ -6,7 +6,7 @@ package org.jminor.common.ui.control;
 import javax.swing.Action;
 
 /**
- * Used when handling sets of Controls
+ * Used when handling sets of Controls.
  */
 public interface ControlIterator {
 

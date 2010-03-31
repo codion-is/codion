@@ -61,6 +61,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * A static utility class.
+ */
 public class EntityUiUtil {
 
   private EntityUiUtil() {}

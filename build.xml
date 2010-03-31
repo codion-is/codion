@@ -186,9 +186,9 @@
           description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true" />
     <mkdir dir="${docsapi}" />
-    <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*"
-             author="true" version="true" use="true" windowtitle="JMinor API docs"
-             link="http://java.sun.com/javase/6/docs/api/"
+    <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8" docencoding="UTF-8"
+             overview="${src}/overview.html" author="true" version="true" use="true" windowtitle="JMinor v${version} API"
+             doctitle="JMinor v${version} API" link="http://java.sun.com/javase/6/docs/api/"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
                     Db org.jminor.framework.db*,

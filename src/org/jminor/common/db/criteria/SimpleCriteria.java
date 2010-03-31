@@ -5,6 +5,9 @@ package org.jminor.common.db.criteria;
 
 import org.jminor.common.db.dbms.Database;
 
+/**
+ * Encapsulates a simple free-form query criteria.
+ */
 public class SimpleCriteria implements Criteria {
 
   private final String criteriaString;

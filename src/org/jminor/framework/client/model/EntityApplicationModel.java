@@ -11,6 +11,9 @@ import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A central application model class.
+ */
 public abstract class EntityApplicationModel {
 
   private final Event evtSelectionFiltersDetailChanged = new Event();

@@ -12,7 +12,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
-   * A class encapsulating a server log entry
+   * A class encapsulating a server log entry.
  */
 public class ServerLogEntry implements Serializable, Comparable<ServerLogEntry> {
 

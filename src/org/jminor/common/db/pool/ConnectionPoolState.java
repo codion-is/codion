@@ -6,7 +6,8 @@ package org.jminor.common.db.pool;
 import java.io.Serializable;
 
 /**
-* User: Björn Darri
+* A class containing the state of a connection pool at a given time.
+* User: Bjorn Darri
 * Date: 8.12.2007
 * Time: 16:17:01
 */

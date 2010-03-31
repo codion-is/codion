@@ -8,7 +8,7 @@ import java.awt.Toolkit;
 import java.net.URL;
 
 /**
- * A class serving as resource owner for images
+ * A class serving as resource owner for images.
  */
 public class Images {
 

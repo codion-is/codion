@@ -8,6 +8,9 @@ import org.jminor.framework.domain.Entity;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+/**
+ * An event describing a update action.
+ */
 public class UpdateEvent extends ActionEvent {
 
   private final List<Entity> updatedEntities;

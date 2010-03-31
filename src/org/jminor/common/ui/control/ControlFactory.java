@@ -10,7 +10,7 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 /**
- * A static utility class for providing Control objects
+ * A static utility class for constructing Control objects.
  */
 public class ControlFactory {
 

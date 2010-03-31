@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * A panel for configuring the PropertySearchModels for a given EntityTableModel
+ * A panel for configuring the PropertySearchModels for a given EntityTableModel.
  */
 public class EntityCriteriaPanel extends JPanel {
 

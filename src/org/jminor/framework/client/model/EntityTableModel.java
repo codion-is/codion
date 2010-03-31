@@ -46,7 +46,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * A TableModel implementation for showing entities
+ * A TableModel implementation for displaying and working with entities.
  */
 public class EntityTableModel extends AbstractTableModel implements Refreshable {
 

@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * User: Björn Darri
+ * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.
+ * User: Bjorn Darri
  * Date: 28.6.2009
  * Time: 16:17:14
  */

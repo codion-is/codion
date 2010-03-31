@@ -16,6 +16,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A class encapsulating a entity definition, such as table name, order by clause and properties.
+ */
 public class EntityDefinition implements Serializable {
 
   private static final long serialVersionUID = 1;

@@ -8,7 +8,7 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
 /**
- * A class encapsulating select query parameters
+ * A class encapsulating select query parameters.
  */
 public class SelectCriteria extends EntityCriteria {
 

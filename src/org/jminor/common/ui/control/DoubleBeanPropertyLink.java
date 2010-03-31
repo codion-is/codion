@@ -7,6 +7,9 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.DoubleField;
 
+/**
+ * Binds a DoubleField to a double based bean property.
+ */
 public class DoubleBeanPropertyLink extends TextBeanPropertyLink {
 
   public DoubleBeanPropertyLink(final DoubleField doubleField, final Object owner, final String propertyName,

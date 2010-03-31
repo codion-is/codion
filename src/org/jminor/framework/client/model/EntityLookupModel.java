@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A class responsible for doing entity lookups based on a set of criteria properties.
+ */
 public class EntityLookupModel {
 
   private final Event evtSelectedEntitiesChanged = new Event();

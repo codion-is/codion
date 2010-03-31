@@ -12,7 +12,7 @@ import org.junit.Test;
 import javax.swing.JComboBox;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 13.1.2008
  * Time: 12:15:13
  */

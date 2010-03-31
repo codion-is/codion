@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * An abstract base class for linking a UI component to a property value
+ * An abstract base class for linking a UI component to a property value.
  */
 public abstract class AbstractPropertyLink extends Control {
 

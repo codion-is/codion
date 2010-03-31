@@ -10,6 +10,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+/**
+ * A text field for ints.
+ */
 public class IntField extends TextFieldPlus {
 
   /** Constructs a new IntField. */

@@ -23,6 +23,9 @@ import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * A JPanel for retrieving login information.
+ */
 public class LoginPanel extends JPanel {
 
   private final JTextField usernameField = new JTextField(8);

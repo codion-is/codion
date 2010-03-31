@@ -20,7 +20,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * A class for linking a ComboBox to a EntityEditModel property value
+ * A class for linking a ComboBox to a EntityEditModel property value.
  */
 public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
 

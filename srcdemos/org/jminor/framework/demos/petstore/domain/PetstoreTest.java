@@ -13,7 +13,7 @@ import org.junit.Test;
 import java.util.Collection;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 24.12.2007
  * Time: 13:20:26
  */

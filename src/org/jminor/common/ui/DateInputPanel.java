@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A panel for showing a formatted text field and a button activating a calendar for date input
+ * A panel for displaying a formatted text field and a button activating a calendar for date input.
  */
 public class DateInputPanel extends JPanel {
 

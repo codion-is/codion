@@ -12,6 +12,9 @@ import org.jminor.framework.domain.Type;
 import java.sql.Timestamp;
 import java.util.regex.Pattern;
 
+/**
+ * A class for filtering a set of entities based on a property.
+ */
 @SuppressWarnings({"unchecked"})
 public class PropertyFilterModel extends AbstractSearchModel {
 

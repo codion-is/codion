@@ -18,7 +18,7 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import java.awt.Dimension;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 24.12.2007
  * Time: 23:36:04
  */

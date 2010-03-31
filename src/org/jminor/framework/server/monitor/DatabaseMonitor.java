@@ -14,6 +14,9 @@ import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * User: Bjorn Darri
+ */
 public class DatabaseMonitor {
 
   private final Event evtStatsUpdateIntervalChanged = new Event();

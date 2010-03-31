@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implements the database layer accessible to the client
+ * Implements the database layer accessible to the client.
  */
 public class EntityDbConnection extends DbConnection implements EntityDb {
 

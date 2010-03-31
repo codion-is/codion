@@ -5,6 +5,9 @@ package org.jminor.common.db;
 
 import java.io.Serializable;
 
+/**
+ * Encapsulates basic database usage statistics.
+ */
 public class DatabaseStatistics implements Serializable {
 
   private static final long serialVersionUID = 1;

@@ -6,7 +6,7 @@ package org.jminor.common.db;
 import java.io.Serializable;
 
 /**
- * A class encapsulating a username and password
+ * A class encapsulating a username and password.
  */
 public class User implements Serializable {
 

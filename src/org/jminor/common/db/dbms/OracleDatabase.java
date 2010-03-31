@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * A Database implementation based on the Oracle database.
+ */
 public class OracleDatabase extends AbstractDatabase {
 
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();

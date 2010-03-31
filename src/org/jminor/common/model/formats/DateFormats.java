@@ -5,6 +5,9 @@ package org.jminor.common.model.formats;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * A collection of date format strings.
+ */
 public class DateFormats {
 
   public static final String COMPACT_DASH = "dd-MM-yy";

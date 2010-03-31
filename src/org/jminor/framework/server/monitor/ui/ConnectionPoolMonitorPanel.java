@@ -4,8 +4,6 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
-import org.jminor.common.ui.control.ControlFactory;
-import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
@@ -16,7 +14,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 10.12.2007
  * Time: 15:54:36
  */
@@ -44,12 +42,12 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     add(connectionPoolPane, BorderLayout.CENTER);
   }
 
-  private ControlSet getPopupCommands() {
-    final ControlSet controlSet = new ControlSet();
-    controlSet.add(ControlFactory.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
-    controlSet.addSeparator();
-    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
-
-    return controlSet;
-  }
+//  private ControlSet getPopupCommands() {
+//    final ControlSet controlSet = new ControlSet();
+//    controlSet.add(ControlFactory.methodControl(this, "addConnectionPool", "Add connection pool(s)"));
+//    controlSet.addSeparator();
+//    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+//
+//    return controlSet;
+//  }
 }

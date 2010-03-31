@@ -6,6 +6,9 @@ package org.jminor.common.ui;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.Insets;
 
+/**
+ * A BorderlessTabbedPaneUI with insets only at the top. 
+ */
 public class BorderlessTabbedPaneUI extends BasicTabbedPaneUI {
 
   /** {@inheritDoc} */

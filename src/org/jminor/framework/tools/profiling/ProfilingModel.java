@@ -21,6 +21,9 @@ import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * A class for running multiple EntityApplicationModel instances for testing/profiling purposes.
+ */
 public abstract class ProfilingModel {
 
   protected static final Random random = new Random();

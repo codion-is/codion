@@ -15,12 +15,11 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * User: Björn Darri
+ * Encapsulates the property search parameters search type, upper bound and lower bound,
+ * as well as relevant events and states.
+ * User: Bjorn Darri
  * Date: 26.12.2007
  * Time: 14:48:22
- *
- * Encapsulates the property search parameters search type, upper bound and lower bound,
- * as well as relevant events and states
  */
 public abstract class AbstractSearchModel {
 

@@ -27,6 +27,10 @@ import javax.swing.JTextField;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
 
+/**
+ * A UI component based on the EntityEditModel.
+ * @see EntityEditModel
+ */
 public abstract class EntityEditPanel extends JPanel {
 
   private final EntityEditModel model;

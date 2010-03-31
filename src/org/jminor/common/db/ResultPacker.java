@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * A ResultPacker packs the contents of a ResultSet into a List
+ * A ResultPacker packs the contents of a ResultSet into a List.
  */
 public interface ResultPacker<T> {
 

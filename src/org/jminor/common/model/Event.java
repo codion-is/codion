@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A synchronous event class
+ * A synchronous event class.
  */
 public class Event implements ActionListener {
 

@@ -3,6 +3,13 @@
  */
 package org.jminor.common.model;
 
+/**
+ * Specifies an object that can be refreshed.
+ */
 public interface Refreshable {
+
+  /**
+   * Performs a refresh
+   */
   void refresh();
 }

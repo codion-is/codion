@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 3.8.2009
  * Time: 00:14:32
  */

@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * Represents a entity property, for example a database column.
- * Contains some representation data
  */
 public class Property implements Serializable {
 
@@ -943,6 +942,9 @@ public class Property implements Serializable {
     }
   }
 
+  /**
+   * A BLOB property, based on two columns, the actual BLOB column and a column containing the name of the BLOB object.
+   */
   public static class BlobProperty extends Property {
 
     private final String blobColumnName;
@@ -959,7 +961,7 @@ public class Property implements Serializable {
   }
 
   /**
- * Used when property change events are fired
+   * Used when property change events are fired
    */
   public static class Event extends ActionEvent {
 
@@ -1005,7 +1007,7 @@ public class Property implements Serializable {
      * @param initialization true if the property value was being initialized
      */
     public Event(final Object source, final String entityID, final Property property, final Object newValue,
-                         final Object oldValue, final boolean isModelChange, final boolean initialization) {
+                 final Object oldValue, final boolean isModelChange, final boolean initialization) {
       super(source, 0, property.getPropertyID());
       this.entityID = entityID;
       this.property = property;
@@ -1068,7 +1070,7 @@ public class Property implements Serializable {
   }
 
   /**
- * Used when listening to PropertyEvents
+   * Used when listening to PropertyEvents
    */
   public abstract static class Listener implements ActionListener {
 

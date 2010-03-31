@@ -10,6 +10,9 @@ import org.jminor.common.model.CancelException;
 import javax.swing.JComponent;
 import java.io.FileNotFoundException;
 
+/**
+ * A default ExcptionHandler implementation.
+ */
 public class DefaultExceptionHandler implements ExceptionHandler {
 
   private static final ExceptionHandler defaultExceptionHandler = new DefaultExceptionHandler();

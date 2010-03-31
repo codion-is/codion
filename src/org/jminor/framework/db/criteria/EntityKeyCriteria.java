@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A class encapsulating a query criteria with EntityKey objects as values
+ * A class encapsulating a query criteria with EntityKey objects as values.
  */
 public class EntityKeyCriteria implements Criteria, Serializable {
 

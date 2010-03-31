@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class for unit testing domain entities
+ * A class for unit testing domain entities.
  */
 public abstract class EntityTestUnit {
 

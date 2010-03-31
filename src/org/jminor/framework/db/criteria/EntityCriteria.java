@@ -10,7 +10,7 @@ import org.jminor.framework.domain.EntityRepository;
 import java.io.Serializable;
 
 /**
- * A class encapsulating query criteria parameters
+ * A class encapsulating query criteria parameters.
  */
 public class EntityCriteria implements Serializable {
 

@@ -5,6 +5,14 @@ package org.jminor.common.ui;
 
 import javax.swing.JComponent;
 
+/**
+ * An interface describing an exception handler
+ */
 public interface ExceptionHandler {
+  /**
+   * Handle the given exception and display it to the user.
+   * @param exception the exception
+   * @param dialogParent the component to use as parent to the exception dialog
+   */
   void handleException(final Throwable exception, final JComponent dialogParent);
 }

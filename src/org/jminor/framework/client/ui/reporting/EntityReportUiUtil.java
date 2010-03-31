@@ -12,6 +12,9 @@ import net.sf.jasperreports.view.JRViewer;
 import javax.swing.JFrame;
 import java.awt.Dimension;
 
+/**
+ * A static utility class for displaying jasper reports.
+ */
 public class EntityReportUiUtil {
 
   /**

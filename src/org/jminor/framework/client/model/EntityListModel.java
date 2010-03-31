@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 //todo incomplete, no selection model
+/**
+ * A ListModel for displaying entities.
+ */
 public class EntityListModel extends AbstractListModel implements Refreshable {
 
   private static final Logger log = Util.getLogger(EntityListModel.class);

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Defines the database methods the db layer offers
+ * Defines the database methods the db layer offers.
  * User: darri
  * Date: 7.1.2005
  * Time: 11:35:59

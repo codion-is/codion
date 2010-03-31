@@ -10,7 +10,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Property;
 
 /**
- * A class for linking a DoubleField to a EntityEditModel double property value
+ * A class for linking a DoubleField to a EntityEditModel double property value.
  */
 public class DoublePropertyLink extends TextPropertyLink {
 

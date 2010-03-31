@@ -7,7 +7,8 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 /**
- * User: Björn Darri
+ * An exception indicating that the entity in question has been modified since it was loaded.
+ * User: Bjorn Darri
  * Date: 26.9.2009
  * Time: 15:35:18
  */

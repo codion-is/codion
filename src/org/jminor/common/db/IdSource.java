@@ -4,8 +4,8 @@
 package org.jminor.common.db;
 
 /**
- * A enum representing the possible ways of retrieving a new  ID value
- * User: Björn Darri
+ * A enum representing the possible ways of retrieving a new  ID value.
+ * User: Bjorn Darri
  * Date: 12.1.2008
  * Time: 20:42:34
  */

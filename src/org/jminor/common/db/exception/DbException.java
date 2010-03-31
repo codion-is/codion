@@ -6,7 +6,7 @@ package org.jminor.common.db.exception;
 import java.sql.SQLException;
 
 /**
- * Represents an exception coming from a database-layer
+ * An exception coming from a database-layer.
  */
 public class DbException extends Exception  {
 

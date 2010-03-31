@@ -29,7 +29,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
 /**
- * User: Björn Darri
+ * An abstract panel for showing search/filter configuration.
+ * User: Bjorn Darri
  * Date: 26.12.2007
  * Time: 15:17:20
  */

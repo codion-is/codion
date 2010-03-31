@@ -24,6 +24,9 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
+/**
+ * User: Bjorn Darri
+ */
 public class DatabaseMonitorPanel extends JPanel {
 
   private final DatabaseMonitor model;

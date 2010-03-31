@@ -29,7 +29,7 @@ import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 /**
- * A static utility class
+ * A static utility class.
  */
 public class Util {
 

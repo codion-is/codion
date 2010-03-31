@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A class for editing a property value for one or more entities at a time
+ * A class for editing a property value for one or more entities at a time.
  */
 public class PropertyEditPanel extends JPanel {
 
@@ -169,6 +169,9 @@ public class PropertyEditPanel extends JPanel {
     return button;
   }
 
+  /**
+   * Specifies a generic class for retrieving a value from a UI component.
+   */
   public static abstract class InputManager {
     private final JComponent inputComponent;
 
@@ -183,6 +186,9 @@ public class PropertyEditPanel extends JPanel {
     protected abstract Object getValue();
   }
 
+  /**
+   * A InputManager implementation for date values.
+   */
   public static class DateInputManager extends InputManager {
     public DateInputManager(final Date currentValue, final SimpleDateFormat dateFormat) {
       super(EntityUiUtil.createDateInputPanel(currentValue, dateFormat));
@@ -204,6 +210,9 @@ public class PropertyEditPanel extends JPanel {
     }
   }
 
+  /**
+   * A InputManager implementation for double values.
+   */
   public static class DoubleInputManager extends InputManager {
     public DoubleInputManager(final Double currentValue) {
       super(new DoubleField());
@@ -230,6 +239,9 @@ public class PropertyEditPanel extends JPanel {
     }
   }
 
+  /**
+   * A InputManager implementation for boolean values.
+   */
   public static class BooleanInputManager extends InputManager {
     public BooleanInputManager(final Boolean currentValue) {
       super(new JComboBox(new BooleanComboBoxModel()));
@@ -243,6 +255,9 @@ public class PropertyEditPanel extends JPanel {
     }
   }
 
+  /**
+   * A InputManager implementation for Entity values.
+   */
   public static class EntityInputManager extends InputManager {
     public EntityInputManager(final Property.ForeignKeyProperty foreignKeyProperty, final EntityEditModel editModel,
                               final Entity currentValue) {
@@ -305,6 +320,9 @@ public class PropertyEditPanel extends JPanel {
     }
   }
 
+  /**
+   * A InputManager implementation for String values.
+   */
   public static class TextInputManager extends InputManager {
     public TextInputManager(final Property property, final EntityEditModel editModel, final String currentValue) {
       super(createTextInputPanel(property, editModel, currentValue));

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
+ * Defines DBMS specific functionality as well as basic database configuration settings.
  * User: darri
  * Date: 16.6.2009
  * Time: 08:52:08

@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 /**
- * A factory class for handing out EntityDbProviders according to system properties
+ * A factory class for handing out EntityDbProviders according to system properties.
  */
 public class EntityDbProviderFactory {
 

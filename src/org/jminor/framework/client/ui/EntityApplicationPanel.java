@@ -52,6 +52,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * A central application panel class.
+ */
 public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
 
   static {

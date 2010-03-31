@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class for editing a Entity instance, providing property change events and combobox models
+ * A class for editing a Entity instance, providing property change events and combobox models.
  */
 public class EntityEditModel {
 

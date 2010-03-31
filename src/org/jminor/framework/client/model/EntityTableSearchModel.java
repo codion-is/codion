@@ -25,13 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: Björn Darri
- * Date: 24.7.2008
- * Time: 21:29:55
- *
  * This class encapsulates filtering functionality, which refers to showing/hiding entities already available
  * in a table model and searching functionality, which refers to configuring the underlying query,
- * which then needs to be re-run
+ * which then needs to be re-run.
+ * User: Bjorn Darri
+ * Date: 24.7.2008
+ * Time: 21:29:55
  */
 public class EntityTableSearchModel {
 

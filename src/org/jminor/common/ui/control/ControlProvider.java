@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * Provides UI controls
+ * Provides UI controls based on the Control class and it's descendants.
  */
 public class ControlProvider {
 

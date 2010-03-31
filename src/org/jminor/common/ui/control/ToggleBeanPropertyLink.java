@@ -11,6 +11,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.Method;
 
+/**
+ * Binds a ButtonModel to a boolean based bean property.
+ */
 public class ToggleBeanPropertyLink extends BeanPropertyLink {
 
   private final ButtonModel buttonModel;

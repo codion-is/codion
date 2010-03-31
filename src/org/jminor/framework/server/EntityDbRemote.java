@@ -7,6 +7,7 @@ import org.jminor.framework.db.EntityDb;
 
 import java.rmi.Remote;
 
-public interface EntityDbRemote extends EntityDb, Remote {
-
-}
+/**
+ * An interface specifying a remote EntityDb implementation.
+ */
+public interface EntityDbRemote extends EntityDb, Remote {}

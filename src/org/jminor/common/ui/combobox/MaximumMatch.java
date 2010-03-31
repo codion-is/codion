@@ -15,6 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 /**
+ * Selects an item in a JComboBox based values typed in on the keyboard.
  * @author Thomas Bierhance
  */
 public class MaximumMatch extends PlainDocument {

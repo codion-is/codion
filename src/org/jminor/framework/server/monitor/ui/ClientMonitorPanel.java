@@ -13,7 +13,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 10.12.2007
  * Time: 17:32:53
  */

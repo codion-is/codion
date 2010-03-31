@@ -3,6 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+/**
+ * A default abstract implementation of the Database interface.
+ */
 public abstract class AbstractDatabase implements Database {
 
   private final String databaseType;

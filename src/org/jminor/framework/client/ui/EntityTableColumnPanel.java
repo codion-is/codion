@@ -21,7 +21,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * A panel that synchronizes child panel sizes and positions to table columns
+ * A panel that synchronizes child panel sizes and positions to table columns.
  */
 public abstract class EntityTableColumnPanel extends JPanel {
 

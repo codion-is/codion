@@ -10,6 +10,9 @@ import javax.swing.text.MaskFormatter;
 import java.text.Format;
 import java.text.ParseException;
 
+/**
+ * Binds a JFormattedField to a string based bean property.
+ */
 public class FormattedTextBeanPropertyLink extends TextBeanPropertyLink {
 
   private final Format format;

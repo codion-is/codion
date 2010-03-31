@@ -32,7 +32,7 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 4.12.2007
  * Time: 18:14:35
  */

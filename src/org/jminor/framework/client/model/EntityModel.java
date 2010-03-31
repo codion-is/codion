@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A model class with basic functionality for creating, editing and deleting objects from a database
+ * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
  */
 public class EntityModel implements Refreshable {
 

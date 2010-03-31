@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 /**
- * Defines the methods available to clients
+ * Defines the methods available to remote clients.
  * User: darri
  * Date: 4.3.2005
  * Time: 10:59:16

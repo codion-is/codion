@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 29.7.2009
  * Time: 18:07:24
  */

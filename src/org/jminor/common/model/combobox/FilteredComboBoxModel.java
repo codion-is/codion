@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A ComboBoxModel implementation that allows filtering via FilterCriteria objects
+ * A ComboBoxModel implementation that allows filtering via FilterCriteria objects.
  * @see org.jminor.common.model.FilterCriteria
  * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
  */
@@ -40,37 +40,24 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
 
   private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
-  /** Instantiates a new FilteredComboBoxModel that does not sort its contents and
-   * does not include a nullValueItem */
+  /**
+   * Instantiates a new FilteredComboBoxModel that does not sort its contents and does not include a nullValueItem.
+   */
   public FilteredComboBoxModel() {
     this(false, null);
   }
 
   /**
-   * Instantiates a new FilteredComboBoxModel
+   * Instantiates a new FilteredComboBoxModel.
    * @param sortContents if true then the contents of this model are sorted on refresh
-   * @param nullValueString an object representing a null value, which is shown at the top of the item list
+   * @param nullValueString a string representing a null value, which is shown at the top of the item list
    * @see #isNullValueItemSelected()
    */
   public FilteredComboBoxModel(final boolean sortContents, final String nullValueString) {
-    this(sortContents, nullValueString, new Comparator<Object>() {
-      private final Collator collator = Collator.getInstance();
-      @SuppressWarnings({"unchecked"})
-      public int compare(final Object objectOne, final Object objectTwo) {
-        if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
-          return ((Comparable) objectOne).compareTo(objectTwo);
-        else
-          return collator.compare(objectOne.toString(), objectTwo.toString());
-      }
-    });
-  }
-
-  public FilteredComboBoxModel(final boolean sortContents, final String nullValueString,
-                               final Comparator<? super Object> sortComparator) {
     this.sortContents = sortContents;
     this.nullValueString = nullValueString;
     this.selectedItem = nullValueString != null ? nullValueString : null;
-    this.sortComparator = sortComparator;
+    this.sortComparator = sortContents ? initializeComparator() : null;
   }
 
   public boolean isSortContents() {
@@ -269,5 +256,18 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    */
   protected boolean include(final Object object) {
     return filterCriteria == null || filterCriteria.include(object);
+  }
+
+  protected Comparator<Object> initializeComparator() {
+    return new Comparator<Object>() {
+      private final Collator collator = Collator.getInstance();
+      @SuppressWarnings({"unchecked"})
+      public int compare(final Object objectOne, final Object objectTwo) {
+        if (objectOne instanceof Comparable && objectTwo instanceof Comparable)
+          return ((Comparable) objectOne).compareTo(objectTwo);
+        else
+          return collator.compare(objectOne.toString(), objectTwo.toString());
+      }
+    };
   }
 }

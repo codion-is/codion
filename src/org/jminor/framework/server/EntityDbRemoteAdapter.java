@@ -54,7 +54,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * An adapter for handling logging and database connection pooling
+ * An adapter for handling logging and database connection pooling.
  */
 public class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 

@@ -17,11 +17,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: Björn Darri
+ * A static utility class.
+ * User: Bjorn Darri
  * Date: 30.3.2010
  * Time: 21:47:16
  */
 public class EntityDbUtil {
+
   /**
    * Returns a SQL string version of the given value
    * @param database the Database instance

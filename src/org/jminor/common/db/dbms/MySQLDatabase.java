@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * A Database implementation based on the MySQL database.
+ */
 public class MySQLDatabase extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {

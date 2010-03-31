@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Defines the server admin service methods
+ * Defines the server admin service methods.
  * User: darri
  * Date: 19.2.2007
  * Time: 09:41:35

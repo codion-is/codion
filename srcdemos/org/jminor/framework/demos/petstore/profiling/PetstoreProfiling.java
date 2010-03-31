@@ -16,7 +16,7 @@ import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 import javax.swing.UIManager;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 30.11.2007
  * Time: 03:33:10
  */

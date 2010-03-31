@@ -6,6 +6,7 @@ package org.jminor.common.model;
 import java.io.Serializable;
 
 /**
+ * Enumerating the possible ways of searching.
  * User: darri
  * Date: 9.3.2007
  * Time: 23:22:01

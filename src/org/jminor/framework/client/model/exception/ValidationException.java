@@ -5,6 +5,9 @@ package org.jminor.framework.client.model.exception;
 
 import org.jminor.framework.domain.Property;
 
+/**
+ * An exception used to indicate an invalid property value.
+ */
 public class ValidationException extends Exception {
 
   private final Property property;

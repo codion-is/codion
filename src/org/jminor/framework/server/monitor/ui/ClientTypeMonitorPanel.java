@@ -8,7 +8,6 @@ import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ClientTypeMonitor;
 
 import javax.swing.BorderFactory;
@@ -23,7 +22,7 @@ import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 11.12.2007
  * Time: 12:58:29
  */
@@ -74,10 +73,10 @@ public class ClientTypeMonitorPanel extends JPanel {
             Messages.get(Messages.EXCEPTION), exception.getMessage(), exception);
   }
 
-  private ControlSet getPopupCommands() {
-    final ControlSet controlSet = new ControlSet();
-    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
-
-    return controlSet;
-  }
+//  private ControlSet getPopupCommands() {
+//    final ControlSet controlSet = new ControlSet();
+//    controlSet.add(ControlFactory.methodControl(model, "refresh", "Refresh"));
+//
+//    return controlSet;
+//  }
 }

@@ -7,6 +7,9 @@ import javax.swing.UIManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * A class containing i18n message keys used in the common package.
+ */
 public class Messages {
 
   private static final ResourceBundle bundle =

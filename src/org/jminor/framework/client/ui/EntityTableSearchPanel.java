@@ -20,6 +20,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A UI component based on the EntityTableSearchModel
+ * @see EntityTableSearchModel
+ */
 public class EntityTableSearchPanel extends EntityTableColumnPanel {
 
   private final Event evtAdvancedChanged = new Event();

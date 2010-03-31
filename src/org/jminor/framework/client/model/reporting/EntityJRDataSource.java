@@ -12,7 +12,7 @@ import net.sf.jasperreports.engine.JRField;
 import java.util.Iterator;
 
 /**
- * A default JRDataSource implementation which iterates through the iterator received via the constructor
+ * A default JRDataSource implementation which iterates through the iterator received via the constructor.
  */
 public class EntityJRDataSource implements JRDataSource {
 
@@ -23,10 +23,6 @@ public class EntityJRDataSource implements JRDataSource {
     if (reportIterator == null)
       throw new IllegalArgumentException("EntityJRDataSource requires a non-null reportIterator");
     this.reportIterator = reportIterator;
-  }
-
-  public Entity getCurrentEntity() {
-    return currentEntity;
   }
 
   public boolean next() throws JRException {
@@ -46,5 +42,9 @@ public class EntityJRDataSource implements JRDataSource {
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
     return getCurrentEntity().getTableValue(jrField.getName());
+  }
+
+  protected Entity getCurrentEntity() {
+    return currentEntity;
   }
 }

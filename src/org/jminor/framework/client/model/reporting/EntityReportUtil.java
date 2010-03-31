@@ -17,7 +17,8 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- * User: Björn Darri
+ * A static utility class for working with jasper reports.
+ * User: Bjorn Darri
  * Date: 30.7.2009
  * Time: 17:58:09
  */

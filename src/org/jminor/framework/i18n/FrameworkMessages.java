@@ -6,6 +6,9 @@ package org.jminor.framework.i18n;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * A class containing i18n message keys used in the framework package.
+ */
 public class FrameworkMessages {
 
   private static final ResourceBundle bundle =

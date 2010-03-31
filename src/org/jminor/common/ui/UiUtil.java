@@ -65,7 +65,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * A static utility class
+ * A static utility class.
  */
 public class UiUtil {
 

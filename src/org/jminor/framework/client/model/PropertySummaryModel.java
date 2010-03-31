@@ -16,11 +16,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * User: Björn Darri
+ * A class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.
+ * User: Bjorn Darri
  * Date: 5.9.2009
  * Time: 21:47:06
- *
- * The following summary types are implemented: Sum, average, minimum, maximum and minimum & maximum
  */
 public class PropertySummaryModel {
 
@@ -102,12 +101,30 @@ public class PropertySummaryModel {
     return format;
   }
 
+  /**
+   * Provides the values used when creating the summary value.
+   */
   public interface PropertyValueProvider {
+
+    /**
+     * @return the values to base the summary on
+     */
     Collection<?> getValues();
+
+    /**
+     * @return true if the values provided by <code>getValues()</code> is a subset of the total available values
+     */
     boolean isValueSubset();
+
+    /**
+     * @param event the event to use when notifying changes to the underlying data which require a summary refresh
+     */
     void bindValuesChangedEvent(final Event event);
   }
 
+  /**
+   * Provides a String containing a summary value based on a collection of values.
+   */
   public interface Summary {
     String getSummary(final Collection<?> values, final Type propertyType, final Format format);
   }

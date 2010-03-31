@@ -10,6 +10,9 @@ import org.jminor.framework.domain.EntityRepository;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A static utility class for constructing query criteria implementations.
+ */
 public class CriteriaUtil {
 
   public static SelectCriteria selectCriteria(final Entity.Key key) {

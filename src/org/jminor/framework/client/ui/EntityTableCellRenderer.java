@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The default TableCellRenderer implementation used by EntityTablePanel
+ * The default TableCellRenderer implementation used by EntityTablePanel.
  */
 public class EntityTableCellRenderer implements TableCellRenderer {
 
@@ -92,8 +92,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
-  /*
-   * Default Renderers
+  /**
+   * A cell renderer for doubles.
    */
   public static class DoubleRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
@@ -128,6 +128,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
+  /**
+   * A cell renderer for integers.
+   */
   public static class IntegerRenderer extends DefaultTableCellRenderer {
     private final NumberFormat format;
 
@@ -159,6 +162,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
+  /**
+   * A cell renderer for dates.
+   */
   public static class DateRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
@@ -188,6 +194,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
+  /**
+   * A cell renderer for timestamps.
+   */
   public static class TimestampRenderer extends DefaultTableCellRenderer {
     private final DateFormat format;
 
@@ -217,6 +226,9 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
   }
 
+  /**
+   * A cell renderer for booleans.
+   */
   public static class BooleanRenderer extends JCheckBox implements TableCellRenderer {
 
     /** Constructs a new BooleanRenderer. */

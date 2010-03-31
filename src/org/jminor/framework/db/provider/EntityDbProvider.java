@@ -6,7 +6,7 @@ package org.jminor.framework.db.provider;
 import org.jminor.framework.db.EntityDb;
 
 /**
- * Interface for a class responsible for providing EntityDb objects
+ * Interface for a class responsible for providing EntityDb objects.
  * User: darri
  * Date: 9.5.2005
  * Time: 11:39:13

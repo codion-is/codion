@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 24.12.2007
  * Time: 14:05:58
  */

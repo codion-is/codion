@@ -11,6 +11,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
+/**
+ * Binds a JTextComponent to a text based bean property.
+ */
 public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentListener {
 
   private final Document document;

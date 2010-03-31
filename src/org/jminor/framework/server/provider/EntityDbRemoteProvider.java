@@ -23,7 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A class responsible for managing a remote db connection
+ * A class responsible for managing a remote db connection.
  */
 public class EntityDbRemoteProvider implements EntityDbProvider {
 

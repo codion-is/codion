@@ -13,6 +13,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A UI component for showing summary panels for numerical properties in a EntityTableModel.
+ */
 public class EntityTableSummaryPanel extends EntityTableColumnPanel {
 
   private final EntityTableModel tableModel;

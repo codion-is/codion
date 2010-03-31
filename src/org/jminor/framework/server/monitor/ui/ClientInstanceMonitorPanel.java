@@ -8,7 +8,6 @@ import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerLogEntry;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ControlSet;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 4.12.2007
  * Time: 22:49:42
  */
@@ -117,10 +116,10 @@ public class ClientInstanceMonitorPanel extends JPanel {
     add(scrollPane, BorderLayout.CENTER);
   }
 
-  private ControlSet getPopupCommands() {
-    final ControlSet controlSet = new ControlSet();
-    controlSet.add(ControlFactory.methodControl(this, "disconnectSelected", "Disconnect selected"));
-
-    return controlSet;
-  }
+//  private ControlSet getPopupCommands() {
+//    final ControlSet controlSet = new ControlSet();
+//    controlSet.add(ControlFactory.methodControl(this, "disconnectSelected", "Disconnect selected"));
+//
+//    return controlSet;
+//  }
 }

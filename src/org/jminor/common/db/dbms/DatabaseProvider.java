@@ -3,6 +3,11 @@
  */
 package org.jminor.common.db.dbms;
 
+/**
+ * Provides Database implementations based on system settings.
+ * @see Database#DATABASE_IMPLEMENTATION_CLASS
+ * @see Database#DATABASE_TYPE
+ */
 public class DatabaseProvider {
 
   public static Database createInstance() {

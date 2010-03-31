@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A class encapsulating a simple collection of server access log entries and basic connection access info
- * User: Björn Darri
+ * A class encapsulating a simple collection of server access log entries and basic connection access info.
+ * User: Bjorn Darri
  * Date: 7.12.2007
  * Time: 12:07:44
  */

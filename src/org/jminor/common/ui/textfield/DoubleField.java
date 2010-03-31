@@ -10,6 +10,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+/**
+ * A text field for doubles.
+ */
 public class DoubleField extends IntField {
 
   public static final String POINT = ".";

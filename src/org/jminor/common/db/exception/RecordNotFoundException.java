@@ -4,7 +4,7 @@
 package org.jminor.common.db.exception;
 
 /**
- * Exception class to be used when an expected record was not found
+ * Exception used when an expected record was not found.
  */
 public class RecordNotFoundException extends DbException {
 

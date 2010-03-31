@@ -10,6 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * A Database implementation based on the HSQL database.
+ */
 public class HSQLDatabase extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {

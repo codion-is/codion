@@ -40,6 +40,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * A UI component based on the EntityLookupModel
+ * @see EntityLookupModel
+ */
 public class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;

@@ -8,10 +8,11 @@ import org.jminor.common.db.User;
 import java.io.Serializable;
 
 /**
-* User: Björn Darri
-* Date: 11.12.2007
-* Time: 13:19:13
-*/
+ * Contains basic information about a remote client.
+ * User: Bjorn Darri
+ * Date: 11.12.2007
+ * Time: 13:19:13
+ */
 public class ClientInfo implements Serializable {
 
   private static final long serialVersionUID = 1;

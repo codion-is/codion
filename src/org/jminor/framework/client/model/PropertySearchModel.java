@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A class for searching a set of entities based on a property.
+ */
 public class PropertySearchModel extends AbstractSearchModel {
 
   private final EntityComboBoxModel entityComboBoxModel;

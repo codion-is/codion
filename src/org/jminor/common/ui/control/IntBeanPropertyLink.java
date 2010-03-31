@@ -7,6 +7,9 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.IntField;
 
+/**
+ * Binds a DoubleField to a int based bean property.
+ */
 public class IntBeanPropertyLink extends TextBeanPropertyLink {
 
   public IntBeanPropertyLink(final IntField intField, final Object owner, final String propertyName,

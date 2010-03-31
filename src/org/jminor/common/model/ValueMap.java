@@ -4,7 +4,7 @@
 package org.jminor.common.model;
 
 /**
- * An interface describing an object containing values mapped to keys
+ * An interface describing an object containing values mapped to keys.
  */
 public interface ValueMap {
 

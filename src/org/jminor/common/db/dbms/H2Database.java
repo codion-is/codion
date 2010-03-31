@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * A Database implementation based on the H2 database.
+ */
 public class H2Database extends AbstractDatabase {
 
   private static final ThreadLocal dateFormat = new ThreadLocal() {

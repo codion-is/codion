@@ -77,7 +77,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities
+ * The EntityTablePanel class consists of a JTable as well as filtering/searching and summary facilities.
  *
  * The default layout is as follows
  * <pre>

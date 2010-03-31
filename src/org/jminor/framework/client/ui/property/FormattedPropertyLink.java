@@ -17,6 +17,9 @@ import java.awt.Color;
 import java.text.Format;
 import java.text.ParseException;
 
+/**
+ * A class for linking a JFormattedTextField to a EntityEditModel property value.
+ */
 public class FormattedPropertyLink extends TextPropertyLink {
 
   private final Format format;

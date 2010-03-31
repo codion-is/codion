@@ -12,7 +12,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * A class for linking a UI component to a boolean value
+ * A class for linking a UI component to a boolean value.
  */
 public class BooleanPropertyLink extends AbstractEntityPropertyLink {
 

@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * A class responsible for managing a local db connection
+ * A class responsible for managing a local db connection.
  */
 public class EntityDbLocalProvider implements EntityDbProvider {
 

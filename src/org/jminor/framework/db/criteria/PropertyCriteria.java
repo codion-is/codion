@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A object for encapsulating a query criteria with a single property and one or more values
+ * A object for encapsulating a query criteria with a single property and one or more values.
  */
 public class PropertyCriteria implements Criteria, Serializable {
 

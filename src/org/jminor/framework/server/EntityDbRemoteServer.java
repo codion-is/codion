@@ -38,7 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * The remote server class, responsible for handling remote db connection requests
+ * The remote server class, responsible for handling remote db connection requests.
  */
 public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityDbServer {
 

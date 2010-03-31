@@ -82,7 +82,7 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records
+ * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  */
 public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 

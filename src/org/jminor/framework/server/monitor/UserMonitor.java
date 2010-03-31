@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 import java.util.Enumeration;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 11.12.2007
  * Time: 11:26:21
  */

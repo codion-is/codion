@@ -13,13 +13,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * A beefed up Action
+ * A beefed up Action.
  */
 public class Control extends AbstractAction {
 
   private final State enabledState;
 
-  /** Constructs a new Control. */
+  /**
+   * Constructs a new Control.
+   */
   public Control() {
     this(null);
   }

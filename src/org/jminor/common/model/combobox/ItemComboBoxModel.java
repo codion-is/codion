@@ -11,6 +11,9 @@ import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Graphics;
 
+/**
+ * A ComboBoxModel implementation based on the <code>ItemComboBoxModel.Item</code> class.
+ */
 public class ItemComboBoxModel extends DefaultComboBoxModel {
 
   /** Constructs a new ItemComboBoxModel. */
@@ -56,6 +59,10 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     return -1;
   }
 
+  /**
+   * An Item to use in a ItemComboBoxModel.
+   * @param <T> the type of the actual item
+   */
   public static class Item<T> {
 
     private final T item;
@@ -73,6 +80,9 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
       return caption;
     }
 
+    /**
+     * @return the actual item
+     */
     public T getItem() {
       return item;
     }
@@ -84,6 +94,9 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     }
   }
 
+  /**
+   * An IconItem to use in a ItemComboBoxModel.
+   */
   public static class IconItem extends Item<Object> implements Icon {
 
     private final ImageIcon icon;

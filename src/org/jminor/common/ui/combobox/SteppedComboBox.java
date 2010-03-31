@@ -13,7 +13,8 @@ import java.awt.event.FocusEvent;
 import java.util.Vector;
 
 /**
- * Slightly modified, automatic popup size according to getDisplaySize()
+ * A JComboBox which automatically sets the popup widtch according to the largest value in the combo box.
+ * Slightly modified, automatic popup size according to getDisplaySize().
  * @author Nobuo Tamemasa
  */
 public class SteppedComboBox extends JComboBox {

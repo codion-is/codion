@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * A state which behaves according to a set of states, either ANDing or ORing those together
- * when determining its own state
+ * when determining its own state.
  */
 public class AggregateState extends State {
 

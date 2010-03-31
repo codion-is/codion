@@ -11,7 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * User: Björn Darri
+ * A static utility class for date handling.
+ * User: Bjorn Darri
  * Date: 3.8.2009
  * Time: 00:09:47
  */
@@ -19,6 +20,7 @@ public class DateUtil {
 
   /**
    * @param date the date to check for validity
+   * @param formats the date formats to use for validation
    * @return true if the date is valid, using the default short date format
    * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */

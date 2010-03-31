@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A static utility class
+ * A static utility class.
  */
 public class EntityUtil {
 

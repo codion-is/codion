@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 /**
- * User: Björn Darri
+ * User: Bjorn Darri
  * Date: 30.11.2007
  * Time: 03:33:10
  */

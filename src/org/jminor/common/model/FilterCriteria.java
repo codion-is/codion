@@ -3,6 +3,9 @@
  */
 package org.jminor.common.model;
 
+/**
+ * An interface describing a filtering criteria.
+ */
 public interface FilterCriteria {
   /**
    * @param item the item

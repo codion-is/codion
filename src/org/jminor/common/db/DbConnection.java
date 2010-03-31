@@ -30,7 +30,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A JDBC layer database connection class
+ * A database connection class providing transaction control, a simple query cache
+ * and functions for querying and manipulating data.
  */
 public class DbConnection {
 
@@ -507,7 +508,7 @@ public class DbConnection {
 
   public static DatabaseStatistics getDatabaseStatistics() {
     return new DatabaseStatistics(counter.getQueriesPerSecond(), counter.getCachedQueriesPerSecond(),
-            counter.getSelectsPerSecond(), counter.getInsertsPerSecond(), 
+            counter.getSelectsPerSecond(), counter.getInsertsPerSecond(),
             counter.getDeletesPerSecond(), counter.getUpdatesPerSecond());
   }
 

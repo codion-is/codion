@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table
+ * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
 public class EntityComboBoxModel extends FilteredComboBoxModel {
 
