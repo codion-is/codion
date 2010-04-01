@@ -10,6 +10,7 @@ import org.jminor.common.db.User;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
@@ -18,7 +19,6 @@ import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
-import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -118,7 +118,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> update(final List<Entity> entities) throws DbException, EntityModifiedException {
+  public List<Entity> update(final List<Entity> entities) throws DbException, RecordModifiedException {
     if (entities.size() == 0)
       return entities;
 
@@ -529,13 +529,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param entity the entity to check
    * @throws DbException in case of a database exception
    * @throws RecordNotFoundException in case the entity has been deleted
-   * @throws EntityModifiedException in case the entity has been modified
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified
    */
-  private void checkIfModified(final Entity entity) throws DbException, EntityModifiedException {
+  private void checkIfModified(final Entity entity) throws DbException, RecordModifiedException {
     final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
             new SimpleCriteria(EntityDbUtil.getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))
-      throw new EntityModifiedException(entity, current);
+      throw new RecordModifiedException(entity, current);
   }
 
   /**

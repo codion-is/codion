@@ -10,8 +10,7 @@ import org.jminor.framework.domain.Entity;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -21,6 +20,11 @@ public class EntityJRDataSourceTest {
   @Test
   public void test() throws Exception {
     final List<Entity> entities = EntityDbConnectionTest.dbProvider.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
+    try {
+      new EntityJRDataSource(null);
+      fail();
+    }
+    catch (Exception e) {}
     final EntityJRDataSource source = new EntityJRDataSource(entities.iterator());
     while (source.next()) {
       final Entity dept = source.getCurrentEntity();

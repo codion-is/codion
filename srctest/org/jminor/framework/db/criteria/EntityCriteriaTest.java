@@ -11,20 +11,27 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 public class EntityCriteriaTest {
 
   @Test
   public void test() {
+    try {
+      new EntityCriteria(null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {}
     final Database database = DatabaseProvider.createInstance();
     final CriteriaSet set1 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,
             new PropertyCriteria(new Property("stringProperty", Type.STRING), SearchType.LIKE, "value"),
             new PropertyCriteria(new Property("intProperty", Type.INT), SearchType.LIKE, 666)
     );
-    assertEquals("where (stringProperty = 'value' and intProperty = 666)",
-            new EntityCriteria("entityID", set1).getWhereClause(database));
+    final EntityCriteria criteria = new EntityCriteria("entityID", set1);
+    assertEquals("where (stringProperty = 'value' and intProperty = 666)", criteria.getWhereClause(database));
+    assertEquals(set1, criteria.getCriteria());
     final CriteriaSet set2 = new CriteriaSet(
             CriteriaSet.Conjunction.AND,
             new PropertyCriteria(new Property("doubleProperty", Type.DOUBLE), SearchType.LIKE, 666.666),

@@ -21,7 +21,6 @@ import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
-import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -317,15 +316,12 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<Entity> update(final List<Entity> entities) throws DbException, EntityModifiedException, RemoteException {
+  public List<Entity> update(final List<Entity> entities) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.update(entities);
     }
     catch (DbException dbe) {
       throw dbe;
-    }
-    catch (EntityModifiedException eme) {
-      throw eme;
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);

@@ -7,9 +7,9 @@ import org.jminor.common.db.User;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
-import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -224,11 +224,11 @@ public class EntityDbConnectionTest {
       updatedDeparment = baseDb.update(Arrays.asList(department)).get(0);
       try {
         optimisticDb.update(Arrays.asList(department));
-        fail("EntityModifiedException should have been thrown");
+        fail("RecordModifiedException should have been thrown");
       }
-      catch (EntityModifiedException e) {
-        assertTrue(e.getModifiedEntity().propertyValuesEqual(updatedDeparment));
-        assertTrue(e.getEntity().propertyValuesEqual(department));
+      catch (RecordModifiedException e) {
+        assertTrue(((Entity) e.getModifiedRow()).propertyValuesEqual(updatedDeparment));
+        assertTrue(((Entity) e.getRow()).propertyValuesEqual(department));
       }
     }
     finally {

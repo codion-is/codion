@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
@@ -16,7 +17,6 @@ import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.criteria.CriteriaUtil;
-import org.jminor.framework.db.exception.EntityModifiedException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -365,11 +365,11 @@ public class EntityEditModel {
    * Performs a update on the active entity
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws org.jminor.framework.db.exception.EntityModifiedException in case an entity was modified by another user
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see #validateEntities(java.util.List, int)
    */
-  public final void update() throws CancelException, DbException, EntityModifiedException, ValidationException {
+  public final void update() throws CancelException, DbException, RecordModifiedException, ValidationException {
     update(Arrays.asList(getEntityCopy()));
   }
 
@@ -378,13 +378,13 @@ public class EntityEditModel {
    * @param entities the Entities to update
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws EntityModifiedException in case an entity was modified by another user
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see #evtBeforeUpdate
    * @see #evtAfterUpdate
    * @see #validateEntities(java.util.List, int)
    */
-  public final void update(final List<Entity> entities) throws DbException, EntityModifiedException, CancelException, ValidationException {
+  public final void update(final List<Entity> entities) throws DbException, RecordModifiedException, CancelException, ValidationException {
     if (isReadOnly())
       throw new RuntimeException("This is a read-only model, updating is not allowed!");
     if (!isMultipleUpdateAllowed() && entities.size() > 1)

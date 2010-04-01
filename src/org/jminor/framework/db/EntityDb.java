@@ -111,7 +111,7 @@ public interface EntityDb {
    * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DbException in case of a db exception
-   * @throws org.jminor.framework.db.exception.EntityModifiedException in case an entity has been modified by another user
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified by another user
    */
   List<Entity> update(final List<Entity> entities) throws Exception;
 

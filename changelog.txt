@@ -1143,3 +1143,4 @@
   Lots of minor JavaDoc improvements
   FilteredComboBoxModel removed unused constructor and added protected initializeComparator()
   package-info.java added to all packages as well as overview.html to source root, javadoc ant target updated accordingly
+  EntityModifiedException renamed to RecordModifiedException and moved to common.db
