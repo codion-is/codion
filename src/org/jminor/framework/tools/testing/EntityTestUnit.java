@@ -11,6 +11,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
+import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.domain.Entity;
@@ -131,14 +132,17 @@ public abstract class EntityTestUnit {
     try {
       getEntityDb().beginTransaction();
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new HashSet<String>()));
-      final Entity initialEntity = initializeTestEntity(entityID);
-      if (initialEntity == null)
-        throw new Exception("No test entity provided " + entityID);
+      Entity testEntity = null;
+      if (EntityRepository.isReadOnly(entityID)) {
+        final Entity initialEntity = initializeTestEntity(entityID);
+        if (initialEntity == null)
+          throw new Exception("No test entity provided " + entityID);
 
-      final Entity testEntity = testInsert(initialEntity);
-      testSelect(testEntity);
-      testUpdate(testEntity);
-      testDelete(testEntity);
+        testEntity = testInsert(initialEntity);
+        testUpdate(testEntity);
+        testDelete(testEntity);
+      }
+      testSelect(entityID, testEntity);
     }
     finally {
       referencedEntities.clear();
@@ -170,19 +174,24 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * Tests selecting the given entity
+   * Tests selecting the given entity, if <code>testEntity</code> is null
+   * then selecting many entities is tested.
+   * @param entityID the entityID in case <code>testEntity</code> is null
    * @param testEntity the entity to test selecting
    * @throws Exception in case of an exception
    */
-  protected void testSelect(final Entity testEntity) throws Exception {
+  protected void testSelect(final String entityID, final Entity testEntity) throws Exception {
     try {
-      final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
-      assertTrue("Entity of type " + testEntity.getEntityID() + " failed select comparison",
-              testEntity.propertyValuesEqual(tmp));
-
-      final List<Entity> entityByPrimaryKey = getEntityDb().selectMany(Arrays.asList(testEntity.getPrimaryKey()));
-      assertTrue("Entity of type " + testEntity.getEntityID() + " was not found when selecting by primary key",
-              entityByPrimaryKey.size() == 1 && entityByPrimaryKey.get(0).equals(testEntity));
+      if (testEntity != null) {
+        final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
+        assertTrue("Entity of type " + testEntity.getEntityID() + " failed property value comparison",
+                testEntity.propertyValuesEqual(tmp));
+        assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
+                testEntity.equals(tmp));
+      }
+      else {
+        getEntityDb().selectMany(new SelectCriteria(entityID, null, 10));
+      }
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -258,13 +267,19 @@ public abstract class EntityTestUnit {
    * @param entityID the entityID for which to initialize an entity instance
    * @return an entity
    */
-  protected abstract Entity initializeTestEntity(final String entityID);
+  protected Entity initializeTestEntity(final String entityID) throws Exception {
+    initializeRandomReferences(entityID);
+
+    return EntityUtil.createRandomEntity(entityID, referencedEntities);
+  }
 
   /**
    * This method should return <code>testEntity</code> in a modified state
    * @param testEntity the entity to modify
    */
-  protected abstract void modifyEntity(final Entity testEntity);
+  protected void modifyEntity(final Entity testEntity) {
+    testEntity.setAs(EntityUtil.createRandomEntity(testEntity.getEntityID(), referencedEntities));
+  }
 
   /**
    * This method should initialize instances of entities specified by the entityIDs found in the
@@ -273,7 +288,32 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
-  protected abstract void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception;
+  @SuppressWarnings({"UnusedDeclaration"})
+  protected void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception {}
+
+  protected void initializeRandomReferenceEntities(final Collection<String> referecenEntityIDs) throws Exception {
+    for (final String entityID : referecenEntityIDs) {
+      initializeRandomReferences(entityID);
+      setReferenceEntity(entityID, EntityUtil.createRandomEntity(entityID, referencedEntities));
+    }
+  }
+
+  private void initializeRandomReferences(final String entityID) throws Exception {
+    final Collection<Property.ForeignKeyProperty> fks = EntityRepository.getForeignKeyProperties(entityID);
+    for (final Property.ForeignKeyProperty property : fks) {
+      if (!referencedEntities.containsKey(property.getReferencedEntityID())) {
+        final Entity referenceEntity = initializeRandomReferenceEntity(property.getReferencedEntityID());
+        referencedEntities.put(referenceEntity.getEntityID(), referenceEntity);
+      }
+    }
+  }
+
+  private Entity initializeRandomReferenceEntity(final String referencedEntityID) throws Exception {
+    final Entity ret = EntityUtil.createRandomEntity(referencedEntityID, referencedEntities);
+    initialize(ret);
+
+    return ret;
+  }
 
   /**
    * Initializes the given entity, that is, performs an insert on it in case it doesn't

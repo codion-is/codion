@@ -14,31 +14,31 @@
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt, log4j.properties"/>
   <fileset id="framework_resources" dir="${src}" includes=
-          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
+          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
   <fileset id="test_resources" dir="${srctest}" includes=
           "org/jminor/**/*.gif, org/jminor/**/*.properties, org/jminor/**/*.txt"/>
   <fileset id="demos_resources" dir="${srcdemos}" includes=
-          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt" />
+          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
 
   <target name="clean"
           description="Clean all output and generated dirs">
-    <delete dir="${build.base}" includeEmptyDirs="true" />
-    <delete dir="${build.demos}" includeEmptyDirs="true" />
-    <delete dir="${build.test}" includeEmptyDirs="true" />
-    <delete dir="${build.root}" includeEmptyDirs="true" />
-    <delete dir="${test.reports}" includeEmptyDirs="true" />
-    <delete dir="${test.htmlreports}" includeEmptyDirs="true" />
-    <delete dir="${test}" includeEmptyDirs="true" />
+    <delete dir="${build.base}" includeEmptyDirs="true"/>
+    <delete dir="${build.demos}" includeEmptyDirs="true"/>
+    <delete dir="${build.test}" includeEmptyDirs="true"/>
+    <delete dir="${build.root}" includeEmptyDirs="true"/>
+    <delete dir="${test.reports}" includeEmptyDirs="true"/>
+    <delete dir="${test.htmlreports}" includeEmptyDirs="true"/>
+    <delete dir="${test}" includeEmptyDirs="true"/>
   </target>
 
   <target name="build"
           description="Compiles all source files">
-    <mkdir dir="${build.base}" />
-    <mkdir dir="${build.demos}" />
-    <mkdir dir="${build.test}" />
+    <mkdir dir="${build.base}"/>
+    <mkdir dir="${build.demos}"/>
+    <mkdir dir="${build.test}"/>
 
-    <javac destdir="${build.base}" debug="${build.debuginfo}" >
-      <src path="${src}" />
+    <javac destdir="${build.base}" debug="${build.debuginfo}">
+      <src path="${src}"/>
       <classpath refid="libraries"/>
     </javac>
 
@@ -48,45 +48,45 @@
       <classpath refid="libraries"/>
     </rmic>
 
-    <copy todir="${build.base}" >
-      <fileset refid="common_resources" />
-      <fileset refid="framework_resources" />
+    <copy todir="${build.base}">
+      <fileset refid="common_resources"/>
+      <fileset refid="framework_resources"/>
     </copy>
 
-    <javac destdir="${build.demos}" debug="{build.debug}" >
-      <src path="${srcdemos}" />
+    <javac destdir="${build.demos}" debug="{build.debug}">
+      <src path="${srcdemos}"/>
       <classpath>
-        <path refid="libraries" />
-        <path location="${build.base}" />
+        <path refid="libraries"/>
+        <path location="${build.base}"/>
       </classpath>
     </javac>
 
-    <copy todir="${build.demos}" >
-      <fileset refid="demos_resources" />
+    <copy todir="${build.demos}">
+      <fileset refid="demos_resources"/>
     </copy>
 
-    <javac destdir="${build.test}" debug="{build.debug}" >
-      <src path="${srctest}" />
+    <javac destdir="${build.test}" debug="{build.debug}">
+      <src path="${srctest}"/>
       <classpath>
-        <path refid="libraries" />
-        <path location="${build.base}" />
-        <path location="${build.demos}" />
+        <path refid="libraries"/>
+        <path location="${build.base}"/>
+        <path location="${build.demos}"/>
       </classpath>
     </javac>
 
-    <copy todir="${build.test}" >
-      <fileset refid="test_resources" />
+    <copy todir="${build.test}">
+      <fileset refid="test_resources"/>
     </copy>
 
     <tstamp>
-      <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm" />
+      <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm"/>
     </tstamp>
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
   <target name="compile_demo_reports" description="Compile the demo jasper reports">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-	  <classpath>
+      <classpath>
         <fileset dir="${lib}" includes="**/*.jar"/>
       </classpath>
     </taskdef>
@@ -95,7 +95,7 @@
 
   <target name="dist" depends="build, manifest"
           description="Builds all distribution jar files in the dist directory">
-    <mkdir dir="${dist}" />
+    <mkdir dir="${dist}"/>
     <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          excludes="org/jminor/framework/demos/**"/>
@@ -168,26 +168,27 @@
     <jar jarfile="${dist}/${ant.project.name}-api-doc.jar" basedir="${docsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
-    <copy file="${basedir}/changelog.txt" todir="${dist}" />
+    <copy file="${basedir}/changelog.txt" todir="${dist}"/>
   </target>
 
   <target name="manifest"
           description="Generates a MANIFEST.MF file for inclusion in jars">
     <mkdir dir="${build.base}/META-INF"/>
-      <manifest file="${build.base}/META-INF/MANIFEST.MF">
-        <attribute name="Implementation-Title" value="JMinor Application Framework"/>
-        <attribute name="Implementation-Version" value="${version}"/>
-        <attribute name="Implementation-URL" value="http://jminor.org"/>
-        <attribute name="Build-Jdk" value="${java.specification.version}"/>
-      </manifest>
+    <manifest file="${build.base}/META-INF/MANIFEST.MF">
+      <attribute name="Implementation-Title" value="JMinor Application Framework"/>
+      <attribute name="Implementation-Version" value="${version}"/>
+      <attribute name="Implementation-URL" value="http://jminor.org"/>
+      <attribute name="Build-Jdk" value="${java.specification.version}"/>
+    </manifest>
   </target>
 
   <target name="javadoc" depends="build"
           description="Generates framework javadocs">
-    <delete dir="${docsapi}" includeEmptyDirs="true" />
-    <mkdir dir="${docsapi}" />
+    <delete dir="${docsapi}" includeEmptyDirs="true"/>
+    <mkdir dir="${docsapi}"/>
     <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8" docencoding="UTF-8"
-             overview="${src}/overview.html" author="true" version="true" use="true" windowtitle="JMinor v${version} API"
+             overview="${src}/overview.html" author="true" version="true" use="true"
+             windowtitle="JMinor v${version} API"
              doctitle="JMinor v${version} API" link="http://java.sun.com/javase/6/docs/api/"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
@@ -205,92 +206,93 @@
       </classpath>
     </taskdef>
 
-    <javancss srcdir="${src}" includes="**/*.java" generateReport="true" outputfile="${test}/javancss_metrics.xml" format="xml"/>
+    <javancss srcdir="${src}" includes="**/*.java" generateReport="true" outputfile="${test}/javancss_metrics.xml"
+              format="xml"/>
   </target>
 
   <target name="deploy_server" depends="create_derby_db, create_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <mkdir dir="${deploy.server.path}" />
-    <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib" />
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.log4j}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.derby}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.h2}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.json}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib" />
-    <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib" />
-    <copy file="${deploy.server.policy}" todir="${deploy.server.path}" />
-    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}" />
-    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}" />
-    <copy todir="${deploy.server.path}" >
-      <fileset dir="${basedir}/resources/server/" />
+    <mkdir dir="${deploy.server.path}"/>
+    <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.log4j}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.derby}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.h2}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.json}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib"/>
+    <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib"/>
+    <copy file="${deploy.server.policy}" todir="${deploy.server.path}"/>
+    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}"/>
+    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}"/>
+    <copy todir="${deploy.server.path}">
+      <fileset dir="${basedir}/resources/server/"/>
     </copy>
     <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
-    <copy todir="${deploy.server.path}/h2db" >
-      <fileset dir="${db.h2.dir}" />
+    <copy todir="${deploy.server.path}/h2db">
+      <fileset dir="${db.h2.dir}"/>
     </copy>
-    <copy todir="${deploy.server.path}/derbydb" >
-      <fileset dir="${db.derby.dir}" />
+    <copy todir="${deploy.server.path}/derbydb">
+      <fileset dir="${db.derby.dir}"/>
     </copy>
   </target>
 
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
-    <mkdir dir="${deploy.server.monitor.path}" />
-    <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib" />
-    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}" />
-    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}" />
-    <copy todir="${deploy.server.monitor.path}" >
-      <fileset dir="${basedir}/resources/server_monitor/" />
+    <mkdir dir="${deploy.server.monitor.path}"/>
+    <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.log4j}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}"/>
+    <copy todir="${deploy.server.monitor.path}">
+      <fileset dir="${basedir}/resources/server_monitor/"/>
     </copy>
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
   <target name="deploy_demos" depends="create_derby_db, create_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
-    <mkdir dir="${deploy.demos.path}" />
-    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${dist}/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.derby}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.h2}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.json}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib" />
-    <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib" />
-    <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}" />
-    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}" />
+    <mkdir dir="${deploy.demos.path}"/>
+    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-client-remote.jar" todir="${deploy.demos.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.derby}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.h2}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.json}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jasperreports.base}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.log4j}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jcalendar}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
+    <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}"/>
+    <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}"/>
+    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}"/>
     <copy todir="${deploy.demos.path}">
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
-      <fileset dir="${basedir}/resources/demos/petstore/" />
-      <fileset dir="${basedir}/resources/demos/schemabrowser/" />
+      <fileset dir="${basedir}/resources/demos/petstore/"/>
+      <fileset dir="${basedir}/resources/demos/schemabrowser/"/>
     </copy>
     <chmod dir="${deploy.demos.path}" perm="u+x" type="file" includes="*.sh"/>
-    <copy todir="${deploy.demos.path}/h2db" >
-      <fileset dir="${db.h2.dir}" />
+    <copy todir="${deploy.demos.path}/h2db">
+      <fileset dir="${db.h2.dir}"/>
     </copy>
-    <copy todir="${deploy.demos.path}/derbydb" >
-      <fileset dir="${db.derby.dir}" />
+    <copy todir="${deploy.demos.path}/derbydb">
+      <fileset dir="${db.derby.dir}"/>
     </copy>
   </target>
 
   <target name="deploy_all" depends="dist, deploy_server, deploy_server_monitor, deploy_demos"
           description="A convenience target for deploying the server, server monitor and demo applications">
     <delete file="${dist}/deployment/jminor-${version}.zip"/>
-    <zip destfile="${dist}/deployment/jminor-${version}.zip" >
+    <zip destfile="${dist}/deployment/jminor-${version}.zip">
       <fileset dir="${dist}" excludes="deployment/**"/>
     </zip>
   </target>
@@ -315,7 +317,7 @@
       <fileset dir="${resources}"/>
     </copy>
     <copy todir="${wiki.media.project}/test">
-      <fileset dir="${test}" />
+      <fileset dir="${test}"/>
     </copy>
     <chmod dir="${wiki.media.project}" perm="ugo+r" type="file" includes="**/*"/>
     <chmod dir="${wiki.media.project}" perm="ugo+rx" type="dir" includes="**/*"/>
@@ -326,30 +328,30 @@
           description="Creates a jminor-project.zip file in the base directory">
     <delete file="${basedir}/${ant.project.name}-${version}-project.zip"/>
     <delete file="${basedir}/derby.log"/>
-    <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip" >
+    <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip">
       <fileset dir="${basedir}" excludes="test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
   </target>
 
   <target name="report" depends="run_unit_tests"
           description="Creates a unit test html report">
-    <mkdir dir="${test.htmlreports}" />
+    <mkdir dir="${test.htmlreports}"/>
     <junitreport todir="${test.reports}">
-      <fileset dir="${test.reports}" includes="TEST-*.xml" />
-      <report format="frames" todir="${test.htmlreports}" />
+      <fileset dir="${test.reports}" includes="TEST-*.xml"/>
+      <report format="frames" todir="${test.htmlreports}"/>
     </junitreport>
   </target>
 
   <target name="run_unit_tests" depends="build, create_derby_db"
           description="Runs the framework unit tests">
-    <mkdir dir="${test.reports}" />
-    <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" >
-      <formatter type="xml" usefile="true" />
+    <mkdir dir="${test.reports}"/>
+    <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes">
+      <formatter type="xml" usefile="true"/>
       <classpath>
-        <pathelement path="${build.base}" />
-        <pathelement path="${build.demos}" />
-        <pathelement path="${build.test}" />
-        <path refid="libraries" />
+        <pathelement path="${build.base}"/>
+        <pathelement path="${build.demos}"/>
+        <pathelement path="${build.test}"/>
+        <path refid="libraries"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
       <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
@@ -357,8 +359,8 @@
       <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
       <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
       <batchtest todir="${test.reports}">
-        <fileset dir="${srctest}" includes="**/*Test.java" />
-        <fileset dir="${srcdemos}" includes="**/*Test.java" />
+        <fileset dir="${srctest}" includes="**/*Test.java"/>
+        <fileset dir="${srcdemos}" includes="**/*Test.java"/>
       </batchtest>
     </junit>
   </target>
@@ -396,6 +398,26 @@
         <pathelement location="${lib.jcalendar}"/>
         <pathelement location="${lib.json}"/>
         <pathelement location="${lib.log4j}"/>
+      </classpath>
+      <jvmarg value="-Djminor.client.connectionType=remote"/>
+      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
+    </java>
+  </target>
+
+  <target name="run_demo_empdept_profiling" depends="build"
+          description="Runs the EmpDept profiling application with a remote db connection">
+    <java classname="org.jminor.framework.demos.empdept.profiling.EmpDeptProfiling" fork="yes">
+      <classpath>
+        <pathelement path="${build.base}"/>
+        <pathelement path="${build.demos}"/>
+        <pathelement location="${lib.jasperreports.base}"/>
+        <pathelement location="${lib.jcalendar}"/>
+        <pathelement location="${lib.json}"/>
+        <pathelement location="${lib.log4j}"/>
+        <pathelement location="${lib.jfreechart.base}"/>
+        <pathelement location="${lib.jfreechart.common}"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -517,7 +539,7 @@
           description="Creates the demo derby database in case it is not already available. The demo database includes
           the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
     <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
-      <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true" />
+      <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>
       <arg value="${db.sql.dir}/create_derby_db.sql"/>
     </java>
   </target>

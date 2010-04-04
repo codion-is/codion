@@ -37,7 +37,7 @@ public abstract class ProfilingModel {
   private final Event evtBatchSizeChanged = new Event();
   private final Event evtDoneExiting = new Event();
 
-  private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME, "20000"));
+  private int maximumThinkTime = Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME, "2000"));
   private int minimumThinkTime = maximumThinkTime / 2;
   private int loginWaitFactor = Integer.parseInt(System.getProperty(Configuration.PROFILING_LOGIN_WAIT, "2"));
   private int batchSize = Integer.parseInt(System.getProperty(Configuration.PROFILING_BATCH_SIZE, "10"));
@@ -386,5 +386,32 @@ public abstract class ProfilingModel {
       delayedWorkRequestsPerSecondCounter = 0;
       workRequestsPerSecondTime = current;
     }
+  }
+
+  public static abstract class UsageScenario {
+
+    public void run(final EntityApplicationModel applicationModel) throws Exception {
+      if (applicationModel == null)
+        throw new RuntimeException("Can not run without an application model");
+      try {
+        prepare(applicationModel);
+        performScenario(applicationModel);
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+        throw e;
+      }
+      finally {
+        cleanup(applicationModel);
+      }
+    }
+
+    protected abstract void performScenario(final EntityApplicationModel applicationModel) throws Exception;
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    protected void prepare(final EntityApplicationModel applicationModel) {}
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    protected void cleanup(final EntityApplicationModel applicationModel) {}
   }
 }

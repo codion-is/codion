@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Random;
 import java.util.prefs.Preferences;
 
 /**
@@ -44,6 +45,7 @@ public class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
 
+  private static final Random random = new Random();
   private static List<Logger> loggers = new ArrayList<Logger>();
   private static Level defaultLoggingLevel;
   private static Preferences userPreferences;
@@ -450,5 +452,17 @@ public class Util {
         e.printStackTrace();
       }
     }
+  }
+
+  public static String createRandomString(final int length) {
+    final StringBuffer sb = new StringBuffer();
+    for (int i = length; i > 0; i -= 12) {
+      final int n = Math.min(12, Math.abs(i));
+      sb.append(padString(Long.toString(Math.round(random.nextDouble() * Math.pow(36, n)), 36), n, '0', true));
+    }
+    if (sb.length() > length)
+      return sb.substring(0, length-1);
+    else
+      return sb.toString();
   }
 }

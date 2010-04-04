@@ -72,6 +72,10 @@ public class DatabaseMonitor {
   public void resetStats() {
     queriesPerSecond.clear();
     cachedQueriesPerSecond.clear();
+    selectsPerSecond.clear();
+    insertsPerSecond.clear();
+    updatesPerSecond.clear();
+    deletesPerSecond.clear();
   }
 
   public void updateStats() throws RemoteException {

@@ -9,10 +9,12 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
+import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.profiling.ProfilingModel;
 import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
@@ -30,6 +32,47 @@ import java.util.Date;
 @SuppressWarnings({"UnusedDeclaration"})
 public class EmpDeptProfiling extends ProfilingModel {
 
+  private final UsageScenario selectDepartment = new UsageScenario() {
+    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+      selectRandomRow(applicationModel.getMainApplicationModel(DepartmentModel.class).getTableModel());
+    }
+  };
+
+  private final UsageScenario updateEmployee = new UsageScenario() {
+    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+      final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+      selectRandomRow(departmentModel.getTableModel());
+      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+      if (employeeModel.getTableModel().getRowCount() > 0) {
+        selectRandomRow(employeeModel.getTableModel());
+        if (random.nextDouble() < 0.5)
+          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, 100 + random.nextDouble() * 1900);
+        else
+          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, 1000 + random.nextDouble() * 9000);
+
+        employeeModel.getEditModel().update();
+      }
+    }
+  };
+
+  private final UsageScenario insertEmployee = new UsageScenario() {
+    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+      final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+      employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, null));
+      selectRandomRow(departmentModel.getTableModel());
+      employeeModel.getEditModel().insert();
+    }
+  };
+
+  private final UsageScenario insertDepartment = new UsageScenario() {
+    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+      final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+      departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
+      departmentModel.getEditModel().insert();
+    }
+  };
+
   public EmpDeptProfiling() {
     super(new User("scott", "tiger"));
   }
@@ -41,29 +84,17 @@ public class EmpDeptProfiling extends ProfilingModel {
 
   @Override
   protected void performWork(final EntityApplicationModel applicationModel) {
-    final EntityModel departmentModel = applicationModel.getMainApplicationModels().iterator().next();
     try {
-      if (departmentModel.getTableModel().getRowCount() > 0)
-        departmentModel.getTableModel().setSelectedItemIndexes(Arrays.asList(0));
-      departmentModel.refresh();
-      selectRandomRow(departmentModel.getTableModel());
-      final String objString = new Object().toString();
-      departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, objString.substring(objString.indexOf("@"), objString.length()-1));
-      departmentModel.getEditModel().update();
-      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
-      if (employeeModel.getTableModel().getRowCount() > 0) {
-        selectRandomRow(employeeModel.getTableModel());
-        final double randomDouble = random.nextDouble();
-        if (randomDouble < 0.5)
-          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, 100 + randomDouble * 1900);
-        else
-          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, 1000 + randomDouble * 9000);
-
-        employeeModel.getEditModel().update();
-      }
+      final double d = random.nextDouble();
+      if (d < 0.5)
+        selectDepartment.run(applicationModel);
+      else if (d < 0.75)
+        updateEmployee.run(applicationModel);
+      if (d < 0.95)
+        insertEmployee.run(applicationModel);
     }
     catch (Exception e) {
-      System.out.println(e.toString());
+      e.printStackTrace();
     }
   }
 
@@ -74,6 +105,7 @@ public class EmpDeptProfiling extends ProfilingModel {
 
     final EntityModel model = applicationModel.getMainApplicationModels().iterator().next();
     model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model.refresh();
 
     return applicationModel;
   }

@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.IdSource;
+import org.jminor.common.model.Version;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
@@ -22,7 +23,11 @@ public class EmpDept {
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 
+  public static final Version version = new Version(EmpDept.class.getPackage().getName(), "1");
+
   /**Used for i18n*/
+  public static final String DEPARTMENT = "department";
+  public static final String EMPLOYEE = "employee";
   public static final String NONE = "none";
   public static final String EMPLOYEE_SALARY_VALIDATION = "employee_salary_validation";
   public static final String EMPLOYEE_COMMISSION_VALIDATION = "employee_commission_validation";
@@ -30,7 +35,7 @@ public class EmpDept {
   public static final String IMPORT_JSON = "import_json";
 
   /**Entity identifier for the table scott.dept*/
-  public static final String T_DEPARTMENT = "department";
+  public static final String T_DEPARTMENT = "department" + version;
 
   /**Property identifier for the DEPTNO column in the table scott.dept*/
   public static final String DEPARTMENT_ID = "deptno";
@@ -40,7 +45,7 @@ public class EmpDept {
   public static final String DEPARTMENT_LOCATION = "loc";
 
   /**Entity identifier for the table scott.emp*/
-  public static final String T_EMPLOYEE = "employee";
+  public static final String T_EMPLOYEE = "employee" + version;
 
   /**Property identifier for the EMPNO column in the table scott.emp*/
   public static final String EMPLOYEE_ID = "empno";

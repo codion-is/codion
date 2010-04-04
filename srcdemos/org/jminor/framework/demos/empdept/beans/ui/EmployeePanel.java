@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model, EmpDept.getString(EmpDept.T_EMPLOYEE), true, true);
+    super(model, EmpDept.getString(EmpDept.EMPLOYEE), true, true);
   }
 
   @Override
