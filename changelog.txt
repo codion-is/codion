@@ -1153,3 +1153,16 @@
   common.db.Version added
   EmpDept domain uses the above
   run_emp_dept_profiling ant task added
+  Property.min/max fields added
+  EntityEditModel now does range checks on numerical properties using the above
+  FrameworkMessages.PROPERTY_VALUE_TOO_LARGE/SMALL added
+  ProfilingModel.initializeUsageScenarios() added
+  ProfilingModel.runScenario() added
+  ProfilingModel.counter field as well as Counter class
+  ProfilingModel added usage scenario statistics graph data set
+  ProfilingPanel added usage scenario graph
+  common.model.ValueProvider added (moved from EntityDbUtil)
+  Property.isNumerical() added
+  EntityEditModel.performRangeValidation() added
+  EntityUtil.getRandomValue() now takes into account the min and max values of numerical properties
+  EntityUtil.createEntity() now uses the ValueProvider interface

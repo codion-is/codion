@@ -14,6 +14,7 @@ import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.i18n.FrameworkMessages;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -106,7 +107,8 @@ public class EntityEditModelTest {
     catch (ValidationException e) {
       assertEquals(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), e.getProperty());
       assertEquals(50d, e.getValue());
-      assertEquals("Validation message should fit", EmpDept.getString(EmpDept.EMPLOYEE_COMMISSION_VALIDATION), e.getMessage());
+      assertEquals("Validation message should fit", e.getProperty() + ", " +
+              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + e.getProperty().getMin(), e.getMessage());
     }
 
     editModel.clear();

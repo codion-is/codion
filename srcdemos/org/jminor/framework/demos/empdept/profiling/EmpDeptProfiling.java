@@ -22,6 +22,7 @@ import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -32,49 +33,52 @@ import java.util.Date;
 @SuppressWarnings({"UnusedDeclaration"})
 public class EmpDeptProfiling extends ProfilingModel {
 
-  private final UsageScenario selectDepartment = new UsageScenario() {
-    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-      selectRandomRow(applicationModel.getMainApplicationModel(DepartmentModel.class).getTableModel());
-    }
-  };
-
-  private final UsageScenario updateEmployee = new UsageScenario() {
-    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-      final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
-      selectRandomRow(departmentModel.getTableModel());
-      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
-      if (employeeModel.getTableModel().getRowCount() > 0) {
-        selectRandomRow(employeeModel.getTableModel());
-        if (random.nextDouble() < 0.5)
-          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, 100 + random.nextDouble() * 1900);
-        else
-          employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, 1000 + random.nextDouble() * 9000);
-
-        employeeModel.getEditModel().update();
-      }
-    }
-  };
-
-  private final UsageScenario insertEmployee = new UsageScenario() {
-    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-      final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
-      final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
-      employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, null));
-      selectRandomRow(departmentModel.getTableModel());
-      employeeModel.getEditModel().insert();
-    }
-  };
-
-  private final UsageScenario insertDepartment = new UsageScenario() {
-    protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-      final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
-      departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
-      departmentModel.getEditModel().insert();
-    }
-  };
-
   public EmpDeptProfiling() {
     super(new User("scott", "tiger"));
+  }
+
+  @Override
+  protected Collection<UsageScenario> initializeUsageScenarios() {
+    final UsageScenario selectDepartment = new UsageScenario("selectDepartment") {
+      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+        selectRandomRow(applicationModel.getMainApplicationModel(DepartmentModel.class).getTableModel());
+      }
+    };
+    final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
+      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+        final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+        selectRandomRow(departmentModel.getTableModel());
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+        if (employeeModel.getTableModel().getRowCount() > 0) {
+          selectRandomRow(employeeModel.getTableModel());
+          if (random.nextDouble() < 0.5)
+            employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_COMMISSION, 100 + random.nextDouble() * 1900);
+          else
+            employeeModel.getEditModel().setValue(EmpDept.EMPLOYEE_SALARY, 1000 + random.nextDouble() * 9000);
+
+          employeeModel.getEditModel().update();
+        }
+      }
+    };
+    final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
+      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+        final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+        employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, null));
+        departmentModel.getTableModel().clearSelection();
+        selectRandomRow(departmentModel.getTableModel());
+        employeeModel.getEditModel().insert();
+      }
+    };
+    final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
+      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+        final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+        departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
+        departmentModel.getEditModel().insert();
+      }
+    };
+
+    return Arrays.asList(insertDepartment, insertEmployee, updateEmployee, selectDepartment);
   }
 
   @Override
@@ -87,11 +91,13 @@ public class EmpDeptProfiling extends ProfilingModel {
     try {
       final double d = random.nextDouble();
       if (d < 0.5)
-        selectDepartment.run(applicationModel);
+        runScenario("selectDepartment", applicationModel);
       else if (d < 0.75)
-        updateEmployee.run(applicationModel);
-      if (d < 0.95)
-        insertEmployee.run(applicationModel);
+        runScenario("updateEmployee", applicationModel);
+      else if (d < 0.98)
+        runScenario("insertEmployee", applicationModel);
+      else
+        runScenario("insertDepartment", applicationModel);
     }
     catch (Exception e) {
       e.printStackTrace();

@@ -5,6 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -88,8 +89,8 @@ public class EntityDbUtil {
    */
   public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
     return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
-      public Object getValue(final String propertyID) {
-        return entityKey.getValue(propertyID);
+      public Object getValue(final Object propertyID) {
+        return entityKey.getValue((String) propertyID);
       }
     });
   }
@@ -105,8 +106,8 @@ public class EntityDbUtil {
    */
   public static String getWhereCondition(final Database database, final Entity entity) {
     return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {
-      public Object getValue(final String propertyID) {
-        return entity.getOriginalValue(propertyID);
+      public Object getValue(final Object propertyID) {
+        return entity.getOriginalValue((String) propertyID);
       }
     });
   }
@@ -172,9 +173,5 @@ public class EntityDbUtil {
         properties.add(property);
 
     return properties;
-  }
-
-  private interface ValueProvider {
-    public Object getValue(final String propertyID);
   }
 }

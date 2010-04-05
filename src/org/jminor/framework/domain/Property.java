@@ -101,6 +101,18 @@ public class Property implements Serializable {
   private int maximumFractionDigits = -1;
 
   /**
+   * The maximum value for this property.
+   * Only applicable to numerical properties
+   */
+  private Double max;
+
+  /**
+   * The minimum value for this property.
+   * Only applicable to numerical properties
+   */
+  private Double min;
+
+  /**
    * Specifies whether or not to use number format grouping in table views,
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
    * Only applicable to numerical properties
@@ -174,6 +186,13 @@ public class Property implements Serializable {
    */
   public boolean is(final Property property) {
     return is(property.propertyID);
+  }
+
+  /**
+   * @return true if this is a numerical Property, that is, INT or DOUBLE
+   */
+  public boolean isNumerical() {
+    return propertyType == Type.DOUBLE || propertyType == Type.INT;
   }
 
   /**
@@ -350,6 +369,38 @@ public class Property implements Serializable {
    */
   public int getMaximumFractionDigits() {
     return maximumFractionDigits;
+  }
+
+  /**
+   * @return the maximum allowed value for this property, null if none is defined,
+   * only applicable to numerical properties
+   */
+  public Double getMax() {
+    return max;
+  }
+
+  /**
+   * Sets the maximum allowed value for this property, only applicable to numerical properties
+   */
+  public Property setMax(final double max) {
+    this.max = max;
+    return this;
+  }
+
+  /**
+   * @return the minimum allowed value for this property, null if none is defined,
+   * only applicable to numerical properties
+   */
+  public Double getMin() {
+    return min;
+  }
+
+  /**
+   * Sets the minimum allowed value for this property, only applicable to numerical properties
+   */
+  public Property setMin(final double min) {
+    this.min = min;
+    return this;
   }
 
   /**

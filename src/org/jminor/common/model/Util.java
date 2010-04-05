@@ -415,7 +415,7 @@ public class Util {
       return false;
     for (final Object object : objects)
       if (object == null)
-          return false;
+        return false;
 
     return true;
   }
@@ -454,15 +454,14 @@ public class Util {
     }
   }
 
-  public static String createRandomString(final int length) {
-    final StringBuffer sb = new StringBuffer();
-    for (int i = length; i > 0; i -= 12) {
-      final int n = Math.min(12, Math.abs(i));
-      sb.append(padString(Long.toString(Math.round(random.nextDouble() * Math.pow(36, n)), 36), n, '0', true));
-    }
-    if (sb.length() > length)
-      return sb.substring(0, length-1);
-    else
-      return sb.toString();
+  private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  public static String createRandomString(final int minLength, final int maxLength) {
+    final StringBuilder sb = new StringBuilder();
+    final int length = random.nextInt(maxLength - minLength) + minLength;
+    for( int i = 0; i < length; i++ )
+      sb.append(AB.charAt(random.nextInt(AB.length())));
+
+    return sb.toString();
   }
 }

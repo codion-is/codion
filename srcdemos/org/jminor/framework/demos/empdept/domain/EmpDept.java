@@ -29,8 +29,6 @@ public class EmpDept {
   public static final String DEPARTMENT = "department";
   public static final String EMPLOYEE = "employee";
   public static final String NONE = "none";
-  public static final String EMPLOYEE_SALARY_VALIDATION = "employee_salary_validation";
-  public static final String EMPLOYEE_COMMISSION_VALIDATION = "employee_commission_validation";
   public static final String EMPLOYEE_REPORT = "employee_report";
   public static final String IMPORT_JSON = "import_json";
 
@@ -79,6 +77,7 @@ public class EmpDept {
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME)
+            .setIdSource(IdSource.NONE)
             .setStringProvider(new Entity.StringProvider(DEPARTMENT_NAME)));
 
     /*Defining the entity type T_EMPLOYEE*/
@@ -92,8 +91,9 @@ public class EmpDept {
             new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB))
                     .setMaxLength(9),
             new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY))
-                    .setNullable(false),
-            new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION)),
+                    .setNullable(false).setMin(1000).setMax(10000),
+            new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION))
+                    .setMin(100).setMax(2000),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.DATE, getString(EMPLOYEE_HIREDATE))

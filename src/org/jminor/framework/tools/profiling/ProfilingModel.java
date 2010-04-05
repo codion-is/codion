@@ -14,8 +14,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
@@ -46,6 +49,7 @@ public abstract class ProfilingModel {
   private boolean stopped = false;
 
   private final Stack<EntityApplicationModel> clients = new Stack<EntityApplicationModel>();
+  private final Collection<UsageScenario> usageScenarios;
   private User user;
   private boolean working = false;
   private boolean relentless = true;
@@ -61,11 +65,9 @@ public abstract class ProfilingModel {
   private final XYSeries numberOfClientsSeries = new XYSeries("Client count");
   private final XYSeriesCollection numberOfClientsCollection = new XYSeriesCollection();
 
-  private int workRequestsPerSecond = 0;
-  private int workRequestsPerSecondCounter = 0;
-  private int delayedWorkRequestsPerSecond = 0;
-  private int delayedWorkRequestsPerSecondCounter = 0;
-  private long workRequestsPerSecondTime = System.currentTimeMillis();
+  private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
+
+  private Counter counter = new Counter();
 
   private int warningTime = 200;
 
@@ -74,17 +76,20 @@ public abstract class ProfilingModel {
    */
   public ProfilingModel(final User user) {
     this.user = user;
+    this.usageScenarios = initializeUsageScenarios();
     workRequestsCollection.addSeries(workRequestsSeries);
     workRequestsCollection.addSeries(delayedWorkRequestsSeries);
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfClientsCollection.addSeries(numberOfClientsSeries);
+    for (final UsageScenario usageScenario : this.usageScenarios)
+      usageScenarioCollection.addSeries(new XYSeries(usageScenario.getName()));
     initializeSettings();
     loadDomainModel();
     new Timer(true).schedule(new TimerTask() {
       @Override
       public void run() {
-        updateRequestsPerSecond();
+        counter.updateRequestsPerSecond();
         updateChart();
         if (stopped && clients.size() == 0)
           evtDoneExiting.fire();
@@ -94,6 +99,10 @@ public abstract class ProfilingModel {
 
   public User getUser() {
     return user;
+  }
+
+  public Collection<UsageScenario> getUsageScenarios() {
+    return usageScenarios;
   }
 
   public void setUser(User user) {
@@ -110,6 +119,10 @@ public abstract class ProfilingModel {
 
   public XYSeriesCollection getNumberOfClientsDataset() {
     return numberOfClientsCollection;
+  }
+
+  public XYSeriesCollection getUsageScenarioDataset() {
+    return usageScenarioCollection;
   }
 
   public int getWarningTime() {
@@ -244,6 +257,15 @@ public abstract class ProfilingModel {
     return evtWarningTimeChanged;
   }
 
+  protected void runScenario(final String usageScenarioName, final EntityApplicationModel applicationModel) throws Exception {
+    counter.incrementScenario(usageScenarioName);
+    getUsageScenario(usageScenarioName).run(applicationModel);
+  }
+
+  protected Collection<UsageScenario> initializeUsageScenarios() {
+    return new ArrayList<UsageScenario>();
+  }
+
   protected abstract void loadDomainModel();
 
   protected abstract void performWork(final EntityApplicationModel applicationModel);
@@ -252,14 +274,14 @@ public abstract class ProfilingModel {
 
   protected void initializeSettings() {/**/}
 
-  protected void selectRandomRow(final EntityTableModel model) {
+  public static void selectRandomRow(final EntityTableModel model) {
     if (model.getRowCount() == 0)
       return;
 
     model.setSelectedItemIndex(random.nextInt(model.getRowCount()));
   }
 
-  protected void selectRandomRows(final EntityTableModel model, final int count) {
+  public static void selectRandomRows(final EntityTableModel model, final int count) {
     if (model.getRowCount() == 0)
       return;
 
@@ -270,7 +292,7 @@ public abstract class ProfilingModel {
     model.setSelectedItemIndexes(indexes);
   }
 
-  protected void selectRandomRows(final EntityTableModel model, final double ratio) {
+  public static void selectRandomRows(final EntityTableModel model, final double ratio) {
     if (model.getRowCount() == 0)
       return;
 
@@ -301,14 +323,14 @@ public abstract class ProfilingModel {
                 final long currentTime = System.currentTimeMillis();
                 try {
                   working = true;
-                  workRequestsPerSecondCounter++;
+                  counter.incrementWorkRequestsPerSecond();
                   performWork(applicationModel);
                 }
                 finally {
                   working = false;
                   final long workTime = System.currentTimeMillis() - currentTime;
                   if (workTime > warningTime)
-                    delayedWorkRequestsPerSecondCounter++;
+                    counter.incrementDelayedWorkRequestsPerSecond();
                 }
               }
             }
@@ -369,26 +391,34 @@ public abstract class ProfilingModel {
 
   private void updateChart() {
     final long time = System.currentTimeMillis();
-    workRequestsSeries.add(time, workRequestsPerSecond);
-    delayedWorkRequestsSeries.add(time, delayedWorkRequestsPerSecond);
+    workRequestsSeries.add(time, counter.getWorkRequestsPerSecond());
+    delayedWorkRequestsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
+    for (final String scenarioName : counter.getScenarioNames())
+      usageScenarioCollection.getSeries(scenarioName).add(time, counter.getScenarioRate(scenarioName));
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfClientsSeries.add(time, clients.size());
   }
 
-  private void updateRequestsPerSecond() {
-    final long current = System.currentTimeMillis();
-    final double seconds = (current - workRequestsPerSecondTime)/1000;
-    if (seconds > 5) {
-      workRequestsPerSecond = (int) ((double) workRequestsPerSecondCounter/seconds);
-      delayedWorkRequestsPerSecond = (int) ((double) delayedWorkRequestsPerSecondCounter/seconds);
-      workRequestsPerSecondCounter = 0;
-      delayedWorkRequestsPerSecondCounter = 0;
-      workRequestsPerSecondTime = current;
-    }
+  private UsageScenario getUsageScenario(final String usageScenarioName) {
+    for (final UsageScenario scenario : usageScenarios)
+      if (scenario.getName().equals(usageScenarioName))
+        return scenario;
+
+    throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
   }
 
   public static abstract class UsageScenario {
+
+    private final String name;
+
+    public UsageScenario(final String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return this.name;
+    }
 
     public void run(final EntityApplicationModel applicationModel) throws Exception {
       if (applicationModel == null)
@@ -413,5 +443,65 @@ public abstract class ProfilingModel {
 
     @SuppressWarnings({"UnusedDeclaration"})
     protected void cleanup(final EntityApplicationModel applicationModel) {}
+  }
+
+  private static class Counter {
+    private final Map<String, Integer> usageScenarioCounter = new HashMap<String, Integer>();
+    private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
+
+    private int workRequestsPerSecond = 0;
+    private int workRequestsPerSecondCounter = 0;
+    private int delayedWorkRequestsPerSecond = 0;
+    private int delayedWorkRequestsPerSecondCounter = 0;
+    private long workRequestsPerSecondTime = System.currentTimeMillis();
+
+    public int getWorkRequestsPerSecond() {
+      return workRequestsPerSecond;
+    }
+
+    public int getDelayedWorkRequestsPerSecond() {
+      return delayedWorkRequestsPerSecond;
+    }
+
+    public Collection<String> getScenarioNames() {
+      return usageScenarioRates.keySet();
+    }
+
+    public int getScenarioRate(final String scenarioName) {
+      return usageScenarioRates.get(scenarioName);
+    }
+
+    public void incrementWorkRequestsPerSecond() {
+      workRequestsPerSecondCounter++;
+    }
+
+    public void incrementDelayedWorkRequestsPerSecond() {
+      delayedWorkRequestsPerSecondCounter++;
+    }
+
+    public void incrementScenario(final String scenarioName) {
+      if (!usageScenarioRates.containsKey(scenarioName))
+        usageScenarioRates.put(scenarioName, 0);
+      usageScenarioCounter.put(scenarioName, usageScenarioCounter.containsKey(scenarioName) ? usageScenarioCounter.get(scenarioName) + 1 : 0);
+    }
+
+    public void updateRequestsPerSecond() {
+      final long current = System.currentTimeMillis();
+      final double seconds = (current - workRequestsPerSecondTime)/1000;
+      if (seconds > 5) {
+        workRequestsPerSecond = (int) ((double) workRequestsPerSecondCounter/seconds);
+        delayedWorkRequestsPerSecond = (int) ((double) delayedWorkRequestsPerSecondCounter/seconds);
+        for (final String scenarioName : usageScenarioRates.keySet()) {
+          if (usageScenarioCounter.containsKey(scenarioName))
+            usageScenarioRates.put(scenarioName, (int) (usageScenarioCounter.get(scenarioName)/seconds));
+          else
+            usageScenarioRates.put(scenarioName, 0);
+        }
+        usageScenarioCounter.clear();
+        workRequestsPerSecondCounter = 0;
+        delayedWorkRequestsPerSecondCounter = 0;
+        workRequestsPerSecondTime = current;
+      }
+    }
   }
 }

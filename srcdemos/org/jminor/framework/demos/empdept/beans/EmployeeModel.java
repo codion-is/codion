@@ -9,7 +9,6 @@ import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
-import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -45,23 +44,6 @@ public class EmployeeModel extends EntityModel {
         }
 
         return super.createEntityComboBoxModel(property);
-      }
-
-      /** Implementing validation for the salary and commission properties */
-      @Override
-      public void validate(final Entity entity, final Property property, final int action) throws ValidationException {
-        final Object value = entity.getValue(property);
-        if (property.is(EmpDept.EMPLOYEE_SALARY)) {
-          final Double salary = (Double) value;
-          if (salary != null && (salary < 1000 || salary > 10000))
-            throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_SALARY_VALIDATION));
-        }
-        if (property.is(EmpDept.EMPLOYEE_COMMISSION)) {
-          final Double commission = (Double) value;
-          if (commission != null && (commission < 100 || commission > 2000))
-            throw new ValidationException(property, value, EmpDept.getString(EmpDept.EMPLOYEE_COMMISSION_VALIDATION));
-        }
-        super.validate(entity, property, action);
       }
     };
   }

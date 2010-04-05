@@ -136,6 +136,9 @@ public class FrameworkMessages {
   public static final String EXPORT_SELECTED_TIP = "export_selected_tip";
   public static final String EXPORT_SELECTED_DONE = "export_selected_done";
 
+  public static final String PROPERTY_VALUE_TOO_LARGE = "property_value_too_large";
+  public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
+
   public static String get(final String key) {
     return bundle.getString(key);
   }

@@ -103,6 +103,12 @@ public class ProfilingPanel extends JPanel {
     final ChartPanel numberOfClientsChartPanel = new ChartPanel(numberOfClientsChart);
     numberOfClientsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
+    final JFreeChart usageScenarioChart = ChartFactory.createXYStepChart(null,
+            null, null, getModel().getUsageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
+    usageScenarioChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
+    usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
     final ToggleBeanPropertyLink pauseControl =
             ControlFactory.toggleControl(getModel(), "pause", "Pause activity", getModel().eventPauseChanged());
     pauseControl.setMnemonic('P');
@@ -171,9 +177,10 @@ public class ProfilingPanel extends JPanel {
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
     userBase.add(userPanel, BorderLayout.NORTH);
 
-    final JPanel chartBase = new JPanel(new GridLayout(3,1,5,5));
+    final JPanel chartBase = new JPanel(new GridLayout(4,1,5,5));
     chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
     chartBase.add(workRequestsChartPanel);
+    chartBase.add(usageScenarioChartPanel);
     chartBase.add(numberOfClientsChartPanel);
     chartBase.add(thinkTimeChartPanel);
 
