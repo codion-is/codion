@@ -517,10 +517,10 @@ public class EntityEditModel {
     final Double value = property.getPropertyType() == Type.DOUBLE ? (Double) entity.getValue(property)
             : (Integer) entity.getValue(property.getPropertyID());
     if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
-      throw new ValidationException(property, value, property + ", " +
+      throw new ValidationException(property, value, "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
     if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax()))
-      throw new ValidationException(property, value, property + ", " +
+      throw new ValidationException(property, value, "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
   }
 

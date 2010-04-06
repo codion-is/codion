@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.model;
 
 /**
-* User: Björn Darri
+* User: Bjorn Darri
 * Date: 4.4.2010
 * Time: 21:06:22
 */

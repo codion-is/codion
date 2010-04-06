@@ -107,7 +107,7 @@ public class EntityEditModelTest {
     catch (ValidationException e) {
       assertEquals(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), e.getProperty());
       assertEquals(50d, e.getValue());
-      assertEquals("Validation message should fit", e.getProperty() + ", " +
+      assertEquals("Validation message should fit", "'" + e.getProperty() + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + e.getProperty().getMin(), e.getMessage());
     }
 
