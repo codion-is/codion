@@ -18,6 +18,7 @@ import org.apache.log4j.Level;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.net.URL;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -252,6 +253,12 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   /** {@inheritDoc} */
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout);
+  }
+
+  /** {@inheritDoc} */
+  public void loadDomainModel(final URL location, final String domainClassName) throws RemoteException, ClassNotFoundException,
+          IllegalAccessException, InstantiationException {
+    EntityDbRemoteServer.loadDomainModel(location, domainClassName);
   }
 
   public static void main(String[] arguments) {

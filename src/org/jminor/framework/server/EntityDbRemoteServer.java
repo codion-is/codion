@@ -9,8 +9,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.EntityRepository;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +16,10 @@ import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -91,6 +93,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   EntityDbRemoteServer(final Database database) throws RemoteException {
     super(SERVER_PORT, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+    loadDefaultDomainModels();
     this.database = database;
     EntityDbRemoteAdapter.initConnectionPools(database);
     final String host = database.getHost();
@@ -137,13 +140,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   /** {@inheritDoc} */
-  public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID,
-                                final Map<String, EntityDefinition> repository) throws RemoteException {
+  public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException {
     if (connectionKey == null)
       return null;
-
-    if (!EntityRepository.contains(repository))
-      EntityRepository.putAll(repository);
 
     final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
     if (connections.containsKey(client))
@@ -275,6 +274,53 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
           adapter.disconnect();
       }
     }
+  }
+
+  public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
+          InstantiationException, IllegalAccessException {
+    loadDomainModel((URL) null, domainClassName);
+  }
+
+  public static void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException,
+          IllegalAccessException, InstantiationException {
+    loadDomainModel(location == null ? null : new URL[] {location}, domainClassName);
+  }
+
+  public static void loadDomainModel(final URL[] locations, final String domainClassName) throws ClassNotFoundException,
+          IllegalAccessException, InstantiationException {
+    System.out.println("Server loading domain model class '" + domainClassName + "' from jars: " + Util.getArrayContentsAsString(locations, false));
+    if (locations == null || locations.length == 0)
+      Class.forName(domainClassName);
+    else
+      Class.forName(domainClassName, true, new URLClassLoader(locations, ClassLoader.getSystemClassLoader()));
+  }
+
+  private void loadDefaultDomainModels() throws RemoteException {
+    final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
+    final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
+    if (domainModelJars == null || domainModelJars.length() == 0)
+      return;
+    if (domainModelClasses == null || domainModelClasses.length() == 0)
+      return;
+
+    final String[] jars = domainModelJars.split(",");
+    final String[] classes = domainModelClasses.split(",");
+    try {
+      final URL[] jarURLs = getJarURLs(jars);
+      for (final String classname : classes)
+        loadDomainModel(jarURLs, classname);
+    }
+    catch (Exception e) {
+      throw new RemoteException("Exception while loading default domain models", e);
+    }
+  }
+
+  private URL[] getJarURLs(final String[] jars) throws MalformedURLException {
+    final URL[] urls = new URL[jars.length];
+    for (int i = 0; i < jars.length; i++)
+      urls[i] = new File(jars[i]).toURI().toURL();
+
+    return urls;
   }
 
   private void startConnectionCheckTimer() {

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -130,6 +131,11 @@ public class ServerMonitor {
 
   public void performGC() throws RemoteException {
     server.performGC();
+  }
+
+  public void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException, RemoteException,
+          InstantiationException, IllegalAccessException {
+    server.loadDomainModel(location, domainClassName);
   }
 
   public void shutdownServer() throws RemoteException {

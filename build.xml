@@ -204,6 +204,7 @@
     <mkdir dir="${deploy.server.path}"/>
     <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.log4j}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.derby}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.h2}" todir="${deploy.server.path}/lib"/>
@@ -278,7 +279,7 @@
     </copy>
   </target>
 
-  <target name="deploy_all" depends="dist, deploy_server, deploy_server_monitor, deploy_demos"
+  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos"
           description="A convenience target for deploying the server, server monitor and demo applications">
     <delete file="${dist}/deployment/jminor-${version}.zip"/>
     <zip destfile="${dist}/deployment/jminor-${version}.zip">

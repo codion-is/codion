@@ -1166,3 +1166,12 @@
   EntityEditModel.performRangeValidation() added
   EntityUtil.getRandomValue() now takes into account the min and max values of numerical properties
   EntityUtil.createEntity() now uses the ValueProvider interface
+  Configuration.SERVER_DOMAIN_MODEL_JARS and SERVER_DOMAIN_MODEL_CLASSES added
+  EntityDbRemoteServer.loadDomainModel() added
+  EntityDbRemoteServer.loadDefaultDomainModels() added, which loads domain model classes and jars according to the above configuration values
+  deploy_server ant task now copies jminor-demos.jar to server_dir/lib
+  EntityDbServer.connect() no longer takes EntityDefinition map as parameter
+  EntityDbRemoteProvider changed according to the above
+  ServerMonitor.loadDomainModel() added
+  ServerMonitorPanel.loadDomainModel() added and added as action as well
+  Clients no longer send EntityDefinition maps when connecting to the server, the EntityDefinition loading now happens on the server only, which means that the server must preload domain models before clients working on that domain model can connect

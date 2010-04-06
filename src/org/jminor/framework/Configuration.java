@@ -94,6 +94,20 @@ public class Configuration {
   public static final String SERVER_CONNECTION_POOLING_INITIAL = "jminor.server.pooling.initial";
 
   /**
+   * Specifies a comma separated list of jar files to use when loading domain model classes
+   * @see #SERVER_DOMAIN_MODEL_CLASSES
+   */
+  public static final String SERVER_DOMAIN_MODEL_JARS = "jminor.server.domain.jars";
+
+  /**
+   * Specifies a comma separated list of domain model classnames, these classes must be
+   * available on the server classpath or the jars containing these classes specified
+   * via the SERVER_DOMAIN_MODEL_JARS property
+   * @see #SERVER_DOMAIN_MODEL_JARS
+   */
+  public static final String SERVER_DOMAIN_MODEL_CLASSES = "jminor.server.domain.classes";
+
+  /**
    * Specifies the initial think time setting for the profiling client
    * (max think time = thinktime, min think time = max think time / 2)
    */
@@ -418,6 +432,8 @@ public class Configuration {
     parseBooleanSetting(PERFORM_NULL_VALIDATION);
     parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
     parseBooleanSetting(ALLOW_COLUMN_REORDERING);
+    parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
+    parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
   }
 
   private static void parseIntegerSetting(final String setting) {
@@ -452,6 +468,10 @@ public class Configuration {
 
   public static boolean getBooleanValue(final String key) {
     return (Boolean) getValue(key);
+  }
+
+  public static String getStringValue(final String key) {
+    return (String) settings.get(key);
   }
 
   /**

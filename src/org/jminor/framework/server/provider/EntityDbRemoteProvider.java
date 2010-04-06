@@ -8,7 +8,6 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.server.EntityDbServer;
 
 import org.apache.log4j.Logger;
@@ -63,7 +62,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   private void initializeEntityDb() {
     try {
       if (entityDb == null || !connectionValid())
-        entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID, EntityRepository.getEntityDefinitions());
+        entityDb = getRemoteEntityDbServer().connect(user, clientID, clientTypeID);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
