@@ -365,7 +365,7 @@ public class EntityRepository {
   }
 
   public static Collection<String> getDefinedEntities() {
-    return entityDefinitions.keySet();
+    return new ArrayList<String>(entityDefinitions.keySet());
   }
 
   public static Map<String, EntityDefinition> getEntityDefinitions() {

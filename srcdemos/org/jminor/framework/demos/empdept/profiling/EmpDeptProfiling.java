@@ -24,6 +24,8 @@ import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Bjorn Darri
@@ -40,11 +42,13 @@ public class EmpDeptProfiling extends ProfilingModel {
   @Override
   protected Collection<UsageScenario> initializeUsageScenarios() {
     final UsageScenario selectDepartment = new UsageScenario("selectDepartment") {
+      @Override
       protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
         selectRandomRow(applicationModel.getMainApplicationModel(DepartmentModel.class).getTableModel());
       }
     };
     final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
+      @Override
       protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
         final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
         selectRandomRow(departmentModel.getTableModel());
@@ -61,16 +65,19 @@ public class EmpDeptProfiling extends ProfilingModel {
       }
     };
     final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
+      @Override
       protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
         final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
-        final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
-        employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, null));
-        departmentModel.getTableModel().clearSelection();
         selectRandomRow(departmentModel.getTableModel());
+        final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
+        final Map<String, Entity> references = new HashMap<String, Entity>();
+        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedEntity());
+        employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }
     };
     final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
+      @Override
       protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
         final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
         departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));

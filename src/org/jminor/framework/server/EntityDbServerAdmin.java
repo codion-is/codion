@@ -9,6 +9,7 @@ import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
+import org.jminor.framework.domain.EntityDefinition;
 
 import org.apache.log4j.Level;
 
@@ -18,6 +19,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Defines the server admin service methods.
@@ -203,4 +205,6 @@ public interface EntityDbServerAdmin extends Remote {
 
   void loadDomainModel(final URL location, final String domainClassName) throws RemoteException, ClassNotFoundException,
           IllegalAccessException, InstantiationException;
+
+  Map<String, EntityDefinition> getEntityDefinitions() throws RemoteException;
 }

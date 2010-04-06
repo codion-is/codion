@@ -9,6 +9,8 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.EntityRepository;
 
 import org.apache.log4j.Logger;
 
@@ -276,6 +278,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     }
   }
 
+  public static Map<String, EntityDefinition> getEntityDefinitions() {
+    return EntityRepository.getEntityDefinitions();
+  }
+
   public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
           InstantiationException, IllegalAccessException {
     loadDomainModel((URL) null, domainClassName);
@@ -288,7 +294,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   public static void loadDomainModel(final URL[] locations, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
-    System.out.println("Server loading domain model class '" + domainClassName + "' from jars: " + Util.getArrayContentsAsString(locations, false));
+    System.out.println("Server loading domain model class '" + domainClassName + "' from jars '" + Util.getArrayContentsAsString(locations, false) + "'");
     if (locations == null || locations.length == 0)
       Class.forName(domainClassName);
     else
@@ -317,8 +323,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private URL[] getJarURLs(final String[] jars) throws MalformedURLException {
     final URL[] urls = new URL[jars.length];
-    for (int i = 0; i < jars.length; i++)
-      urls[i] = new File(jars[i]).toURI().toURL();
+    for (int i = 0; i < jars.length; i++) {
+      if (jars[i].toLowerCase().startsWith("http"))
+        urls[i] = new URL(jars[i]);
+      else
+        urls[i] = new File(jars[i]).toURI().toURL();
+    }
 
     return urls;
   }

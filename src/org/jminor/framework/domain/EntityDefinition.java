@@ -259,6 +259,11 @@ public class EntityDefinition implements Serializable {
     return denormalizedProperties.get(propertyOwnerEntityID);
   }
 
+  @Override
+  public String toString() {
+    return entityID;
+  }
+
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
     final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {

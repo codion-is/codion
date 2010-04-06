@@ -13,6 +13,7 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
+import org.jminor.framework.domain.EntityDefinition;
 
 import org.apache.log4j.Level;
 
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -259,6 +261,11 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   public void loadDomainModel(final URL location, final String domainClassName) throws RemoteException, ClassNotFoundException,
           IllegalAccessException, InstantiationException {
     EntityDbRemoteServer.loadDomainModel(location, domainClassName);
+  }
+
+  /** {@inheritDoc} */
+  public Map<String, EntityDefinition> getEntityDefinitions() throws RemoteException {
+    return EntityDbRemoteServer.getEntityDefinitions();
   }
 
   public static void main(String[] arguments) {

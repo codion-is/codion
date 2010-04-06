@@ -1175,3 +1175,9 @@
   ServerMonitor.loadDomainModel() added
   ServerMonitorPanel.loadDomainModel() added and added as action as well
   Clients no longer send EntityDefinition maps when connecting to the server, the EntityDefinition loading now happens on the server only, which means that the server must preload domain models before clients working on that domain model can connect
+  EntityDbRemoteServer.getEntityDefinitions() added
+  EntityDbServerAdmin.getEntityDefinitions() added
+  ServerMonitor.domainListModel field and getEntityDefinitions() method added
+  ServerMonitorPanel added a new environment tab showing a list of entities defined in the server
+  dist ant task added framework.domain classes to server_monitor.jar
+  EmpDeptProfiling insertEmployee scenario fixed

@@ -5,17 +5,21 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Util;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Date;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,6 +50,7 @@ public class ServerMonitor {
   private boolean shutdown = false;
 
   private String memoryUsage;
+  private final DefaultListModel domainListModel = new DefaultListModel();
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecond = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -59,6 +64,7 @@ public class ServerMonitor {
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientMonitor(server);
     userMonitor = new UserMonitor(server);
+    refreshDomainList();
     updateTimer = new Timer(false);
     updateTimer.schedule(new TimerTask() {
       @Override
@@ -136,6 +142,16 @@ public class ServerMonitor {
   public void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException, RemoteException,
           InstantiationException, IllegalAccessException {
     server.loadDomainModel(location, domainClassName);
+  }
+
+  public void refreshDomainList() throws RemoteException {
+    domainListModel.clear();
+    for (final Map.Entry<String, EntityDefinition> entry : server.getEntityDefinitions().entrySet())
+      domainListModel.addElement(entry.getValue());
+  }
+
+  public ListModel getDomainListModel() {
+    return domainListModel;
   }
 
   public void shutdownServer() throws RemoteException {

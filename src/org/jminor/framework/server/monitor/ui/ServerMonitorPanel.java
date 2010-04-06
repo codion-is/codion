@@ -20,6 +20,7 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -99,12 +100,32 @@ public class ServerMonitorPanel extends JPanel {
     final JTabbedPane pane = new JTabbedPane();
     pane.setUI(new BorderlessTabbedPaneUI());
     pane.addTab("Performance", performancePanel);
-    pane.addTab("Environment", initEnvironmentInfoPanel());
+    pane.addTab("Environment", initEnvironmentPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients", new ClientMonitorPanel(model.getClientMonitor()));
     pane.addTab("Users", new UserMonitorPanel(model.getUserMonitor()));
 
     add(pane, BorderLayout.CENTER);
+  }
+
+  private JTabbedPane initEnvironmentPanel() throws RemoteException {
+    final JTabbedPane panel = new JTabbedPane();
+    panel.addTab("System", initEnvironmentInfoPanel());
+    panel.addTab("Entities", initDomainModelPanel());
+
+    return panel;
+  }
+
+  private JPanel initDomainModelPanel() {
+    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    final JScrollPane scroller = new JScrollPane(new JList(getModel().getDomainListModel()));
+
+    final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    refreshPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "refreshDomainList", "Refresh")));
+    panel.add(refreshPanel, BorderLayout.NORTH);
+    panel.add(scroller, BorderLayout.CENTER);
+
+    return panel;
   }
 
   private JScrollPane initEnvironmentInfoPanel() throws RemoteException {

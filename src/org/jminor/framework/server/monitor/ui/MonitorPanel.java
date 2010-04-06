@@ -120,8 +120,6 @@ public class MonitorPanel extends JPanel {
       catch (Exception e) {
         e.printStackTrace();
       }
-//      final User user = LoginPanel.getUser(null, new User("scott", "tiger"));
-//      authenticate(user);
       new MonitorPanel().showFrame();
     }
     catch (Exception e) {
