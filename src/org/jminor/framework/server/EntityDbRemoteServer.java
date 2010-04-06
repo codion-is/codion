@@ -294,7 +294,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   public static void loadDomainModel(final URL[] locations, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
-    System.out.println("Server loading domain model class '" + domainClassName + "' from jars '" + Util.getArrayContentsAsString(locations, false) + "'");
+    final String message = "Server loading domain model class '" + domainClassName + "' from"
+            + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
+    log.info(message);
+    System.out.println(message);
     if (locations == null || locations.length == 0)
       Class.forName(domainClassName);
     else
@@ -302,17 +305,15 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   private void loadDefaultDomainModels() throws RemoteException {
-    final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    if (domainModelJars == null || domainModelJars.length() == 0)
-      return;
     if (domainModelClasses == null || domainModelClasses.length() == 0)
       return;
-
-    final String[] jars = domainModelJars.split(",");
+    
     final String[] classes = domainModelClasses.split(",");
+    final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
+    final String[] jars = domainModelJars == null || domainModelJars.length() == 0 ? null : domainModelJars.split(",");
     try {
-      final URL[] jarURLs = getJarURLs(jars);
+      final URL[] jarURLs = jars == null ? null : getJarURLs(jars);
       for (final String classname : classes)
         loadDomainModel(jarURLs, classname);
     }

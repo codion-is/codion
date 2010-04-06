@@ -1181,3 +1181,4 @@
   ServerMonitorPanel added a new environment tab showing a list of entities defined in the server
   dist ant task added framework.domain classes to server_monitor.jar
   EmpDeptProfiling insertEmployee scenario fixed
+  EntityTableModel summary models no longer update on evtSelectionChangedAdjusting, performance killer

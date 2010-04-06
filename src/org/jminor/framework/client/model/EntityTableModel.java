@@ -919,7 +919,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
                 public void bindValuesChangedEvent(final Event event) {
                   evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
                   evtRefreshDone.addListener(event);
-                  evtSelectionChangedAdjusting.addListener(event);
                   evtSelectionChanged.addListener(event);
                 }
 
