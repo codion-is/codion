@@ -12,6 +12,9 @@ import java.util.List;
  */
 public class AggregateState extends State {
 
+  /**
+   * The conjunction types used in AggregateState.
+   */
   public enum Type {AND, OR}
 
   private final List<State> states = new ArrayList<State>();
