@@ -1189,3 +1189,6 @@
   build.xml joined delete_*_db and create_*_db into recreate_*_db and commented out tasks and properties related to Derby Db
   ServerMonitorPanel added a button to reset the statistics and a server shutdown confirmation dialog
   UsageScenario.getDefaultWeight() added
+  EntityRepository.putAll() removed, unused
+  EntityDb.getProperties() removed
+  EntityDbProvider.getDescription() added

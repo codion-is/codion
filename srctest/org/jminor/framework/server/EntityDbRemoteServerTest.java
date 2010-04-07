@@ -54,7 +54,8 @@ public class EntityDbRemoteServerTest {
   @AfterClass
   public static void tearDown() throws Exception {
     try {
-      admin.shutdown();
+      if (admin != null)
+        admin.shutdown();
     }
     catch (RemoteException e) {
       e.printStackTrace();

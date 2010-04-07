@@ -22,10 +22,6 @@ public class EntityRepository {
 
   private EntityRepository() {}
 
-  public static void putAll(final Map<String, EntityDefinition> repository) {
-    entityDefinitions.putAll(repository);
-  }
-
   public static boolean isDefined(final String entityID) {
     return entityDefinitions.containsKey(entityID);
   }

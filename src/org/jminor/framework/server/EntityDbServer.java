@@ -36,7 +36,7 @@ public interface EntityDbServer extends Remote {
 
   /**
    * @return the server port
-   * @throws java.rmi.RemoteException in case of a RemoteException
+   * @throws RemoteException in case of a RemoteException
    */
   int getServerPort() throws RemoteException;
 
@@ -44,5 +44,5 @@ public interface EntityDbServer extends Remote {
    * @return the server load as number of service requests per second
    * @throws RemoteException in case of an exception
    */
-  Integer getServerLoad() throws RemoteException;
+  int getServerLoad() throws RemoteException;
 }

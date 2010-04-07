@@ -16,9 +16,14 @@ public interface EntityDbProvider {
   /**
    * Provides a EntityDb object, is responsible for returning a healthy EntityDb object,
    * that is, it must reconnect an invalid connection whether remotely or locally
-   * @return EntityDb
+   * @return a EntityDb instance
    */
   EntityDb getEntityDb();
+
+  /**
+   * @return a short description of the database provider
+   */
+  String getDescription();
 
   /**
    * Logs out, disconnects and performs cleanup if required

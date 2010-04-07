@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.User;
-import org.jminor.common.db.dbms.Database;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
@@ -50,7 +49,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * A central application panel class.
@@ -625,9 +623,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   protected String getFrameTitle(final String frameCaption, final User user) throws Exception {
-    final Properties properties = getModel().getDbProvider().getEntityDb().getProperties();
-    return frameCaption + " - " + getUserInfo(user,
-            properties.containsKey(Database.DATABASE_SID) ? properties.getProperty(Database.DATABASE_SID) : null);
+    return frameCaption + " - " + getUserInfo(user, getModel().getDbProvider().getDescription());
   }
 
   /**
@@ -894,8 +890,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
   }
 
-  private static String getUserInfo(final User user, final String dbSid) {
-    return getUsername(user.getUsername().toUpperCase()) + (dbSid != null ? "@" + dbSid.toUpperCase() : "");
+  private static String getUserInfo(final User user, final String dbDescription) {
+    return getUsername(user.getUsername().toUpperCase()) + (dbDescription != null ? "@" + dbDescription.toUpperCase() : "");
   }
 
   private static String getUsername(final String username) {

@@ -137,7 +137,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   /** {@inheritDoc} */
-  public Integer getServerLoad() throws RemoteException {
+  public int getServerLoad() throws RemoteException {
     return EntityDbRemoteAdapter.getRequestsPerSecond();
   }
 

@@ -48,6 +48,15 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
     return entityDb;
   }
 
+  public String getDescription() {
+    try {
+      return server != null ? server.getServerName() : "";
+    }
+    catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void disconnect() {
     try {
       if (entityDb != null && connectionValid())
@@ -113,7 +122,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
       Collections.sort(servers, new Comparator<EntityDbServer>() {
         public int compare(final EntityDbServer serverOne, final EntityDbServer serverTwo) {
           try {
-            return serverOne.getServerLoad().compareTo(serverTwo.getServerLoad());
+            return Integer.valueOf(serverOne.getServerLoad()).compareTo(serverTwo.getServerLoad());
           }
           catch (RemoteException e) {
             return 1;

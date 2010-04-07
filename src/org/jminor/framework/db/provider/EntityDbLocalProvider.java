@@ -58,6 +58,14 @@ public class EntityDbLocalProvider implements EntityDbProvider {
     return entityDb;
   }
 
+  public String getDescription() {
+    final String sid = database.getSid();
+    if (sid == null)
+      return database.getHost();
+
+    return sid;
+  }
+
   /** {@inheritDoc} */
   public void disconnect() {
     try {

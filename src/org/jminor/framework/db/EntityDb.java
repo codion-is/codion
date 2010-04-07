@@ -13,7 +13,6 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Defines the database methods the db layer offers.
@@ -88,7 +87,7 @@ public interface EntityDb {
    * Performs a commit unless a transaction is open.
    * @param statement the statement to execute
    * @param outParameterType the type of the output parameter, if any, java.sql.Types.*
-   * User Types.NULL to indicate no output parameter.
+   * Use Types.NULL to indicate no output parameter.
    * @throws org.jminor.common.db.exception.DbException in case of a database error
    * @return the return parameter if any, otherwise null
    */
@@ -261,11 +260,4 @@ public interface EntityDb {
    * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws Exception;
-
-  /**
-   * Returns a Properties object containing database connection properties
-   * @return the connection properties
-   * @throws Exception in case of an exception
-   */
-  Properties getProperties() throws Exception;
 }
