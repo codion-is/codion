@@ -35,13 +35,13 @@ public class RandomItemPanel extends JPanel {
 
   private void initUI() {
     final int count = model.getItemCount();
-    setLayout(new GridLayout(count, 1, 5, 5));
+    setLayout(new GridLayout(count, 1, 0, 0));
     for (final RandomItemModel.RandomItem item : model.getItems())
       add(createWeightPanel(item));
   }
 
   protected JPanel createWeightPanel(final RandomItemModel.RandomItem item) {
-    final JPanel panel = new JPanel(new BorderLayout(5, 5));
+    final JPanel panel = new JPanel(new BorderLayout(0, 0));
     final Control incrementControl = new Control("+") {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -78,16 +78,18 @@ public class RandomItemPanel extends JPanel {
       }
     }.updateUI();
 
+    final JPanel btnPanel = new JPanel(new GridLayout(1, 2, 0, 0));
     JButton btn = new JButton(decrementControl);
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     btn.setMargin(new Insets(0,0,0,0));
-    panel.add(btn, BorderLayout.WEST);
-    panel.add(txtValue, BorderLayout.CENTER);
+    btnPanel.add(btn);
     btn = new JButton(incrementControl);
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     btn.setMargin(new Insets(0,0,0,0));
-    panel.add(btn, BorderLayout.EAST);
+    btnPanel.add(btn);
 
+    panel.add(txtValue, BorderLayout.CENTER);
+    panel.add(btnPanel, BorderLayout.EAST);
     panel.setBorder(BorderFactory.createTitledBorder(item.getItem().toString()));
 
     return panel;

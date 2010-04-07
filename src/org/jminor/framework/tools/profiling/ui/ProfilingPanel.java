@@ -219,7 +219,7 @@ public class ProfilingPanel extends JPanel {
     final JPanel activityPanel = new JPanel(new BorderLayout(5, 5));
     activityPanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
-    final JPanel thinkTimePanel = new JPanel(new GridLayout(4, 4, 5, 5));
+    final JPanel thinkTimePanel = new JPanel(new GridLayout(3, 4, 5, 5));
     thinkTimePanel.add(new JLabel("Maximum", JLabel.CENTER));
     thinkTimePanel.add(spnMaxThinkTime);
     thinkTimePanel.add(new JLabel("Minimum", JLabel.CENTER));
