@@ -46,6 +46,10 @@ public class EmpDeptProfiling extends ProfilingModel {
       protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
         selectRandomRow(applicationModel.getMainApplicationModel(DepartmentModel.class).getTableModel());
       }
+      @Override
+      protected int getDefaultWeight() {
+        return 10;
+      }
     };
     final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
       @Override
@@ -63,6 +67,10 @@ public class EmpDeptProfiling extends ProfilingModel {
           employeeModel.getEditModel().update();
         }
       }
+      @Override
+      protected int getDefaultWeight() {
+        return 5;
+      }
     };
     final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
       @Override
@@ -75,6 +83,10 @@ public class EmpDeptProfiling extends ProfilingModel {
         employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }
+      @Override
+      protected int getDefaultWeight() {
+        return 3;
+      }
     };
     final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
       @Override
@@ -82,6 +94,10 @@ public class EmpDeptProfiling extends ProfilingModel {
         final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
         departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
+      }
+      @Override
+      protected int getDefaultWeight() {
+        return 1;
       }
     };
 
@@ -91,24 +107,6 @@ public class EmpDeptProfiling extends ProfilingModel {
   @Override
   protected void loadDomainModel() {
     new EmpDept();
-  }
-
-  @Override
-  protected void performWork(final EntityApplicationModel applicationModel) {
-    try {
-      final double d = random.nextDouble();
-      if (d < 0.5)
-        runScenario("selectDepartment", applicationModel);
-      else if (d < 0.75)
-        runScenario("updateEmployee", applicationModel);
-      else if (d < 0.98)
-        runScenario("insertEmployee", applicationModel);
-      else
-        runScenario("insertDepartment", applicationModel);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   @Override

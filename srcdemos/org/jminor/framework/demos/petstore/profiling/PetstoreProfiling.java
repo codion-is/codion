@@ -14,6 +14,8 @@ import org.jminor.framework.tools.profiling.ProfilingModel;
 import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 
 import javax.swing.UIManager;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * User: Bjorn Darri
@@ -32,13 +34,19 @@ public class PetstoreProfiling extends ProfilingModel {
   }
 
   @Override
-  protected void performWork(final EntityApplicationModel applicationModel) {
-    final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
-    categoryModel.getTableModel().clearSelection();
-    categoryModel.refresh();
-    selectRandomRow(categoryModel.getTableModel());
-    selectRandomRow(categoryModel.getDetailModels().get(0).getTableModel());
-    selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
+  protected Collection<UsageScenario> initializeUsageScenarios() {
+    final UsageScenario scenario = new UsageScenario("selectRecords") {
+      @Override
+      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+        final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
+        categoryModel.getTableModel().clearSelection();
+        categoryModel.refresh();
+        selectRandomRow(categoryModel.getTableModel());
+        selectRandomRow(categoryModel.getDetailModels().get(0).getTableModel());
+        selectRandomRow(categoryModel.getDetailModels().get(0).getDetailModels().get(0).getTableModel());
+      }
+    };
+    return Arrays.asList(scenario);
   }
 
   @Override

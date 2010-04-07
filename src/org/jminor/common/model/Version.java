@@ -6,10 +6,11 @@ package org.jminor.common.model;
 import java.io.Serializable;
 
 /**
-* User: Bjorn Darri
-* Date: 4.4.2010
-* Time: 14:32:05
-*/
+ * A class encapsulating a version.
+ * User: Bjorn Darri
+ * Date: 4.4.2010
+ * Time: 14:32:05
+ */
 public class Version implements Serializable {
 
   private static final long serialVersionUID = 1;
@@ -20,7 +21,7 @@ public class Version implements Serializable {
   public Version(final String domain, final String version) {
     this.domain = domain;
     this.version = version;
- }
+  }
 
   public String getDomain() {
     return domain;

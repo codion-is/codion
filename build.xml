@@ -200,7 +200,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="create_derby_db, create_h2_db"
+  <target name="deploy_server" depends="recreate_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <mkdir dir="${deploy.server.path}"/>
     <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib"/>
@@ -223,9 +223,9 @@
     <copy todir="${deploy.server.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
-    <copy todir="${deploy.server.path}/derbydb">
-      <fileset dir="${db.derby.dir}"/>
-    </copy>
+    <!--<copy todir="${deploy.server.path}/derbydb">-->
+      <!--<fileset dir="${db.derby.dir}"/>-->
+    <!--</copy>-->
   </target>
 
   <target name="deploy_server_monitor"
@@ -245,7 +245,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="create_derby_db, create_h2_db, compile_demo_reports"
+  <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
     <mkdir dir="${deploy.demos.path}"/>
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.path}/lib"/>
@@ -275,9 +275,9 @@
     <copy todir="${deploy.demos.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
-    <copy todir="${deploy.demos.path}/derbydb">
-      <fileset dir="${db.derby.dir}"/>
-    </copy>
+    <!--<copy todir="${deploy.demos.path}/derbydb">-->
+      <!--<fileset dir="${db.derby.dir}"/>-->
+    <!--</copy>-->
   </target>
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos"
@@ -333,7 +333,7 @@
     </junitreport>
   </target>
 
-  <target name="run_unit_tests" depends="build, create_derby_db"
+  <target name="run_unit_tests" depends="build, recreate_h2_db"
           description="Runs the framework unit tests">
     <mkdir dir="${test.reports}"/>
     <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes">
@@ -356,7 +356,7 @@
     </junit>
   </target>
 
-  <target name="run_demo_empdept_local" depends="build, create_derby_db, create_h2_db"
+  <target name="run_demo_empdept_local" depends="build, recreate_h2_db"
           description="Runs the EmpDept demo application with a local db connection">
     <java classname="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel" fork="yes">
       <classpath>
@@ -417,7 +417,7 @@
     </java>
   </target>
 
-  <target name="run_demo_petstore_local" depends="build, create_derby_db, create_h2_db"
+  <target name="run_demo_petstore_local" depends="build, recreate_h2_db"
           description="Runs the Petstore demo application with a local db connection">
     <java classname="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel" fork="yes">
       <classpath>
@@ -456,7 +456,7 @@
     </java>
   </target>
 
-  <target name="run_rmi_server" depends="build, create_derby_db, create_h2_db"
+  <target name="run_rmi_server" depends="build, recreate_h2_db"
           description="Runs the RMI server">
     <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
@@ -515,42 +515,22 @@
     </java>
   </target>
 
-  <condition property="derbydb.not.available">
-    <not>
-      <available file="${db.derby.dir}/${db.derby.name}"/>
-    </not>
-  </condition>
-
-  <target name="delete_derby_db"
-          description="Deletes the derby database">
-    <delete dir="${db.derby.dir}"/>
-  </target>
-
-  <target name="create_derby_db" if="derbydb.not.available"
-          description="Creates the demo derby database in case it is not already available. The demo database includes
+  <target name="recreate_h2_db"
+          description="Recreates the demo h2 database in case it is not already available. The demo database includes
           the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
-    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
-      <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>
-      <arg value="${db.sql.dir}/create_derby_db.sql"/>
-    </java>
-  </target>
-
-  <condition property="h2db.not.available">
-    <not>
-      <available file="${db.h2.dir}"/>
-    </not>
-  </condition>
-
-  <target name="delete_h2_db"
-          description="Deletes the h2 database">
     <delete dir="${db.h2.dir}"/>
-  </target>
-
-  <target name="create_h2_db" if="h2db.not.available"
-          description="Creates the demo h2 database in case it is not already available. The demo database includes
-          the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
       <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/db/scripts/create_h2_db.sql -showResults"/>
     </java>
   </target>
+
+  <!--<target name="recreate_derby_db"-->
+          <!--description="Recreates the demo derby database in case it is not already available. The demo database includes-->
+          <!--the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">-->
+    <!--<delete dir="${db.derby.dir}"/>-->
+    <!--<java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">-->
+      <!--<sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>-->
+      <!--<arg value="${db.sql.dir}/create_derby_db.sql"/>-->
+    <!--</java>-->
+  <!--</target>-->
 </project>

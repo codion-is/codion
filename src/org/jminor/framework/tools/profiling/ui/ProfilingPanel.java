@@ -4,6 +4,7 @@
 package org.jminor.framework.tools.profiling.ui;
 
 import org.jminor.common.ui.LoginPanel;
+import org.jminor.common.ui.RandomItemPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -85,6 +86,82 @@ public class ProfilingPanel extends JPanel {
   }
 
   protected void initUI() {
+    final JPanel chartBase = initChartPanel();
+    final JPanel activityPanel = initActivityPanel();
+    final JPanel clientPanel = initClientPanel();
+    final JPanel userBase = initUserPanel();
+    final JPanel scenarioBase = initScenarioPanel();
+
+    final JPanel controlBase = new JPanel(new FlexibleGridLayout(4,1,5,5,false,true));
+    controlBase.add(clientPanel);
+    controlBase.add(activityPanel);
+    controlBase.add(scenarioBase);
+    controlBase.add(userBase);
+
+    setLayout(new BorderLayout());
+    add(controlBase, BorderLayout.WEST);
+    add(chartBase, BorderLayout.CENTER);
+  }
+
+  private JPanel initScenarioPanel() {
+    final JPanel scenarioBase = new JPanel(new BorderLayout(5,5));
+    scenarioBase.add(new RandomItemPanel(getModel().getRandomModel()), BorderLayout.NORTH);
+    scenarioBase.setBorder(BorderFactory.createTitledBorder("Scenarios"));
+
+    return scenarioBase;
+  }
+
+  private JPanel initUserPanel() {
+    final LoginPanel userPanel = new LoginPanel(getModel().getUser(), true, "Username", "Password");
+    final ActionListener userInfoListener = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        getModel().setUser(userPanel.getUser());
+      }
+    };
+    userPanel.getPasswordField().addActionListener(userInfoListener);
+    userPanel.getUsernameField().addActionListener(userInfoListener);
+    final JPanel userBase = new JPanel(new BorderLayout(5,5));
+    userBase.setBorder(BorderFactory.createTitledBorder("User"));
+    userBase.add(userPanel, BorderLayout.NORTH);
+
+    return userBase;
+  }
+
+  private JPanel initClientPanel() {
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "batchSize",
+            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel());
+    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
+
+    final IntField clientCountField = new IntField();
+    clientCountField.setHorizontalAlignment(JTextField.CENTER);
+    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().eventClientCountChanged(), LinkType.READ_ONLY);
+
+    final Control addClientsControl = ControlFactory.methodControl(getModel(), "addClients", "Add");
+    addClientsControl.setMnemonic('A');
+    final Control removeClientsControl = ControlFactory.methodControl(getModel(), "removeClients", "Remove");
+    removeClientsControl.setMnemonic('R');
+
+    final JPanel clientPanel = new JPanel(new BorderLayout(5, 5));
+    clientPanel.setBorder(BorderFactory.createTitledBorder("Clients"));
+
+    final JPanel clientBatchPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+    clientBatchPanel.add(new JLabel("Client count", JLabel.CENTER));
+    clientBatchPanel.add(clientCountField);
+    clientBatchPanel.add(new JLabel("Client batch size", JLabel.CENTER));
+    clientBatchPanel.add(spnBatchSize);
+
+    final JPanel addRemovePanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    addRemovePanel.add(ControlProvider.createButton(addClientsControl));
+    addRemovePanel.add(ControlProvider.createButton(removeClientsControl));
+
+    clientPanel.add(clientBatchPanel, BorderLayout.NORTH);
+    clientPanel.add(addRemovePanel, BorderLayout.SOUTH);
+
+    return clientPanel;
+  }
+
+  private JPanel initChartPanel() {
     final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
             null, null, getModel().getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
     workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
@@ -109,21 +186,17 @@ public class ProfilingPanel extends JPanel {
     final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final ToggleBeanPropertyLink pauseControl =
-            ControlFactory.toggleControl(getModel(), "pause", "Pause activity", getModel().eventPauseChanged());
-    pauseControl.setMnemonic('P');
-    final ToggleBeanPropertyLink relentlessControl =
-            ControlFactory.toggleControl(getModel(), "relentless", "Relentless", getModel().eventRelentlessChanged());
-    relentlessControl.setMnemonic('E');
-    final Control addClientsControl = ControlFactory.methodControl(getModel(), "addClients", "Add client batch");
-    addClientsControl.setMnemonic('A');
-    final Control removeClientsControl = ControlFactory.methodControl(getModel(), "removeClients", "Remove client batch");
-    removeClientsControl.setMnemonic('R');
+    final JPanel chartBase = new JPanel(new GridLayout(4,1,5,5));
+    chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
+    chartBase.add(workRequestsChartPanel);
+    chartBase.add(usageScenarioChartPanel);
+    chartBase.add(numberOfClientsChartPanel);
+    chartBase.add(thinkTimeChartPanel);
 
-    final IntField clientCountField = new IntField();
-    clientCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().eventClientCountChanged(), LinkType.READ_ONLY);
+    return chartBase;
+  }
 
+  private JPanel initActivityPanel() {
     final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
             getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
@@ -136,61 +209,31 @@ public class ProfilingPanel extends JPanel {
             getModel().eventWarningTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
 
-    FlexibleGridLayout layout = new FlexibleGridLayout(8,1,5,5,true,false);
-    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
-    final JPanel activityPanel = new JPanel(layout);
+    final ToggleBeanPropertyLink pauseControl =
+            ControlFactory.toggleControl(getModel(), "pause", "Pause", getModel().eventPauseChanged());
+    pauseControl.setMnemonic('P');
+    final ToggleBeanPropertyLink relentlessControl =
+            ControlFactory.toggleControl(getModel(), "relentless", "Relentless", getModel().eventRelentlessChanged());
+    relentlessControl.setMnemonic('E');
+
+    final JPanel activityPanel = new JPanel(new BorderLayout(5, 5));
     activityPanel.setBorder(BorderFactory.createTitledBorder("Activity"));
-    activityPanel.add(new JLabel("Max. think time (ms)", JLabel.CENTER));
-    activityPanel.add(spnMaxThinkTime);
-    activityPanel.add(new JLabel("Min. think time (ms)", JLabel.CENTER));
-    activityPanel.add(spnMinThinkTimeField);
-    activityPanel.add(new JLabel("Warning time (ms)", JLabel.CENTER));
-    activityPanel.add(spnWarningTime);
-    activityPanel.add(ControlProvider.createToggleButton(pauseControl));
-    activityPanel.add(ControlProvider.createToggleButton(relentlessControl));
 
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "batchSize",
-            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel());
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
+    final JPanel thinkTimePanel = new JPanel(new GridLayout(4, 4, 5, 5));
+    thinkTimePanel.add(new JLabel("Maximum", JLabel.CENTER));
+    thinkTimePanel.add(spnMaxThinkTime);
+    thinkTimePanel.add(new JLabel("Minimum", JLabel.CENTER));
+    thinkTimePanel.add(spnMinThinkTimeField);
+    thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
+    thinkTimePanel.add(spnWarningTime);
 
-    layout = new FlexibleGridLayout(6,1,5,5,true,false);
-    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
-    final JPanel clientPanel = new JPanel(layout);
-    clientPanel.setBorder(BorderFactory.createTitledBorder("Clients"));
-    clientPanel.add(new JLabel("Client count", JLabel.CENTER));
-    clientPanel.add(clientCountField);
-    clientPanel.add(new JLabel("Client batch size", JLabel.CENTER));
-    clientPanel.add(spnBatchSize);
-    clientPanel.add(ControlProvider.createButton(addClientsControl));
-    clientPanel.add(ControlProvider.createButton(removeClientsControl));
+    final JPanel pauseRelentlessPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    pauseRelentlessPanel.add(ControlProvider.createToggleButton(pauseControl));
+    pauseRelentlessPanel.add(ControlProvider.createToggleButton(relentlessControl));
 
-    final LoginPanel userPanel = new LoginPanel(getModel().getUser(), true, "Username", "Password");
-    final ActionListener userInfoListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        getModel().setUser(userPanel.getUser());
-      }
-    };
-    userPanel.getPasswordField().addActionListener(userInfoListener);
-    userPanel.getUsernameField().addActionListener(userInfoListener);
-    final JPanel userBase = new JPanel(new BorderLayout(5,5));
-    userBase.setBorder(BorderFactory.createTitledBorder("User"));
-    userBase.add(userPanel, BorderLayout.NORTH);
+    activityPanel.add(thinkTimePanel, BorderLayout.NORTH);
+    activityPanel.add(pauseRelentlessPanel, BorderLayout.SOUTH);
 
-    final JPanel chartBase = new JPanel(new GridLayout(4,1,5,5));
-    chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
-    chartBase.add(workRequestsChartPanel);
-    chartBase.add(usageScenarioChartPanel);
-    chartBase.add(numberOfClientsChartPanel);
-    chartBase.add(thinkTimeChartPanel);
-
-    final JPanel controlBase = new JPanel(new FlexibleGridLayout(3,1,5,5,false,true));
-    controlBase.add(clientPanel);
-    controlBase.add(activityPanel);
-    controlBase.add(userBase);
-
-    setLayout(new BorderLayout());
-    add(controlBase, BorderLayout.WEST);
-    add(chartBase, BorderLayout.CENTER);
+    return activityPanel;
   }
 }

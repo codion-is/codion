@@ -6,6 +6,7 @@ package org.jminor.framework.tools.profiling;
 import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.RandomItemModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -50,6 +51,7 @@ public abstract class ProfilingModel {
 
   private final Stack<EntityApplicationModel> clients = new Stack<EntityApplicationModel>();
   private final Collection<UsageScenario> usageScenarios;
+  private final RandomItemModel scenarioRandomModel;
   private User user;
   private boolean working = false;
   private boolean relentless = true;
@@ -77,6 +79,7 @@ public abstract class ProfilingModel {
   public ProfilingModel(final User user) {
     this.user = user;
     this.usageScenarios = initializeUsageScenarios();
+    this.scenarioRandomModel = initializeScenarioRandomModel();
     workRequestsCollection.addSeries(workRequestsSeries);
     workRequestsCollection.addSeries(delayedWorkRequestsSeries);
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
@@ -99,6 +102,10 @@ public abstract class ProfilingModel {
 
   public User getUser() {
     return user;
+  }
+
+  public RandomItemModel getRandomModel() {
+    return scenarioRandomModel;
   }
 
   public Collection<UsageScenario> getUsageScenarios() {
@@ -268,7 +275,15 @@ public abstract class ProfilingModel {
 
   protected abstract void loadDomainModel();
 
-  protected abstract void performWork(final EntityApplicationModel applicationModel);
+  protected void performWork(final EntityApplicationModel applicationModel) {
+    try {
+      final UsageScenario scenario = (UsageScenario) scenarioRandomModel.getRandomItem();
+      runScenario(scenario.getName(), applicationModel);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
   protected abstract EntityApplicationModel initializeApplicationModel() throws CancelException;
 
@@ -389,6 +404,14 @@ public abstract class ProfilingModel {
     return initializeApplicationModel();
   }
 
+  private RandomItemModel initializeScenarioRandomModel() {
+    final RandomItemModel model = new RandomItemModel();
+    for (final UsageScenario scenario : this.usageScenarios)
+      model.addItem(scenario, scenario.getDefaultWeight());
+
+    return model;
+  }
+
   private void updateChart() {
     final long time = System.currentTimeMillis();
     workRequestsSeries.add(time, counter.getWorkRequestsPerSecond());
@@ -420,6 +443,11 @@ public abstract class ProfilingModel {
       return this.name;
     }
 
+    @Override
+    public String toString() {
+      return getName();
+    }
+
     public void run(final EntityApplicationModel applicationModel) throws Exception {
       if (applicationModel == null)
         throw new RuntimeException("Can not run without an application model");
@@ -434,6 +462,10 @@ public abstract class ProfilingModel {
       finally {
         cleanup(applicationModel);
       }
+    }
+
+    protected int getDefaultWeight() {
+      return 1;
     }
 
     protected abstract void performScenario(final EntityApplicationModel applicationModel) throws Exception;

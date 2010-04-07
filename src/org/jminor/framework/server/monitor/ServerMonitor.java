@@ -139,6 +139,11 @@ public class ServerMonitor {
     server.performGC();
   }
 
+  public void resetStats() {
+    connectionRequestsPerSecond.clear();
+    warningTimeExceededSecond.clear();
+  }
+
   public void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException, RemoteException,
           InstantiationException, IllegalAccessException {
     server.loadDomainModel(location, domainClassName);

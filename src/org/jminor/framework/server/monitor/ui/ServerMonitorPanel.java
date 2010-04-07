@@ -59,6 +59,13 @@ public class ServerMonitorPanel extends JPanel {
     return model;
   }
 
+  public void shutdownServer() throws RemoteException {
+    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to shut this server down?", "Confirm shutdown",
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+      model.shutdownServer();
+    }
+  }
+
   public void loadDomainModel() throws ClassNotFoundException, RemoteException, MalformedURLException,
           IllegalAccessException, InstantiationException {
     final String domainModelClass = JOptionPane.showInputDialog("Domain class name");
@@ -74,9 +81,9 @@ public class ServerMonitorPanel extends JPanel {
     infoPanel.add(initMemoryField());
     infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(this, "loadDomainModel", "Load domain model...")));
     infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "performGC", "Run garbage collector")));
-    infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(model, "shutdownServer", "Shut down server")));
+    infoPanel.add(ControlProvider.createButton(ControlFactory.methodControl(this, "shutdownServer", "Shut down server")));
 
-    final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
     controlPanel.add(new JLabel("Warning threshold (ms)"));
     final JSpinner spnWarningThreshold = new JSpinner(
             new IntBeanSpinnerPropertyLink(model, "warningThreshold", model.eventWarningThresholdChanged(), null).getSpinnerModel());
@@ -90,9 +97,13 @@ public class ServerMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
     controlPanel.add(spnConnectionTimeout);
 
+    final JPanel controlPanelBase = new JPanel(new BorderLayout(5, 5));
+    controlPanelBase.add(controlPanel, BorderLayout.WEST);
+    controlPanelBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+
     final JPanel performancePanel = new JPanel(new BorderLayout());
     requestsPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
-    performancePanel.add(controlPanel, BorderLayout.NORTH);
+    performancePanel.add(controlPanelBase, BorderLayout.NORTH);
     performancePanel.add(requestsPerSecondChartPanel, BorderLayout.CENTER);
 
     setLayout(new BorderLayout());

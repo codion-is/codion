@@ -1182,3 +1182,10 @@
   dist ant task added framework.domain classes to server_monitor.jar
   EmpDeptProfiling insertEmployee scenario fixed
   EntityTableModel summary models no longer update on evtSelectionChangedAdjusting, performance killer
+  common.model.RandomItemModel, BoundedRandomItemModel and tests and and common.ui.RandomItemPanel added
+  ProfilingModel.scenarioShareModel field added
+  ProfilingModel.performWork() no longer abstract
+  ProfilingPanel refactored and added SharePanel for usage scenario weight configuration
+  build.xml joined delete_*_db and create_*_db into recreate_*_db and commented out tasks and properties related to Derby Db
+  ServerMonitorPanel added a button to reset the statistics and a server shutdown confirmation dialog
+  UsageScenario.getDefaultWeight() added
