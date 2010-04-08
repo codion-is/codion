@@ -1197,3 +1197,5 @@
   BoundedRandomItemModel no longer truncates the total weight to module # of items
   RandomItemPanel refactored
   ProfilingModel now updates scenario chart while inactive
+  ProfilingModel.getThinkTime(), think() and delayLogin() added
+  EmpDeptProfiling added loginLogout usage scenario

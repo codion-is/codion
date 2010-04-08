@@ -60,7 +60,7 @@ public class ServerMonitorPanel extends JPanel {
   }
 
   public void shutdownServer() throws RemoteException {
-    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to shut this server down?", "Confirm shutdown",
+    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to shut down this server?", "Confirm shutdown",
             JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
       model.shutdownServer();
     }

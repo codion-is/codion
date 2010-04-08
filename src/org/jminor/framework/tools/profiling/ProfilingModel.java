@@ -319,21 +319,32 @@ public abstract class ProfilingModel {
     model.setSelectedItemIndexes(indexes);
   }
 
+  /**
+   * Simulates a user think pause by sleeping for a little while
+   * @throws InterruptedException in case the sleep is interrupted
+   * @see #getThinkTime()
+   */
+  protected void think() throws InterruptedException {
+    Thread.sleep(getThinkTime());
+  }
+
+  protected int getThinkTime() {
+    final int time = maximumThinkTime - minimumThinkTime;
+    return time > 0 ? random.nextInt(time) + minimumThinkTime : minimumThinkTime;
+  }
+
   private synchronized void addClient() {
     final Runnable clientRunner = new Runnable() {
       public void run() {
         try {
-          final EntityApplicationModel applicationModel = initApplicationModel();
+          delayLogin();
+          System.out.println("Initializing a EntityApplicationModel...");
+          final EntityApplicationModel applicationModel = initializeApplicationModel();
           clients.push(applicationModel);
-          try {
-            evtClientCountChanged.fire();
-          }
-          catch (Exception e) {
-            e.printStackTrace();
-          }
+          evtClientCountChanged.fire();
           while (clients.contains(applicationModel)) {
             try {
-              Thread.sleep(getClientThinkTime(false));
+              think();
               if (!pause && (relentless || !working) && (clients.contains(applicationModel))) {
                 final long currentTime = System.currentTimeMillis();
                 try {
@@ -368,15 +379,6 @@ public abstract class ProfilingModel {
     applicationModel.getDbProvider().disconnect();
   }
 
-  private int getClientThinkTime(final boolean isLoggingIn) {
-    if (isLoggingIn)
-      return random.nextInt(maximumThinkTime * loginWaitFactor);
-    else {
-      final int time = maximumThinkTime - minimumThinkTime;
-      return time > 0 ? random.nextInt(time) + minimumThinkTime : minimumThinkTime;
-    }
-  }
-
   private synchronized void removeClient() {
     EntityApplicationModel applicationModel = null;
     try {
@@ -389,19 +391,15 @@ public abstract class ProfilingModel {
     }
   }
 
-  private EntityApplicationModel initApplicationModel() throws CancelException {
+  private void delayLogin() {
     try {
-      final int sleepyTime = getClientThinkTime(true);
+      final int sleepyTime = random.nextInt(maximumThinkTime * loginWaitFactor);
       System.out.println("AppModel delaying login for " + sleepyTime + " ms");
       Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
     }
     catch (InterruptedException e) {
       e.printStackTrace();
     }
-
-    System.out.println("Initializing a EntityApplicationModel...");
-
-    return initializeApplicationModel();
   }
 
   private RandomItemModel initializeScenarioRandomModel() {

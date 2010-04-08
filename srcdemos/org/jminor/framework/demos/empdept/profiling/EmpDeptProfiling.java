@@ -7,8 +7,6 @@ import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
@@ -19,11 +17,9 @@ import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.profiling.ProfilingModel;
 import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,8 +96,20 @@ public class EmpDeptProfiling extends ProfilingModel {
         return 1;
       }
     };
+    final UsageScenario logoutLogin = new UsageScenario("logoutLogin") {
+      @Override
+      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
+        applicationModel.getDbProvider().disconnect();
+        think();
+        applicationModel.getDbProvider().getEntityDb();
+      }
+      @Override
+      protected int getDefaultWeight() {
+        return 4;
+      }
+    };
 
-    return Arrays.asList(insertDepartment, insertEmployee, updateEmployee, selectDepartment);
+    return Arrays.asList(insertDepartment, insertEmployee, updateEmployee, selectDepartment, logoutLogin);
   }
 
   @Override
@@ -119,85 +127,6 @@ public class EmpDeptProfiling extends ProfilingModel {
     model.refresh();
 
     return applicationModel;
-  }
-
-  private void loadTestRMIServer() {
-    try {
-      final EntityDbRemoteProvider dbProvider =
-              new EntityDbRemoteProvider(new User("scott", "tiger"), "scott@tiger"+System.currentTimeMillis(), getClass().getSimpleName());
-
-      for (int i = 0; i < 100; i++)
-        dbProvider.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);
-
-      dbProvider.getEntityDb().disconnect();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException();
-    }
-  }
-
-  private void testSelect() {
-    try {
-      JOptionPane.showMessageDialog(null, "Start");
-
-      final User user = new User("scott", "tiger");
-      final EntityDbProvider db = EntityDbProviderFactory.createEntityDbProvider(user, user.toString());
-      db.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
-      db.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);
-      JOptionPane.showMessageDialog(null, "Exit");
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void testInsert() {
-    EntityDbProvider db = null;
-    try {
-      JOptionPane.showMessageDialog(null, "Start");
-
-      final User user = new User("scott", "tiger");
-      db = EntityDbProviderFactory.createEntityDbProvider(user, user.toString());
-      db.getEntityDb().beginTransaction();
-      db.getEntityDb().insert(Arrays.asList(
-              getEmployee(null, "One", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Two", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Three", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Four", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Five", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Six", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Seven", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Eight", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Nine", "none", null, new Date(), 1234.123, 13, null),
-              getEmployee(null, "Ten", "none", null, new Date(), 1234.123, 13, null)));
-      JOptionPane.showMessageDialog(null, "Exit");
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-    finally {
-      try {
-        if (db != null)
-          db.getEntityDb().rollbackTransaction();
-      }
-      catch (Exception e) {/**/}
-    }
-  }
-
-  private Entity getEmployee(final Integer id, final String name, final String job, final Entity manager,
-                             final Date hiredate, final double salary, final double commission, final Entity department) {
-    final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
-    employee.setValue(EmpDept.EMPLOYEE_ID, id);
-    employee.setValue(EmpDept.EMPLOYEE_NAME, name);
-    employee.setValue(EmpDept.EMPLOYEE_JOB, job);
-    employee.setValue(EmpDept.EMPLOYEE_MGR_FK, manager);
-    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
-    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-
-    return employee;
   }
 
   public static void main(String[] args) {
