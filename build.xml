@@ -459,6 +459,7 @@
     <java classname="org.jminor.framework.server.EntityDbRemoteServerAdmin" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
+        <pathelement path="${build.demos}"/>
         <pathelement location="${lib.derby}"/>
         <pathelement location="${lib.h2}"/>
         <pathelement location="${lib.json}"/>
@@ -477,6 +478,7 @@
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>
       <jvmarg value="-Djminor.server.db.port=3333"/>
+      <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorServerKeystore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server.policy"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=jminor"/>
