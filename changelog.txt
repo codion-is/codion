@@ -1209,4 +1209,10 @@
   Demo load and unit testing classes moved to demos.xxx.testing
   Renamed jminor_profiling.policy to jminor_load_test.policy
   build.xml run_rmi_server, added demo classes to classpath and specified the default domain model classes for loading
+  EntityLoadTestModelTest added
+  EntityLoadTestModel.selectRandomRows() bugs fixed
+  LoadTestModel getter/setter/changeEvent added for loginDelayFactor field
+  LoadTestModel.getUsageScenario() added
+  LoadTestModel.UsageScenario.successfulRunCount and unsuccessfulRunCount fields added plus getters as well as getTotalRunCount() which returns the sum of the two
+  LoadTestModel added value checks to setters
 0.5.3

@@ -50,7 +50,7 @@ public class LoadTestPanel extends JPanel {
     if (loadTestModel == null)
       throw new IllegalArgumentException("LoadTestPanel requires a LoadTestModel instance");
     this.loadTestModel = loadTestModel;
-    initUI();
+    initializeUI();
   }
 
   public LoadTestModel getModel() {
@@ -82,12 +82,12 @@ public class LoadTestPanel extends JPanel {
     frame.setVisible(true);
   }
 
-  protected void initUI() {
-    final JPanel chartBase = initChartPanel();
-    final JPanel activityPanel = initActivityPanel();
-    final JPanel clientPanel = initClientPanel();
-    final JPanel userBase = initUserPanel();
-    final JPanel scenarioBase = initScenarioPanel();
+  protected void initializeUI() {
+    final JPanel chartBase = initializeChartPanel();
+    final JPanel activityPanel = initializeActivityPanel();
+    final JPanel clientPanel = initializeClientPanel();
+    final JPanel userBase = initializeUserPanel();
+    final JPanel scenarioBase = initializeScenarioPanel();
 
     final JPanel controlBase = new JPanel(new FlexibleGridLayout(4, 1, 5, 5, false, true));
     controlBase.add(clientPanel);
@@ -100,7 +100,7 @@ public class LoadTestPanel extends JPanel {
     add(chartBase, BorderLayout.CENTER);
   }
 
-  private JPanel initScenarioPanel() {
+  private JPanel initializeScenarioPanel() {
     final JPanel scenarioBase = new JPanel(new BorderLayout(5, 5));
     scenarioBase.add(new RandomItemPanel(getModel().getRandomModel()), BorderLayout.NORTH);
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Scenarios"));
@@ -108,7 +108,7 @@ public class LoadTestPanel extends JPanel {
     return scenarioBase;
   }
 
-  private JPanel initUserPanel() {
+  private JPanel initializeUserPanel() {
     final LoginPanel userPanel = new LoginPanel(getModel().getUser(), true, "Username", "Password");
     final ActionListener userInfoListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -124,9 +124,9 @@ public class LoadTestPanel extends JPanel {
     return userBase;
   }
 
-  private JPanel initClientPanel() {
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "batchSize",
-            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel());
+  private JPanel initializeClientPanel() {
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "clientBatchSize",
+            getModel().eventClientBatchSizeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
 
@@ -158,7 +158,7 @@ public class LoadTestPanel extends JPanel {
     return clientPanel;
   }
 
-  private JPanel initChartPanel() {
+  private JPanel initializeChartPanel() {
     final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
             null, null, getModel().getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
     workRequestsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
@@ -193,7 +193,7 @@ public class LoadTestPanel extends JPanel {
     return chartBase;
   }
 
-  private JPanel initActivityPanel() {
+  private JPanel initializeActivityPanel() {
     final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
             getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
@@ -207,8 +207,7 @@ public class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanPropertyLink pauseControl =
-            ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
+    final ToggleBeanPropertyLink pauseControl = ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
     pauseControl.setMnemonic('P');
 
     final JPanel activityPanel = new JPanel(new BorderLayout(5, 5));

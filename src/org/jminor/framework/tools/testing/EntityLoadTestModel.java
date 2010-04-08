@@ -35,9 +35,10 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     if (model.getRowCount() == 0)
       return;
 
+    final int startIdx = random.nextInt(model.getRowCount() - count);
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (int i = 0; i < count; i++)
-      indexes.add(random.nextInt(model.getRowCount()));
+    for (int i = startIdx; i < count + startIdx; i++)
+      indexes.add(i);
 
     model.setSelectedItemIndexes(indexes);
   }
@@ -46,7 +47,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     if (model.getRowCount() == 0)
       return;
 
-    final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount()/ratio) : 1;
+    final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount() * ratio) : 1;
     final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = 0; i < toSelect; i++)
       indexes.add(i);

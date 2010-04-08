@@ -29,14 +29,15 @@ public abstract class LoadTestModel {
   private final Event evtMaximumThinkTimeChanged = new Event();
   private final Event evtMinimumThinkTimeChanged = new Event();
   private final Event evtWarningTimeChanged = new Event();
+  private final Event evtLoginDelayFactorChanged = new Event();
   private final Event evtClientCountChanged = new Event();
-  private final Event evtBatchSizeChanged = new Event();
+  private final Event evtClientBatchSizeChanged = new Event();
   private final Event evtDoneExiting = new Event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
   private int loginDelayFactor;
-  private int batchSize;
+  private int clientBatchSize;
 
   private boolean paused = false;
   private boolean stopped = false;
@@ -59,7 +60,7 @@ public abstract class LoadTestModel {
 
   private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
 
-  private Counter counter = new Counter();
+  private final Counter counter;
 
   private int warningTime;
 
@@ -68,10 +69,10 @@ public abstract class LoadTestModel {
    * @param user the default user to use when initializing applications
    * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
-   * @param batchSize the number of clients to add in a batch
+   * @param clientBatchSize the number of clients to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int batchSize,
+  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int clientBatchSize,
                        final int warningTime) {
     if (maximumThinkTime <= 0)
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
@@ -80,10 +81,11 @@ public abstract class LoadTestModel {
     this.maximumThinkTime = maximumThinkTime;
     this.minimumThinkTime = maximumThinkTime / 2;
     this.loginDelayFactor = loginDelayFactor;
-    this.batchSize = batchSize;
+    this.clientBatchSize = clientBatchSize;
     this.warningTime = warningTime;
     this.usageScenarios = initializeUsageScenarios();
     this.scenarioRandomModel = initializeScenarioRandomModel();
+    this.counter = new Counter(this.usageScenarios);
     initializeChartData();
     initializeContext();
     new Timer(true).schedule(new TimerTask() {
@@ -134,6 +136,9 @@ public abstract class LoadTestModel {
   }
 
   public void setWarningTime(int warningTime) {
+    if (warningTime <= 0)
+      throw new IllegalArgumentException("Warning time must be a positive integer");
+
     if (this.warningTime != warningTime) {
       this.warningTime = warningTime;
       evtWarningTimeChanged.fire();
@@ -147,22 +152,25 @@ public abstract class LoadTestModel {
     return clients.size();
   }
 
-  public int getBatchSize() {
-    return batchSize;
+  public int getClientBatchSize() {
+    return clientBatchSize;
   }
 
-  public void setBatchSize(int batchSize) {
-    this.batchSize = batchSize;
-    evtBatchSizeChanged.fire();
+  public void setClientBatchSize(int clientBatchSize) {
+    if (clientBatchSize <= 0)
+      throw new IllegalArgumentException("Client batch size must be a positive integer");
+
+    this.clientBatchSize = clientBatchSize;
+    evtClientBatchSizeChanged.fire();
   }
 
   public void addClients() throws Exception {
-    for (int i = 0; i < batchSize; i++)
+    for (int i = 0; i < clientBatchSize; i++)
       addClient();
   }
 
   public void removeClients() throws Exception {
-    for (int i = 0; i < batchSize && clients.size() > 0; i++)
+    for (int i = 0; i < clientBatchSize && clients.size() > 0; i++)
       removeClient();
   }
 
@@ -201,6 +209,9 @@ public abstract class LoadTestModel {
    * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
    */
   public void setMaximumThinkTime(int maximumThinkTime) {
+    if (maximumThinkTime <= 0)
+      throw new IllegalArgumentException("Maximum think time must be a positive integer");
+
     this.maximumThinkTime = maximumThinkTime;
     evtMaximumThinkTimeChanged.fire();
   }
@@ -216,12 +227,27 @@ public abstract class LoadTestModel {
    * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
    */
   public void setMinimumThinkTime(int minimumThinkTime) {
+    if (minimumThinkTime < 0)
+      throw new IllegalArgumentException("Minimum think time must be a positive integer");
+
     this.minimumThinkTime = minimumThinkTime;
     evtMinimumThinkTimeChanged.fire();
   }
 
-  public Event eventBatchSizeChanged() {
-    return evtBatchSizeChanged;
+  public int getLoginDelayFactor() {
+    return this.loginDelayFactor;
+  }
+
+  public void setLoginDelayFactor(final int loginDelayFactor) {
+    if (loginDelayFactor < 0)
+      throw new IllegalArgumentException("Login delay factor must be a positive integer");
+
+    this.loginDelayFactor = loginDelayFactor;
+    evtLoginDelayFactorChanged.fire();
+  }
+
+  public Event eventClientBatchSizeChanged() {
+    return evtClientBatchSizeChanged;
   }
 
   public Event eventClientCountChanged() {
@@ -248,15 +274,6 @@ public abstract class LoadTestModel {
     return evtWarningTimeChanged;
   }
 
-  protected void runScenario(final String usageScenarioName, final Object application) throws Exception {
-    counter.incrementScenario(usageScenarioName);
-    getUsageScenario(usageScenarioName).run(application);
-  }
-
-  protected Collection<UsageScenario> initializeUsageScenarios() {
-    return new ArrayList<UsageScenario>();
-  }
-
   protected void performWork(final Object application) {
     try {
       final UsageScenario scenario = (UsageScenario) scenarioRandomModel.getRandomItem();
@@ -265,6 +282,22 @@ public abstract class LoadTestModel {
     catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  protected void runScenario(final String usageScenarioName, final Object application) throws Exception {
+    getUsageScenario(usageScenarioName).run(application);
+  }
+
+  public UsageScenario getUsageScenario(final String usageScenarioName) {
+    for (final UsageScenario scenario : usageScenarios)
+      if (scenario.getName().equals(usageScenarioName))
+        return scenario;
+
+    throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
+  }
+
+  protected Collection<UsageScenario> initializeUsageScenarios() {
+    return new ArrayList<UsageScenario>();
   }
 
   protected abstract Object initializeApplication() throws CancelException;
@@ -381,17 +414,11 @@ public abstract class LoadTestModel {
     }
   }
 
-  private UsageScenario getUsageScenario(final String usageScenarioName) {
-    for (final UsageScenario scenario : usageScenarios)
-      if (scenario.getName().equals(usageScenarioName))
-        return scenario;
-
-    throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
-  }
-
   public static abstract class UsageScenario {
 
     private final String name;
+    private int successfulRunCount = 0;
+    private int unsuccessfulRunCount = 0;
 
     public UsageScenario(final String name) {
       this.name = name;
@@ -399,6 +426,22 @@ public abstract class LoadTestModel {
 
     public String getName() {
       return this.name;
+    }
+
+    public int getSuccessfulRunCount() {
+      return successfulRunCount;
+    }
+
+    public int getUnsuccessfulRunCount() {
+      return unsuccessfulRunCount;
+    }
+
+    public int getTotalRunCount() {
+      return getSuccessfulRunCount() + getUnsuccessfulRunCount();
+    }
+
+    public void resetRunCount() {
+      successfulRunCount = unsuccessfulRunCount = 0;
     }
 
     @Override
@@ -412,8 +455,10 @@ public abstract class LoadTestModel {
       try {
         prepare(application);
         performScenario(application);
+        successfulRunCount++;
       }
       catch (Exception e) {
+        unsuccessfulRunCount++;
         e.printStackTrace();
         throw e;
       }
@@ -436,7 +481,8 @@ public abstract class LoadTestModel {
   }
 
   private static class Counter {
-    private final Map<String, Integer> usageScenarioCounter = new HashMap<String, Integer>();
+
+    private final Collection<UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
 
     private int workRequestsPerSecond = 0;
@@ -444,6 +490,10 @@ public abstract class LoadTestModel {
     private int delayedWorkRequestsPerSecond = 0;
     private int delayedWorkRequestsPerSecondCounter = 0;
     private long workRequestsPerSecondTime = System.currentTimeMillis();
+
+    public Counter(final Collection<UsageScenario> usageScenarios) {
+      this.usageScenarios = usageScenarios;
+    }
 
     public int getWorkRequestsPerSecond() {
       return workRequestsPerSecond;
@@ -472,29 +522,25 @@ public abstract class LoadTestModel {
       delayedWorkRequestsPerSecondCounter++;
     }
 
-    public void incrementScenario(final String scenarioName) {
-      if (!usageScenarioRates.containsKey(scenarioName))
-        usageScenarioRates.put(scenarioName, 0);
-      usageScenarioCounter.put(scenarioName, usageScenarioCounter.containsKey(scenarioName) ? usageScenarioCounter.get(scenarioName) + 1 : 0);
-    }
-
     public void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - workRequestsPerSecondTime)/1000;
       if (seconds > 5) {
         workRequestsPerSecond = (int) ((double) workRequestsPerSecondCounter/seconds);
         delayedWorkRequestsPerSecond = (int) ((double) delayedWorkRequestsPerSecondCounter/seconds);
-        for (final String scenarioName : usageScenarioRates.keySet()) {
-          if (usageScenarioCounter.containsKey(scenarioName))
-            usageScenarioRates.put(scenarioName, (int) (usageScenarioCounter.get(scenarioName)/seconds));
-          else
-            usageScenarioRates.put(scenarioName, 0);
-        }
-        usageScenarioCounter.clear();
-        workRequestsPerSecondCounter = 0;
-        delayedWorkRequestsPerSecondCounter = 0;
+        for (final UsageScenario scenario : usageScenarios)
+          usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / seconds));
+
+        resetCounters();
         workRequestsPerSecondTime = current;
       }
+    }
+
+    private void resetCounters() {
+      for (final UsageScenario scenario : usageScenarios)
+        scenario.resetRunCount();
+      workRequestsPerSecondCounter = 0;
+      delayedWorkRequestsPerSecondCounter = 0;
     }
   }
 }

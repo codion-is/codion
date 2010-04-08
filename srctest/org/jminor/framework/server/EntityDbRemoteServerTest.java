@@ -12,6 +12,7 @@ import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import org.junit.AfterClass;
@@ -31,6 +32,7 @@ public class EntityDbRemoteServerTest {
   @BeforeClass
   public static void setUp() throws Exception {
     new EmpDept();
+    new Petstore();
     defaultManager = System.getSecurityManager();
     System.setProperty(Configuration.SERVER_PORT, "2222");
     System.setProperty(Configuration.SERVER_DB_PORT, "2223");
