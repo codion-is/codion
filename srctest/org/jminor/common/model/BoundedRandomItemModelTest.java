@@ -24,41 +24,41 @@ public class BoundedRandomItemModelTest {
 
     assertEquals(3, model.getItemCount());
 
-    assertEquals(9, model.getWeightBounds());
+    assertEquals(10, model.getWeightBounds());
 
     assertEquals(3, model.getWeight(one));//last
     assertEquals(3, model.getWeight(two));
-    assertEquals(3, model.getWeight(three));
+    assertEquals(4, model.getWeight(three));
 
     model.increment(one);
 
     assertEquals(4, model.getWeight(one));
     assertEquals(3, model.getWeight(two));
-    assertEquals(2, model.getWeight(three));//last
+    assertEquals(3, model.getWeight(three));//last
 
     model.increment(three);
 
     assertEquals(4, model.getWeight(one));
     assertEquals(2, model.getWeight(two));//last
-    assertEquals(3, model.getWeight(three));
+    assertEquals(4, model.getWeight(three));
 
     model.decrement(one);
 
     assertEquals(3, model.getWeight(one));
     assertEquals(2, model.getWeight(two));
-    assertEquals(4, model.getWeight(three));//last
+    assertEquals(5, model.getWeight(three));//last
 
     model.decrement(two);
 
     assertEquals(4, model.getWeight(one));//last
     assertEquals(1, model.getWeight(two));
-    assertEquals(4, model.getWeight(three));
+    assertEquals(5, model.getWeight(three));
 
     model.decrement(two);
 
     assertEquals(4, model.getWeight(one));
     assertEquals(0, model.getWeight(two));
-    assertEquals(5, model.getWeight(three));//last
+    assertEquals(6, model.getWeight(three));//last
 
     try {
       model.decrement(two);
@@ -70,49 +70,49 @@ public class BoundedRandomItemModelTest {
 
     assertEquals(3, model.getWeight(one));//last
     assertEquals(0, model.getWeight(two));
-    assertEquals(6, model.getWeight(three));
+    assertEquals(7, model.getWeight(three));
 
     model.increment(three);
 
     assertEquals(2, model.getWeight(one));//last
     assertEquals(0, model.getWeight(two));
-    assertEquals(7, model.getWeight(three));
+    assertEquals(8, model.getWeight(three));
 
     model.decrement(three);
 
     assertEquals(2, model.getWeight(one));
     assertEquals(1, model.getWeight(two));//last
-    assertEquals(6, model.getWeight(three));
+    assertEquals(7, model.getWeight(three));
 
     model.decrement(three);
 
     assertEquals(3, model.getWeight(one));//last
     assertEquals(1, model.getWeight(two));
-    assertEquals(5, model.getWeight(three));
+    assertEquals(6, model.getWeight(three));
 
     model.decrement(two);
 
     assertEquals(3, model.getWeight(one));
     assertEquals(0, model.getWeight(two));
-    assertEquals(6, model.getWeight(three));//last
+    assertEquals(7, model.getWeight(three));//last
 
     model.increment(three);
 
     assertEquals(2, model.getWeight(one));//last
     assertEquals(0, model.getWeight(two));
-    assertEquals(7, model.getWeight(three));
+    assertEquals(8, model.getWeight(three));
 
     model.increment(three);
 
     assertEquals(1, model.getWeight(one));//last
     assertEquals(0, model.getWeight(two));
-    assertEquals(8, model.getWeight(three));
+    assertEquals(9, model.getWeight(three));
 
     model.increment(three);
 
     assertEquals(0, model.getWeight(one));//last
     assertEquals(0, model.getWeight(two));
-    assertEquals(9, model.getWeight(three));
+    assertEquals(10, model.getWeight(three));
 
     try {
       model.increment(three);

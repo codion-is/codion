@@ -29,6 +29,8 @@ public class RandomItemModelTest {
     model.increment(three);
     assertEquals(1, model.getWeight(three));
 
+    assertEquals(Double.valueOf(1/3d), Double.valueOf(model.getWeightRatio(one)));
+
     model.increment(three);
     assertEquals(2, model.getWeight(three));
     model.increment(three);
@@ -36,10 +38,19 @@ public class RandomItemModelTest {
     model.increment(three);
     assertEquals(4, model.getWeight(three));
 
+    assertEquals(Double.valueOf(4/6d), Double.valueOf(model.getWeightRatio(three)));
+
     model.increment(one);
     assertEquals(2, model.getWeight(one));
+
+    assertEquals(Double.valueOf(2/7d), Double.valueOf(model.getWeightRatio(one)));
+
     model.increment(two);
     assertEquals(2, model.getWeight(two));
+
+    assertEquals(Double.valueOf(2/8d), Double.valueOf(model.getWeightRatio(one)));
+    assertEquals(Double.valueOf(2/8d), Double.valueOf(model.getWeightRatio(two)));
+    assertEquals(Double.valueOf(4/8d), Double.valueOf(model.getWeightRatio(three)));
 
     model.decrement(one);
     assertEquals(1, model.getWeight(one));

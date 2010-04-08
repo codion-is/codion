@@ -14,7 +14,7 @@ package org.jminor.common.model;
 public class BoundedRandomItemModel extends RandomItemModel {
 
   private final int weightBounds;
-  private RandomItem lastEffected;
+  private RandomItem lastAffected;
 
   /**
    * Instantiates a new BoundedRandomItemModel with a default bounded weight of 100.
@@ -35,12 +35,9 @@ public class BoundedRandomItemModel extends RandomItemModel {
     if (items == null || items.length == 0)
       throw new IllegalArgumentException("Items must not be null or empty");
 
-    int amount = boundedWeight / items.length;
-    for (final Object sharee : items)
-      super.addItem(sharee, amount);
-
-    lastEffected = this.items.get(0);
-    this.weightBounds = amount * items.length;
+    this.weightBounds = boundedWeight;
+    initializeItems(items);
+    lastAffected = this.items.get(0);
   }
 
   public int getWeightBounds() {
@@ -52,9 +49,9 @@ public class BoundedRandomItemModel extends RandomItemModel {
     synchronized (items) {
       final RandomItem randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds)
-        throw new RuntimeException("Maximum shares reached");
+        throw new RuntimeException("Maximum weight reached");
 
-      decrementShare(randomItem);
+      decrementWeight(randomItem);
       getRandomItem(item).increment();
     }
     evtWeightsChanged.fire();
@@ -65,9 +62,9 @@ public class BoundedRandomItemModel extends RandomItemModel {
     synchronized (items) {
       final RandomItem randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0)
-        throw new RuntimeException("No shares left");
+        throw new RuntimeException("No weight to shed");
 
-      incrementShare(randomItem);
+      incrementWeight(randomItem);
       randomItem.decrement();
     }
     evtWeightsChanged.fire();
@@ -83,18 +80,25 @@ public class BoundedRandomItemModel extends RandomItemModel {
     throw new RuntimeException("addItem is not implemented in the BoundedRandomItemModel " + getClass().getSimpleName());
   }
 
-  private void incrementShare(final RandomItem exclude) {
-    lastEffected = getNextRandomItem(exclude, false);
-    lastEffected.increment();
+  protected void initializeItems(final Object... items) {
+    final int rest = weightBounds % items.length;
+    final int amountEach = weightBounds / items.length;
+    for (int i = 0; i < items.length; i++)
+      super.addItem(items[i], i < items.length - 1 ? amountEach : amountEach + rest);
   }
 
-  private void decrementShare(final RandomItem exclude) {
-    lastEffected = getNextRandomItem(exclude, true);
-    lastEffected.decrement();
+  private void incrementWeight(final RandomItem exclude) {
+    lastAffected = getNextItem(exclude, false);
+    lastAffected.increment();
   }
 
-  private RandomItem getNextRandomItem(final RandomItem exclude, final boolean nonEmpty) {
-    int index = items.indexOf(lastEffected);
+  private void decrementWeight(final RandomItem exclude) {
+    lastAffected = getNextItem(exclude, true);
+    lastAffected.decrement();
+  }
+
+  private RandomItem getNextItem(final RandomItem exclude, final boolean nonEmpty) {
+    int index = items.indexOf(lastAffected);
     RandomItem item = null;
     while (item == null || item == exclude || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
       if (index == 0)

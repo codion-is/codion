@@ -110,7 +110,7 @@ public class RandomItemModel {
     if (totalWeights == 0)
       throw new RuntimeException("Can not choose a random item unless total weights exceed 0");
 
-    final int random = getRandom().nextInt(totalWeights);
+    final int random = getRandom().nextInt(totalWeights + 1);
     int position = 0;
     for (final RandomItem item : items) {
       position += item.getWeight();
@@ -119,6 +119,19 @@ public class RandomItemModel {
     }
 
     throw new RuntimeException("getRandomItem did not find an item");
+  }
+
+  /**
+   * Returns this items share in the total weights as a floating point number between 0 and 1
+   * @param item the item
+   * @return the ratio of the total weights held by the given item
+   */
+  public double getWeightRatio(final Object item) {
+    final int totalWeights = getTotalWeights();
+    if (totalWeights == 0)
+      return 0;
+
+    return getWeight(item) / (double) totalWeights;
   }
 
   /**
@@ -233,14 +246,14 @@ public class RandomItemModel {
 
     void decrement() {
       if (weight == 0)
-        throw new IllegalStateException("Weight must be 0 or larger");
+        throw new IllegalStateException("Weight can not be negative");
 
       weight--;
     }
 
     void setWeight(final int weight) {
       if (weight < 0)
-        throw new IllegalStateException("Weight must be 0 or larger");
+        throw new IllegalStateException("Weight can not be negative");
 
       this.weight = weight;
     }
