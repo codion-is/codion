@@ -259,6 +259,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       log.warn(e);
     }
     removeConnections(false);
+    final String connectInfo = getServerName() + " removed from registry";
+    log.info(connectInfo);
+    System.out.println(connectInfo);
     if (database.isEmbedded())
       database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
   }

@@ -46,9 +46,10 @@ public class EntityLoadTestModelTest {
 
     loadTest.addClients();
 
-    Thread.sleep(1500);
+    Thread.sleep(2000);
 
-    assertEquals(1, loadTest.getClientCount());
+    assertEquals("One client expected, if this fails try increasing the Thread.sleep() value above",
+            1, loadTest.getClientCount());
     assertTrue(loadTest.getUsageScenario("selectDepartment").getTotalRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("selectDepartment").getSuccessfulRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("selectDepartment").getUnsuccessfulRunCount() == 0);

@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.rmi.RemoteException;
 import java.util.Collection;
 
 public class EntityDbRemoteServerTest {
@@ -55,13 +54,9 @@ public class EntityDbRemoteServerTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    try {
-      if (admin != null)
-        admin.shutdown();
-    }
-    catch (RemoteException e) {
-      e.printStackTrace();
-    }
+    if (admin != null)
+      admin.shutdown();
+    Thread.sleep(100);
     admin = null;
     server = null;
     System.setSecurityManager(defaultManager);
