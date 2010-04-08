@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
-import org.jminor.framework.tools.profiling.ProfilingModel;
+import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.UIManager;
 
@@ -20,14 +20,14 @@ import javax.swing.UIManager;
  * Date: 30.11.2007
  * Time: 04:00:43
  */
-public class SchemaBrowserProfiling extends ProfilingModel {
+public class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
   private static final User user = new User("scott", "tiger");
 
   /**
    * @param user the user to use for database access during profiling
    */
-  public SchemaBrowserProfiling(final User user) {
+  public SchemaBrowserLoadTest(final User user) {
     super(user);
   }
 
@@ -65,6 +65,6 @@ public class SchemaBrowserProfiling extends ProfilingModel {
       e.printStackTrace();
     }
 
-    new LoadTestPanel(new SchemaBrowserProfiling(user)).showFrame();
+    new LoadTestPanel(new SchemaBrowserLoadTest(user)).showFrame();
   }
 }

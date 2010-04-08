@@ -1203,3 +1203,6 @@
   ProfilingPanel renamed to LoadTestPanel and moved to common.ui
   LoadTestModel.relentless and working fields removed
   LoadTestPanel showFrame() no longer called in constructor
+  ProfilingModel renamed to EntityLoadTestModel and moved to framework.tools.testing
+  EmpDeptProfiling, PetstoreProfiling and SchemaBrowserProfiling renamed to ...LoadTest
+  Configuration.PROFILING_* renamed to LOAD_TEST_*, values changed accordingly

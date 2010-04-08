@@ -15,7 +15,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
-import org.jminor.framework.tools.profiling.ProfilingModel;
+import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -29,9 +29,9 @@ import java.util.Map;
  * Time: 03:33:10
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class EmpDeptProfiling extends ProfilingModel {
+public class EmpDeptLoadTest extends EntityLoadTestModel {
 
-  public EmpDeptProfiling() {
+  public EmpDeptLoadTest() {
     super(new User("scott", "tiger"));
   }
 
@@ -137,6 +137,6 @@ public class EmpDeptProfiling extends ProfilingModel {
       e.printStackTrace();
     }
 
-    new LoadTestPanel(new EmpDeptProfiling()).showFrame();
+    new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
   }
 }

@@ -108,20 +108,20 @@ public class Configuration {
   public static final String SERVER_DOMAIN_MODEL_CLASSES = "jminor.server.domain.classes";
 
   /**
-   * Specifies the initial think time setting for the profiling client
+   * Specifies the initial think time setting for the load test client
    * (max think time = thinktime, min think time = max think time / 2)
    */
-  public static final String PROFILING_THINKTIME = "jminor.profiling.thinktime";
+  public static final String LOAD_TEST_THINKTIME = "jminor.loadtest.thinktime";
 
   /**
    * Specifies the number which the max think time is multiplied with when initializing the clients
    */
-  public static final String PROFILING_LOGIN_WAIT = "jminor.profiling.loginwait";
+  public static final String LOAD_TEST_LOGIN_DELAY = "jminor.loadtest.logindelay";
 
   /**
    * Specifies the initial client batch size
    */
-  public static final String PROFILING_BATCH_SIZE = "jminor.profiling.batchsize";
+  public static final String LOAD_TEST_BATCH_SIZE = "jminor.loadtest.batchsize";
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when

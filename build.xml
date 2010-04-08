@@ -399,7 +399,7 @@
 
   <target name="run_demo_empdept_profiling" depends="build"
           description="Runs the EmpDept profiling application with a remote db connection">
-    <java classname="org.jminor.framework.demos.empdept.profiling.EmpDeptProfiling" fork="yes">
+    <java classname="org.jminor.framework.demos.empdept.profiling.EmpDeptLoadTest" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
         <pathelement path="${build.demos}"/>

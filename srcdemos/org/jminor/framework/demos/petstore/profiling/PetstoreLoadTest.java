@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
-import org.jminor.framework.tools.profiling.ProfilingModel;
+import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -22,9 +22,9 @@ import java.util.Collection;
  * Date: 30.11.2007
  * Time: 03:33:10
  */
-public class PetstoreProfiling extends ProfilingModel {
+public class PetstoreLoadTest extends EntityLoadTestModel {
 
-  public PetstoreProfiling() {
+  public PetstoreLoadTest() {
     super(new User("scott", "tiger"));
   }
 
@@ -71,6 +71,6 @@ public class PetstoreProfiling extends ProfilingModel {
       e.printStackTrace();
     }
 
-    new LoadTestPanel(new PetstoreProfiling()).showFrame();
+    new LoadTestPanel(new PetstoreLoadTest()).showFrame();
   }
 }

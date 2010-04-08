@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.tools.profiling;
+package org.jminor.framework.tools.testing;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.LoadTestModel;
@@ -15,12 +15,12 @@ import java.util.List;
 /**
  * A class for running multiple EntityApplicationModel instances for testing/profiling purposes.
  */
-public abstract class ProfilingModel extends LoadTestModel {
+public abstract class EntityLoadTestModel extends LoadTestModel {
 
-  public ProfilingModel(final User user) {
-    super(user, Integer.parseInt(System.getProperty(Configuration.PROFILING_THINKTIME, "2000")),
-            Integer.parseInt(System.getProperty(Configuration.PROFILING_LOGIN_WAIT, "2")),
-            Integer.parseInt(System.getProperty(Configuration.PROFILING_BATCH_SIZE, "10")), 200);
+  public EntityLoadTestModel(final User user) {
+    super(user, Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_THINKTIME, "2000")),
+            Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_LOGIN_DELAY, "2")),
+            Integer.parseInt(System.getProperty(Configuration.LOAD_TEST_BATCH_SIZE, "10")), 200);
     loadDomainModel();
   }
 
