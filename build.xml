@@ -112,7 +112,6 @@
                 org/jminor/framework/db/**,
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/domain/**,
-                org/jminor/framework/tools/profiling/**,
                 org/jminor/framework/tools/testing/**,
                 org/jminor/framework/server/provider/EntityDbRemoteProvider*,
                 org/jminor/framework/server/EntityDbRemote.class,
@@ -131,7 +130,6 @@
                 org/jminor/framework/db/provider/EntityDbProvider*,
                 org/jminor/framework/i18n/**,
                 org/jminor/framework/domain/**,
-                org/jminor/framework/tools/profiling/**,
                 org/jminor/framework/tools/testing/**,
                 org/jminor/framework/server/provider/EntityDbRemoteProvider*,
                 org/jminor/framework/server/EntityDbRemote.class,
@@ -264,7 +262,7 @@
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.path}/lib"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.path}/lib"/>
     <copy file="${deploy.demos.policy}" todir="${deploy.demos.path}"/>
-    <copy file="${deploy.profiling.policy}" todir="${deploy.demos.path}"/>
+    <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.path}"/>
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.path}"/>
     <copy todir="${deploy.demos.path}">
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
@@ -397,8 +395,8 @@
     </java>
   </target>
 
-  <target name="run_demo_empdept_profiling" depends="build"
-          description="Runs the EmpDept profiling application with a remote db connection">
+  <target name="run_demo_empdept_load_test" depends="build"
+          description="Runs the EmpDept load testing application with a remote db connection">
     <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
@@ -413,7 +411,7 @@
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${basedir}/resources/security/JMinorClientTruststore"/>
-      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_client.policy"/>
+      <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_load_test.policy"/>
     </java>
   </target>
 

@@ -25,7 +25,7 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
   private static final User user = new User("scott", "tiger");
 
   /**
-   * @param user the user to use for database access during profiling
+   * @param user the user to use for database access during load testing
    */
   public SchemaBrowserLoadTest(final User user) {
     super(user);

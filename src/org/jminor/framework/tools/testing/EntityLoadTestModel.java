@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class for running multiple EntityApplicationModel instances for testing/profiling purposes.
+ * A class for running multiple EntityApplicationModel instances for load testing purposes.
  */
 public abstract class EntityLoadTestModel extends LoadTestModel {
 

@@ -1207,4 +1207,5 @@
   EmpDeptProfiling, PetstoreProfiling and SchemaBrowserProfiling renamed to ...LoadTest
   Configuration.PROFILING_* renamed to LOAD_TEST_*, values changed accordingly
   Demo load and unit testing classes moved to demos.xxx.testing
+  Renamed jminor_profiling.policy to jminor_load_test.policy
 0.5.3
