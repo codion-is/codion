@@ -85,12 +85,12 @@ public class LoadTestPanel extends JPanel {
   protected void initializeUI() {
     final JPanel chartBase = initializeChartPanel();
     final JPanel activityPanel = initializeActivityPanel();
-    final JPanel clientPanel = initializeClientPanel();
+    final JPanel applicationPanel = initializeApplicationPanel();
     final JPanel userBase = initializeUserPanel();
     final JPanel scenarioBase = initializeScenarioPanel();
 
     final JPanel controlBase = new JPanel(new FlexibleGridLayout(4, 1, 5, 5, false, true));
-    controlBase.add(clientPanel);
+    controlBase.add(applicationPanel);
     controlBase.add(activityPanel);
     controlBase.add(scenarioBase);
     controlBase.add(userBase);
@@ -124,38 +124,38 @@ public class LoadTestPanel extends JPanel {
     return userBase;
   }
 
-  private JPanel initializeClientPanel() {
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "clientBatchSize",
-            getModel().eventClientBatchSizeChanged(), null).getSpinnerModel());
+  private JPanel initializeApplicationPanel() {
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "applicationBatchSize",
+            getModel().eventApplicationBatchSizeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
 
-    final IntField clientCountField = new IntField();
-    clientCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(clientCountField, getModel(), "clientCount", getModel().eventClientCountChanged(), LinkType.READ_ONLY);
+    final IntField applicationCountField = new IntField();
+    applicationCountField.setHorizontalAlignment(JTextField.CENTER);
+    new IntBeanPropertyLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY);
 
-    final Control addClientsControl = ControlFactory.methodControl(getModel(), "addClients", "Add");
-    addClientsControl.setMnemonic('A');
-    final Control removeClientsControl = ControlFactory.methodControl(getModel(), "removeClients", "Remove");
-    removeClientsControl.setMnemonic('R');
+    final Control addApplicationsControl = ControlFactory.methodControl(getModel(), "addApplications", "Add");
+    addApplicationsControl.setMnemonic('A');
+    final Control removeApplicationsControl = ControlFactory.methodControl(getModel(), "removeApplications", "Remove");
+    removeApplicationsControl.setMnemonic('R');
 
-    final JPanel clientPanel = new JPanel(new BorderLayout(5, 5));
-    clientPanel.setBorder(BorderFactory.createTitledBorder("Clients"));
+    final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
+    applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JPanel clientBatchPanel = new JPanel(new GridLayout(2, 2, 5, 5));
-    clientBatchPanel.add(new JLabel("Client count", JLabel.CENTER));
-    clientBatchPanel.add(clientCountField);
-    clientBatchPanel.add(new JLabel("Client batch size", JLabel.CENTER));
-    clientBatchPanel.add(spnBatchSize);
+    final JPanel applicationBatchPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+    applicationBatchPanel.add(new JLabel("Application count", JLabel.CENTER));
+    applicationBatchPanel.add(applicationCountField);
+    applicationBatchPanel.add(new JLabel("Application batch size", JLabel.CENTER));
+    applicationBatchPanel.add(spnBatchSize);
 
     final JPanel addRemovePanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    addRemovePanel.add(ControlProvider.createButton(addClientsControl));
-    addRemovePanel.add(ControlProvider.createButton(removeClientsControl));
+    addRemovePanel.add(ControlProvider.createButton(addApplicationsControl));
+    addRemovePanel.add(ControlProvider.createButton(removeApplicationsControl));
 
-    clientPanel.add(clientBatchPanel, BorderLayout.NORTH);
-    clientPanel.add(addRemovePanel, BorderLayout.SOUTH);
+    applicationPanel.add(applicationBatchPanel, BorderLayout.NORTH);
+    applicationPanel.add(addRemovePanel, BorderLayout.SOUTH);
 
-    return clientPanel;
+    return applicationPanel;
   }
 
   private JPanel initializeChartPanel() {
@@ -171,11 +171,11 @@ public class LoadTestPanel extends JPanel {
     final ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
     thinkTimeChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart numberOfClientsChart = ChartFactory.createXYStepChart(null,
-            null, null, getModel().getNumberOfClientsDataset(), PlotOrientation.VERTICAL, true, true, false);
-    numberOfClientsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    final ChartPanel numberOfClientsChartPanel = new ChartPanel(numberOfClientsChart);
-    numberOfClientsChartPanel.setBorder(BorderFactory.createEtchedBorder());
+    final JFreeChart numberOfApplicationsChart = ChartFactory.createXYStepChart(null,
+            null, null, getModel().getNumberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
+    numberOfApplicationsChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
+    numberOfApplicationsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JFreeChart usageScenarioChart = ChartFactory.createXYStepChart(null,
             null, null, getModel().getUsageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
@@ -187,7 +187,7 @@ public class LoadTestPanel extends JPanel {
     chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
     chartBase.add(workRequestsChartPanel);
     chartBase.add(usageScenarioChartPanel);
-    chartBase.add(numberOfClientsChartPanel);
+    chartBase.add(numberOfApplicationsChartPanel);
     chartBase.add(thinkTimeChartPanel);
 
     return chartBase;

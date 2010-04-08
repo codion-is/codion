@@ -1215,4 +1215,6 @@
   LoadTestModel.getUsageScenario() added
   LoadTestModel.UsageScenario.successfulRunCount and unsuccessfulRunCount fields added plus getters as well as getTotalRunCount() which returns the sum of the two
   LoadTestModel added value checks to setters
+  RandomItemModel some minor changes/refactorings
+  LoadTestModel/Panel application used instead of client
 0.5.3

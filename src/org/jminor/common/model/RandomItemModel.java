@@ -139,11 +139,7 @@ public class RandomItemModel {
    * @param item the item
    */
   public void increment(final Object item) {
-    synchronized (items) {
-      final RandomItem randomItem = getRandomItem(item);
-      if (randomItem != null)
-        randomItem.increment();
-    }
+    getRandomItem(item).increment();
     eventWeightsChanged().fire();
   }
 
@@ -153,11 +149,7 @@ public class RandomItemModel {
    * @throws IllegalStateException in case the weight is 0
    */
   public void decrement(final Object item) {
-    synchronized (items) {
-      final RandomItem randomItem = getRandomItem(item);
-      if (randomItem != null)
-        randomItem.decrement();
-    }
+    getRandomItem(item).decrement();
     eventWeightsChanged().fire();
   }
 
@@ -177,34 +169,27 @@ public class RandomItemModel {
    * @return the item weight
    */
   public int getWeight(final Object item) {
-    synchronized (items) {
-      final RandomItem randomItem = getRandomItem(item);
-      if (randomItem != null)
-        return randomItem.getWeight();
-    }
-
-    return 0;
+    return getRandomItem(item).getWeight();
   }
 
   /**
    * Returns the RandomItem associated with <code>item</code>.
    * @param item the item
    * @return the RandomItem
+   * @throws RuntimeException in case the item is not found
    */
   protected RandomItem getRandomItem(final Object item) {
     for (final RandomItem randomItem : items)
       if (randomItem.getItem().equals(item))
         return randomItem;
 
-    return null;
+    throw new RuntimeException("Item not found: " + item);
   }
 
   private int getTotalWeights() {
     int sum = 0;
-    synchronized (items) {
-      for (final RandomItem item : items)
-        sum += item.getWeight();
-    }
+    for (final RandomItem item : items)
+      sum += item.getWeight();
 
     return sum;
   }

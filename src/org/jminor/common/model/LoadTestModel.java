@@ -30,19 +30,19 @@ public abstract class LoadTestModel {
   private final Event evtMinimumThinkTimeChanged = new Event();
   private final Event evtWarningTimeChanged = new Event();
   private final Event evtLoginDelayFactorChanged = new Event();
-  private final Event evtClientCountChanged = new Event();
-  private final Event evtClientBatchSizeChanged = new Event();
+  private final Event evtApplicationtCountChanged = new Event();
+  private final Event evtApplicationBatchSizeChanged = new Event();
   private final Event evtDoneExiting = new Event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
   private int loginDelayFactor;
-  private int clientBatchSize;
+  private int applicationBatchSize;
 
   private boolean paused = false;
   private boolean stopped = false;
 
-  private final Stack<Object> clients = new Stack<Object>();
+  private final Stack<Object> applications = new Stack<Object>();
   private final Collection<UsageScenario> usageScenarios;
   private final RandomItemModel scenarioRandomModel;
   private User user;
@@ -55,8 +55,8 @@ public abstract class LoadTestModel {
   private final XYSeries maximumThinkTimeSeries = new XYSeries("Maximum think time");
   private final XYSeriesCollection thinkTimeCollection = new XYSeriesCollection();
 
-  private final XYSeries numberOfClientsSeries = new XYSeries("Client count");
-  private final XYSeriesCollection numberOfClientsCollection = new XYSeriesCollection();
+  private final XYSeries numberOfApplicationsSeries = new XYSeries("Application count");
+  private final XYSeriesCollection numberOfApplicationsCollection = new XYSeriesCollection();
 
   private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
 
@@ -69,10 +69,10 @@ public abstract class LoadTestModel {
    * @param user the default user to use when initializing applications
    * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
-   * @param clientBatchSize the number of clients to add in a batch
+   * @param applicationBatchSize the number of applications to add in a batch
    * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
    */
-  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int clientBatchSize,
+  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
                        final int warningTime) {
     if (maximumThinkTime <= 0)
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
@@ -81,7 +81,7 @@ public abstract class LoadTestModel {
     this.maximumThinkTime = maximumThinkTime;
     this.minimumThinkTime = maximumThinkTime / 2;
     this.loginDelayFactor = loginDelayFactor;
-    this.clientBatchSize = clientBatchSize;
+    this.applicationBatchSize = applicationBatchSize;
     this.warningTime = warningTime;
     this.usageScenarios = initializeUsageScenarios();
     this.scenarioRandomModel = initializeScenarioRandomModel();
@@ -93,7 +93,7 @@ public abstract class LoadTestModel {
       public void run() {
         counter.updateRequestsPerSecond();
         updateChartData();
-        if (stopped && clients.size() == 0)
+        if (stopped && applications.size() == 0)
           evtDoneExiting.fire();
       }
     }, new Date(), 2000);
@@ -123,8 +123,8 @@ public abstract class LoadTestModel {
     return thinkTimeCollection;
   }
 
-  public XYSeriesCollection getNumberOfClientsDataset() {
-    return numberOfClientsCollection;
+  public XYSeriesCollection getNumberOfApplicationsDataset() {
+    return numberOfApplicationsCollection;
   }
 
   public XYSeriesCollection getUsageScenarioDataset() {
@@ -146,32 +146,32 @@ public abstract class LoadTestModel {
   }
 
   /**
-   * @return the number of active clients
+   * @return the number of active applications
    */
-  public int getClientCount() {
-    return clients.size();
+  public int getApplicationCount() {
+    return applications.size();
   }
 
-  public int getClientBatchSize() {
-    return clientBatchSize;
+  public int getApplicationBatchSize() {
+    return applicationBatchSize;
   }
 
-  public void setClientBatchSize(int clientBatchSize) {
-    if (clientBatchSize <= 0)
-      throw new IllegalArgumentException("Client batch size must be a positive integer");
+  public void setApplicationBatchSize(int applicationBatchSize) {
+    if (applicationBatchSize <= 0)
+      throw new IllegalArgumentException("Application batch size must be a positive integer");
 
-    this.clientBatchSize = clientBatchSize;
-    evtClientBatchSizeChanged.fire();
+    this.applicationBatchSize = applicationBatchSize;
+    evtApplicationBatchSizeChanged.fire();
   }
 
-  public void addClients() throws Exception {
-    for (int i = 0; i < clientBatchSize; i++)
-      addClient();
+  public void addApplications() throws Exception {
+    for (int i = 0; i < applicationBatchSize; i++)
+      addApplication();
   }
 
-  public void removeClients() throws Exception {
-    for (int i = 0; i < clientBatchSize && clients.size() > 0; i++)
-      removeClient();
+  public void removeApplications() throws Exception {
+    for (int i = 0; i < applicationBatchSize && applications.size() > 0; i++)
+      removeApplication();
   }
 
   /**
@@ -192,9 +192,9 @@ public abstract class LoadTestModel {
   public void exit() {
     paused = false;
     stopped = true;
-    synchronized (clients) {
-      while (clients.size() > 0)
-        removeClient();
+    synchronized (applications) {
+      while (applications.size() > 0)
+        removeApplication();
     }
   }
 
@@ -246,12 +246,12 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
-  public Event eventClientBatchSizeChanged() {
-    return evtClientBatchSizeChanged;
+  public Event eventApplicationBatchSizeChanged() {
+    return evtApplicationBatchSizeChanged;
   }
 
-  public Event eventClientCountChanged() {
-    return evtClientCountChanged;
+  public Event eventApplicationCountChanged() {
+    return evtApplicationtCountChanged;
   }
 
   public Event eventDoneExiting() {
@@ -320,19 +320,19 @@ public abstract class LoadTestModel {
     return time > 0 ? random.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }
 
-  private synchronized void addClient() {
-    final Runnable clientRunner = new Runnable() {
+  private synchronized void addApplication() {
+    final Runnable applicationRunner = new Runnable() {
       public void run() {
         try {
           delayLogin();
           System.out.println("Initializing an application...");
           final Object application = initializeApplication();
-          clients.push(application);
-          evtClientCountChanged.fire();
-          while (clients.contains(application)) {
+          applications.push(application);
+          evtApplicationtCountChanged.fire();
+          while (applications.contains(application)) {
             try {
               think();
-              if (!paused && (clients.contains(application))) {
+              if (!paused && (applications.contains(application))) {
                 final long currentTime = System.currentTimeMillis();
                 try {
                   counter.incrementWorkRequestsPerSecond();
@@ -357,14 +357,14 @@ public abstract class LoadTestModel {
         }
       }
     };
-    new Thread(clientRunner).start();
+    new Thread(applicationRunner).start();
   }
 
-  private synchronized void removeClient() {
+  private synchronized void removeApplication() {
     Object application = null;
     try {
-      application = clients.pop();
-      evtClientCountChanged.fire();
+      application = applications.pop();
+      evtApplicationtCountChanged.fire();
     }
     catch (Exception e) {
       System.out.println(application + " exception while logging out");
@@ -396,7 +396,7 @@ public abstract class LoadTestModel {
     workRequestsCollection.addSeries(delayedWorkRequestsSeries);
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
-    numberOfClientsCollection.addSeries(numberOfClientsSeries);
+    numberOfApplicationsCollection.addSeries(numberOfApplicationsSeries);
     for (final UsageScenario usageScenario : this.usageScenarios)
       usageScenarioCollection.addSeries(new XYSeries(usageScenario.getName()));
   }
@@ -407,7 +407,7 @@ public abstract class LoadTestModel {
     delayedWorkRequestsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
-    numberOfClientsSeries.add(time, clients.size());
+    numberOfApplicationsSeries.add(time, applications.size());
     for (final Object object : usageScenarioCollection.getSeries()) {
       final XYSeries series = (XYSeries) object;
       series.add(time, counter.getScenarioRate((String) series.getKey()));

@@ -41,15 +41,15 @@ public class EntityLoadTestModelTest {
     loadTest.setMaximumThinkTime(100);
     loadTest.setMinimumThinkTime(50);
 
-    loadTest.setClientBatchSize(1);
-    assertEquals(1, loadTest.getClientBatchSize());
+    loadTest.setApplicationBatchSize(1);
+    assertEquals(1, loadTest.getApplicationBatchSize());
 
-    loadTest.addClients();
+    loadTest.addApplications();
 
     Thread.sleep(2000);
 
     assertEquals("One client expected, if this fails try increasing the Thread.sleep() value above",
-            1, loadTest.getClientCount());
+            1, loadTest.getApplicationCount());
     assertTrue(loadTest.getUsageScenario("selectDepartment").getTotalRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("selectDepartment").getSuccessfulRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("selectDepartment").getUnsuccessfulRunCount() == 0);
@@ -63,7 +63,7 @@ public class EntityLoadTestModelTest {
     Thread.sleep(500);
 
     assertFalse(loadTest.isPaused());
-    assertEquals(0, loadTest.getClientCount());
+    assertEquals(0, loadTest.getApplicationCount());
   }
 
   @Test
