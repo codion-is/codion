@@ -1195,3 +1195,4 @@
   RandomItemPanel UI changed, decrease button moved to the east side
   RandomItemModel.getWeightRatio() added and tested
   BoundedRandomItemModel no longer truncates the total weight to module # of items
+  RandomItemPanel refactored

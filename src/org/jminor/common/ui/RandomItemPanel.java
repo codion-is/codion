@@ -25,36 +25,51 @@ public class RandomItemPanel extends JPanel {
 
   private final RandomItemModel model;
 
+  /**
+   * Instantiates a new RandomItemPanel.
+   * @param model the RandomItemModel to base this panel on
+   */
   public RandomItemPanel(final RandomItemModel model) {
     if (model == null)
       throw new IllegalArgumentException("Model can not be null");
 
     this.model = model;
-    initUI();
+    initializeUI();
   }
 
-  private void initUI() {
+  /**
+   * Initializes the UI
+   */
+  protected void initializeUI() {
     final int count = model.getItemCount();
     setLayout(new GridLayout(count, 1, 0, 0));
     for (final RandomItemModel.RandomItem item : model.getItems())
-      add(createWeightPanel(item));
+      add(initializeWeightPanel(item));
   }
 
-  protected JPanel createWeightPanel(final RandomItemModel.RandomItem item) {
+  /**
+   * Returns a JPanel with controls configuring the weight of the given item
+   * @param item the item for which to create a configuration panel
+   * @return a conrol panel for the item weight
+   */
+  protected JPanel initializeWeightPanel(final RandomItemModel.RandomItem item) {
     final JPanel panel = new JPanel(new BorderLayout(0, 0));
-    final Control incrementControl = new Control("+") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        model.increment(item.getItem());
-      }
-    };
-    final Control decrementControl = new Control("-") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        model.decrement(item.getItem());
-      }
-    };
+
+    panel.add(initializeDisplayField(item), BorderLayout.CENTER);
+    panel.add(initializeWeightControlPanel(item), BorderLayout.EAST);
+    panel.setBorder(BorderFactory.createTitledBorder(item.getItem().toString()));
+
+    return panel;
+  }
+
+  /**
+   * Returns a JTextField bound to the weight of the given item
+   * @param item the item
+   * @return a JTextField displaying the weight value of the given item
+   */
+  protected JTextField initializeDisplayField(final RandomItemModel.RandomItem item) {
     final IntField txtValue = new IntField();
+    txtValue.setToolTipText(item.getItem().toString());
     txtValue.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     txtValue.setHorizontalAlignment(JTextField.CENTER);
     txtValue.setEditable(false);
@@ -63,35 +78,53 @@ public class RandomItemPanel extends JPanel {
       public Object getModelPropertyValue() {
         return model.getWeight(item.getItem());
       }
-
       @Override
       protected Object getUIPropertyValue() {
         return txtValue.getInt();
       }
-
       @Override
       public void setModelPropertyValue(final Object value) {}
-
       @Override
       protected void setUIPropertyValue(final Object propertyValue) {
         txtValue.setInt((Integer) propertyValue);
       }
     }.updateUI();
 
+    return txtValue;
+  }
+
+  /**
+   * Returns a JPanel containing controls for adjusting the weight of the given item
+   * @param item the item
+   * @return a control panel for the item weight
+   */
+  protected JPanel initializeWeightControlPanel(final RandomItemModel.RandomItem item) {
     final JPanel btnPanel = new JPanel(new GridLayout(1, 2, 0, 0));
-    JButton btn = new JButton(decrementControl);
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    btn.setMargin(new Insets(0,0,0,0));
-    btnPanel.add(btn);
-    btn = new JButton(incrementControl);
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    btn.setMargin(new Insets(0,0,0,0));
-    btnPanel.add(btn);
+    btnPanel.add(initializeWeightButton(item, false));
+    btnPanel.add(initializeWeightButton(item, true));
 
-    panel.add(txtValue, BorderLayout.CENTER);
-    panel.add(btnPanel, BorderLayout.EAST);
-    panel.setBorder(BorderFactory.createTitledBorder(item.getItem().toString()));
+    return btnPanel;
+  }
 
-    return panel;
+  /**
+   * Returns a JButton for either incrementing or decrementing the weight of the given item.
+   * @param item the item
+   * @param increment if true then a 'increment' button is returned otherwise a 'decrement' button
+   * @return a button for adjusting the item weight
+   */
+  protected JButton initializeWeightButton(final RandomItemModel.RandomItem item, final boolean increment) {
+    final JButton btn = new JButton(new Control(increment ? "+" : "-") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        if (increment)
+          model.increment(item.getItem());
+        else
+          model.decrement(item.getItem());
+      }
+    });
+    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    btn.setMargin(new Insets(0, 0, 0, 0));
+
+    return btn;
   }
 }
