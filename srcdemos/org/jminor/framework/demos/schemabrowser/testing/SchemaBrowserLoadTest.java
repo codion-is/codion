@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.schemabrowser.profiling;
+package org.jminor.framework.demos.schemabrowser.testing;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;

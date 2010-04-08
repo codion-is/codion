@@ -351,7 +351,7 @@
       <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
       <batchtest todir="${test.reports}">
         <fileset dir="${srctest}" includes="**/*Test.java"/>
-        <fileset dir="${srcdemos}" includes="**/*Test.java"/>
+        <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
       </batchtest>
     </junit>
   </target>
@@ -399,7 +399,7 @@
 
   <target name="run_demo_empdept_profiling" depends="build"
           description="Runs the EmpDept profiling application with a remote db connection">
-    <java classname="org.jminor.framework.demos.empdept.profiling.EmpDeptLoadTest" fork="yes">
+    <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
         <pathelement path="${build.base}"/>
         <pathelement path="${build.demos}"/>

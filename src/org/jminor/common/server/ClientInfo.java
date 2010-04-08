@@ -64,6 +64,6 @@ public class ClientInfo implements Serializable {
 
   @Override
   public String toString() {
-    return user != null ? user + "@" + getClientHost() + " - " + clientID : clientID;
+    return user != null ? user + "@" + getClientHost() + " [" + clientTypeID + "] - " + clientID : clientID;
   }
 }

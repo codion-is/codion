@@ -1206,3 +1206,5 @@
   ProfilingModel renamed to EntityLoadTestModel and moved to framework.tools.testing
   EmpDeptProfiling, PetstoreProfiling and SchemaBrowserProfiling renamed to ...LoadTest
   Configuration.PROFILING_* renamed to LOAD_TEST_*, values changed accordingly
+  Demo load and unit testing classes moved to demos.xxx.testing
+0.5.3
