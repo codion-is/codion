@@ -1208,5 +1208,5 @@
   Configuration.PROFILING_* renamed to LOAD_TEST_*, values changed accordingly
   Demo load and unit testing classes moved to demos.xxx.testing
   Renamed jminor_profiling.policy to jminor_load_test.policy
-  build.xml run_rmi_server, added demo classes to classpath specified the default domain model classes for loading
+  build.xml run_rmi_server, added demo classes to classpath and specified the default domain model classes for loading
 0.5.3
