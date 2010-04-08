@@ -1,11 +1,9 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.tools.profiling.ui;
+package org.jminor.common.ui;
 
-import org.jminor.common.ui.LoginPanel;
-import org.jminor.common.ui.RandomItemPanel;
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
@@ -16,7 +14,6 @@ import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.tools.profiling.ProfilingModel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -38,31 +35,31 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * A UI component based on the ProfilingModel class.
- * @see ProfilingModel
+ * A default UI component for the LoadTestModel class.
+ * @see org.jminor.common.model.LoadTestModel
  */
-public class ProfilingPanel extends JPanel {
+public class LoadTestPanel extends JPanel {
 
-  private final ProfilingModel profilingModel;
+  private final LoadTestModel loadTestModel;
 
-  /** Constructs a new ProfilingPanel.
-   * @param profilingModel the profiling model
+  /**
+   * Constructs a new LoadTestPanel.
+   * @param loadTestModel the LoadTestModel to base this panel on
    */
-  public ProfilingPanel(final ProfilingModel profilingModel) {
-    if (profilingModel == null)
-      throw new IllegalArgumentException("ProfilingPanel requires a ProfilingModel instance");
-    this.profilingModel = profilingModel;
+  public LoadTestPanel(final LoadTestModel loadTestModel) {
+    if (loadTestModel == null)
+      throw new IllegalArgumentException("LoadTestPanel requires a LoadTestModel instance");
+    this.loadTestModel = loadTestModel;
     initUI();
-    showFrame();
   }
 
-  public ProfilingModel getModel() {
-    return profilingModel;
+  public LoadTestModel getModel() {
+    return loadTestModel;
   }
 
   public void showFrame() {
     final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
-    final String title = "JMinor - " + profilingModel.getClass().getSimpleName();
+    final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
     getModel().eventDoneExiting().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (frame != null) {
@@ -80,7 +77,7 @@ public class ProfilingPanel extends JPanel {
     });
     frame.setTitle(title);
     frame.getContentPane().add(this);
-    UiUtil.resizeWindow(frame, 0.6);
+    UiUtil.resizeWindow(frame, 0.75);
     UiUtil.centerWindow(frame);
     frame.setVisible(true);
   }
@@ -92,7 +89,7 @@ public class ProfilingPanel extends JPanel {
     final JPanel userBase = initUserPanel();
     final JPanel scenarioBase = initScenarioPanel();
 
-    final JPanel controlBase = new JPanel(new FlexibleGridLayout(4,1,5,5,false,true));
+    final JPanel controlBase = new JPanel(new FlexibleGridLayout(4, 1, 5, 5, false, true));
     controlBase.add(clientPanel);
     controlBase.add(activityPanel);
     controlBase.add(scenarioBase);
@@ -104,7 +101,7 @@ public class ProfilingPanel extends JPanel {
   }
 
   private JPanel initScenarioPanel() {
-    final JPanel scenarioBase = new JPanel(new BorderLayout(5,5));
+    final JPanel scenarioBase = new JPanel(new BorderLayout(5, 5));
     scenarioBase.add(new RandomItemPanel(getModel().getRandomModel()), BorderLayout.NORTH);
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Scenarios"));
 
@@ -186,7 +183,7 @@ public class ProfilingPanel extends JPanel {
     final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel chartBase = new JPanel(new GridLayout(4,1,5,5));
+    final JPanel chartBase = new JPanel(new GridLayout(4, 1, 5, 5));
     chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
     chartBase.add(workRequestsChartPanel);
     chartBase.add(usageScenarioChartPanel);
@@ -208,31 +205,29 @@ public class ProfilingPanel extends JPanel {
     final JSpinner spnWarningTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "warningTime",
             getModel().eventWarningTimeChanged(), null).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
+    spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
     final ToggleBeanPropertyLink pauseControl =
-            ControlFactory.toggleControl(getModel(), "pause", "Pause", getModel().eventPauseChanged());
+            ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
     pauseControl.setMnemonic('P');
-    final ToggleBeanPropertyLink relentlessControl =
-            ControlFactory.toggleControl(getModel(), "relentless", "Relentless", getModel().eventRelentlessChanged());
-    relentlessControl.setMnemonic('E');
 
     final JPanel activityPanel = new JPanel(new BorderLayout(5, 5));
     activityPanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
     final JPanel thinkTimePanel = new JPanel(new GridLayout(3, 4, 5, 5));
-    thinkTimePanel.add(new JLabel("Maximum", JLabel.CENTER));
+    thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
     thinkTimePanel.add(spnMaxThinkTime);
-    thinkTimePanel.add(new JLabel("Minimum", JLabel.CENTER));
+    thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
     thinkTimePanel.add(spnMinThinkTimeField);
     thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
     thinkTimePanel.add(spnWarningTime);
 
-    final JPanel pauseRelentlessPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    pauseRelentlessPanel.add(ControlProvider.createToggleButton(pauseControl));
-    pauseRelentlessPanel.add(ControlProvider.createToggleButton(relentlessControl));
+    final JPanel pausePanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    pausePanel.add(new JLabel());
+    pausePanel.add(ControlProvider.createToggleButton(pauseControl));
 
     activityPanel.add(thinkTimePanel, BorderLayout.NORTH);
-    activityPanel.add(pauseRelentlessPanel, BorderLayout.SOUTH);
+    activityPanel.add(pausePanel, BorderLayout.SOUTH);
 
     return activityPanel;
   }

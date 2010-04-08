@@ -5,6 +5,7 @@ package org.jminor.framework.demos.empdept.profiling;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
@@ -15,7 +16,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.profiling.ProfilingModel;
-import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -39,8 +39,8 @@ public class EmpDeptProfiling extends ProfilingModel {
   protected Collection<UsageScenario> initializeUsageScenarios() {
     final UsageScenario selectDepartment = new UsageScenario("selectDepartment") {
       @Override
-      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-        selectRandomRow(applicationModel.getMainApplicationModel(DepartmentModel.class).getTableModel());
+      protected void performScenario(final Object applicationModel) throws Exception {
+        selectRandomRow(((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class).getTableModel());
       }
       @Override
       protected int getDefaultWeight() {
@@ -49,8 +49,8 @@ public class EmpDeptProfiling extends ProfilingModel {
     };
     final UsageScenario updateEmployee = new UsageScenario("updateEmployee") {
       @Override
-      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-        final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+      protected void performScenario(final Object applicationModel) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
         if (employeeModel.getTableModel().getRowCount() > 0) {
@@ -70,8 +70,8 @@ public class EmpDeptProfiling extends ProfilingModel {
     };
     final UsageScenario insertEmployee = new UsageScenario("insertEmployee") {
       @Override
-      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-        final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+      protected void performScenario(final Object applicationModel) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class);
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
         final Map<String, Entity> references = new HashMap<String, Entity>();
@@ -86,8 +86,8 @@ public class EmpDeptProfiling extends ProfilingModel {
     };
     final UsageScenario insertDepartment = new UsageScenario("insertDepartment") {
       @Override
-      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-        final EntityModel departmentModel = applicationModel.getMainApplicationModel(DepartmentModel.class);
+      protected void performScenario(final Object applicationModel) throws Exception {
+        final EntityModel departmentModel = ((EntityApplicationModel) applicationModel).getMainApplicationModel(DepartmentModel.class);
         departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
@@ -98,10 +98,10 @@ public class EmpDeptProfiling extends ProfilingModel {
     };
     final UsageScenario logoutLogin = new UsageScenario("logoutLogin") {
       @Override
-      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-        applicationModel.getDbProvider().disconnect();
+      protected void performScenario(final Object applicationModel) throws Exception {
+        ((EntityApplicationModel) applicationModel).getDbProvider().disconnect();
         think();
-        applicationModel.getDbProvider().getEntityDb();
+        ((EntityApplicationModel) applicationModel).getDbProvider().getEntityDb();
       }
       @Override
       protected int getDefaultWeight() {
@@ -118,7 +118,7 @@ public class EmpDeptProfiling extends ProfilingModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws CancelException {
+  protected Object initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
             new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
 
@@ -137,6 +137,6 @@ public class EmpDeptProfiling extends ProfilingModel {
       e.printStackTrace();
     }
 
-    new ProfilingPanel(new EmpDeptProfiling());
+    new LoadTestPanel(new EmpDeptProfiling()).showFrame();
   }
 }

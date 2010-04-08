@@ -1199,3 +1199,7 @@
   ProfilingModel now updates scenario chart while inactive
   ProfilingModel.getThinkTime(), think() and delayLogin() added
   EmpDeptProfiling added loginLogout usage scenario
+  common.model.LoadTestModel refactored from ProfilingModel
+  ProfilingPanel renamed to LoadTestPanel and moved to common.ui
+  LoadTestModel.relentless and working fields removed
+  LoadTestPanel showFrame() no longer called in constructor

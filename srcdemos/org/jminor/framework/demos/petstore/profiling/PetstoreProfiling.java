@@ -5,13 +5,13 @@ package org.jminor.framework.demos.petstore.profiling;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.profiling.ProfilingModel;
-import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
@@ -37,8 +37,8 @@ public class PetstoreProfiling extends ProfilingModel {
   protected Collection<UsageScenario> initializeUsageScenarios() {
     final UsageScenario scenario = new UsageScenario("selectRecords") {
       @Override
-      protected void performScenario(final EntityApplicationModel applicationModel) throws Exception {
-        final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
+      protected void performScenario(final Object applicationModel) throws Exception {
+        final EntityModel categoryModel = ((EntityApplicationModel) applicationModel).getMainApplicationModels().iterator().next();
         categoryModel.getTableModel().clearSelection();
         categoryModel.refresh();
         selectRandomRow(categoryModel.getTableModel());
@@ -50,7 +50,7 @@ public class PetstoreProfiling extends ProfilingModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws CancelException {
+  protected Object initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();
@@ -71,6 +71,6 @@ public class PetstoreProfiling extends ProfilingModel {
       e.printStackTrace();
     }
 
-    new ProfilingPanel(new PetstoreProfiling());
+    new LoadTestPanel(new PetstoreProfiling()).showFrame();
   }
 }

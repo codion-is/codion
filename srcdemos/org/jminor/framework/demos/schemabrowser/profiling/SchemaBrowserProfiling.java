@@ -5,13 +5,13 @@ package org.jminor.framework.demos.schemabrowser.profiling;
 
 import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.schemabrowser.client.SchemaBrowserAppModel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 import org.jminor.framework.tools.profiling.ProfilingModel;
-import org.jminor.framework.tools.profiling.ui.ProfilingPanel;
 
 import javax.swing.UIManager;
 
@@ -37,8 +37,8 @@ public class SchemaBrowserProfiling extends ProfilingModel {
   }
 
   @Override
-  protected void performWork(EntityApplicationModel applicationModel) {
-    final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
+  protected void performWork(final Object applicationModel) {
+    final EntityModel schemaModel = ((EntityApplicationModel) applicationModel).getMainApplicationModels().iterator().next();
     schemaModel.getTableModel().refresh();
     selectRandomRow(schemaModel.getTableModel());
     selectRandomRow(schemaModel.getDetailModels().get(0).getTableModel());
@@ -46,7 +46,7 @@ public class SchemaBrowserProfiling extends ProfilingModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel() throws CancelException {
+  protected Object initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
@@ -65,6 +65,6 @@ public class SchemaBrowserProfiling extends ProfilingModel {
       e.printStackTrace();
     }
 
-    new ProfilingPanel(new SchemaBrowserProfiling(user));
+    new LoadTestPanel(new SchemaBrowserProfiling(user)).showFrame();
   }
 }
