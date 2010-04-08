@@ -1196,3 +1196,4 @@
   RandomItemModel.getWeightRatio() added and tested
   BoundedRandomItemModel no longer truncates the total weight to module # of items
   RandomItemPanel refactored
+  ProfilingModel now updates scenario chart while inactive

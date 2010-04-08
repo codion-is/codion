@@ -416,8 +416,10 @@ public abstract class ProfilingModel {
     final long time = System.currentTimeMillis();
     workRequestsSeries.add(time, counter.getWorkRequestsPerSecond());
     delayedWorkRequestsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
-    for (final String scenarioName : counter.getScenarioNames())
-      usageScenarioCollection.getSeries(scenarioName).add(time, counter.getScenarioRate(scenarioName));
+    for (final Object object : usageScenarioCollection.getSeries()) {
+      final XYSeries series = (XYSeries) object;
+      series.add(time, counter.getScenarioRate((String) series.getKey()));
+    }
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfClientsSeries.add(time, clients.size());
@@ -500,6 +502,9 @@ public abstract class ProfilingModel {
     }
 
     public int getScenarioRate(final String scenarioName) {
+      if (!usageScenarioRates.containsKey(scenarioName))
+        return 0;
+
       return usageScenarioRates.get(scenarioName);
     }
 
