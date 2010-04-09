@@ -254,10 +254,10 @@ public class LoadTestPanel extends JPanel {
     chartBase.add(memoryUsageChartPanel);
 
     final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 0, 5, 5, true, false));
-    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "performGC", "Perform GC")));
     controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(getModel(), "collectChartData",
             "Collect chart data", getModel().eventCollectChartDataChanged())));
     controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "resetChartData", "Reset")));
+    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "performGC", "Perform GC")));
 
     final JPanel controlPanelBase = new JPanel(new BorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.EAST);
