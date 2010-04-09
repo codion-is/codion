@@ -24,9 +24,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Random;
 import java.util.prefs.Preferences;
 
 /**
@@ -238,8 +238,24 @@ public class Util {
     }, 0, interval);
   }
 
+  public static long getAllocatedMemory() {
+    return Runtime.getRuntime().totalMemory() / 1024;
+  }
+
+  public static long getFreeMemory() {
+    return Runtime.getRuntime().freeMemory() / 1024;
+  }
+
+  public static long getMaxMemory() {
+    return Runtime.getRuntime().maxMemory() / 1024;
+  }
+
+  public static long getUsedMemory() {
+    return getAllocatedMemory() - getFreeMemory();
+  }
+
   public static String getMemoryUsageString() {
-    return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 + " KB";
+    return getUsedMemory() + " KB";
   }
 
   /**

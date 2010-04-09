@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.db.User;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -10,6 +11,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -21,14 +23,19 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -89,73 +96,122 @@ public class LoadTestPanel extends JPanel {
     final JPanel userBase = initializeUserPanel();
     final JPanel scenarioBase = initializeScenarioPanel();
 
-    final JPanel controlBase = new JPanel(new FlexibleGridLayout(4, 1, 5, 5, false, true));
-    controlBase.add(applicationPanel);
-    controlBase.add(activityPanel);
-    controlBase.add(scenarioBase);
-    controlBase.add(userBase);
+    final JPanel controlPanel = new JPanel(new FlexibleGridLayout(4, 1, 5, 5, false, true));
+    controlPanel.add(applicationPanel);
+    controlPanel.add(activityPanel);
+    controlPanel.add(scenarioBase);
+    controlPanel.add(userBase);
+
+    final JPanel controlBase = new JPanel(new BorderLayout());
+    controlBase.add(controlPanel, BorderLayout.NORTH);
 
     setLayout(new BorderLayout());
     add(controlBase, BorderLayout.WEST);
     add(chartBase, BorderLayout.CENTER);
+    add(initializeSouthPanel(), BorderLayout.SOUTH);
+  }
+
+  private JPanel initializeSouthPanel() {
+    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    southPanel.add(new JLabel("Memory usage:"));
+    southPanel.add(initializeMemoryField());
+
+    return southPanel;
+  }
+
+  private JTextField initializeMemoryField() {
+    final JTextField txtMemory = new JTextField(8);
+    txtMemory.setEditable(false);
+    txtMemory.setHorizontalAlignment(JLabel.CENTER);
+    new TextBeanPropertyLink(txtMemory, getModel(), "memoryUsage", String.class, getModel().eventMemoryUsageUpdated(), LinkType.READ_ONLY);
+
+    return txtMemory;
   }
 
   private JPanel initializeScenarioPanel() {
-    final JPanel scenarioBase = new JPanel(new BorderLayout(5, 5));
-    scenarioBase.add(new RandomItemPanel(getModel().getRandomModel()), BorderLayout.NORTH);
-    scenarioBase.setBorder(BorderFactory.createTitledBorder("Scenarios"));
+    final JPanel scenarioBase = new RandomItemPanel(getModel().getRandomModel());
+    scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
 
     return scenarioBase;
   }
 
   private JPanel initializeUserPanel() {
-    final LoginPanel userPanel = new LoginPanel(getModel().getUser(), true, "Username", "Password");
+    final User user = getModel().getUser();
+    final JTextField txtUsername = new JTextField(user.getUsername());
+    txtUsername.setColumns(8);
+    final JTextField txtPassword = new JPasswordField(user.getPassword());
+    txtPassword.setColumns(8);
     final ActionListener userInfoListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        getModel().setUser(userPanel.getUser());
+        getModel().setUser(new User(txtUsername.getText(), txtPassword.getText()));
       }
     };
-    userPanel.getPasswordField().addActionListener(userInfoListener);
-    userPanel.getUsernameField().addActionListener(userInfoListener);
-    final JPanel userBase = new JPanel(new BorderLayout(5,5));
+    txtUsername.addActionListener(userInfoListener);
+    txtPassword.addActionListener(userInfoListener);
+    final FlexibleGridLayout layout = new FlexibleGridLayout(2, 2, 5, 5, true, false);
+    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
+    final JPanel userBase = new JPanel(layout);
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
-    userBase.add(userPanel, BorderLayout.NORTH);
+
+    userBase.add(new JLabel("Username"));
+    userBase.add(txtUsername);
+    userBase.add(new JLabel("Password"));
+    userBase.add(txtPassword);
 
     return userBase;
   }
 
   private JPanel initializeApplicationPanel() {
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "applicationBatchSize",
-            getModel().eventApplicationBatchSizeChanged(), null).getSpinnerModel());
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
-
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
     new IntBeanPropertyLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY);
 
-    final Control addApplicationsControl = ControlFactory.methodControl(getModel(), "addApplications", "Add");
-    addApplicationsControl.setMnemonic('A');
-    final Control removeApplicationsControl = ControlFactory.methodControl(getModel(), "removeApplications", "Remove");
-    removeApplicationsControl.setMnemonic('R');
-
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JPanel applicationBatchPanel = new JPanel(new GridLayout(2, 2, 5, 5));
-    applicationBatchPanel.add(new JLabel("Application count", JLabel.CENTER));
-    applicationBatchPanel.add(applicationCountField);
-    applicationBatchPanel.add(new JLabel("Application batch size", JLabel.CENTER));
-    applicationBatchPanel.add(spnBatchSize);
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "applicationBatchSize",
+            getModel().eventApplicationBatchSizeChanged(), null).getSpinnerModel());
+    spnBatchSize.setToolTipText("Application batch size");
+    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
 
-    final JPanel addRemovePanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    addRemovePanel.add(ControlProvider.createButton(addApplicationsControl));
-    addRemovePanel.add(ControlProvider.createButton(removeApplicationsControl));
+    final JPanel applicationCountPanel = new JPanel(new BorderLayout(5, 5));
+    applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
+    applicationCountPanel.add(applicationCountField, BorderLayout.CENTER);
+    applicationCountPanel.add(spnBatchSize, BorderLayout.EAST);
 
-    applicationPanel.add(applicationBatchPanel, BorderLayout.NORTH);
-    applicationPanel.add(addRemovePanel, BorderLayout.SOUTH);
+    applicationPanel.add(applicationCountPanel, BorderLayout.NORTH);
 
     return applicationPanel;
+  }
+
+  private JPanel initializeApplicationCountButtonPanel() {
+    final JPanel btnPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+    btnPanel.add(initializeAddRemoveApplicationButton(false));
+    btnPanel.add(initializeAddRemoveApplicationButton(true));
+
+    return btnPanel;
+  }
+
+  private JButton initializeAddRemoveApplicationButton(final boolean add) {
+    final JButton btn = new JButton(new Control(add ? "+" : "-") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          if (add)
+            getModel().addApplications();
+          else
+            getModel().removeApplications();
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    });
+    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    btn.setMargin(new Insets(0, 0, 0, 0));
+
+    return btn;
   }
 
   private JPanel initializeChartPanel() {
@@ -183,37 +239,62 @@ public class LoadTestPanel extends JPanel {
     final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel chartBase = new JPanel(new GridLayout(4, 1, 5, 5));
+    final JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
+            null, null, getModel().getMemoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
+    memoryUsageChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
+    memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
+    final JPanel chartBase = new JPanel(new GridLayout(5, 1, 0, 0));
     chartBase.setBorder(BorderFactory.createTitledBorder("Status"));
     chartBase.add(workRequestsChartPanel);
     chartBase.add(usageScenarioChartPanel);
     chartBase.add(numberOfApplicationsChartPanel);
     chartBase.add(thinkTimeChartPanel);
+    chartBase.add(memoryUsageChartPanel);
 
-    return chartBase;
+    final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 0, 5, 5, true, false));
+    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "performGC", "Perform GC")));
+    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(getModel(), "collectChartData",
+            "Collect chart data", getModel().eventCollectChartDataChanged())));
+    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "resetChartData", "Reset")));
+
+    final JPanel controlPanelBase = new JPanel(new BorderLayout());
+    controlPanelBase.add(controlPanel, BorderLayout.EAST);
+
+    final JPanel chartPanel = new JPanel(new BorderLayout(5, 5));
+    chartPanel.add(controlPanelBase, BorderLayout.NORTH);
+    chartPanel.add(chartBase, BorderLayout.CENTER);
+
+    return chartPanel;
   }
 
   private JPanel initializeActivityPanel() {
-    final JSpinner spnMaxThinkTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
-            getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel());
+    SpinnerNumberModel spinnerModel = new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
+            getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel();
+    spinnerModel.setStepSize(10);
+    final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    final JSpinner spnMinThinkTimeField = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "minimumThinkTime",
-            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel());
+    spinnerModel = new IntBeanSpinnerPropertyLink(getModel(), "minimumThinkTime",
+            getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel();
+    spinnerModel.setStepSize(10);
+    final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    final JSpinner spnWarningTime = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "warningTime",
-            getModel().eventWarningTimeChanged(), null).getSpinnerModel());
+    spinnerModel = new IntBeanSpinnerPropertyLink(getModel(), "warningTime",
+            getModel().eventWarningTimeChanged(), null).getSpinnerModel();
+    spinnerModel.setStepSize(10);
+    final JSpinner spnWarningTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
     final ToggleBeanPropertyLink pauseControl = ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
     pauseControl.setMnemonic('P');
 
-    final JPanel activityPanel = new JPanel(new BorderLayout(5, 5));
-    activityPanel.setBorder(BorderFactory.createTitledBorder("Activity"));
-
-    final JPanel thinkTimePanel = new JPanel(new GridLayout(3, 4, 5, 5));
+    final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
+    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
+    final JPanel thinkTimePanel = new JPanel(layout);
     thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
     thinkTimePanel.add(spnMaxThinkTime);
     thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
@@ -221,13 +302,11 @@ public class LoadTestPanel extends JPanel {
     thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
     thinkTimePanel.add(spnWarningTime);
 
-    final JPanel pausePanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    pausePanel.add(new JLabel());
-    pausePanel.add(ControlProvider.createToggleButton(pauseControl));
+    thinkTimePanel.add(new JLabel());
+    thinkTimePanel.add(ControlProvider.createToggleButton(pauseControl));
 
-    activityPanel.add(thinkTimePanel, BorderLayout.NORTH);
-    activityPanel.add(pausePanel, BorderLayout.SOUTH);
+    thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
-    return activityPanel;
+    return thinkTimePanel;
   }
 }

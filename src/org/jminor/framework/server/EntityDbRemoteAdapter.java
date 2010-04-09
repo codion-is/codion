@@ -36,6 +36,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
@@ -163,7 +164,12 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       entityDbConnection = null;
       connected = false;
 
-      UnicastRemoteObject.unexportObject(this, true);
+      try {
+        UnicastRemoteObject.unexportObject(this, true);
+      }
+      catch (NoSuchObjectException e) {
+        log.error(e);
+      }
       evtLogout.fire();
     }
     catch (Exception e) {

@@ -223,6 +223,21 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   /** {@inheritDoc} */
+  public long getAllocatedMemory() throws RemoteException {
+    return Util.getAllocatedMemory();
+  }
+
+  /** {@inheritDoc} */
+  public long getUsedMemory() throws RemoteException {
+    return Util.getUsedMemory();
+  }
+
+  /** {@inheritDoc} */
+  public long getMaxMemory() throws RemoteException {
+    return Util.getMaxMemory();
+  }
+
+  /** {@inheritDoc} */
   public void performGC() throws RemoteException {
     Runtime.getRuntime().gc();
   }

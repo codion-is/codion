@@ -26,12 +26,14 @@ public abstract class LoadTestModel {
   protected static final Random random = new Random();
 
   private final Event evtPausedChanged = new Event();
+  private final Event evtCollectChartDataChanged = new Event();
   private final Event evtMaximumThinkTimeChanged = new Event();
   private final Event evtMinimumThinkTimeChanged = new Event();
   private final Event evtWarningTimeChanged = new Event();
   private final Event evtLoginDelayFactorChanged = new Event();
   private final Event evtApplicationtCountChanged = new Event();
   private final Event evtApplicationBatchSizeChanged = new Event();
+  private final Event evtMemoryUsageUpdated = new Event();
   private final Event evtDoneExiting = new Event();
 
   private int maximumThinkTime;
@@ -41,6 +43,7 @@ public abstract class LoadTestModel {
 
   private boolean paused = false;
   private boolean stopped = false;
+  private boolean collectChartData = false;
 
   private final Stack<Object> applications = new Stack<Object>();
   private final Collection<UsageScenario> usageScenarios;
@@ -59,6 +62,11 @@ public abstract class LoadTestModel {
   private final XYSeriesCollection numberOfApplicationsCollection = new XYSeriesCollection();
 
   private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
+
+  private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated memory");
+  private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
+  private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
+  private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
 
   private final Counter counter;
 
@@ -92,7 +100,9 @@ public abstract class LoadTestModel {
       @Override
       public void run() {
         counter.updateRequestsPerSecond();
-        updateChartData();
+        if (collectChartData && !paused)
+          updateChartData();
+        evtMemoryUsageUpdated.fire();
         if (stopped && applications.size() == 0)
           evtDoneExiting.fire();
       }
@@ -105,6 +115,10 @@ public abstract class LoadTestModel {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public void performGC() {
+    System.gc();
   }
 
   public RandomItemModel getRandomModel() {
@@ -129,6 +143,26 @@ public abstract class LoadTestModel {
 
   public XYSeriesCollection getUsageScenarioDataset() {
     return usageScenarioCollection;
+  }
+
+  public XYSeriesCollection getMemoryUsageDataset() {
+    return memoryUsageCollection;
+  }
+
+  /**
+   * Resets the accumulated chart data
+   */
+  public void resetChartData() {
+    workRequestsSeries.clear();
+    delayedWorkRequestsSeries.clear();
+    minimumThinkTimeSeries.clear();
+    maximumThinkTimeSeries.clear();
+    numberOfApplicationsSeries.clear();
+    allocatedMemoryCollection.clear();
+    usedMemoryCollection.clear();
+    for (final Object series : usageScenarioCollection.getSeries()) {
+      ((XYSeries) series).clear();
+    }
   }
 
   public int getWarningTime() {
@@ -189,6 +223,15 @@ public abstract class LoadTestModel {
     evtPausedChanged.fire();
   }
 
+  public boolean isCollectChartData() {
+    return collectChartData;
+  }
+
+  public void setCollectChartData(final boolean value) {
+    this.collectChartData = value;
+    evtCollectChartDataChanged.fire();
+  }
+
   public void exit() {
     paused = false;
     stopped = true;
@@ -246,6 +289,10 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
+  public String getMemoryUsage() {
+    return Util.getMemoryUsageString();
+  }
+
   public Event eventApplicationBatchSizeChanged() {
     return evtApplicationBatchSizeChanged;
   }
@@ -270,8 +317,16 @@ public abstract class LoadTestModel {
     return evtPausedChanged;
   }
 
+  public Event eventCollectChartDataChanged() {
+    return evtCollectChartDataChanged;
+  }
+
   public Event eventWarningTimeChanged() {
     return evtWarningTimeChanged;
+  }
+
+  public Event eventMemoryUsageUpdated() {
+    return evtMemoryUsageUpdated;
   }
 
   protected void performWork(final Object application) {
@@ -397,6 +452,9 @@ public abstract class LoadTestModel {
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfApplicationsCollection.addSeries(numberOfApplicationsSeries);
+    memoryUsageCollection.addSeries(maxMemoryCollection);
+    memoryUsageCollection.addSeries(allocatedMemoryCollection);
+    memoryUsageCollection.addSeries(usedMemoryCollection);
     for (final UsageScenario usageScenario : this.usageScenarios)
       usageScenarioCollection.addSeries(new XYSeries(usageScenario.getName()));
   }
@@ -408,6 +466,9 @@ public abstract class LoadTestModel {
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
+    allocatedMemoryCollection.add(time, Util.getAllocatedMemory());
+    usedMemoryCollection.add(time, Util.getUsedMemory());
+    maxMemoryCollection.add(time, Util.getMaxMemory());
     for (final Object object : usageScenarioCollection.getSeries()) {
       final XYSeries series = (XYSeries) object;
       series.add(time, counter.getScenarioRate((String) series.getKey()));

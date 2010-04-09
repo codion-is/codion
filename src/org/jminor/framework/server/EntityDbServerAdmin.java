@@ -121,6 +121,24 @@ public interface EntityDbServerAdmin extends Remote {
   String getMemoryUsage() throws RemoteException;
 
   /**
+   * @return the total amount of memory allocated by the server process
+   * @throws RemoteException in case of a communication error
+   */
+  long getAllocatedMemory() throws RemoteException;
+
+  /**
+   * @return the amount of memory being used by the server process
+   * @throws RemoteException in case of a communication error
+   */
+  long getUsedMemory() throws RemoteException;
+
+  /**
+   * @return the maximum amount of memory available to the server process
+   * @throws RemoteException in case of a communication error
+   */
+  long getMaxMemory() throws RemoteException;
+
+  /**
    * Performs garbage collection
    * @throws RemoteException in case of a communication error
    */

@@ -1218,4 +1218,14 @@
   RandomItemModel some minor changes/refactorings
   LoadTestModel/Panel application used instead of client
   Entity.getModifiedState() renamed to stateModified() for consistency
+  RandomItemPanel.createWeightSpinnerModel() added
+  RandomItemPanel is now JSpinner based
+  LoadTestModel.collectChartData field plus event and getter added
+  LoadTestPanel refactored
+  LoadTestModel now collects memory usage data
+  LoadTestPanel displays memory usage data chart
+  EntityDbServerAdmin.getAllocatedMemory(), getMaxMemory() and getUsedMemory() added
+  ServerMonitor now collects memory usage and connection count data
+  ServerMonitorPanel displays memory usage and connection count data charts
+  Util.getAllocatedMemory(), getUsedMemory(), getMaxMemory() and getFreeMemory() added
 0.5.3

@@ -51,16 +51,28 @@ public class ServerMonitor {
 
   private String memoryUsage;
   private final DefaultListModel domainListModel = new DefaultListModel();
-  private final XYSeries connectionRequestsPerSecond = new XYSeries("Service requests per second");
-  private final XYSeries warningTimeExceededSecond = new XYSeries("Service calls exceeding warning time per second");
+  private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
+  private final XYSeries warningTimeExceededSecondSeries = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
+
+  private final XYSeries allocatedMemorySeries = new XYSeries("Allocated memory");
+  private final XYSeries usedMemorySeries = new XYSeries("Used memory");
+  private final XYSeries maxMemorySeries = new XYSeries("Maximum memory");
+  private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
+
+  private final XYSeries connectionCountSeries = new XYSeries("Connection count");
+  private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
   public ServerMonitor(final String hostName, final String serverName) throws RemoteException {
     this.hostName = hostName;
     this.serverName = serverName;
     this.server = connectServer(serverName);
-    connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
-    connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecond);
+    connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
+    connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecondSeries);
+    memoryUsageCollection.addSeries(maxMemorySeries);
+    memoryUsageCollection.addSeries(allocatedMemorySeries);
+    memoryUsageCollection.addSeries(usedMemorySeries);
+    connectionCountCollection.addSeries(connectionCountSeries);
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientMonitor(server);
     userMonitor = new UserMonitor(server);
@@ -135,13 +147,24 @@ public class ServerMonitor {
     return connectionRequestsPerSecondCollection;
   }
 
+  public XYSeriesCollection getMemoryUsageDataSet() {
+    return memoryUsageCollection;
+  }
+
+  public XYSeriesCollection getConnectionCountDataSet() {
+    return connectionCountCollection;
+  }
+
   public void performGC() throws RemoteException {
     server.performGC();
   }
 
   public void resetStats() {
-    connectionRequestsPerSecond.clear();
-    warningTimeExceededSecond.clear();
+    connectionRequestsPerSecondSeries.clear();
+    warningTimeExceededSecondSeries.clear();
+    allocatedMemorySeries.clear();
+    usedMemorySeries.clear();
+    connectionCountSeries.clear();
   }
 
   public void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException, RemoteException,
@@ -219,8 +242,12 @@ public class ServerMonitor {
     final long time = System.currentTimeMillis();
     connectionCount = server.getConnectionCount();
     memoryUsage = server.getMemoryUsage();
-    connectionRequestsPerSecond.add(time, server.getRequestsPerSecond());
-    warningTimeExceededSecond.add(time, server.getWarningTimeExceededPerSecond());
+    connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
+    warningTimeExceededSecondSeries.add(time, server.getWarningTimeExceededPerSecond());
+    maxMemorySeries.add(time, server.getMaxMemory());
+    allocatedMemorySeries.add(time, server.getAllocatedMemory());
+    usedMemorySeries.add(time, server.getUsedMemory());
+    connectionCountSeries.add(time, server.getConnectionCount());
     evtStatsUpdated.fire();
   }
 }
