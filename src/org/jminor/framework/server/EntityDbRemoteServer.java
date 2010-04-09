@@ -361,7 +361,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private void removeConnection(final ClientInfo client, final boolean logout) throws RemoteException {
     if (connections.containsKey(client)) {
-      log.info("Connection removed: " + client);
+      if (log.isDebugEnabled())
+        log.debug("Connection removed: " + client);
       final EntityDbRemoteAdapter adapter = connections.remove(client);
       if (logout)
         adapter.disconnect();
@@ -381,7 +382,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       }
     });
     connections.put(client, remoteAdapter);
-    log.info("Connection added: " + client);
+    if (log.isDebugEnabled())
+      log.debug("Connection added: " + client);
 
     return remoteAdapter;
   }
