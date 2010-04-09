@@ -260,10 +260,10 @@ public class EntityEditModel {
 
   /**
    * @return the state which indicates the modified state of the active entity
-   * @see org.jminor.framework.domain.Entity#getModifiedState()
+   * @see org.jminor.framework.domain.Entity#stateModified()
    */
   public State getEntityModifiedState() {
-    return entity.getModifiedState();
+    return entity.stateModified();
   }
 
   /**

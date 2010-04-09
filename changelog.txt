@@ -1217,4 +1217,5 @@
   LoadTestModel added value checks to setters
   RandomItemModel some minor changes/refactorings
   LoadTestModel/Panel application used instead of client
+  Entity.getModifiedState() renamed to stateModified() for consistency
 0.5.3

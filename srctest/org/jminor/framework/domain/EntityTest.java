@@ -166,7 +166,7 @@ public class EntityTest {
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
 
     try {
-      test2.getModifiedState().setActive(true);
+      test2.stateModified().setActive(true);
       fail("Should not be able to set the state of the modified state");
     }
     catch (Exception e) {}

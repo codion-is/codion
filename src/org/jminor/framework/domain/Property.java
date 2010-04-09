@@ -1121,7 +1121,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * Used when listening to PropertyEvents
+   * Used when listening to Property.Events
    */
   public abstract static class Listener implements ActionListener {
 
