@@ -160,6 +160,7 @@ public abstract class LoadTestModel {
     numberOfApplicationsSeries.clear();
     allocatedMemoryCollection.clear();
     usedMemoryCollection.clear();
+    maxMemoryCollection.clear();
     for (final Object series : usageScenarioCollection.getSeries()) {
       ((XYSeries) series).clear();
     }

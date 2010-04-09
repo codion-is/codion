@@ -164,6 +164,7 @@ public class ServerMonitor {
     warningTimeExceededSecondSeries.clear();
     allocatedMemorySeries.clear();
     usedMemorySeries.clear();
+    maxMemorySeries.clear();
     connectionCountSeries.clear();
   }
 
