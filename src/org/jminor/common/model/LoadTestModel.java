@@ -49,8 +49,8 @@ public abstract class LoadTestModel {
   private final RandomItemModel scenarioChooser;
   private User user;
 
-  private final XYSeries workRequestsSeries = new XYSeries("Work requests per second");
-  private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed requests per second");
+  private final XYSeries workRequestsSeries = new XYSeries("Scenarios run per second");
+  private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed scenarios per second");
   private final XYSeriesCollection workRequestsCollection = new XYSeriesCollection();
 
   private final XYSeries minimumThinkTimeSeries = new XYSeries("Minimum think time");

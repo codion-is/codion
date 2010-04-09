@@ -1232,4 +1232,6 @@
   LoadTestModel.scenarioRandomModel field renamed to scenarioChooser
   UiUtil.createMemoryUsageField() added
   MonitorPanel displays memory usage
+  DbConnectionPool.Counter added
+  LoadTestPanel UI improved
 0.5.3

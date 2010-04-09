@@ -11,6 +11,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.MethodControl;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -94,12 +95,14 @@ public class LoadTestPanel extends JPanel {
     final JPanel applicationPanel = initializeApplicationPanel();
     final JPanel userBase = initializeUserPanel();
     final JPanel scenarioBase = initializeScenarioPanel();
+    final JPanel chartControlPanel = initializeChartControlPanel();
 
-    final JPanel controlPanel = new JPanel(new FlexibleGridLayout(4, 1, 5, 5, false, true));
+    final JPanel controlPanel = new JPanel(new FlexibleGridLayout(5, 1, 5, 5, false, true));
     controlPanel.add(applicationPanel);
     controlPanel.add(activityPanel);
     controlPanel.add(scenarioBase);
     controlPanel.add(userBase);
+    controlPanel.add(chartControlPanel);
 
     final JPanel controlBase = new JPanel(new BorderLayout());
     controlBase.add(controlPanel, BorderLayout.NORTH);
@@ -204,6 +207,16 @@ public class LoadTestPanel extends JPanel {
     return btn;
   }
 
+  private JPanel initializeChartControlPanel() {
+    final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 2, 5, 5, true, false));
+    controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
+    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(getModel(), "collectChartData",
+            "Collect chart data", getModel().eventCollectChartDataChanged())));
+    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "resetChartData", "Reset")));
+
+    return controlPanel;
+  }
+
   private JPanel initializeChartPanel() {
     final JFreeChart workRequestsChart = ChartFactory.createXYStepChart(null,
             null, null, getModel().getWorkRequestsDataset(), PlotOrientation.VERTICAL, true, true, false);
@@ -243,20 +256,7 @@ public class LoadTestPanel extends JPanel {
     chartBase.add(thinkTimeChartPanel);
     chartBase.add(memoryUsageChartPanel);
 
-    final JPanel controlPanel = new JPanel(new FlexibleGridLayout(1, 0, 5, 5, true, false));
-    controlPanel.add(ControlProvider.createCheckBox(ControlFactory.toggleControl(getModel(), "collectChartData",
-            "Collect chart data", getModel().eventCollectChartDataChanged())));
-    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "resetChartData", "Reset")));
-    controlPanel.add(ControlProvider.createButton(ControlFactory.methodControl(getModel(), "performGC", "Perform GC")));
-
-    final JPanel controlPanelBase = new JPanel(new BorderLayout());
-    controlPanelBase.add(controlPanel, BorderLayout.EAST);
-
-    final JPanel chartPanel = new JPanel(new BorderLayout(5, 5));
-    chartPanel.add(controlPanelBase, BorderLayout.NORTH);
-    chartPanel.add(chartBase, BorderLayout.CENTER);
-
-    return chartPanel;
+    return chartBase;
   }
 
   private JPanel initializeActivityPanel() {
@@ -281,6 +281,7 @@ public class LoadTestPanel extends JPanel {
 
     final ToggleBeanPropertyLink pauseControl = ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
     pauseControl.setMnemonic('P');
+    final MethodControl gcControl = ControlFactory.methodControl(getModel(), "performGC", "Perform GC");
 
     final FlexibleGridLayout layout = new FlexibleGridLayout(4, 2, 5, 5, true, false);
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
@@ -292,7 +293,7 @@ public class LoadTestPanel extends JPanel {
     thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
     thinkTimePanel.add(spnWarningTime);
 
-    thinkTimePanel.add(new JLabel());
+    thinkTimePanel.add(ControlProvider.createButton(gcControl));
     thinkTimePanel.add(ControlProvider.createToggleButton(pauseControl));
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
