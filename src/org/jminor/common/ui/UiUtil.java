@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
@@ -63,6 +64,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A static utility class.
@@ -91,6 +94,20 @@ public class UiUtil {
   private static JScrollBar verticalScrollBar;
 
   private UiUtil() {}
+
+  public static JTextField createMemoryUsageField(final int updateInterval) {
+    final JTextField txt = new JTextField();
+    txt.setColumns(8);
+    txt.setEditable(false);
+    txt.setHorizontalAlignment(JTextField.CENTER);
+    new Timer(true).schedule(new TimerTask() {
+      public void run() {
+        txt.setText(Util.getMemoryUsageString());
+      }
+    }, new Date(), updateInterval);
+
+    return txt;
+  }
 
   public static File selectDirectory(final JComponent dialogParent, final String startDir) throws CancelException {
     return selectDirectory(dialogParent, startDir, null);

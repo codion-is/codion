@@ -11,7 +11,6 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanPropertyLink;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -114,22 +113,13 @@ public class LoadTestPanel extends JPanel {
   private JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(initializeMemoryField());
+    southPanel.add(UiUtil.createMemoryUsageField(2000));
 
     return southPanel;
   }
 
-  private JTextField initializeMemoryField() {
-    final JTextField txtMemory = new JTextField(8);
-    txtMemory.setEditable(false);
-    txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanPropertyLink(txtMemory, getModel(), "memoryUsage", String.class, getModel().eventMemoryUsageUpdated(), LinkType.READ_ONLY);
-
-    return txtMemory;
-  }
-
   private JPanel initializeScenarioPanel() {
-    final JPanel scenarioBase = new RandomItemPanel(getModel().getRandomModel());
+    final JPanel scenarioBase = new RandomItemPanel(getModel().getScenarioChooser());
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
 
     return scenarioBase;

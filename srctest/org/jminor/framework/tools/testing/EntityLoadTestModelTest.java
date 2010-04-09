@@ -32,11 +32,11 @@ public class EntityLoadTestModelTest {
 
     loadTest.setLoginDelayFactor(0);
 
-    loadTest.getRandomModel().setWeight(loadTest.getUsageScenario("selectDepartment"), 1);
-    loadTest.getRandomModel().setWeight(loadTest.getUsageScenario("insertDepartment"), 0);
-    loadTest.getRandomModel().setWeight(loadTest.getUsageScenario("insertEmployee"), 0);
-    loadTest.getRandomModel().setWeight(loadTest.getUsageScenario("logoutLogin"), 0);
-    loadTest.getRandomModel().setWeight(loadTest.getUsageScenario("updateEmployee"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("selectDepartment"), 1);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("insertDepartment"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("insertEmployee"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("logoutLogin"), 0);
+    loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("updateEmployee"), 0);
 
     loadTest.setMaximumThinkTime(100);
     loadTest.setMinimumThinkTime(50);

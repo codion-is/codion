@@ -33,7 +33,6 @@ public abstract class LoadTestModel {
   private final Event evtLoginDelayFactorChanged = new Event();
   private final Event evtApplicationtCountChanged = new Event();
   private final Event evtApplicationBatchSizeChanged = new Event();
-  private final Event evtMemoryUsageUpdated = new Event();
   private final Event evtDoneExiting = new Event();
 
   private int maximumThinkTime;
@@ -47,7 +46,7 @@ public abstract class LoadTestModel {
 
   private final Stack<Object> applications = new Stack<Object>();
   private final Collection<UsageScenario> usageScenarios;
-  private final RandomItemModel scenarioRandomModel;
+  private final RandomItemModel scenarioChooser;
   private User user;
 
   private final XYSeries workRequestsSeries = new XYSeries("Work requests per second");
@@ -73,7 +72,7 @@ public abstract class LoadTestModel {
   private int warningTime;
 
   /**
-   * Constructs a new LoadTest.
+   * Constructs a new LoadTestModel.
    * @param user the default user to use when initializing applications
    * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
@@ -92,7 +91,7 @@ public abstract class LoadTestModel {
     this.applicationBatchSize = applicationBatchSize;
     this.warningTime = warningTime;
     this.usageScenarios = initializeUsageScenarios();
-    this.scenarioRandomModel = initializeScenarioRandomModel();
+    this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
     initializeContext();
@@ -102,7 +101,6 @@ public abstract class LoadTestModel {
         counter.updateRequestsPerSecond();
         if (collectChartData && !paused)
           updateChartData();
-        evtMemoryUsageUpdated.fire();
         if (stopped && applications.size() == 0)
           evtDoneExiting.fire();
       }
@@ -121,8 +119,8 @@ public abstract class LoadTestModel {
     System.gc();
   }
 
-  public RandomItemModel getRandomModel() {
-    return scenarioRandomModel;
+  public RandomItemModel getScenarioChooser() {
+    return scenarioChooser;
   }
 
   public Collection<UsageScenario> getUsageScenarios() {
@@ -290,10 +288,6 @@ public abstract class LoadTestModel {
     evtLoginDelayFactorChanged.fire();
   }
 
-  public String getMemoryUsage() {
-    return Util.getMemoryUsageString();
-  }
-
   public Event eventApplicationBatchSizeChanged() {
     return evtApplicationBatchSizeChanged;
   }
@@ -326,13 +320,9 @@ public abstract class LoadTestModel {
     return evtWarningTimeChanged;
   }
 
-  public Event eventMemoryUsageUpdated() {
-    return evtMemoryUsageUpdated;
-  }
-
   protected void performWork(final Object application) {
     try {
-      final UsageScenario scenario = (UsageScenario) scenarioRandomModel.getRandomItem();
+      final UsageScenario scenario = (UsageScenario) scenarioChooser.getRandomItem();
       runScenario(scenario.getName(), application);
     }
     catch (Exception e) {
@@ -381,23 +371,23 @@ public abstract class LoadTestModel {
       public void run() {
         try {
           delayLogin();
-          System.out.println("Initializing an application...");
           final Object application = initializeApplication();
+          System.out.println("Initialized application: " + application);
           applications.push(application);
           evtApplicationtCountChanged.fire();
           while (applications.contains(application)) {
             try {
               think();
-              if (!paused && (applications.contains(application))) {
+              if (!isPaused() && (applications.contains(application))) {
                 final long currentTime = System.currentTimeMillis();
                 try {
-                  counter.incrementWorkRequestsPerSecond();
+                  counter.incrementWorkRequests();
                   performWork(application);
                 }
                 finally {
                   final long workTime = System.currentTimeMillis() - currentTime;
                   if (workTime > warningTime)
-                    counter.incrementDelayedWorkRequestsPerSecond();
+                    counter.incrementDelayedWorkRequests();
                 }
               }
             }
@@ -439,7 +429,7 @@ public abstract class LoadTestModel {
     }
   }
 
-  private RandomItemModel initializeScenarioRandomModel() {
+  private RandomItemModel initializeScenarioChooser() {
     final RandomItemModel model = new RandomItemModel();
     for (final UsageScenario scenario : this.usageScenarios)
       model.addItem(scenario, scenario.getDefaultWeight());
@@ -548,10 +538,10 @@ public abstract class LoadTestModel {
     private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
 
     private int workRequestsPerSecond = 0;
-    private int workRequestsPerSecondCounter = 0;
+    private int workRequestCounter = 0;
     private int delayedWorkRequestsPerSecond = 0;
-    private int delayedWorkRequestsPerSecondCounter = 0;
-    private long workRequestsPerSecondTime = System.currentTimeMillis();
+    private int delayedWorkRequestCounter = 0;
+    private long time = System.currentTimeMillis();
 
     public Counter(final Collection<UsageScenario> usageScenarios) {
       this.usageScenarios = usageScenarios;
@@ -576,33 +566,33 @@ public abstract class LoadTestModel {
       return usageScenarioRates.get(scenarioName);
     }
 
-    public void incrementWorkRequestsPerSecond() {
-      workRequestsPerSecondCounter++;
+    public void incrementWorkRequests() {
+      workRequestCounter++;
     }
 
-    public void incrementDelayedWorkRequestsPerSecond() {
-      delayedWorkRequestsPerSecondCounter++;
+    public void incrementDelayedWorkRequests() {
+      delayedWorkRequestCounter++;
     }
 
     public void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - workRequestsPerSecondTime)/1000;
+      final double seconds = (current - time)/1000;
       if (seconds > 5) {
-        workRequestsPerSecond = (int) ((double) workRequestsPerSecondCounter/seconds);
-        delayedWorkRequestsPerSecond = (int) ((double) delayedWorkRequestsPerSecondCounter/seconds);
+        workRequestsPerSecond = (int) ((double) workRequestCounter /seconds);
+        delayedWorkRequestsPerSecond = (int) ((double) delayedWorkRequestCounter /seconds);
         for (final UsageScenario scenario : usageScenarios)
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / seconds));
 
         resetCounters();
-        workRequestsPerSecondTime = current;
+        time = current;
       }
     }
 
     private void resetCounters() {
       for (final UsageScenario scenario : usageScenarios)
         scenario.resetRunCount();
-      workRequestsPerSecondCounter = 0;
-      delayedWorkRequestsPerSecondCounter = 0;
+      workRequestCounter = 0;
+      delayedWorkRequestCounter = 0;
     }
   }
 }

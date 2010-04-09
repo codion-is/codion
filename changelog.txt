@@ -1228,4 +1228,8 @@
   ServerMonitor now collects memory usage and connection count data
   ServerMonitorPanel displays memory usage and connection count data charts
   Util.getAllocatedMemory(), getUsedMemory(), getMaxMemory() and getFreeMemory() added
+  LoadTestModel, some minor field/method name changes
+  LoadTestModel.scenarioRandomModel field renamed to scenarioChooser
+  UiUtil.createMemoryUsageField() added
+  MonitorPanel displays memory usage
 0.5.3
