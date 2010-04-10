@@ -203,6 +203,7 @@ public class LoadTestPanel extends JPanel {
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     btn.setMargin(new Insets(0, 0, 0, 0));
+    btn.setToolTipText(add ? "Add application batch" : "Remove application batch");
 
     return btn;
   }
