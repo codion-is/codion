@@ -1234,4 +1234,5 @@
   MonitorPanel displays memory usage
   DbConnectionPool.Counter added
   LoadTestPanel UI improved
+  EntityDbConnection.getDeleteSQL() bug fixed, now it always includes the 'from' keyword (MySQL doesnt like it when its missing)
 0.5.3

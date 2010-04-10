@@ -118,7 +118,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> update(final List<Entity> entities) throws DbException, RecordModifiedException {
+  public List<Entity> update(final List<Entity> entities) throws DbException {
     if (entities.size() == 0)
       return entities;
 
@@ -159,7 +159,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (EntityRepository.isReadOnly(criteria.getEntityID()))
       throw new DbException("Can not delete a read only entity");
 
-    execute(Arrays.asList(getDeleteSql(getDatabase(), criteria)));
+    execute(Arrays.asList(getDeleteSQL(getDatabase(), criteria)));
   }
 
   /** {@inheritDoc} */
@@ -212,7 +212,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
       if (selectQuery == null) {
         final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = getSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
+        sql = getSelectSQL(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
                 criteria.getWhereClause(getDatabase(), !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
       }
       else {
@@ -245,7 +245,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       final Property property = EntityRepository.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      sql = getSelectSql(EntityRepository.getSelectTableName(entityID),
+      sql = getSelectSQL(EntityRepository.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
@@ -274,12 +274,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
       if (selectQuery == null) {
         final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = getSelectSql(datasource, "count(*)", criteria.getWhereClause(getDatabase(),
+        sql = getSelectSQL(datasource, "count(*)", criteria.getWhereClause(getDatabase(),
                 !datasource.toLowerCase().contains("where")), null);
 
       }
       else {
-        sql = getSelectSql("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(),
+        sql = getSelectSQL("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(),
                 !selectQuery.toLowerCase().contains("where")) + ")", "count(*)", null, null);
       }
 
@@ -463,8 +463,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return a query for deleting the entity having the given primary key
    */
   static String getDeleteSQL(final Database database, final Entity.Key entityKey) {
-    return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
-            .append(" where ").append(EntityDbUtil.getWhereCondition(database, entityKey)).toString();
+    return getDeleteSQL(database, new EntityCriteria(entityKey.getEntityID(), new EntityKeyCriteria(entityKey)));
   }
 
   /**
@@ -472,8 +471,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param criteria the EntityCriteria instance
    * @return a query for deleting the entities specified by the given criteria
    */
-  static String getDeleteSql(final Database database, final EntityCriteria criteria) {
-    return new StringBuilder("delete ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
+  static String getDeleteSQL(final Database database, final EntityCriteria criteria) {
+    return new StringBuilder("delete from ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
             .append(criteria.getWhereClause(database)).toString();
   }
 
@@ -486,7 +485,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * "col1, col2" as input results in the following order by clause "order by col1, col2"
    * @return the generated sql query
    */
-  static String getSelectSql(final String table, final String columns, final String whereCondition,
+  static String getSelectSQL(final String table, final String columns, final String whereCondition,
                              final String orderByClause) {
     final StringBuilder sql = new StringBuilder("select ");
     sql.append(columns);
@@ -531,7 +530,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @throws RecordNotFoundException in case the entity has been deleted
    * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified
    */
-  private void checkIfModified(final Entity entity) throws DbException, RecordModifiedException {
+  private void checkIfModified(final Entity entity) throws DbException {
     final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
             new SimpleCriteria(EntityDbUtil.getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))

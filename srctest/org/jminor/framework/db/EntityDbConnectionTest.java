@@ -9,6 +9,7 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
@@ -168,6 +169,10 @@ public class EntityDbConnectionTest {
 
     assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
             EntityDbConnection.getDeleteSQL(database, testEntity.getPrimaryKey()));
+
+    assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
+            EntityDbConnection.getDeleteSQL(database, new EntityCriteria(testEntity.getEntityID(),
+                    new EntityKeyCriteria(testEntity.getPrimaryKey()))));
   }
 
   @Test
@@ -206,7 +211,7 @@ public class EntityDbConnectionTest {
 
   @Test
   public void getSelectSql() throws Exception {
-    final String generated = EntityDbConnection.getSelectSql("table", "col, col2", "where col = 1", "col2");
+    final String generated = EntityDbConnection.getSelectSQL("table", "col, col2", "where col = 1", "col2");
     assertEquals("Generate select should be working", "select col, col2 from table where col = 1 order by col2", generated);
   }
 
