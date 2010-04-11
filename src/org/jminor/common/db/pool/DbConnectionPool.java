@@ -99,7 +99,7 @@ public class DbConnectionPool implements ConnectionPool {
 
   public void checkInConnection(final DbConnection connection) {
     if (closed)
-      throw new IllegalStateException("Trying to check a connection into a closed connection pool!");
+      disconnect(connection);
 
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
@@ -251,6 +251,9 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   private void disconnect(final DbConnection connection) {
+    if (connection == null)
+      return;
+
     counter.incrementConnectionsDestroyedCounter();
     connection.disconnect();
   }

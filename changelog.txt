@@ -1245,4 +1245,6 @@
   SQLServerDatabase no longer throws error if SID is missing
   User.UNIT_TEST_USER added, parses jminor.unittest.username and jminor.unittest.password from system properties, scott/tiger default
   Unit tests now running on H2, HSQL, Derby, MySQL, PostgreSQL, Oracle and SQL Server, fuck yeah
+  DbConnectionPoolTest.loadTest() added
+  DbConnectionPool now silently disconnects connections checked into a closed connection pool instead of throwing an exception
 0.5.3
