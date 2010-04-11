@@ -103,8 +103,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     final String sid = database.getSid();
     if (host == null || host.length() == 0)
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
-    if (!database.isEmbedded() && (sid == null || sid.length() == 0))
-      throw new RuntimeException("Database sid must be specified (" + Database.DATABASE_SID + ")");
     if (!database.isEmbedded() && (port == null || port.length() == 0))
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
 

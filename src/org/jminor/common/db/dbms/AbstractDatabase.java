@@ -3,6 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+import java.util.Properties;
+import java.sql.SQLException;
+
 /**
  * A default abstract implementation of the Database interface.
  */
@@ -106,5 +109,47 @@ public abstract class AbstractDatabase implements Database {
   /** {@inheritDoc} */
   public boolean isEmbedded() {
     return embedded;
+  }
+
+  /**
+   * This default implementation returns true
+   * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
+   */
+  public boolean supportsIsValid() {
+    return true;
+  }
+
+  /**
+   * Returns a query to use when checking if the connection is valid,
+   * this is used in cases where the dbms does not support the isValid() call.
+   * Returning null is safe if isValid() is supported.
+   * This default implementation returns null.
+   * @return a check connection query
+   * @see #supportsIsValid()
+   */
+  public String getCheckConnectionQuery() {
+    return null;
+  }
+
+  /**
+   * This should shutdown the database in case it is an embedded one
+   * and if that is applicable, such as for Derby.
+   * This default implementation does nothing.
+   * @param connectionProperties the connection properties
+   */
+  public void shutdownEmbedded(final Properties connectionProperties) {}
+
+  /**
+   * This default implementation returns null
+   * @param connectionProperties the connection properties
+   * @return null
+   */
+  public String getAuthenticationInfo(final Properties connectionProperties) {
+    return null;
+  }
+
+  /** {@inheritDoc} */
+  public String getErrorMessage(final SQLException exception) {
+    return exception.getMessage();
   }
 }

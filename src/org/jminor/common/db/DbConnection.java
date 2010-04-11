@@ -525,7 +525,7 @@ public class DbConnection {
   private boolean checkConnection() throws SQLException {
     if (connection != null) {
       try {
-        checkConnectionStatement.executeQuery("select 1 from dual");
+        checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
         return true;
       }
       catch (SQLException exception) {

@@ -1235,4 +1235,13 @@
   DbConnectionPool.Counter added
   LoadTestPanel UI improved
   EntityDbConnection.getDeleteSQL() bug fixed, now it always includes the 'from' keyword (MySQL doesnt like it when its missing)
+  EntityDbConnection.selectRowCount(), now uses 'alias' for subquery alias when selectQuery is available (MySQL requires it)
+  Database.getCheckConnectionQuery() added
+  AbstractDatabase implements the above returning null
+  PostgreSQLDatabase and OracleDatabase override the above
+  EntityDefinition, added (subquery) 'as' alias for subquery properties when initializing the select properties, for PostgreSQL
+  AbstractDatabase now has default implementations for supportsIsValid(), shutdownEmbedded(), getAuthenticationInfo() and getErrorMessage()
+  EntityDbRemoteServer does not check for SID anymore
+  SQLServerDatabase no longer throws error if SID is missing
+  Unit tests now running on H2, Derby, MySQL, PostgreSQL, Oracle and SQL Server
 0.5.3

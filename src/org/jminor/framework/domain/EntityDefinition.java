@@ -371,7 +371,7 @@ public class EntityDefinition implements Serializable {
     for (final Property property : selectProperties) {
       if (property instanceof Property.SubqueryProperty)
         stringBuilder.append("(").append(((Property.SubqueryProperty)property).getSubQuery()).append(
-                ") ").append(property.getPropertyID());
+                ") as ").append(property.getPropertyID());
       else
         stringBuilder.append(property.getPropertyID());
 

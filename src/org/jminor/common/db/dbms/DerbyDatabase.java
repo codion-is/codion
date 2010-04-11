@@ -111,14 +111,4 @@ public class DerbyDatabase extends AbstractDatabase {
         e.printStackTrace();
     }
   }
-
-  /** {@inheritDoc} */
-  public boolean supportsIsValid() {
-    return true;
-  }
-
-  /** {@inheritDoc} */
-  public String getErrorMessage(final SQLException exception) {
-    return exception.getMessage();
-  }
 }

@@ -280,7 +280,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       }
       else {
         sql = getSelectSQL("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(),
-                !selectQuery.toLowerCase().contains("where")) + ")", "count(*)", null, null);
+                !selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
       }
 
       return queryInteger(sql);

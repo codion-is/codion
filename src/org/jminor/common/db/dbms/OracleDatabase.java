@@ -94,16 +94,13 @@ public class OracleDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    return null;
+  public boolean supportsIsValid() {
+    return false;
   }
 
   /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  /** {@inheritDoc} */
-  public boolean supportsIsValid() {
-    return false;
+  public String getCheckConnectionQuery() {
+    return "select 1 from dual";
   }
 
   /** {@inheritDoc} */
