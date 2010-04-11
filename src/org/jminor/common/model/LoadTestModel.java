@@ -127,6 +127,14 @@ public abstract class LoadTestModel {
     return usageScenarios;
   }
 
+  public UsageScenario getUsageScenario(final String usageScenarioName) {
+    for (final UsageScenario scenario : usageScenarios)
+      if (scenario.getName().equals(usageScenarioName))
+        return scenario;
+
+    throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
+  }
+
   public XYSeriesCollection getWorkRequestsDataset() {
     return workRequestsCollection;
   }
@@ -332,14 +340,6 @@ public abstract class LoadTestModel {
 
   protected void runScenario(final String usageScenarioName, final Object application) throws Exception {
     getUsageScenario(usageScenarioName).run(application);
-  }
-
-  public UsageScenario getUsageScenario(final String usageScenarioName) {
-    for (final UsageScenario scenario : usageScenarios)
-      if (scenario.getName().equals(usageScenarioName))
-        return scenario;
-
-    throw new RuntimeException("UsageScenario not found: " + usageScenarioName);
   }
 
   protected Collection<UsageScenario> initializeUsageScenarios() {
