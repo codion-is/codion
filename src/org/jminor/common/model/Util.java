@@ -480,4 +480,15 @@ public class Util {
 
     return sb.toString();
   }
+
+  /**
+   * @param columnName the columnName
+   * @param sqlStringValue the sql string value
+   * @return a query comparison string, e.g. "columnName = sqlStringValue"
+   * or "columnName is null" in case sqlStringValue is 'null'
+   */
+  public static String getQueryString(final String columnName, final String sqlStringValue) {
+    return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
+            " is " : " = ").append(sqlStringValue).toString();
+  }
 }

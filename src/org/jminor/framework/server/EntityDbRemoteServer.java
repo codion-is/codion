@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;

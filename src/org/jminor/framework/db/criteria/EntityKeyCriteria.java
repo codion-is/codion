@@ -5,6 +5,7 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDbUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -124,7 +125,7 @@ public class EntityKeyCriteria implements Criteria, Serializable {
     final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : key.getProperties()) {
-      stringBuilder.append(EntityDbUtil.getQueryString(columnNames == null ? property.getColumnName() : columnNames.get(i),
+      stringBuilder.append(Util.getQueryString(columnNames == null ? property.getColumnName() : columnNames.get(i),
               EntityDbUtil.getSQLStringValue(database, property, key.getValue(property.getPropertyID()))));
       if (i++ < key.getPropertyCount() - 1)
         stringBuilder.append(" and ");

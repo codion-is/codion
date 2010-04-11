@@ -5,6 +5,7 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;

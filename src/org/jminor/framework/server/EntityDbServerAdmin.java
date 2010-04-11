@@ -4,9 +4,9 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DatabaseStatistics;
-import org.jminor.common.db.User;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.domain.EntityDefinition;

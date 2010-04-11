@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 

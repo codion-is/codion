@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.testing;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 

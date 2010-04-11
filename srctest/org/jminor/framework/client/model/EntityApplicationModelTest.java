@@ -1,6 +1,6 @@
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.client.EmpDeptAppModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;

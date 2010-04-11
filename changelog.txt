@@ -1248,4 +1248,5 @@
   DbConnectionPoolTest.loadTest() added
   DbConnectionPool now silently disconnects connections checked into a closed connection pool instead of throwing an exception
   ConnectionPoolInstanceMonitor refactored and moved to common.db.pool.monitor, home sweet home
+  User moved from common.db to common.model
 0.5.3

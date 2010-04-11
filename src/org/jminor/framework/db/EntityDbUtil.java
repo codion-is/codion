@@ -5,6 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
@@ -126,24 +127,13 @@ public class EntityDbUtil {
     final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
-      stringBuilder.append(getQueryString(property.getPropertyID(),
+      stringBuilder.append(Util.getQueryString(property.getPropertyID(),
               getSQLStringValue(database, property, valueProvider.getValue(property.getPropertyID()))));
       if (i++ < properties.size() - 1)
         stringBuilder.append(" and ");
     }
 
     return stringBuilder.append(")").toString();
-  }
-
-  /**
-   * @param columnName the columnName
-   * @param sqlStringValue the sql string value
-   * @return a query comparison string, e.g. "columnName = sqlStringValue"
-   * or "columnName is null" in case sqlStringValue is 'null'
-   */
-  public static String getQueryString(final String columnName, final String sqlStringValue) {
-    return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
-            " is " : " = ").append(sqlStringValue).toString();
   }
 
   /**

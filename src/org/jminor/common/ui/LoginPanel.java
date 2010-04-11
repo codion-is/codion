@@ -3,9 +3,9 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Icon;

@@ -3,8 +3,8 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.model.User;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;

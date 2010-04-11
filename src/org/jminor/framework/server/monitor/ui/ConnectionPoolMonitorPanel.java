@@ -4,8 +4,8 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.monitor.ConnectionPoolInstanceMonitor;
-import org.jminor.common.db.pool.monitor.ui.ConnectionPoolInstanceMonitorPanel;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
+import org.jminor.common.ui.ConnectionPoolInstanceMonitorPanel;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import javax.swing.JOptionPane;

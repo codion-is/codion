@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import javax.swing.DefaultListModel;

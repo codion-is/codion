@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -5,8 +5,8 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbConnectionProvider;
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;

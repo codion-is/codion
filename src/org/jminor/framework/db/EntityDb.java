@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.domain.Entity;

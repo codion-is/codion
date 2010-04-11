@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.User;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.db.exception.RecordModifiedException;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.SelectCriteria;

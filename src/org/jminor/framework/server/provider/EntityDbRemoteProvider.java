@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.provider;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;

@@ -5,9 +5,9 @@ package org.jminor.framework.tools;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;

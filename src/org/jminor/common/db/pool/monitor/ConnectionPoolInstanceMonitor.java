@@ -3,12 +3,12 @@
  */
 package org.jminor.common.db.pool.monitor;
 
-import org.jminor.common.db.User;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.User;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;

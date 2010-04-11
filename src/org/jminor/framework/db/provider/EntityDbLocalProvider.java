@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db.provider;
 
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;

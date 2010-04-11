@@ -3,8 +3,6 @@
  */
 package org.jminor.common.model;
 
-import org.jminor.common.db.User;
-
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 

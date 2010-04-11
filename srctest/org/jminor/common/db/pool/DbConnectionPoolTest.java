@@ -6,13 +6,13 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.db.pool.monitor.ConnectionPoolInstanceMonitor;
-import org.jminor.common.db.pool.monitor.ui.ConnectionPoolInstanceMonitorPanel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.model.User;
+import org.jminor.common.ui.ConnectionPoolInstanceMonitorPanel;
 import org.jminor.common.ui.UiUtil;
 
 import static org.junit.Assert.*;

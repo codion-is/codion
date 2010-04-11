@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 
 import java.io.Serializable;
 import java.util.Date;

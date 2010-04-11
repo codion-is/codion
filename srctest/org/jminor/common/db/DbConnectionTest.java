@@ -5,6 +5,7 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.model.User;
 
 import org.junit.After;
 import static org.junit.Assert.*;

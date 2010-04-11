@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
