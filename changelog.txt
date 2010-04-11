@@ -1247,4 +1247,5 @@
   Unit tests now running on H2, HSQL, Derby, MySQL, PostgreSQL, Oracle and SQL Server, fuck yeah
   DbConnectionPoolTest.loadTest() added
   DbConnectionPool now silently disconnects connections checked into a closed connection pool instead of throwing an exception
+  ConnectionPoolInstanceMonitor refactored and moved to common.db.pool.monitor, home sweet home
 0.5.3

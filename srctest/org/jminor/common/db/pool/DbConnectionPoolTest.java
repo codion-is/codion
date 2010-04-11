@@ -9,12 +9,17 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.pool.monitor.ConnectionPoolInstanceMonitor;
+import org.jminor.common.db.pool.monitor.ui.ConnectionPoolInstanceMonitorPanel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.ui.UiUtil;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import javax.swing.JFrame;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -42,14 +47,28 @@ public class DbConnectionPoolTest {
         System.out.println("####################################");
       }
     }, startTime, 500);
+    final ConnectionPoolInstanceMonitor monitor = new ConnectionPoolInstanceMonitor(User.UNIT_TEST_USER, pool);
+    monitor.setStatsUpdateInterval(1);
+    JFrame frame = null;
+    if (!GraphicsEnvironment.isHeadless()) {
+      frame = new JFrame("DbConnectionPoolTest");
+      frame.add(new ConnectionPoolInstanceMonitorPanel(monitor));
+      frame.pack();
+      UiUtil.centerWindow(frame);
+      frame.setVisible(true);
+    }
     model.addApplications();
     model.setCollectChartData(true);
-    Thread.sleep(3200);
+    Thread.sleep(4200);
     model.exit();
     pool.close();
-    Thread.sleep(1000);
+    Thread.sleep(800);
     final ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startTime.getTime());
     assertEquals(statistics.getConnectionsCreated(), statistics.getConnectionsDestroyed());
+    if (!GraphicsEnvironment.isHeadless() && frame != null) {
+      frame.setVisible(false);
+      frame.dispose();
+    }
   }
 
   @Test

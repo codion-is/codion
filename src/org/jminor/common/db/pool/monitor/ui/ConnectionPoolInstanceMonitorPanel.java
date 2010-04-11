@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server.monitor.ui;
+package org.jminor.common.db.pool.monitor.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.monitor.ConnectionPoolInstanceMonitor;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
-import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
