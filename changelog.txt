@@ -1243,5 +1243,6 @@
   AbstractDatabase now has default implementations for supportsIsValid(), shutdownEmbedded(), getAuthenticationInfo() and getErrorMessage()
   EntityDbRemoteServer does not check for SID anymore
   SQLServerDatabase no longer throws error if SID is missing
-  Unit tests now running on H2, Derby, MySQL, PostgreSQL, Oracle and SQL Server
+  User.UNIT_TEST_USER added, parses jminor.unittest.username and jminor.unittest.password from system properties, scott/tiger default
+  Unit tests now running on H2, HSQL, Derby, MySQL, PostgreSQL, Oracle and SQL Server, fuck yeah
 0.5.3

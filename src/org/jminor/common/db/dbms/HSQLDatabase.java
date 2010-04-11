@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -99,11 +97,5 @@ public class HSQLDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public void shutdownEmbedded(final Properties connectionProperties) {
-    try {
-      DriverManager.getConnection(getURL(connectionProperties)).createStatement().execute("SHUTDOWN");
-    }
-    catch (SQLException e) {
-      e.printStackTrace();
-    }
   }
 }

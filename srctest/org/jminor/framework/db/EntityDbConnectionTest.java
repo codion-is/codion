@@ -45,7 +45,7 @@ import java.util.Map;
 public class EntityDbConnectionTest {
 
   public static final EntityDbProvider dbProvider =
-          EntityDbProviderFactory.createEntityDbProvider(new User("scott", "tiger"), "JMinor Unit Tests");
+          EntityDbProviderFactory.createEntityDbProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
   public static final Database database = DatabaseProvider.createInstance();
 
   public static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
@@ -220,8 +220,8 @@ public class EntityDbConnectionTest {
     final Database database = DatabaseProvider.createInstance();
     String oldLocation = null;
     Entity updatedDeparment = null;
-    final EntityDbConnection baseDb = new EntityDbConnection(database, new User("scott", "tiger"));
-    final EntityDbConnection optimisticDb = new EntityDbConnection(database, new User("scott", "tiger"));
+    final EntityDbConnection baseDb = new EntityDbConnection(database, User.UNIT_TEST_USER);
+    final EntityDbConnection optimisticDb = new EntityDbConnection(database, User.UNIT_TEST_USER);
     optimisticDb.setOptimisticLocking(true);
     try {
       final Entity department = baseDb.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");

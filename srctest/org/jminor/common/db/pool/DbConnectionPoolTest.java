@@ -20,7 +20,7 @@ public class DbConnectionPoolTest {
   @Test
   public void test() throws Exception {
     final Date startDate = new Date();
-    final User user = new User("scott", null);
+    final User user = User.UNIT_TEST_USER;
     final ConnectionPoolSettings settings = ConnectionPoolSettings.getDefault(user);
     assertEquals(60000, settings.getPooledConnectionTimeout());
     final DbConnectionPool pool = new DbConnectionPool(new DbConnectionProvider() {
@@ -29,12 +29,12 @@ public class DbConnectionPoolTest {
         return new DbConnection(database, user);
       }
     }, settings);
-    pool.getConnectionPoolSettings().getUser().setPassword("tiger");
+    pool.getConnectionPoolSettings().getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
     ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startDate.getTime());
-    assertEquals(new User("scott", null), statistics.getUser());
+    assertEquals(new User(User.UNIT_TEST_USER.getUsername(), null), statistics.getUser());
     assertNotNull(statistics.getTimestamp());
     assertNotNull(statistics.getCreationDate());
     assertEquals(0, statistics.getConnectionsDestroyed());

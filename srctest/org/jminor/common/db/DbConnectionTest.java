@@ -55,7 +55,7 @@ public class DbConnectionTest {
 
   @Before
   public void before() throws Exception {
-    dbConnection = new DbConnection(database, new User("scott", "tiger"));
+    dbConnection = new DbConnection(database, User.UNIT_TEST_USER);
   }
 
   @After
@@ -94,7 +94,7 @@ public class DbConnectionTest {
 
   @Test
   public void query() throws Exception {
-    dbConnection = new DbConnection(database, new User("scott", "tiger"));
+    dbConnection = new DbConnection(database, User.UNIT_TEST_USER);
     final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new ResultPacker() {
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<List> result = new ArrayList<List>();
@@ -114,21 +114,21 @@ public class DbConnectionTest {
 
   @Test
   public void queryInt() throws Exception {
-    dbConnection = new DbConnection(database, new User("scott", "tiger"));
+    dbConnection = new DbConnection(database, User.UNIT_TEST_USER);
     final Integer ret = dbConnection.queryInteger("select deptno from scott.dept");
     assertNotNull("queryInteger should return a value", ret);
   }
 
   @Test
   public void queryIntegers() throws Exception {
-    dbConnection = new DbConnection(database, new User("scott", "tiger"));
+    dbConnection = new DbConnection(database, User.UNIT_TEST_USER);
     final List<Integer> ret = dbConnection.queryIntegers("select deptno from scott.dept");
     assertTrue("queryIntegers should return a value", ret.size() > 0);
   }
 
   @Test
   public void queryStrings() throws Exception {
-    dbConnection = new DbConnection(database, new User("scott", "tiger"));
+    dbConnection = new DbConnection(database, User.UNIT_TEST_USER);
     final List<String> ret = dbConnection.queryStrings("select dname from scott.dept");
     assertTrue("queryStrings should return a value", ret.size() > 0);
   }

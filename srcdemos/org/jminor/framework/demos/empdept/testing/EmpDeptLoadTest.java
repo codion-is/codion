@@ -32,7 +32,7 @@ import java.util.Map;
 public class EmpDeptLoadTest extends EntityLoadTestModel {
 
   public EmpDeptLoadTest() {
-    super(new User("scott", "tiger"));
+    super(User.UNIT_TEST_USER);
   }
 
   @Override

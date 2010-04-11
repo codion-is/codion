@@ -64,13 +64,13 @@ public class EntityDbRemoteServerTest {
 
   @Test
   public void test() throws Exception {
-    final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(new User("scott", "tiger"),
+    final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
             "UnitTestConnection0", "EntityDbRemoteServerTest");
     final EntityDb remoteDbOne = providerOne.getEntityDb();
     assertTrue(remoteDbOne.isConnectionValid());
     assertEquals(1, server.getConnectionCount());
 
-    final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(new User("scott", "tiger"),
+    final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
             "UnitTestConnection1", "EntityDbRemoteServerTest");
     final EntityDb remoteDbTwo = providerTwo.getEntityDb();
     server.setLoggingOn("UnitTestConnection1", true);
@@ -78,7 +78,7 @@ public class EntityDbRemoteServerTest {
     assertTrue(remoteDbTwo.isConnectionValid());
     assertEquals(2, server.getConnectionCount());
 
-    final Collection<ClientInfo> clients = admin.getClients(new User("scott", null));
+    final Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
 
     providerTwo.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);

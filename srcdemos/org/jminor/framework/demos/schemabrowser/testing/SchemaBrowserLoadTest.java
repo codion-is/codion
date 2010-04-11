@@ -22,13 +22,8 @@ import javax.swing.UIManager;
  */
 public class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
-  private static final User user = new User("scott", "tiger");
-
-  /**
-   * @param user the user to use for database access during load testing
-   */
-  public SchemaBrowserLoadTest(final User user) {
-    super(user);
+  public SchemaBrowserLoadTest() {
+    super(User.UNIT_TEST_USER);
   }
 
   @Override
@@ -48,7 +43,7 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
   @Override
   protected Object initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
-            new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), user+"@"+new Object(), getClass().getSimpleName()));
+            new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), User.UNIT_TEST_USER +"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();
     schemaModel.setLinkedDetailModel(schemaModel.getDetailModels().get(0));
     final EntityModel dbObjectModel = schemaModel.getDetailModels().get(0);
@@ -65,6 +60,6 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
       e.printStackTrace();
     }
 
-    new LoadTestPanel(new SchemaBrowserLoadTest(user)).showFrame();
+    new LoadTestPanel(new SchemaBrowserLoadTest()).showFrame();
   }
 }

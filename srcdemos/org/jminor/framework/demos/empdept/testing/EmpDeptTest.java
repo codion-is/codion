@@ -24,7 +24,7 @@ public class EmpDeptTest extends EntityTestUnit {
 
   @Override
   protected User getTestUser() throws CancelException {
-    return new User("scott", "tiger");
+    return User.UNIT_TEST_USER;
   }
 
   @Override

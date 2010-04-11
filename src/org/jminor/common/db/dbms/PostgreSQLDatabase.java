@@ -71,7 +71,9 @@ public class PostgreSQLDatabase extends AbstractDatabase {
     return "jdbc:postgresql://" + host + ":" + port + "/" + sid;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return false
+   */
   public boolean supportsIsValid() {
     return false;
   }

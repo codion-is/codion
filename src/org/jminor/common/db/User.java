@@ -12,9 +12,20 @@ public class User implements Serializable {
 
   private static final long serialVersionUID = 1;
 
+  public static final String UNITTEST_USERNAME_PROPERTY = "jminor.unittest.username";
+  public static final String UNITTEST_PASSWORD_PROPERTY = "jminor.unittest.password";
+
+  public static final User UNIT_TEST_USER;
+
   private final String username;
   private final int hashCode;
   private String password;
+
+  static {
+    final String unitTestUserName = System.getProperty(UNITTEST_USERNAME_PROPERTY, "scott");
+    final String unitTestPassword = System.getProperty(UNITTEST_PASSWORD_PROPERTY, "tiger");
+    UNIT_TEST_USER = new User(unitTestUserName, unitTestPassword);
+  }
 
   public User(final String username, final String password) {
     this.username = username;

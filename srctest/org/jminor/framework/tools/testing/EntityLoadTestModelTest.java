@@ -68,7 +68,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new EmpDeptAppModel(new EntityDbRemoteProvider(new User("scott", "tiger"), "clientID", "EntityLoadTestModelTest"));
+    final EntityApplicationModel model = new EmpDeptAppModel(new EntityDbRemoteProvider(User.UNIT_TEST_USER, "clientID", "EntityLoadTestModelTest"));
     model.refreshAll();
     final EntityTableModel tableModel = model.getMainApplicationModel(DepartmentModel.class).getTableModel();
 

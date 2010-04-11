@@ -93,7 +93,9 @@ public class OracleDatabase extends AbstractDatabase {
     return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return false
+   */
   public boolean supportsIsValid() {
     return false;
   }
