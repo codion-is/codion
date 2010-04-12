@@ -373,7 +373,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         final Property.BlobProperty property =
                 (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-        final String whereCondition = EntityDbUtil.getWhereCondition(getDatabase(), primaryKey);
+        final String whereCondition = CriteriaUtil.getWhereCondition(getDatabase(), primaryKey);
 
         execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString());
@@ -401,7 +401,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
       return readBlobField(EntityRepository.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
-              EntityDbUtil.getWhereCondition(getDatabase(), primaryKey));
+              CriteriaUtil.getWhereCondition(getDatabase(), primaryKey));
     }
     catch (SQLException exception) {
       throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
@@ -421,7 +421,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getColumnName());
-      columnValues.append(EntityDbUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
+      columnValues.append(CriteriaUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size()-1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -449,12 +449,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.getColumnName()).append(" = ").append(
-              EntityDbUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
+              CriteriaUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
 
-    return sql.append(" where ").append(EntityDbUtil.getWhereCondition(database, entity)).toString();
+    return sql.append(" where ").append(CriteriaUtil.getWhereCondition(database, entity)).toString();
   }
 
   /**
@@ -532,7 +532,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   private void checkIfModified(final Entity entity) throws DbException {
     final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
-            new SimpleCriteria(EntityDbUtil.getWhereCondition(getDatabase(), entity))));
+            new SimpleCriteria(CriteriaUtil.getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))
       throw new RecordModifiedException(entity, current);
   }

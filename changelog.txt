@@ -1249,4 +1249,6 @@
   DbConnectionPool now silently disconnects connections checked into a closed connection pool instead of throwing an exception
   ConnectionPoolInstanceMonitor refactored and moved to common.db.pool.monitor, home sweet home
   User moved from common.db to common.model
+  EntityDbUtil, moved all sql generation code to CriteriaUtil
+  PropertyCriteria and EntityKeyCriteria now delegate toString() implementation to static CriteriaUtil methods
 0.5.3
