@@ -8,11 +8,11 @@ import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
-import org.jminor.common.db.pool.monitor.ConnectionPoolInstanceMonitor;
+import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.ConnectionPoolInstanceMonitorPanel;
+import org.jminor.common.ui.ConnectionPoolMonitorPanel;
 import org.jminor.common.ui.UiUtil;
 
 import static org.junit.Assert.*;
@@ -47,12 +47,12 @@ public class DbConnectionPoolTest {
         System.out.println("####################################");
       }
     }, startTime, 500);
-    final ConnectionPoolInstanceMonitor monitor = new ConnectionPoolInstanceMonitor(User.UNIT_TEST_USER, pool);
+    final ConnectionPoolMonitor monitor = new ConnectionPoolMonitor(User.UNIT_TEST_USER, pool);
     monitor.setStatsUpdateInterval(1);
     JFrame frame = null;
     if (!GraphicsEnvironment.isHeadless()) {
       frame = new JFrame("DbConnectionPoolTest");
-      frame.add(new ConnectionPoolInstanceMonitorPanel(monitor));
+      frame.add(new ConnectionPoolMonitorPanel(monitor));
       frame.pack();
       UiUtil.centerWindow(frame);
       frame.setVisible(true);

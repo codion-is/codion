@@ -27,7 +27,7 @@ import java.util.TimerTask;
  * Date: 4.12.2007
  * Time: 18:20:24
  */
-public class ConnectionPoolInstanceMonitor {
+public class ConnectionPoolMonitor {
 
   private final Event evtStatsUpdated = new Event();
   private final Event evtStatsUpdateIntervalChanged = new Event();
@@ -54,7 +54,7 @@ public class ConnectionPoolInstanceMonitor {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
-  public ConnectionPoolInstanceMonitor(final User user, final ConnectionPool pool) throws RemoteException {
+  public ConnectionPoolMonitor(final User user, final ConnectionPool pool) throws RemoteException {
     this.user = user;
     this.pool = pool;
     this.poolSettings = pool.getConnectionPoolSettings();
@@ -168,7 +168,6 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public void shutdown() {
-    System.out.println("ConnectionPoolInstanceMonitor shutdown: " + user);
     if (updateTimer != null)
       updateTimer.cancel();
   }

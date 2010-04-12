@@ -1255,4 +1255,8 @@
   Criteria.asString(), added CriteriaValueProvider parameter
   CriteriaValueProvider moved and renamed to Criteria.ValueProvider
   Criteria.ValueProvider.getSQLStringValue() renamed to getSQLString()
+  ConnectionPoolMonitor renamed to PoolMonitor
+  ConnectionPoolMonitorPanel renamed to PoolMonitorPanel
+  ConnectionPoolInstanceMonitor renamed to ConnectionPoolMonitor
+  ConnectionPoolInstanceMonitorPanel renamed to ConnectionPoolMonitorPanel
 0.5.3

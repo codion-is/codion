@@ -7,7 +7,7 @@ import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.db.pool.monitor.ConnectionPoolInstanceMonitor;
+import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
@@ -21,20 +21,20 @@ import java.util.Collection;
  * Date: 10.12.2007
  * Time: 15:27:24
  */
-public class ConnectionPoolMonitor {
+public class PoolMonitor {
 
   private final EntityDbServerAdmin server;
 
-  private Collection<ConnectionPoolInstanceMonitor> connectionPoolInstanceMonitors = new ArrayList<ConnectionPoolInstanceMonitor>();
+  private Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<ConnectionPoolMonitor>();
 
-  public ConnectionPoolMonitor(final EntityDbServerAdmin server) throws RemoteException {
+  public PoolMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
 
   public void refresh() throws RemoteException {
     for (final ConnectionPoolSettings settings : server.getEnabledConnectionPools())
-      connectionPoolInstanceMonitors.add(new ConnectionPoolInstanceMonitor(settings.getUser(), new ConnectionPool() {
+      connectionPoolMonitors.add(new ConnectionPoolMonitor(settings.getUser(), new ConnectionPool() {
         public ConnectionPoolSettings getConnectionPoolSettings() {
           try {
             return server.getConnectionPoolSettings(settings.getUser());
@@ -108,13 +108,13 @@ public class ConnectionPoolMonitor {
       setConnectionPoolSettings(ConnectionPoolSettings.getDefault(new User(username.trim(), null)));
   }
 
-  public Collection<ConnectionPoolInstanceMonitor> getConnectionPoolInstanceMonitors() {
-    return connectionPoolInstanceMonitors;
+  public Collection<ConnectionPoolMonitor> getConnectionPoolInstanceMonitors() {
+    return connectionPoolMonitors;
   }
 
   public void shutdown() {
-    System.out.println("ConnectionPoolMonitor shutdown");
-    for (final ConnectionPoolInstanceMonitor monitor : connectionPoolInstanceMonitors)
+    System.out.println("PoolMonitor shutdown");
+    for (final ConnectionPoolMonitor monitor : connectionPoolMonitors)
       monitor.shutdown();
   }
 }
