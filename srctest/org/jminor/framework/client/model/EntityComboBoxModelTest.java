@@ -25,13 +25,13 @@ public class EntityComboBoxModelTest {
 
   public EntityComboBoxModelTest() {
     new EmpDept();
-    comboBoxModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider);
+    comboBoxModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
   }
 
   @Test
   public void testConstructor() {
     try {
-      new EntityComboBoxModel(null, EntityDbConnectionTest.dbProvider);
+      new EntityComboBoxModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}

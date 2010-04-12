@@ -5,7 +5,6 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.criteria.CriteriaValueProvider;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
@@ -88,7 +87,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Database database, final CriteriaValueProvider valueProvider) {
+  public String asString(final Database database, final ValueProvider valueProvider) {
     return getConditionString(database, valueProvider);
   }
 
@@ -142,7 +141,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     return property.getPropertyType() == Type.STRING && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
   }
 
-  private String getConditionString(final Database database, final CriteriaValueProvider valueProvider) {
+  private String getConditionString(final Database database, final ValueProvider valueProvider) {
     if (getProperty() instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaString(this, database, valueProvider);
 
@@ -152,9 +151,9 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (isNullCriteria)
       return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");
 
-    final String sqlValue = getSqlValue(valueProvider.getSQLStringValue(database,
+    final String sqlValue = getSqlValue(valueProvider.getSQLString(database,
             getProperty(), getValues().get(0)));
-    final String sqlValue2 = getValueCount() == 2 ? getSqlValue(valueProvider.getSQLStringValue(
+    final String sqlValue2 = getValueCount() == 2 ? getSqlValue(valueProvider.getSQLString(
             database, getProperty(), getValues().get(1))) : null;
 
     switch(getSearchType()) {
@@ -175,7 +174,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     throw new IllegalArgumentException("Unknown search type" + getSearchType());
   }
 
-  private String getForeignKeyCriteriaString(final PropertyCriteria criteria, final Database database, final CriteriaValueProvider valueProvider) {
+  private String getForeignKeyCriteriaString(final PropertyCriteria criteria, final Database database, final ValueProvider valueProvider) {
     if (criteria.getValueCount() > 1)
       return getMultipleColumnForeignKeyCriteriaString(database, valueProvider);
 
@@ -191,7 +190,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     return set.asString(database, valueProvider);
   }
 
-  private String getMultipleColumnForeignKeyCriteriaString(final Database database, final CriteriaValueProvider valueProvider) {
+  private String getMultipleColumnForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
     if (primaryKeyProperties.size() > 1) {
@@ -214,11 +213,11 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   private String getInList(final Database database, final String whereColumn, final boolean notIn,
-                           final CriteriaValueProvider valueProvider) {
+                           final ValueProvider valueProvider) {
     final StringBuilder stringBuilder = new StringBuilder("(").append(whereColumn).append((notIn ? " not in (" : " in ("));
     int cnt = 1;
     for (int i = 0; i < getValues().size(); i++) {
-      final String sqlValue = valueProvider.getSQLStringValue(database, getProperty(),
+      final String sqlValue = valueProvider.getSQLString(database, getProperty(),
               getValues().get(i));
       if (getProperty().getPropertyType() == Type.STRING && !isCaseSensitive())
         stringBuilder.append("upper(").append(sqlValue).append(")");
@@ -237,14 +236,14 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   private String getNotLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
-                                     final CriteriaValueProvider valueProvider) {
+                                     final ValueProvider valueProvider) {
     return getValueCount() > 1 ? getInList(database, columnIdentifier, true, valueProvider) :
             columnIdentifier + (getProperty().getPropertyType() == Type.STRING && containsWildcard(sqlValue)
             ? " not like " + sqlValue : " <> " + sqlValue);
   }
 
   private String getLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
-                                  final CriteriaValueProvider valueProvider) {
+                                  final ValueProvider valueProvider) {
     return getValueCount() > 1 ? getInList(database, columnIdentifier, false, valueProvider) :
             columnIdentifier + (getProperty().getPropertyType() == Type.STRING && containsWildcard(sqlValue)
             ? " like " + sqlValue : " = " + sqlValue);

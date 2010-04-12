@@ -83,7 +83,7 @@ public class CriteriaSet implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Database database, final CriteriaValueProvider valueProvider) {
+  public String asString(final Database database, final ValueProvider valueProvider) {
     if (criteriaList.size() == 0)
       return "";
 

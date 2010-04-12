@@ -44,9 +44,9 @@ import java.util.Map;
  */
 public class EntityDbConnectionTest {
 
-  public static final EntityDbProvider dbProvider =
+  public static final EntityDbProvider DB_PROVIDER =
           EntityDbProviderFactory.createEntityDbProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
-  public static final Database database = DatabaseProvider.createInstance();
+  public static final Database DATABASE = DatabaseProvider.createInstance();
 
   public static final String COMBINED_ENTITY_ID = "selectQueryEntityID";
 
@@ -68,22 +68,22 @@ public class EntityDbConnectionTest {
     final JasperReport report = (JasperReport) JRLoader.loadObject("resources/demos/empdept/reports/empdept_employees.jasper");
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final JasperPrint print = dbProvider.getEntityDb().fillReport(report, reportParameters);
+    final JasperPrint print = DB_PROVIDER.getEntityDb().fillReport(report, reportParameters);
     assertNotNull(print);
   }
 
   @Test
   public void selectAll() throws Exception {
-    final List<Entity> depts = dbProvider.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> depts = DB_PROVIDER.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
     assertEquals(depts.size(), 4);
-    List<Entity> emps = dbProvider.getEntityDb().selectAll(COMBINED_ENTITY_ID);
+    List<Entity> emps = DB_PROVIDER.getEntityDb().selectAll(COMBINED_ENTITY_ID);
     assertTrue(emps.size() > 0);
   }
 
   @Test
   public void selectDependentEntities() throws Exception {
-    final List<Entity> accounting = dbProvider.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<String, List<Entity>> emps = dbProvider.getEntityDb().selectDependentEntities(accounting);
+    final List<Entity> accounting = DB_PROVIDER.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
+    final Map<String, List<Entity>> emps = DB_PROVIDER.getEntityDb().selectDependentEntities(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(EmpDept.T_EMPLOYEE));
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
@@ -91,37 +91,37 @@ public class EntityDbConnectionTest {
 
   @Test
   public void selectMany() throws Exception {
-    List<Entity> result = dbProvider.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
+    List<Entity> result = DB_PROVIDER.getEntityDb().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
-    result = dbProvider.getEntityDb().selectMany(EntityUtil.getPrimaryKeys(result));
+    result = DB_PROVIDER.getEntityDb().selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = dbProvider.getEntityDb().selectMany(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
+    result = DB_PROVIDER.getEntityDb().selectMany(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = dbProvider.getEntityDb().selectMany(new SelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
+    result = DB_PROVIDER.getEntityDb().selectMany(new SelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
     assertTrue(result.size() > 0);
   }
 
   @Test
   public void selectRowCount() throws Exception {
-    int rowCount = dbProvider.getEntityDb().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
+    int rowCount = DB_PROVIDER.getEntityDb().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
     assertEquals(4, rowCount);
-    rowCount = dbProvider.getEntityDb().selectRowCount(new EntityCriteria(COMBINED_ENTITY_ID));
+    rowCount = DB_PROVIDER.getEntityDb().selectRowCount(new EntityCriteria(COMBINED_ENTITY_ID));
     assertEquals(16, rowCount);
   }
 
   @Test
   public void selectSingle() throws Exception {
-    Entity sales = dbProvider.getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    Entity sales = DB_PROVIDER.getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = dbProvider.getEntityDb().selectSingle(sales.getPrimaryKey());
+    sales = DB_PROVIDER.getEntityDb().selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = dbProvider.getEntityDb().selectSingle(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
+    sales = DB_PROVIDER.getEntityDb().selectSingle(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 
   @Test
   public void selectPropertyValues() throws Exception {
-    final List<Object> result = dbProvider.getEntityDb().selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
+    final List<Object> result = DB_PROVIDER.getEntityDb().selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);
     assertTrue(result.contains("ACCOUNTING"));
     assertTrue(result.contains("SALES"));
     assertTrue(result.contains("RESEARCH"));
@@ -148,18 +148,18 @@ public class EntityDbConnectionTest {
 
     assertEquals("insert into " + EntityTestDomain.T_DETAIL
             + "(id, int, string, boolean, entity_id)"
-            + " values(1, 2, 'string', 1, 2)", EntityDbConnection.getInsertSQL(database, testEntity));
+            + " values(1, 2, 'string', 1, 2)", EntityDbConnection.getInsertSQL(DATABASE, testEntity));
 
     testEntity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
     testEntity.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
     testEntity.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
 
-    final String shortDateStringSql = database.getSQLDateString(dateValue, false);
-    final String longDateStringSql = database.getSQLDateString(timestampValue, true);
+    final String shortDateStringSql = DATABASE.getSQLDateString(dateValue, false);
+    final String longDateStringSql = DATABASE.getSQLDateString(timestampValue, true);
     assertEquals("insert into " + EntityTestDomain.T_DETAIL
             + "(id, int, double, string, date, timestamp, boolean, entity_id)"
             + " values(1, 2, 1.2, 'string', " + shortDateStringSql + ", " + longDateStringSql + ", 1, 2)",
-            EntityDbConnection.getInsertSQL(database, testEntity));
+            EntityDbConnection.getInsertSQL(DATABASE, testEntity));
   }
 
   @Test
@@ -168,10 +168,10 @@ public class EntityDbConnectionTest {
     testEntity.setValue(EntityTestDomain.DETAIL_ID, 1);
 
     assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
-            EntityDbConnection.getDeleteSQL(database, testEntity.getPrimaryKey()));
+            EntityDbConnection.getDeleteSQL(DATABASE, testEntity.getPrimaryKey()));
 
     assertEquals("delete from " + EntityTestDomain.T_DETAIL + " where (id = 1)",
-            EntityDbConnection.getDeleteSQL(database, new EntityCriteria(testEntity.getEntityID(),
+            EntityDbConnection.getDeleteSQL(DATABASE, new EntityCriteria(testEntity.getEntityID(),
                     new EntityKeyCriteria(testEntity.getPrimaryKey()))));
   }
 
@@ -194,7 +194,7 @@ public class EntityDbConnectionTest {
             stringValue, dateValue, timestampValue, booleanValue, referencedEntityValue);
 
     try {
-      EntityDbConnection.getUpdateSQL(database, testEntity);
+      EntityDbConnection.getUpdateSQL(DATABASE, testEntity);
       fail("Should get an exception when trying to get update sql of a non-modified entity");
     }
     catch (Exception e) {}
@@ -203,10 +203,10 @@ public class EntityDbConnectionTest {
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "newString");
     assertEquals( "update " + EntityTestDomain.T_DETAIL
             + " set int = 42, string = 'newString' where (id = 1)",
-            EntityDbConnection.getUpdateSQL(database, testEntity));
+            EntityDbConnection.getUpdateSQL(DATABASE, testEntity));
     testEntity.setValue(EntityTestDomain.DETAIL_STRING, "string");
     assertEquals("update " + EntityTestDomain.T_DETAIL + " set int = 42 where (id = 1)",
-            EntityDbConnection.getUpdateSQL(database, testEntity));
+            EntityDbConnection.getUpdateSQL(DATABASE, testEntity));
   }
 
   @Test

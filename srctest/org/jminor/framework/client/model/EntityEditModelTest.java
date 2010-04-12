@@ -28,12 +28,12 @@ import java.util.List;
 
 public class EntityEditModelTest {
 
-  private EmployeeModel employeeModel = new EmployeeModel(EntityDbConnectionTest.dbProvider);
+  private EmployeeModel employeeModel = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER);
 
   @Test
   public void test() throws Exception {
     try {
-      new EntityEditModel(null, EntityDbConnectionTest.dbProvider);
+      new EntityEditModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}

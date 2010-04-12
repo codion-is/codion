@@ -4,7 +4,6 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaValueProvider;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
 
@@ -64,7 +63,7 @@ public class EntityCriteria implements Serializable {
    * @param valueProvider responsible for providing the actual sql string values
    * @return a where condition based on this EntityCriteria
    */
-  public String asString(final Database database, final CriteriaValueProvider valueProvider) {
+  public String asString(final Database database, final Criteria.ValueProvider valueProvider) {
     return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause(database, valueProvider);
   }
 
@@ -73,7 +72,7 @@ public class EntityCriteria implements Serializable {
    * @param valueProvider responsible for providing the actual sql string values
    * @return the where clause
    */
-  public String getWhereClause(final Database database, final CriteriaValueProvider valueProvider) {
+  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider) {
     return getWhereClause(database, valueProvider, true);
   }
 
@@ -83,7 +82,7 @@ public class EntityCriteria implements Serializable {
    * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
-  public String getWhereClause(final Database database, final CriteriaValueProvider valueProvider, final boolean includeWhereKeyword) {
+  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider, final boolean includeWhereKeyword) {
     final String criteriaString = criteria == null ? "" : criteria.asString(database, valueProvider);
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";

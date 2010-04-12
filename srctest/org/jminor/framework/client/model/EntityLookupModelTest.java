@@ -28,7 +28,7 @@ public class EntityLookupModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityLookupModel(null, EntityDbConnectionTest.dbProvider, new ArrayList<Property>());
+      new EntityLookupModel(null, EntityDbConnectionTest.DB_PROVIDER, new ArrayList<Property>());
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -38,7 +38,7 @@ public class EntityLookupModelTest {
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider, null);
+      new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER, null);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -121,17 +121,17 @@ public class EntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
-    lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider,
+    lookupModel = new EntityLookupModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER,
             Arrays.asList(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB)));
 
-    EntityDbConnectionTest.dbProvider.getEntityDb().beginTransaction();
+    EntityDbConnectionTest.DB_PROVIDER.getEntityDb().beginTransaction();
     setupData();
   }
 
   @After
   public void tearDown() throws Exception {
-    EntityDbConnectionTest.dbProvider.getEntityDb().rollbackTransaction();
+    EntityDbConnectionTest.DB_PROVIDER.getEntityDb().rollbackTransaction();
   }
 
   private boolean contains(final List<Entity> result, final String employeeName) {
@@ -181,6 +181,6 @@ public class EntityLookupModelTest {
     emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
     emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    EntityDbConnectionTest.dbProvider.getEntityDb().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
+    EntityDbConnectionTest.DB_PROVIDER.getEntityDb().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }
 }

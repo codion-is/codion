@@ -22,7 +22,7 @@ public class BooleanPropertyLinkTest {
   private EntityEditModel model;
 
   public BooleanPropertyLinkTest() {
-    model = new ItemModel(EntityDbConnectionTest.dbProvider).getEditModel();
+    model = new ItemModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 
   @Test

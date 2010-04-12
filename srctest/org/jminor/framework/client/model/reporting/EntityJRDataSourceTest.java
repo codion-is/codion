@@ -19,7 +19,7 @@ public class EntityJRDataSourceTest {
 
   @Test
   public void test() throws Exception {
-    final List<Entity> entities = EntityDbConnectionTest.dbProvider.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> entities = EntityDbConnectionTest.DB_PROVIDER.getEntityDb().selectAll(EmpDept.T_DEPARTMENT);
     try {
       new EntityJRDataSource(null);
       fail();

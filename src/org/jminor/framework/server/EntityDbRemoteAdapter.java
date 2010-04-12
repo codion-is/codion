@@ -4,7 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DbConnectionProvider;
-import org.jminor.common.db.criteria.CriteriaValueProvider;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -723,7 +723,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return entries;
     }
 
-    public void logAccess(final String method, final Object[] arguments, final CriteriaValueProvider valueProvider) {
+    public void logAccess(final String method, final Object[] arguments, final Criteria.ValueProvider valueProvider) {
       this.lastAccessDate = System.currentTimeMillis();
       this.lastAccessedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
@@ -787,7 +787,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     private static String parameterArrayToString(final Database database, final Object[] arguments,
-                                                 final CriteriaValueProvider valueProvider) {
+                                                 final Criteria.ValueProvider valueProvider) {
       if (arguments == null)
         return "";
 
@@ -802,7 +802,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
 
     private static void parameterToString(final Database database, final Object arg, final StringBuilder destination,
-                                          final CriteriaValueProvider valueProvider) {
+                                          final Criteria.ValueProvider valueProvider) {
       if (arg instanceof Object[]) {
         if (((Object[]) arg).length > 0)
           destination.append("[").append(parameterArrayToString(database, (Object[]) arg, valueProvider)).append("]");

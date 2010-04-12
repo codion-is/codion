@@ -6,7 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.criteria.CriteriaValueProvider;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
@@ -52,7 +52,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
-  public static final CriteriaValueProvider ENTITY_SQL_VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
+  public static final Criteria.ValueProvider ENTITY_SQL_VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Type, ResultPacker> propertyResultPackers = new HashMap<Type, ResultPacker>();
@@ -459,7 +459,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
       stringBuilder.append(Util.getQueryString(property.getPropertyID(),
-              ENTITY_SQL_VALUE_PROVIDER.getSQLStringValue(database, property,
+              ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property,
                       valueProvider.getValue(property.getPropertyID()))));
       if (i++ < properties.size() - 1)
         stringBuilder.append(" and ");
@@ -481,7 +481,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getColumnName());
-      columnValues.append(ENTITY_SQL_VALUE_PROVIDER.getSQLStringValue(database, property, entity.getValue(property)));
+      columnValues.append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property, entity.getValue(property)));
       if (columnIndex++ < insertProperties.size() - 1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -508,7 +508,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       throw new DbException("No modified updatable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      sql.append(property.getColumnName()).append(" = ").append(ENTITY_SQL_VALUE_PROVIDER.getSQLStringValue(database,
+      sql.append(property.getColumnName()).append(" = ").append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database,
               property, entity.getValue(property)));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");

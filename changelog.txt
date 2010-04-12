@@ -1253,4 +1253,6 @@
   EntityDbUtil.getInsertProperties() and getUpdateProperties() moved to EntityDbConnection
   common.db.criteria.CriteriaValueProvider interface added
   Criteria.asString(), added CriteriaValueProvider parameter
+  CriteriaValueProvider moved and renamed to Criteria.ValueProvider
+  Criteria.ValueProvider.getSQLStringValue() renamed to getSQLString()
 0.5.3

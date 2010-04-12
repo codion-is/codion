@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.db.criteria.CriteriaValueProvider;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
@@ -21,12 +21,12 @@ import java.util.List;
  */
 public class CriteriaUtil {
 
-  private static CriteriaValueProvider valueProvider;
+  private static Criteria.ValueProvider valueProvider;
 
-  public static CriteriaValueProvider getCriteriaValueProvider() {
+  public static Criteria.ValueProvider getCriteriaValueProvider() {
     if (valueProvider == null)
-      valueProvider = new CriteriaValueProvider() {
-        public String getSQLStringValue(final Database database, final Object columnKey, final Object value) {
+      valueProvider = new Criteria.ValueProvider() {
+        public String getSQLString(final Database database, final Object columnKey, final Object value) {
           final Property property = (Property) columnKey;
           if (isValueNull(property, value))
             return "null";
@@ -57,8 +57,8 @@ public class CriteriaUtil {
               else
                 return getBooleanSQLString((Boolean) value);
             case ENTITY:
-              return value instanceof Entity ? getSQLStringValue(database, columnKey, ((Entity) value).getPrimaryKey().getFirstKeyValue())
-                      : getSQLStringValue(database, ((Entity.Key) value).getFirstKeyProperty(), ((Entity.Key) value).getFirstKeyValue());
+              return value instanceof Entity ? getSQLString(database, columnKey, ((Entity) value).getPrimaryKey().getFirstKeyValue())
+                      : getSQLString(database, ((Entity.Key) value).getFirstKeyProperty(), ((Entity.Key) value).getFirstKeyValue());
             default:
               throw new IllegalArgumentException("Undefined property type: " + property.getPropertyType());
           }

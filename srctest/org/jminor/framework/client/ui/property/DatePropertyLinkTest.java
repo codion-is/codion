@@ -26,7 +26,7 @@ public class DatePropertyLinkTest {
   private EntityEditModel model;
 
   public DatePropertyLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
+    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 
   @Test

@@ -14,11 +14,11 @@ public class EntityTableSearchModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityTableSearchModel(null, new DefaultTableColumnModel(), EntityDbConnectionTest.dbProvider, false);
+      new EntityTableSearchModel(null, new DefaultTableColumnModel(), EntityDbConnectionTest.DB_PROVIDER, false);
     }
     catch (IllegalArgumentException e) {}
     try {
-      new EntityTableSearchModel("entityID", null, EntityDbConnectionTest.dbProvider, false);
+      new EntityTableSearchModel("entityID", null, EntityDbConnectionTest.DB_PROVIDER, false);
     }
     catch (IllegalArgumentException e) {}
   }
@@ -26,7 +26,7 @@ public class EntityTableSearchModelTest {
   @Test
   public void test() {
     new EmpDept();
-    final EntityTableModel tableModel = new EntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.dbProvider);
+    final EntityTableModel tableModel = new EntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
     assertNotNull(model.getTableColumnModel());

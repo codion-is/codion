@@ -23,7 +23,7 @@ public class LookupPropertyLinkTest {
   private EntityEditModel model;
 
   public LookupPropertyLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
+    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 
   @Test
