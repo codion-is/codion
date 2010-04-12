@@ -16,7 +16,7 @@ public class SimpleCriteria implements Criteria {
     this.criteriaString = criteriaString;
   }
 
-  public String asString(final Database database) {
+  public String asString(final Database database, final CriteriaValueProvider valueProvider) {
     return criteriaString;
   }
 }

@@ -83,14 +83,14 @@ public class CriteriaSet implements Criteria, Serializable {
   }
 
   /** {@inheritDoc} */
-  public String asString(final Database database) {
+  public String asString(final Database database, final CriteriaValueProvider valueProvider) {
     if (criteriaList.size() == 0)
       return "";
 
     final StringBuilder criteriaString = new StringBuilder(criteriaList.size() > 1 ? "(" : "");
     int i = 0;
     for (final Criteria criteria : criteriaList) {
-      criteriaString.append(criteria.asString(database));
+      criteriaString.append(criteria.asString(database, valueProvider));
       if (i++ < criteriaList.size() - 1)
         criteriaString.append(conjunction.toString());
     }

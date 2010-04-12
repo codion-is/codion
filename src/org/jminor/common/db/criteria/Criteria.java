@@ -10,8 +10,9 @@ import org.jminor.common.db.dbms.Database;
  */
 public interface Criteria {
   /**
-   * @return a SQL where condition string without the 'where' keyword
-   * @param database the Database instance
+   * @return a SQL where condition string without the 'where' keyword  @param database the Database instance
+   * @param database the underlying Database
+   * @param valueProvider responsible for providing the actual sql string values
    */
-  String asString(final Database database);
+  String asString(final Database database, final CriteriaValueProvider valueProvider);
 }

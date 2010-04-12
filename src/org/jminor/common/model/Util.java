@@ -491,4 +491,8 @@ public class Util {
     return new StringBuilder(columnName).append(sqlStringValue.equalsIgnoreCase("null") ?
             " is " : " = ").append(sqlStringValue).toString();
   }
+
+  public static String sqlEscapeString(final String val) {
+    return val.replaceAll("'", "''");
+  }
 }

@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DbConnectionProvider;
+import org.jminor.common.db.criteria.CriteriaValueProvider;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -640,7 +641,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                 EntityDbConnection connection = null;
                 try {
                   active.add(EntityDbRemoteAdapter.this);
-                  methodLogger.logAccess(methodName, arguments);
+                  methodLogger.logAccess(methodName, arguments, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
 
                   return method.invoke(connection = getConnection(clientInfo.getUser()), arguments);
                 }
@@ -722,11 +723,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return entries;
     }
 
-    public void logAccess(final String method, final Object[] arguments) {
+    public void logAccess(final String method, final Object[] arguments, final CriteriaValueProvider valueProvider) {
       this.lastAccessDate = System.currentTimeMillis();
       this.lastAccessedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
-        this.lastAccessMessage = parameterArrayToString(database, arguments);
+        this.lastAccessMessage = parameterArrayToString(database, arguments, valueProvider);
         addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false, null);
       }
     }
@@ -785,13 +786,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return logEntries;
     }
 
-    private static String parameterArrayToString(final Database database, final Object[] arguments) {
+    private static String parameterArrayToString(final Database database, final Object[] arguments,
+                                                 final CriteriaValueProvider valueProvider) {
       if (arguments == null)
         return "";
 
       final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);//best guess ?
       for (int i = 0; i < arguments.length; i++) {
-        parameterToString(database, arguments[i], stringBuilder);
+        parameterToString(database, arguments[i], stringBuilder, valueProvider);
         if (i < arguments.length-1)
           stringBuilder.append(", ");
       }
@@ -799,17 +801,18 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return stringBuilder.toString();
     }
 
-    private static void parameterToString(final Database database, final Object arg, final StringBuilder destination) {
+    private static void parameterToString(final Database database, final Object arg, final StringBuilder destination,
+                                          final CriteriaValueProvider valueProvider) {
       if (arg instanceof Object[]) {
         if (((Object[]) arg).length > 0)
-          destination.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");
+          destination.append("[").append(parameterArrayToString(database, (Object[]) arg, valueProvider)).append("]");
       }
       else if (arg instanceof Collection) {
         if (((Collection) arg).size() > 0)
-          destination.append("[").append(parameterArrayToString(database, ((Collection) arg).toArray())).append("]");
+          destination.append("[").append(parameterArrayToString(database, ((Collection) arg).toArray(), valueProvider)).append("]");
       }
       else if (arg instanceof EntityCriteria)
-        destination.append(((EntityCriteria) arg).asString(database));
+        destination.append(((EntityCriteria) arg).asString(database, valueProvider));
       else if (arg instanceof Entity)
         destination.append(getEntityParameterString((Entity) arg));
       else if (arg instanceof JasperReport)

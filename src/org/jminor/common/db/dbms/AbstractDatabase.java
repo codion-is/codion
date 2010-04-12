@@ -3,8 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
-import java.util.Properties;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * A default abstract implementation of the Database interface.
