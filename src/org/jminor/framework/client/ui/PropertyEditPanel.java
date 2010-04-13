@@ -5,18 +5,11 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.combobox.BooleanComboBoxModel;
-import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.ui.DateInputPanel;
-import org.jminor.common.ui.TextInputPanel;
-import org.jminor.common.ui.textfield.DoubleField;
-import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.Configuration;
+import org.jminor.common.ui.input.InputValueProvider;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 
@@ -27,17 +20,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,7 +35,7 @@ public class PropertyEditPanel extends JPanel {
 
   private final Event evtButtonClicked = new Event();
 
-  private final InputManager inputManager;
+  private final InputValueProvider inputManager;
 
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
@@ -55,39 +43,21 @@ public class PropertyEditPanel extends JPanel {
   /**
    * Instantiates a new PropertyEditPanel
    * @param property the property to edit
-   * @param entities the entities
    */
-  public PropertyEditPanel(final Property property, final List<Entity> entities) {
-    this(property, entities, null);
+  public PropertyEditPanel(final Property property) {
+    this(property, null);
   }
 
   /**
    * Instantiates a new PropertyEditPanel
    * @param property the property to edit
-   * @param entities the entities
-   * @param editModel an EntityEditModel instance used in case of an Property.ForeignKeyProperty being edited,
-   * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
-   */
-  public PropertyEditPanel(final Property property, final List<Entity> entities, final EntityEditModel editModel) {
-    this(property, entities, editModel, null);
-  }
-
-  /**
-   * Instantiates a new PropertyEditPanel
-   * @param property the property to edit
-   * @param entities the entities
-   * @param editModel an EntityEditModel instance used in case of an Property.ForeignKeyProperty being edited,
-   * it provides both the EntityDbProvider as well as the EntityComboBoxModel used in that case
    * @param inputManager the InputManager to use, if no InputManager is specified a default one is used
    */
-  public PropertyEditPanel(final Property property, final List<Entity> entities, final EntityEditModel editModel,
-                           final InputManager inputManager) {
+  public PropertyEditPanel(final Property property, final InputValueProvider inputManager) {
     if (property == null)
       throw new IllegalArgumentException("Property must be specified");
-    if (property instanceof Property.ForeignKeyProperty && editModel == null)
-      throw new IllegalArgumentException("No EntityModel instance provided for foreign key property editor");
 
-    this.inputManager = inputManager != null ? inputManager : initializeInputManager(property, editModel, entities);
+    this.inputManager = inputManager;
     initUI(property.getCaption());
   }
 
@@ -125,30 +95,6 @@ public class PropertyEditPanel extends JPanel {
     add(btnBase, BorderLayout.SOUTH);
   }
 
-  protected InputManager initializeInputManager(final Property property, final EntityEditModel editModel,
-                                                final List<Entity> entities) {
-    final Collection<Object> values = EntityUtil.getDistinctPropertyValues(entities, property.getPropertyID());
-    final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    switch (property.getPropertyType()) {
-      case TIMESTAMP:
-        return new DateInputManager((Date) currentValue, Configuration.getDefaultTimestampFormat());
-      case DATE:
-        return new DateInputManager((Date) currentValue, Configuration.getDefaultDateFormat());
-      case DOUBLE:
-        return new DoubleInputManager((Double) currentValue);
-      case INT:
-        return new IntInputManager((Integer) currentValue);
-      case BOOLEAN:
-        return new BooleanInputManager((Boolean) currentValue);
-      case STRING:
-        return new TextInputManager(property, editModel, (String) currentValue);
-      case ENTITY:
-        return new EntityInputManager((Property.ForeignKeyProperty) property, editModel, (Entity) currentValue);
-    }
-
-    throw new IllegalArgumentException("Unsupported property type: " + property.getPropertyType());
-  }
-
   private JPanel createButtonPanel() {
     final JPanel panel = new JPanel(new GridLayout(1,2,5,5));
     panel.add(okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION));
@@ -170,102 +116,16 @@ public class PropertyEditPanel extends JPanel {
   }
 
   /**
-   * Specifies a generic class for retrieving a value from a UI component.
-   */
-  public static abstract class InputManager {
-    private final JComponent inputComponent;
-
-    public InputManager(final JComponent inputComponent) {
-      this.inputComponent = inputComponent;
-    }
-
-    public JComponent getInputComponent() {
-      return this.inputComponent;
-    }
-
-    protected abstract Object getValue();
-  }
-
-  /**
-   * A InputManager implementation for date values.
-   */
-  public static class DateInputManager extends InputManager {
-    public DateInputManager(final Date currentValue, final SimpleDateFormat dateFormat) {
-      super(EntityUiUtil.createDateInputPanel(currentValue, dateFormat));
-    }
-
-    @Override
-    protected Object getValue() {
-      try {
-        final String dateText = ((DateInputPanel) getInputComponent()).getInputField().getText();
-        if (!dateText.contains("_"))
-          return new Timestamp(((DateInputPanel) getInputComponent()).getDate().getTime());
-        else
-          return null;
-      }
-      catch (ParseException e) {
-        throw new RuntimeException("Wrong date format "
-                + ((DateInputPanel) getInputComponent()).getFormatPattern() + " expected");
-      }
-    }
-  }
-
-  /**
-   * A InputManager implementation for double values.
-   */
-  public static class DoubleInputManager extends InputManager {
-    public DoubleInputManager(final Double currentValue) {
-      super(new DoubleField());
-      if (currentValue != null)
-        ((DoubleField) getInputComponent()).setDouble(currentValue);
-    }
-
-    @Override
-    protected Object getValue() {
-      return ((DoubleField) getInputComponent()).getDouble();
-    }
-  }
-
-  public static class IntInputManager extends InputManager {
-    public IntInputManager(final Integer currentValue) {
-      super(new IntField());
-      if (currentValue != null)
-        ((IntField) getInputComponent()).setInt(currentValue);
-    }
-
-    @Override
-    protected Object getValue() {
-      return ((IntField) getInputComponent()).getInt();
-    }
-  }
-
-  /**
-   * A InputManager implementation for boolean values.
-   */
-  public static class BooleanInputManager extends InputManager {
-    public BooleanInputManager(final Boolean currentValue) {
-      super(new JComboBox(new BooleanComboBoxModel()));
-      if (currentValue != null)
-        ((JComboBox) getInputComponent()).setSelectedItem(currentValue);
-    }
-
-    @Override
-    protected Object getValue() {
-      return ((ItemComboBoxModel.Item) ((JComboBox) getInputComponent()).getModel().getSelectedItem()).getItem();
-    }
-  }
-
-  /**
    * A InputManager implementation for Entity values.
    */
-  public static class EntityInputManager extends InputManager {
-    public EntityInputManager(final Property.ForeignKeyProperty foreignKeyProperty, final EntityEditModel editModel,
-                              final Entity currentValue) {
+  public static class EntityInputProvider extends InputValueProvider {
+    public EntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final EntityEditModel editModel,
+                               final Entity currentValue) {
       super(createEntityField(foreignKeyProperty, editModel, currentValue));
     }
 
     @Override
-    protected Object getValue() {
+    public Object getValue() {
       if (getInputComponent() instanceof JComboBox) {
         if (((JComboBox) getInputComponent()).getSelectedIndex() == 0)
           return null;
@@ -317,29 +177,6 @@ public class PropertyEditPanel extends JPanel {
 
         return field;
       }
-    }
-  }
-
-  /**
-   * A InputManager implementation for String values.
-   */
-  public static class TextInputManager extends InputManager {
-    public TextInputManager(final Property property, final EntityEditModel editModel, final String currentValue) {
-      super(createTextInputPanel(property, editModel, currentValue));
-    }
-
-    @Override
-    protected Object getValue() {
-      return ((TextInputPanel) getInputComponent()).getText();
-    }
-
-    private static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
-                                                       final Object currentValue) {
-      final JTextField txtField = new JTextField(currentValue != null ? currentValue.toString() : "");
-      txtField.setColumns(16);
-      EntityUiUtil.addLookupDialog(txtField, editModel.getEntityID(), property, editModel.getDbProvider());
-
-      return new TextInputPanel(txtField, property.getCaption());
     }
   }
 }

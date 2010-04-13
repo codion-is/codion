@@ -25,6 +25,10 @@ public class DateInputPanel extends JPanel {
   private final SimpleDateFormat dateFormat;
   private JButton button;
 
+  public DateInputPanel(final Date initialValue, final SimpleDateFormat maskFormat) {
+    this(UiUtil.createFormattedField(maskFormat, initialValue), maskFormat, true, null);
+  }
+
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
                         final boolean includeButton, final State enabledState) {
     super(new BorderLayout());

@@ -20,10 +20,17 @@ import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.images.Images;
+import org.jminor.common.ui.input.BooleanInputProvider;
+import org.jminor.common.ui.input.DateInputProvider;
+import org.jminor.common.ui.input.DoubleInputProvider;
+import org.jminor.common.ui.input.InputValueProvider;
+import org.jminor.common.ui.input.IntInputProvider;
+import org.jminor.common.ui.input.TextInputProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.PropertyValueListProvider;
 import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
@@ -38,19 +45,7 @@ import net.sf.jasperreports.engine.JRException;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
@@ -71,15 +66,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -778,8 +765,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       return;
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedEntities());
-    final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, selectedEntities,
-            getEditModel(), getInputManager(propertyToUpdate, selectedEntities));
+    final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, getInputManager(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
             null, editPanel.getOkButton(), editPanel.eventButtonClicked());
     if (editPanel.isEditAccepted()) {
@@ -1727,8 +1713,29 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected PropertyEditPanel.InputManager getInputManager(final Property property, final List<Entity> toUpdate) {
-    return null;
+  protected InputValueProvider getInputManager(final Property property, final List<Entity> toUpdate) {
+    final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
+    final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
+    switch (property.getPropertyType()) {
+      case TIMESTAMP:
+        return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
+      case DATE:
+        return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
+      case DOUBLE:
+        return new DoubleInputProvider((Double) currentValue);
+      case INT:
+        return new IntInputProvider((Integer) currentValue);
+      case BOOLEAN:
+        return new BooleanInputProvider((Boolean) currentValue);
+      case STRING:
+        return new TextInputProvider(property.getCaption(), new PropertyValueListProvider(getModel().getDbProvider(),
+                getModel().getEntityID(), property.getPropertyID()), (String) currentValue);
+      case ENTITY:
+        return new PropertyEditPanel.EntityInputProvider((Property.ForeignKeyProperty) property,
+                getModel().getEditModel(), (Entity) currentValue);
+    }
+
+    throw new IllegalArgumentException("Unsupported property type: " + property.getPropertyType());
   }
 
   /**

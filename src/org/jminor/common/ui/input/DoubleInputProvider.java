@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.common.ui.input;
+
+import org.jminor.common.ui.textfield.DoubleField;
+
+/**
+   * A InputManager implementation for double values.
+*/
+public class DoubleInputProvider extends InputValueProvider {
+
+  public DoubleInputProvider(final Double currentValue) {
+    super(new DoubleField());
+    if (currentValue != null)
+      ((DoubleField) getInputComponent()).setDouble(currentValue);
+  }
+
+  @Override
+  public Object getValue() {
+    return ((DoubleField) getInputComponent()).getDouble();
+  }
+}

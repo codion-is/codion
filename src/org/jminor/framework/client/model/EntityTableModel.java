@@ -34,16 +34,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A TableModel implementation for displaying and working with entities.

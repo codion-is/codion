@@ -5,29 +5,16 @@ package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.ValueListProvider;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.KeyStroke;
-import javax.swing.RootPaneContainer;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -36,36 +23,16 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.net.URI;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A static utility class.
@@ -101,6 +68,7 @@ public class UiUtil {
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         txt.setText(Util.getMemoryUsageString());
       }
@@ -222,6 +190,14 @@ public class UiUtil {
     showInDialog(getParentWindow(parent), calendar, true, message, true, true, null);
 
     return new Date(calendar.getCalendar().getTimeInMillis());
+  }
+
+  public static JFormattedTextField createFormattedField(final SimpleDateFormat maskFormat, final Object initialValue) {
+    final JFormattedTextField txtField = createFormattedField(DateUtil.getDateMask(maskFormat));
+    if (initialValue != null)
+      txtField.setText(maskFormat.format(initialValue));
+
+    return txtField;
   }
 
   public static JFormattedTextField createFormattedField(final String mask) {
@@ -709,5 +685,79 @@ public class UiUtil {
     }
 
     return null;
+  }
+
+  public static void addLookupDialog(final JTextField txtField, final ValueListProvider valueListProvider) {
+    txtField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK), "valueLookup");
+    txtField.getActionMap().put("valueLookup", new AbstractAction() {
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final Object value = selectPropertyValue(txtField, valueListProvider.getValueList());
+          if (value != null)
+            txtField.setText(value.toString());
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    });
+  }
+
+  public static Object selectPropertyValue(final JComponent dialogOwner, List<?> values) {
+    final DefaultListModel listModel = new DefaultListModel();
+    for (final Object value : values)
+      listModel.addElement(value);
+
+    final JList list = new JList(new Vector<Object>(values));
+    final Window owner = getParentWindow(dialogOwner);
+    final JDialog dialog = new JDialog(owner, Messages.get(Messages.SELECT_VALUE));
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+      public void actionPerformed(ActionEvent e) {
+        dialog.dispose();
+      }
+    };
+    final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
+      public void actionPerformed(ActionEvent e) {
+        list.clearSelection();
+        dialog.dispose();
+      }
+    };
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    final JButton btnOk  = new JButton(okAction);
+    final JButton btnCancel = new JButton(cancelAction);
+    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+    btnOk.setMnemonic(okMnemonic.charAt(0));
+    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+    dialog.getRootPane().getActionMap().put("cancel", cancelAction);
+    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    list.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2)
+          okAction.actionPerformed(null);
+      }
+    });
+    dialog.setLayout(new BorderLayout());
+    final JScrollPane scroller = new JScrollPane(list);
+    dialog.add(scroller, BorderLayout.CENTER);
+    final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
+    buttonPanel.add(btnOk);
+    buttonPanel.add(btnCancel);
+    final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonBasePanel.add(buttonPanel);
+    dialog.getRootPane().setDefaultButton(btnOk);
+    dialog.add(buttonBasePanel, BorderLayout.SOUTH);
+    dialog.pack();
+    dialog.setLocationRelativeTo(owner);
+    dialog.setModal(true);
+    dialog.setResizable(true);
+    dialog.setVisible(true);
+
+    return list.getSelectedValue();
   }
 }

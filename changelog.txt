@@ -1266,3 +1266,7 @@
   ValueMapModelTest added
   LoadTestModel.updateTimer and updateInterval fields added
   EntityListModelTest added
+  PropertyEditPanel.InputManager renamed to InputValueProvider and moved to common.ui.input (along with descendants)
+  ValueListProvider added to common.model
+  PropertyValueListProvider added
+  EntityUiUtil.addLookupDialog() moved to UiUtil
