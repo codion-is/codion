@@ -22,7 +22,7 @@ public class DatabaseMonitor {
   private final Event evtStatsUpdateIntervalChanged = new Event();
 
   private final EntityDbServerAdmin server;
-  private final ConnectionPoolMonitor connectionPoolMonitor;
+  private final PoolMonitor poolMonitor;
   private final XYSeries queriesPerSecond = new XYSeries("Total per second");
   private final XYSeries cachedQueriesPerSecond = new XYSeries("Cached selects per second");
   private final XYSeries selectsPerSecond = new XYSeries("Selects per second");
@@ -36,7 +36,7 @@ public class DatabaseMonitor {
 
   public DatabaseMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
-    this.connectionPoolMonitor = new ConnectionPoolMonitor(server);
+    this.poolMonitor = new PoolMonitor(server);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);
     this.queriesPerSecondCollection.addSeries(cachedQueriesPerSecond);
     this.queriesPerSecondCollection.addSeries(selectsPerSecond);
@@ -59,14 +59,14 @@ public class DatabaseMonitor {
     return statsUpdateInterval;
   }
 
-  public ConnectionPoolMonitor getConnectionPoolMonitor() {
-    return connectionPoolMonitor;
+  public PoolMonitor getConnectionPoolMonitor() {
+    return poolMonitor;
   }
 
   public void shutdown() {
     if (updateTimer != null)
       updateTimer.cancel();
-    connectionPoolMonitor.shutdown();
+    poolMonitor.shutdown();
   }
 
   public void resetStats() {

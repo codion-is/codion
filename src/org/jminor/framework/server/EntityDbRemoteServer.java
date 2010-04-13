@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
@@ -103,8 +103,6 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     final String sid = database.getSid();
     if (host == null || host.length() == 0)
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
-    if (!database.isEmbedded() && (sid == null || sid.length() == 0))
-      throw new RuntimeException("Database sid must be specified (" + Database.DATABASE_SID + ")");
     if (!database.isEmbedded() && (port == null || port.length() == 0))
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
 
@@ -259,6 +257,9 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       log.warn(e);
     }
     removeConnections(false);
+    final String connectInfo = getServerName() + " removed from registry";
+    log.info(connectInfo);
+    System.out.println(connectInfo);
     if (database.isEmbedded())
       database.shutdownEmbedded(null);//todo does not work when shutdown requires user authentication
   }
@@ -358,7 +359,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   private void removeConnection(final ClientInfo client, final boolean logout) throws RemoteException {
     if (connections.containsKey(client)) {
-      log.info("Connection removed: " + client);
+      if (log.isDebugEnabled())
+        log.debug("Connection removed: " + client);
       final EntityDbRemoteAdapter adapter = connections.remove(client);
       if (logout)
         adapter.disconnect();
@@ -378,7 +380,8 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       }
     });
     connections.put(client, remoteAdapter);
-    log.info("Connection added: " + client);
+    if (log.isDebugEnabled())
+      log.debug("Connection added: " + client);
 
     return remoteAdapter;
   }

@@ -102,7 +102,7 @@ public class EntityUtilTest {
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
     assertTrue(emp1.propertyValuesEqual(parsedEntity));
-    assertTrue(parsedEntity.getModifiedState().isActive());
+    assertTrue(parsedEntity.stateModified().isActive());
     assertTrue(parsedEntity.isModified());
     assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_COMMISSION));
     assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_DEPARTMENT_FK));

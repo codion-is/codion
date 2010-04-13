@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.petstore.testing;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -25,7 +25,7 @@ import java.util.Collection;
 public class PetstoreLoadTest extends EntityLoadTestModel {
 
   public PetstoreLoadTest() {
-    super(new User("scott", "tiger"));
+    super(User.UNIT_TEST_USER);
   }
 
   @Override

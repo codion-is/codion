@@ -6,14 +6,16 @@ package org.jminor.framework.db;
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.IdSource;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.User;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.criteria.EntityCriteria;
@@ -49,6 +51,8 @@ import java.util.Set;
 public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
+
+  public static final Criteria.ValueProvider ENTITY_SQL_VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Type, ResultPacker> propertyResultPackers = new HashMap<Type, ResultPacker>();
@@ -118,7 +122,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public List<Entity> update(final List<Entity> entities) throws DbException, RecordModifiedException {
+  public List<Entity> update(final List<Entity> entities) throws DbException {
     if (entities.size() == 0)
       return entities;
 
@@ -159,7 +163,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (EntityRepository.isReadOnly(criteria.getEntityID()))
       throw new DbException("Can not delete a read only entity");
 
-    execute(Arrays.asList(getDeleteSql(getDatabase(), criteria)));
+    execute(Arrays.asList(getDeleteSQL(getDatabase(), criteria)));
   }
 
   /** {@inheritDoc} */
@@ -212,11 +216,11 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
       if (selectQuery == null) {
         final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = getSelectSql(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-                criteria.getWhereClause(getDatabase(), !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
+        sql = getSelectSQL(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
+                criteria.getWhereClause(getDatabase(), ENTITY_SQL_VALUE_PROVIDER, !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
       }
       else {
-        sql = selectQuery + " " + criteria.getWhereClause(getDatabase(), !selectQuery.toLowerCase().contains("where"));
+        sql = selectQuery + " " + criteria.getWhereClause(getDatabase(), ENTITY_SQL_VALUE_PROVIDER, !selectQuery.toLowerCase().contains("where"));
       }
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
@@ -245,7 +249,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       final Property property = EntityRepository.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      sql = getSelectSql(EntityRepository.getSelectTableName(entityID),
+      sql = getSelectSQL(EntityRepository.getSelectTableName(entityID),
               new StringBuilder("distinct ").append(columnName).toString(),
               new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
 
@@ -274,13 +278,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
       if (selectQuery == null) {
         final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = getSelectSql(datasource, "count(*)", criteria.getWhereClause(getDatabase(),
+        sql = getSelectSQL(datasource, "count(*)", criteria.getWhereClause(getDatabase(), ENTITY_SQL_VALUE_PROVIDER,
                 !datasource.toLowerCase().contains("where")), null);
 
       }
       else {
-        sql = getSelectSql("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(),
-                !selectQuery.toLowerCase().contains("where")) + ")", "count(*)", null, null);
+        sql = getSelectSQL("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(), ENTITY_SQL_VALUE_PROVIDER,
+                !selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
       }
 
       return queryInteger(sql);
@@ -373,7 +377,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
         final Property.BlobProperty property =
                 (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
-        final String whereCondition = EntityDbUtil.getWhereCondition(getDatabase(), primaryKey);
+        final String whereCondition = getWhereCondition(getDatabase(), primaryKey);
 
         execute(new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString());
@@ -401,11 +405,67 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               (Property.BlobProperty) EntityRepository.getProperty(primaryKey.getEntityID(), blobPropertyID);
 
       return readBlobField(EntityRepository.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
-              EntityDbUtil.getWhereCondition(getDatabase(), primaryKey));
+              getWhereCondition(getDatabase(), primaryKey));
     }
     catch (SQLException exception) {
       throw new DbException(exception, null, getDatabase().getErrorMessage(exception));
     }
+  }
+
+  /**
+   * Constructs a where condition based on the given primary key
+   * @param database the Database instance
+   * @param entityKey the EntityKey instance
+   * @return a where clause using this EntityKey instance, without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
+   */
+  public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
+    return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
+      public Object getValue(final Object propertyID) {
+        return entityKey.getValue((String) propertyID);
+      }
+    });
+  }
+
+  /**
+   * Constructs a where condition based on the primary key of the given entity, using the
+   * original property values. This method should be used when updating an entity in case
+   * a primary key property value has changed, hence using the original value.
+   * @param database the Database instance
+   * @param entity the Entity instance
+   * @return a where clause specifying this entity instance, without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
+   */
+  public static String getWhereCondition(final Database database, final Entity entity) {
+    return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {
+      public Object getValue(final Object propertyID) {
+        return entity.getOriginalValue((String) propertyID);
+      }
+    });
+  }
+
+  /**
+   * Constructs a where condition based on the given primary key properties and the values provide by <code>valueProvider</code>
+   * @param database the Database instance
+   * @param properties the properties to use when constructing the condition
+   * @param valueProvider the value provider
+   * @return a where clause according to the given properties and the values provided by <code>valueProvider</code>,
+   * without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple properties "(idCol1 = 42) and (idCol2 = 24)"
+   */
+  public static String getWhereCondition(final Database database, final List<Property.PrimaryKeyProperty> properties,
+                                         final ValueProvider valueProvider) {
+    final StringBuilder stringBuilder = new StringBuilder("(");
+    int i = 0;
+    for (final Property.PrimaryKeyProperty property : properties) {
+      stringBuilder.append(Util.getQueryString(property.getPropertyID(),
+              ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property,
+                      valueProvider.getValue(property.getPropertyID()))));
+      if (i++ < properties.size() - 1)
+        stringBuilder.append(" and ");
+    }
+
+    return stringBuilder.append(")").toString();
   }
 
   /**
@@ -417,12 +477,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final StringBuilder sql = new StringBuilder("insert into ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
-    final Collection<Property> insertProperties = EntityDbUtil.getInsertProperties(entity);
+    final Collection<Property> insertProperties = getInsertProperties(entity);
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getColumnName());
-      columnValues.append(EntityDbUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
-      if (columnIndex++ < insertProperties.size()-1) {
+      columnValues.append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property, entity.getValue(property)));
+      if (columnIndex++ < insertProperties.size() - 1) {
         sql.append(", ");
         columnValues.append(", ");
       }
@@ -443,18 +503,18 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(EntityRepository.getTableName(entity.getEntityID())).append(" set ");
-    final Collection<Property> properties = EntityDbUtil.getUpdateProperties(entity);
+    final Collection<Property> properties = getUpdateProperties(entity);
     if (properties.size() == 0)
       throw new DbException("No modified updatable properties found in entity: " + entity);
     int columnIndex = 0;
     for (final Property property : properties) {
-      sql.append(property.getColumnName()).append(" = ").append(
-              EntityDbUtil.getSQLStringValue(database, property, entity.getValue(property.getPropertyID())));
+      sql.append(property.getColumnName()).append(" = ").append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database,
+              property, entity.getValue(property)));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
 
-    return sql.append(" where ").append(EntityDbUtil.getWhereCondition(database, entity)).toString();
+    return sql.append(" where ").append(getWhereCondition(database, entity)).toString();
   }
 
   /**
@@ -463,8 +523,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @return a query for deleting the entity having the given primary key
    */
   static String getDeleteSQL(final Database database, final Entity.Key entityKey) {
-    return new StringBuilder("delete from ").append(EntityRepository.getTableName(entityKey.getEntityID()))
-            .append(" where ").append(EntityDbUtil.getWhereCondition(database, entityKey)).toString();
+    return getDeleteSQL(database, new EntityCriteria(entityKey.getEntityID(), new EntityKeyCriteria(entityKey)));
   }
 
   /**
@@ -472,9 +531,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param criteria the EntityCriteria instance
    * @return a query for deleting the entities specified by the given criteria
    */
-  static String getDeleteSql(final Database database, final EntityCriteria criteria) {
-    return new StringBuilder("delete ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
-            .append(criteria.getWhereClause(database)).toString();
+  static String getDeleteSQL(final Database database, final EntityCriteria criteria) {
+    return new StringBuilder("delete from ").append(EntityRepository.getTableName(criteria.getEntityID())).append(" ")
+            .append(criteria.getWhereClause(database, ENTITY_SQL_VALUE_PROVIDER)).toString();
   }
 
   /**
@@ -486,7 +545,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * "col1, col2" as input results in the following order by clause "order by col1, col2"
    * @return the generated sql query
    */
-  static String getSelectSql(final String table, final String columns, final String whereCondition,
+  static String getSelectSQL(final String table, final String columns, final String whereCondition,
                              final String orderByClause) {
     final StringBuilder sql = new StringBuilder("select ");
     sql.append(columns);
@@ -500,6 +559,35 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     }
 
     return sql.toString();
+  }
+
+  /**
+   * Returns the properties used when inserting an instance of this entity, leaving out properties with null values
+   * @param entity the entity
+   * @return the properties used to insert the given entity type
+   */
+  static Collection<Property> getInsertProperties(final Entity entity) {
+    final Collection<Property> properties = new ArrayList<Property>();
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
+            EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
+      if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.getPropertyID()))
+        properties.add(property);
+    }
+
+    return properties;
+  }
+
+  /**
+   * @param entity the Entity instance
+   * @return the properties used to update this entity, modified properties that is
+   */
+  static Collection<Property> getUpdateProperties(final Entity entity) {
+    final List<Property> properties = new ArrayList<Property>();
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, false, false))
+      if (entity.isModified(property.getPropertyID()) && !(property instanceof Property.ForeignKeyProperty))
+        properties.add(property);
+
+    return properties;
   }
 
   private void execute(final List<String> statements) throws DbException {
@@ -531,9 +619,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @throws RecordNotFoundException in case the entity has been deleted
    * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified
    */
-  private void checkIfModified(final Entity entity) throws DbException, RecordModifiedException {
+  private void checkIfModified(final Entity entity) throws DbException {
     final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
-            new SimpleCriteria(EntityDbUtil.getWhereCondition(getDatabase(), entity))));
+            new SimpleCriteria(getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))
       throw new RecordModifiedException(entity, current);
   }

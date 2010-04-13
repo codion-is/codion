@@ -28,7 +28,7 @@ public class EntityModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityModel(null, EntityDbConnectionTest.dbProvider);
+      new EntityModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (IllegalArgumentException e) {}
@@ -99,7 +99,7 @@ public class EntityModelTest {
 
   @Before
   public void setUp() throws Exception {
-    departmentModel = new DepartmentModel(EntityDbConnectionTest.dbProvider);
+    departmentModel = new DepartmentModel(EntityDbConnectionTest.DB_PROVIDER);
   }
 
   private boolean containsAll(List<Entity> employees, List<Entity> employeesFromModel) {

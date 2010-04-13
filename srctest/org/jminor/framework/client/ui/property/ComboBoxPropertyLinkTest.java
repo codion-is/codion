@@ -22,7 +22,7 @@ public class ComboBoxPropertyLinkTest {
   private EntityEditModel model;
 
   public ComboBoxPropertyLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
+    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 
   @Test

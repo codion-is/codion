@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petstore.client;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;

@@ -4,9 +4,9 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DatabaseStatistics;
-import org.jminor.common.db.User;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.domain.EntityDefinition;
@@ -119,6 +119,24 @@ public interface EntityDbServerAdmin extends Remote {
    * @throws RemoteException in case of a communication error
    */
   String getMemoryUsage() throws RemoteException;
+
+  /**
+   * @return the total amount of memory allocated by the server process
+   * @throws RemoteException in case of a communication error
+   */
+  long getAllocatedMemory() throws RemoteException;
+
+  /**
+   * @return the amount of memory being used by the server process
+   * @throws RemoteException in case of a communication error
+   */
+  long getUsedMemory() throws RemoteException;
+
+  /**
+   * @return the maximum amount of memory available to the server process
+   * @throws RemoteException in case of a communication error
+   */
+  long getMaxMemory() throws RemoteException;
 
   /**
    * Performs garbage collection

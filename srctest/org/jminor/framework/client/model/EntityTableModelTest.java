@@ -46,7 +46,7 @@ public class EntityTableModelTest {
   @Test
   public void testConstructor() {
     try {
-      new EntityTableModel(null, EntityDbConnectionTest.dbProvider);
+      new EntityTableModel(null, EntityDbConnectionTest.DB_PROVIDER);
       fail();
     }
     catch (Exception e) {}
@@ -237,7 +237,7 @@ public class EntityTableModelTest {
 
   public static class EntityTableModelTmp extends EntityTableModel {
     public EntityTableModelTmp() {
-      super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.dbProvider);
+      super(EntityTestDomain.T_DETAIL, EntityDbConnectionTest.DB_PROVIDER);
     }
 
     @Override

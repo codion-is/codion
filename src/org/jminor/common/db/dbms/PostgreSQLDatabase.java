@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,21 +71,15 @@ public class PostgreSQLDatabase extends AbstractDatabase {
     return "jdbc:postgresql://" + host + ":" + port + "/" + sid;
   }
 
-  /** {@inheritDoc} */
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  /** {@inheritDoc} */
+  /**
+   * @return false
+   */
   public boolean supportsIsValid() {
     return false;
   }
 
   /** {@inheritDoc} */
-  public String getErrorMessage(final SQLException exception) {
-    return exception.getMessage();
+  public String getCheckConnectionQuery() {
+    return "select 1";
   }
 }

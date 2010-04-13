@@ -21,7 +21,7 @@ public class TextPropertyLinkTest {
   private EntityEditModel model;
 
   public TextPropertyLinkTest() {
-    model = new EmployeeModel(EntityDbConnectionTest.dbProvider).getEditModel();
+    model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 
   @Test

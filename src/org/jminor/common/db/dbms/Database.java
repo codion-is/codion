@@ -186,6 +186,15 @@ public interface Database {
   boolean supportsIsValid();
 
   /**
+   * Returns a query to use when checking if the connection is valid,
+   * this is used in cases where the dbms does not support the isValid() call.
+   * Returning null is safe if isValid() is supported.
+   * @return a check connection query
+   * @see #supportsIsValid()
+   */
+  String getCheckConnectionQuery();
+
+  /**
    * Returns a user friendly error message for the given exception,
    * otherwise simply return the message from <code>exception</code>
    * @param exception the underlying SQLException

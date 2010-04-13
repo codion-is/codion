@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.DefaultExceptionHandler;

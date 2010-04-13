@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server.monitor;
+package org.jminor.common.db.pool.monitor;
 
-import org.jminor.common.db.User;
+import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
-import org.jminor.framework.server.EntityDbServerAdmin;
+import org.jminor.common.model.User;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -27,7 +27,7 @@ import java.util.TimerTask;
  * Date: 4.12.2007
  * Time: 18:20:24
  */
-public class ConnectionPoolInstanceMonitor {
+public class ConnectionPoolMonitor {
 
   private final Event evtStatsUpdated = new Event();
   private final Event evtStatsUpdateIntervalChanged = new Event();
@@ -35,7 +35,7 @@ public class ConnectionPoolInstanceMonitor {
   private final Event evtRefresh = new Event();
 
   private final User user;
-  private final EntityDbServerAdmin server;
+  private final ConnectionPool pool;
   private ConnectionPoolSettings poolSettings;
   private ConnectionPoolStatistics poolStats;
 
@@ -54,11 +54,10 @@ public class ConnectionPoolInstanceMonitor {
   private Timer updateTimer;
   private int statsUpdateInterval;
 
-  public ConnectionPoolInstanceMonitor(final User user, final EntityDbServerAdmin server) throws RemoteException {
-    System.out.println("new ConnectionPoolInstanceMonitor for user: " + user);
+  public ConnectionPoolMonitor(final User user, final ConnectionPool pool) throws RemoteException {
     this.user = user;
-    this.server = server;
-    this.poolSettings = server.getConnectionPoolSettings(user);
+    this.pool = pool;
+    this.poolSettings = pool.getConnectionPoolSettings();
     this.macroStatsCollection.addSeries(inPoolSeriesMacro);
     this.macroStatsCollection.addSeries(inUseSeriesMacro);
     this.macroStatsCollection.addSeries(poolSizeSeries);
@@ -79,14 +78,14 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public int getPooledConnectionTimeout() throws RemoteException {
-    return server.getConnectionPoolSettings(user).getPooledConnectionTimeout() / 1000;
+    return pool.getConnectionPoolSettings().getPooledConnectionTimeout() / 1000;
   }
 
   public void setPooledConnectionTimeout(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
+    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
     settings.setPooledConnectionTimeout(value * 1000);
-    server.setConnectionPoolSettings(settings);
-    this.poolSettings = settings;
+    pool.setConnectionPoolSettings(settings);
+    poolSettings = settings;
   }
 
   public int getMinimumPoolSize() {
@@ -94,10 +93,10 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public void setMinimumPoolSize(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
+    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
     settings.setMinimumPoolSize(value);
-    server.setConnectionPoolSettings(settings);
-    this.poolSettings = settings;
+    pool.setConnectionPoolSettings(settings);
+    poolSettings = settings;
   }
 
   public int getMaximumPoolSize() {
@@ -105,10 +104,10 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public void setMaximumPoolSize(final int value) throws RemoteException {
-    final ConnectionPoolSettings settings = server.getConnectionPoolSettings(user);
+    final ConnectionPoolSettings settings = pool.getConnectionPoolSettings();
     settings.setMaximumPoolSize(value);
-    server.setConnectionPoolSettings(settings);
-    this.poolSettings = settings;
+    pool.setConnectionPoolSettings(settings);
+    poolSettings = settings;
   }
 
   public boolean datasetContainsData() {
@@ -134,7 +133,7 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public void resetStats() throws RemoteException {
-    server.resetConnectionPoolStatistics(user);
+    pool.resetPoolStatistics();
   }
 
   public void resetInPoolStats() {
@@ -148,17 +147,17 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public void setCollectFineGrainedStats(final boolean value) throws RemoteException {
-    server.setCollectFineGrainedPoolStatistics(user, value);
+    pool.setCollectFineGrainedStatistics(value);
     evtCollectFineGrainedStatsChanged.fire();
   }
 
   public boolean isCollectFineGrainedStats() throws RemoteException {
-    return server.isCollectFineGrainedPoolStatistics(user);
+    return pool.isCollectFineGrainedStatistics();
   }
 
   public void setStatsUpdateInterval(final int value) {
     if (value != this.statsUpdateInterval) {
-      this.statsUpdateInterval = value;
+      statsUpdateInterval = value;
       evtStatsUpdateIntervalChanged.fire();
       startUpdateTimer(value * 1000);
     }
@@ -169,7 +168,6 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   public void shutdown() {
-    System.out.println("ConnectionPoolInstanceMonitor shutdown: " + user);
     if (updateTimer != null)
       updateTimer.cancel();
   }
@@ -191,7 +189,7 @@ public class ConnectionPoolInstanceMonitor {
   }
 
   private void updateStats() throws RemoteException {
-    poolStats = server.getConnectionPoolStatistics(user, lastStatsUpdateTime);
+    poolStats = pool.getConnectionPoolStatistics(lastStatsUpdateTime);
     lastStatsUpdateTime = poolStats.getTimestamp();
     poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getLiveConnectionCount());
     minimumPoolSizeSeries.add(poolStats.getTimestamp(), poolSettings.getMinimumPoolSize());

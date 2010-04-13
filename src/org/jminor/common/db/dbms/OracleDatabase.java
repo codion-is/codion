@@ -93,17 +93,16 @@ public class OracleDatabase extends AbstractDatabase {
     return "jdbc:oracle:thin:@" + host + ":" + port + ":" + sid;
   }
 
-  /** {@inheritDoc} */
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    return null;
+  /**
+   * @return false
+   */
+  public boolean supportsIsValid() {
+    return false;
   }
 
   /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  /** {@inheritDoc} */
-  public boolean supportsIsValid() {
-    return false;
+  public String getCheckConnectionQuery() {
+    return "select 1 from dual";
   }
 
   /** {@inheritDoc} */

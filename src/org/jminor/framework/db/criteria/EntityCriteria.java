@@ -60,27 +60,30 @@ public class EntityCriteria implements Serializable {
   /**
    * Returns a where condition based on this EntityCriteria
    * @param database the Database instance
+   * @param valueProvider responsible for providing the actual sql string values
    * @return a where condition based on this EntityCriteria
    */
-  public String asString(final Database database) {
-    return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause(database);
+  public String asString(final Database database, final Criteria.ValueProvider valueProvider) {
+    return EntityRepository.getTableName(getEntityID()) + " " + getWhereClause(database, valueProvider);
   }
 
   /**
    * @param database the Database instance
+   * @param valueProvider responsible for providing the actual sql string values
    * @return the where clause
    */
-  public String getWhereClause(final Database database) {
-    return getWhereClause(database, true);
+  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider) {
+    return getWhereClause(database, valueProvider, true);
   }
 
   /**
    * @param database the Database instance
+   * @param valueProvider responsible for providing the actual sql string values
    * @param includeWhereKeyword if false AND is used instead of the WHERE keyword
    * @return a where clause base on this criteria
    */
-  public String getWhereClause(final Database database, final boolean includeWhereKeyword) {
-    final String criteriaString = criteria == null ? "" : criteria.asString(database);
+  public String getWhereClause(final Database database, final Criteria.ValueProvider valueProvider, final boolean includeWhereKeyword) {
+    final String criteriaString = criteria == null ? "" : criteria.asString(database, valueProvider);
 
     return criteriaString.length() > 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
   }

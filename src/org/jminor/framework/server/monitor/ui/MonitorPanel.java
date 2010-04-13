@@ -16,10 +16,12 @@ import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.MonitorModel;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
 /**
@@ -77,6 +79,7 @@ public class MonitorPanel extends JPanel {
     for (final HostMonitor hostMonitor : model.getHostMonitors())
       hostPane.addTab(hostMonitor.getHostName(), new HostMonitorPanel(hostMonitor));
     add(hostPane, BorderLayout.CENTER);
+    add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
   private ControlSet initMainMenuControlSets() {
@@ -110,6 +113,14 @@ public class MonitorPanel extends JPanel {
 
   private Control initExitControl() {
     return ControlFactory.methodControl(this, "exit", "Exit", null, null, 'X');
+  }
+
+  private JPanel initializeSouthPanel() {
+    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    southPanel.add(new JLabel("Memory usage:"));
+    southPanel.add(UiUtil.createMemoryUsageField(2000));
+
+    return southPanel;
   }
 
   public static void main(final String[] arguments) {

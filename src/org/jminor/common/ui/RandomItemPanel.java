@@ -5,18 +5,17 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.RandomItemModel;
 import org.jminor.common.ui.control.AbstractPropertyLink;
-import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.textfield.IntField;
+import org.jminor.common.ui.layout.FlexibleGridLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
 
 /**
  * A default UI for the RandomItemModel.
@@ -37,14 +36,20 @@ public class RandomItemPanel extends JPanel {
     initializeUI();
   }
 
+  public RandomItemModel getModel() {
+    return model;
+  }
+
   /**
    * Initializes the UI
    */
   protected void initializeUI() {
     final int count = model.getItemCount();
-    setLayout(new GridLayout(count, 1, 0, 0));
-    for (final RandomItemModel.RandomItem item : model.getItems())
+    setLayout(new FlexibleGridLayout(count * 2, 1, 5, 5, true, false));
+    for (final RandomItemModel.RandomItem item : getModel().getItems()) {
+      add(new JLabel(item.getItem().toString()));
       add(initializeWeightPanel(item));
+    }
   }
 
   /**
@@ -54,77 +59,45 @@ public class RandomItemPanel extends JPanel {
    */
   protected JPanel initializeWeightPanel(final RandomItemModel.RandomItem item) {
     final JPanel panel = new JPanel(new BorderLayout(0, 0));
-
-    panel.add(initializeDisplayField(item), BorderLayout.CENTER);
-    panel.add(initializeWeightControlPanel(item), BorderLayout.EAST);
-    panel.setBorder(BorderFactory.createTitledBorder(item.getItem().toString()));
+    final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
+    spinner.setToolTipText(item.getItem().toString());
+    panel.add(spinner, BorderLayout.CENTER);
 
     return panel;
   }
 
   /**
-   * Returns a JTextField bound to the weight of the given item
+   * Returns a SpinnerModel for controlling the weight of the given item.
    * @param item the item
-   * @return a JTextField displaying the weight value of the given item
+   * @return a weight controlling SpinnerModel
    */
-  protected JTextField initializeDisplayField(final RandomItemModel.RandomItem item) {
-    final IntField txtValue = new IntField();
-    txtValue.setToolTipText(item.getItem().toString());
-    txtValue.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    txtValue.setHorizontalAlignment(JTextField.CENTER);
-    txtValue.setEditable(false);
-    new AbstractPropertyLink(model, model.eventWeightsChanged(), LinkType.READ_ONLY) {
+  private SpinnerModel createWeightSpinnerModel(final Object item) {
+    final SpinnerModel spinnerModel = new SpinnerNumberModel(getModel().getWeight(item), 0, Integer.MAX_VALUE, 1);
+    final AbstractPropertyLink propertyLink = new AbstractPropertyLink(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
       @Override
       public Object getModelPropertyValue() {
-        return model.getWeight(item.getItem());
+        return getModel().getWeight(item);
       }
       @Override
       protected Object getUIPropertyValue() {
-        return txtValue.getInt();
+        return spinnerModel.getValue();
       }
       @Override
-      public void setModelPropertyValue(final Object value) {}
+      public void setModelPropertyValue(final Object value) {
+        getModel().setWeight(item, (Integer) value);
+      }
       @Override
       protected void setUIPropertyValue(final Object propertyValue) {
-        txtValue.setInt((Integer) propertyValue);
+        spinnerModel.setValue(propertyValue);
       }
-    }.updateUI();
-
-    return txtValue;
-  }
-
-  /**
-   * Returns a JPanel containing controls for adjusting the weight of the given item
-   * @param item the item
-   * @return a control panel for the item weight
-   */
-  protected JPanel initializeWeightControlPanel(final RandomItemModel.RandomItem item) {
-    final JPanel btnPanel = new JPanel(new GridLayout(1, 2, 0, 0));
-    btnPanel.add(initializeWeightButton(item, false));
-    btnPanel.add(initializeWeightButton(item, true));
-
-    return btnPanel;
-  }
-
-  /**
-   * Returns a JButton for either incrementing or decrementing the weight of the given item.
-   * @param item the item
-   * @param increment if true then a 'increment' button is returned otherwise a 'decrement' button
-   * @return a button for adjusting the item weight
-   */
-  protected JButton initializeWeightButton(final RandomItemModel.RandomItem item, final boolean increment) {
-    final JButton btn = new JButton(new Control(increment ? "+" : "-") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (increment)
-          model.increment(item.getItem());
-        else
-          model.decrement(item.getItem());
+    };
+    propertyLink.updateUI();
+    spinnerModel.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent e) {
+        propertyLink.updateModel();
       }
     });
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    btn.setMargin(new Insets(0, 0, 0, 0));
 
-    return btn;
+    return spinnerModel;
   }
 }

@@ -5,8 +5,8 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbConnectionProvider;
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.Database;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -36,25 +36,16 @@ public class DbConnectionPool implements ConnectionPool {
   private final Set<DbConnection> connectionsInUse = new HashSet<DbConnection>();
 
   private final List<ConnectionPoolState> connectionPoolStatistics = new ArrayList<ConnectionPoolState>(1000);
-  private final Date creationDate = new Date();
-  private Date resetDate = new Date();
+
+  private int connectionPoolStatisticsIndex = 0;
   private ConnectionPoolSettings connectionPoolSettings;
   private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "true").equalsIgnoreCase("true");
-  private int connectionPoolStatisticsIndex = 0;
-  private int liveConnections = 0;
-  private int connectionsCreated = 0;
-  private int connectionsDestroyed = 0;
-  private int connectionRequests = 0;
-  private int connectionRequestsDelayed = 0;
-  private int requestsDelayedPerSecond = 0;
-  private int requestsDelayedPerSecondCounter = 0;
-  private int requestsPerSecond = 0;
-  private int requestsPerSecondCounter = 0;
-  private long requestsPerSecondTime = System.currentTimeMillis();
 
   private final DbConnectionProvider dbConnectionProvider;
   private boolean closed = false;
   private int poolStatisticsSize = 1000;
+
+  private final Counter counter = new Counter();
 
   public DbConnectionPool(final DbConnectionProvider dbConnectionProvider, final ConnectionPoolSettings settings) {
     this.dbConnectionProvider = dbConnectionProvider;
@@ -65,25 +56,19 @@ public class DbConnectionPool implements ConnectionPool {
         cleanPool();
       }
     }, new Date(), settings.getPoolCleanupInterval());
-    new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        updateStatistics();
-      }
-    }, new Date(), 2550);
   }
 
   public DbConnection checkOutConnection() throws ClassNotFoundException, SQLException {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
-    incrementRequestCounter();
+    counter.incrementRequestCounter();
     DbConnection connection = getConnectionFromPool();
     if (connection == null) {
-      incrementDelayedRequestCounter();
+      counter.incrementDelayedRequestCounter();
       synchronized (connectionPool) {
-        if (liveConnections < connectionPoolSettings.getMaximumPoolSize()) {
-          incrementConnectionsCreatedCounter();
+        if (counter.getLiveConnections() < connectionPoolSettings.getMaximumPoolSize()) {
+          counter.incrementConnectionsCreatedCounter();
           if (log.isDebugEnabled())
             log.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
           checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
@@ -114,7 +99,7 @@ public class DbConnectionPool implements ConnectionPool {
 
   public void checkInConnection(final DbConnection connection) {
     if (closed)
-      throw new IllegalStateException("Trying to check a connection into a closed connection pool!");
+      disconnect(connection);
 
     synchronized (connectionPool) {
       synchronized (connectionsInUse) {
@@ -167,15 +152,15 @@ public class DbConnectionPool implements ConnectionPool {
         statistics.setAvailableInPool(connectionPool.size());
       }
     }
-    statistics.setLiveConnectionCount(liveConnections);
-    statistics.setConnectionsCreated(connectionsCreated);
-    statistics.setConnectionsDestroyed(connectionsDestroyed);
-    statistics.setCreationDate(creationDate);
-    statistics.setConnectionRequests(connectionRequests);
-    statistics.setConnectionRequestsDelayed(connectionRequestsDelayed);
-    statistics.setRequestsDelayedPerSecond(requestsDelayedPerSecond);
-    statistics.setRequestsPerSecond(requestsPerSecond);
-    statistics.setResetDate(resetDate);
+    statistics.setLiveConnectionCount(counter.getLiveConnections());
+    statistics.setConnectionsCreated(counter.getConnectionsCreated());
+    statistics.setConnectionsDestroyed(counter.getConnectionsDestroyed());
+    statistics.setCreationDate(counter.getCreationDate());
+    statistics.setConnectionRequests(counter.getConnectionRequests());
+    statistics.setConnectionRequestsDelayed(counter.getConnectionRequestsDelayed());
+    statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
+    statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
+    statistics.setResetDate(counter.getResetDate());
     statistics.setTimestamp(System.currentTimeMillis());
     if (since >= 0)
       statistics.setPoolStatistics(getPoolStatistics(since));
@@ -210,11 +195,7 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   public void resetPoolStatistics() {
-    connectionsCreated = 0;
-    connectionsDestroyed = 0;
-    connectionRequests = 0;
-    connectionRequestsDelayed = 0;
-    resetDate = new Date();
+    counter.resetPoolStatistics();
   }
 
   private DbConnection getConnectionFromPool() {
@@ -255,7 +236,7 @@ public class DbConnectionPool implements ConnectionPool {
           iterator.remove();
           if (log.isDebugEnabled())
             log.debug(getConnectionPoolSettings().getUser() + " removing connection from pool, idle for " + idleTime / 1000
-                  + " seconds, " + connectionPool.size() + " available");
+                    + " seconds, " + connectionPool.size() + " available");
           disconnect(connection);
         }
       }
@@ -270,35 +251,108 @@ public class DbConnectionPool implements ConnectionPool {
   }
 
   private void disconnect(final DbConnection connection) {
-    connectionsDestroyed++;
-    liveConnections--;
+    if (connection == null)
+      return;
+
+    counter.incrementConnectionsDestroyedCounter();
     connection.disconnect();
   }
 
-  private void updateStatistics() {
-    final long current = System.currentTimeMillis();
-    final double seconds = (current - requestsPerSecondTime) / 1000;
-    if (seconds > 5) {
+  private static class Counter {
+    private final Date creationDate = new Date();
+    private Date resetDate = new Date();
+    private int liveConnections = 0;
+    private int connectionsCreated = 0;
+    private int connectionsDestroyed = 0;
+    private int connectionRequests = 0;
+    private int connectionRequestsDelayed = 0;
+    private int requestsDelayedPerSecond = 0;
+    private int requestsDelayedPerSecondCounter = 0;
+    private int requestsPerSecond = 0;
+    private int requestsPerSecondCounter = 0;
+    private long requestsPerSecondTime = System.currentTimeMillis();
+
+    public Counter() {
+      new Timer(true).schedule(new TimerTask() {
+        @Override
+        public void run() {
+          updateStatistics();
+        }
+      }, new Date(), 5000);
+    }
+
+    public Date getCreationDate() {
+      return creationDate;
+    }
+
+    public Date getResetDate() {
+      return resetDate;
+    }
+
+    public int getConnectionRequests() {
+      return connectionRequests;
+    }
+
+    public int getConnectionRequestsDelayed() {
+      return connectionRequestsDelayed;
+    }
+
+    public int getConnectionsCreated() {
+      return connectionsCreated;
+    }
+
+    public int getConnectionsDestroyed() {
+      return connectionsDestroyed;
+    }
+
+    public int getLiveConnections() {
+      return liveConnections;
+    }
+
+    public int getRequestsDelayedPerSecond() {
+      return requestsDelayedPerSecond;
+    }
+
+    public int getRequestsPerSecond() {
+      return requestsPerSecond;
+    }
+
+    public void resetPoolStatistics() {
+      connectionsCreated = 0;
+      connectionsDestroyed = 0;
+      connectionRequests = 0;
+      connectionRequestsDelayed = 0;
+      resetDate = new Date();
+    }
+
+    public void updateStatistics() {
+      final long current = System.currentTimeMillis();
+      final double seconds = (current - requestsPerSecondTime) / 1000;
       requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
       requestsPerSecondCounter = 0;
       requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);
       requestsDelayedPerSecondCounter = 0;
       requestsPerSecondTime = current;
     }
-  }
 
-  private void incrementConnectionsCreatedCounter() {
-    liveConnections++;
-    connectionsCreated++;
-  }
+    public void incrementConnectionsDestroyedCounter() {
+      liveConnections--;
+      connectionsDestroyed++;
+    }
 
-  private void incrementDelayedRequestCounter() {
-    connectionRequestsDelayed++;
-    requestsDelayedPerSecondCounter++;
-  }
+    public void incrementConnectionsCreatedCounter() {
+      liveConnections++;
+      connectionsCreated++;
+    }
 
-  private void incrementRequestCounter() {
-    connectionRequests++;
-    requestsPerSecondCounter++;
+    public void incrementDelayedRequestCounter() {
+      connectionRequestsDelayed++;
+      requestsDelayedPerSecondCounter++;
+    }
+
+    public void incrementRequestCounter() {
+      connectionRequests++;
+      requestsPerSecondCounter++;
+    }
   }
 }

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,23 +69,5 @@ public class MySQLDatabase extends AbstractDatabase {
       throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
     return "jdbc:mysql://" + host + ":" + port + "/" + sid;
-  }
-
-  /** {@inheritDoc} */
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  /** {@inheritDoc} */
-  public boolean supportsIsValid() {
-    return true;
-  }
-
-  /** {@inheritDoc} */
-  public String getErrorMessage(final SQLException exception) {
-    return exception.getMessage();
   }
 }

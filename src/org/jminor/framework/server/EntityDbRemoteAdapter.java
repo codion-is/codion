@@ -4,7 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DbConnectionProvider;
-import org.jminor.common.db.User;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -12,6 +12,7 @@ import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.DbConnectionPool;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
@@ -36,6 +37,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
@@ -163,7 +165,12 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       entityDbConnection = null;
       connected = false;
 
-      UnicastRemoteObject.unexportObject(this, true);
+      try {
+        UnicastRemoteObject.unexportObject(this, true);
+      }
+      catch (NoSuchObjectException e) {
+        log.error(e);
+      }
       evtLogout.fire();
     }
     catch (Exception e) {
@@ -634,7 +641,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                 EntityDbConnection connection = null;
                 try {
                   active.add(EntityDbRemoteAdapter.this);
-                  methodLogger.logAccess(methodName, arguments);
+                  methodLogger.logAccess(methodName, arguments, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
 
                   return method.invoke(connection = getConnection(clientInfo.getUser()), arguments);
                 }
@@ -716,11 +723,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return entries;
     }
 
-    public void logAccess(final String method, final Object[] arguments) {
+    public void logAccess(final String method, final Object[] arguments, final Criteria.ValueProvider valueProvider) {
       this.lastAccessDate = System.currentTimeMillis();
       this.lastAccessedMethod = method;
       if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
-        this.lastAccessMessage = parameterArrayToString(database, arguments);
+        this.lastAccessMessage = parameterArrayToString(database, arguments, valueProvider);
         addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false, null);
       }
     }
@@ -779,13 +786,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return logEntries;
     }
 
-    private static String parameterArrayToString(final Database database, final Object[] arguments) {
+    private static String parameterArrayToString(final Database database, final Object[] arguments,
+                                                 final Criteria.ValueProvider valueProvider) {
       if (arguments == null)
         return "";
 
       final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);//best guess ?
       for (int i = 0; i < arguments.length; i++) {
-        parameterToString(database, arguments[i], stringBuilder);
+        parameterToString(database, arguments[i], stringBuilder, valueProvider);
         if (i < arguments.length-1)
           stringBuilder.append(", ");
       }
@@ -793,17 +801,18 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return stringBuilder.toString();
     }
 
-    private static void parameterToString(final Database database, final Object arg, final StringBuilder destination) {
+    private static void parameterToString(final Database database, final Object arg, final StringBuilder destination,
+                                          final Criteria.ValueProvider valueProvider) {
       if (arg instanceof Object[]) {
         if (((Object[]) arg).length > 0)
-          destination.append("[").append(parameterArrayToString(database, (Object[]) arg)).append("]");
+          destination.append("[").append(parameterArrayToString(database, (Object[]) arg, valueProvider)).append("]");
       }
       else if (arg instanceof Collection) {
         if (((Collection) arg).size() > 0)
-          destination.append("[").append(parameterArrayToString(database, ((Collection) arg).toArray())).append("]");
+          destination.append("[").append(parameterArrayToString(database, ((Collection) arg).toArray(), valueProvider)).append("]");
       }
       else if (arg instanceof EntityCriteria)
-        destination.append(((EntityCriteria) arg).asString(database));
+        destination.append(((EntityCriteria) arg).asString(database, valueProvider));
       else if (arg instanceof Entity)
         destination.append(getEntityParameterString((Entity) arg));
       else if (arg instanceof JasperReport)

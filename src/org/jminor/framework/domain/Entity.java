@@ -120,8 +120,9 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
   }
 
   /**
-   * Adds a PropertyListener, this listener will be notified each time a property value changes
-   * @param propertyListener the PropertyListener
+   * Adds a Property.Listener, this listener will be notified each time a property value changes
+   * @param propertyListener the Property.Listener
+   * @see org.jminor.framework.domain.Property.Event
    */
   public void addPropertyListener(final Property.Listener propertyListener) {
     if (evtPropertyChanged == null)
@@ -142,7 +143,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * @return a State object indicating whether this entity has been
    * modified since it was instantiated
    */
-  public State getModifiedState() {
+  public State stateModified() {
     if (stModified == null)
       stModified = new State(isModified());
 
@@ -1121,7 +1122,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       final String entityID = entity.getEntityID();
       final ToString stringProvider = EntityRepository.getStringProvider(entityID);
 
-      return stringProvider == null ? entityID + ": " + entity.getPrimaryKey().toString() : stringProvider.toString(entity);
+      return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }
 
     public String getValueAsString(final Entity entity, final Property property) {

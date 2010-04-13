@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.client.ui;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
@@ -53,7 +53,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   @Override
   protected void configureApplication() {
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
     Util.setLoggingLevel(Level.DEBUG);

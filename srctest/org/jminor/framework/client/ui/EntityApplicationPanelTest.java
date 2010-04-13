@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentPanel;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
@@ -23,11 +23,11 @@ public class EntityApplicationPanelTest {
     final EmpDeptAppPanel panel = new EmpDeptAppPanel() {
       @Override
       protected User getUser(String frameCaption, User defaultUser, String applicationIdentifier, ImageIcon applicationIcon) throws CancelException {
-        return new User("scott", "tiger");
+        return User.UNIT_TEST_USER;
       }
     };
     if (GraphicsEnvironment.isHeadless())
-      panel.initialize(new User("scott", "tiger"));
+      panel.initialize(User.UNIT_TEST_USER);
     else
       panel.startApplication("test", null, false, null);
 

@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.tools.testing;
 
-import org.jminor.common.db.User;
 import org.jminor.common.model.LoadTestModel;
+import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class for running multiple EntityApplicationModel instances for testing/profiling purposes.
+ * A class for running multiple EntityApplicationModel instances for load testing purposes.
  */
 public abstract class EntityLoadTestModel extends LoadTestModel {
 
@@ -35,9 +35,10 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     if (model.getRowCount() == 0)
       return;
 
+    final int startIdx = random.nextInt(model.getRowCount() - count);
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (int i = 0; i < count; i++)
-      indexes.add(random.nextInt(model.getRowCount()));
+    for (int i = startIdx; i < count + startIdx; i++)
+      indexes.add(i);
 
     model.setSelectedItemIndexes(indexes);
   }
@@ -46,7 +47,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     if (model.getRowCount() == 0)
       return;
 
-    final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount()/ratio) : 1;
+    final int toSelect = ratio > 0 ? (int) Math.floor(model.getRowCount() * ratio) : 1;
     final List<Integer> indexes = new ArrayList<Integer>();
     for (int i = 0; i < toSelect; i++)
       indexes.add(i);

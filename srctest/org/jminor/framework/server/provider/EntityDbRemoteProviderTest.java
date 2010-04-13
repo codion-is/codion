@@ -3,16 +3,16 @@
  */
 package org.jminor.framework.server.provider;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.server.EntityDbRemoteServerTest;
 
+import static junit.framework.Assert.assertFalse;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static junit.framework.Assert.assertFalse;
 
 /**
  * User: Bjorn Darri
@@ -33,7 +33,7 @@ public class EntityDbRemoteProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityDbRemoteProvider provider = new EntityDbRemoteProvider(new User("scott", "tiger"), "TestClientID", "TestClient");
+    final EntityDbRemoteProvider provider = new EntityDbRemoteProvider(User.UNIT_TEST_USER, "TestClientID", "TestClient");
     final EntityDb db = provider.getEntityDb();
     assertNotNull(db);
     assertTrue(db.isConnected());

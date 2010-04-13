@@ -1207,4 +1207,56 @@
   EmpDeptProfiling, PetstoreProfiling and SchemaBrowserProfiling renamed to ...LoadTest
   Configuration.PROFILING_* renamed to LOAD_TEST_*, values changed accordingly
   Demo load and unit testing classes moved to demos.xxx.testing
+  Renamed jminor_profiling.policy to jminor_load_test.policy
+  build.xml run_rmi_server, added demo classes to classpath and specified the default domain model classes for loading
+  EntityLoadTestModelTest added
+  EntityLoadTestModel.selectRandomRows() bugs fixed
+  LoadTestModel getter/setter/changeEvent added for loginDelayFactor field
+  LoadTestModel.getUsageScenario() added
+  LoadTestModel.UsageScenario.successfulRunCount and unsuccessfulRunCount fields added plus getters as well as getTotalRunCount() which returns the sum of the two
+  LoadTestModel added value checks to setters
+  RandomItemModel some minor changes/refactorings
+  LoadTestModel/Panel application used instead of client
+  Entity.getModifiedState() renamed to stateModified() for consistency
+  RandomItemPanel.createWeightSpinnerModel() added
+  RandomItemPanel is now JSpinner based
+  LoadTestModel.collectChartData field plus event and getter added
+  LoadTestPanel refactored
+  LoadTestModel now collects memory usage data
+  LoadTestPanel displays memory usage data chart
+  EntityDbServerAdmin.getAllocatedMemory(), getMaxMemory() and getUsedMemory() added
+  ServerMonitor now collects memory usage and connection count data
+  ServerMonitorPanel displays memory usage and connection count data charts
+  Util.getAllocatedMemory(), getUsedMemory(), getMaxMemory() and getFreeMemory() added
+  LoadTestModel, some minor field/method name changes
+  LoadTestModel.scenarioRandomModel field renamed to scenarioChooser
+  UiUtil.createMemoryUsageField() added
+  MonitorPanel displays memory usage
+  DbConnectionPool.Counter added
+  LoadTestPanel UI improved
+  EntityDbConnection.getDeleteSQL() bug fixed, now it always includes the 'from' keyword (MySQL doesnt like it when its missing)
+  EntityDbConnection.selectRowCount(), now uses 'alias' for subquery alias when selectQuery is available (MySQL requires it)
+  Database.getCheckConnectionQuery() added
+  AbstractDatabase implements the above returning null
+  PostgreSQLDatabase and OracleDatabase override the above
+  EntityDefinition, added (subquery) 'as' alias for subquery properties when initializing the select properties, for PostgreSQL
+  AbstractDatabase now has default implementations for supportsIsValid(), shutdownEmbedded(), getAuthenticationInfo() and getErrorMessage()
+  EntityDbRemoteServer does not check for SID anymore
+  SQLServerDatabase no longer throws error if SID is missing
+  User.UNIT_TEST_USER added, parses jminor.unittest.username and jminor.unittest.password from system properties, scott/tiger default
+  Unit tests now running on H2, HSQL, Derby, MySQL, PostgreSQL, Oracle and SQL Server, fuck yeah
+  DbConnectionPoolTest.loadTest() added
+  DbConnectionPool now silently disconnects connections checked into a closed connection pool instead of throwing an exception
+  ConnectionPoolInstanceMonitor refactored and moved to common.db.pool.monitor, home sweet home
+  User moved from common.db to common.model
+  EntityDbUtil removed, code moved to common.db.SQLUtil
+  EntityDbUtil.getInsertProperties() and getUpdateProperties() moved to EntityDbConnection
+  common.db.criteria.CriteriaValueProvider interface added
+  Criteria.asString(), added CriteriaValueProvider parameter
+  CriteriaValueProvider moved and renamed to Criteria.ValueProvider
+  Criteria.ValueProvider.getSQLStringValue() renamed to getSQLString()
+  ConnectionPoolMonitor renamed to PoolMonitor
+  ConnectionPoolMonitorPanel renamed to PoolMonitorPanel
+  ConnectionPoolInstanceMonitor renamed to ConnectionPoolMonitor
+  ConnectionPoolInstanceMonitorPanel renamed to ConnectionPoolMonitorPanel
 0.5.3

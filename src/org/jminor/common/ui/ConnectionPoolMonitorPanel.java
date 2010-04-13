@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server.monitor.ui;
+package org.jminor.common.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
-import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -37,9 +37,9 @@ import java.text.NumberFormat;
  * Date: 4.12.2007
  * Time: 22:49:27
  */
-public class ConnectionPoolInstanceMonitorPanel extends JPanel {
+public class ConnectionPoolMonitorPanel extends JPanel {
 
-  private final ConnectionPoolInstanceMonitor model;
+  private final ConnectionPoolMonitor model;
 
   private final NumberFormat format = NumberFormat.getInstance();
 
@@ -61,7 +61,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
   private final JTextField txtRequested = new JTextField();
   private final JTextField txtDelayed = new JTextField();
 
-  public ConnectionPoolInstanceMonitorPanel(final ConnectionPoolInstanceMonitor model) throws RemoteException {
+  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) throws RemoteException {
     this.model = model;
     format.setMaximumFractionDigits(2);
     initUI();
@@ -95,7 +95,7 @@ public class ConnectionPoolInstanceMonitorPanel extends JPanel {
     add(statusBase, BorderLayout.CENTER);
   }
 
-  private void initializeCharts(final ConnectionPoolInstanceMonitor model) {
+  private void initializeCharts(final ConnectionPoolMonitor model) {
     inPoolMacroChart.getXYPlot().setDataset(model.getInPoolDataSetMacro());
     inPoolMacroChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolMacroChart.getXYPlot().getRenderer();

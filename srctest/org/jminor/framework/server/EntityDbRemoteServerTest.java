@@ -4,14 +4,15 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.DatabaseStatistics;
-import org.jminor.common.db.User;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.server.provider.EntityDbRemoteProvider;
 
 import org.junit.AfterClass;
@@ -19,7 +20,6 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.rmi.RemoteException;
 import java.util.Collection;
 
 public class EntityDbRemoteServerTest {
@@ -31,6 +31,7 @@ public class EntityDbRemoteServerTest {
   @BeforeClass
   public static void setUp() throws Exception {
     new EmpDept();
+    new Petstore();
     defaultManager = System.getSecurityManager();
     System.setProperty(Configuration.SERVER_PORT, "2222");
     System.setProperty(Configuration.SERVER_DB_PORT, "2223");
@@ -53,13 +54,9 @@ public class EntityDbRemoteServerTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    try {
-      if (admin != null)
-        admin.shutdown();
-    }
-    catch (RemoteException e) {
-      e.printStackTrace();
-    }
+    if (admin != null)
+      admin.shutdown();
+    Thread.sleep(100);
     admin = null;
     server = null;
     System.setSecurityManager(defaultManager);
@@ -67,13 +64,13 @@ public class EntityDbRemoteServerTest {
 
   @Test
   public void test() throws Exception {
-    final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(new User("scott", "tiger"),
+    final EntityDbRemoteProvider providerOne = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
             "UnitTestConnection0", "EntityDbRemoteServerTest");
     final EntityDb remoteDbOne = providerOne.getEntityDb();
     assertTrue(remoteDbOne.isConnectionValid());
     assertEquals(1, server.getConnectionCount());
 
-    final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(new User("scott", "tiger"),
+    final EntityDbRemoteProvider providerTwo = new EntityDbRemoteProvider(User.UNIT_TEST_USER,
             "UnitTestConnection1", "EntityDbRemoteServerTest");
     final EntityDb remoteDbTwo = providerTwo.getEntityDb();
     server.setLoggingOn("UnitTestConnection1", true);
@@ -81,7 +78,7 @@ public class EntityDbRemoteServerTest {
     assertTrue(remoteDbTwo.isConnectionValid());
     assertEquals(2, server.getConnectionCount());
 
-    final Collection<ClientInfo> clients = admin.getClients(new User("scott", null));
+    final Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
 
     providerTwo.getEntityDb().selectAll(EmpDept.T_EMPLOYEE);

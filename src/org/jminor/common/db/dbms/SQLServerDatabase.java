@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +16,7 @@ public class SQLServerDatabase extends AbstractDatabase {
   private static final ThreadLocal dateFormat = new ThreadLocal() {
     @Override
     protected synchronized Object initialValue() {
-      return new SimpleDateFormat("MM-dd-yyyy");//105
+      return new SimpleDateFormat("dd-MM-yyyy");//105
     }
   };
   private static final ThreadLocal timestampFormat = new ThreadLocal() {
@@ -66,27 +65,7 @@ public class SQLServerDatabase extends AbstractDatabase {
     if (port == null || port.length() == 0)
       throw new RuntimeException(DATABASE_PORT + " is required for database type " + getDatabaseType());
     final String sid = getSid();
-    if (sid == null || sid.length() == 0)
-      throw new RuntimeException(DATABASE_SID + " is required for database type " + getDatabaseType());
 
-    return "jdbc:sqlserver://" + host + ":" + port + ";databaseName=" + sid;
-  }
-
-  /** {@inheritDoc} */
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    return null;
-  }
-
-  /** {@inheritDoc} */
-  public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  /** {@inheritDoc} */
-  public boolean supportsIsValid() {
-    return true;
-  }
-
-  /** {@inheritDoc} */
-  public String getErrorMessage(final SQLException exception) {
-    return exception.getMessage();
+    return "jdbc:sqlserver://" + host + ":" + port + (sid != null && sid.length() > 0 ? ";databaseName=" + sid : "");
   }
 }

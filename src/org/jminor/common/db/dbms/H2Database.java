@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -100,16 +99,6 @@ public class H2Database extends AbstractDatabase {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc} *///todo implement
   public void shutdownEmbedded(final Properties connectionProperties) {}
-
-  /** {@inheritDoc} */
-  public boolean supportsIsValid() {
-    return true;
-  }
-
-  /** {@inheritDoc} */
-  public String getErrorMessage(final SQLException exception) {
-    return exception.getMessage();
-  }
 }

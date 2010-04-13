@@ -5,6 +5,7 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
 import org.apache.log4j.Logger;
@@ -525,7 +526,7 @@ public class DbConnection {
   private boolean checkConnection() throws SQLException {
     if (connection != null) {
       try {
-        checkConnectionStatement.executeQuery("select 1 from dual");
+        checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
         return true;
       }
       catch (SQLException exception) {

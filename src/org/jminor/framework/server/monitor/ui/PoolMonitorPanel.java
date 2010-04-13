@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.ui.BorderlessTabbedPaneUI;
-import org.jminor.framework.server.monitor.ConnectionPoolInstanceMonitor;
-import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
+import org.jminor.common.ui.ConnectionPoolMonitorPanel;
+import org.jminor.framework.server.monitor.PoolMonitor;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,11 +19,11 @@ import java.rmi.RemoteException;
  * Date: 10.12.2007
  * Time: 15:54:36
  */
-public class ConnectionPoolMonitorPanel extends JPanel {
+public class PoolMonitorPanel extends JPanel {
 
-  private final ConnectionPoolMonitor model;
+  private final PoolMonitor model;
 
-  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) throws RemoteException {
+  public PoolMonitorPanel(final PoolMonitor model) throws RemoteException {
     this.model = model;
     initUI();
   }
@@ -37,8 +38,8 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
     connectionPoolPane.setUI(new BorderlessTabbedPaneUI());
-    for (final ConnectionPoolInstanceMonitor monitor : model.getConnectionPoolInstanceMonitors())
-      connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolInstanceMonitorPanel(monitor));
+    for (final ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors())
+      connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolMonitorPanel(monitor));
     add(connectionPoolPane, BorderLayout.CENTER);
   }
 

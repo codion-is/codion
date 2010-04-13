@@ -3,7 +3,7 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 
 import java.io.Serializable;
 

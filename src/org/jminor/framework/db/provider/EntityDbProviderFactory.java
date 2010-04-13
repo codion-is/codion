@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.provider;
 
-import org.jminor.common.db.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;

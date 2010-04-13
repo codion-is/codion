@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -48,10 +49,22 @@ public class ServerMonitorPanel extends JPanel {
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
 
+  private final JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
+        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+  private final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
+
+  private final JFreeChart connectionCountChart = ChartFactory.createXYStepChart(null,
+        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+  private final ChartPanel connectionCountChartPanel = new ChartPanel(connectionCountChart);
+
   public ServerMonitorPanel(final ServerMonitor model) throws RemoteException {
     this.model = model;
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataSet());
     requestsPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataSet());
+    memoryUsageChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataSet());
+    connectionCountChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     initUI();
   }
 
@@ -101,10 +114,15 @@ public class ServerMonitorPanel extends JPanel {
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(ControlProvider.createButton(ControlFactory.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
 
+    final JPanel chartPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+    chartPanel.add(requestsPerSecondChartPanel);
+    chartPanel.add(connectionCountChartPanel);
+    chartPanel.add(memoryUsageChartPanel);
+    chartPanel.setBorder(BorderFactory.createEtchedBorder());
+
     final JPanel performancePanel = new JPanel(new BorderLayout());
-    requestsPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     performancePanel.add(controlPanelBase, BorderLayout.NORTH);
-    performancePanel.add(requestsPerSecondChartPanel, BorderLayout.CENTER);
+    performancePanel.add(chartPanel, BorderLayout.CENTER);
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
