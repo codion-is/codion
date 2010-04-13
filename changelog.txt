@@ -1265,3 +1265,4 @@
   ChangeValueMap aded
   ValueMapModelTest added
   LoadTestModel.updateTimer and updateInterval fields added
+  EntityListModelTest added
