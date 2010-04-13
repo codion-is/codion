@@ -286,7 +286,7 @@
     </zip>
   </target>
 
-  <target name="deploy_to_wiki" depends="javadoc, report"
+  <target name="deploy_to_wiki" depends="javadoc, run_and_report"
           description="Publishes the relevant files to the documentation wiki">
     <delete dir="${wiki.media.project}"/>
     <mkdir dir="${wiki.media.project}"/>

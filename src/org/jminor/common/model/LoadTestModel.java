@@ -464,6 +464,9 @@ public abstract class LoadTestModel {
     }
   }
 
+  /**
+   * Encapsulates a load test usage scenario.
+   */
   public static abstract class UsageScenario {
 
     private final String name;
@@ -521,6 +524,11 @@ public abstract class LoadTestModel {
       return 1;
     }
 
+    /**
+     * Runs a set of actions on the given application.
+     * @param application the application
+     * @throws Exception in case of an exception
+     */
     protected abstract void performScenario(final Object application) throws Exception;
 
     @SuppressWarnings({"UnusedDeclaration"})
