@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
  */
 package org.jminor.common.model;
 
@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * User: Björn Darri
+ * User: BjÃ¶rn Darri
  * Date: 12.4.2010
  * Time: 23:42:56
  */
@@ -28,13 +28,13 @@ public class StringProviderTest {
 
   @Test
   public void test() {
-    final ValueMap department = new AbstractValueMap() {
+    final ValueMap department = new ValueMapModel() {
       @Override
       public String toString() {
         return (String) getValue(DEPARTMENT_NAME);
       }
-
-      protected ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+      @Override
+      public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                                 final boolean initialization) {
         return new ActionEvent(this, 0, "none");
       }
@@ -43,8 +43,9 @@ public class StringProviderTest {
     department.setValue(DEPARTMENT_LOCATION, "Reykjavik");
     department.setValue(DEPARTMENT_NAME, "Sales");
 
-    final ValueMap employee = new AbstractValueMap() {
-      protected ActionEvent getValueChangeEvent(String key, Object newValue, Object oldValue, boolean initialization) {
+    final ValueMap employee = new ValueMapModel() {
+      @Override
+      public ActionEvent getValueChangeEvent(String key, Object newValue, Object oldValue, boolean initialization) {
         return new ActionEvent(this, 0, "none");
       }
     };

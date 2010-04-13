@@ -3,8 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.AbstractValueMap;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.ValueMapModel;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
  */
-public final class Entity extends AbstractValueMap implements Serializable, Comparable<Entity> {
+public final class Entity extends ValueMapModel implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -117,6 +116,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
    * @param propertyID the property ID
    * @return true if the property has been modified since the entity was instantiated
    */
+  @Override
   public boolean isModified(final String propertyID) {
     return super.isModified(propertyID) || primaryKey.isModified(propertyID);
   }
@@ -125,6 +125,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
    * @return true if one or more properties have been modified
    * since the entity was instantiated
    */
+  @Override
   public boolean isModified() {
     return super.isModified() || primaryKey.isModified();
   }
@@ -186,6 +187,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>
    */
+  @Override
   public Object getValue(final String propertyID) {
     final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
@@ -341,15 +343,6 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
 
   /**
    * @param propertyID the property identifier
-   * @return true if this entity contains a value for the property
-   * N.B. does not include the primary key properties
-   */
-  public boolean containsValue(final String propertyID) {
-    return values.containsKey(propertyID);
-  }
-
-  /**
-   * @param propertyID the property identifier
    * @return the value of the property, bypassing the Entity.Proxy
    */
   public Object getRawValue(final String propertyID) {
@@ -364,19 +357,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
    * @return true if all property values are equal
    */
   public boolean propertyValuesEqual(final Entity entity) {
-    if (!entity.primaryKey.equals(primaryKey))
-      return false;
-
-    for (final Map.Entry<String, Object> entry : entity.values.entrySet()) {
-      if (containsValue(entry.getKey())) {
-        if (!Util.equal(entry.getValue(), super.getValue(entry.getKey())))
-          return false;
-      }
-      else
-        return false;
-    }
-
-    return true;
+    return entity.primaryKey.equals(primaryKey) && super.equals(entity);
   }
 
   /**
@@ -498,6 +479,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
    * @param propertyID the property identifier
    * @return true if the value of the given property is null
    */
+  @Override
   public boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
     final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
@@ -619,7 +601,8 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
     return entity;
   }
 
-  protected ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+  @Override
+  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                             final boolean initialization) {
     return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
   }
@@ -741,7 +724,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
   /**
    * A class representing column key objects for entities, contains the values for those columns
    */
-  public static class Key extends AbstractValueMap implements Serializable {
+  public static class Key extends ValueMapModel implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -832,6 +815,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
       return false;
     }
 
+    @Override
     public Object setValue(final String propertyID, final Object newValue) {
       hashCodeDirty = true;
       if (isSingleIntegerKey()) {
@@ -922,6 +906,7 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
       return false;
     }
 
+    @Override
     public boolean isValueNull(final String propertyID) {
       return Entity.isValueNull(getProperty(propertyID).getPropertyType(), getValue(propertyID));
     }
@@ -958,7 +943,8 @@ public final class Entity extends AbstractValueMap implements Serializable, Comp
       }
     }
 
-    protected ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+    @Override
+    public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                               final boolean initialization) {
       return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }

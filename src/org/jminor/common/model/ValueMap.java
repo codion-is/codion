@@ -24,6 +24,13 @@ public interface ValueMap {
   Object setValue(final String key, final Object value);
 
   /**
+   * Removes the given key and value from this value map
+   * @param key the key to remove
+   * @return the value
+   */
+  Object removeValue(final String key);
+
+  /**
    * Returns true if the value mapped to the given key is null
    * @param key the key
    * @return true if the value mapped to the given key is null
