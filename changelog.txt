@@ -1264,3 +1264,4 @@
   Entity.StringProvider moved to common.model
   ChangeValueMap aded
   ValueMapModelTest added
+  LoadTestModel.updateTimer and updateInterval fields added

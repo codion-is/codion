@@ -32,11 +32,13 @@ public abstract class LoadTestModel {
   private final Event evtApplicationtCountChanged = new Event();
   private final Event evtApplicationBatchSizeChanged = new Event();
   private final Event evtDoneExiting = new Event();
+  private final Event evtUpdateIntervalChanged = new Event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
   private int loginDelayFactor;
   private int applicationBatchSize;
+  private int updateInterval;
 
   private boolean paused = false;
   private boolean stopped = false;
@@ -46,6 +48,10 @@ public abstract class LoadTestModel {
   private final Collection<UsageScenario> usageScenarios;
   private final RandomItemModel scenarioChooser;
   private User user;
+
+  private final Counter counter;
+  private Timer updateTimer;
+  private int warningTime;
 
   private final XYSeries workRequestsSeries = new XYSeries("Scenarios run per second");
   private final XYSeries delayedWorkRequestsSeries = new XYSeries("Delayed scenarios per second");
@@ -64,10 +70,6 @@ public abstract class LoadTestModel {
   private final XYSeries usedMemoryCollection = new XYSeries("Used memory");
   private final XYSeries maxMemoryCollection = new XYSeries("Maximum memory");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
-
-  private final Counter counter;
-
-  private int warningTime;
 
   /**
    * Constructs a new LoadTestModel.
@@ -93,16 +95,7 @@ public abstract class LoadTestModel {
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
     initializeContext();
-    new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        counter.updateRequestsPerSecond();
-        if (collectChartData && !paused)
-          updateChartData();
-        if (stopped && applications.size() == 0)
-          evtDoneExiting.fire();
-      }
-    }, new Date(), 2000);
+    setUpdateInterval(2000);
   }
 
   public User getUser() {
@@ -181,6 +174,21 @@ public abstract class LoadTestModel {
     if (this.warningTime != warningTime) {
       this.warningTime = warningTime;
       evtWarningTimeChanged.fire();
+    }
+  }
+
+  public int getUpdateInterval() {
+    return updateInterval;
+  }
+
+  public void setUpdateInterval(final int updateInterval) {
+    if (updateInterval < 0)
+      throw new IllegalArgumentException("Update interval must be a positive integer");
+
+    if (this.updateInterval != updateInterval) {
+      this.updateInterval = updateInterval;
+      scheduleUpdateTime(updateInterval);
+      evtUpdateIntervalChanged.fire();
     }
   }
 
@@ -360,8 +368,8 @@ public abstract class LoadTestModel {
   }
 
   protected int getThinkTime() {
-    final int time = maximumThinkTime - minimumThinkTime;
-    return time > 0 ? random.nextInt(time) + minimumThinkTime : minimumThinkTime;
+    final int time = getMaximumThinkTime() - getMinimumThinkTime();
+    return time > 0 ? random.nextInt(time) + getMinimumThinkTime() : getMinimumThinkTime();
   }
 
   private synchronized void addApplication() {
@@ -433,6 +441,23 @@ public abstract class LoadTestModel {
       model.addItem(scenario, scenario.getDefaultWeight());
 
     return model;
+  }
+
+  private void scheduleUpdateTime(final int intervalMs) {
+    if (updateTimer != null)
+      updateTimer.cancel();
+
+    updateTimer = new Timer(true);
+    updateTimer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        counter.updateRequestsPerSecond();
+        if (collectChartData && !paused)
+          updateChartData();
+        if (stopped && applications.size() == 0)
+          evtDoneExiting.fire();
+      }
+    }, new Date(), intervalMs);
   }
 
   private void initializeChartData() {
@@ -559,10 +584,6 @@ public abstract class LoadTestModel {
 
     public int getDelayedWorkRequestsPerSecond() {
       return delayedWorkRequestsPerSecond;
-    }
-
-    public Collection<String> getScenarioNames() {
-      return usageScenarioRates.keySet();
     }
 
     public int getScenarioRate(final String scenarioName) {

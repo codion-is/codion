@@ -309,7 +309,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     if (domainModelClasses == null || domainModelClasses.length() == 0)
       return;
-    
+
     final String[] classes = domainModelClasses.split(",");
     final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
     final String[] jars = domainModelJars == null || domainModelJars.length() == 0 ? null : domainModelJars.split(",");
@@ -340,12 +340,12 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       connectionMaintenanceTimer.cancel();
 
     connectionMaintenanceTimer = new Timer(true);
-    connectionMaintenanceTimer.scheduleAtFixedRate(new TimerTask() {
+    connectionMaintenanceTimer.schedule(new TimerTask() {
       @Override
       public void run() {
         maintainConnections();
       }
-    }, new Date(), checkMaintenanceInterval * 1000L);
+    }, new Date(), checkMaintenanceInterval * 1000);
   }
 
   private void maintainConnections() {

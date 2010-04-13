@@ -30,7 +30,24 @@ public class EntityLoadTestModelTest {
   public void testLoadTesting() throws Exception {
     final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
 
+    loadTest.setCollectChartData(true);
+    loadTest.setUpdateInterval(350);
     loadTest.setLoginDelayFactor(0);
+
+    try {
+      loadTest.setLoginDelayFactor(-1);
+      fail();
+    }
+    catch (Exception e) {}
+    try {
+      loadTest.setUpdateInterval(-1);
+      fail();
+    }
+    catch (Exception e) {}
+
+    assertTrue(loadTest.isCollectChartData());
+    assertEquals(350, loadTest.getUpdateInterval());
+    assertEquals(0, loadTest.getLoginDelayFactor());
 
     loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("selectDepartment"), 1);
     loadTest.getScenarioChooser().setWeight(loadTest.getUsageScenario("insertDepartment"), 0);
@@ -40,16 +57,17 @@ public class EntityLoadTestModelTest {
 
     loadTest.setMaximumThinkTime(100);
     loadTest.setMinimumThinkTime(50);
+    loadTest.setWarningTime(10);
 
-    loadTest.setApplicationBatchSize(1);
-    assertEquals(1, loadTest.getApplicationBatchSize());
+    loadTest.setApplicationBatchSize(2);
+    assertEquals(2, loadTest.getApplicationBatchSize());
 
     loadTest.addApplications();
 
     Thread.sleep(2000);
 
-    assertEquals("One client expected, if this fails try increasing the Thread.sleep() value above",
-            1, loadTest.getApplicationCount());
+    assertEquals("Two clients expected, if this fails try increasing the Thread.sleep() value above",
+            2, loadTest.getApplicationCount());
     assertTrue(loadTest.getUsageScenario("selectDepartment").getTotalRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("selectDepartment").getSuccessfulRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("selectDepartment").getUnsuccessfulRunCount() == 0);
@@ -58,6 +76,11 @@ public class EntityLoadTestModelTest {
     loadTest.setPaused(true);
     assertTrue(loadTest.isPaused());
 
+    loadTest.resetChartData();
+
+    loadTest.setApplicationBatchSize(1);
+    loadTest.removeApplications();
+    assertEquals(1, loadTest.getApplicationCount());
     loadTest.exit();
 
     Thread.sleep(500);

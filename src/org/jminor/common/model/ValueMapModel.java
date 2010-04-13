@@ -149,7 +149,7 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
 
   /** {@inheritDoc} */
   public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                            final boolean initialization) {
+                                         final boolean initialization) {
     return new ActionEvent(this, 0, key);
   }
 
