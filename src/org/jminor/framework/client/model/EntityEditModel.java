@@ -252,7 +252,7 @@ public class EntityEditModel {
     final Entity copy = entity.getCopy();
     if (!includePrimaryKeyValues) {
       for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(copy.getEntityID()))
-        copy.setValue(property, null, false);
+        copy.setValue(property, null);
     }
 
     return copy;
@@ -788,7 +788,7 @@ public class EntityEditModel {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !(property instanceof Property.DenormalizedProperty))//these are set via their respective parent properties
-        defaultEntity.setValue(property, getDefaultValue(property), true);
+        defaultEntity.setValue(property, getDefaultValue(property));
 
     return defaultEntity;
   }
@@ -950,7 +950,7 @@ public class EntityEditModel {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected Object doSetValue(final Property property, final Object value, final boolean validateType) {
-    entity.setValue(property.getPropertyID(), value, validateType);
+    entity.setValue(property.getPropertyID(), value);
 
     return value;
   }

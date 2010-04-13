@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.db.IdSource;
+import org.jminor.common.model.StringProvider;
 import org.jminor.common.model.Version;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
@@ -78,7 +79,7 @@ public class EmpDept {
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME)
             .setIdSource(IdSource.NONE)
-            .setStringProvider(new Entity.StringProvider(DEPARTMENT_NAME)));
+            .setStringProvider(new StringProvider(DEPARTMENT_NAME)));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
@@ -103,7 +104,7 @@ public class EmpDept {
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
-            .setStringProvider(new Entity.StringProvider(EMPLOYEE_NAME)));
+            .setStringProvider(new StringProvider(EMPLOYEE_NAME)));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
     Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {

@@ -1259,4 +1259,6 @@
   ConnectionPoolMonitorPanel renamed to PoolMonitorPanel
   ConnectionPoolInstanceMonitor renamed to ConnectionPoolMonitor
   ConnectionPoolInstanceMonitorPanel renamed to ConnectionPoolMonitorPanel
+  AbstractValueMap refactored from Entity and Entity.Key
+  Entity.StringProvider moved to common.model and renamed ValueMapStringProvider
 0.5.3

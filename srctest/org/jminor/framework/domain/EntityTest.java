@@ -5,14 +5,12 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.Date;
 
 public class EntityTest {
@@ -231,29 +229,5 @@ public class EntityTest {
 
     employee.setValue(EmpDept.EMPLOYEE_NAME, "noname");
     assertEquals(employee.getValue(EmpDept.EMPLOYEE_NAME), "noname");
-  }
-
-  @Test
-  public void stringProvider() {
-    new EmpDept();
-    final Entity department = new Entity(EmpDept.T_DEPARTMENT);
-    department.setValue(EmpDept.DEPARTMENT_ID, -10);
-    department.setValue(EmpDept.DEPARTMENT_LOCATION, "Reykjavik");
-    department.setValue(EmpDept.DEPARTMENT_NAME, "Sales");
-
-    final Entity employee = new Entity(EmpDept.T_EMPLOYEE);
-    final Date hiredate = new Date();
-    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-    employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
-    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-
-    final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
-
-    final Entity.StringProvider employeeToString = new Entity.StringProvider(EmpDept.EMPLOYEE_NAME)
-            .addText(" (department: ").addValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
-            .addReferencedValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, EmpDept.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(EmpDept.EMPLOYEE_HIREDATE, dateFormat).addText(")");
-
-    assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
   }
 }

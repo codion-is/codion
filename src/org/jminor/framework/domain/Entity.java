@@ -3,17 +3,15 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.State;
+import org.jminor.common.model.AbstractValueMap;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.ValueMap;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Collator;
 import java.text.DateFormat;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -24,7 +22,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
  */
-public final class Entity implements Serializable, Comparable<Entity>, ValueMap {
+public final class Entity extends AbstractValueMap implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -32,29 +30,6 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * The primary key of this entity
    */
   private final Key primaryKey;
-
-  /**
-   * Holds the values of all properties except primary key properties
-   */
-  private final Map<String, Object> values = new HashMap<String, Object>();
-
-  /**
-   * Holds the original value of properties which values have changed,
-   * including primary key properties
-   */
-  private Map<String, Object> originalValues;
-
-  /**
-   * An event fired when a property changes
-   * @see #addPropertyListener(org.jminor.framework.domain.Property.Listener)
-   * @see #removePropertyListener(org.jminor.framework.domain.Property.Listener)
-   */
-  private transient Event evtPropertyChanged;
-
-  /**
-   * A state indicating the modified status of this entity
-   */
-  private transient State stModified;
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -86,6 +61,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
+    this.primaryKey.eventPropertyChanged().addListener(eventPropertyChanged());
   }
 
   /**
@@ -125,9 +101,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * @see org.jminor.framework.domain.Property.Event
    */
   public void addPropertyListener(final Property.Listener propertyListener) {
-    if (evtPropertyChanged == null)
-      evtPropertyChanged = new Event();
-    evtPropertyChanged.addListener(propertyListener);
+    eventPropertyChanged().addListener(propertyListener);
   }
 
   /**
@@ -140,14 +114,11 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
   }
 
   /**
-   * @return a State object indicating whether this entity has been
-   * modified since it was instantiated
+   * @param propertyID the property ID
+   * @return true if the property has been modified since the entity was instantiated
    */
-  public State stateModified() {
-    if (stModified == null)
-      stModified = new State(isModified());
-
-    return stModified.getLinkedState();
+  public boolean isModified(final String propertyID) {
+    return super.isModified(propertyID) || primaryKey.isModified(propertyID);
   }
 
   /**
@@ -155,36 +126,21 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * since the entity was instantiated
    */
   public boolean isModified() {
-    return originalValues != null && originalValues.size() > 0;
+    return super.isModified() || primaryKey.isModified();
   }
 
   /**
-   * @param propertyID the property ID
-   * @return true if the property has been modified since the entity was instantiated
+   * Returns the value this property had when the entity was loaded
+   * @param propertyID the property identifier
+   * @return the original value of the property
    */
-  public boolean isModified(final String propertyID) {
-    return originalValues != null && originalValues.containsKey(propertyID);
-  }
+  @Override
+  public Object getOriginalValue(String propertyID) {
+    final Property property = getProperty(propertyID);
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.getOriginalValue(propertyID);
 
-  /**
-   * Sets the value of the given property
-   * @param propertyID the ID of the property
-   * @param value the new value
-   * @return the old value
-   */
-  public Object setValue(final String propertyID, final Object value) {
-    return setValue(propertyID, value, true);
-  }
-
-  /**
-   * Sets the value of the given property
-   * @param propertyID the ID of the property
-   * @param value the new value
-   * @param validateType set to true if basic type validation should be performed on the value
-   * @return the old value
-   */
-  public Object setValue(final String propertyID, final Object value, final boolean validateType) {
-    return setValue(getProperty(propertyID), value, validateType);
+    return super.getOriginalValue(propertyID);
   }
 
   /**
@@ -193,30 +149,29 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * values comprising the foreign key are also set.
    * @param property the property
    * @param value the new value
-   * @param validateType set to true if basic type validation should be performed on the value
    * @return the old value
    */
-  public Object setValue(final Property property, final Object value, final boolean validateType) {
-    if (validateType)
-      validateType(property, value);
-
-    final boolean isPrimaryKeyProperty = property instanceof Property.PrimaryKeyProperty;
-    final boolean initialization = isPrimaryKeyProperty ? !primaryKey.hasValue(property.getPropertyID())
-            : !values.containsKey(property.getPropertyID());
-    return doSetValue(property, value, isPrimaryKeyProperty, initialization, true);
+  public Object setValue(final Property property, final Object value) {
+    return setValue(property.getPropertyID(), value);
   }
 
-  /**
-   * Initializing a value has the same effect as using <code>setValue()</code> except for Property.ForeignKeyPropertys
-   * for which neither denormalized (Property.DenormalizedProperty) values nor the reference key values are set.
-   * It is also assumed that the Entity does not contain a value for the property, so the modified state is
-   * ignored during the value setting
-   * Use with care.
-   * @param property the property to initialize
-   * @param value the initial value
-   */
-  public void initializeValue(final Property property, final Object value) {
-    doSetValue(property, value, property instanceof Property.PrimaryKeyProperty, true, false);
+  @Override
+  public Object setValue(final String key, final Object value) {
+    final Property property = getProperty(key);
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.setValue(key, value);
+    if (property instanceof Property.DenormalizedViewProperty)
+      throw new IllegalArgumentException("Can not set the value of a denormalized property");
+    if (value != null && value instanceof Entity && value.equals(this))
+      throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
+
+    validateType(property, value);
+
+    toString = null;
+    if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity))
+      propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value);
+
+    return super.setValue(key, value);
   }
 
   /**
@@ -224,10 +179,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * @return the value of the <code>property</code>
    */
   public Object getValue(final Property property) {
-    if (property instanceof Property.DenormalizedViewProperty)
-      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
-
-    return getProxy(getEntityID()).getValue(this, property);
+    return getValue(property.getPropertyID());//todo
   }
 
   /**
@@ -235,7 +187,13 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
    * @return the value of the property identified by <code>propertyID</code>
    */
   public Object getValue(final String propertyID) {
-    return getValue(getProperty(propertyID));
+    final Property property = getProperty(propertyID);
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.getValue(propertyID);
+    if (property instanceof Property.DenormalizedViewProperty)
+      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
+
+    return getProxy(getEntityID()).getValue(this, property);
   }
 
   /**
@@ -382,18 +340,6 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
   }
 
   /**
-   * Returns the value this property had when the entity was loaded
-   * @param propertyID the property identifier
-   * @return the original value of the property
-   */
-  public Object getOriginalValue(final String propertyID) {
-    if (isModified(propertyID))
-      return originalValues.get(propertyID);
-
-    return getValue(propertyID);
-  }
-
-  /**
    * @param propertyID the property identifier
    * @return true if this entity contains a value for the property
    * N.B. does not include the primary key properties
@@ -410,7 +356,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     if (primaryKey.containsProperty(propertyID))
       return primaryKey.getValue(propertyID);
 
-    return values.get(propertyID);
+    return super.getValue(propertyID);
   }
 
   /**
@@ -422,8 +368,8 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       return false;
 
     for (final Map.Entry<String, Object> entry : entity.values.entrySet()) {
-      if (values.containsKey(entry.getKey())) {
-        if (!Util.equal(entry.getValue(), values.get(entry.getKey())))
+      if (containsValue(entry.getKey())) {
+        if (!Util.equal(entry.getValue(), super.getValue(entry.getKey())))
           return false;
       }
       else
@@ -511,10 +457,9 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
         originalValues = new HashMap<String, Object>();
       originalValues.putAll(sourceEntity.originalValues);
     }
-    if (evtPropertyChanged != null)
+    if (eventPropertyChanged() != null)
       for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-        evtPropertyChanged.fire(new Property.Event(this, getEntityID(), property, getRawValue(property.getPropertyID()),
-                null, true, true));
+        eventPropertyChanged().fire(getValueChangeEvent(property.getPropertyID(), getRawValue(property.getPropertyID()), null, true));
 
     toString = sourceEntity.toString;
     if (stModified != null)
@@ -535,7 +480,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(i);
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
-              : values.get(referenceKeyProperty.getPropertyID());
+              : super.getValue(referenceKeyProperty.getPropertyID());
       if (!isValueNull(referenceKeyProperty.getPropertyType(), value)) {
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
@@ -664,8 +609,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
   static Entity initializeEntity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
-      final Property property = EntityRepository.getProperty(entityID, entry.getKey());
-      entity.initializeValue(property, entry.getValue());
+      entity.setValue(entry.getKey(), entry.getValue());
     }
     if (originalValues != null) {
       entity.originalValues = new HashMap<String, Object>(originalValues);
@@ -675,46 +619,13 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     return entity;
   }
 
-  /**
-   * Performs the actual value setting, minding all the stuff that needs minding here
-   * @param property the property
-   * @param newValue the new value
-   * @param isPrimaryKeyProperty true if the property is part of the primary key
-   * @param initialization true if the property value is being initialized, if true it is assumed
-   * that this Entity instance does not contain a value for the property, thus the modified state
-   * can be safely disregarded during the value setting
-   * @param propagateReferenceValues if set to true then both reference key values and
-   * denormalized values are set in case <code>property</code> is a Property.ForeignKeyProperty.
-   * @return the old value
-   * @throws IllegalArgumentException in case <code>newValue</code> is the entity itself, preventing circular references
-   */
-  private Object doSetValue(final Property property, final Object newValue, final boolean isPrimaryKeyProperty,
-                            final boolean initialization, boolean propagateReferenceValues) {
-    if (property instanceof Property.DenormalizedViewProperty)
-      throw new IllegalArgumentException("Can not set the value of a denormalized property");
-    if (newValue != null && newValue instanceof Entity && newValue.equals(this))
-      throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
+  protected ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+                                            final boolean initialization) {
+    return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
+  }
 
-    //invalidate the toString cache
-    toString = null;
-
-    if (propagateReferenceValues && property instanceof Property.ForeignKeyProperty && (newValue == null || newValue instanceof Entity))
-      propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) newValue);
-
-    final Object oldValue = initialization ? null :
-            isPrimaryKeyProperty ? primaryKey.getValue(property.getPropertyID()) : values.get(property.getPropertyID());
-    if (isPrimaryKeyProperty)
-      primaryKey.setValue(property.getPropertyID(), newValue);
-    else
-      values.put(property.getPropertyID(), newValue);
-
-    if (!initialization)
-      handleValueChange(property.getPropertyID(), property.getPropertyType(), newValue, oldValue);
-
-    if (evtPropertyChanged != null && !isEqual(property.getPropertyType(), newValue, oldValue))
-      evtPropertyChanged.fire(new Property.Event(this, getEntityID(), property, newValue, oldValue, true, initialization));
-
-    return oldValue;
+  static ActionEvent initValueChangeEvent(final Object source, final String entityID, final Property property, Object newValue, Object oldValue, boolean initialization) {
+    return new Property.Event(source, entityID, property, newValue, oldValue, true, initialization);
   }
 
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
@@ -723,7 +634,7 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     if (EntityRepository.hasDenormalizedProperties(getEntityID())) {
       final Collection<Property.DenormalizedProperty> denormalizedProperties =
               EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
-      setDenormalizedValues(foreignKeyProperty, newValue, denormalizedProperties);
+      setDenormalizedValues(newValue, denormalizedProperties);
     }
   }
 
@@ -741,50 +652,23 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
                     : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
-      if (!(referenceProperty instanceof Property.MirrorProperty)) {
-        final boolean isPrimaryKeyProperty = referenceProperty instanceof Property.PrimaryKeyProperty;
-        final boolean initialization = isPrimaryKeyProperty ? !primaryKey.containsProperty(referenceProperty.getPropertyID())
-                : !values.containsKey(referenceProperty.getPropertyID());
-        doSetValue(referenceProperty, referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.getPropertyID()) : null,
-                isPrimaryKeyProperty, initialization, true);
-      }
+      if (!(referenceProperty instanceof Property.MirrorProperty))
+        setValue(referenceProperty.getPropertyID(), referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.getPropertyID()) : null);
     }
   }
 
   /**
    * Sets the denormalized property values
-   * @param foreignKeyProperty the foreign key property
-   * @param entity the entity value
+   * @param entity the entity value owning the denormalized values
    * @param denormalizedProperties the denormalized properties
    */
-  private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity entity,
-                                     final Collection<Property.DenormalizedProperty> denormalizedProperties) {
+  private void setDenormalizedValues(final Entity entity, final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        doSetValue(denormalizedProperty,
-                entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()),
-                false, !values.containsKey(foreignKeyProperty.getPropertyID()), true);
+        setValue(denormalizedProperty.getPropertyID(),
+                entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
       }
     }
-  }
-
-  /**
-   * Updates the modified state of this entity according to the current property change
-   * @param propertyID the property identifier
-   * @param type the property type
-   * @param newValue the new value
-   * @param oldValue the previous value
-   */
-  private void handleValueChange(final String propertyID, final Type type, final Object newValue, final Object oldValue) {
-    if (originalValues != null && originalValues.containsKey(propertyID)) {
-      if (isEqual(type, originalValues.get(propertyID), newValue))
-        originalValues.remove(propertyID);//we're back to the original value
-    }
-    else if (!isEqual(type, oldValue, newValue))
-      (originalValues == null ? (originalValues = new HashMap<String, Object>()) : originalValues).put(propertyID, oldValue);
-
-    if (stModified != null)
-      stModified.setActive(isModified());
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
@@ -855,9 +739,9 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
   }
 
   /**
- * A class representing column key objects for entities, contains the values for those columns
+   * A class representing column key objects for entities, contains the values for those columns
    */
-  public static class Key implements Serializable {
+  public static class Key extends AbstractValueMap implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -865,11 +749,6 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
      * the entity ID
      */
     private final String entityID;
-
-    /**
-     * Contains the values of this key mapped to their respective propertyIDs
-     */
-    private final Map<String, Object> values;
 
     /**
      * Caching the hash code
@@ -891,11 +770,11 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
      * @param entityID the entity ID
      */
     public Key(final String entityID) {
+      super(1);
       if (entityID == null)
         throw new IllegalArgumentException("Key can not be instantiated without an entityID");
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
-      this.values = new HashMap<String, Object>(properties.size());
     }
 
     /**
@@ -943,14 +822,6 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
 
     /**
      * @param propertyID the property identifier
-     * @return true if this key contains a value for propertyID
-     */
-    public boolean hasValue(final String propertyID) {
-      return values.containsKey(propertyID);
-    }
-
-    /**
-     * @param propertyID the property identifier
      * @return true if this key contains a property with the given identifier
      */
     public boolean containsProperty(final String propertyID) {
@@ -961,12 +832,17 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       return false;
     }
 
-    /**
-     * @param propertyID the property identifier
-     * @return the value of the property identified by propertyID
-     */
-    public Object getValue(final String propertyID) {
-      return values.get(propertyID);
+    public Object setValue(final String propertyID, final Object newValue) {
+      hashCodeDirty = true;
+      if (isSingleIntegerKey()) {
+        if (!(newValue == null || newValue instanceof Integer))
+          throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
+                  + propertyID + ", got " + newValue + "; " + newValue.getClass());
+        hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
+        hashCodeDirty = false;
+      }
+
+      return super.setValue(propertyID, newValue);
     }
 
     /**
@@ -1040,10 +916,14 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
         return true;
 
       for (final Property property : getProperties())
-        if (isValueNull(property.getPropertyType(), values.get(property.getPropertyID())))
+        if (isValueNull(property.getPropertyID()))
           return true;
 
       return false;
+    }
+
+    public boolean isValueNull(final String propertyID) {
+      return Entity.isValueNull(getProperty(propertyID).getPropertyType(), getValue(propertyID));
     }
 
     public static List<Key> copy(final List<Key> entityKeys) {
@@ -1063,29 +943,24 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
       hashCode = -Integer.MAX_VALUE;
       hashCodeDirty = true;
       if (key != null) {
-        for (final Property.PrimaryKeyProperty property : getProperties())
-          values.put(property.getPropertyID(), copyPropertyValue(key.getValue(property.getPropertyID())));
-
+        if (originalValues != null)
+          originalValues.clear();
+        values.clear();
+        for (final Property.PrimaryKeyProperty property : getProperties()) {
+          final Object value = copyPropertyValue(key.getValue(property.getPropertyID()));
+          values.put(property.getPropertyID(), value);
+          eventPropertyChanged().fire(initValueChangeEvent(this, getEntityID(), property, value, null, true));
+        }
+        if (stModified != null)
+          stModified.setActive(false);
         hashCode = key.hashCode;
         hashCodeDirty = key.hashCodeDirty;
       }
     }
 
-    /**
-     * Sets the value of the property identified by propertyID to newValue
-     * @param propertyID the property identifier
-     * @param newValue the new value
-     */
-    void setValue(final String propertyID, final Object newValue) {
-      values.put(propertyID, newValue);
-      hashCodeDirty = true;
-      if (isSingleIntegerKey()) {
-        if (!(newValue == null || newValue instanceof Integer))
-          throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
-                  + propertyID + ", got " + newValue + "; " + newValue.getClass());
-        hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
-        hashCodeDirty = false;
-      }
+    protected ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+                                              final boolean initialization) {
+      return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }
 
     /**
@@ -1139,170 +1014,4 @@ public final class Entity implements Serializable, Comparable<Entity>, ValueMap 
     }
   }
 
-  /**
-   * Provides String representations of ValueMap objects.<br>
-   * Given a ValueMap named valueMap containing the following mappings:
-   * <pre>
-   * "key1" -> value1
-   * "key2" -> value2
-   * "key3" -> value3
-   * "key4" -> {ValueMap instance with a single mapping "refKey" -> refValue}
-   * </pre>
-   * <code>
-   * StringProvider provider = new StringProvider();<br>
-   * provider.addText("key1=");<br>
-   * provider.addValue("key1");<br>
-   * provider.addText(", key3='");<br>
-   * provider.addValue("key3");<br>
-   * provider.addText("' referenced value=");<br>
-   * provider.addReferencedValue("key4", "refKey");<br>
-   * System.out.println(provider.toString(valueMap));<br>
-   * </code>
-   * <br>
-   * outputs the following String:<br><br>
-   * <code>key1=value1, key3='value3' referenced value=refValue</code>
-   */
-  public static class StringProvider implements ToString, Serializable {
-
-    /**
-     * Holds the ValueProviders used when constructing the String representation
-     */
-    private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
-
-    /**
-     * Instantiates a new StringProvider instance
-     */
-    public StringProvider() {}
-
-    /**
-     * Instantiates a new StringProvider instance, with the value mapped to the given propertyID
-     * @param propertyID the propertyID
-     */
-    public StringProvider(final String propertyID) {
-      addValue(propertyID);
-    }
-
-    /** {@inheritDoc} */
-    public String toString(final ValueMap valueMap) {
-      final StringBuilder builder = new StringBuilder();
-      for (final ValueProvider valueProvider : valueProviders)
-        builder.append(valueProvider.toString(valueMap));
-
-      return builder.toString();
-    }
-
-    /**
-     * Adds the value mapped to the given propertyID to this StringProvider
-     * @param propertyID the propertyID
-     * @return this StringProvider instance
-     */
-    public StringProvider addValue(final String propertyID) {
-      valueProviders.add(new StringValueProvider(propertyID));
-      return this;
-    }
-
-    /**
-     * Adds the value mapped to the given propertyID to this StringProvider
-     * @param propertyID the propertyID
-     * @param format the Format to use when appending the value
-     * @return this StringProvider instance
-     */
-    public StringProvider addFormattedValue(final String propertyID, final Format format) {
-      valueProviders.add(new FormattedValueProvider(propertyID, format));
-      return this;
-    }
-
-    /**
-     * Adds the value mapped to the given propertyID in the Entity instance mapped to the given foreignKeyPropertyID
-     * to this StringProvider
-     * @param foreignKeyPropertyID the ID of the foreign key property
-     * @param propertyID the propertyID
-     * @return this StringProvider instance
-     */
-    public StringProvider addReferencedValue(final String foreignKeyPropertyID, final String propertyID) {
-      valueProviders.add(new ReferencedValueProvider(foreignKeyPropertyID, propertyID));
-      return this;
-    }
-
-    /**
-     * Adds the given static text to this StringProvider
-     * @param text the text to add
-     * @return this StringProvider instance
-     */
-    public StringProvider addText(final String text) {
-      valueProviders.add(new StaticTextProvider(text));
-      return this;
-    }
-
-    private static interface ValueProvider {
-      public String toString(final ValueMap valueMap);
-    }
-
-    private static class FormattedValueProvider implements ValueProvider, Serializable {
-      private final String propertyID;
-      private final Format format;
-
-      public FormattedValueProvider(final String propertyID, final Format format) {
-        this.propertyID = propertyID;
-        this.format = format;
-      }
-
-      public String toString(final ValueMap valueMap) {
-        if (valueMap.isValueNull(propertyID))
-          return "";
-
-        return format.format(valueMap.getValue(propertyID));
-      }
-    }
-
-    private static class ReferencedValueProvider implements ValueProvider, Serializable {
-      private final String foreignKeyPropertyID;
-      private final String propertyID;
-
-      public ReferencedValueProvider(final String foreignKeyPropertyID, final String propertyID) {
-        this.foreignKeyPropertyID = foreignKeyPropertyID;
-        this.propertyID = propertyID;
-      }
-
-      public String toString(final ValueMap valueMap) {
-        if (valueMap.isValueNull(foreignKeyPropertyID))
-          return "";
-        final Object referencedValue = valueMap.getValue(foreignKeyPropertyID);
-        if (!(referencedValue instanceof Entity))
-          throw new RuntimeException(foreignKeyPropertyID + " does not refer to a Entity instance");
-        final Entity foreignKeyEntity = (Entity) referencedValue;
-        if (foreignKeyEntity.isValueNull(propertyID))
-          return "";
-
-        return foreignKeyEntity.getValue(propertyID).toString();
-      }
-    }
-
-    private static class StringValueProvider implements ValueProvider, Serializable {
-      private final String propertyID;
-
-      public StringValueProvider(final String propertyID) {
-        this.propertyID = propertyID;
-      }
-
-      public String toString(final ValueMap valueMap) {
-        if (valueMap.isValueNull(propertyID))
-          return "";
-
-        return valueMap.getValue(propertyID).toString();
-      }
-    }
-
-    private static class StaticTextProvider implements ValueProvider, Serializable {
-      private final String text;
-
-      public StaticTextProvider(final String text) {
-        this.text = text;
-      }
-
-      public String toString(final ValueMap valueMap) {
-        return text;
-      }
-    }
-  }
 }

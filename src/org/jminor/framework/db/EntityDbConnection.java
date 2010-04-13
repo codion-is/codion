@@ -92,14 +92,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
         final IdSource idSource = EntityRepository.getIdSource(entityID);
         if (idSource.isQueried() && entity.getPrimaryKey().isNull())
-          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNewIdValue(entityID, idSource), false);
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNewIdValue(entityID, idSource));
 
         execute(sql = getInsertSQL(getDatabase(), entity));
 
         if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
                   queryInteger(getDatabase().getAutoIncrementValueSQL(
-                          EntityRepository.getEntityIdSource(entityID))), false);
+                          EntityRepository.getEntityIdSource(entityID))));
 
         keys.add(entity.getPrimaryKey());
       }
@@ -641,7 +641,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
               ? initLazyLoaded(referencedPrimaryKeys)
               : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
       for (final Entity entity : entities)
-        entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+        entity.setValue(foreignKeyProperty.getPropertyID(), hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
     }
   }
 

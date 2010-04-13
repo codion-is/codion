@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.db.IdSource;
+import org.jminor.common.model.StringProvider;
 import org.jminor.common.model.Version;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -89,7 +89,7 @@ public class Petstore {
             new Property(ADDRESS_LONGITUDE, Type.DOUBLE, "Longitude").setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2)
-            .setStringProvider(new Entity.StringProvider(ADDRESS_STREET_1).addText(" ")
+            .setStringProvider(new StringProvider(ADDRESS_STREET_1).addText(" ")
             .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
             .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE)));
 
@@ -100,7 +100,7 @@ public class Petstore {
             new Property(CATEGORY_IMAGE_URL, Type.STRING, "Image URL").setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(CATEGORY_NAME)
-            .setStringProvider(new Entity.StringProvider(CATEGORY_NAME)));
+            .setStringProvider(new StringProvider(CATEGORY_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_ITEM, "petstore.item",
             new Property.PrimaryKeyProperty(ITEM_ID),
@@ -118,7 +118,7 @@ public class Petstore {
             new Property(ITEM_DISABLED, Type.BOOLEAN, "Disabled").setNullable(false).setDefaultValue(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME)
-            .setStringProvider(new Entity.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME)));
+            .setStringProvider(new StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_PRODUCT, "petstore.product",
             new Property.PrimaryKeyProperty(PRODUCT_ID),
@@ -129,7 +129,7 @@ public class Petstore {
             new Property(PRODUCT_IMAGE_URL, Type.STRING, "Image URL").setMaxLength(55).setHidden(true))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(PRODUCT_NAME)
-            .setStringProvider(new Entity.StringProvider(PRODUCT_CATEGORY_FK)
+            .setStringProvider(new StringProvider(PRODUCT_CATEGORY_FK)
             .addText(" - ").addValue(PRODUCT_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
@@ -139,7 +139,7 @@ public class Petstore {
             new Property(SELLER_CONTACT_INFO_EMAIL, Type.STRING, "Email").setMaxLength(24).setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME)
-            .setStringProvider(new Entity.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
+            .setStringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_TAG, "petstore.tag",
@@ -150,13 +150,13 @@ public class Petstore {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag")
-            .setStringProvider(new Entity.StringProvider(TAG_TAG)));
+            .setStringProvider(new StringProvider(TAG_TAG)));
 
     EntityRepository.add(new EntityDefinition(T_TAG_ITEM, "petstore.tag_item",
             new Property.ForeignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     new Property.PrimaryKeyProperty(TAG_ITEM_ITEM_ID, Type.INT).setIndex(0)).setNullable(false),
             new Property.ForeignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     new Property.PrimaryKeyProperty(TAG_ITEM_TAG_ID, Type.INT).setIndex(1)).setNullable(false))
-            .setStringProvider(new Entity.StringProvider(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK)));
+            .setStringProvider(new StringProvider(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK)));
   }
 }

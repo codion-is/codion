@@ -67,7 +67,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     for (final Property property : properties)
       if (!(property instanceof Property.ForeignKeyProperty)) {
         try {
-          entity.initializeValue(property, getValue(resultSet, property));
+          entity.setValue(property.getPropertyID(), getValue(resultSet, property));
         }
         catch (Exception e) {
           throw new SQLException("Unable to load property: " + property, e);

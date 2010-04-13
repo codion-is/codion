@@ -322,8 +322,17 @@
     </zip>
   </target>
 
-  <target name="report" depends="run_unit_tests"
+  <target name="run_and_report" depends="run_unit_tests"
           description="Creates a unit test html report">
+    <mkdir dir="${test.htmlreports}"/>
+    <junitreport todir="${test.reports}">
+      <fileset dir="${test.reports}" includes="TEST-*.xml"/>
+      <report format="frames" todir="${test.htmlreports}"/>
+    </junitreport>
+  </target>
+
+  <target name="report"
+          description="Creates a unit test html report on a previously run test">
     <mkdir dir="${test.htmlreports}"/>
     <junitreport todir="${test.reports}">
       <fileset dir="${test.reports}" includes="TEST-*.xml"/>
