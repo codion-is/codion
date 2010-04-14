@@ -28,14 +28,14 @@ public class StringProviderTest {
 
   @Test
   public void test() {
-    final ValueMap department = new ValueMapModel() {
+    final ValueMap<String, Object> department = new ValueMapModel<String, Object>() {
       @Override
       public String toString() {
         return (String) getValue(DEPARTMENT_NAME);
       }
       @Override
       public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                                final boolean initialization) {
+                                             final boolean initialization) {
         return new ActionEvent(this, 0, "none");
       }
     };
@@ -43,7 +43,7 @@ public class StringProviderTest {
     department.setValue(DEPARTMENT_LOCATION, "Reykjavik");
     department.setValue(DEPARTMENT_NAME, "Sales");
 
-    final ValueMap employee = new ValueMapModel() {
+    final ValueMap<String, Object> employee = new ValueMapModel<String, Object>() {
       @Override
       public ActionEvent getValueChangeEvent(String key, Object newValue, Object oldValue, boolean initialization) {
         return new ActionEvent(this, 0, "none");
@@ -56,7 +56,7 @@ public class StringProviderTest {
 
     final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
-    final StringProvider employeeToString = new StringProvider(EMPLOYEE_NAME)
+    final StringProvider<String, Object> employeeToString = new StringProvider<String, Object>(EMPLOYEE_NAME)
             .addText(" (department: ").addValue(EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
             .addReferencedValue(EMPLOYEE_DEPARTMENT_FK, DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(EMPLOYEE_HIREDATE, dateFormat).addText(")");

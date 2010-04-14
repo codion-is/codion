@@ -11,19 +11,19 @@ import java.util.Map;
 /**
  * A ValueMap implementation which keeps track of value modifications.
  */
-public class ValueMapModel implements ChangeValueMap, Serializable {
+public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
 
   private static final long serialVersionUID = 1;
 
   /**
    * Holds the values contained in this value map.
    */
-  protected final Map<String, Object> values;
+  protected final Map<T, V> values;
 
   /**
    * Holds the original value for keys which values have changed.
    */
-  protected Map<String, Object> originalValues;
+  protected Map<T, V> originalValues;
 
   /**
    * Holds the modified state of this value map.
@@ -47,7 +47,7 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
    * @param initialSize the initial size
    */
   public ValueMapModel(final int initialSize) {
-    values = new HashMap<String, Object>(initialSize);
+    values = new HashMap<T, V>(initialSize);
   }
 
   /** {@inheritDoc} */
@@ -67,22 +67,22 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
   }
 
   /** {@inheritDoc} */
-  public boolean containsValue(final String key) {
+  public boolean containsValue(final T key) {
     return values.containsKey(key);
   }
 
   /** {@inheritDoc} */
-  public boolean isValueNull(final String key) {
+  public boolean isValueNull(final T key) {
     return containsValue(key) && getValue(key) == null;
   }
 
   /** {@inheritDoc} */
-  public Object getValue(final String key) {
+  public V getValue(final T key) {
     return values.get(key);
   }
 
   /** {@inheritDoc} */
-  public Object getOriginalValue(final String key) {
+  public V getOriginalValue(final T key) {
     if (isModified(key))
       return originalValues.get(key);
 
@@ -95,14 +95,14 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
   }
 
   /** {@inheritDoc} */
-  public boolean isModified(final String key) {
+  public boolean isModified(final T key) {
     return originalValues != null && originalValues.containsKey(key);
   }
 
   /** {@inheritDoc} */
-  public Object setValue(final String key, final Object value) {
+  public V setValue(final T key, final V value) {
     final boolean initialization = !containsValue(key);
-    Object oldValue = null;
+    V oldValue = null;
     if (!initialization) {
       oldValue = getValue(key);
       if (Util.equal(oldValue, value))
@@ -128,8 +128,8 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
   }
 
   /** {@inheritDoc} */
-  public Object removeValue(final String key) {
-    final Object value = getValue(key);
+  public V removeValue(final T key) {
+    final V value = getValue(key);
     doRemoveValue(key);
     doRemoveOriginalValue(key);
 
@@ -142,26 +142,26 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
   }
 
   /** {@inheritDoc} */
-  public void revertValue(final String key) {
+  public void revertValue(final T key) {
     if (isModified(key))
       setValue(key, getOriginalValue(key));
   }
 
   /** {@inheritDoc} */
-  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                         final boolean initialization) {
-    return new ActionEvent(this, 0, key);
+  public ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization) {
+    return new ActionEvent(this, 0, key.toString());
   }
 
+  @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object object) {
     if (!(object instanceof ValueMapModel))
       return false;
 
-    final ValueMapModel otherMap = (ValueMapModel) object;
+    final ValueMapModel<T, V> otherMap = (ValueMapModel<T, V>) object;
     if (values.size() != otherMap.values.size())
       return false;
-    for (final Map.Entry<String, Object> entry : otherMap.values.entrySet()) {
+    for (final Map.Entry<T, V> entry : otherMap.values.entrySet()) {
       if (containsValue(entry.getKey())) {
         if (!Util.equal(entry.getValue(), getValue(entry.getKey())))
           return false;
@@ -173,16 +173,16 @@ public class ValueMapModel implements ChangeValueMap, Serializable {
     return true;
   }
 
-  private void doSetOriginalValue(final String key, final Object oldValue) {
-    (originalValues == null ? (originalValues = new HashMap<String, Object>()) : originalValues).put(key, oldValue);
+  private void doSetOriginalValue(final T key, final V oldValue) {
+    (originalValues == null ? (originalValues = new HashMap<T, V>()) : originalValues).put(key, oldValue);
   }
 
-  private void doRemoveOriginalValue(final String key) {
+  private void doRemoveOriginalValue(final T key) {
     if (originalValues != null)
       originalValues.remove(key);
   }
 
-  private void doRemoveValue(final String key) {
+  private void doRemoveValue(final T key) {
     values.remove(key);
   }
 }

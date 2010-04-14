@@ -9,6 +9,6 @@ package org.jminor.common.model;
  * Date: 4.4.2010
  * Time: 21:06:22
  */
-public interface ValueProvider {
-  public Object getValue(final Object key);
+public interface ValueProvider<T, V> {
+  public V getValue(final T key);
 }

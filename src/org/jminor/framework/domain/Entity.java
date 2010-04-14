@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
  */
-public final class Entity extends ValueMapModel implements Serializable, Comparable<Entity> {
+public final class Entity extends ValueMapModel<String, Object> implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -40,6 +40,11 @@ public final class Entity extends ValueMapModel implements Serializable, Compara
    * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
   private transient Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
+
+  /**
+   * Caching this frequently referenced map
+   */
+  private transient Map<String, Property> properties;
 
   private static Map<String, Proxy> proxies;
   private static Proxy defaultProxy = new Proxy();
@@ -91,7 +96,10 @@ public final class Entity extends ValueMapModel implements Serializable, Compara
    * @return the property identified by propertyID
    */
   public Property getProperty(final String propertyID) {
-    return EntityRepository.getProperty(getEntityID(), propertyID);
+    if (properties == null)
+      properties = EntityRepository.getProperties(getEntityID());
+
+    return properties.get(propertyID);
   }
 
   /**
@@ -724,7 +732,7 @@ public final class Entity extends ValueMapModel implements Serializable, Compara
   /**
    * A class representing column key objects for entities, contains the values for those columns
    */
-  public static class Key extends ValueMapModel implements Serializable {
+  public static class Key extends ValueMapModel<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -981,7 +989,7 @@ public final class Entity extends ValueMapModel implements Serializable, Compara
 
     public String toString(final Entity entity) {
       final String entityID = entity.getEntityID();
-      final ToString stringProvider = EntityRepository.getStringProvider(entityID);
+      final ToString<String, Object> stringProvider = EntityRepository.getStringProvider(entityID);
 
       return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }

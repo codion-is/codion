@@ -420,9 +420,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
-    return getWhereCondition(database, entityKey.getProperties(), new ValueProvider() {
-      public Object getValue(final Object propertyID) {
-        return entityKey.getValue((String) propertyID);
+    return getWhereCondition(database, entityKey.getProperties(), new ValueProvider<String, Object>() {
+      public Object getValue(final String propertyID) {
+        return entityKey.getValue(propertyID);
       }
     });
   }
@@ -437,9 +437,9 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity entity) {
-    return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider() {
-      public Object getValue(final Object propertyID) {
-        return entity.getOriginalValue((String) propertyID);
+    return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider<String, Object>() {
+      public Object getValue(final String propertyID) {
+        return entity.getOriginalValue(propertyID);
       }
     });
   }
@@ -454,13 +454,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * e.g. "(idCol = 42)" or in case of multiple properties "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final List<Property.PrimaryKeyProperty> properties,
-                                         final ValueProvider valueProvider) {
+                                         final ValueProvider<String, Object> valueProvider) {
     final StringBuilder stringBuilder = new StringBuilder("(");
     int i = 0;
     for (final Property.PrimaryKeyProperty property : properties) {
       stringBuilder.append(Util.getQueryString(property.getPropertyID(),
-              ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property,
-                      valueProvider.getValue(property.getPropertyID()))));
+              ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property, valueProvider.getValue(property.getPropertyID()))));
       if (i++ < properties.size() - 1)
         stringBuilder.append(" and ");
     }

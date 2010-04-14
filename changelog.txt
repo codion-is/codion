@@ -1270,3 +1270,6 @@
   ValueListProvider added to common.model
   PropertyValueListProvider added
   EntityUiUtil.addLookupDialog() moved to UiUtil
+  ValueMap, ChangeValueMap, ValueMapModel, ValueProvider and StringProvider generified
+  Entity changed accordingly
+  Entity.properties cache field added

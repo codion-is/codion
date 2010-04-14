@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 /**
  * A ValueMap extension which keeps track of value modifications.
  */
-public interface ChangeValueMap extends ValueMap {
+public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
 
   /**
    * @return a State active when this value map has been modified
@@ -22,7 +22,7 @@ public interface ChangeValueMap extends ValueMap {
    * @param key the key for which to retrieve the original value
    * @return the original value
    */
-  Object getOriginalValue(final String key);
+  V getOriginalValue(final T key);
 
   /**
    * @return true if a value has been modified since this value map was initialized
@@ -34,13 +34,13 @@ public interface ChangeValueMap extends ValueMap {
    * @param key the key
    * @return true if the value has changed
    */
-  boolean isModified(final String key);
+  boolean isModified(final T key);
 
   /**
    * Reverts the value associated with the given key to its original value
    * @param key the key for which to revert the value
    */
-  void revertValue(final String key);
+  void revertValue(final T key);
 
   /**
    * Returns an ActionEvent describing the value change.
@@ -50,5 +50,5 @@ public interface ChangeValueMap extends ValueMap {
    * @param initialization true if the value is being initialized
    * @return an ActionEvent describing the value change
    */
-  ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue, final boolean initialization);
+  ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization);
 }
