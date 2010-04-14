@@ -110,7 +110,7 @@ public abstract class LoadTestModel {
     System.gc();
   }
 
-  public RandomItemModel getScenarioChooser() {
+  public RandomItemModel<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
 

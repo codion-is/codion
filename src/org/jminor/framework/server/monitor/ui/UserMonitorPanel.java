@@ -42,6 +42,7 @@ public class UserMonitorPanel  extends JPanel {
           final UserInstanceMonitor userInstanceMonitor = (UserInstanceMonitor) userInstanceList.getSelectedValue();
           if (userInstanceMonitor != null)
             add(new UserInstanceMonitorPanel(userInstanceMonitor), BorderLayout.CENTER);
+          repaint();
         }
         catch (RemoteException ex) {
           throw new RuntimeException(ex);

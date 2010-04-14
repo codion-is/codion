@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 /**
  * An abstract base class for linking a UI component to a property value.
  */
-public abstract class AbstractPropertyLink extends Control {
+public abstract class AbstractPropertyLink<T> extends Control {
 
   /**
    * The Object that owns the linked property
@@ -103,22 +103,22 @@ public abstract class AbstractPropertyLink extends Control {
   /**
    * @return the model value of the linked property
    */
-  public abstract Object getModelPropertyValue();
+  public abstract T getModelPropertyValue();
 
   /**
    * Sets the property value in the model
    * @param value the value to set for property
    */
-  public abstract void setModelPropertyValue(final Object value);
+  public abstract void setModelPropertyValue(final T value);
 
   /**
    * @return the property value according to the UI
    */
-  protected abstract Object getUIPropertyValue();
+  protected abstract T getUIPropertyValue();
 
   /**
    * Sets the property value in the UI
    * @param propertyValue the value to represent in the UI
    */
-  protected abstract void setUIPropertyValue(final Object propertyValue);
+  protected abstract void setUIPropertyValue(final T propertyValue);
 }

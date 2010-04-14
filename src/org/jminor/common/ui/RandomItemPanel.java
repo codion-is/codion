@@ -20,15 +20,15 @@ import java.awt.BorderLayout;
 /**
  * A default UI for the RandomItemModel.
  */
-public class RandomItemPanel extends JPanel {
+public class RandomItemPanel<T> extends JPanel {
 
-  private final RandomItemModel model;
+  private final RandomItemModel<T> model;
 
   /**
    * Instantiates a new RandomItemPanel.
    * @param model the RandomItemModel to base this panel on
    */
-  public RandomItemPanel(final RandomItemModel model) {
+  public RandomItemPanel(final RandomItemModel<T> model) {
     if (model == null)
       throw new IllegalArgumentException("Model can not be null");
 
@@ -36,7 +36,7 @@ public class RandomItemPanel extends JPanel {
     initializeUI();
   }
 
-  public RandomItemModel getModel() {
+  public RandomItemModel<T> getModel() {
     return model;
   }
 
@@ -46,7 +46,7 @@ public class RandomItemPanel extends JPanel {
   protected void initializeUI() {
     final int count = model.getItemCount();
     setLayout(new FlexibleGridLayout(count * 2, 1, 5, 5, true, false));
-    for (final RandomItemModel.RandomItem item : getModel().getItems()) {
+    for (final RandomItemModel.RandomItem<T> item : getModel().getItems()) {
       add(new JLabel(item.getItem().toString()));
       add(initializeWeightPanel(item));
     }
@@ -57,7 +57,7 @@ public class RandomItemPanel extends JPanel {
    * @param item the item for which to create a configuration panel
    * @return a conrol panel for the item weight
    */
-  protected JPanel initializeWeightPanel(final RandomItemModel.RandomItem item) {
+  protected JPanel initializeWeightPanel(final RandomItemModel.RandomItem<T> item) {
     final JPanel panel = new JPanel(new BorderLayout(0, 0));
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     spinner.setToolTipText(item.getItem().toString());
@@ -71,7 +71,7 @@ public class RandomItemPanel extends JPanel {
    * @param item the item
    * @return a weight controlling SpinnerModel
    */
-  private SpinnerModel createWeightSpinnerModel(final Object item) {
+  private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerModel spinnerModel = new SpinnerNumberModel(getModel().getWeight(item), 0, Integer.MAX_VALUE, 1);
     final AbstractPropertyLink propertyLink = new AbstractPropertyLink(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
       @Override

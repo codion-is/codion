@@ -37,6 +37,7 @@ public class EntityDbRemoteServerTest {
     System.setProperty(Configuration.SERVER_DB_PORT, "2223");
     System.setProperty(Configuration.SERVER_ADMIN_PORT, "3334");
     System.setProperty(Configuration.SERVER_HOST_NAME, "localhost");
+    System.setProperty(Configuration.SERVER_CONNECTION_POOLING_INITIAL, "scott");
     System.setProperty(Configuration.SERVER_CONNECTION_SSL_ENABLED, "true");
     System.setProperty(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore");
     System.setProperty("java.rmi.server.hostname", "localhost");

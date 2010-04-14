@@ -1278,3 +1278,10 @@
   BoundedRandomItemModel generified
   ValueListProvider generified
   PropertyValueListProvider changed accordingly
+  AbstractPropertyLink generified
+  InputValueProvider generified
+  InputValueProvider descendant unit tests added
+  RandomItemPanel generified
+  EntityLoadTestModelTest now shows a LoadTestPanel frame
+  ClientMonitor finished, HostMonitor improved
+  EntityDbRemoteServerAdmin getClients() overloaded

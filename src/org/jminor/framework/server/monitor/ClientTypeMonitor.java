@@ -6,9 +6,8 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
+import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * User: Bjorn Darri
@@ -20,7 +19,7 @@ public class ClientTypeMonitor {
   private final EntityDbServerAdmin server;
   private final String clientTypeID;
 
-  private final Collection<ClientInstanceMonitor> clientInstanceMonitors = new ArrayList<ClientInstanceMonitor>();
+  private final DefaultListModel clientInstanceListModel = new DefaultListModel();
 
   public ClientTypeMonitor(final EntityDbServerAdmin server, final String clientTypeID) throws RemoteException {
     this.server = server;
@@ -29,9 +28,13 @@ public class ClientTypeMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final ClientInfo client : server.getClients(null))
-      if (clientTypeID.equals(client.getClientTypeID()))
-        clientInstanceMonitors.add(new ClientInstanceMonitor(client, server));
+    clientInstanceListModel.clear();
+    for (final ClientInfo client : server.getClients(clientTypeID))
+      clientInstanceListModel.addElement(new ClientInstanceMonitor(client, server));
+  }
+
+  public DefaultListModel getClientInstanceListModel() {
+    return clientInstanceListModel;
   }
 
   public String getClientTypeID() {
@@ -42,14 +45,9 @@ public class ClientTypeMonitor {
     return server;
   }
 
-  public void disconnectAll() throws RemoteException {
-    server.removeConnections(false);
-    refresh();
-  }
-
-  public void disconnectTimedOut() throws RemoteException {
-    server.removeConnections(true);
-    refresh();
+  @Override
+  public String toString() {
+    return getClientTypeID();
   }
 
   public void shutdown() {

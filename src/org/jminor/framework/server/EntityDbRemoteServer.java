@@ -159,11 +159,32 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     return users;
   }
 
+  public Collection<ClientInfo> getClients() throws RemoteException {
+    final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
+    synchronized (connections) {
+      for (final EntityDbRemoteAdapter adapter : connections.values())
+        clients.add(adapter.getClientInfo());
+    }
+
+    return clients;
+  }
+
   public Collection<ClientInfo> getClients(final User user) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     synchronized (connections) {
       for (final EntityDbRemoteAdapter adapter : connections.values())
         if (user == null || adapter.getUser().equals(user))
+          clients.add(adapter.getClientInfo());
+    }
+
+    return clients;
+  }
+
+  public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
+    final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
+    synchronized (connections) {
+      for (final EntityDbRemoteAdapter adapter : connections.values())
+        if (adapter.getClientInfo().getClientTypeID().equals(clientTypeID))
           clients.add(adapter.getClientInfo());
     }
 

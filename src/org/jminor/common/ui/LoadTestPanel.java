@@ -122,7 +122,7 @@ public class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeScenarioPanel() {
-    final JPanel scenarioBase = new RandomItemPanel(getModel().getScenarioChooser());
+    final RandomItemPanel scenarioBase = new RandomItemPanel<LoadTestModel.UsageScenario>(getModel().getScenarioChooser());
     scenarioBase.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
 
     return scenarioBase;

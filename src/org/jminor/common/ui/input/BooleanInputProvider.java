@@ -11,16 +11,16 @@ import javax.swing.JComboBox;
 /**
    * A InputManager implementation for boolean values.
  */
-public class BooleanInputProvider extends InputValueProvider {
+public class BooleanInputProvider extends InputValueProvider<Boolean> {
 
   public BooleanInputProvider(final Boolean currentValue) {
     super(new JComboBox(new BooleanComboBoxModel()));
     if (currentValue != null)
-      ((JComboBox) getInputComponent()).setSelectedItem(currentValue);
+      ((JComboBox) getInputComponent()).getModel().setSelectedItem(currentValue);
   }
 
   @Override
-  public Object getValue() {
-    return ((ItemComboBoxModel.Item) ((JComboBox) getInputComponent()).getModel().getSelectedItem()).getItem();
+  public Boolean getValue() {
+    return (Boolean) ((ItemComboBoxModel.Item) ((JComboBox) getInputComponent()).getModel().getSelectedItem()).getItem();
   }
 }

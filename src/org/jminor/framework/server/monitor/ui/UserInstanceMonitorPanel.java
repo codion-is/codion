@@ -42,6 +42,7 @@ public class UserInstanceMonitorPanel extends JPanel {
       public void valueChanged(final ListSelectionEvent e) {
         try {
           clientInstancePanel.setModel((ClientInstanceMonitor) clientList.getSelectedValue());
+          repaint();
         }
         catch (RemoteException ex) {
           throw new RuntimeException(ex);

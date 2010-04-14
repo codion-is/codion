@@ -1,6 +1,7 @@
 package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.User;
+import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
@@ -29,6 +30,8 @@ public class EntityLoadTestModelTest {
   @Test
   public void testLoadTesting() throws Exception {
     final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
+
+    new LoadTestPanel(loadTest).showFrame();
 
     loadTest.setCollectChartData(true);
     loadTest.setUpdateInterval(350);

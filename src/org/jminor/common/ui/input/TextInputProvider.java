@@ -12,14 +12,14 @@ import javax.swing.JTextField;
 /**
  * A InputManager implementation for String values.
  */
-public class TextInputProvider extends InputValueProvider {
+public class TextInputProvider extends InputValueProvider<String> {
 
   public TextInputProvider(final String inputDialogTitle, final ValueListProvider valueListProvider, final String currentValue) {
     super(createTextInputPanel(inputDialogTitle, valueListProvider, currentValue));
   }
 
   @Override
-  public Object getValue() {
+  public String getValue() {
     return ((TextInputPanel) getInputComponent()).getText();
   }
 

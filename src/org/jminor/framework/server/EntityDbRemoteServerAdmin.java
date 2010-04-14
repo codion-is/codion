@@ -111,9 +111,19 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     return server.getClients(user);
   }
 
+  /** {@inheritDoc} */
+  public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
+    return server.getClients(clientTypeID);
+  }
+
+  /** {@inheritDoc} */
+  public Collection<ClientInfo> getClients() throws RemoteException {
+    return server.getClients();
+  }
+
   public Collection<String> getClientTypes() throws RemoteException {
     final Set<String> clientTypes = new HashSet<String>();
-    for (final ClientInfo client : getClients(null))
+    for (final ClientInfo client : getClients())
       clientTypes.add(client.getClientTypeID());
 
     return clientTypes;

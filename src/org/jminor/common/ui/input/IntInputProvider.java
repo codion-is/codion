@@ -5,7 +5,7 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.ui.textfield.IntField;
 
-public class IntInputProvider extends InputValueProvider {
+public class IntInputProvider extends InputValueProvider<Integer> {
 
   public IntInputProvider(final Integer currentValue) {
     super(new IntField());
@@ -14,7 +14,7 @@ public class IntInputProvider extends InputValueProvider {
   }
 
   @Override
-  public Object getValue() {
+  public Integer getValue() {
     return ((IntField) getInputComponent()).getInt();
   }
 }

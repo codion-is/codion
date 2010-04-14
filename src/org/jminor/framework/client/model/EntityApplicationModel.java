@@ -22,9 +22,9 @@ public abstract class EntityApplicationModel {
   private final EntityDbProvider dbProvider;
   private final List<? extends EntityModel> mainApplicationModels;
 
-  public EntityApplicationModel(final User user, final String appID) {
+  public EntityApplicationModel(final User user, final String applicationID) {
     loadDomainModel();
-    this.dbProvider = initializeDbProvider(user, appID);
+    this.dbProvider = initializeDbProvider(user, applicationID);
     this.mainApplicationModels = initializeMainApplicationModels(dbProvider);
     bindEvents();
   }
@@ -117,11 +117,6 @@ public abstract class EntityApplicationModel {
     }
   }
 
-  public static String createClientKey(final String reference, final User user) {
-    return (reference != null ? (reference + " - ") : "")
-            + "[" + user.getUsername() + "] " + Long.toHexString(System.currentTimeMillis());
-  }
-
   public EntityModel getMainApplicationModel(final Class modelClass) {
     for (final EntityModel model : mainApplicationModels)
       if (model.getClass().equals(modelClass))
@@ -151,8 +146,8 @@ public abstract class EntityApplicationModel {
    */
   protected abstract List<? extends EntityModel> initializeMainApplicationModels(final EntityDbProvider dbProvider);
 
-  protected EntityDbProvider initializeDbProvider(final User user, final String appID) {
-    return EntityDbProviderFactory.createEntityDbProvider(user, createClientKey(appID, user));
+  protected EntityDbProvider initializeDbProvider(final User user, final String applicationID) {
+    return EntityDbProviderFactory.createEntityDbProvider(user, applicationID);
   }
 
   protected void bindEvents() {}

@@ -72,6 +72,17 @@ public class MonitorPanel extends JPanel {
     model.refresh();
   }
 
+  public void showFrame() {
+    monitorFrame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.png").getImage());
+    monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initMainMenuControlSets()));
+    monitorFrame.setTitle("JMinor - EntityDb Server Monitor");
+    monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    monitorFrame.getContentPane().add(this);
+    UiUtil.resizeWindow(monitorFrame, 0.75);
+    UiUtil.centerWindow(monitorFrame);
+    monitorFrame.setVisible(true);
+  }
+
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane hostPane = new JTabbedPane();
@@ -137,16 +148,5 @@ public class MonitorPanel extends JPanel {
       e.printStackTrace();
       System.exit(1);
     }
-  }
-
-  private void showFrame() {
-    monitorFrame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.png").getImage());
-    monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initMainMenuControlSets()));
-    monitorFrame.setTitle("JMinor - EntityDb Server Monitor");
-    monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    monitorFrame.getContentPane().add(this);
-    UiUtil.resizeWindow(monitorFrame, 0.75);
-    UiUtil.centerWindow(monitorFrame);
-    monitorFrame.setVisible(true);
   }
 }

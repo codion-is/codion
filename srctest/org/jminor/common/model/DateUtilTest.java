@@ -9,6 +9,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 /**
  * User: Bjorn Darri
  * Date: 3.8.2009
@@ -27,5 +30,17 @@ public class DateUtilTest {
 
     assertTrue("isDateValid should work with a date format specified",
             DateUtil.isDateValid("03.10.1975", false, DateFormats.getDateFormat(DateFormats.SHORT_DOT)));
+  }
+
+  @Test
+  public void floorDate() {
+    final Date date = new Date();
+    assertFalse(DateUtil.floorDate(date).equals(date));
+  }
+
+  @Test
+  public void floorTimestamp() {
+    final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    assertFalse(DateUtil.floorTimestamp(timestamp).equals(timestamp));
   }
 }

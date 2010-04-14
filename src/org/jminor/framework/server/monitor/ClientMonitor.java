@@ -5,9 +5,9 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.framework.server.EntityDbServerAdmin;
 
+import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Enumeration;
 
 /**
  * User: Bjorn Darri
@@ -18,25 +18,45 @@ public class ClientMonitor {
 
   private final EntityDbServerAdmin server;
 
-  private Collection<ClientTypeMonitor> clientTypeMonitors = new ArrayList<ClientTypeMonitor>();
+  private final DefaultListModel clientTypeListModel = new DefaultListModel();
 
   public ClientMonitor(final EntityDbServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
 
-  public Collection<ClientTypeMonitor> getClientTypeMonitors() {
-    return clientTypeMonitors;
+  public DefaultListModel getClientTypeListModel() {
+    return clientTypeListModel;
   }
 
   public void refresh() throws RemoteException{
+    clientTypeListModel.clear();
     for (final String clientType : server.getClientTypes())
-      clientTypeMonitors.add(new ClientTypeMonitor(server, clientType));
+      clientTypeListModel.addElement(new ClientTypeMonitor(server, clientType));
+  }
+
+  public void disconnectAll() throws RemoteException {
+    server.removeConnections(false);
+    refresh();
+  }
+
+  public void disconnectTimedOut() throws RemoteException {
+    server.removeConnections(true);
+    refresh();
+  }
+
+  public void setCheckMaintenanceInterval(final int interval) throws RemoteException {
+    server.setCheckMaintenanceInterval(interval);
+  }
+
+  public int getCheckMaintenanceInterval() throws RemoteException {
+    return server.getCheckMaintenanceInterval();
   }
 
   public void shutdown() {
     System.out.println("ClientMonitor shutdown");
-    for (final ClientTypeMonitor monitor : clientTypeMonitors)
-      monitor.shutdown();
+    final Enumeration enumeration = clientTypeListModel.elements();
+    while (enumeration.hasMoreElements())
+      ((ClientTypeMonitor) enumeration.nextElement()).shutdown();
   }
 }

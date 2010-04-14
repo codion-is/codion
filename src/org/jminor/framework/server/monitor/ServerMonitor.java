@@ -18,7 +18,6 @@ import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,6 +31,7 @@ public class ServerMonitor {
 
   private static final Logger log = Util.getLogger(ServerMonitor.class);
 
+  private final Event evtStatsUpdateIntervalChanged = new Event();
   private final Event evtServerShutDown = new Event();
   private final Event evtStatsUpdated = new Event();
   private final Event evtWarningThresholdChanged = new Event();
@@ -41,7 +41,9 @@ public class ServerMonitor {
   private final String serverName;
   private final EntityDbServerAdmin server;
 
-  private final Timer updateTimer;
+  private Timer updateTimer;
+  private int statsUpdateInterval;
+
   private final DatabaseMonitor databaseMonitor;
   private final ClientMonitor clientMonitor;
   private final UserMonitor userMonitor;
@@ -77,19 +79,15 @@ public class ServerMonitor {
     clientMonitor = new ClientMonitor(server);
     userMonitor = new UserMonitor(server);
     refreshDomainList();
-    updateTimer = new Timer(false);
-    updateTimer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        try {
-          if (!shutdown)
-            updateStats();
-        }
-        catch (RemoteException e) {
-          e.printStackTrace();
-        }
-      }
-    }, new Date(), 2000);
+    setStatsUpdateInterval(2);
+  }
+
+  public void setStatsUpdateInterval(final int value) {
+    if (value != this.statsUpdateInterval) {
+      this.statsUpdateInterval = value;
+      evtStatsUpdateIntervalChanged.fire();
+      startUpdateTimer(value * 1000);
+    }
   }
 
   public void shutdown() {
@@ -215,6 +213,10 @@ public class ServerMonitor {
     return evtWarningThresholdChanged;
   }
 
+  public Event eventStatsUpdateIntervalChanged() {
+    return evtStatsUpdateIntervalChanged;
+  }
+
   private EntityDbServerAdmin connectServer(final String serverName) throws RemoteException {
     final long time = System.currentTimeMillis();
     try {
@@ -250,5 +252,26 @@ public class ServerMonitor {
     usedMemorySeries.add(time, server.getUsedMemory());
     connectionCountSeries.add(time, server.getConnectionCount());
     evtStatsUpdated.fire();
+  }
+
+  private void startUpdateTimer(final int delay) {
+    if (delay <= 0)
+      return;
+
+    if (updateTimer != null)
+      updateTimer.cancel();
+    updateTimer = new Timer(false);
+    updateTimer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        try {
+          if (!shutdown)
+            updateStats();
+        }
+        catch (RemoteException e) {
+          e.printStackTrace();
+        }
+      }
+    }, delay, delay);
   }
 }

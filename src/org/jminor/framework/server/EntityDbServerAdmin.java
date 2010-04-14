@@ -171,11 +171,24 @@ public interface EntityDbServerAdmin extends Remote {
   Collection<User> getUsers() throws RemoteException;
 
   /**
-   * @param user the user for which to retrieve the connection keys
+   * @return the info on all clients connected to the server
+   * @throws RemoteException in case of a communication error
+   */
+  Collection<ClientInfo> getClients() throws RemoteException;
+
+  /**
+   * @param user the user for which to retrieve the client infos
    * @return the connection keys associated with the given user
    * @throws RemoteException in case of a communication error
    */
   Collection<ClientInfo> getClients(final User user) throws RemoteException;
+
+  /**
+   * @param clientTypeID the client type for which to retrieve the client infos
+   * @return the connection keys associated with the given user
+   * @throws RemoteException in case of a communication error
+   */
+  Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException;
 
   /**
    * Returns the connection timeout in seconds

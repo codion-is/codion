@@ -39,6 +39,7 @@ public class DbConnectionPoolTest {
     final LoadTestModel model = initializeLoadTestModel(pool);
 
     new Timer(true).schedule(new TimerTask() {
+      @Override
       public void run() {
         System.out.println("created: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionsCreated());
         System.out.println("requests: " + pool.getConnectionPoolStatistics(startTime.getTime()).getConnectionRequests());
@@ -62,7 +63,7 @@ public class DbConnectionPoolTest {
     Thread.sleep(4200);
     model.exit();
     pool.close();
-    Thread.sleep(800);
+    Thread.sleep(1000);
     final ConnectionPoolStatistics statistics = pool.getConnectionPoolStatistics(startTime.getTime());
     assertEquals(statistics.getConnectionsCreated(), statistics.getConnectionsDestroyed());
     if (!GraphicsEnvironment.isHeadless() && frame != null) {
@@ -188,10 +189,10 @@ public class DbConnectionPoolTest {
 
   private LoadTestModel initializeLoadTestModel(final DbConnectionPool pool) {
     return new LoadTestModel(User.UNIT_TEST_USER, 200, 1, 20, 20) {
-      protected void disconnectApplication(Object application) {
+      @Override
+      protected void disconnectApplication(Object application) {}
 
-      }
-
+      @Override
       protected Object initializeApplication() throws CancelException {
         return new ActionListener() {
           public void actionPerformed(ActionEvent e) {

@@ -13,14 +13,14 @@ import java.util.Date;
 /**
    * A InputManager implementation for date values.
  */
-public class DateInputProvider extends InputValueProvider {
+public class DateInputProvider extends InputValueProvider<Date> {
 
   public DateInputProvider(final Date currentValue, final SimpleDateFormat dateFormat) {
     super(new DateInputPanel(currentValue, dateFormat));
   }
 
   @Override
-  public Object getValue() {
+  public Date getValue() {
     try {
       final String dateText = ((DateInputPanel) getInputComponent()).getInputField().getText();
       if (!dateText.contains("_"))

@@ -22,27 +22,27 @@ public class ValueMapModelTest {
 
     model.setValue(key, 1);
     assertTrue(model.containsValue(key));
-    assertEquals(1, model.getValue(key));
-    assertEquals(1, model.getOriginalValue(key));
+    assertEquals(Integer.valueOf(1), model.getValue(key));
+    assertEquals(Integer.valueOf(1), model.getOriginalValue(key));
     assertFalse(model.isValueNull(key));
     assertFalse(model.isModified());
     assertFalse(model.isModified(key));
 
     model.setValue(key, 1);
     assertTrue(model.containsValue(key));
-    assertEquals(1, model.getValue(key));
+    assertEquals(Integer.valueOf(1), model.getValue(key));
     assertFalse(model.isModified());
     assertFalse(model.isModified(key));
 
     model.setValue(key, 2);
     assertTrue(model.containsValue(key));
-    assertEquals(2, model.getValue(key));
-    assertEquals(1, model.getOriginalValue(key));
+    assertEquals(Integer.valueOf(2), model.getValue(key));
+    assertEquals(Integer.valueOf(1), model.getOriginalValue(key));
     assertTrue(model.isModified());
     assertTrue(model.isModified(key));
 
     model.revertValue(key);
-    assertEquals(1, model.getValue(key));
+    assertEquals(Integer.valueOf(1), model.getValue(key));
     assertFalse(model.isModified());
     assertFalse(model.isModified(key));
 
