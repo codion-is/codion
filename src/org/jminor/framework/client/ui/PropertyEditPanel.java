@@ -6,27 +6,17 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.ui.input.InputValueProvider;
-import org.jminor.framework.client.model.EntityComboBoxModel;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * A class for editing a property value for one or more entities at a time.
@@ -35,7 +25,7 @@ public class PropertyEditPanel extends JPanel {
 
   private final Event evtButtonClicked = new Event();
 
-  private final InputValueProvider inputManager;
+  private final InputValueProvider inputProvider;
 
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
@@ -43,21 +33,15 @@ public class PropertyEditPanel extends JPanel {
   /**
    * Instantiates a new PropertyEditPanel
    * @param property the property to edit
+   * @param inputProvider the InputManager to use
    */
-  public PropertyEditPanel(final Property property) {
-    this(property, null);
-  }
-
-  /**
-   * Instantiates a new PropertyEditPanel
-   * @param property the property to edit
-   * @param inputManager the InputManager to use, if no InputManager is specified a default one is used
-   */
-  public PropertyEditPanel(final Property property, final InputValueProvider inputManager) {
+  public PropertyEditPanel(final Property property, final InputValueProvider inputProvider) {
     if (property == null)
       throw new IllegalArgumentException("Property must be specified");
+    if (inputProvider == null)
+      throw new IllegalArgumentException("InputProvider must be specified");
 
-    this.inputManager = inputManager;
+    this.inputProvider = inputProvider;
     initUI(property.getCaption());
   }
 
@@ -79,7 +63,7 @@ public class PropertyEditPanel extends JPanel {
    * @return the value specified by the input component of this PropertyEditPanel
    */
   public Object getValue() {
-    return inputManager.getValue();
+    return inputProvider.getValue();
   }
 
   public Event eventButtonClicked() {
@@ -89,7 +73,7 @@ public class PropertyEditPanel extends JPanel {
   protected void initUI(final String propertyID) {
     setLayout(new BorderLayout(5,5));
     setBorder(BorderFactory.createTitledBorder(propertyID));
-    add(inputManager.getInputComponent(), BorderLayout.CENTER);
+    add(inputProvider.getInputComponent(), BorderLayout.CENTER);
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnBase.add(createButtonPanel());
     add(btnBase, BorderLayout.SOUTH);
@@ -113,70 +97,5 @@ public class PropertyEditPanel extends JPanel {
     button.setMnemonic(mnemonic.charAt(0));
 
     return button;
-  }
-
-  /**
-   * A InputManager implementation for Entity values.
-   */
-  public static class EntityInputProvider extends InputValueProvider {
-    public EntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final EntityEditModel editModel,
-                               final Entity currentValue) {
-      super(createEntityField(foreignKeyProperty, editModel, currentValue));
-    }
-
-    @Override
-    public Object getValue() {
-      if (getInputComponent() instanceof JComboBox) {
-        if (((JComboBox) getInputComponent()).getSelectedIndex() == 0)
-          return null;
-
-        return ((JComboBox) getInputComponent()).getSelectedItem();
-      }
-      else {//EntityLookupField
-        final EntityLookupField lookupField = (EntityLookupField) getInputComponent();
-        if (lookupField.getModel().getSelectedEntities().size() == 0)
-          return null;
-
-        return lookupField.getModel().getSelectedEntities().get(0);
-      }
-    }
-
-    private static JComponent createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                final EntityEditModel editModel, final Object currentValue) {
-      if (!EntityRepository.isLargeDataset(foreignKeyProperty.getReferencedEntityID())) {
-        final EntityComboBoxModel model = editModel.createEntityComboBoxModel(foreignKeyProperty);
-        if (model.getNullValueString() == null)
-          model.setNullValueString("-");
-        model.refresh();
-        if (currentValue != null)
-          model.setSelectedItem(currentValue);
-
-        return new JComboBox(model);
-      }
-      else {
-        final String[] searchPropertyIds = EntityRepository.getEntitySearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
-        List<Property> searchProperties;
-        if (searchPropertyIds != null) {
-          searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIds);
-        }
-        else {//use all string properties
-          final Collection<Property> properties =
-                  EntityRepository.getDatabaseProperties(foreignKeyProperty.getReferencedEntityID());
-          searchProperties = new ArrayList<Property>();
-          for (final Property property : properties)
-            if (property.getPropertyType() == Type.STRING)
-              searchProperties.add(property);
-        }
-        if (searchProperties.size() == 0)
-          throw new RuntimeException("No searchable properties found for entity: " + foreignKeyProperty.getReferencedEntityID());
-
-        final EntityLookupField field = new EntityLookupField(editModel.createEntityLookupModel(
-                foreignKeyProperty.getReferencedEntityID(), null, searchProperties));
-        if (currentValue != null)
-          field.getModel().setSelectedEntity((Entity) currentValue);
-
-        return field;
-      }
-    }
   }
 }

@@ -746,7 +746,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * Queries the user on which property to update, after which it calls the
    * <code>updateSelectedEntities(property)</code> with that property
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
-   * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
+   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities() {
     try {
@@ -758,14 +758,14 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see #getInputManager(org.jminor.framework.domain.Property, java.util.List)
+   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
     if (!getModel().containsTableModel() || getModel().getTableModel().stateSelectionEmpty().isActive())
       return;
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedEntities());
-    final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, getInputManager(propertyToUpdate, selectedEntities));
+    final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
             null, editPanel.getOkButton(), editPanel.eventButtonClicked());
     if (editPanel.isEditAccepted()) {
@@ -1706,14 +1706,16 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   protected void validateData() throws ValidationException, CancelException {}
 
   /**
-   * for overriding, to provide specific input components for multiple entity update
+   * Provides value input components for multiple entity update, override to supply
+   * specific InputValueProvider implementations for properties.
+   * Remember to return with a call to super.getInputManager().
    * @param property the property for which to get the InputManager
    * @param toUpdate the entities that are about to be updated
    * @return the InputManager handling input for <code>property</code>
    * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected InputValueProvider getInputManager(final Property property, final List<Entity> toUpdate) {
+  protected InputValueProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     switch (property.getPropertyType()) {
@@ -1731,8 +1733,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         return new TextInputProvider(property.getCaption(), new PropertyValueListProvider(getModel().getDbProvider(),
                 getModel().getEntityID(), property.getPropertyID()), (String) currentValue);
       case ENTITY:
-        return new PropertyEditPanel.EntityInputProvider((Property.ForeignKeyProperty) property,
-                getModel().getEditModel(), (Entity) currentValue);
+        return new EntityInputProvider((Property.ForeignKeyProperty) property, getModel().getEditModel(), (Entity) currentValue);
     }
 
     throw new IllegalArgumentException("Unsupported property type: " + property.getPropertyType());

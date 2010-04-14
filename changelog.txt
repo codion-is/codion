@@ -1285,3 +1285,5 @@
   EntityLoadTestModelTest now shows a LoadTestPanel frame
   ClientMonitor finished, HostMonitor improved
   EntityDbRemoteServerAdmin getClients() overloaded
+  EntityPanel.getInputManager() renamed to getInputProvider()
+  PropertyEditPanel.EntityInputProvider moved up to client.ui
