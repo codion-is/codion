@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.db.DbConnection;
 import org.jminor.common.db.DbConnectionProvider;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
@@ -580,8 +581,11 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     ConnectionPool pool = connectionPools.get(settings.getUser());
     if (pool == null) {
       connectionPools.put(settings.getUser(), new DbConnectionPool(new DbConnectionProvider() {
-        public EntityDbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+        public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
           return new EntityDbConnection(database, user);
+        }
+        public void destroyConnection(final DbConnection connection) {
+          connection.disconnect();
         }
       }, settings));
     }

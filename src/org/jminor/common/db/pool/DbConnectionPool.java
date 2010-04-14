@@ -255,7 +255,7 @@ public class DbConnectionPool implements ConnectionPool {
       return;
 
     counter.incrementConnectionsDestroyedCounter();
-    connection.disconnect();
+    dbConnectionProvider.destroyConnection(connection);
   }
 
   private static class Counter {
@@ -278,7 +278,7 @@ public class DbConnectionPool implements ConnectionPool {
         public void run() {
           updateStatistics();
         }
-      }, new Date(), 5000);
+      }, new Date(), 1000);
     }
 
     public Date getCreationDate() {
@@ -327,7 +327,7 @@ public class DbConnectionPool implements ConnectionPool {
 
     public void updateStatistics() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - requestsPerSecondTime) / 1000;
+      final double seconds = (current - requestsPerSecondTime) / 1000d;
       requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
       requestsPerSecondCounter = 0;
       requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);

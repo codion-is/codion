@@ -23,4 +23,10 @@ public interface DbConnectionProvider {
    * @throws SQLException in case of a database exception
    */
   DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException;
+
+  /**
+   * Disconnects the given connection and disposes of any resources it holds.
+   * @param connection the connection to destroy
+   */
+  void destroyConnection(final DbConnection connection);
 }

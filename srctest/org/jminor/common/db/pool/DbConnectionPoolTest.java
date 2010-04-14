@@ -83,6 +83,9 @@ public class DbConnectionPoolTest {
       public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
         return new DbConnection(database, user);
       }
+      public void destroyConnection(final DbConnection connection) {
+        connection.disconnect();
+      }
     }, settings);
     pool.getConnectionPoolSettings().getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
@@ -237,6 +240,9 @@ public class DbConnectionPoolTest {
     return new DbConnectionPool(new DbConnectionProvider() {
       public DbConnection createConnection(User user) throws ClassNotFoundException, SQLException {
         return new DbConnection(DatabaseProvider.createInstance(), User.UNIT_TEST_USER);
+      }
+      public void destroyConnection(final DbConnection connection) {
+        connection.disconnect();
       }
     }, new ConnectionPoolSettings(User.UNIT_TEST_USER, true, 70, 1, 200));
   }

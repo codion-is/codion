@@ -67,7 +67,7 @@ public class EntityLoadTestModelTest {
 
     loadTest.addApplications();
 
-    Thread.sleep(2000);
+    Thread.sleep(3000);
 
     assertEquals("Two clients expected, if this fails try increasing the Thread.sleep() value above",
             2, loadTest.getApplicationCount());

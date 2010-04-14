@@ -1287,3 +1287,4 @@
   EntityDbRemoteServerAdmin getClients() overloaded
   EntityPanel.getInputManager() renamed to getInputProvider()
   PropertyEditPanel.EntityInputProvider moved up to client.ui
+  DbConnectionProvider.destroyConnection() added
