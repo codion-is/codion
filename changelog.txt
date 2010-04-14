@@ -1273,3 +1273,5 @@
   ValueMap, ChangeValueMap, ValueMapModel, ValueProvider and StringProvider generified
   Entity changed accordingly
   Entity.properties cache field added
+  RandomItemModel generified
+  LoadTestModel changed accordingly

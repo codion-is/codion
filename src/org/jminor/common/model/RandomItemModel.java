@@ -26,7 +26,7 @@ import java.util.Random;
  * Object random = model.getRandomItem();
  * </pre>
  */
-public class RandomItemModel {
+public class RandomItemModel<T> {
 
   /**
    * An Event fired when a weight value has changed
@@ -36,7 +36,7 @@ public class RandomItemModel {
   /**
    * The items contained in this model
    */
-  protected final List<RandomItem> items = new ArrayList<RandomItem>();
+  protected final List<RandomItem<T>> items = new ArrayList<RandomItem<T>>();
 
   private final Random random = new Random();
 
@@ -49,9 +49,9 @@ public class RandomItemModel {
    * @param defaultWeight the default weight to assign to each intial item
    * @param items the items to add to this model
    */
-  public RandomItemModel(final int defaultWeight, final Object... items) {
+  public RandomItemModel(final int defaultWeight, final T... items) {
     if (items != null) {
-      for (final Object item : items)
+      for (final T item : items)
         addItem(item, defaultWeight);
     }
   }
@@ -60,7 +60,7 @@ public class RandomItemModel {
    * Adds the given item to this model with default weight of 0.
    * @param item the item to add
    */
-  public void addItem(final Object item) {
+  public void addItem(final T item) {
     addItem(item, 0);
   }
 
@@ -69,14 +69,14 @@ public class RandomItemModel {
    * @param item the item to add
    * @param weight the initial weight to assign to the item
    */
-  public void addItem(final Object item, final int weight) {
-    items.add(new RandomItem(item, weight));
+  public void addItem(final T item, final int weight) {
+    items.add(new RandomItem<T>(item, weight));
   }
 
   /**
    * @return the items in this model.
    */
-  public Collection<RandomItem> getItems() {
+  public Collection<RandomItem<T>> getItems() {
     return items;
   }
 
@@ -105,14 +105,14 @@ public class RandomItemModel {
    * Fetches a random item from this model based on the item weights.
    * @return a randomly chosen item.
    */
-  public Object getRandomItem() {
+  public T getRandomItem() {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0)
       throw new RuntimeException("Can not choose a random item unless total weights exceed 0");
 
     final int random = getRandom().nextInt(totalWeights + 1);
     int position = 0;
-    for (final RandomItem item : items) {
+    for (final RandomItem<T> item : items) {
       position += item.getWeight();
       if (random <= position && item.getWeight() > 0)
         return item.getItem();
@@ -126,7 +126,7 @@ public class RandomItemModel {
    * @param item the item
    * @return the ratio of the total weights held by the given item
    */
-  public double getWeightRatio(final Object item) {
+  public double getWeightRatio(final T item) {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0)
       return 0;
@@ -138,7 +138,7 @@ public class RandomItemModel {
    * Increments the weight of the given item by one
    * @param item the item
    */
-  public void increment(final Object item) {
+  public void increment(final T item) {
     getRandomItem(item).increment();
     eventWeightsChanged().fire();
   }
@@ -148,7 +148,7 @@ public class RandomItemModel {
    * @param item the item
    * @throws IllegalStateException in case the weight is 0
    */
-  public void decrement(final Object item) {
+  public void decrement(final T item) {
     getRandomItem(item).decrement();
     eventWeightsChanged().fire();
   }
@@ -158,7 +158,7 @@ public class RandomItemModel {
    * @param item the item
    * @param weight the value
    */
-  public void setWeight(final Object item, final int weight) {
+  public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
     eventWeightsChanged().fire();
   }
@@ -168,7 +168,7 @@ public class RandomItemModel {
    * @param item the item
    * @return the item weight
    */
-  public int getWeight(final Object item) {
+  public int getWeight(final T item) {
     return getRandomItem(item).getWeight();
   }
 
@@ -178,8 +178,8 @@ public class RandomItemModel {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected RandomItem getRandomItem(final Object item) {
-    for (final RandomItem randomItem : items)
+  protected RandomItem<T> getRandomItem(final T item) {
+    for (final RandomItem<T> randomItem : items)
       if (randomItem.getItem().equals(item))
         return randomItem;
 
@@ -197,12 +197,14 @@ public class RandomItemModel {
   /**
    * A class encapsulating an Object item and a integer weight value.
    */
-  public static class RandomItem {
+  public static class RandomItem<T> {
 
-    private final Object item;
+    private final T item;
     private int weight = 0;
 
-    public RandomItem(final Object item, final int weight) {
+    public RandomItem(final T item, final int weight) {
+      if (weight < 0)
+        throw new IllegalStateException("Weight can not be negative");
       this.item = item;
       this.weight = weight;
     }
@@ -211,7 +213,7 @@ public class RandomItemModel {
       return weight;
     }
 
-    public Object getItem() {
+    public T getItem() {
       return item;
     }
 

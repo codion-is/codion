@@ -46,7 +46,7 @@ public abstract class LoadTestModel {
 
   private final Stack<Object> applications = new Stack<Object>();
   private final Collection<UsageScenario> usageScenarios;
-  private final RandomItemModel scenarioChooser;
+  private final RandomItemModel<UsageScenario> scenarioChooser;
   private User user;
 
   private final Counter counter;
@@ -336,8 +336,7 @@ public abstract class LoadTestModel {
 
   protected void performWork(final Object application) {
     try {
-      final UsageScenario scenario = (UsageScenario) scenarioChooser.getRandomItem();
-      runScenario(scenario.getName(), application);
+      runScenario(scenarioChooser.getRandomItem().getName(), application);
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -435,8 +434,8 @@ public abstract class LoadTestModel {
     }
   }
 
-  private RandomItemModel initializeScenarioChooser() {
-    final RandomItemModel model = new RandomItemModel();
+  private RandomItemModel<UsageScenario> initializeScenarioChooser() {
+    final RandomItemModel<UsageScenario> model = new RandomItemModel<UsageScenario>();
     for (final UsageScenario scenario : this.usageScenarios)
       model.addItem(scenario, scenario.getDefaultWeight());
 
