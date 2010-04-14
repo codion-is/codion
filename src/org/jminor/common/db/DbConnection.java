@@ -171,7 +171,8 @@ public class DbConnection {
       if (!transactionOpen)
         throw new IllegalStateException("Transaction is not open");
 
-      rollback();
+      log.debug(user.getUsername() + ": rollback transaction;");
+      connection.rollback();
     }
     finally {
       transactionOpen = false;
@@ -188,7 +189,8 @@ public class DbConnection {
       if (!transactionOpen)
         throw new IllegalStateException("Transaction is not open");
 
-      commit();
+      log.debug(user.getUsername() + ": commit transaction;");
+      connection.commit();
     }
     finally {
       transactionOpen = false;
@@ -415,8 +417,12 @@ public class DbConnection {
   /**
    * Performs a commit
    * @throws SQLException thrown if anything goes wrong during the execution
+   * @throws IllegalStateException in case a transaction is open
    */
   public final void commit() throws SQLException {
+    if (isTransactionOpen())
+      throw new IllegalStateException("Can not perform a commit during an open transaction");
+
     log.debug(user.getUsername() + ": " + "commit;");
     connection.commit();
   }
@@ -424,8 +430,12 @@ public class DbConnection {
   /**
    * Performs a rollback
    * @throws SQLException thrown if anything goes wrong during the execution
+   * @throws IllegalStateException in case a transaction is open
    */
   public final void rollback() throws SQLException {
+    if (isTransactionOpen())
+      throw new IllegalStateException("Can not perform a rollback during an open transaction");
+
     log.debug(user.getUsername() + ": " + "rollback;");
     connection.rollback();
   }

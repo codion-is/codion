@@ -78,15 +78,7 @@ public class DbConnectionPoolTest {
     final User user = User.UNIT_TEST_USER;
     final ConnectionPoolSettings settings = ConnectionPoolSettings.getDefault(user);
     assertEquals(60000, settings.getPooledConnectionTimeout());
-    final DbConnectionPool pool = new DbConnectionPool(new DbConnectionProvider() {
-      final Database database = DatabaseProvider.createInstance();
-      public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
-        return new DbConnection(database, user);
-      }
-      public void destroyConnection(final DbConnection connection) {
-        connection.disconnect();
-      }
-    }, settings);
+    final DbConnectionPool pool = new DbConnectionPool(createConnectionProvider(), settings);
     pool.getConnectionPoolSettings().getUser().setPassword(User.UNIT_TEST_USER.getPassword());
     assertEquals(user, pool.getUser());
     pool.setCollectFineGrainedStatistics(true);
@@ -237,13 +229,19 @@ public class DbConnectionPoolTest {
   }
 
   private DbConnectionPool initializeLoadTestPool() {
-    return new DbConnectionPool(new DbConnectionProvider() {
-      public DbConnection createConnection(User user) throws ClassNotFoundException, SQLException {
-        return new DbConnection(DatabaseProvider.createInstance(), User.UNIT_TEST_USER);
+    return new DbConnectionPool(createConnectionProvider(),
+            new ConnectionPoolSettings(User.UNIT_TEST_USER, true, 70, 1, 200));
+  }
+
+  private static DbConnectionProvider createConnectionProvider() {
+    return new DbConnectionProvider() {
+      final Database database = DatabaseProvider.createInstance();
+      public DbConnection createConnection(final User user) throws ClassNotFoundException, SQLException {
+        return new DbConnection(database, user);
       }
       public void destroyConnection(final DbConnection connection) {
         connection.disconnect();
       }
-    }, new ConnectionPoolSettings(User.UNIT_TEST_USER, true, 70, 1, 200));
+    };
   }
 }

@@ -446,9 +446,8 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
         originalValues = new HashMap<String, Object>();
       originalValues.putAll(sourceEntity.originalValues);
     }
-    if (eventPropertyChanged() != null)
-      for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-        eventPropertyChanged().fire(getValueChangeEvent(property.getPropertyID(), getRawValue(property.getPropertyID()), null, true));
+    for (final Property property : EntityRepository.getProperties(getEntityID(), true))
+      eventPropertyChanged().fire(getValueChangeEvent(property.getPropertyID(), getRawValue(property.getPropertyID()), null, true));
 
     toString = sourceEntity.toString;
     if (stModified != null)

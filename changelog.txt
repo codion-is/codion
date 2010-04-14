@@ -1288,3 +1288,5 @@
   EntityPanel.getInputManager() renamed to getInputProvider()
   PropertyEditPanel.EntityInputProvider moved up to client.ui
   DbConnectionProvider.destroyConnection() added
+  Entity.setAs() no longer checks if eventPropertyValueChanged() returns null since it wont, ever
+  DbConnection.commit()/rollback() throw IllegalStateException in case a transaction is open
