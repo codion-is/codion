@@ -72,28 +72,28 @@ public class RandomItemPanel<T> extends JPanel {
    * @return a weight controlling SpinnerModel
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
-    final SpinnerModel spinnerModel = new SpinnerNumberModel(getModel().getWeight(item), 0, Integer.MAX_VALUE, 1);
-    final AbstractPropertyLink propertyLink = new AbstractPropertyLink(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
+    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(getModel().getWeight(item), 0, Integer.MAX_VALUE, 1);
+    final AbstractPropertyLink<Integer> propertyLink = new AbstractPropertyLink<Integer>(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
       @Override
-      public Object getModelPropertyValue() {
+      public Integer getModelPropertyValue() {
         return getModel().getWeight(item);
       }
       @Override
-      protected Object getUIPropertyValue() {
-        return spinnerModel.getValue();
+      protected Integer getUIPropertyValue() {
+        return (Integer) spinnerModel.getValue();
       }
       @Override
-      public void setModelPropertyValue(final Object value) {
-        getModel().setWeight(item, (Integer) value);
+      public void setModelPropertyValue(final Integer value) {
+        getModel().setWeight(item, value);
       }
       @Override
-      protected void setUIPropertyValue(final Object propertyValue) {
+      protected void setUIPropertyValue(final Integer propertyValue) {
         spinnerModel.setValue(propertyValue);
       }
     };
     propertyLink.updateUI();
     spinnerModel.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent e) {
+      public void stateChanged(final ChangeEvent e) {
         propertyLink.updateModel();
       }
     });
