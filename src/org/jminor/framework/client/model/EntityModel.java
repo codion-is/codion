@@ -608,7 +608,7 @@ public class EntityModel implements Refreshable {
     });
     if (!containsTableModel()) {
       getEditModel().getEntityChangedEvent().addListener(new ActionListener() {
-        public void actionPerformed(ActionEvent event) {
+        public void actionPerformed(final ActionEvent event) {
           updateDetailModelsByActiveEntity();
         }
       });
@@ -620,7 +620,7 @@ public class EntityModel implements Refreshable {
       return;
 
     getTableModel().eventSelectionChanged().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
+      public void actionPerformed(final ActionEvent event) {
         updateDetailModelsByActiveEntity();
       }
     });
@@ -632,7 +632,7 @@ public class EntityModel implements Refreshable {
     });
 
     getTableModel().addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent event) {
+      public void tableChanged(final TableModelEvent event) {
         //if the selected record is being updated via the table model refresh the one in the model
         if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
           getEditModel().setEntity(null);
