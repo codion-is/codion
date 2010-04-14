@@ -11,16 +11,16 @@ package org.jminor.common.model;
  * Date: 6.4.2010
  * Time: 21:26:00
  */
-public class BoundedRandomItemModel extends RandomItemModel {
+public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 
   private final int weightBounds;
-  private RandomItem lastAffected;
+  private RandomItem<T> lastAffected;
 
   /**
    * Instantiates a new BoundedRandomItemModel with a default bounded weight of 100.
    * @param items the items
    */
-  public BoundedRandomItemModel(final Object... items) {
+  public BoundedRandomItemModel(final T... items) {
     this(100, items);
   }
 
@@ -29,7 +29,7 @@ public class BoundedRandomItemModel extends RandomItemModel {
    * @param boundedWeight the maximum total weight
    * @param items the items
    */
-  public BoundedRandomItemModel(final int boundedWeight, final Object... items) {
+  public BoundedRandomItemModel(final int boundedWeight, final T... items) {
     if (boundedWeight <= 0)
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     if (items == null || items.length == 0)
@@ -45,7 +45,7 @@ public class BoundedRandomItemModel extends RandomItemModel {
   }
 
   @Override
-  public void increment(final Object item) {
+  public void increment(final T item) {
     synchronized (items) {
       final RandomItem randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds)
@@ -58,9 +58,9 @@ public class BoundedRandomItemModel extends RandomItemModel {
   }
 
   @Override
-  public void decrement(final Object item) {
+  public void decrement(final T item) {
     synchronized (items) {
-      final RandomItem randomItem = getRandomItem(item);
+      final RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0)
         throw new RuntimeException("No weight to shed");
 
@@ -71,16 +71,16 @@ public class BoundedRandomItemModel extends RandomItemModel {
   }
 
   @Override
-  public void setWeight(final Object item, final int weight) {
+  public void setWeight(final T item, final int weight) {
     throw new RuntimeException("setWeigth is not implemented in the " + getClass().getSimpleName());
   }
 
   @Override
-  public void addItem(final Object item, final int weight) {
+  public void addItem(final T item, final int weight) {
     throw new RuntimeException("addItem is not implemented in the BoundedRandomItemModel " + getClass().getSimpleName());
   }
 
-  protected void initializeItems(final Object... items) {
+  protected void initializeItems(final T... items) {
     final int rest = weightBounds % items.length;
     final int amountEach = weightBounds / items.length;
     for (int i = 0; i < items.length; i++)
@@ -97,9 +97,9 @@ public class BoundedRandomItemModel extends RandomItemModel {
     lastAffected.decrement();
   }
 
-  private RandomItem getNextItem(final RandomItem exclude, final boolean nonEmpty) {
+  private RandomItem<T> getNextItem(final RandomItem exclude, final boolean nonEmpty) {
     int index = items.indexOf(lastAffected);
-    RandomItem item = null;
+    RandomItem<T> item = null;
     while (item == null || item == exclude || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
       if (index == 0)
         index = items.size() - 1;

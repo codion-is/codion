@@ -5,6 +5,6 @@ package org.jminor.common.model;
 
 import java.util.List;
 
-public interface ValueListProvider {
-  List<?> getValueList() throws Exception;
+public interface ValueListProvider<T> {
+  List<T> getValueList() throws Exception;
 }

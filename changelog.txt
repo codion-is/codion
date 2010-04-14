@@ -1275,3 +1275,6 @@
   Entity.properties cache field added
   RandomItemModel generified
   LoadTestModel changed accordingly
+  BoundedRandomItemModel generified
+  ValueListProvider generified
+  PropertyValueListProvider changed accordingly

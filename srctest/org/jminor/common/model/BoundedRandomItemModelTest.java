@@ -20,7 +20,7 @@ public class BoundedRandomItemModelTest {
     final Object two = "two";
     final Object three = "three";
 
-    final BoundedRandomItemModel model = new BoundedRandomItemModel(10, one, two, three);
+    final BoundedRandomItemModel<Object> model = new BoundedRandomItemModel<Object>(10, one, two, three);
 
     assertEquals(3, model.getItemCount());
 

@@ -8,7 +8,7 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 
 import java.util.List;
 
-public class PropertyValueListProvider implements ValueListProvider {
+public class PropertyValueListProvider implements ValueListProvider<Object> {
 
   private final EntityDbProvider dbProvider;
   private final String entityID;
@@ -20,7 +20,7 @@ public class PropertyValueListProvider implements ValueListProvider {
     this.propertyID = propertyID;
   }
 
-  public List<?> getValueList() throws Exception {
+  public List<Object> getValueList() throws Exception {
     return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
   }
 }
