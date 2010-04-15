@@ -13,7 +13,7 @@ import java.util.Date;
 /**
    * A InputManager implementation for date values.
  */
-public class DateInputProvider extends InputValueProvider<Date> {
+public class DateInputProvider extends AbstractInputProvider<Date> {
 
   public DateInputProvider(final Date currentValue, final SimpleDateFormat dateFormat) {
     super(new DateInputPanel(currentValue, dateFormat));

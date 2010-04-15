@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.input.InputValueProvider;
+import org.jminor.common.ui.input.AbstractInputProvider;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.AbstractAction;
@@ -25,7 +25,7 @@ public class PropertyEditPanel extends JPanel {
 
   private final Event evtButtonClicked = new Event();
 
-  private final InputValueProvider inputProvider;
+  private final AbstractInputProvider inputProvider;
 
   private JButton okButton;
   private int buttonValue = -Integer.MAX_VALUE;
@@ -35,7 +35,7 @@ public class PropertyEditPanel extends JPanel {
    * @param property the property to edit
    * @param inputProvider the InputManager to use
    */
-  public PropertyEditPanel(final Property property, final InputValueProvider inputProvider) {
+  public PropertyEditPanel(final Property property, final AbstractInputProvider inputProvider) {
     if (property == null)
       throw new IllegalArgumentException("Property must be specified");
     if (inputProvider == null)

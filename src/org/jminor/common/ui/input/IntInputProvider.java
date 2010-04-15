@@ -5,7 +5,7 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.ui.textfield.IntField;
 
-public class IntInputProvider extends InputValueProvider<Integer> {
+public class IntInputProvider extends AbstractInputProvider<Integer> {
 
   public IntInputProvider(final Integer currentValue) {
     super(new IntField());

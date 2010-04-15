@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.input.InputValueProvider;
+import org.jminor.common.ui.input.AbstractInputProvider;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entity;
@@ -22,7 +22,7 @@ import java.util.List;
  * This class uses a JComboBox or a EntityLookupField for input based on the <code>isLargeDataset</code> property.
  * @see EntityRepository#isLargeDataset(String)
  */
-public class EntityInputProvider extends InputValueProvider<Entity> {
+public class EntityInputProvider extends AbstractInputProvider<Entity> {
 
   public EntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final EntityEditModel editModel,
                              final Entity currentValue) {

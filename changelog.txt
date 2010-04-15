@@ -1290,3 +1290,4 @@
   DbConnectionProvider.destroyConnection() added
   Entity.setAs() no longer checks if eventPropertyValueChanged() returns null since it wont, ever
   DbConnection.commit()/rollback() throw IllegalStateException in case a transaction is open
+  InputValueProvider renamed to AbstractInputProvider

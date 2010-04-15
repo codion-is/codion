@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 /**
  * A InputManager implementation for String values.
  */
-public class TextInputProvider extends InputValueProvider<String> {
+public class TextInputProvider extends AbstractInputProvider<String> {
 
   public TextInputProvider(final String inputDialogTitle, final ValueListProvider valueListProvider, final String currentValue) {
     super(createTextInputPanel(inputDialogTitle, valueListProvider, currentValue));
