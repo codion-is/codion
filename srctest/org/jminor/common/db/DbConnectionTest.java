@@ -152,6 +152,16 @@ public class DbConnectionTest {
       fail("IllegalStateException should have been thrown");
     }
     catch (IllegalStateException e) {}
+    try {
+      dbConnection.commit();
+      fail("IllegalStateException should have been thrown");
+    }
+    catch (IllegalStateException e) {}
+    try {
+      dbConnection.rollback();
+      fail("IllegalStateException should have been thrown");
+    }
+    catch (IllegalStateException e) {}
   }
 
   @Test
