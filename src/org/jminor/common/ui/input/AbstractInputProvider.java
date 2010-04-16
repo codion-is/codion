@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 /**
  * Specifies a generic class for providing a value via a UI component.
  */
-public abstract class AbstractInputProvider<T> {
+public abstract class AbstractInputProvider<T> implements InputProvider<T> {
 
   private final JComponent inputComponent;
 
