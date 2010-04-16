@@ -9,7 +9,7 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
-   * A InputManager implementation for boolean values.
+ * A InputManager implementation for boolean values.
  */
 public class BooleanInputProvider extends AbstractInputProvider<Boolean> {
 

@@ -5,6 +5,9 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.ui.textfield.IntField;
 
+/**
+ * A InputManager implementation for int values.
+*/
 public class IntInputProvider extends AbstractInputProvider<Integer> {
 
   public IntInputProvider(final Integer currentValue) {

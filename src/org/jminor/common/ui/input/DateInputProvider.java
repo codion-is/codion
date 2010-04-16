@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
-   * A InputManager implementation for date values.
+ * A InputManager implementation for date values.
  */
 public class DateInputProvider extends AbstractInputProvider<Date> {
 

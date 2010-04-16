@@ -6,7 +6,7 @@ package org.jminor.common.ui.input;
 import org.jminor.common.ui.textfield.DoubleField;
 
 /**
-   * A InputManager implementation for double values.
+ * A InputManager implementation for double values.
 */
 public class DoubleInputProvider extends AbstractInputProvider<Double> {
 
