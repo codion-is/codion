@@ -3,10 +3,11 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.DateUtil;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -15,18 +16,8 @@ import java.util.Properties;
  */
 public class DerbyDatabase extends AbstractDatabase {
 
-  private static final ThreadLocal dateFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("yyyy-MM-dd");
-    }
-  };
-  private static final ThreadLocal timestampFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    }
-  };
+  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd");
+  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm:ss");
 
   public DerbyDatabase() {
     super(DERBY);
@@ -57,7 +48,7 @@ public class DerbyDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
-    return "DATE('" + (isTimestamp ? ((DateFormat) timestampFormat.get()).format(value) : ((DateFormat) dateFormat.get()).format(value)) + "')";
+    return "DATE('" + (isTimestamp ? timestampFormat.get().format(value) : dateFormat.get().format(value)) + "')";
   }
 
   /** {@inheritDoc} */

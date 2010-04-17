@@ -3,8 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.DateUtil;
+
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -13,18 +14,8 @@ import java.util.Properties;
  */
 public class MySQLDatabase extends AbstractDatabase {
 
-  private static final ThreadLocal dateFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("dd-MM-yyyy");
-    }
-  };
-  private static final ThreadLocal timestampFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    }
-  };
+  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("dd-MM-yyyy");
+  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("dd-MM-yyyy HH:mm");
 
   public MySQLDatabase() {
     super(MYSQL);
@@ -52,8 +43,8 @@ public class MySQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "str_to_date('" + ((DateFormat) timestampFormat.get()).format(value) + "', '%d-%m-%Y %H:%i')" :
-            "str_to_date('" + ((DateFormat) dateFormat.get()).format(value) + "', '%d-%m-%Y')";
+            "str_to_date('" + timestampFormat.get().format(value) + "', '%d-%m-%Y %H:%i')" :
+            "str_to_date('" + dateFormat.get().format(value) + "', '%d-%m-%Y')";
   }
 
   /** {@inheritDoc} */

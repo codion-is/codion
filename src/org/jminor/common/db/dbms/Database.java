@@ -156,7 +156,7 @@ public interface Database {
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide
-   * a derby database with user info for authentication purposes
+   * embedded databases with user info for authentication purposes
    * @return the database url of the active database, based on system properties
    */
   String getURL(final Properties connectionProperties);

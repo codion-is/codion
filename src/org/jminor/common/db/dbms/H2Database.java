@@ -3,8 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.DateUtil;
+
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -13,18 +14,8 @@ import java.util.Properties;
  */
 public class H2Database extends AbstractDatabase {
 
-  private static final ThreadLocal dateFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("yyyy-MM-dd");
-    }
-  };
-  private static final ThreadLocal timestampFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    }
-  };
+  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd");
+  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm:ss");
 
   public H2Database() {
     super(H2);
@@ -56,8 +47,8 @@ public class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "PARSEDATETIME('" + ((DateFormat) timestampFormat.get()).format(value) + "', 'yyyy-MM-dd HH:mm:ss')" :
-            "PARSEDATETIME('" + ((DateFormat) dateFormat.get()).format(value) + "', 'yyyy-MM-dd')";
+            "PARSEDATETIME('" + timestampFormat.get().format(value) + "', 'yyyy-MM-dd HH:mm:ss')" :
+            "PARSEDATETIME('" + dateFormat.get().format(value) + "', 'yyyy-MM-dd')";
   }
 
   /** {@inheritDoc} */

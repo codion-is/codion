@@ -3,8 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.model.DateUtil;
+
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -13,18 +14,8 @@ import java.util.Properties;
  */
 public class SQLServerDatabase extends AbstractDatabase {
 
-  private static final ThreadLocal dateFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("dd-MM-yyyy");//105
-    }
-  };
-  private static final ThreadLocal timestampFormat = new ThreadLocal() {
-    @Override
-    protected synchronized Object initialValue() {
-      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//120
-    }
-  };
+  private static final ThreadLocal<DateFormat> dateFormat = DateUtil.getThreadLocalDateFormat("dd-MM-yyyy");//105
+  private static final ThreadLocal<DateFormat> timestampFormat = DateUtil.getThreadLocalDateFormat("yyyy-MM-dd HH:mm:ss");//120
 
   public SQLServerDatabase() {
     super(SQLSERVER);
@@ -52,8 +43,8 @@ public class SQLServerDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   public String getSQLDateString(final Date value, final boolean isTimestamp) {
     return isTimestamp ?
-            "convert(datetime, '" + ((DateFormat) timestampFormat.get()).format(value) + "', 120)" :
-            "convert(datetime, '" + ((DateFormat) dateFormat.get()).format(value) + "', 105)";
+            "convert(datetime, '" + timestampFormat.get().format(value) + "', 120)" :
+            "convert(datetime, '" + dateFormat.get().format(value) + "', 105)";
   }
 
   /** {@inheritDoc} */

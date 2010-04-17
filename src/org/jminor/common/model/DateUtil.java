@@ -206,6 +206,15 @@ public class DateUtil {
     return numberOfDays;
   }
 
+  public static ThreadLocal<DateFormat> getThreadLocalDateFormat(final String formatString) {
+    return new ThreadLocal<DateFormat>() {
+      @Override
+      protected synchronized DateFormat initialValue() {
+        return new SimpleDateFormat(formatString);
+      }
+    };
+  }
+
   /**
    * Parses the date pattern and returns mask string that can be used in JFormattedFields.
    * This only works with plain numerical date formats.

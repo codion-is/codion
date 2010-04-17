@@ -31,7 +31,7 @@ public interface ConnectionPool {
   DbConnection checkOutConnection() throws ClassNotFoundException, SQLException;
 
   /**
-   * @return the connection pool setings
+   * @return the connection pool settings
    */
   ConnectionPoolSettings getConnectionPoolSettings();
 
