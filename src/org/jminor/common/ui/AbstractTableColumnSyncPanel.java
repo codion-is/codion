@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui;
-
-import org.jminor.framework.domain.Property;
+package org.jminor.common.ui;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -23,36 +21,26 @@ import java.util.Map;
 /**
  * A panel that synchronizes child panel sizes and positions to table columns.
  */
-public abstract class EntityTableColumnPanel extends JPanel {
+public abstract class AbstractTableColumnSyncPanel extends JPanel {
 
   private final TableColumnModel tableColumnModel;
   private final Box.Filler verticalFiller;
-  private Map<String, JPanel> columnPanels;
+  private Map<TableColumn, JPanel> columnPanels;
 
-  public EntityTableColumnPanel(final TableColumnModel tableColumnModel) {
+  public AbstractTableColumnSyncPanel(final TableColumnModel tableColumnModel) {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     this.tableColumnModel = tableColumnModel;
     final Dimension fillerSize = new Dimension();
     this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
   }
 
-  public Map<String, JPanel> getColumnPanels() {
+  public Map<TableColumn, JPanel> getColumnPanels() {
     if (columnPanels == null) {
       columnPanels = initializeColumnPanels();
       bindColumnAndPanelSizes();
     }
 
     return columnPanels;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Dimension getPreferredSize() {
-    for (final JPanel searchPanel : getColumnPanels().values())
-      if (searchPanel instanceof PropertySearchPanel)
-        return new Dimension(super.getPreferredSize().width, searchPanel.getPreferredSize().height);
-
-    return new Dimension(super.getPreferredSize().width, getColumnPanels().values().iterator().next().getPreferredSize().height);
   }
 
   /**
@@ -65,13 +53,13 @@ public abstract class EntityTableColumnPanel extends JPanel {
     resetPanel();
   }
 
-  protected abstract Map<String, JPanel> initializeColumnPanels();
+  protected abstract Map<TableColumn, JPanel> initializeColumnPanels();
 
   protected void resetPanel() {
     removeAll();
     final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
     while (columnEnumeration.hasMoreElements())
-      add(getColumnPanels().get(((Property) columnEnumeration.nextElement().getIdentifier()).getPropertyID()));
+      add(getColumnPanels().get(columnEnumeration.nextElement()));
     add(verticalFiller);
 
     syncPanelWidths(tableColumnModel, columnPanels);
@@ -102,7 +90,7 @@ public abstract class EntityTableColumnPanel extends JPanel {
     final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
-      final JPanel panel = columnPanels.get(((Property) column.getIdentifier()).getPropertyID());
+      final JPanel panel = columnPanels.get(column);
       panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
       column.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
@@ -114,11 +102,11 @@ public abstract class EntityTableColumnPanel extends JPanel {
     }
   }
 
-  private static void syncPanelWidths(final TableColumnModel columnModel, final Map<String, JPanel> panelMap) {
+  private static void syncPanelWidths(final TableColumnModel columnModel, final Map<TableColumn, JPanel> panelMap) {
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
-      final JPanel panel = panelMap.get(((Property) column.getIdentifier()).getPropertyID());
+      final JPanel panel = panelMap.get(column);
       syncPanelWidth(panel, column);
     }
   }

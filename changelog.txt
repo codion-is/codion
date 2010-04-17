@@ -1293,3 +1293,4 @@
   InputValueProvider renamed to AbstractInputProvider
   EntityInputProvider refactored into EntityComboProvider and EntityLookupProvider, tests added
   PropertyEditPanel renamed to InputProviderPanel and moved to common.ui.input
+  EntityTableColumnPanel renamed to AbstractTableColumnSyncPanel and moved to common.ui

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.ui.AbstractTableColumnSyncPanel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.domain.Property;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * A UI component for showing summary panels for numerical properties in a EntityTableModel.
  */
-public class EntityTableSummaryPanel extends EntityTableColumnPanel {
+public class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
 
   private final EntityTableModel tableModel;
 
@@ -31,14 +32,15 @@ public class EntityTableSummaryPanel extends EntityTableColumnPanel {
    * @return the summary panel
    */
   @Override
-  protected Map<String, JPanel> initializeColumnPanels() {
-    final Map<String, JPanel> panels = new HashMap<String, JPanel>();
+  protected Map<TableColumn, JPanel> initializeColumnPanels() {
+    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
     final Enumeration<TableColumn> columns = tableModel.getTableColumnModel().getColumns();
     while (columns.hasMoreElements()) {
-      final Property property = (Property) columns.nextElement().getIdentifier();
+      final TableColumn column = columns.nextElement();
+      final Property property = (Property) column.getIdentifier();
       final PropertySummaryModel summaryModel = tableModel.getPropertySummaryModel(property);
       final PropertySummaryPanel summaryPanel = initializePropertySummaryPanel(summaryModel);
-      panels.put(property.getPropertyID(), summaryPanel);
+      panels.put(column, summaryPanel);
     }
 
     return panels;

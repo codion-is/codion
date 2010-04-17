@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.ui.AbstractTableColumnSyncPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
@@ -24,7 +25,7 @@ import java.util.Map;
  * A UI component based on the EntityTableSearchModel
  * @see EntityTableSearchModel
  */
-public class EntityTableSearchPanel extends EntityTableColumnPanel {
+public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
 
   private final Event evtAdvancedChanged = new Event();
 
@@ -84,9 +85,13 @@ public class EntityTableSearchPanel extends EntityTableColumnPanel {
   }
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
-    final JPanel panel = getColumnPanels().get(propertyID);
-    if (panel instanceof PropertySearchPanel)
-      return (PropertySearchPanel) panel;
+    final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      final Property property = (Property) column.getIdentifier();
+      if (property.is(propertyID))
+        return (PropertySearchPanel) getColumnPanels().get(column);
+    }
 
     return null;
   }
@@ -96,19 +101,20 @@ public class EntityTableSearchPanel extends EntityTableColumnPanel {
   }
 
   @Override
-  protected Map<String, JPanel> initializeColumnPanels() {
-    final Map<String, JPanel> panels = new HashMap<String, JPanel>();
+  protected Map<TableColumn, JPanel> initializeColumnPanels() {
+    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
     final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
-      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+      final TableColumn column = columnEnumeration.nextElement();
+      final Property property = (Property) column.getIdentifier();
       if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
         final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
-        panels.put(property.getPropertyID(), initializePropertySearchPanel(propertySearchModel));
+        panels.put(column, initializePropertySearchPanel(propertySearchModel));
       }
       else {
         final JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, UiUtil.getPreferredTextFieldHeight()));
-        panels.put(property.getPropertyID(), panel);
+        panels.put(column, panel);
       }
     }
 
