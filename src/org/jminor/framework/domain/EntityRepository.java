@@ -43,6 +43,30 @@ public class EntityRepository {
   }
 
   /**
+   * Retrieves the properties used when searching for a entity of the given type,
+   * if no search property IDs are defined all STRING based properties are returned.
+   * @param entityID the entity ID
+   * @return the search properties to use
+   */
+  public static List<Property> getSearchProperties(final String entityID) {
+    final String[] searchPropertyIds = getEntitySearchPropertyIDs(entityID);
+    List<Property> searchProperties;
+    if (searchPropertyIds != null) {
+      searchProperties = getProperties(entityID, searchPropertyIds);
+    }
+    else {//use all string properties
+      final Collection<Property> properties =
+              getDatabaseProperties(entityID);
+      searchProperties = new ArrayList<Property>();
+      for (final Property property : properties)
+        if (property.getPropertyType() == Type.STRING)
+          searchProperties.add(property);
+    }
+
+    return searchProperties;
+  }
+
+  /**
    * @param entityID the entity ID
    * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
    */

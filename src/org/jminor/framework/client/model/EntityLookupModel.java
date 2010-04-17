@@ -100,7 +100,7 @@ public class EntityLookupModel {
   }
 
   public void setSelectedEntity(final Entity entity) {
-    setSelectedEntities(Arrays.asList(entity));
+    setSelectedEntities(entity != null ? Arrays.asList(entity) : null);
   }
 
   public void setSelectedEntities(final List<Entity> entities) {
