@@ -1298,3 +1298,4 @@
   SelectCriteria renamed to EntitySelectCriteria
   CriteriaUtil renamed to EntityCriteriaUtil
   DateUtil.getThreadLocalDateFormat() added and used throughout common.db.dbms
+  EntityDbConnectionTest added three exception tests

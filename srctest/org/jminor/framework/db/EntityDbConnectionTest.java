@@ -6,7 +6,9 @@ package org.jminor.framework.db;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
+import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
@@ -101,6 +103,12 @@ public class EntityDbConnectionTest {
     assertTrue(result.size() > 0);
   }
 
+  @Test(expected = DbException.class)
+  public void selectManyInvalidColumn() throws Exception {
+    DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT,
+            new SimpleCriteria("no_column is null")));
+  }
+
   @Test
   public void selectRowCount() throws Exception {
     int rowCount = DB_PROVIDER.getEntityDb().selectRowCount(new EntityCriteria(EmpDept.T_DEPARTMENT));
@@ -117,6 +125,16 @@ public class EntityDbConnectionTest {
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
     sales = DB_PROVIDER.getEntityDb().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
+  }
+
+  @Test(expected = RecordNotFoundException.class)
+  public void selectSingleNotFound() throws Exception {
+    DB_PROVIDER.getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "NO_NAME");
+  }
+
+  @Test(expected = DbException.class)
+  public void selectSingleManyFound() throws Exception {
+    DB_PROVIDER.getEntityDb().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, "MANAGER");
   }
 
   @Test
