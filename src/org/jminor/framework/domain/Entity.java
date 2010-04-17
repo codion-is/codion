@@ -595,7 +595,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     return defaultProxy;
   }
 
-  static Entity initializeEntity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
+  static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
       entity.setValue(entry.getKey(), entry.getValue());
@@ -610,7 +610,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
 
   @Override
   public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                            final boolean initialization) {
+                                         final boolean initialization) {
     return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
   }
 
@@ -952,7 +952,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
 
     @Override
     public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                              final boolean initialization) {
+                                           final boolean initialization) {
       return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }
 

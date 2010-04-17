@@ -1303,3 +1303,5 @@
   EntityDbServer renamed to RemoteServer and moved to common.server
   AbstractRemoteServer added
   EntityDbRemoteServer now extends AbstractRemoteServer
+  Entity.initializeEntity() renamed to initialize()
+  EntityUtil.getJSONEntity() renamed to getJSONObject()

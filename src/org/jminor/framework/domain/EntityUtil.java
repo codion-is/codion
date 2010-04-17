@@ -12,7 +12,16 @@ import org.json.JSONObject;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * A static utility class.
@@ -52,7 +61,7 @@ public class EntityUtil {
           originalValueMap.put(propertyID, parseJSONValue(entityID, propertyID, originalValues));
         }
       }
-      entities.add(Entity.initializeEntity(entityID, propertyValueMap, originalValueMap));
+      entities.add(Entity.initialize(entityID, propertyValueMap, originalValueMap));
     }
 
     return entities;
@@ -63,10 +72,10 @@ public class EntityUtil {
   }
 
   public static String getJSONString(final Collection<Entity> entities, final int indentFactor) throws JSONException {
-    return indentFactor > 0 ? getJSONEntity(entities).toString(indentFactor) : getJSONEntity(entities).toString();
+    return indentFactor > 0 ? getJSONObject(entities).toString(indentFactor) : getJSONObject(entities).toString();
   }
 
-  public static JSONObject getJSONEntity(final Collection<Entity> entities) throws JSONException {
+  public static JSONObject getJSONObject(final Collection<Entity> entities) throws JSONException {
     final JSONObject jsonEntities = new JSONObject();
     for (final Entity entity : entities)
       jsonEntities.put(entity.getEntityID() + " PK[" + entity.getPrimaryKey() + "]", toJSONObject(entity));
@@ -268,7 +277,7 @@ public class EntityUtil {
     if (entity.isValueNull(property.getPropertyID()))
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
-      return getJSONEntity(Arrays.asList(entity.getEntityValue(property.getPropertyID())));
+      return getJSONObject(Arrays.asList(entity.getEntityValue(property.getPropertyID())));
     if (property.getPropertyType() == Type.DATE || property.getPropertyType() == Type.TIMESTAMP)
       return entity.getFormattedDate(property.getPropertyID(), property.getPropertyType() == Type.DATE ? jsonDateFormat : jsonTimestampFormat);
 
@@ -289,7 +298,7 @@ public class EntityUtil {
     if (Entity.isValueNull(property.getPropertyType(), entity.getOriginalValue(property.getPropertyID())))
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
-      return getJSONEntity(Arrays.asList((Entity) entity.getOriginalValue(property.getPropertyID())));
+      return getJSONObject(Arrays.asList((Entity) entity.getOriginalValue(property.getPropertyID())));
     if (property.getPropertyType() == Type.DATE || property.getPropertyType() == Type.TIMESTAMP) {
       final Date date = (Date) entity.getOriginalValue(property.getPropertyID());
       return property.getPropertyType() == Type.DATE ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
