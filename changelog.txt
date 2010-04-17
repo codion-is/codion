@@ -1300,3 +1300,6 @@
   DateUtil.getThreadLocalDateFormat() added and used throughout common.db.dbms
   EntityDbConnectionTest added three exception tests
   EntityDbProviderFactoryTest added
+  EntityDbServer renamed to RemoteServer and moved to common.server
+  AbstractRemoteServer added
+  EntityDbRemoteServer now extends AbstractRemoteServer

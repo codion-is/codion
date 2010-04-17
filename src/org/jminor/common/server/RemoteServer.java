@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 
@@ -14,19 +14,26 @@ import java.rmi.RemoteException;
  * Date: 4.3.2005
  * Time: 10:59:16
  */
-public interface EntityDbServer extends Remote {
+public interface RemoteServer<T> extends Remote {
 
   public final String SERVER_ADMIN_SUFFIX = "-admin";
 
   /**
-   * Establishes a connection to this EntityDbServer
+   * Establishes a connection to this RemoteServer
    * @param user the user
    * @param connectionKey a String identifying the connection
    * @param clientTypeID a String identifying the client
-   * @return a EntityDbRemote instance
+   * @return a remote connection instance
    * @throws RemoteException in case of a RemoteException
    */
-  EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException;
+  T connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException;
+
+  /**
+   * Disconnects the connection identified by the given key.
+   * @param connectionKey the key identifying the connection that should be disconnected
+   * @throws RemoteException in case of a communication error
+   */
+  void disconnect(final String connectionKey) throws RemoteException;
 
   /**
    * @return the server name

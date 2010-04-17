@@ -10,6 +10,7 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDbConnection;
@@ -59,7 +60,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
     super(SERVER_ADMIN_PORT, useSecureConnection ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             useSecureConnection ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    server.getRegistry().rebind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX, this);
+    server.getRegistry().rebind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX, this);
   }
 
   /** {@inheritDoc} */
@@ -137,7 +138,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   /** {@inheritDoc} */
   public void shutdown() throws RemoteException {
     try {
-      server.getRegistry().unbind(server.getServerName() + EntityDbServer.SERVER_ADMIN_SUFFIX);
+      server.getRegistry().unbind(server.getServerName() + RemoteServer.SERVER_ADMIN_SUFFIX);
     }
     catch (NotBoundException e) {/**/}
     server.shutdown();

@@ -6,6 +6,7 @@ package org.jminor.framework.server;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
@@ -22,19 +23,24 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The remote server class, responsible for handling remote db connection requests.
  */
-public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityDbServer {
+public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteServer.class);
 
@@ -68,10 +74,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     }
   }
 
-  private final String serverName;
   private final Date startDate = new Date();
-  private final Map<ClientInfo, EntityDbRemoteAdapter> connections =
-          Collections.synchronizedMap(new HashMap<ClientInfo, EntityDbRemoteAdapter>());
 
   private Timer connectionMaintenanceTimer;
   private int checkMaintenanceInterval = 30; //seconds
@@ -83,22 +86,19 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   EntityDbRemoteServer(final Database database) throws RemoteException {
-    super(SERVER_PORT, SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+    super(SERVER_PORT, initializeServerName(database.getHost(), database.getSid()),
+            SSL_CONNECTION_ENABLED ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             SSL_CONNECTION_ENABLED ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     loadDefaultDomainModels();
     this.database = database;
     EntityDbRemoteAdapter.initConnectionPools(database);
     final String host = database.getHost();
     final String port = database.getPort();
-    final String sid = database.getSid();
     if (host == null || host.length() == 0)
       throw new RuntimeException("Database host must be specified (" + Database.DATABASE_HOST + ")");
     if (!database.isEmbedded() && (port == null || port.length() == 0))
       throw new RuntimeException("Database port must be specified (" + Database.DATABASE_PORT + ")");
 
-    serverName = Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
-            + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
-            + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
     startConnectionCheckTimer();
     getRegistry().rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry";
@@ -106,39 +106,13 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     System.out.println(connectInfo);
   }
 
-  public Registry getRegistry() throws RemoteException {
-    return LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
-  }
-
   public Database getDatabase() {
     return database;
   }
 
   /** {@inheritDoc} */
-  public String getServerName() {
-    return serverName;
-  }
-
-  /** {@inheritDoc} */
-  public int getServerPort() throws RemoteException {
-    return SERVER_PORT;
-  }
-
-  /** {@inheritDoc} */
   public int getServerLoad() throws RemoteException {
     return EntityDbRemoteAdapter.getRequestsPerSecond();
-  }
-
-  /** {@inheritDoc} */
-  public EntityDbRemote connect(final User user, final String connectionKey, final String clientTypeID) throws RemoteException {
-    if (connectionKey == null)
-      return null;
-
-    final ClientInfo client = new ClientInfo(connectionKey, clientTypeID, user);
-    if (connections.containsKey(client))
-      return connections.get(client);
-
-    return doConnect(client);
   }
 
   public int getConnectionTimeout() {
@@ -151,51 +125,36 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
 
   public Collection<User> getUsers() throws RemoteException {
     final Set<User> users = new HashSet<User>();
-    synchronized (connections) {
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        users.add(adapter.getUser());
-    }
+    for (final EntityDbRemote adapter : getConnections().values())
+      users.add(((EntityDbRemoteAdapter) adapter).getUser());
 
     return users;
   }
 
   public Collection<ClientInfo> getClients() throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
-    synchronized (connections) {
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        clients.add(adapter.getClientInfo());
-    }
+    for (final EntityDbRemote adapter : getConnections().values())
+      clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
 
     return clients;
   }
 
   public Collection<ClientInfo> getClients(final User user) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
-    synchronized (connections) {
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        if (user == null || adapter.getUser().equals(user))
-          clients.add(adapter.getClientInfo());
-    }
+    for (final EntityDbRemote adapter : getConnections().values())
+      if (user == null || ((EntityDbRemoteAdapter) adapter).getUser().equals(user))
+        clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
 
     return clients;
   }
 
   public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
-    synchronized (connections) {
-      for (final EntityDbRemoteAdapter adapter : connections.values())
-        if (adapter.getClientInfo().getClientTypeID().equals(clientTypeID))
-          clients.add(adapter.getClientInfo());
-    }
+    for (final EntityDbRemote adapter : getConnections().values())
+      if (((EntityDbRemoteAdapter) adapter).getClientInfo().getClientTypeID().equals(clientTypeID))
+        clients.add(((EntityDbRemoteAdapter) adapter).getClientInfo());
 
     return clients;
-  }
-
-  public void disconnect(final String connectionKey) throws RemoteException {
-    if (connectionKey == null)
-      return;
-
-    removeConnection(new ClientInfo(connectionKey), true);
   }
 
   public int getCheckMaintenanceInterval() {
@@ -207,27 +166,24 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       checkMaintenanceInterval = checkTimerInterval <= 0 ? 1 : checkTimerInterval;
   }
 
+  /**
+   * Returns the server log for the connection identified by the given key.
+   * @param connectionKey the connection key
+   * @return the server log for the given connection
+   */
   public ServerLog getServerLog(final String connectionKey) {
-    synchronized (connections) {
-      final ClientInfo client = new ClientInfo(connectionKey);
-      if (connections.containsKey(client))
-        return connections.get(client).getServerLog();
-    }
+    final ClientInfo client = new ClientInfo(connectionKey);
+    if (containsConnection(client))
+      return ((EntityDbRemoteAdapter) getConnection(client)).getServerLog();
 
     return null;
   }
 
-  public int getConnectionCount() {
-    return connections.size();
-  }
-
   public boolean isLoggingOn(final String connectionKey) {
-    synchronized (connections) {
-      final ClientInfo client = new ClientInfo(connectionKey);
-      for (final EntityDbRemoteAdapter connection : connections.values()) {
-        if (connection.getClientInfo().equals(client)) {
-          return connection.getMethodLogger().isLoggingEnabled();
-        }
+    final ClientInfo client = new ClientInfo(connectionKey);
+    for (final EntityDbRemote connection : getConnections().values()) {
+      if (((EntityDbRemoteAdapter) connection).getClientInfo().equals(client)) {
+        return ((EntityDbRemoteAdapter) connection).getMethodLogger().isLoggingEnabled();
       }
     }
 
@@ -235,13 +191,11 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   public void setLoggingOn(final String connectionKey, final boolean status) {
-    synchronized (connections) {
-      final ClientInfo client = new ClientInfo(connectionKey);
-      for (final EntityDbRemoteAdapter connection : connections.values()) {
-        if (connection.getClientInfo().equals(client)) {
-          connection.getMethodLogger().setLoggingEnabled(status);
-          return;
-        }
+    final ClientInfo client = new ClientInfo(connectionKey);
+    for (final EntityDbRemote adapter : getConnections().values()) {
+      if (((EntityDbRemoteAdapter) adapter).getClientInfo().equals(client)) {
+        ((EntityDbRemoteAdapter) adapter).getMethodLogger().setLoggingEnabled(status);
+        return;
       }
     }
   }
@@ -255,18 +209,7 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   public void shutdown() throws RemoteException {
-    try {
-      getRegistry().unbind(serverName);
-    }
-    catch (NotBoundException e) {
-      log.error(this, e);
-    }
-    try {
-      UnicastRemoteObject.unexportObject(this, true);
-    }
-    catch (NoSuchObjectException e) {
-      log.warn(e);
-    }
+    super.shutdown();
     removeConnections(false);
     final String connectInfo = getServerName() + " removed from registry";
     log.info(connectInfo);
@@ -276,17 +219,15 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
   }
 
   public void removeConnections(final boolean inactiveOnly) throws RemoteException {
-    synchronized (connections) {
-      final List<ClientInfo> clients = new ArrayList<ClientInfo>(connections.keySet());
-      for (final ClientInfo client : clients) {
-        final EntityDbRemoteAdapter adapter = connections.get(client);
-        if (inactiveOnly) {
-          if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
-            adapter.disconnect();
-        }
-        else
+    final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
+    for (final ClientInfo client : clients) {
+      final EntityDbRemoteAdapter adapter = (EntityDbRemoteAdapter) getConnection(client);
+      if (inactiveOnly) {
+        if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
           adapter.disconnect();
       }
+      else
+        adapter.disconnect();
     }
   }
 
@@ -314,6 +255,34 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
       Class.forName(domainClassName);
     else
       Class.forName(domainClassName, true, new URLClassLoader(locations, ClassLoader.getSystemClassLoader()));
+  }
+
+  protected void doDisconnect(final EntityDbRemote adapter) throws RemoteException {
+    try {
+      if (adapter.isConnected())
+        adapter.disconnect();
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
+    }
+  }
+
+  protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
+    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
+    remoteAdapter.eventLogout().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          disconnect(client.getClientID());
+        }
+        catch (RemoteException ex) {
+          ex.printStackTrace();
+        }
+      }
+    });
+    if (log.isDebugEnabled())
+      log.debug("Connection added: " + client);
+
+    return remoteAdapter;
   }
 
   private void loadDefaultDomainModels() throws RemoteException {
@@ -368,33 +337,10 @@ public class EntityDbRemoteServer extends UnicastRemoteObject implements EntityD
     }
   }
 
-  private void removeConnection(final ClientInfo client, final boolean logout) throws RemoteException {
-    if (connections.containsKey(client)) {
-      if (log.isDebugEnabled())
-        log.debug("Connection removed: " + client);
-      final EntityDbRemoteAdapter adapter = connections.remove(client);
-      if (logout)
-        adapter.disconnect();
-    }
-  }
-
-  private EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
-    final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    remoteAdapter.eventLogout().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          removeConnection(client, false);
-        }
-        catch (RemoteException ex) {
-          ex.printStackTrace();
-        }
-      }
-    });
-    connections.put(client, remoteAdapter);
-    if (log.isDebugEnabled())
-      log.debug("Connection added: " + client);
-
-    return remoteAdapter;
+  private static String initializeServerName(String host, String sid) {
+    return Configuration.getValue(Configuration.SERVER_NAME_PREFIX)
+            + " " + Util.getVersion() + " @ " + (sid != null ? sid.toUpperCase() : host.toUpperCase())
+            + " [id:" + Long.toHexString(System.currentTimeMillis()) + "]";
   }
 
   private static void initializeRegistry() throws RemoteException {

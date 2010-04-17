@@ -42,8 +42,8 @@
       <classpath refid="libraries"/>
     </javac>
 
-    <rmic base="${build.base}" includes="org/jminor/framework/server/EntityDbRemoteAdapter.class,
-                                         org/jminor/framework/server/EntityDbRemoteServer.class,
+    <rmic base="${build.base}" includes="org/jminor/common/server/AbstractRemoteServer.class,
+                                         org/jminor/framework/server/EntityDbRemoteAdapter.class,
                                          org/jminor/framework/server/EntityDbRemoteServerAdmin.class">
       <classpath refid="libraries"/>
     </rmic>
@@ -115,7 +115,6 @@
                 org/jminor/framework/tools/testing/**,
                 org/jminor/framework/server/provider/EntityDbRemoteProvider*,
                 org/jminor/framework/server/EntityDbRemote.class,
-                org/jminor/framework/server/EntityDbServer.class,
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
@@ -133,7 +132,6 @@
                 org/jminor/framework/tools/testing/**,
                 org/jminor/framework/server/provider/EntityDbRemoteProvider*,
                 org/jminor/framework/server/EntityDbRemote.class,
-                org/jminor/framework/server/EntityDbServer.class,
                 org/jminor/framework/server/EntityDbRemoteAdapter_Stub.class,
                 org/jminor/framework/server/EntityDbRemoteServer_Stub.class"/>
 
