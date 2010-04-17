@@ -15,8 +15,8 @@ public interface ResultPacker<T> {
   /**
    * Iterates through the given ResultSet, packing its contents into a List
    * @param resultSet the object containing the query result to process
-   * @param fetchCount the number of records to retrieve from the result set,
-   * a value of -1 means all should be retrieved
+   * @param fetchCount the number of records to fetch from the result set,
+   * a negative value means all should be fetched.
    * @return a List containing the data from the query result
    * @throws SQLException thrown if anything goes wrong during the packing
    */
