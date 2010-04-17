@@ -50,7 +50,7 @@ public class PetstoreLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected Object initializeApplication() throws CancelException {
+  protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
             new PetstoreAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
     final EntityModel categoryModel = applicationModel.getMainApplicationModels().iterator().next();

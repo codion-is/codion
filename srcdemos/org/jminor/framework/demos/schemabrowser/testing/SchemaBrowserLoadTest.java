@@ -41,7 +41,7 @@ public class SchemaBrowserLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected Object initializeApplication() throws CancelException {
+  protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
             new SchemaBrowserAppModel(new EntityDbRemoteProvider(getUser(), User.UNIT_TEST_USER +"@"+new Object(), getClass().getSimpleName()));
     final EntityModel schemaModel = applicationModel.getMainApplicationModels().iterator().next();

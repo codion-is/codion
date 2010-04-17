@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.tools.testing;
 
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
@@ -59,6 +60,8 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
   protected void disconnectApplication(final Object applicationModel) {
     ((EntityApplicationModel) applicationModel).getDbProvider().disconnect();
   }
+
+  protected abstract EntityApplicationModel initializeApplication() throws CancelException;
 
   protected abstract void loadDomainModel();
 }

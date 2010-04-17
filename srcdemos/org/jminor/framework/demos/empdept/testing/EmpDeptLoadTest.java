@@ -118,7 +118,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected Object initializeApplication() throws CancelException {
+  protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel =
             new EmpDeptAppModel(new EntityDbRemoteProvider(getUser(), "scott@"+new Object(), getClass().getSimpleName()));
 
