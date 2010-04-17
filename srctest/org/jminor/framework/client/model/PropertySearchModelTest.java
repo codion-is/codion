@@ -8,7 +8,7 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.criteria.CriteriaUtil;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -24,7 +24,7 @@ import org.junit.Test;
 public class PropertySearchModelTest {
 
   private static final Database DATABASE = DatabaseProvider.createInstance();
-  private static final Criteria.ValueProvider VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
+  private static final Criteria.ValueProvider VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   static {
     new EmpDept();

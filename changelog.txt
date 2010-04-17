@@ -1296,3 +1296,4 @@
   EntityTableColumnPanel renamed to AbstractTableColumnSyncPanel and moved to common.ui
   InputProviderPanel now implements InputProvider
   SelectCriteria renamed to EntitySelectCriteria
+  CriteriaUtil renamed to EntityCriteriaUtil

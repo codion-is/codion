@@ -15,7 +15,6 @@ import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.client.model.exception.ValidationException;
-import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -919,7 +918,7 @@ public class EntityEditModel {
    */
   protected void doDelete(final List<Entity> entities) throws DbException, CancelException {
     try {
-      getDbProvider().getEntityDb().delete(CriteriaUtil.criteria((EntityUtil.getPrimaryKeys(entities))));
+      getDbProvider().getEntityDb().delete(EntityUtil.getPrimaryKeys(entities));
     }
     catch (DbException dbe) {
       throw dbe;

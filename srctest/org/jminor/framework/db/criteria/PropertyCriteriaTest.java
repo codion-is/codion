@@ -23,7 +23,7 @@ import java.util.Date;
 public class PropertyCriteriaTest {
 
   private static final Database DATABASE = DatabaseProvider.createInstance();
-  private static final Criteria.ValueProvider VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
+  private static final Criteria.ValueProvider VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   public PropertyCriteriaTest() {
     new EmpDept();

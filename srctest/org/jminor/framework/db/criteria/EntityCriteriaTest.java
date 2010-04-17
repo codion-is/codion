@@ -17,7 +17,7 @@ import org.junit.Test;
 
 public class EntityCriteriaTest {
 
-  private static final Criteria.ValueProvider VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
+  private static final Criteria.ValueProvider VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   @Test
   public void test() {

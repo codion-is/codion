@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.db.criteria.CriteriaUtil;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.beans.DepartmentModel;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -87,7 +87,7 @@ public class EntityModelTest {
 
     final EntityDb db = departmentModel.getEntityDb();
     final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = db.selectMany(CriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
+    final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
     departmentModel.getDetailModel(EmployeeModel.class).getTableModel().setQueryFilteredByMaster(true);

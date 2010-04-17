@@ -17,8 +17,8 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.ValueProvider;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.criteria.EntityCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -52,7 +52,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   private static final Logger log = Util.getLogger(EntityDbConnection.class);
 
-  public static final Criteria.ValueProvider ENTITY_SQL_VALUE_PROVIDER = CriteriaUtil.getCriteriaValueProvider();
+  public static final Criteria.ValueProvider ENTITY_SQL_VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Type, ResultPacker> propertyResultPackers = new HashMap<Type, ResultPacker>();
@@ -168,12 +168,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DbException {
-    return selectSingle(CriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
+    return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   public Entity selectSingle(final Entity.Key primaryKey) throws DbException {
-    return selectSingle(CriteriaUtil.selectCriteria(primaryKey));
+    return selectSingle(EntityCriteriaUtil.selectCriteria(primaryKey));
   }
 
   /** {@inheritDoc} */
@@ -193,12 +193,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (primaryKeys == null || primaryKeys.size() == 0)
       return new ArrayList<Entity>(0);
 
-    return selectMany(CriteriaUtil.selectCriteria(primaryKeys));
+    return selectMany(EntityCriteriaUtil.selectCriteria(primaryKeys));
   }
 
   /** {@inheritDoc} */
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DbException {
-    return selectMany(CriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
+    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
   /** {@inheritDoc} */

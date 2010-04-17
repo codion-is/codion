@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * A static utility class for constructing query criteria implementations
  */
-public class CriteriaUtil {
+public class EntityCriteriaUtil {
 
   private static Criteria.ValueProvider valueProvider;
 
