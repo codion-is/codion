@@ -20,16 +20,13 @@ public class EntityComboProvider extends AbstractInputProvider<Entity> {
   }
 
   public Entity getValue() {
-    if (((JComboBox) getInputComponent()).getSelectedIndex() == 0)
-      return null;
-
-    return (Entity) ((JComboBox) getInputComponent()).getSelectedItem();
+    final EntityComboBoxModel model = (EntityComboBoxModel) ((JComboBox) getInputComponent()).getModel();
+    return model.getSelectedEntity();
   }
 
   private static JComboBox createEntityField(final EntityComboBoxModel model, final Object currentValue) {
-    if (model.getNullValueString() == null)
-      model.setNullValueString("-");
-    model.refresh();
+    if (!model.isDataInitialized())
+      model.refresh();
     if (currentValue != null)
       model.setSelectedItem(currentValue);
 
