@@ -9,6 +9,7 @@ import org.jminor.common.model.Event;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -19,7 +20,7 @@ import java.awt.event.ActionEvent;
 /**
  * A panel for presenting a InputProvider.
  */
-public class InputProviderPanel extends JPanel {
+public class InputProviderPanel extends JPanel implements InputProvider {
 
   private final Event evtButtonClicked = new Event();
 
@@ -55,11 +56,14 @@ public class InputProviderPanel extends JPanel {
     return okButton;
   }
 
-  /**
-   * @return the value specified by the input component of this InputProviderPanel
-   */
+  /** {@inheritDoc} */
   public Object getValue() {
     return inputProvider.getValue();
+  }
+
+  /** {@inheritDoc} */
+  public JComponent getInputComponent() {
+    return inputProvider.getInputComponent();
   }
 
   public Event eventButtonClicked() {
