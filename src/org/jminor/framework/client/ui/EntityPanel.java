@@ -24,6 +24,7 @@ import org.jminor.common.ui.input.BooleanInputProvider;
 import org.jminor.common.ui.input.DateInputProvider;
 import org.jminor.common.ui.input.DoubleInputProvider;
 import org.jminor.common.ui.input.InputProvider;
+import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.input.IntInputProvider;
 import org.jminor.common.ui.input.TextInputProvider;
 import org.jminor.framework.Configuration;
@@ -786,11 +787,12 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       return;
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedEntities());
-    final PropertyEditPanel editPanel = new PropertyEditPanel(propertyToUpdate, getInputProvider(propertyToUpdate, selectedEntities));
-    UiUtil.showInDialog(this, editPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
-            null, editPanel.getOkButton(), editPanel.eventButtonClicked());
-    if (editPanel.isEditAccepted()) {
-      EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), editPanel.getValue(), selectedEntities);
+    final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
+            getInputProvider(propertyToUpdate, selectedEntities));
+    UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
+            null, inputPanel.getOkButton(), inputPanel.eventButtonClicked());
+    if (inputPanel.isEditAccepted()) {
+      EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
         getModel().getEditModel().update(selectedEntities);

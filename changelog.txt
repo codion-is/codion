@@ -1292,3 +1292,4 @@
   DbConnection.commit()/rollback() throw IllegalStateException in case a transaction is open
   InputValueProvider renamed to AbstractInputProvider
   EntityInputProvider refactored into EntityComboProvider and EntityLookupProvider, tests added
+  PropertyEditPanel renamed to InputProviderPanel and moved to common.ui.input

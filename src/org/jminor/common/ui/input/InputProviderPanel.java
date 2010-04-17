@@ -1,12 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui;
+package org.jminor.common.ui.input;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.input.InputProvider;
-import org.jminor.framework.domain.Property;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -19,9 +17,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 /**
- * A class for editing a property value for one or more entities at a time.
+ * A panel for presenting a InputProvider.
  */
-public class PropertyEditPanel extends JPanel {
+public class InputProviderPanel extends JPanel {
 
   private final Event evtButtonClicked = new Event();
 
@@ -31,18 +29,16 @@ public class PropertyEditPanel extends JPanel {
   private int buttonValue = -Integer.MAX_VALUE;
 
   /**
-   * Instantiates a new PropertyEditPanel
-   * @param property the property to edit
+   * Instantiates a new InputProviderPanel
+   * @param caption the input panel caption
    * @param inputProvider the InputManager to use
    */
-  public PropertyEditPanel(final Property property, final InputProvider inputProvider) {
-    if (property == null)
-      throw new IllegalArgumentException("Property must be specified");
+  public InputProviderPanel(final String caption, final InputProvider inputProvider) {
     if (inputProvider == null)
       throw new IllegalArgumentException("InputProvider must be specified");
 
     this.inputProvider = inputProvider;
-    initUI(property.getCaption());
+    initUI(caption);
   }
 
   /**
@@ -60,7 +56,7 @@ public class PropertyEditPanel extends JPanel {
   }
 
   /**
-   * @return the value specified by the input component of this PropertyEditPanel
+   * @return the value specified by the input component of this InputProviderPanel
    */
   public Object getValue() {
     return inputProvider.getValue();
@@ -70,9 +66,9 @@ public class PropertyEditPanel extends JPanel {
     return evtButtonClicked;
   }
 
-  protected void initUI(final String propertyID) {
+  protected void initUI(final String caption) {
     setLayout(new BorderLayout(5,5));
-    setBorder(BorderFactory.createTitledBorder(propertyID));
+    setBorder(BorderFactory.createTitledBorder(caption));
     add(inputProvider.getInputComponent(), BorderLayout.CENTER);
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnBase.add(createButtonPanel());
