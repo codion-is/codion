@@ -2,7 +2,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.framework.db.EntityDbConnectionTest;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.assertEquals;
@@ -16,7 +16,7 @@ public class EntityListModelTest {
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
     model.refresh();
     assertEquals(4, model.getSize());
-    model.setSelectCriteria(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno <> 10"), EmpDept.DEPARTMENT_ID));
+    model.setSelectCriteria(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno <> 10"), EmpDept.DEPARTMENT_ID));
     model.refresh();
     assertEquals(3, model.getSize());
     assertEquals(3, model.getAllEntities().size());

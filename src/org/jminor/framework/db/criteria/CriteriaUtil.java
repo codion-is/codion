@@ -81,32 +81,32 @@ public class CriteriaUtil {
       return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE).toString();
   }
 
-  public static SelectCriteria selectCriteria(final Entity.Key key) {
+  public static EntitySelectCriteria selectCriteria(final Entity.Key key) {
     return selectCriteria(Arrays.asList(key));
   }
 
-  public static SelectCriteria selectCriteria(final List<Entity.Key> keys) {
+  public static EntitySelectCriteria selectCriteria(final List<Entity.Key> keys) {
     final EntityKeyCriteria keyCriteria = new EntityKeyCriteria(keys);
-    return new SelectCriteria(keyCriteria.getEntityID(), keyCriteria);
+    return new EntitySelectCriteria(keyCriteria.getEntityID(), keyCriteria);
   }
 
-  public static SelectCriteria selectCriteria(final String entityID, final String propertyID,
-                                              final SearchType searchType, final Object... values) {
-    return new SelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
+  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
+                                                    final SearchType searchType, final Object... values) {
+    return new EntitySelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
             searchType, values));
   }
 
-  public static SelectCriteria selectCriteria(final String entityID, final String propertyID,
-                                              final SearchType searchType, final int fetchCount,
-                                              final Object... values) {
-    return new SelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
+  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
+                                                    final SearchType searchType, final int fetchCount,
+                                                    final Object... values) {
+    return new EntitySelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
             searchType, values), fetchCount);
   }
 
-  public static SelectCriteria selectCriteria(final String entityID, final String propertyID,
-                                              final SearchType searchType, final String orderByClause,
-                                              final int fetchCount, final Object... values) {
-    return new SelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
+  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
+                                                    final SearchType searchType, final String orderByClause,
+                                                    final int fetchCount, final Object... values) {
+    return new EntitySelectCriteria(entityID, new PropertyCriteria(EntityRepository.getProperty(entityID, propertyID),
             searchType, values), orderByClause, fetchCount);
   }
 

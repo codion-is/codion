@@ -10,7 +10,7 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -95,9 +95,9 @@ public class EntityDbConnectionTest {
     assertEquals(2, result.size());
     result = DB_PROVIDER.getEntityDb().selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = DB_PROVIDER.getEntityDb().selectMany(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
+    result = DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = DB_PROVIDER.getEntityDb().selectMany(new SelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
+    result = DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
     assertTrue(result.size() > 0);
   }
 
@@ -115,7 +115,7 @@ public class EntityDbConnectionTest {
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
     sales = DB_PROVIDER.getEntityDb().selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = DB_PROVIDER.getEntityDb().selectSingle(new SelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
+    sales = DB_PROVIDER.getEntityDb().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 

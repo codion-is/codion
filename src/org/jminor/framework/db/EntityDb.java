@@ -5,7 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -169,7 +169,7 @@ public interface EntityDb {
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws org.jminor.common.db.exception.DbException if an exception occurs
    */
-  Entity selectSingle(final SelectCriteria criteria) throws Exception;
+  Entity selectSingle(final EntitySelectCriteria criteria) throws Exception;
 
   /**
    * Returns entities according to <code>keys</code>
@@ -185,7 +185,7 @@ public interface EntityDb {
    * @return entities according to the given criteria
    * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
-  List<Entity> selectMany(final SelectCriteria criteria) throws Exception;
+  List<Entity> selectMany(final EntitySelectCriteria criteria) throws Exception;
 
   /**
    * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition

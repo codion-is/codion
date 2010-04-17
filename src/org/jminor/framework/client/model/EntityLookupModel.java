@@ -8,8 +8,8 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.criteria.PropertyCriteria;
-import org.jminor.framework.db.criteria.SelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -190,9 +190,9 @@ public class EntityLookupModel {
             || getSelectedEntities().size() > 0 && selectedAsString.equals(getSearchString());
   }
 
-  public SelectCriteria getSelectCriteria() {
+  public EntitySelectCriteria getSelectCriteria() {
     if (getSearchString().equals(getWildcard()))
-      return new SelectCriteria(getEntityID());
+      return new EntitySelectCriteria(getEntityID());
 
     final CriteriaSet baseCriteria = new CriteriaSet(CriteriaSet.Conjunction.OR);
     final String[] lookupTexts = isMultipleSelectionAllowed() ? getSearchString().split(getMultipleValueSeparator()) : new String[] {getSearchString()};
@@ -204,7 +204,7 @@ public class EntityLookupModel {
       }
     }
 
-    return new SelectCriteria(getEntityID(), additionalLookupCriteria == null ? baseCriteria :
+    return new EntitySelectCriteria(getEntityID(), additionalLookupCriteria == null ? baseCriteria :
             new CriteriaSet(CriteriaSet.Conjunction.AND, additionalLookupCriteria, baseCriteria));
   }
 

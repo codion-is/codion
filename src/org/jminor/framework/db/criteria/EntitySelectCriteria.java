@@ -10,7 +10,7 @@ import org.jminor.framework.domain.EntityRepository;
 /**
  * A class encapsulating select query parameters.
  */
-public class SelectCriteria extends EntityCriteria {
+public class EntitySelectCriteria extends EntityCriteria {
 
   private final int fetchCount;
   private final String orderByClause;
@@ -19,7 +19,7 @@ public class SelectCriteria extends EntityCriteria {
    * Instantiates a new EntityCriteria, which includes all the underlying entities
    * @param entityID the ID of the entity to select
    */
-  public SelectCriteria(final String entityID) {
+  public EntitySelectCriteria(final String entityID) {
     this(entityID, null);
   }
 
@@ -31,7 +31,7 @@ public class SelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public SelectCriteria(final String entityID, final Criteria criteria) {
+  public EntitySelectCriteria(final String entityID, final Criteria criteria) {
     this(entityID, criteria, null);
   }
 
@@ -44,7 +44,7 @@ public class SelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public SelectCriteria(final String entityID, final Criteria criteria, final String orderByClause) {
+  public EntitySelectCriteria(final String entityID, final Criteria criteria, final String orderByClause) {
     this(entityID, criteria, orderByClause, -1);
   }
 
@@ -57,7 +57,7 @@ public class SelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public SelectCriteria(final String entityID, final Criteria criteria, final int fetchCount) {
+  public EntitySelectCriteria(final String entityID, final Criteria criteria, final int fetchCount) {
     this(entityID, criteria, null, fetchCount);
   }
 
@@ -71,7 +71,7 @@ public class SelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public SelectCriteria(final String entityID, final Criteria criteria, final String orderByClause,
+  public EntitySelectCriteria(final String entityID, final Criteria criteria, final String orderByClause,
                         final int fetchCount) {
     super(entityID, criteria);
     this.fetchCount = fetchCount;

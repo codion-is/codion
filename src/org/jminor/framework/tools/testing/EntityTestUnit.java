@@ -11,7 +11,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.db.provider.EntityDbProviderFactory;
 import org.jminor.framework.domain.Entity;
@@ -190,7 +190,7 @@ public abstract class EntityTestUnit {
                 testEntity.equals(tmp));
       }
       else {
-        getEntityDb().selectMany(new SelectCriteria(entityID, null, 10));
+        getEntityDb().selectMany(new EntitySelectCriteria(entityID, null, 10));
       }
     }
     catch (Exception e) {

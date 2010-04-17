@@ -20,7 +20,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.CriteriaUtil;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityKeyCriteria;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
@@ -177,7 +177,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final SelectCriteria criteria) throws DbException {
+  public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.size() == 0)
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
@@ -203,12 +203,12 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /** {@inheritDoc} */
   public List<Entity> selectAll(final String entityID) throws DbException {
-    return selectMany(new SelectCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
+    return selectMany(new EntitySelectCriteria(entityID, null, EntityRepository.getOrderByClause(entityID)));
   }
 
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectMany(final SelectCriteria criteria) throws DbException {
+  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
     addCacheQueriesRequest();
 
     String sql = null;
@@ -304,7 +304,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       addCacheQueriesRequest();
       final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
       for (final Dependency dependency : dependencies) {
-        final List<Entity> dependentEntities = selectMany(new SelectCriteria(dependency.entityID,
+        final List<Entity> dependentEntities = selectMany(new EntitySelectCriteria(dependency.entityID,
                 new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
         if (dependentEntities.size() > 0)
           dependencyMap.put(dependency.entityID, dependentEntities);
@@ -619,7 +619,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified
    */
   private void checkIfModified(final Entity entity) throws DbException {
-    final Entity current = selectSingle(new SelectCriteria(entity.getEntityID(),
+    final Entity current = selectSingle(new EntitySelectCriteria(entity.getEntityID(),
             new SimpleCriteria(getWhereCondition(getDatabase(), entity))));
     if (!current.propertyValuesEqual(entity.getOriginalCopy()))
       throw new RecordModifiedException(entity, current);

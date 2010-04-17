@@ -46,7 +46,7 @@ public class CriteriaUtilTest {
     final Entity entity = new Entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, 10);
 
-    SelectCriteria criteria = CriteriaUtil.selectCriteria(entity.getPrimaryKey());
+    EntitySelectCriteria criteria = CriteriaUtil.selectCriteria(entity.getPrimaryKey());
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
     assertEquals("where (deptno = 10)", criteria.getWhereClause(DATABASE, VALUE_PROVIDER));
 

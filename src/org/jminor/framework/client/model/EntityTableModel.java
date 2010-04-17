@@ -12,7 +12,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.table.TableSorter;
 import org.jminor.framework.client.model.reporting.EntityJRDataSource;
 import org.jminor.framework.db.EntityDb;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -34,7 +34,16 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -1022,7 +1031,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       return new ArrayList<Entity>();
 
     try {
-      return getEntityDb().selectMany(new SelectCriteria(getEntityID(), criteria,
+      return getEntityDb().selectMany(new EntitySelectCriteria(getEntityID(), criteria,
               EntityRepository.getOrderByClause(getEntityID()), getFetchCount()));
     }
     catch (Exception e) {

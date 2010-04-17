@@ -22,7 +22,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -402,7 +402,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public Entity selectSingle(final SelectCriteria criteria) throws DbException, RemoteException {
+  public Entity selectSingle(final EntitySelectCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectSingle(criteria);
     }
@@ -428,7 +428,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /** {@inheritDoc} */
-  public List<Entity> selectMany(final SelectCriteria criteria) throws DbException, RemoteException {
+  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException, RemoteException {
     try {
       return loggingEntityDbProxy.selectMany(criteria);
     }

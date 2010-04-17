@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 
@@ -40,7 +40,7 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   /**
    * the SelectCriteria used to filter the data
    */
-  private SelectCriteria selectCriteria;
+  private EntitySelectCriteria selectCriteria;
 
   private boolean dataInitialized = false;
 
@@ -141,14 +141,14 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    * Sets the criteria to use when querying data
    * @param selectCriteria the criteria
    */
-  public void setSelectCriteria(final SelectCriteria selectCriteria) {
+  public void setSelectCriteria(final EntitySelectCriteria selectCriteria) {
     this.selectCriteria = selectCriteria;
   }
 
   /**
-   * @return the SelectCriteria used by this EntityComboBoxModel
+   * @return the EntitySelectCriteria used by this EntityComboBoxModel
    */
-  protected SelectCriteria getSelectCriteria() {
+  protected EntitySelectCriteria getSelectCriteria() {
     return selectCriteria;
   }
 

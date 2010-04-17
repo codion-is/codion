@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.criteria.SelectCriteria;
+import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -62,9 +62,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   private boolean forceRefresh = false;
 
   /**
-   * the SelectCriteria used to filter the data
+   * the EntitySelectCriteria used to filter the data
    */
-  private SelectCriteria selectCriteria;
+  private EntitySelectCriteria selectCriteria;
 
   /**
    * A map of entities used to filter the contents of this model
@@ -229,9 +229,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * Sets the criteria to use when querying data
    * @param selectCriteria the criteria
    */
-  public void setSelectCriteria(final SelectCriteria selectCriteria) {
+  public void setSelectCriteria(final EntitySelectCriteria selectCriteria) {
     if (selectCriteria != null && !selectCriteria.getEntityID().equals(getEntityID()))
-      throw new RuntimeException("SelectCriteria entityID mismatch, " + getEntityID()
+      throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + getEntityID()
               + " expected, got " + selectCriteria.getEntityID());
     this.selectCriteria = selectCriteria;
   }
@@ -283,7 +283,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   /**
    * @return the SelectCriteria used by this EntityComboBoxModel
    */
-  protected SelectCriteria getSelectCriteria() {
+  protected EntitySelectCriteria getSelectCriteria() {
     return selectCriteria;
   }
 

@@ -1295,3 +1295,4 @@
   PropertyEditPanel renamed to InputProviderPanel and moved to common.ui.input
   EntityTableColumnPanel renamed to AbstractTableColumnSyncPanel and moved to common.ui
   InputProviderPanel now implements InputProvider
+  SelectCriteria renamed to EntitySelectCriteria
