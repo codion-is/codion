@@ -144,7 +144,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
    * @return the original value of the property
    */
   @Override
-  public Object getOriginalValue(String propertyID) {
+  public Object getOriginalValue(final String propertyID) {
     final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
       return primaryKey.getOriginalValue(propertyID);
