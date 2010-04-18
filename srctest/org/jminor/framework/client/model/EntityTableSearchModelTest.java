@@ -29,7 +29,7 @@ public class EntityTableSearchModelTest {
     final EntityTableModel tableModel = new EntityTableModel(EmpDept.T_EMPLOYEE, EntityDbConnectionTest.DB_PROVIDER);
     final EntityTableSearchModel model = tableModel.getSearchModel();
     assertEquals(EmpDept.T_EMPLOYEE, model.getEntityID());
-    assertNotNull(model.getTableColumnModel());
+    assertNotNull(model.getColumnModel());
     assertEquals(false, model.isSimpleSearch());
     model.setSearchConjunction(CriteriaSet.Conjunction.OR);
     assertEquals(CriteriaSet.Conjunction.OR, model.getSearchConjunction());

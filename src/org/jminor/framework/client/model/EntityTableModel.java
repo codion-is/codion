@@ -122,8 +122,8 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return the underlying table column properties
    */
   public List<Property> getTableColumnProperties() {
-    final List<Property> propertyList = new ArrayList<Property>(getTableColumnModel().getColumnCount());
-    final Enumeration<TableColumn> columnEnumeration = getTableColumnModel().getColumns();
+    final List<Property> propertyList = new ArrayList<Property>(getColumnModel().getColumnCount());
+    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements())
       propertyList.add((Property) columnEnumeration.nextElement().getIdentifier());
 
@@ -186,7 +186,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @param status the sorting status, use TableSorter.DESCENDING, .NOT_SORTED, .ASCENDING
    */
   public void setSortingStatus(final String propertyID, final int status) {
-    final int columnIndex = getTableColumnModel().getColumnIndex(EntityRepository.getProperty(getEntityID(), propertyID));
+    final int columnIndex = getColumnModel().getColumnIndex(EntityRepository.getProperty(getEntityID(), propertyID));
     if (columnIndex == -1)
       throw new RuntimeException("Column based on property '" + propertyID + " not found");
 
@@ -242,14 +242,14 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /** {@inheritDoc} */
   @Override
   public Class<?> getColumnClass(final int columnIndex) {
-    final Property columnProperty = (Property) getTableColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
+    final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
     return getValueClass(columnProperty.getPropertyType(), getItemAtViewIndex(0).getValue(columnProperty.getPropertyID()));
   }
 
   /** {@inheritDoc} */
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    return getVisibleItems().get(rowIndex).getTableValue((Property) getTableColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
+    return getVisibleItems().get(rowIndex).getTableValue((Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
   }
 
   /**
@@ -532,7 +532,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   }
 
   public Property getColumnProperty(final int columnIndex) {
-    return (Property) getTableColumnModel().getColumn(columnIndex).getIdentifier();
+    return (Property) getColumnModel().getColumn(columnIndex).getIdentifier();
   }
 
   /**
@@ -550,7 +550,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return evtRefreshStarted;
   }
 
-  protected TableColumnModel initializeTableColumnModel(final String tableIdentifier) {
+  protected TableColumnModel initializeColumnModel(final String tableIdentifier) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     int i = 0;
     for (final Property property : initializeColumnProperties(tableIdentifier)) {
@@ -597,7 +597,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * @return a EntityTableSearchModel for this EntityTableModel
    */
   protected EntityTableSearchModel initializeSearchModel() {
-    return new EntityTableSearchModel(getEntityID(), getTableColumnModel(), getDbProvider(), false);
+    return new EntityTableSearchModel(getEntityID(), getColumnModel(), getDbProvider(), false);
   }
 
   /**
@@ -647,7 +647,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
       return modelColumnIndex;
 
     for (int index = 0; index < getColumnCount(); index++)
-      if (getTableColumnModel().getColumn(index).getModelIndex() == modelColumnIndex)
+      if (getColumnModel().getColumn(index).getModelIndex() == modelColumnIndex)
         return index;
 
     return -1;

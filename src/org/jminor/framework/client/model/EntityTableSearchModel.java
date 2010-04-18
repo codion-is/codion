@@ -39,7 +39,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   private final State stSearchStateChanged = new State();
 
   private final String entityID;
-  private final TableColumnModel tableColumnModel;
+  private final TableColumnModel columnModel;
   private final Map<String, PropertyFilterModel> propertyFilterModels;
   private final Map<String, PropertySearchModel> propertySearchModels;
   /** When active the search should be simplified */
@@ -50,22 +50,22 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
   /**
    * Instantiates a new EntityTableSearchModel
    * @param entityID the ID of the underlying entity
-   * @param tableColumnModel the underlying TableColumnModel
+   * @param columnModel the underlying TableColumnModel
    * assumed to belong to the entity identified by <code>entityID</code>
    * @param dbProvider a EntityDbProvider instance, required if <code>searchableProperties</code> include
    * foreign key properties
    * @param simpleSearch if true then search panels based on this search model should implement a simplified search
    */
-  public EntityTableSearchModel(final String entityID, final TableColumnModel tableColumnModel,
+  public EntityTableSearchModel(final String entityID, final TableColumnModel columnModel,
                                 final EntityDbProvider dbProvider, final boolean simpleSearch) {
     if (entityID == null)
       throw new IllegalArgumentException("entityID must be specified");
-    if (tableColumnModel == null)
+    if (columnModel == null)
       throw new IllegalArgumentException("tableColumnModel must be specified");
     this.entityID = entityID;
-    this.tableColumnModel = tableColumnModel;
-    this.propertyFilterModels = initializePropertyFilterModels(tableColumnModel);
-    this.propertySearchModels = initializePropertySearchModels(tableColumnModel, dbProvider);
+    this.columnModel = columnModel;
+    this.propertyFilterModels = initializePropertyFilterModels(columnModel);
+    this.propertySearchModels = initializePropertySearchModels(columnModel, dbProvider);
     this.searchStateOnRefresh = getSearchModelState();
     this.simpleSearch = simpleSearch;
     bindEvents();
@@ -79,8 +79,8 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
     return simpleSearch;
   }
 
-  public TableColumnModel getTableColumnModel() {
-    return tableColumnModel;
+  public TableColumnModel getColumnModel() {
+    return columnModel;
   }
 
   /**

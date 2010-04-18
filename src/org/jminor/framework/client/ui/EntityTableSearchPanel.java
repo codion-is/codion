@@ -32,7 +32,7 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
   private final EntityTableSearchModel searchModel;
 
   public EntityTableSearchPanel(final EntityTableSearchModel searchModel) {
-    super(searchModel.getTableColumnModel());
+    super(searchModel.getColumnModel());
     this.searchModel = searchModel;
     resetPanel();
   }
@@ -85,7 +85,7 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
   }
 
   public PropertySearchPanel getSearchPanel(final String propertyID) {
-    final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
+    final Enumeration<TableColumn> columnEnumeration = searchModel.getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
       final Property property = (Property) column.getIdentifier();
@@ -103,7 +103,7 @@ public class EntityTableSearchPanel extends AbstractTableColumnSyncPanel {
   @Override
   protected Map<TableColumn, JPanel> initializeColumnPanels() {
     final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
-    final Enumeration<TableColumn> columnEnumeration = searchModel.getTableColumnModel().getColumns();
+    final Enumeration<TableColumn> columnEnumeration = searchModel.getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
       final Property property = (Property) column.getIdentifier();

@@ -22,7 +22,7 @@ public class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
   private final EntityTableModel tableModel;
 
   public EntityTableSummaryPanel(final EntityTableModel tableModel) {
-    super(tableModel.getTableColumnModel());
+    super(tableModel.getColumnModel());
     this.tableModel = tableModel;
     resetPanel();
   }
@@ -34,7 +34,7 @@ public class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel {
   @Override
   protected Map<TableColumn, JPanel> initializeColumnPanels() {
     final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
-    final Enumeration<TableColumn> columns = tableModel.getTableColumnModel().getColumns();
+    final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
       final TableColumn column = columns.nextElement();
       final Property property = (Property) column.getIdentifier();

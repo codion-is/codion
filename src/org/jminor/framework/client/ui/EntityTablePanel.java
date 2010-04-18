@@ -384,7 +384,7 @@ public class EntityTablePanel extends JPanel {
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectTableColumns() {
-    final Enumeration<TableColumn> columns = getTableModel().getTableColumnModel().getColumns();
+    final Enumeration<TableColumn> columns = getTableModel().getColumnModel().getColumns();
     final List<TableColumn> allColumns = new ArrayList<TableColumn>();
     while (columns.hasMoreElements())
       allColumns.add(columns.nextElement());
@@ -803,7 +803,7 @@ public class EntityTablePanel extends JPanel {
    * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable(final boolean rowColoring) {
-    final TableColumnModel columnModel = getTableModel().getTableColumnModel();
+    final TableColumnModel columnModel = getTableModel().getColumnModel();
     final JTable table = new JTable(getTableModel().getTableSorter(), columnModel, getTableModel().getSelectionModel());
     final TableCellRenderer tableCellRenderer = initializeTableCellRenderer(rowColoring);
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
@@ -1043,14 +1043,14 @@ public class EntityTablePanel extends JPanel {
       final TableColumn hiddenColumn = hiddenColumnIterator.next();
       if (hiddenColumn.getIdentifier().equals(property)) {
         hiddenColumnIterator.remove();
-        getTableModel().getTableColumnModel().addColumn(hiddenColumn);
+        getTableModel().getColumnModel().addColumn(hiddenColumn);
       }
     }
   }
 
   private void hideColumn(final Property property) {
     final TableColumn column = getTableModel().getTableColumn(property);
-    getTableModel().getTableColumnModel().removeColumn(column);
+    getTableModel().getColumnModel().removeColumn(column);
     hiddenColumns.add(column);
   }
 
@@ -1068,7 +1068,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    final Property property = getTableModel().getColumnProperty(getTableModel().getTableColumnModel().getColumnIndexAtX(event.getX()));
+    final Property property = getTableModel().getColumnProperty(getTableModel().getColumnModel().getColumnIndexAtX(event.getX()));
 
     toggleFilterPanel(event.getLocationOnScreen(), propertyFilterPanels.get(property.getPropertyID()), getJTable());
   }

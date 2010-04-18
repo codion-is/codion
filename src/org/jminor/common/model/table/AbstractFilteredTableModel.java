@@ -26,7 +26,7 @@ import java.util.ListIterator;
  * <pre>
  * AbstractFilteredTableModel tableModel = ...;
  * JTable table = new JTable(tableModel.getTableSorter(),
- *                           tableModel.getTableColumnModel(),
+ *                           tableModel.getColumnModel(),
  *                           tableModel.getSelectionModel());
  * </pre>
  * User: Björn Darri
@@ -52,7 +52,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   /**
    * The TableColumnModel
    */
-  private final TableColumnModel tableColumnModel;
+  private final TableColumnModel columnModel;
 
   /**
    * The sorter model
@@ -77,7 +77,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   public AbstractFilteredTableModel(final String tableIdentifier) {
     this.tableSorter = new TableSorter(this);
-    this.tableColumnModel = initializeTableColumnModel(tableIdentifier);
+    this.columnModel = initializeColumnModel(tableIdentifier);
     bindEventsInternal();
   }
 
@@ -105,7 +105,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   /** {@inheritDoc} */
   public int getColumnCount() {
-    return tableColumnModel.getColumnCount();
+    return getColumnModel().getColumnCount();
   }
 
   /** {@inheritDoc} */
@@ -428,8 +428,8 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     }
   }
 
-  public TableColumnModel getTableColumnModel() {
-    return tableColumnModel;
+  public TableColumnModel getColumnModel() {
+    return columnModel;
   }
 
   /**
@@ -438,7 +438,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * @return the TableColumn associated with the given identifier
    */
   public TableColumn getTableColumn(final Object identifier) {
-    return tableColumnModel.getColumn(tableColumnModel.getColumnIndex(identifier));
+    return getColumnModel().getColumn(columnModel.getColumnIndex(identifier));
   }
 
   /**
@@ -517,7 +517,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     return tableSorter.viewIndex(modelIndexOf(item));
   }
 
-  protected abstract TableColumnModel initializeTableColumnModel(final String tableIdentifier);
+  protected abstract TableColumnModel initializeColumnModel(final String tableIdentifier);
 
   private void bindEventsInternal() {
     final List<T> selectedItems = new ArrayList<T>();
