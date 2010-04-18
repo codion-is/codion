@@ -102,10 +102,10 @@ public class EntityLoadTestModelTest {
     assertFalse(tableModel.stateSelectionEmpty().isActive());
 
     EntityLoadTestModel.selectRandomRows(tableModel, 3);
-    assertEquals(3, tableModel.getSelectedEntities().size());
+    assertEquals(3, tableModel.getSelectedItems().size());
 
     EntityLoadTestModel.selectRandomRows(tableModel, 0.5);
-    assertEquals(2, tableModel.getSelectedEntities().size());
+    assertEquals(2, tableModel.getSelectedItems().size());
 
     model.getDbProvider().disconnect();
   }

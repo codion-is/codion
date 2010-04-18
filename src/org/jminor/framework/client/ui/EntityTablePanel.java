@@ -27,7 +27,25 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
@@ -920,7 +938,7 @@ public class EntityTablePanel extends JPanel {
     final String[][] header = new String[][] {headerValues.toArray(new String[headerValues.size()])};
 
     final List<Entity> entities = getTableModel().getSelectionModel().isSelectionEmpty()
-            ? getTableModel().getAllEntities(false) : getTableModel().getSelectedEntities();
+            ? getTableModel().getAllItems(false) : getTableModel().getSelectedItems();
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {

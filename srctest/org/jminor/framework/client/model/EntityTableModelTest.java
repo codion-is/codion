@@ -69,7 +69,7 @@ public class EntityTableModelTest {
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
     testModel.setSortingStatus(EntityTestDomain.DETAIL_STRING, TableSorter.DESCENDING);
-    assertEquals("e", testModel.getEntityAtViewIndex(0).getValue(EntityTestDomain.DETAIL_STRING));
+    assertEquals("e", testModel.getItemAtViewIndex(0).getValue(EntityTestDomain.DETAIL_STRING));
     testModel.setSelectedItemIndex(2);
     assertEquals(2, testModel.getSelectedIndex());
     testModel.moveSelectionDown();
@@ -78,9 +78,9 @@ public class EntityTableModelTest {
     testModel.moveSelectionUp();
     assertEquals(1, testModel.getSelectedIndex());
     testModel.selectAll();
-    assertEquals(5, testModel.getSelectedEntities().size());
+    assertEquals(5, testModel.getSelectedItems().size());
     testModel.clearSelection();
-    assertEquals(0, testModel.getSelectedEntities().size());
+    assertEquals(0, testModel.getSelectedItems().size());
     assertFalse(testModel.isCellEditable(0,0));
 
     final Property property = EntityRepository.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
@@ -124,7 +124,7 @@ public class EntityTableModelTest {
     //test filters
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("a");
     assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-    assertEquals("4 entities should be hidden", 4, testModel.getHiddenCount());
+    assertEquals("4 entities should be hidden", 4, testModel.getHiddenItemCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
     assertTrue("Model should contain all entities, including hidden",
@@ -136,7 +136,7 @@ public class EntityTableModelTest {
 
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setLikeValue("t"); // ekki til
     assertTrue("filter should be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
-    assertEquals("all 5 entities should be hidden", 5, testModel.getHiddenCount());
+    assertEquals("all 5 entities should be hidden", 5, testModel.getHiddenItemCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(testEntities, false, testModel));
     assertTrue("Model should contain all entities, including hidden",
@@ -146,11 +146,11 @@ public class EntityTableModelTest {
     assertFalse("filter should not be enabled", testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).isSearchEnabled());
 
     //test selection
-    testModel.setSelectedEntity(testEntities[0]);
-    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
+    testModel.setSelectedItem(testEntities[0]);
+    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedItem());
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
     testModel.addSelectedItemIndex(1);
-    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
+    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedItem());
     assertEquals("selected indexes should fit", Arrays.asList(0, 1), testModel.getSelectedViewIndexes());
     assertEquals("current index should fit", 0, testModel.getSelectedIndex());
     testModel.addSelectedItemIndex(4);
@@ -200,29 +200,29 @@ public class EntityTableModelTest {
     testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING).setSearchEnabled(false);
     assertEquals("current index should fit", 0,
             testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", testEntities[3], testModel.getSelectedEntity());
+    assertEquals("selected item should fit", testEntities[3], testModel.getSelectedItem());
 
     //test selection and sorting together
     testModel.setSelectedItemIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedEntity());
+    assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedItem());
 
     testModel.getTableSorter().setSortingStatus(2, TableSorter.ASCENDING);
-    assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedEntity());
+    assertEquals("current selected item should fit", testEntities[2], testModel.getSelectedItem());
     assertEquals("current index should fit", 2,
             testModel.getSelectionModel().getMinSelectionIndex());
 
     testModel.setSelectedItemIndexes(Arrays.asList(0));
-    assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedEntity());
+    assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedItem());
     testModel.getTableSorter().setSortingStatus(2, TableSorter.DESCENDING);
     assertEquals("current index should fit", 4,
             testModel.getSelectionModel().getMinSelectionIndex());
 
     assertEquals("selected indexes should fit", Arrays.asList(4), testModel.getSelectedViewIndexes());
-    assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedEntity());
+    assertEquals("current selected item should fit", testEntities[0], testModel.getSelectedItem());
     assertEquals("current index should fit", 4,
             testModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedEntity());
+    assertEquals("selected item should fit", testEntities[0], testModel.getSelectedItem());
   }
 
   private boolean tableModelContainsAll(final Entity[] entities, final boolean includeFiltered,
@@ -243,7 +243,7 @@ public class EntityTableModelTest {
     @Override
     public void refresh() {
       clear();
-      addEntities(performQuery(null), false);
+      addItems(performQuery(null), false);
     }
 
     @Override

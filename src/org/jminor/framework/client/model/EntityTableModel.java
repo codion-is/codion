@@ -7,9 +7,8 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.TableSorter;
+import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.framework.client.model.reporting.EntityJRDataSource;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -24,10 +23,6 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.log4j.Logger;
 
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -35,33 +30,23 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class EntityTableModel extends AbstractTableModel implements Refreshable {
+public class EntityTableModel extends AbstractFilteredTableModel<Entity> implements Refreshable {
 
   private static final Logger log = Util.getLogger(EntityTableModel.class);
 
   private final Event evtRefreshStarted = new Event();
   private final Event evtRefreshDone = new Event();
-  private final Event evtFilteringStarted = new Event();
-  private final Event evtFilteringDone = new Event();
-  private final Event evtTableDataChanged = new Event();
-  private final Event evtSelectedIndexChanged = new Event();
-  private final Event evtSelectionChangedAdjusting = new Event();
-  private final Event evtSelectionChanged = new Event();
-
-  private final State stSelectionEmpty = new State(true);
 
   /**
    * The entity ID
@@ -74,21 +59,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   private final EntityDbProvider dbProvider;
 
   /**
-   * Holds visible entities
-   */
-  private final List<Entity> visibleEntities = new ArrayList<Entity>();
-
-  /**
-   * Holds entities that are hidden
-   */
-  private final List<Entity> hiddenEntities = new ArrayList<Entity>();
-
-  /**
-   * The TableColumnModel
-   */
-  private final TableColumnModel tableColumnModel;
-
-  /**
    * The search model
    */
   private final EntityTableSearchModel tableSearchModel;
@@ -99,19 +69,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
 
   /**
-   * The sorter model
-   */
-  private final TableSorter tableSorter;
-
-  /**
    * True if the underlying query should be configurable by the user
    */
   private final boolean queryConfigurationAllowed;
-
-  /**
-   * Holds the selected items while sorting
-   */
-  private List<Entity.Key> selectedPrimaryKeys;
 
   /**
    * If true the underlying query should be filtered by the selected master record
@@ -127,46 +87,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * true while the model data is being refreshed
    */
   private boolean isRefreshing = false;
-
-  /**
-   * true while the model data is being filtered
-   */
-  private boolean isFiltering = false;
-
-  /**
-   * true while the model data is being sorted
-   */
-  private boolean isSorting = false;
-
-  /**
-   * true while the selection is being updated
-   */
-  private boolean isUpdatingSelection = false;
-
-  /**
-   * Holds the topmost (minimum) selected index
-   */
-  private int minSelectedIndex = -1;
-
-  /**
-   * The selection model
-   */
-  private final DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
-    @Override
-    public void fireValueChanged(int min, int max, boolean isAdjusting) {
-      super.fireValueChanged(min, max, isAdjusting);
-      stSelectionEmpty.setActive(isSelectionEmpty());
-      final int minSelIndex = getMinSelectionIndex();
-      if (minSelectedIndex != minSelIndex) {
-        minSelectedIndex = minSelIndex;
-        evtSelectedIndexChanged.fire();
-      }
-      if (isAdjusting || isUpdatingSelection || isSorting)
-        evtSelectionChangedAdjusting.fire();
-      else
-        evtSelectionChanged.fire();
-    }
-  };
 
   /**
    * Initializes a new EntityTableModel
@@ -185,6 +105,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public EntityTableModel(final String entityID, final EntityDbProvider dbProvider,
                           final boolean queryConfigurationAllowed) {
+    super(entityID);
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider can not be null");
     if (entityID == null || entityID.length() == 0)
@@ -192,9 +113,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     this.entityID = entityID;
     this.dbProvider = dbProvider;
     this.queryConfigurationAllowed = queryConfigurationAllowed;
-    this.tableColumnModel = initializeTableColumnModel();
     this.tableSearchModel = initializeSearchModel();
-    this.tableSorter = new TableSorter(this);
     bindEventsInternal();
     bindEvents();
   }
@@ -203,8 +122,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the underlying table column properties
    */
   public List<Property> getTableColumnProperties() {
-    final List<Property> propertyList = new ArrayList<Property>(tableColumnModel.getColumnCount());
-    final Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
+    final List<Property> propertyList = new ArrayList<Property>(getTableColumnModel().getColumnCount());
+    final Enumeration<TableColumn> columnEnumeration = getTableColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements())
       propertyList.add((Property) columnEnumeration.nextElement().getIdentifier());
 
@@ -256,13 +175,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   /**
-   * @return the TableSorter used by this EntityTableModel
-   */
-  public TableSorter getTableSorter() {
-    return tableSorter;
-  }
-
-  /**
    * @return the EntityTableSearchModel instance used by this table model
    */
   public EntityTableSearchModel getSearchModel() {
@@ -278,7 +190,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     if (columnIndex == -1)
       throw new RuntimeException("Column based on property '" + propertyID + " not found");
 
-    tableSorter.setSortingStatus(columnIndex, status);
+    super.setSortingStatus(columnIndex, status);
   }
 
   /**
@@ -299,80 +211,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return true if the model is either refreshing, filtering or sorting
    */
   public boolean isChangingState() {
-    return isRefreshing || isFiltering || isSorting;
-  }
-
-  /**
-   * @return the ListSelectionModel this EntityTableModel uses
-   */
-  public DefaultListSelectionModel getSelectionModel() {
-    return selectionModel;
-  }
-
-  /**
-   * Moves all selected indexes up one index, wraps around
-   * @see #evtSelectionChanged
-   */
-  public void moveSelectionUp() {
-    if (visibleEntities.size() > 0) {
-      if (getSelectionModel().isSelectionEmpty())
-        getSelectionModel().setSelectionInterval(visibleEntities.size() - 1, visibleEntities.size() - 1);
-      else {
-        final Collection<Integer> selected = getSelectedViewIndexes();
-        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
-        for (final Integer index : selected)
-          newSelected.add(index == 0 ? visibleEntities.size() - 1 : index - 1);
-
-        setSelectedItemIndexes(newSelected);
-      }
-    }
-  }
-
-  /**
-   * Moves all selected indexes down one index, wraps around
-   * @see #evtSelectionChanged
-   */
-  public void moveSelectionDown() {
-    if (visibleEntities.size() > 0) {
-      if (getSelectionModel().isSelectionEmpty())
-        getSelectionModel().setSelectionInterval(0,0);
-      else {
-        final Collection<Integer> selected = getSelectedViewIndexes();
-        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
-        for (final Integer index : selected)
-          newSelected.add(index == visibleEntities.size() - 1 ? 0 : index + 1);
-
-        setSelectedItemIndexes(newSelected);
-      }
-    }
-  }
-
-  /**
-   * Selects all visible entities
-   * @see #evtSelectionChanged
-   */
-  public void selectAll() {
-    getSelectionModel().setSelectionInterval(0, visibleEntities.size() - 1);
-  }
-
-  /**
-   * Clears the selection
-   * @see #evtSelectionChanged
-   */
-  public void clearSelection() {
-    getSelectionModel().clearSelection();
-  }
-
-  /**
-   * Clears all entities from this EntityTableModel
-   */
-  public void clear() {
-    hiddenEntities.clear();
-    final int size = getRowCount();
-    if (size > 0) {
-      visibleEntities.clear();
-      fireTableRowsDeleted(0, size - 1);
-    }
+    return isRefreshing || isFiltering() || isSorting();
   }
 
   /**
@@ -405,31 +244,12 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   public Class<?> getColumnClass(final int columnIndex) {
     final Property columnProperty = (Property) getTableColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
-    return getValueClass(columnProperty.getPropertyType(), getEntityAtViewIndex(0).getValue(columnProperty.getPropertyID()));
-  }
-
-  /** {@inheritDoc} */
-  public int getColumnCount() {
-    return getTableColumnModel().getColumnCount();
-  }
-
-  /** {@inheritDoc} */
-  public int getRowCount() {
-    return visibleEntities.size();
+    return getValueClass(columnProperty.getPropertyType(), getItemAtViewIndex(0).getValue(columnProperty.getPropertyID()));
   }
 
   /** {@inheritDoc} */
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    return visibleEntities.get(rowIndex).getTableValue((Property) getTableColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
-  }
-
-  /**
-   * Returns the TableColumn for the given property
-   * @param property the property for which to retrieve the column
-   * @return the TableColumn associated with the given property
-   */
-  public TableColumn getTableColumn(final Property property) {
-    return tableColumnModel.getColumn(tableColumnModel.getColumnIndex(property));
+    return getVisibleItems().get(rowIndex).getTableValue((Property) getTableColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
   }
 
   /**
@@ -439,7 +259,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   public Color getRowBackgroundColor(final int row) {
-    final Entity rowEntity = getEntityAtViewIndex(row);
+    final Entity rowEntity = getItemAtViewIndex(row);
 
     return Entity.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
   }
@@ -451,7 +271,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public Collection<Object> getValues(final Property property, final boolean selectedOnly) {
     return EntityUtil.getPropertyValues(property.getPropertyID(),
-            selectedOnly ? getSelectedEntities() : visibleEntities, false);
+            selectedOnly ? getSelectedItems() : getVisibleItems(), false);
   }
 
   /**
@@ -459,7 +279,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return the entity with the given primary key from the table model, null if it's not found
    */
   public Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
-    for (final Entity entity : visibleEntities)
+    for (final Entity entity : getVisibleItems())
       if (entity.getPrimaryKey().equals(primaryKey))
         return entity;
 
@@ -474,37 +294,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @return a String describing the selected/filtered state of this table model
    */
   public String getStatusMessage() {
-    final int hiddenCount = getHiddenCount();
+    final int hiddenCount = getHiddenItemCount();
 
     return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
             Integer.toString(getSelectedModelIndexes().size())).append(" ").append(
             FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
             hiddenCount > 0 ? ", " + hiddenCount + " "
                     + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
-  }
-
-  public Collection<Integer> getSelectedViewIndexes() {
-    final List<Integer> indexes = new ArrayList<Integer>();
-    final int min = selectionModel.getMinSelectionIndex();
-    final int max = selectionModel.getMaxSelectionIndex();
-    for (int i = min; i <= max; i++)
-      if (selectionModel.isSelectedIndex(i))
-        indexes.add(i);
-
-    return indexes;
-  }
-
-  public Collection<Integer> getSelectedModelIndexes() {
-    final Collection<Integer> indexes = new ArrayList<Integer>();
-    final int min = selectionModel.getMinSelectionIndex();
-    final int max = selectionModel.getMaxSelectionIndex();
-    if (min >= 0 && max >= 0) {
-      for (int i = min; i <= max; i++)
-        if (selectionModel.isSelectedIndex(i))
-          indexes.add(tableSorter.modelIndex(i));
-    }
-
-    return indexes;
   }
 
   /**
@@ -523,7 +319,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
       final List<Entity> queryResult = performQuery(getQueryCriteria());
       clear();
-      addEntities(queryResult, false);
+      addItems(queryResult, false);
       setSelectedByPrimaryKeys(selectedPrimaryKeys);
     }
     finally {
@@ -541,7 +337,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, boolean atFrontOfList) throws DbException {
     try {
-      addEntities(getEntityDb().selectMany(primaryKeys), atFrontOfList);
+      addItems(getEntityDb().selectMany(primaryKeys), atFrontOfList);
     }
     catch (DbException dbe) {
       throw dbe;
@@ -564,85 +360,20 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @param entities the entities to replace
    */
   public void replaceEntities(final Entity... entities) {
-    for (int i = 0; i < visibleEntities.size(); i++) {
-      final Entity entity = visibleEntities.get(i);
+    for (int i = 0; i < getVisibleItemCount(); i++) {
+      final Entity entity = getItemAt(i);
       for (final Entity newEntity : entities)
         if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
           entity.setAs(newEntity);
-          final int index = visibleEntities.indexOf(entity);
+          final int index = indexOf(entity);
           fireTableRowsUpdated(index, index);
         }
     }
 
-    for (final Entity entity : hiddenEntities) {
+    for (final Entity entity : getHiddenItems()) {
       for (final Entity newEntity : entities)
         if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey()))
           entity.setAs(newEntity);
-    }
-  }
-
-  /**
-   * Removes the given entities from this table model
-   * @param entities the entities to remove from the model
-   */
-  public void removeEntities(final List<Entity> entities) {
-    for (final Entity entity : entities)
-      removeEntity(entity);
-  }
-
-  /**
-   * Removes the given entity from this table model
-   * @param entity the entity to remove from the model
-   */
-  public void removeEntity(final Entity entity) {
-    int index = visibleEntities.indexOf(entity);
-    if (index >= 0) {
-      visibleEntities.remove(index);
-      fireTableRowsDeleted(index, index);
-    }
-    else {
-      index = hiddenEntities.indexOf(entity);
-      if (index >= 0)
-        hiddenEntities.remove(index);
-    }
-  }
-
-  /**
-   * @param index the index
-   * @return the Entity at <code>index</code>
-   */
-  public Entity getEntityAtViewIndex(final int index) {
-    if (index >= 0 && index < visibleEntities.size())
-      return visibleEntities.get(tableSorter.modelIndex(index));
-
-    throw new ArrayIndexOutOfBoundsException("No visible entity found at index: " + index + ", size: " + visibleEntities.size());
-  }
-
-  /**
-   * Filters this table model
-   * @see #evtFilteringStarted
-   * @see #evtFilteringDone
-   */
-  public void filterTable() {
-    try {
-      isFiltering = true;
-      evtFilteringStarted.fire();
-      final List<Entity.Key> selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      visibleEntities.addAll(hiddenEntities);
-      hiddenEntities.clear();
-      for (final ListIterator<Entity> iterator = visibleEntities.listIterator(); iterator.hasNext();) {
-        final Entity entity = iterator.next();
-        if (!tableSearchModel.include(entity)) {
-          hiddenEntities.add(entity);
-          iterator.remove();
-        }
-      }
-      fireTableChanged(new TableModelEvent(this, 0, Integer.MAX_VALUE, -1));
-      setSelectedByPrimaryKeys(selectedPrimaryKeys);
-    }
-    finally {
-      isFiltering = false;
-      evtFilteringDone.fire();
     }
   }
 
@@ -673,53 +404,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * if none are selected an empty list is returned
    */
   public List<Entity.Key> getPrimaryKeysOfSelectedEntities() {
-    return EntityUtil.getPrimaryKeys(getSelectedEntities());
-  }
-
-  /**
-   * @return a list containing the selected entities
-   */
-  public List<Entity> getSelectedEntities() {
-    final Collection<Integer> selectedModelIndexes = getSelectedModelIndexes();
-    final List<Entity> selectedEntities = new ArrayList<Entity>();
-    for (final int modelIndex : selectedModelIndexes)
-      selectedEntities.add(visibleEntities.get(modelIndex));
-
-    return selectedEntities;
-  }
-
-  /**
-   * Selects the given entities
-   * @param entities the entities to select
-   */
-  public void setSelectedEntities(final List<Entity> entities) {
-    final List<Integer> indexes = new ArrayList<Integer>();
-    for (final Entity entity : entities) {
-      final int index = viewIndexOf(entity);
-      if (index >= 0)
-        indexes.add(index);
-    }
-
-    setSelectedItemIndexes(indexes);
-  }
-
-  /**
-   * @return the selected entity, null if none is selected
-   */
-  public Entity getSelectedEntity() {
-    final int index = selectionModel.getMinSelectionIndex();
-    if (index >= 0 && index < visibleEntities.size())
-      return getEntityAtViewIndex(index);
-    else
-      return null;
-  }
-
-  /**
-   * Sets the selected entity
-   * @param entity the entity to select
-   */
-  public void setSelectedEntity(final Entity entity) {
-    setSelectedEntities(Arrays.asList(entity));
+    return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
 
   /**
@@ -728,7 +413,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public void setSelectedByPrimaryKeys(final List<Entity.Key> primaryKeys) {
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (final Entity visibleEntity : visibleEntities) {
+    for (final Entity visibleEntity : getVisibleItems()) {
       final int index = primaryKeys.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
         indexes.add(viewIndexOf(visibleEntity));
@@ -740,67 +425,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   /**
-   * Clears the selection and selects the entity at <code>index</code>
-   * @param index the index
-   */
-  public void setSelectedItemIndex(final int index) {
-    selectionModel.setSelectionInterval(index, index);
-  }
-
-  /**
-   * Selects the entity at <code>index</code>
-   * @param index the index
-   */
-  public void addSelectedItemIndex(final int index) {
-    selectionModel.addSelectionInterval(index, index);
-  }
-
-  /**
-   * Selects the given indexes
-   * @param indexes the indexes to select
-   */
-  public void setSelectedItemIndexes(final List<Integer> indexes) {
-    selectionModel.clearSelection();
-    addSelectedItemIndexes(indexes);
-  }
-
-  /**
-   * Adds these indexes to the selection
-   * @param indexes the indexes to add to the selection
-   */
-  public void addSelectedItemIndexes(final List<Integer> indexes) {
-    try {
-      isUpdatingSelection = true;
-      for (int i = 0; i < indexes.size()-1; i++) {
-        final int index = indexes.get(i);
-        selectionModel.addSelectionInterval(index, index);
-      }
-    }
-    finally {
-      isUpdatingSelection = false;
-      if (indexes.size() > 0) {
-        final int lastIndex = indexes.get(indexes.size()-1);
-        selectionModel.addSelectionInterval(lastIndex, lastIndex);
-      }
-    }
-  }
-
-  /**
-   * @return the index of the selected record, -1 if none is selected and
-   * the lowest index if more than one record is selected
-   */
-  public int getSelectedIndex() {
-    return minSelectedIndex;
-  }
-
-  /**
    * Finds entities according to the values in <code>keys</code>
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in <code>keys</code>
    */
   public List<Entity> getEntitiesByPrimaryKeys(final List<Entity.Key> keys) {
     final List<Entity> entities = new ArrayList<Entity>();
-    for (final Entity entity : getAllEntities()) {
+    for (final Entity entity : getAllItems()) {
       for (final Entity.Key key : keys) {
         if (entity.getPrimaryKey().equals(key)) {
           entities.add(entity);
@@ -820,7 +451,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public Entity[] getEntitiesByPropertyValues(final Map<String, Object> propertyValues) {
     final List<Entity> entities = new ArrayList<Entity>();
-    for (final Entity entity : getAllEntities()) {
+    for (final Entity entity : getAllItems()) {
       boolean equal = true;
       for (final Map.Entry<String, Object> entries : propertyValues.entrySet()) {
         final String propertyID = entries.getKey();
@@ -843,7 +474,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    */
   public final Map<String, List<Entity>> getSelectionDependencies() throws DbException {
     try {
-      return getEntityDb().selectDependentEntities(getSelectedEntities());
+      return getEntityDb().selectDependentEntities(getSelectedItems());
     }
     catch (DbException dbe) {
       throw dbe;
@@ -853,49 +484,15 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     }
   }
 
-  /**
-   * @return the number of currently filtered (hidden) items
-   */
-  public int getHiddenCount() {
-    return hiddenEntities.size();
-  }
-
-  /**
-   * @param entity the object to search for
-   * @param includeHidden set to true if the search should include hidden entities
-   * @return true if this table model contains the given object
-   */
-  public boolean contains(final Entity entity, final boolean includeHidden) {
-    final boolean ret = viewIndexOf(entity) >= 0;
-    if (!ret && includeHidden)
-      return hiddenEntities.indexOf(entity) >= 0;
-
-    return ret;
-  }
-
-  /**
-   * @return all visible and hidden entities in this table model
-   */
-  public List<Entity> getAllEntities() {
-    return getAllEntities(true);
-  }
-
-  /**
-   * @param includeHidden if true then filtered entities are included
-   * @return all entities in this table model
-   */
-  public List<Entity> getAllEntities(final boolean includeHidden) {
-    final List<Entity> entities = new ArrayList<Entity>(visibleEntities);
-    if (includeHidden)
-      entities.addAll(hiddenEntities);
-
-    return entities;
-  }
-
   /** {@inheritDoc} */
   @Override
   public String toString() {
     return getEntityID();
+  }
+
+  /** {@inheritDoc} */
+  public boolean include(final Entity item) {
+    return getSearchModel().include(item);
   }
 
   /**
@@ -917,9 +514,9 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
       propertySummaryModels.put(property.getPropertyID(), new PropertySummaryModel(property,
               new PropertySummaryModel.PropertyValueProvider() {
                 public void bindValuesChangedEvent(final Event event) {
-                  evtFilteringDone.addListener(event);//todo summary is updated twice per refresh and should update on insert
-                  evtRefreshDone.addListener(event);
-                  evtSelectionChanged.addListener(event);
+                  eventFilteringDone().addListener(event);//todo summary is updated twice per refresh and should update on insert
+                  eventRefreshDone().addListener(event);
+                  eventSelectionChanged().addListener(event);
                 }
 
                 public Collection<?> getValues() {
@@ -927,7 +524,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
                 }
 
                 public boolean isValueSubset() {
-                  return !stSelectionEmpty.isActive();
+                  return !stateSelectionEmpty().isActive();
                 }
               }));
 
@@ -935,32 +532,7 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   }
 
   public Property getColumnProperty(final int columnIndex) {
-    return (Property) tableColumnModel.getColumn(columnIndex).getIdentifier();
-  }
-
-  public TableColumnModel getTableColumnModel() {
-    return tableColumnModel;
-  }
-
-  /**
-   * @return a State active when the selection is empty
-   */
-  public State stateSelectionEmpty() {
-    return stSelectionEmpty;
-  }
-
-  /**
-   * @return an Event fired when the model has been filtered
-   */
-  public Event eventFilteringDone() {
-    return evtFilteringDone;
-  }
-
-  /**
-   * @return an Event fired when the model is about to be filtered
-   */
-  public Event eventFilteringStarted() {
-    return evtFilteringStarted;
+    return (Property) getTableColumnModel().getColumn(columnIndex).getIdentifier();
   }
 
   /**
@@ -978,38 +550,10 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     return evtRefreshStarted;
   }
 
-  /**
-   * @return an event fired when the minimum (topmost) selected index changes (minSelectionIndex property in ListSelectionModel)
-   */
-  public Event eventSelectedIndexChanged() {
-    return evtSelectedIndexChanged;
-  }
-
-  /**
-   * @return an Event fired after the selection has changed
-   */
-  public Event eventSelectionChanged() {
-    return evtSelectionChanged;
-  }
-
-  /**
-   * @return an Event fired when the selection is changing
-   */
-  public Event eventSelectionChangedAdjusting() {
-    return evtSelectionChangedAdjusting;
-  }
-
-  /**
-   * @return an Event fired after the table data has changed
-   */
-  public Event eventTableDataChanged() {
-    return evtTableDataChanged;
-  }
-
-  protected TableColumnModel initializeTableColumnModel() {
+  protected TableColumnModel initializeTableColumnModel(final String tableIdentifier) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     int i = 0;
-    for (final Property property : initializeColumnProperties()) {
+    for (final Property property : initializeColumnProperties(tableIdentifier)) {
       final TableColumn column = new TableColumn(i++);
       column.setIdentifier(property);
       column.setHeaderValue(property.getCaption());
@@ -1070,8 +614,8 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
   /**
    * @return a list of Properties that should be used as basis for this table models column model
    */
-  protected List<Property> initializeColumnProperties() {
-    return new ArrayList<Property>(EntityRepository.getVisibleProperties(getEntityID()));
+  protected List<Property> initializeColumnProperties(final String entityID) {
+    return new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID));
   }
 
   /**
@@ -1080,32 +624,13 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
    * @see #getJRDataSource()
    */
   protected Iterator<Entity> initializeReportIterator() {
-    return getSelectedEntities().iterator();
+    return getSelectedItems().iterator();
   }
 
   /**
    * Override to add event bindings
    */
   protected void bindEvents() {}
-
-  /**
-   * Adds the given entities to this table model
-   * @param entities the entities to add
-   * @param atFront if true then the entities are added at the front
-   */
-  protected void addEntities(final List<Entity> entities, final boolean atFront) {
-    for (final Entity entity : entities) {
-      if (tableSearchModel.include(entity)) {
-        if (atFront)
-          visibleEntities.add(0, entity);
-        else
-          visibleEntities.add(entity);
-      }
-      else
-        hiddenEntities.add(entity);
-    }
-    fireTableDataChanged();
-  }
 
   /**
    * Maps the index of the column in the table model at
@@ -1121,19 +646,11 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     if (modelColumnIndex < 0)
       return modelColumnIndex;
 
-    for (int index = 0; index < tableColumnModel.getColumnCount(); index++)
-      if (tableColumnModel.getColumn(index).getModelIndex() == modelColumnIndex)
+    for (int index = 0; index < getColumnCount(); index++)
+      if (getTableColumnModel().getColumn(index).getModelIndex() == modelColumnIndex)
         return index;
 
     return -1;
-  }
-
-  private int modelIndexOf(final Entity entity) {
-    return visibleEntities.indexOf(entity);
-  }
-
-  private int viewIndexOf(final Entity entity) {
-    return tableSorter.viewIndex(modelIndexOf(entity));
   }
 
   private void bindEventsInternal() {
@@ -1145,23 +662,6 @@ public class EntityTableModel extends AbstractTableModel implements Refreshable 
     evtRefreshDone.addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         tableSearchModel.setSearchModelState();
-      }
-    });
-    addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent event) {
-        evtTableDataChanged.fire();
-      }
-    });
-    tableSorter.eventBeforeSort().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        isSorting = true;
-        selectedPrimaryKeys = getPrimaryKeysOfSelectedEntities();
-      }
-    });
-    tableSorter.eventAfterSort().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        setSelectedByPrimaryKeys(selectedPrimaryKeys);
-        isSorting = false;
       }
     });
   }

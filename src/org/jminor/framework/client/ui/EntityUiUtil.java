@@ -42,7 +42,24 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Level;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -84,7 +101,7 @@ public class EntityUiUtil {
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {
-        final List<Entity> entities = lookupModel.getSelectedEntities();
+        final List<Entity> entities = lookupModel.getSelectedItems();
         for (final Entity entity : entities)
           selected.add(entity);
         dialog.dispose();
@@ -611,7 +628,7 @@ public class EntityUiUtil {
           comboBoxModel.setSelectedEntityByPrimaryKey(lastInsertedPrimaryKeys.get(0));
         }
         else {
-          final Entity selectedEntity = tableModel.getSelectedEntity();
+          final Entity selectedEntity = tableModel.getSelectedItem();
           if (selectedEntity != null)
             comboBoxModel.setSelectedItem(selectedEntity);
         }

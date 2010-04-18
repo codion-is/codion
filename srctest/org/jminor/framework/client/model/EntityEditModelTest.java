@@ -62,7 +62,7 @@ public class EntityEditModelTest {
     assertFalse(entityNullState.isActive());
 
     assertTrue("Active entity is not equal to the selected entity",
-            editModel.getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getEntityAtViewIndex(0)));
+            editModel.getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getItemAtViewIndex(0)));
 
     assertFalse("Active entity is null after an entity is selected", editModel.isEntityNull());
     assertFalse(editModel.getEntityModifiedState().isActive());
@@ -174,7 +174,7 @@ public class EntityEditModelTest {
       employeeModel.getTableModel().refresh();
       employeeModel.getTableModel().setSelectedItemIndex(0);
       editModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
-      final List<Entity> toUpdate = employeeModel.getTableModel().getSelectedEntities();
+      final List<Entity> toUpdate = employeeModel.getTableModel().getSelectedItems();
       editModel.eventAfterUpdate().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           final UpdateEvent de = (UpdateEvent) e;
@@ -205,7 +205,7 @@ public class EntityEditModelTest {
       editModel.getDbProvider().getEntityDb().beginTransaction();
       employeeModel.getTableModel().refresh();
       employeeModel.getTableModel().setSelectedItemIndex(0);
-      final List<Entity> toDelete = employeeModel.getTableModel().getSelectedEntities();
+      final List<Entity> toDelete = employeeModel.getTableModel().getSelectedItems();
       editModel.eventAfterDelete().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           final DeleteEvent de = (DeleteEvent) e;

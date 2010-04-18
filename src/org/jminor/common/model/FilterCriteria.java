@@ -6,10 +6,10 @@ package org.jminor.common.model;
 /**
  * An interface describing a filtering criteria.
  */
-public interface FilterCriteria {
+public interface FilterCriteria<T> {
   /**
    * @param item the item
    * @return true if <code>item</code> should be included
    */
-  boolean include(Object item);
+  boolean include(T item);
 }

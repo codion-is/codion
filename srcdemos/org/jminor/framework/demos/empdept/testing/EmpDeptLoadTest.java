@@ -75,7 +75,7 @@ public class EmpDeptLoadTest extends EntityLoadTestModel {
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmployeeModel.class);
         final Map<String, Entity> references = new HashMap<String, Entity>();
-        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedEntity());
+        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
         employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }

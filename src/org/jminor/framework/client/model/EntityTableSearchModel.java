@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.State;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -32,7 +33,7 @@ import java.util.Map;
  * Date: 24.7.2008
  * Time: 21:29:55
  */
-public class EntityTableSearchModel {
+public class EntityTableSearchModel implements FilterCriteria<Entity> {
 
   private final Event evtFilterStateChanged = new Event();
   private final State stSearchStateChanged = new State();

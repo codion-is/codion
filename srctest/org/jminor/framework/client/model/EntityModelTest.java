@@ -91,9 +91,9 @@ public class EntityModelTest {
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
     departmentModel.getDetailModel(EmployeeModel.class).getTableModel().setQueryFilteredByMaster(true);
-    departmentModel.getTableModel().setSelectedEntity(department);
+    departmentModel.getTableModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
-            departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllEntities();
+            departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllItems();
     assertTrue("Filtered list should contain all employees for department", containsAll(salesEmployees, employeesFromDetailModel));
   }
 

@@ -719,7 +719,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         try {
           UiUtil.setWaitCursor(true, this);
           if (getModel().containsTableModel())
-            getModel().getEditModel().delete(getModel().getTableModel().getSelectedEntities());
+            getModel().getEditModel().delete(getModel().getTableModel().getSelectedItems());
           else
             getModel().getEditModel().delete();
         }
@@ -786,7 +786,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (!getModel().containsTableModel() || getModel().getTableModel().stateSelectionEmpty().isActive())
       return;
 
-    final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedEntities());
+    final List<Entity> selectedEntities = EntityUtil.copyEntities(getModel().getTableModel().getSelectedItems());
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
@@ -841,7 +841,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @throws JSONException in case of a JSON exception
    */
   public void exportSelected() throws CancelException, JSONException {
-    final List<Entity> selected = getModel().getTableModel().getSelectedEntities();
+    final List<Entity> selected = getModel().getTableModel().getSelectedItems();
     Util.writeFile(EntityUtil.getJSONString(selected, 2), UiUtil.chooseFileToSave(this, null, null));
     JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
   }

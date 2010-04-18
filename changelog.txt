@@ -1306,3 +1306,4 @@
   Entity.initializeEntity() renamed to initialize()
   EntityUtil.getJSONEntity() renamed to getJSONObject()
   EntityDb.disconnect() removed, EntityDbProvider responsible for disconnecting
+  AbstractFilteredTableModel refactored from EntityTableModel, added to common.ui.table
