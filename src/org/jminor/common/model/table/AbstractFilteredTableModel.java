@@ -22,7 +22,13 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A TableModel implentation that supports filtering.
+ * A TableModel implentation that supports filtering and sorting.
+ * <pre>
+ * AbstractFilteredTableModel tableModel = ...;
+ * JTable table = new JTable(tableModel.getTableSorter(),
+ *                           tableModel.getTableColumnModel(),
+ *                           tableModel.getSelectionModel());
+ * </pre>
  * User: Björn Darri
  * Date: 18.4.2010
  * Time: 09:48:07
