@@ -1731,10 +1731,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   /**
    * Provides value input components for multiple entity update, override to supply
    * specific InputValueProvider implementations for properties.
-   * Remember to return with a call to super.getInputManager().
-   * @param property the property for which to get the InputManager
+   * Remember to return with a call to super.getInputProviderInputProvider().
+   * @param property the property for which to get the InputProvider
    * @param toUpdate the entities that are about to be updated
-   * @return the InputManager handling input for <code>property</code>
+   * @return the InputProvider handling input for <code>property</code>
    * @see #updateSelectedEntities
    */
   @SuppressWarnings({"UnusedDeclaration"})

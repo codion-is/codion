@@ -32,7 +32,7 @@ public class InputProviderPanel extends JPanel implements InputProvider {
   /**
    * Instantiates a new InputProviderPanel
    * @param caption the input panel caption
-   * @param inputProvider the InputManager to use
+   * @param inputProvider the InputProvider to use
    */
   public InputProviderPanel(final String caption, final InputProvider inputProvider) {
     if (inputProvider == null)

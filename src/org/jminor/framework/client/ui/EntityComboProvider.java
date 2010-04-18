@@ -10,7 +10,7 @@ import org.jminor.framework.domain.Entity;
 import javax.swing.JComboBox;
 
 /**
- * A InputManager implementation for Entity values based on a JComboBox.
+ * A InputProvider implementation for Entity values based on a JComboBox.
  * @see EntityComboBoxModel
  */
 public class EntityComboProvider extends AbstractInputProvider<Entity> {

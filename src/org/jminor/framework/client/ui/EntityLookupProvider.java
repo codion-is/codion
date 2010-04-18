@@ -8,7 +8,7 @@ import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 
 /**
- * A InputManager implementation for Entity values based on a EntityLookupField.
+ * A InputProvider implementation for Entity values based on a EntityLookupField.
  * @see EntityLookupField
  */
 public class EntityLookupProvider extends AbstractInputProvider<Entity> {

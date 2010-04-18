@@ -10,7 +10,7 @@ import org.jminor.common.ui.UiUtil;
 import javax.swing.JTextField;
 
 /**
- * A InputManager implementation for String values.
+ * A InputProvider implementation for String values.
  */
 public class TextInputProvider extends AbstractInputProvider<String> {
 
