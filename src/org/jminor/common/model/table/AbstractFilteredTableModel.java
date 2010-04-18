@@ -250,7 +250,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   /**
-   * Clears the selection and selects the entity at <code>index</code>
+   * Clears the selection and selects the item at <code>index</code>
    * @param index the index
    */
   public void setSelectedItemIndex(final int index) {
@@ -258,7 +258,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   /**
-   * Selects the entity at <code>index</code>
+   * Selects the item at <code>index</code>
    * @param index the index
    */
   public void addSelectedItemIndex(final int index) {
@@ -288,12 +288,12 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
 
   /**
    * Selects the given items
-   * @param entities the entities to select
+   * @param items the items to select
    */
-  public void setSelectedItems(final List<T> entities) {
+  public void setSelectedItems(final List<T> items) {
     final List<Integer> indexes = new ArrayList<Integer>();
-    for (final T entity : entities) {
-      final int index = viewIndexOf(entity);
+    for (final T item : items) {
+      final int index = viewIndexOf(item);
       if (index >= 0)
         indexes.add(index);
     }
@@ -368,9 +368,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
       visibleItems.addAll(hiddenItems);
       hiddenItems.clear();
       for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
-        final T entity = iterator.next();
-        if (!include(entity)) {
-          hiddenItems.add(entity);
+        final T item = iterator.next();
+        if (!include(item)) {
+          hiddenItems.add(item);
           iterator.remove();
         }
       }
@@ -412,17 +412,17 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   /**
-   * Removes the given entity from this table model
-   * @param entity the entity to remove from the model
+   * Removes the given item from this table model
+   * @param item the item to remove from the model
    */
-  public void removeItem(final T entity) {
-    int index = indexOf(entity);
+  public void removeItem(final T item) {
+    int index = indexOf(item);
     if (index >= 0) {
       visibleItems.remove(index);
       fireTableRowsDeleted(index, index);
     }
     else {
-      index = hiddenItems.indexOf(entity);
+      index = hiddenItems.indexOf(item);
       if (index >= 0)
         hiddenItems.remove(index);
     }
@@ -496,15 +496,15 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
    * @param atFront if true then the items are added at the front
    */
   protected void addItems(final List<T> items, final boolean atFront) {
-    for (final T entity : items) {
-      if (include(entity)) {
+    for (final T item : items) {
+      if (include(item)) {
         if (atFront)
-          visibleItems.add(0, entity);
+          visibleItems.add(0, item);
         else
-          visibleItems.add(entity);
+          visibleItems.add(item);
       }
       else
-        hiddenItems.add(entity);
+        hiddenItems.add(item);
     }
     fireTableDataChanged();
   }
