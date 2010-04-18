@@ -17,8 +17,6 @@ import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -224,10 +222,10 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
       final EntityDbRemoteAdapter adapter = (EntityDbRemoteAdapter) getConnection(client);
       if (inactiveOnly) {
         if (!adapter.isActive() && adapter.hasBeenInactive(getConnectionTimeout() * 1000))
-          adapter.disconnect();
+          disconnect(client.getClientID());
       }
       else
-        adapter.disconnect();
+        disconnect(client.getClientID());
     }
   }
 
@@ -260,7 +258,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
   protected void doDisconnect(final EntityDbRemote adapter) throws RemoteException {
     try {
       if (adapter.isConnected())
-        adapter.disconnect();
+        ((EntityDbRemoteAdapter) adapter).disconnect();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -269,16 +267,6 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
-    remoteAdapter.eventLogout().addListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          disconnect(client.getClientID());
-        }
-        catch (RemoteException ex) {
-          ex.printStackTrace();
-        }
-      }
-    });
     if (log.isDebugEnabled())
       log.debug("Connection added: " + client);
 

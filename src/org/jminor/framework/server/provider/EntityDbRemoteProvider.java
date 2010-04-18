@@ -60,7 +60,7 @@ public class EntityDbRemoteProvider implements EntityDbProvider {
   public void disconnect() {
     try {
       if (entityDb != null && connectionValid())
-        entityDb.disconnect();
+        server.disconnect(clientID);
       entityDb = null;
     }
     catch (Exception e) {

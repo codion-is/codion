@@ -27,6 +27,9 @@ public class EntityDbLocalProvider implements EntityDbProvider {
    */
   protected final User user;
 
+  /**
+   * The underlying database implementation
+   */
   protected final Database database;
 
   /**

@@ -35,12 +35,6 @@ public interface EntityDb {
   boolean isConnected() throws Exception;
 
   /**
-   * Logs out and disconnects
-   * @throws Exception in case of an exception
-   */
-  void disconnect() throws Exception;
-
-  /**
    * @throws Exception in case of exception
    * @return true if this db connection is valid
    */

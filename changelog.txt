@@ -1305,3 +1305,4 @@
   EntityDbRemoteServer now extends AbstractRemoteServer
   Entity.initializeEntity() renamed to initialize()
   EntityUtil.getJSONEntity() renamed to getJSONObject()
+  EntityDb.disconnect() removed, EntityDbProvider responsible for disconnecting

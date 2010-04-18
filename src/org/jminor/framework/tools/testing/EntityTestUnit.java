@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public abstract class EntityTestUnit {
 
-  private EntityDb entityDb;
+  private EntityDbProvider entityDbProvider;
   private final Map<String, Entity> referencedEntities = new HashMap<String, Entity>();
 
   public EntityTestUnit() {
@@ -44,13 +44,13 @@ public abstract class EntityTestUnit {
 
   @Before
   public void setUp() throws Exception {
-    entityDb = initializeDbConnectionProvider().getEntityDb();
+    entityDbProvider = initializeDbConnectionProvider();
   }
 
   @After
   public void tearDown() throws Exception {
-    if (entityDb != null)
-      entityDb.disconnect();
+    if (entityDbProvider != null)
+      entityDbProvider.disconnect();
   }
 
   /**
@@ -75,7 +75,7 @@ public abstract class EntityTestUnit {
    * @return the EntityDb instance used by this EntityTestUnit
    */
   protected EntityDb getEntityDb() {
-    return entityDb;
+    return entityDbProvider.getEntityDb();
   }
 
   /**

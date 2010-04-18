@@ -12,7 +12,6 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.DbConnectionPool;
-import org.jminor.common.model.Event;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
@@ -60,10 +59,6 @@ import java.util.TimerTask;
 public class EntityDbRemoteAdapter extends UnicastRemoteObject implements EntityDbRemote {
 
   private static final Logger log = Util.getLogger(EntityDbRemoteAdapter.class);
-  /**
-   * Fired when this EntityDbRemoteAdapter is logging out
-   */
-  private final Event evtLogout = new Event();
   /**
    * Contains information about the client using this connection
    */
@@ -151,28 +146,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   public boolean isConnected() throws RemoteException {
     try {
       return entityDbConnection == null ? connected : entityDbConnection.isConnected();
-    }
-    catch (Exception e) {
-      throw new RemoteException(e.getMessage(), e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  public void disconnect() throws RemoteException {
-    try {
-      if (entityDbConnection != null)
-        entityDbConnection.disconnect();
-
-      entityDbConnection = null;
-      connected = false;
-
-      try {
-        UnicastRemoteObject.unexportObject(this, true);
-      }
-      catch (NoSuchObjectException e) {
-        log.error(e);
-      }
-      evtLogout.fire();
     }
     catch (Exception e) {
       throw new RemoteException(e.getMessage(), e);
@@ -547,13 +520,6 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   }
 
   /**
-   * @return an Event fired when a logout has been performed
-   */
-  public Event eventLogout() {
-    return evtLogout;
-  }
-
-  /**
    * @return the number of connections that are active at this moment
    */
   public static int getActiveCount() {
@@ -632,6 +598,26 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         final User user = new User(username.trim(), null);
         setConnectionPoolSettings(database, ConnectionPoolSettings.getDefault(user));
       }
+    }
+  }
+
+  void disconnect() throws RemoteException {
+    try {
+      if (entityDbConnection != null)
+        entityDbConnection.disconnect();
+
+      entityDbConnection = null;
+      connected = false;
+
+      try {
+        UnicastRemoteObject.unexportObject(this, true);
+      }
+      catch (NoSuchObjectException e) {
+        log.error(e);
+      }
+    }
+    catch (Exception e) {
+      throw new RemoteException(e.getMessage(), e);
     }
   }
 
