@@ -107,7 +107,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       public void run() {
         RequestCounter.updateRequestsPerSecond();
       }
-    }, new Date(), 15000);
+    }, new Date(), 2500);
   }
 
   /**
@@ -841,7 +841,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     static void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - requestsPerSecondTime)/1000;
-      if (seconds > 5) {
+      if (seconds > 0) {
         requestsPerSecond = (int) ((double) requestsPerSecondCounter/seconds);
         warningTimeExceededPerSecond = (int) ((double) warningTimeExceededCounter/seconds);
         warningTimeExceededCounter = 0;
