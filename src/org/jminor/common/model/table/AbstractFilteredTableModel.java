@@ -81,29 +81,6 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     bindEventsInternal();
   }
 
-  private void bindEventsInternal() {
-    final List<T> selectedItems = new ArrayList<T>();
-    addTableModelListener(new TableModelListener() {
-      public void tableChanged(TableModelEvent event) {
-        evtTableDataChanged.fire();
-      }
-    });
-    tableSorter.eventBeforeSort().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        isSorting = true;
-        selectedItems.clear();
-        selectedItems.addAll(getSelectedItems());
-      }
-    });
-    tableSorter.eventAfterSort().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        setSelectedItems(selectedItems);
-        selectedItems.clear();
-        isSorting = false;
-      }
-    });
-  }
-
   public List<T> getVisibleItems() {
     return new ArrayList<T>(visibleItems);
   }
@@ -541,6 +518,29 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   }
 
   protected abstract TableColumnModel initializeTableColumnModel(final String tableIdentifier);
+
+  private void bindEventsInternal() {
+    final List<T> selectedItems = new ArrayList<T>();
+    addTableModelListener(new TableModelListener() {
+      public void tableChanged(TableModelEvent event) {
+        evtTableDataChanged.fire();
+      }
+    });
+    tableSorter.eventBeforeSort().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        isSorting = true;
+        selectedItems.clear();
+        selectedItems.addAll(getSelectedItems());
+      }
+    });
+    tableSorter.eventAfterSort().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent event) {
+        setSelectedItems(selectedItems);
+        selectedItems.clear();
+        isSorting = false;
+      }
+    });
+  }
 
   class SelectionModel extends DefaultListSelectionModel {
 
