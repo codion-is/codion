@@ -535,9 +535,9 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
     });
     tableSorter.eventAfterSort().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
+        isSorting = false;
         setSelectedItems(selectedItems);
         selectedItems.clear();
-        isSorting = false;
       }
     });
   }
