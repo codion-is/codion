@@ -525,17 +525,17 @@
           the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="libraries">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -script ${basedir}/resources/db/scripts/create_h2_db.sql -showResults"/>
+      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${basedir}/resources/db/scripts/create_h2_db.sql"/>
     </java>
   </target>
 
-  <!--<target name="recreate_derby_db"-->
-          <!--description="Recreates the demo derby database in case it is not already available. The demo database includes-->
-          <!--the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">-->
-    <!--<delete dir="${db.derby.dir}"/>-->
-    <!--<java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">-->
-      <!--<sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>-->
-      <!--<arg value="${db.sql.dir}/create_derby_db.sql"/>-->
-    <!--</java>-->
-  <!--</target>-->
+  <target name="recreate_derby_db"
+          description="Recreates the demo derby database in case it is not already available. The demo database includes
+          the EmpDept schema as well as the Petstore schema, used by unit tests and demo applications">
+    <delete dir="${db.derby.dir}"/>
+    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
+      <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>
+      <arg value="${db.sql.dir}/create_derby_db.sql"/>
+    </java>
+  </target>
 </project>

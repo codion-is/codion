@@ -1309,3 +1309,5 @@
   AbstractFilteredTableModel refactored from EntityTableModel, added to common.ui.table
   AbstractFilteredTableModel.tableColumnModel field renamed to columnModel
   EntityTableSearchModel.tableColumnModel field renamed to columnModel
+0.5.4
+  Chinook demo added
