@@ -17,7 +17,7 @@ INSERT INTO Chinook.Genre (GenreId, Name) VALUES (16, 'World');
 INSERT INTO Chinook.Genre (GenreId, Name) VALUES (17, 'Hip Hop/Rap');
 INSERT INTO Chinook.Genre (GenreId, Name) VALUES (18, 'Science Fiction');
 INSERT INTO Chinook.Genre (GenreId, Name) VALUES (19, 'TV Shows');
-INSERT INTO Chinook.Genre (GenreId, Name) VALUES (20, 'Sci Fi  Fantasy');
+INSERT INTO Chinook.Genre (GenreId, Name) VALUES (20, 'Sci Fi/Fantasy');
 INSERT INTO Chinook.Genre (GenreId, Name) VALUES (21, 'Drama');
 INSERT INTO Chinook.Genre (GenreId, Name) VALUES (22, 'Comedy');
 INSERT INTO Chinook.Genre (GenreId, Name) VALUES (23, 'Alternative');
