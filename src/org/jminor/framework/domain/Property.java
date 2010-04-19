@@ -92,10 +92,10 @@ public class Property implements Serializable {
   /**
    * The maximum length of the data
    */
-  private int maxLength = 0;
+  private int maxLength = -1;
 
   /**
-   * The maximum number of fraction digits to show for this property.
+   * The maximum number of fraction digits for this property.
    * Only applicable to DOUBLE properties
    */
   private int maximumFractionDigits = -1;
@@ -348,7 +348,7 @@ public class Property implements Serializable {
   }
 
   /**
-   * @return the maximum length of this property value
+   * @return the maximum length of this property value, -1 is returned if the max length is undefined
    */
   public int getMaxLength() {
     return maxLength;
@@ -381,6 +381,8 @@ public class Property implements Serializable {
 
   /**
    * Sets the maximum allowed value for this property, only applicable to numerical properties
+   * @param max the maximum allowed value
+   * @return this Property instance
    */
   public Property setMax(final double max) {
     this.max = max;
@@ -397,6 +399,8 @@ public class Property implements Serializable {
 
   /**
    * Sets the minimum allowed value for this property, only applicable to numerical properties
+   * @param min the minimum allowed value
+   * @return this Property instance
    */
   public Property setMin(final double min) {
     this.min = min;

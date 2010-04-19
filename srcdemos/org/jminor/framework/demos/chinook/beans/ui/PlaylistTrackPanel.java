@@ -7,6 +7,10 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
+import org.jminor.framework.demos.chinook.domain.Chinook;
+
+import javax.swing.JComboBox;
+import java.awt.GridLayout;
 
 /**
  * User: Björn Darri
@@ -19,7 +23,18 @@ public class PlaylistTrackPanel extends EntityPanel {
     super(model, "Playlist tracks");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
-    return null;
+    return new EntityEditPanel(editModel) {
+      @Override
+      protected void initializeUI() {
+        setLayout(new GridLayout(2, 1, 5, 5));
+        final JComboBox boxPlaylist = createEntityComboBox(Chinook.PLAYLISTTRACK_PLAYLISTID_FK);
+        setDefaultFocusComponent(boxPlaylist);
+        add(createPropertyPanel(Chinook.PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
+        add(createPropertyPanel(Chinook.PLAYLISTTRACK_TRACKID_FK,
+                createEntityLookupField(Chinook.PLAYLISTTRACK_TRACKID_FK, Chinook.TRACK_NAME)));
+      }
+    };
   }
 }

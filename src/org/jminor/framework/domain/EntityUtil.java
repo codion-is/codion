@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.ValueProvider;
 
@@ -12,16 +13,7 @@ import org.json.JSONObject;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A static utility class.
@@ -326,6 +318,15 @@ public class EntityUtil {
     return entity;
   }
 
+  public static Entity randomize(final Entity entity, final boolean includePrimaryKey, final Map<String, Entity> referenceEntities) {
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), includePrimaryKey, false, true)) {
+      if (!property.hasParentProperty())
+        entity.setValue(property, getRandomValue(property, referenceEntities));
+    }
+
+    return entity;
+  }
+
   public static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
     if (property instanceof Property.ForeignKeyProperty) {
       final String referenceEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
@@ -338,12 +339,18 @@ public class EntityUtil {
         case CHAR:
           return (char) random.nextInt();
         case DATE:
-          return new Date();
+          return DateUtil.floorDate(new Date());
+        case TIMESTAMP:
+          return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
         case DOUBLE:
           double min = property.getMin() == null ? -10000000 : property.getMin();
           double max = property.getMax() == null ? 10000000 : property.getMax();
           //Min + (int)(Math.random() * ((Max - Min) + 1))
-          return min + (random.nextDouble() * ((max - min) + 1));
+          final double ret = min + (random.nextDouble() * ((max - min) + 1));
+          if (property.getMaximumFractionDigits() > 0)
+            return Util.roundDouble(ret, property.getMaximumFractionDigits());
+          else
+            return ret;
         case INT: {
           min = property.getMin() == null ? -10000000 : property.getMin();
           max = property.getMax() == null ? 10000000 : property.getMax();
@@ -351,9 +358,7 @@ public class EntityUtil {
           return (int) (min + (random.nextDouble() * ((max - min) + 1)));
         }
         case STRING:
-          return Util.createRandomString(1, property.getMaxLength());
-        case TIMESTAMP:
-          return new Timestamp(System.currentTimeMillis());
+          return Util.createRandomString(1, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
       }
     }
 

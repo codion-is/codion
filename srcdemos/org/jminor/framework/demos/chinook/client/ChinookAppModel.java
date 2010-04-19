@@ -11,6 +11,7 @@ import org.jminor.framework.demos.chinook.beans.AlbumModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import org.jminor.framework.demos.chinook.beans.EmployeeModel;
 import org.jminor.framework.demos.chinook.beans.GenreModel;
+import org.jminor.framework.demos.chinook.beans.PlaylistModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import java.util.Arrays;
@@ -26,12 +27,14 @@ public class ChinookAppModel extends EntityApplicationModel {
   public ChinookAppModel(final User user) {
     super(user, ChinookAppModel.class.getSimpleName());
   }
-  
+
+  @Override
   protected List<? extends EntityModel> initializeMainApplicationModels(EntityDbProvider dbProvider) {
     return Arrays.asList(new GenreModel(getDbProvider()), new CustomerModel(getDbProvider()),
-            new AlbumModel(getDbProvider()), new EmployeeModel(getDbProvider()));
+            new AlbumModel(getDbProvider()), new EmployeeModel(getDbProvider()), new PlaylistModel(getDbProvider()));
   }
 
+  @Override
   protected void loadDomainModel() {
     new Chinook();
   }

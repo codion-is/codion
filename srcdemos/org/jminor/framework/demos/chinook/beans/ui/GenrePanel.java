@@ -24,6 +24,7 @@ public class GenrePanel extends EntityPanel {
     super(model, "Genres");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
     return null;
   }

@@ -76,8 +76,8 @@ public class EntityEditModelTest {
 
     final Double originalCommission = (Double) editModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 1500.5;
-    final Timestamp originalHiredate = (Timestamp) editModel.getValue(EmpDept.EMPLOYEE_HIREDATE);
-    final Timestamp hiredate = new Timestamp(System.currentTimeMillis());
+    final Date originalHiredate = (Date) editModel.getValue(EmpDept.EMPLOYEE_HIREDATE);
+    final Date hiredate = new Date();
     final String originalName = (String) editModel.getValue(EmpDept.EMPLOYEE_NAME);
     final String name = "Mr. Mr";
 

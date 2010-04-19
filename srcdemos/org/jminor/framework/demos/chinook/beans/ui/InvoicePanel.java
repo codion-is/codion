@@ -24,6 +24,7 @@ public class InvoicePanel extends EntityPanel {
     super(model, "Invoices");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
     return null;
   }

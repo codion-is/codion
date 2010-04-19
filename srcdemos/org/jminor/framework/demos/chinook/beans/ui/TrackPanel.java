@@ -19,6 +19,7 @@ public class TrackPanel extends EntityPanel {
     super(model, "Tracks");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
     return null;
   }

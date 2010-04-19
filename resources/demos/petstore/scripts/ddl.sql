@@ -25,8 +25,8 @@ CREATE TABLE petstore.Address (
  city VARCHAR(55) NOT NULL,
  state VARCHAR(25) NOT NULL,
  zip INTEGER NOT NULL,
- latitude DECIMAL(14,10) NOT NULL,
- longitude DECIMAL(14,10) NOT NULL,
+ latitude DECIMAL(14,2) NOT NULL,
+ longitude DECIMAL(14,2) NOT NULL,
  primary key (addressid)
 );
 

@@ -21,10 +21,11 @@ import java.util.List;
 public class EmployeePanel extends EntityPanel {
 
   public EmployeePanel(final EntityModel model) {
-    super(model, "Employees");
+    super(model, "Employees", true, false, false, HIDDEN);
   }
 
-  protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
+  @Override
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;
   }
 

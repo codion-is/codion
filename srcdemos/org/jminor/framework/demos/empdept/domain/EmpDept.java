@@ -79,7 +79,7 @@ public class EmpDept {
             new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME)
             .setIdSource(IdSource.NONE)
-            .setStringProvider(new StringProvider(DEPARTMENT_NAME)));
+            .setStringProvider(new StringProvider<String, Object>(DEPARTMENT_NAME)));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
@@ -92,9 +92,9 @@ public class EmpDept {
             new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB))
                     .setMaxLength(9),
             new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY))
-                    .setNullable(false).setMin(1000).setMax(10000),
+                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION))
-                    .setMin(100).setMax(2000),
+                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
             new Property(EMPLOYEE_HIREDATE, Type.DATE, getString(EMPLOYEE_HIREDATE))
@@ -104,7 +104,7 @@ public class EmpDept {
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
-            .setStringProvider(new StringProvider(EMPLOYEE_NAME)));
+            .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_NAME)));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
     Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {

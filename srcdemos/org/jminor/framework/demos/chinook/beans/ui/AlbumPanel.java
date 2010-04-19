@@ -24,6 +24,7 @@ public class AlbumPanel extends EntityPanel {
     super(model, "Albums");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
     return null;
   }

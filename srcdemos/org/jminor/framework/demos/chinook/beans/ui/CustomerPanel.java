@@ -24,6 +24,7 @@ public class CustomerPanel extends EntityPanel {
     super(model, "Customers");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
     return null;
   }

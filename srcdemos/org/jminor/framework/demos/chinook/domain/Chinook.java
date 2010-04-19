@@ -114,16 +114,18 @@ public class Chinook {
                     .setMaxLength(160),
             new Property.ForeignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
                     new Property(ALBUM_ARTISTID))
-                    .setNullable(false)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
-            .setStringProvider(new StringProvider<String, Object>(ALBUM_TITLE)));
+                    .setNullable(false))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setStringProvider(new StringProvider<String, Object>(ALBUM_TITLE))
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_ARTIST,
             new Property.PrimaryKeyProperty(ARTIST_ARTISTID),
             new Property(ARTIST_NAME, Type.STRING, "Name")
-                    .setMaxLength(120)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
-            .setStringProvider(new StringProvider<String, Object>(ARTIST_NAME)));
+                    .setMaxLength(120))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setStringProvider(new StringProvider<String, Object>(ARTIST_NAME))
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_CUSTOMER,
             new Property.PrimaryKeyProperty(CUSTOMER_CUSTOMERID),
@@ -153,10 +155,11 @@ public class Chinook {
                     .setNullable(false)
                     .setMaxLength(60),
             new Property.ForeignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
-                    new Property(CUSTOMER_SUPPORTREPID))
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
+                    new Property(CUSTOMER_SUPPORTREPID)))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(CUSTOMER_LASTNAME)
-            .addText(", ").addValue(CUSTOMER_FIRSTNAME)));
+            .addText(", ").addValue(CUSTOMER_FIRSTNAME))
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE,
             new Property.PrimaryKeyProperty(EMPLOYEE_EMPLOYEEID),
@@ -187,16 +190,16 @@ public class Chinook {
             new Property(EMPLOYEE_FAX, Type.STRING, "Fax")
                     .setMaxLength(24),
             new Property(EMPLOYEE_EMAIL, Type.STRING, "Email")
-                    .setMaxLength(60)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
+                    .setMaxLength(60))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_LASTNAME)
             .addText(", ").addValue(EMPLOYEE_FIRSTNAME)));
 
     EntityRepository.add(new EntityDefinition(T_GENRE,
             new Property.PrimaryKeyProperty(GENRE_GENREID),
             new Property(GENRE_NAME, Type.STRING, "Name")
-                    .setMaxLength(120)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
+                    .setMaxLength(120))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(GENRE_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_INVOICE,
@@ -217,9 +220,10 @@ public class Chinook {
             new Property(INVOICE_BILLINGPOSTALCODE, Type.STRING, "Billing postal code")
                     .setMaxLength(10),
             new Property(INVOICE_TOTAL, Type.DOUBLE, "Total")
-                    .setNullable(false)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
-            .setStringProvider(new StringProvider<String, Object>(INVOICE_INVOICEID)));
+                    .setNullable(false))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setStringProvider(new StringProvider<String, Object>(INVOICE_INVOICEID))
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_INVOICELINE,
             new Property.PrimaryKeyProperty(INVOICELINE_INVOICELINEID),
@@ -232,31 +236,34 @@ public class Chinook {
             new Property(INVOICELINE_UNITPRICE, Type.DOUBLE, "Price")
                     .setNullable(false),
             new Property(INVOICELINE_QUANTITY, Type.INT, "Quantity")
-                    .setNullable(false)
-    ).setIdSource(IdSource.MAX_PLUS_ONE));
+                    .setNullable(false))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_MEDIATYPE,
             new Property.PrimaryKeyProperty(MEDIATYPE_MEDIATYPEID),
             new Property(MEDIATYPE_NAME, Type.STRING, "Name")
-                    .setMaxLength(120)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
+                    .setMaxLength(120))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(MEDIATYPE_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_PLAYLIST,
             new Property.PrimaryKeyProperty(PLAYLIST_PLAYLISTID),
             new Property(PLAYLIST_NAME, Type.STRING, "Name")
-                    .setMaxLength(120)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
-            .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME)));
+                    .setMaxLength(120))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME))
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
             new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID)),
             new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
-                            .setIndex(1))
-    ).setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
-            .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK)));
+                            .setIndex(1)))
+            .setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
+            .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
+            .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_TRACK,
             new Property.PrimaryKeyProperty(TRACK_TRACKID),
@@ -276,8 +283,9 @@ public class Chinook {
                     .setNullable(false),
             new Property(TRACK_BYTES, Type.INT, "Bytes"),
             new Property(TRACK_UNITPRICE, Type.DOUBLE, "Price")
-                    .setNullable(false)
-    ).setIdSource(IdSource.MAX_PLUS_ONE)
-            .setStringProvider(new StringProvider<String, Object>(TRACK_NAME)));
+                    .setNullable(false))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
+            .setLargeDataset(true));
   }
 }

@@ -1311,3 +1311,6 @@
   EntityTableSearchModel.tableColumnModel field renamed to columnModel
 0.5.4
   Chinook demo added
+  EntityTestUnit bug fixed which prevented testInsert/Update/Delete being run for writable entities, duhh
+  EntityUtil.randomize() added
+  EntityResultPacker now retrieves dates for date properties and timestamp for timestamp properties

@@ -133,16 +133,18 @@ public abstract class EntityTestUnit {
       getEntityDb().beginTransaction();
       initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new HashSet<String>()));
       Entity testEntity = null;
-      if (EntityRepository.isReadOnly(entityID)) {
+      if (!EntityRepository.isReadOnly(entityID)) {
         final Entity initialEntity = initializeTestEntity(entityID);
         if (initialEntity == null)
           throw new Exception("No test entity provided " + entityID);
 
         testEntity = testInsert(initialEntity);
         testUpdate(testEntity);
-        testDelete(testEntity);
       }
       testSelect(entityID, testEntity);
+      if (!EntityRepository.isReadOnly(entityID)) {
+        testDelete(testEntity);
+      }
     }
     finally {
       referencedEntities.clear();
@@ -266,6 +268,7 @@ public abstract class EntityTestUnit {
    * This method should return an instance of the entity specified by <code>entityID</code>
    * @param entityID the entityID for which to initialize an entity instance
    * @return an entity
+   * @throws Exception in case of an exception
    */
   protected Entity initializeTestEntity(final String entityID) throws Exception {
     initializeRandomReferences(entityID);
@@ -278,7 +281,7 @@ public abstract class EntityTestUnit {
    * @param testEntity the entity to modify
    */
   protected void modifyEntity(final Entity testEntity) {
-    testEntity.setAs(EntityUtil.createRandomEntity(testEntity.getEntityID(), referencedEntities));
+    EntityUtil.randomize(testEntity, false, referencedEntities);
   }
 
   /**
@@ -289,7 +292,9 @@ public abstract class EntityTestUnit {
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception {}
+  protected void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception {
+    initializeRandomReferenceEntities(referenceEntityIDs);
+  }
 
   protected void initializeRandomReferenceEntities(final Collection<String> referecenEntityIDs) throws Exception {
     for (final String entityID : referecenEntityIDs) {

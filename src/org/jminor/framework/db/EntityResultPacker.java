@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -112,6 +113,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
       case DOUBLE:
         return getDouble(resultSet, selectIndex);
       case DATE:
+        return getDate(resultSet, selectIndex);
       case TIMESTAMP:
         return getTimestamp(resultSet, selectIndex);
       case STRING:
@@ -143,6 +145,10 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     final String string = resultSet.getString(columnIndex);
 
     return string == null ? "" : string;
+  }
+
+  private Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return resultSet.getDate(columnIndex);
   }
 
   private Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {

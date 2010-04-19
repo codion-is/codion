@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.testing;
 
+import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.tools.testing.EntityTestUnit;
-import org.jminor.common.model.User;
-import org.jminor.common.model.CancelException;
 
 import org.junit.Test;
 
@@ -77,6 +77,7 @@ public class ChinookTest extends EntityTestUnit {
     return User.UNIT_TEST_USER;
   }
 
+  @Override
   protected void loadDomainModel() {
     new Chinook();
   }

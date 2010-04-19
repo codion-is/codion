@@ -15,10 +15,14 @@ import org.jminor.framework.demos.chinook.beans.AlbumModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import org.jminor.framework.demos.chinook.beans.EmployeeModel;
 import org.jminor.framework.demos.chinook.beans.GenreModel;
+import org.jminor.framework.demos.chinook.beans.MediaTypeModel;
+import org.jminor.framework.demos.chinook.beans.PlaylistModel;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumPanel;
 import org.jminor.framework.demos.chinook.beans.ui.CustomerPanel;
 import org.jminor.framework.demos.chinook.beans.ui.EmployeePanel;
 import org.jminor.framework.demos.chinook.beans.ui.GenrePanel;
+import org.jminor.framework.demos.chinook.beans.ui.MediaTypePanel;
+import org.jminor.framework.demos.chinook.beans.ui.PlaylistPanel;
 import org.jminor.framework.demos.chinook.client.ChinookAppModel;
 
 import org.apache.log4j.Level;
@@ -34,13 +38,23 @@ import java.util.List;
  */
 public class ChinookAppPanel extends EntityApplicationPanel {
 
+  @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider(GenreModel.class, GenrePanel.class),
+    return Arrays.asList(
             new EntityPanelProvider(CustomerModel.class, CustomerPanel.class),
             new EntityPanelProvider(AlbumModel.class, AlbumPanel.class),
-            new EntityPanelProvider(EmployeeModel.class, EmployeePanel.class));
+            new EntityPanelProvider(PlaylistModel.class, PlaylistPanel.class));
   }
 
+  @Override
+  protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
+    return Arrays.asList(new EntityPanelProvider("Customers", CustomerModel.class, CustomerPanel.class),
+            new EntityPanelProvider("Genres", GenreModel.class, GenrePanel.class),
+            new EntityPanelProvider("Media types", MediaTypeModel.class, MediaTypePanel.class),
+            new EntityPanelProvider("Employees", EmployeeModel.class, EmployeePanel.class));
+  }
+
+  @Override
   protected EntityApplicationModel initializeApplicationModel(final User user) throws CancelException {
     return new ChinookAppModel(user);
   }

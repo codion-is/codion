@@ -24,6 +24,7 @@ public class MediaTypePanel extends EntityPanel {
     super(model, "Media types");
   }
 
+  @Override
   protected EntityEditPanel initializeEditPanel(EntityEditModel editModel) {
     return null;
   }
