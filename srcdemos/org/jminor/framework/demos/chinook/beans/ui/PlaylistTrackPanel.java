@@ -10,6 +10,7 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import java.awt.GridLayout;
 
 /**
@@ -31,9 +32,10 @@ public class PlaylistTrackPanel extends EntityPanel {
         setLayout(new GridLayout(2, 1, 5, 5));
         final JComboBox boxPlaylist = createEntityComboBox(Chinook.PLAYLISTTRACK_PLAYLISTID_FK);
         setDefaultFocusComponent(boxPlaylist);
+        final JTextField txtTrack = createEntityLookupField(Chinook.PLAYLISTTRACK_TRACKID_FK, Chinook.TRACK_NAME);
+        txtTrack.setColumns(35);
         add(createPropertyPanel(Chinook.PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
-        add(createPropertyPanel(Chinook.PLAYLISTTRACK_TRACKID_FK,
-                createEntityLookupField(Chinook.PLAYLISTTRACK_TRACKID_FK, Chinook.TRACK_NAME)));
+        add(createPropertyPanel(Chinook.PLAYLISTTRACK_TRACKID_FK, txtTrack));
       }
     };
   }

@@ -91,6 +91,8 @@ public class Chinook {
   public static final String PLAYLISTTRACK_PLAYLISTID_FK = "playlistid_fk";
   public static final String PLAYLISTTRACK_TRACKID = "trackid";
   public static final String PLAYLISTTRACK_TRACKID_FK = "trackid_fk";
+  public static final String PLAYLISTTRACK_ALBUM_DENORM = "album_denorm";
+  public static final String PLAYLISTTRACK_ARTIST_DENORM = "artist_denorm";
 
   public static final String T_TRACK = "chinook.track";
   public static final String TRACK_TRACKID = "trackid";
@@ -247,24 +249,6 @@ public class Chinook {
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(MEDIATYPE_NAME)));
 
-    EntityRepository.add(new EntityDefinition(T_PLAYLIST,
-            new Property.PrimaryKeyProperty(PLAYLIST_PLAYLISTID),
-            new Property(PLAYLIST_NAME, Type.STRING, "Name")
-                    .setMaxLength(120))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
-            .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME))
-            .setLargeDataset(true));
-
-    EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
-            new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID).setUpdatable(true)),
-            new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
-                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
-                            .setIndex(1).setUpdatable(true)))
-            .setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
-            .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
-            .setLargeDataset(true));
-
     EntityRepository.add(new EntityDefinition(T_TRACK,
             new Property.PrimaryKeyProperty(TRACK_TRACKID),
             new Property(TRACK_NAME, Type.STRING, "Name")
@@ -286,6 +270,28 @@ public class Chinook {
                     .setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
+            .setLargeDataset(true));
+
+    EntityRepository.add(new EntityDefinition(T_PLAYLIST,
+            new Property.PrimaryKeyProperty(PLAYLIST_PLAYLISTID),
+            new Property(PLAYLIST_NAME, Type.STRING, "Name")
+                    .setMaxLength(120))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME))
+            .setLargeDataset(true));
+
+    EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
+            new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
+                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID).setUpdatable(true)),
+            new Property.DenormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
+                    EntityRepository.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist"),
+            new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
+                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
+                            .setIndex(1).setUpdatable(true)),
+            new Property.DenormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
+                    EntityRepository.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album"))
+            .setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
+            .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setLargeDataset(true));
   }
 }

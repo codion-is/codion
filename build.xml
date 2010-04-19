@@ -264,6 +264,7 @@
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/petstore/"/>
       <fileset dir="${basedir}/resources/demos/schemabrowser/"/>
+      <fileset dir="${basedir}/resources/demos/chinook/"/>
     </copy>
     <chmod dir="${deploy.demos.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.demos.path}/h2db">
