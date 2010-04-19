@@ -571,6 +571,7 @@ public class Property implements Serializable {
 
     public PrimaryKeyProperty(final String propertyID, final Type propertyType, final String caption) {
       super(propertyID, propertyType, caption);
+      setUpdatable(false);
     }
 
     public int getIndex() {
@@ -580,7 +581,6 @@ public class Property implements Serializable {
     public PrimaryKeyProperty setIndex(final int primaryKeyIndex) {
       if (primaryKeyIndex < 0)
         throw new IllegalArgumentException("Primary key index must be at least 0");
-      setUpdatable(false);
       this.index = primaryKeyIndex;
       return this;
     }

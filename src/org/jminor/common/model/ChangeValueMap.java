@@ -48,6 +48,11 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
   void revertValue(final T key);
 
   /**
+   * Reverts all value changes that have been made
+   */
+  void revertAll();
+
+  /**
    * Returns an ActionEvent describing the value change.
    * @param key the key of the value being changed
    * @param newValue the new value

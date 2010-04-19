@@ -257,10 +257,10 @@ public class Chinook {
 
     EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
             new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID)),
+                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID).setUpdatable(true)),
             new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
-                            .setIndex(1)))
+                            .setIndex(1).setUpdatable(true)))
             .setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
             .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setLargeDataset(true));

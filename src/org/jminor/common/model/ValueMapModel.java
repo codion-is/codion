@@ -157,6 +157,12 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
   }
 
   /** {@inheritDoc} */
+  public void revertAll() {
+    for (final T key : values.keySet())
+      revertValue(key);
+  }
+
+  /** {@inheritDoc} */
   public ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization) {
     return new ActionEvent(this, 0, key.toString());
   }

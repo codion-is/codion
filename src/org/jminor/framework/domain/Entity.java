@@ -342,6 +342,21 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     return value == null ? "" : dateFormat.format(value);
   }
 
+  @Override
+  public void revertValue(final String key) {
+    final Property property = getProperty(key);
+    if (property instanceof Property.PrimaryKeyProperty)
+      getPrimaryKey().revertValue(key);
+    else
+      super.revertValue(key);
+  }
+
+  @Override
+  public void revertAll() {
+    getPrimaryKey().revertAll();
+    super.revertAll();
+  }
+
   /**
    * @return true if the this entity instance has a null primary key
    */
@@ -420,9 +435,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
    */
   public Entity getOriginalCopy() {
     final Entity copy = new Entity(getPrimaryKey().getOriginalCopy());
-    if (originalValues != null)
-      for (final Map.Entry<String, Object> entry : originalValues.entrySet())
-        copy.values.put(entry.getKey(), copyPropertyValue(entry.getValue()));
+    copy.revertAll();
 
     return copy;
   }
@@ -433,7 +446,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
    * @param sourceEntity the entity to copy
    */
   public void setAs(final Entity sourceEntity) {
-    primaryKey.setValue(sourceEntity.getPrimaryKey());
+    primaryKey.setAs(sourceEntity.getPrimaryKey());
     values.clear();
     if (originalValues != null)
       originalValues.clear();
@@ -857,7 +870,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
      */
     public Key getCopy() {
       final Key copy = new Key(entityID);
-      copy.setValue(this);
+      copy.setAs(this);
 
       return copy;
     }
@@ -875,12 +888,8 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
      */
     @Override
     public boolean equals(final Object object) {
-      final boolean equal = this == object || object instanceof Key && ((Key) object).entityID.equals(entityID)
+      return this == object || object instanceof Key && ((Key) object).entityID.equals(entityID)
               && object.hashCode() == hashCode();
-//      if (!equal)
-//        System.out.println("keys not equal: " + this + " - " + object);
-
-      return equal;
     }
 
     /**
@@ -934,24 +943,26 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
      * Copies the values from key to this entity key
      * @param key the key to copy
      */
-    void setValue(final Key key) {
-      values.clear();
-      hashCode = -Integer.MAX_VALUE;
+    void setAs(final Key key) {
+      if (key != null && !key.getEntityID().equals(getEntityID()))
+        throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());
+
       hashCodeDirty = true;
+      values.clear();
+      if (originalValues != null)
+        originalValues.clear();
       if (key != null) {
-        if (originalValues != null)
-          originalValues.clear();
-        values.clear();
-        for (final Property.PrimaryKeyProperty property : getProperties()) {
-          final Object value = copyPropertyValue(key.getValue(property.getPropertyID()));
-          values.put(property.getPropertyID(), value);
-          eventPropertyChanged().fire(initValueChangeEvent(this, getEntityID(), property, value, null, true));
+        for (final String entryKey : key.values.keySet())
+          values.put(entryKey, copyPropertyValue(key.values.get(entryKey)));
+        if (key.originalValues != null) {
+          if (originalValues == null)
+            originalValues = new HashMap<String, Object>();
+          for (final String entryKey : key.originalValues.keySet())
+            originalValues.put(entryKey, copyPropertyValue(key.originalValues.get(entryKey)));
         }
-        if (stModified != null)
-          stModified.setActive(false);
-        hashCode = key.hashCode;
-        hashCodeDirty = key.hashCodeDirty;
       }
+      if (stModified != null)
+        stModified.setActive(isModified());
     }
 
     @Override
@@ -1019,5 +1030,4 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
       return null;
     }
   }
-
 }
