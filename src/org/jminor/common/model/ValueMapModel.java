@@ -171,9 +171,18 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
     if (values.size() != otherMap.values.size())
       return false;
 
-    for (final T key : otherMap.values.keySet())
-      if (!containsValue(key) || !Util.equal(otherMap.getValue(key), getValue(key)))
+    for (final T key : otherMap.values.keySet()) {
+      if (!containsValue(key)) {
+        System.out.println("Missing key: " + key);
         return false;
+      }
+      else if (!Util.equal(otherMap.getValue(key), getValue(key))) {
+        System.out.println("Not equal key: " + key);
+        System.out.println(otherMap.getValue(key));
+        System.out.println(getValue(key));
+        return false;
+      }
+    }
 
     return true;
   }

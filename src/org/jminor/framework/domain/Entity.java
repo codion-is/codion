@@ -419,7 +419,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
    * @return a deep copy of this entity in its original state
    */
   public Entity getOriginalCopy() {
-    final Entity copy = getCopy();
+    final Entity copy = new Entity(getPrimaryKey().getOriginalCopy());
     if (originalValues != null)
       for (final Map.Entry<String, Object> entry : originalValues.entrySet())
         copy.values.put(entry.getKey(), copyPropertyValue(entry.getValue()));
@@ -430,7 +430,6 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
   /**
    * Makes this entity identical to <code>sourceEntity</code>.
    * Reference entity values, which are mutable, are deep copied with getCopy()
-   * Original property values, if any are not deep-copied
    * @param sourceEntity the entity to copy
    */
   public void setAs(final Entity sourceEntity) {
@@ -444,7 +443,8 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     if (sourceEntity.originalValues != null && !sourceEntity.originalValues.isEmpty()) {
       if (originalValues == null)
         originalValues = new HashMap<String, Object>();
-      originalValues.putAll(sourceEntity.originalValues);
+      for (final String key : sourceEntity.originalValues.keySet())
+        originalValues.put(key, copyPropertyValue(sourceEntity.originalValues.get(key)));
     }
     for (final Property property : EntityRepository.getProperties(getEntityID(), true))
       eventPropertyChanged().fire(getValueChangeEvent(property.getPropertyID(), getRawValue(property.getPropertyID()), null, true));
@@ -536,7 +536,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
    * @return a copy of <code>value</code>
    */
   public static Object copyPropertyValue(final Object value) {
-    return value instanceof Entity ? ((Entity)value).getCopy() : value;
+    return value instanceof Entity ? ((Entity) value).getCopy() : value;
   }
 
   /**
@@ -855,7 +855,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     /**
      * @return an identical deep copy of this entity key
      */
-    public Key copy() {
+    public Key getCopy() {
       final Key copy = new Key(entityID);
       copy.setValue(this);
 
@@ -875,8 +875,12 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
      */
     @Override
     public boolean equals(final Object object) {
-      return this == object || object instanceof Key && ((Key) object).entityID.equals(entityID)
+      final boolean equal = this == object || object instanceof Key && ((Key) object).entityID.equals(entityID)
               && object.hashCode() == hashCode();
+//      if (!equal)
+//        System.out.println("keys not equal: " + this + " - " + object);
+
+      return equal;
     }
 
     /**
@@ -921,7 +925,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     public static List<Key> copy(final List<Key> entityKeys) {
       final List<Key> copies = new ArrayList<Key>(entityKeys.size());
       for (final Key key : entityKeys)
-        copies.add(key.copy());
+        copies.add(key.getCopy());
 
       return copies;
     }
@@ -961,6 +965,15 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
      */
     private boolean isSingleIntegerKey() {
       return getPropertyCount() == 1 && getFirstKeyProperty().getPropertyType() == Type.INT;
+    }
+
+    public Key getOriginalCopy() {
+      final Key copy = getCopy();
+      if (originalValues != null)
+        for (final String key : originalValues.keySet())
+          copy.setValue(key, copyPropertyValue(originalValues.get(key)));
+
+      return copy;
     }
   }
 
