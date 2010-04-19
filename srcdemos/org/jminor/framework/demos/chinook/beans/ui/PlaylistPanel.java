@@ -12,7 +12,7 @@ import org.jminor.framework.demos.chinook.beans.PlaylistTrackModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import javax.swing.JTextField;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class PlaylistPanel extends EntityPanel {
     return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
-        setLayout(new FlowLayout(FlowLayout.LEADING));
+        setLayout(new GridLayout(1, 1, 5, 5));
         final JTextField txtName = createTextField(Chinook.PLAYLIST_NAME);
         txtName.setColumns(12);
         setDefaultFocusComponent(txtName);
