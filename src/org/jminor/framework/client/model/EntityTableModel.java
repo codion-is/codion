@@ -550,6 +550,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     return evtRefreshStarted;
   }
 
+  @Override
   protected TableColumnModel initializeColumnModel(final String tableIdentifier) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     int i = 0;
@@ -563,6 +564,14 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
     }
 
     return columnModel;
+  }
+
+  /**
+   * @param entityID the ID of the entity the table is based on
+   * @return a list of Properties that should be used as basis for this table models column model
+   */
+  protected List<Property> initializeColumnProperties(final String entityID) {
+    return new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID));
   }
 
   /**
@@ -609,13 +618,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    */
   protected Criteria getQueryCriteria() {
     return tableSearchModel.getSearchCriteria();
-  }
-
-  /**
-   * @return a list of Properties that should be used as basis for this table models column model
-   */
-  protected List<Property> initializeColumnProperties(final String entityID) {
-    return new ArrayList<Property>(EntityRepository.getVisibleProperties(entityID));
   }
 
   /**

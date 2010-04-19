@@ -16,7 +16,7 @@ public class EntityListModelTest {
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
     model.refresh();
     assertEquals(4, model.getSize());
-    model.setSelectCriteria(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno <> 10"), EmpDept.DEPARTMENT_ID));
+    model.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno <> 10"), EmpDept.DEPARTMENT_ID));
     model.refresh();
     assertEquals(3, model.getSize());
     assertEquals(3, model.getAllEntities().size());

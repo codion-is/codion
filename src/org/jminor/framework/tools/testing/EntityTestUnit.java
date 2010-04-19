@@ -19,14 +19,14 @@ import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
+import org.json.JSONException;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -131,7 +131,7 @@ public abstract class EntityTestUnit {
   protected void testEntity(final String entityID) throws Exception {
     try {
       getEntityDb().beginTransaction();
-      initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new HashSet<String>()));
+      initializeReferenceEntities(addAllReferencedEntityIDs(entityID, new ArrayList<String>()));
       Entity testEntity = null;
       if (!EntityRepository.isReadOnly(entityID)) {
         final Entity initialEntity = initializeTestEntity(entityID);
@@ -187,7 +187,7 @@ public abstract class EntityTestUnit {
       if (testEntity != null) {
         final Entity tmp = getEntityDb().selectSingle(testEntity.getPrimaryKey());
         assertTrue("Entity of type " + testEntity.getEntityID() + " failed property value comparison",
-                testEntity.propertyValuesEqual(tmp));
+                propertyValuesEqual(testEntity, tmp));
         assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
                 testEntity.equals(tmp));
       }
@@ -271,8 +271,6 @@ public abstract class EntityTestUnit {
    * @throws Exception in case of an exception
    */
   protected Entity initializeTestEntity(final String entityID) throws Exception {
-    initializeRandomReferences(entityID);
-
     return EntityUtil.createRandomEntity(entityID, referencedEntities);
   }
 
@@ -292,32 +290,15 @@ public abstract class EntityTestUnit {
    * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void initializeReferenceEntities(final Collection<String> referenceEntityIDs) throws Exception {
+  protected void initializeReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
     initializeRandomReferenceEntities(referenceEntityIDs);
   }
 
-  protected void initializeRandomReferenceEntities(final Collection<String> referecenEntityIDs) throws Exception {
-    for (final String entityID : referecenEntityIDs) {
-      initializeRandomReferences(entityID);
+  protected void initializeRandomReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
+    for (int i = referenceEntityIDs.size() - 1; i >= 0; i--) {
+      final String entityID = referenceEntityIDs.get(i);
       setReferenceEntity(entityID, EntityUtil.createRandomEntity(entityID, referencedEntities));
     }
-  }
-
-  private void initializeRandomReferences(final String entityID) throws Exception {
-    final Collection<Property.ForeignKeyProperty> fks = EntityRepository.getForeignKeyProperties(entityID);
-    for (final Property.ForeignKeyProperty property : fks) {
-      if (!referencedEntities.containsKey(property.getReferencedEntityID())) {
-        final Entity referenceEntity = initializeRandomReferenceEntity(property.getReferencedEntityID());
-        referencedEntities.put(referenceEntity.getEntityID(), referenceEntity);
-      }
-    }
-  }
-
-  private Entity initializeRandomReferenceEntity(final String referencedEntityID) throws Exception {
-    final Entity ret = EntityUtil.createRandomEntity(referencedEntityID, referencedEntities);
-    initialize(ret);
-
-    return ret;
   }
 
   /**
@@ -348,7 +329,7 @@ public abstract class EntityTestUnit {
    * @param container the container
    * @return the container
    */
-  private Collection<String> addAllReferencedEntityIDs(final String entityID, final Collection<String> container) {
+  private List<String> addAllReferencedEntityIDs(final String entityID, final List<String> container) {
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(entityID)) {
       final String referenceEntityID = foreignKeyProperty.getReferencedEntityID();
       if (referenceEntityID != null) {
@@ -359,5 +340,22 @@ public abstract class EntityTestUnit {
       }
     }
     return container;
+  }
+
+  private boolean propertyValuesEqual(final Entity entityOne, final Entity entityTwo) {
+    final boolean equal = entityOne.propertyValuesEqual(entityTwo);
+    if (!equal) {
+      try {
+        entityOne.clearOriginalValues();
+        entityTwo.clearOriginalValues();
+        System.out.println(EntityUtil.getJSONString(Arrays.asList(entityOne)));
+        System.out.println(EntityUtil.getJSONString(Arrays.asList(entityTwo)));
+      }
+      catch (JSONException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return equal;
   }
 }

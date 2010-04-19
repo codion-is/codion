@@ -1314,3 +1314,6 @@
   EntityTestUnit bug fixed which prevented testInsert/Update/Delete being run for writable entities, duhh
   EntityUtil.randomize() added
   EntityResultPacker now retrieves dates for date properties and timestamp for timestamp properties
+  ChangeValueMap.clearOriginalValues() added
+  ValueMapModel.equals() improved
+  Launch files added for chinook demo

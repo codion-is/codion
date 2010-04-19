@@ -190,7 +190,7 @@ public class EntityLookupModel {
             || getSelectedEntities().size() > 0 && selectedAsString.equals(getSearchString());
   }
 
-  public EntitySelectCriteria getSelectCriteria() {
+  public EntitySelectCriteria getEntitySelectCriteria() {
     if (getSearchString().equals(getWildcard()))
       return new EntitySelectCriteria(getEntityID());
 
@@ -210,7 +210,7 @@ public class EntityLookupModel {
 
   public List<Entity> performQuery() {
     try {
-      return dbProvider.getEntityDb().selectMany(getSelectCriteria());
+      return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

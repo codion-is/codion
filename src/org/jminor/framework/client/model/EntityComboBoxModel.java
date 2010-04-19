@@ -71,10 +71,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   private Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
 
-  private final FilterCriteria foreignKeyFilterCriteria = new FilterCriteria() {
-    public boolean include(final Object item) {
+  private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
+    public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-        final Entity foreignKeyValue = ((Entity)item).getEntityValue(entry.getKey());
+        final Entity foreignKeyValue = item.getEntityValue(entry.getKey());
         final Set<Entity> filterValues = entry.getValue();
         if (filterValues.size() > 0 && !filterValues.contains(foreignKeyValue))
           return false;
@@ -229,7 +229,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    * Sets the criteria to use when querying data
    * @param selectCriteria the criteria
    */
-  public void setSelectCriteria(final EntitySelectCriteria selectCriteria) {
+  public void setEntitySelectCriteria(final EntitySelectCriteria selectCriteria) {
     if (selectCriteria != null && !selectCriteria.getEntityID().equals(getEntityID()))
       throw new RuntimeException("EntitySelectCriteria entityID mismatch, " + getEntityID()
               + " expected, got " + selectCriteria.getEntityID());
@@ -281,9 +281,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
   }
 
   /**
-   * @return the SelectCriteria used by this EntityComboBoxModel
+   * @return the EntitySelectCriteria used by this EntityComboBoxModel
    */
-  protected EntitySelectCriteria getSelectCriteria() {
+  protected EntitySelectCriteria getEntitySelectCriteria() {
     return selectCriteria;
   }
 
@@ -300,7 +300,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
 
   @Override
   protected boolean include(final Object object) {
-    return super.include(object) && foreignKeyFilterCriteria.include(object);
+    if (object instanceof Entity)
+      return super.include(object) && foreignKeyFilterCriteria.include((Entity) object);
+    else
+      return super.include(object);
   }
 
   /**
@@ -334,8 +337,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getSelectCriteria() != null)
-        return dbProvider.getEntityDb().selectMany(getSelectCriteria());
+      if (getEntitySelectCriteria() != null)
+        return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID());
     }

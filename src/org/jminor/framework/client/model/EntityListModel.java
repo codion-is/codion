@@ -38,7 +38,7 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
   private final boolean staticData;
 
   /**
-   * the SelectCriteria used to filter the data
+   * the EntitySelectCriteria used to filter the data
    */
   private EntitySelectCriteria selectCriteria;
 
@@ -141,14 +141,14 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    * Sets the criteria to use when querying data
    * @param selectCriteria the criteria
    */
-  public void setSelectCriteria(final EntitySelectCriteria selectCriteria) {
+  public void setEntitySelectCriteria(final EntitySelectCriteria selectCriteria) {
     this.selectCriteria = selectCriteria;
   }
 
   /**
    * @return the EntitySelectCriteria used by this EntityComboBoxModel
    */
-  protected EntitySelectCriteria getSelectCriteria() {
+  protected EntitySelectCriteria getEntitySelectCriteria() {
     return selectCriteria;
   }
 
@@ -169,8 +169,8 @@ public class EntityListModel extends AbstractListModel implements Refreshable {
    */
   protected List<Entity> performQuery() {
     try {
-      if (getSelectCriteria() != null)
-        return dbProvider.getEntityDb().selectMany(getSelectCriteria());
+      if (getEntitySelectCriteria() != null)
+        return dbProvider.getEntityDb().selectMany(getEntitySelectCriteria());
       else
         return dbProvider.getEntityDb().selectAll(getEntityID());
     }

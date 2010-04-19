@@ -37,6 +37,11 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
   boolean isModified(final T key);
 
   /**
+   * Clears the orignal values rendering the entity unmodified
+   */
+  public void clearOriginalValues();
+
+  /**
    * Reverts the value associated with the given key to its original value
    * @param key the key for which to revert the value
    */

@@ -63,7 +63,7 @@ public class EntityComboBoxModelTest {
     catch (IllegalArgumentException e) {}
 
     try {
-      comboBoxModel.setSelectCriteria(new EntitySelectCriteria(EmpDept.T_DEPARTMENT));
+      comboBoxModel.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_DEPARTMENT));
       fail("Criteria entityID mismatch");
     }
     catch (RuntimeException e) {}
@@ -90,7 +90,7 @@ public class EntityComboBoxModelTest {
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setSelectCriteria(new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria(" ename = 'CLARK'")));
+    comboBoxModel.setEntitySelectCriteria(new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria(" ename = 'CLARK'")));
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

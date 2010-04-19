@@ -37,7 +37,7 @@ public class EmployeeModel extends EntityModel {
           final EntityComboBoxModel managerModel = new EntityComboBoxModel(EmpDept.T_EMPLOYEE,
                   getDbProvider(), false, EmpDept.getString(EmpDept.NONE), true);
           //Only show the president and managers
-          managerModel.setSelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
+          managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB,
                   SearchType.LIKE, "MANAGER", "PRESIDENT"));
 
           return managerModel;
@@ -64,7 +64,7 @@ public class EmployeeModel extends EntityModel {
       public void propertyChanged(final Property.Event e) {
         //only show managers in the same department as the active entity
         if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
-          getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria() {
+          getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
             public boolean include(final Object item) {
               return item instanceof String //the item representing null
                       || (Entity.isEqual(Type.ENTITY,

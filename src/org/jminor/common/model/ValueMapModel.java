@@ -100,6 +100,15 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
   }
 
   /** {@inheritDoc} */
+  public void clearOriginalValues() {
+    if (originalValues != null)
+      originalValues.clear();
+
+    if (stModified != null)
+      stModified.setActive(isModified());
+  }
+
+  /** {@inheritDoc} */
   public V setValue(final T key, final V value) {
     final boolean initialization = !containsValue(key);
     V oldValue = null;
@@ -161,14 +170,10 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
     final ValueMapModel<T, V> otherMap = (ValueMapModel<T, V>) object;
     if (values.size() != otherMap.values.size())
       return false;
-    for (final Map.Entry<T, V> entry : otherMap.values.entrySet()) {
-      if (containsValue(entry.getKey())) {
-        if (!Util.equal(entry.getValue(), getValue(entry.getKey())))
-          return false;
-      }
-      else
+
+    for (final T key : otherMap.values.keySet())
+      if (!containsValue(key) || !Util.equal(otherMap.getValue(key), getValue(key)))
         return false;
-    }
 
     return true;
   }
