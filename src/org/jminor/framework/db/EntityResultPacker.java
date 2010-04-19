@@ -65,8 +65,9 @@ public class EntityResultPacker implements ResultPacker<Entity> {
           entity.setValue(transientProperty.getPropertyID(), null);
       }
     }
-    for (final Property property : properties)
-      if (!(property instanceof Property.ForeignKeyProperty)) {
+    for (final Property property : properties) {
+      if (!(property instanceof Property.ForeignKeyProperty)
+              && !(property instanceof Property.DenormalizedProperty)) {
         try {
           entity.setValue(property.getPropertyID(), getValue(resultSet, property));
         }
@@ -74,6 +75,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
           throw new SQLException("Unable to load property: " + property, e);
         }
       }
+    }
 
     return entity;
   }

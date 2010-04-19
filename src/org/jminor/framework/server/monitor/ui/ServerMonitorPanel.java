@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
@@ -118,7 +118,7 @@ public class ServerMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
     final JTabbedPane pane = new JTabbedPane();
-    pane.setUI(new BorderlessTabbedPaneUI());
+    pane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     pane.addTab("Performance", performancePanel);
     pane.addTab("Environment", initEnvironmentPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));

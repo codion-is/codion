@@ -4,7 +4,6 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -86,7 +85,7 @@ public class MonitorPanel extends JPanel {
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane hostPane = new JTabbedPane();
-    hostPane.setUI(new BorderlessTabbedPaneUI());
+    hostPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final HostMonitor hostMonitor : model.getHostMonitors())
       hostPane.addTab(hostMonitor.getHostName(), new HostMonitorPanel(hostMonitor));
     add(hostPane, BorderLayout.CENTER);

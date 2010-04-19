@@ -4,8 +4,8 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.ConnectionPoolMonitorPanel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.server.monitor.PoolMonitor;
 
 import javax.swing.JOptionPane;
@@ -37,7 +37,7 @@ public class PoolMonitorPanel extends JPanel {
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
-    connectionPoolPane.setUI(new BorderlessTabbedPaneUI());
+    connectionPoolPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors())
       connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolMonitorPanel(monitor));
     add(connectionPoolPane, BorderLayout.CENTER);

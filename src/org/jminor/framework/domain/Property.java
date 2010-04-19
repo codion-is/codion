@@ -503,8 +503,8 @@ public class Property implements Serializable {
   /**
    * @return the caption used when the value of this property is presented
    */
-  public String getCaption() {
-    if (caption == null && hasParentProperty())
+  public String getCaption() {//todo ugly stuff, denorm prop
+    if (caption == null && hasParentProperty() && parentProperty != null)
       return parentProperty.getCaption();
 
     return caption;
@@ -728,6 +728,11 @@ public class Property implements Serializable {
      */
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
+    }
+
+    @Override//todo ugly fix
+    public boolean hasParentProperty() {
+      return true;
     }
   }
 

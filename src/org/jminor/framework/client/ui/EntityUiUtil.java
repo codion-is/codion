@@ -44,7 +44,6 @@ import org.apache.log4j.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -335,7 +334,6 @@ public class EntityUiUtil {
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     additionalSearchCriteria, searchProperties),
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
-    lookupField.setBorder(BorderFactory.createEtchedBorder());
     new LookupPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     UiUtil.selectAllOnFocusGained(lookupField);

@@ -32,7 +32,7 @@ public class PlaylistTrackPanel extends EntityPanel {
         setLayout(new GridLayout(2, 1, 5, 5));
         final JComboBox boxPlaylist = createEntityComboBox(Chinook.PLAYLISTTRACK_PLAYLISTID_FK);
         setDefaultFocusComponent(boxPlaylist);
-        final JTextField txtTrack = createEntityLookupField(Chinook.PLAYLISTTRACK_TRACKID_FK, Chinook.TRACK_NAME);
+        final JTextField txtTrack = createEntityLookupField(Chinook.PLAYLISTTRACK_TRACKID_FK);
         txtTrack.setColumns(35);
         add(createPropertyPanel(Chinook.PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
         add(createPropertyPanel(Chinook.PLAYLISTTRACK_TRACKID_FK, txtTrack));

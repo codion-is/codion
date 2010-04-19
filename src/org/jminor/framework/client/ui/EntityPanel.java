@@ -11,7 +11,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -1380,7 +1379,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   protected JTabbedPane initializeDetailTabPane() {
     final JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
-    tabbedPane.setUI(new BorderlessTabbedPaneUI());
+    tabbedPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final EntityPanel detailPanel : detailEntityPanels)
       tabbedPane.addTab(detailPanel.getCaption(), detailPanel);
 
@@ -1986,9 +1985,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final ListIterator<Property> iterator = properties.listIterator();
     while(iterator.hasNext()) {
       final Property property = iterator.next();
-      if (property.hasParentProperty() || property instanceof Property.DenormalizedProperty ||
-              (property instanceof Property.PrimaryKeyProperty &&
-                      EntityRepository.getIdSource(getModel().getEntityID()) != IdSource.NONE))
+      if (property.hasParentProperty() || (property instanceof Property.PrimaryKeyProperty &&
+              EntityRepository.getIdSource(getModel().getEntityID()) != IdSource.NONE))
         iterator.remove();
     }
     Collections.sort(properties, new Comparator<Property>() {
@@ -2061,7 +2059,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
                                                 final EntityDbProvider dbProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
-    tabPane.setUI(new BorderlessTabbedPaneUI());
+    tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final Map.Entry<String, List<Entity>> entry : dependencies.entrySet()) {
       final List<Entity> dependantEntities = entry.getValue();
       if (dependantEntities.size() > 0)

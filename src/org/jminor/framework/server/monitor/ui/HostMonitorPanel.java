@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -41,7 +41,7 @@ public class HostMonitorPanel extends JPanel {
     setLayout(new BorderLayout(5,5));
     add(ControlProvider.createToolbar(getControls(), JToolBar.HORIZONTAL), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
-    serverPane.setUI(new BorderlessTabbedPaneUI());
+    serverPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     add(serverPane, BorderLayout.CENTER);
     refreshServerTabs();
   }

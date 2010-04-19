@@ -786,7 +786,7 @@ public class EntityEditModel {
   public Entity getDefaultEntity() {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
-      if (!property.hasParentProperty() && !(property instanceof Property.DenormalizedProperty))//these are set via their respective parent properties
+      if (!property.hasParentProperty())//these are set via their respective parent properties
         defaultEntity.setValue(property, getDefaultValue(property));
 
     return defaultEntity;
@@ -1027,7 +1027,7 @@ public class EntityEditModel {
     else
       stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
     stringBuilder.append(event.getEntityID()).append(" : ").append(event.getProperty()).append(
-            event.getProperty().hasParentProperty() ? " [fk]" : "").append("; ");
+            event.getProperty().hasParentProperty() ? " [fk/dn]" : "").append("; ");
     if (!event.isInitialization()) {
       if (event.getOldValue() != null)
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");

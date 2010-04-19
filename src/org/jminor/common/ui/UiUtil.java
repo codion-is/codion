@@ -15,6 +15,8 @@ import org.jminor.common.ui.textfield.TextFieldPlus;
 import com.toedter.calendar.JCalendar;
 
 import javax.swing.*;
+import javax.swing.plaf.TabbedPaneUI;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -393,6 +395,15 @@ public class UiUtil {
       textField = new JTextField();
 
     return textField.getPreferredSize().height;
+  }
+
+  public static TabbedPaneUI getBorderlessTabbedPaneUI() {
+    return new BasicTabbedPaneUI() {
+      @Override
+      protected Insets getContentBorderInsets(final int tabPlacement) {
+        return new Insets(2,0,0,0);
+      }
+    };
   }
 
   public static void showToolTip(final JComponent component) {

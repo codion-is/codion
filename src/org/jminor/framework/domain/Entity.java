@@ -170,6 +170,8 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     if (property instanceof Property.PrimaryKeyProperty)
       return primaryKey.setValue(key, value);
     if (property instanceof Property.DenormalizedViewProperty)
+      throw new IllegalArgumentException("Can not set the value of a denormalized view property");
+    if (property instanceof Property.DenormalizedProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized property");
     if (value != null && value instanceof Entity && value.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
@@ -434,7 +436,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
    * @return a deep copy of this entity in its original state
    */
   public Entity getOriginalCopy() {
-    final Entity copy = new Entity(getPrimaryKey().getOriginalCopy());
+    final Entity copy = getCopy();
     copy.revertAll();
 
     return copy;
@@ -668,7 +670,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
   private void setDenormalizedValues(final Entity entity, final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        setValue(denormalizedProperty.getPropertyID(),
+        super.setValue(denormalizedProperty.getPropertyID(),
                 entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
       }
     }

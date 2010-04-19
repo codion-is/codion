@@ -8,7 +8,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.ExceptionHandler;
@@ -562,7 +561,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     setLayout(new BorderLayout());
     applicationTabPane = new JTabbedPane(Configuration.getIntValue(Configuration.TAB_PLACEMENT));
     applicationTabPane.setFocusable(false);
-    applicationTabPane.setUI(new BorderlessTabbedPaneUI());
+    applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
         evtSelectedEntityPanelChanged.fire();

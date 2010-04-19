@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.ui.BorderlessTabbedPaneUI;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
@@ -46,7 +46,7 @@ public class DatabaseMonitorPanel extends JPanel {
   private void initUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane();
-    tabPane.setUI(new BorderlessTabbedPaneUI());
+    tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     tabPane.addTab("Performance", getChartPanel());
     tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.getConnectionPoolMonitor()));
     add(tabPane, BorderLayout.CENTER);
