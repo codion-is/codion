@@ -66,8 +66,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
       }
     }
     for (final Property property : properties) {
-      if (!(property instanceof Property.ForeignKeyProperty)
-              && !(property instanceof Property.DenormalizedProperty)) {
+      if (!(property instanceof Property.ForeignKeyProperty) && !property.isDenormalized()) {
         try {
           entity.setValue(property.getPropertyID(), getValue(resultSet, property));
         }

@@ -501,10 +501,18 @@ public class Property implements Serializable {
   }
 
   /**
+   * @return true if this property is a denormalized one which should get
+   * its value from a parent foreign key property
+   */
+  public boolean isDenormalized() {
+    return false;
+  }
+
+  /**
    * @return the caption used when the value of this property is presented
    */
-  public String getCaption() {//todo ugly stuff, denorm prop
-    if (caption == null && hasParentProperty() && parentProperty != null)
+  public String getCaption() {
+    if (caption == null && hasParentProperty())
       return parentProperty.getCaption();
 
     return caption;
@@ -730,8 +738,8 @@ public class Property implements Serializable {
       return denormalizedProperty;
     }
 
-    @Override//todo ugly fix
-    public boolean hasParentProperty() {
+    @Override
+    public boolean isDenormalized() {
       return true;
     }
   }
@@ -838,6 +846,11 @@ public class Property implements Serializable {
      */
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
+    }
+
+    @Override
+    public boolean isDenormalized() {
+      return true;
     }
   }
 

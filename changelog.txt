@@ -1325,3 +1325,4 @@
   BorderlessTabbedPaneUI replaced with UiUtil.getBorderlessTabbedPaneUI()
   Entity.getOriginalCopy() bug fixed
   Entity.setValue() no longer accepts values for denormalized properties, these get their values via their respective parent properties
+  Property.isDenormalized() added

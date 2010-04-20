@@ -59,6 +59,7 @@ public class Chinook {
 
   public static final String T_INVOICE = "chinook.invoice";
   public static final String INVOICE_INVOICEID = "invoiceid";
+  public static final String INVOICE_INVOICEID_AS_STRING = "invoiceid || ''";
   public static final String INVOICE_CUSTOMERID = "customerid";
   public static final String INVOICE_CUSTOMERID_FK = "customerid_fk";
   public static final String INVOICE_INVOICEDATE = "invoicedate";
@@ -266,7 +267,8 @@ public class Chinook {
             .setLargeDataset(true));
 
     EntityRepository.add(new EntityDefinition(T_INVOICE,
-            new Property.PrimaryKeyProperty(INVOICE_INVOICEID),
+            new Property.PrimaryKeyProperty(INVOICE_INVOICEID, Type.INT, "Invoice number"),
+            new Property(INVOICE_INVOICEID_AS_STRING, Type.STRING),
             new Property.ForeignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
                     new Property(INVOICE_CUSTOMERID))
                     .setNullable(false),
@@ -286,7 +288,7 @@ public class Chinook {
                     .setNullable(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(INVOICE_INVOICEID))
-            .setLargeDataset(true));
+            .setLargeDataset(true).setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING));
 
     EntityRepository.add(new EntityDefinition(T_INVOICELINE,
             new Property.PrimaryKeyProperty(INVOICELINE_INVOICELINEID),
