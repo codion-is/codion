@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.common.ui.TextInputPanel;
+import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
@@ -11,6 +12,7 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
@@ -30,7 +32,7 @@ public class TrackPanel extends EntityPanel {
     return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
-        setLayout(new GridLayout(4, 2, 5, 5));
+        setLayout(new GridLayout(5, 2, 5, 5));
         final JTextField txtAlbum = createEntityLookupField(Chinook.TRACK_ALBUMID_FK);
         txtAlbum.setColumns(18);
         setDefaultFocusComponent(txtAlbum);
@@ -46,15 +48,18 @@ public class TrackPanel extends EntityPanel {
         txtBytes.setColumns(18);
         final JTextField txtUnitPrice = createTextField(Chinook.TRACK_UNITPRICE);
         txtUnitPrice.setColumns(18);
+        final JTextField txtDuration = createTextField(Chinook.TRACK_MINUTES_SECONDS_TRANSIENT, LinkType.READ_ONLY);
 
         add(createPropertyPanel(Chinook.TRACK_ALBUMID_FK, txtAlbum));
         add(createPropertyPanel(Chinook.TRACK_NAME, txtName));
         add(createPropertyPanel(Chinook.TRACK_GENREID_FK, cmbGenre));
         add(createPropertyPanel(Chinook.TRACK_COMPOSER, txtComposer));
         add(createPropertyPanel(Chinook.TRACK_MEDIATYPEID_FK, cmbMediaType));
-        add(createPropertyPanel(Chinook.TRACK_MILLISECONDS, txtMilliseconds));
         add(createPropertyPanel(Chinook.TRACK_BYTES, txtBytes));
         add(createPropertyPanel(Chinook.TRACK_UNITPRICE, txtUnitPrice));
+        add(createPropertyPanel(Chinook.TRACK_MILLISECONDS, txtMilliseconds));
+        add(new JLabel());
+        add(createPropertyPanel(Chinook.TRACK_MINUTES_SECONDS_TRANSIENT, txtDuration));
       }
     };
   }

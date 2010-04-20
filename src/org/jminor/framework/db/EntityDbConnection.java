@@ -92,14 +92,13 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
         final IdSource idSource = EntityRepository.getIdSource(entityID);
         if (idSource.isQueried() && entity.getPrimaryKey().isNull())
-          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(), queryNewIdValue(entityID, idSource));
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty().getPropertyID(), queryNewIdValue(entityID, idSource));
 
         execute(sql = getInsertSQL(getDatabase(), entity));
 
         if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull())
-          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty(),
-                  queryInteger(getDatabase().getAutoIncrementValueSQL(
-                          EntityRepository.getEntityIdSource(entityID))));
+          entity.setValue(entity.getPrimaryKey().getFirstKeyProperty().getPropertyID(),
+                  queryInteger(getDatabase().getAutoIncrementValueSQL(EntityRepository.getEntityIdSource(entityID))));
 
         keys.add(entity.getPrimaryKey());
       }
@@ -480,7 +479,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int columnIndex = 0;
     for (final Property property : insertProperties) {
       sql.append(property.getColumnName());
-      columnValues.append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property, entity.getValue(property)));
+      columnValues.append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database, property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < insertProperties.size() - 1) {
         sql.append(", ");
         columnValues.append(", ");
@@ -508,7 +507,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     int columnIndex = 0;
     for (final Property property : properties) {
       sql.append(property.getColumnName()).append(" = ").append(ENTITY_SQL_VALUE_PROVIDER.getSQLString(database,
-              property, entity.getValue(property)));
+              property, entity.getValue(property.getPropertyID())));
       if (columnIndex++ < properties.size() - 1)
         sql.append(", ");
     }
@@ -569,8 +568,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final Collection<Property> properties = new ArrayList<Property>();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(),
             EntityRepository.getIdSource(entity.getEntityID()) != IdSource.AUTO_INCREMENT, false, true)) {
-      if (!(property instanceof Property.ForeignKeyProperty) && !entity.isValueNull(property.getPropertyID()))
+      if (!(property instanceof Property.ForeignKeyProperty) && !(property instanceof Property.TransientProperty)
+              && !entity.isValueNull(property.getPropertyID())) {
         properties.add(property);
+      }
     }
 
     return properties;

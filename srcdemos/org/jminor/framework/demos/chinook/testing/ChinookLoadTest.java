@@ -13,6 +13,7 @@ import org.jminor.framework.demos.chinook.beans.ArtistModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import org.jminor.framework.demos.chinook.beans.GenreModel;
 import org.jminor.framework.demos.chinook.beans.InvoiceModel;
+import org.jminor.framework.demos.chinook.beans.PlaylistModel;
 import org.jminor.framework.demos.chinook.client.ChinookAppModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
@@ -43,7 +44,9 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel genreModel = model.getMainApplicationModel(GenreModel.class);
+        final EntityModel genreModel = new GenreModel(model.getDbProvider());
+        genreModel.setLinkedDetailModel(genreModel.getDetailModels().get(0));
+        genreModel.refresh();
         selectRandomRow(genreModel.getTableModel());
       }
 
@@ -57,6 +60,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel customerModel = new CustomerModel(model.getDbProvider());
+        customerModel.setLinkedDetailModel(customerModel.getDetailModels().get(0));
         customerModel.getTableModel().refresh();
         selectRandomRow(customerModel.getTableModel());
         final EntityModel invoiceModel = customerModel.getDetailModel(InvoiceModel.class);
@@ -92,16 +96,10 @@ public class ChinookLoadTest extends EntityLoadTestModel {
     final EntityApplicationModel appModel = new ChinookAppModel(User.UNIT_TEST_USER);
     appModel.refreshAll();
 
-    EntityModel model = appModel.getMainApplicationModel(GenreModel.class);
+    EntityModel model = appModel.getMainApplicationModel(ArtistModel.class);
     model.setLinkedDetailModel(model.getDetailModels().get(0));
 
-    model = appModel.getMainApplicationModel(CustomerModel.class);
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
-
-    model = model.getDetailModel(InvoiceModel.class);
-    model.setLinkedDetailModel(model.getDetailModels().get(0));
-
-    model = appModel.getMainApplicationModel(AlbumModel.class);
+    model = appModel.getMainApplicationModel(PlaylistModel.class);
     model.setLinkedDetailModel(model.getDetailModels().get(0));
 
     return appModel;

@@ -251,7 +251,7 @@ public class EntityEditModel {
     final Entity copy = entity.getCopy();
     if (!includePrimaryKeyValues) {
       for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(copy.getEntityID()))
-        copy.setValue(property, null);
+        copy.setValue(property.getPropertyID(), null);
     }
 
     return copy;
@@ -513,7 +513,7 @@ public class EntityEditModel {
     if (entity.isValueNull(property.getPropertyID()))
       return;
 
-    final Double value = property.getPropertyType() == Type.DOUBLE ? (Double) entity.getValue(property)
+    final Double value = property.getPropertyType() == Type.DOUBLE ? (Double) entity.getValue(property.getPropertyID())
             : (Integer) entity.getValue(property.getPropertyID());
     if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
       throw new ValidationException(property, value, "'" + property + "' " +
@@ -787,7 +787,7 @@ public class EntityEditModel {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
-        defaultEntity.setValue(property, getDefaultValue(property));
+        defaultEntity.setValue(property.getPropertyID(), getDefaultValue(property));
 
     return defaultEntity;
   }

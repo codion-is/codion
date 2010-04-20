@@ -245,7 +245,8 @@ public class Chinook {
                     .setNullable(false),
             new Property(TRACK_MILLISECONDS, Type.INT, "Milliseconds")
                     .setNullable(false),
-            new Property.TransientProperty(TRACK_MINUTES_SECONDS_TRANSIENT, Type.STRING, "Duration"),
+            new Property.TransientProperty(TRACK_MINUTES_SECONDS_TRANSIENT, Type.STRING, "Duration")
+                    .addLinkedPropertyIDs(TRACK_MILLISECONDS),
             new Property(TRACK_BYTES, Type.INT, "Bytes"),
             new Property(TRACK_UNITPRICE, Type.DOUBLE, "Price")
                     .setNullable(false))
@@ -257,8 +258,8 @@ public class Chinook {
       @Override
       public Object getValue(final Entity entity, final Property property) {
         if (property.is(TRACK_MINUTES_SECONDS_TRANSIENT)) {
-          final int milliseconds = entity.getIntValue(TRACK_MILLISECONDS);
-          if (milliseconds <= 0)
+          final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
+          if (milliseconds == null || milliseconds <= 0)
             return "";
 
           final int seconds = ((milliseconds / 1000) % 60);
@@ -304,7 +305,8 @@ public class Chinook {
 
     EntityRepository.add(new EntityDefinition(T_INVOICE,
             new Property.PrimaryKeyProperty(INVOICE_INVOICEID, Type.INT, "Invoice number"),
-            new Property(INVOICE_INVOICEID_AS_STRING, Type.STRING),
+            new Property(INVOICE_INVOICEID_AS_STRING, Type.STRING)
+                    .setReadOnly(true),
             new Property.ForeignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
                     new Property(INVOICE_CUSTOMERID))
                     .setNullable(false),

@@ -28,7 +28,7 @@ public class StringProviderTest {
 
   @Test
   public void test() {
-    final ValueMap<String, Object> department = new ValueMapModel<String, Object>() {
+    final ValueMap<String, Object> department = new ChangeValueMapModel<String, Object>() {
       @Override
       public String toString() {
         return (String) getValue(DEPARTMENT_NAME);
@@ -43,7 +43,7 @@ public class StringProviderTest {
     department.setValue(DEPARTMENT_LOCATION, "Reykjavik");
     department.setValue(DEPARTMENT_NAME, "Sales");
 
-    final ValueMap<String, Object> employee = new ValueMapModel<String, Object>() {
+    final ValueMap<String, Object> employee = new ChangeValueMapModel<String, Object>() {
       @Override
       public ActionEvent getValueChangeEvent(String key, Object newValue, Object oldValue, boolean initialization) {
         return new ActionEvent(this, 0, "none");

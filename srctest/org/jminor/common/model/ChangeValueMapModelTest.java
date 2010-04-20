@@ -8,12 +8,12 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-public class ValueMapModelTest {
+public class ChangeValueMapModelTest {
 
   @Test
   public void test() {
     final String key = "key";
-    final ChangeValueMap<String, Integer> model = new ValueMapModel<String, Integer>();
+    final ChangeValueMap<String, Integer> model = new ChangeValueMapModel<String, Integer>();
 
     model.stateModified();
     model.eventPropertyChanged();
@@ -58,8 +58,8 @@ public class ValueMapModelTest {
 
   @Test
   public void equals() {
-    final ChangeValueMap<String, Integer> mapOne = new ValueMapModel<String, Integer>();
-    final ChangeValueMap<String, Integer> mapTwo = new ValueMapModel<String, Integer>();
+    final ChangeValueMap<String, Integer> mapOne = new ChangeValueMapModel<String, Integer>();
+    final ChangeValueMap<String, Integer> mapTwo = new ChangeValueMapModel<String, Integer>();
 
     mapOne.setValue("keyOne", 1);
     mapOne.setValue("keyTwo", 2);

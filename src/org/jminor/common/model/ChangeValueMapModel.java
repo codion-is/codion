@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A ValueMap implementation which keeps track of value modifications.
+ * A default ChangeValueMap implementation.
  */
-public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
+public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -38,7 +38,7 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
   /**
    * Instantiate a new ValueMapModel with a default size of 10.
    */
-  public ValueMapModel() {
+  public ChangeValueMapModel() {
     this(10);
   }
 
@@ -46,7 +46,7 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
    * Instantiates a new ValueMapModel with a size of <code>initialSize</code>.
    * @param initialSize the initial size
    */
-  public ValueMapModel(final int initialSize) {
+  public ChangeValueMapModel(final int initialSize) {
     values = new HashMap<T, V>(initialSize);
   }
 
@@ -129,9 +129,8 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
     }
 
     values.put(key, value);
-
     if (evtPropertyChanged != null)
-      evtPropertyChanged.fire(getValueChangeEvent(key, value, oldValue, initialization));
+      notifyValueChange(key, value, initialization, oldValue);
 
     return oldValue;
   }
@@ -145,7 +144,7 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
     if (stModified != null)
       stModified.setActive(isModified());
     if (evtPropertyChanged != null)
-      evtPropertyChanged.fire(getValueChangeEvent(key, null, value, false));
+      notifyValueChange(key, null, false, value);
 
     return value;
   }
@@ -170,27 +169,24 @@ public class ValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializable {
   @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object object) {
-    if (!(object instanceof ValueMapModel))
+    if (!(object instanceof ChangeValueMapModel))
       return false;
 
-    final ValueMapModel<T, V> otherMap = (ValueMapModel<T, V>) object;
+    final ChangeValueMapModel<T, V> otherMap = (ChangeValueMapModel<T, V>) object;
     if (values.size() != otherMap.values.size())
       return false;
 
     for (final T key : otherMap.values.keySet()) {
-      if (!containsValue(key)) {
-        System.out.println("Missing key: " + key);
-        return false;
-      }
-      else if (!Util.equal(otherMap.getValue(key), getValue(key))) {
-        System.out.println("Not equal key: " + key);
-        System.out.println(otherMap.getValue(key));
-        System.out.println(getValue(key));
+      if (!containsValue(key) || !Util.equal(otherMap.getValue(key), getValue(key))) {
         return false;
       }
     }
 
     return true;
+  }
+
+  protected void notifyValueChange(final T key, final V value, final boolean initialization, final V oldValue) {
+    evtPropertyChanged.fire(getValueChangeEvent(key, value, oldValue, initialization));
   }
 
   private void doSetOriginalValue(final T key, final V oldValue) {

@@ -10,7 +10,9 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.text.Format;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -754,6 +756,8 @@ public class Property implements Serializable {
    */
   public static class TransientProperty extends Property {
 
+    private Collection<String> linkedPropertyIDs;
+
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
@@ -796,6 +800,26 @@ public class Property implements Serializable {
     @Override
     public final String getColumnName() {
       throw new RuntimeException("Transient properties do not have column names");
+    }
+
+    /**
+     * @return the IDs of properties that trigger a change event for this property
+     */
+    public Collection<String> getLinkedPropertyIDs() {
+      return linkedPropertyIDs;
+    }
+
+    /**
+     * Adds a property change link on the property identified by <code>linkedPropertyID</code>,
+     * so that changes in that property trigger a change in this property
+     * @param linkedPropertyIDs the IDs of the properties on which to link
+     * @return this TransientProperty instance
+     */
+    public TransientProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
+      if (this.linkedPropertyIDs == null)
+        this.linkedPropertyIDs = new HashSet<String>();
+      this.linkedPropertyIDs.addAll(Arrays.asList(linkedPropertyIDs));
+      return this;
     }
   }
 

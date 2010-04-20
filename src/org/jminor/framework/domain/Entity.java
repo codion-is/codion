@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.ValueMapModel;
+import org.jminor.common.model.ChangeValueMapModel;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
  */
-public final class Entity extends ValueMapModel<String, Object> implements Serializable, Comparable<Entity> {
+public final class Entity extends ChangeValueMapModel<String, Object> implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -152,23 +152,11 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     return super.getOriginalValue(propertyID);
   }
 
-  /**
-   * Sets the value of the given property.
-   * If <code>property</code> is an instance of Property.ForeignKeyProperty, denormalized values and
-   * values comprising the foreign key are also set.
-   * @param property the property
-   * @param value the new value
-   * @return the old value
-   */
-  public Object setValue(final Property property, final Object value) {
-    return setValue(property.getPropertyID(), value);
-  }
-
   @Override
-  public Object setValue(final String key, final Object value) {
-    final Property property = getProperty(key);
+  public Object setValue(final String propertyID, final Object value) {
+    final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.setValue(key, value);
+      return primaryKey.setValue(propertyID, value);
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     if (property instanceof Property.DenormalizedProperty)
@@ -182,15 +170,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity))
       propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value);
 
-    return super.setValue(key, value);
-  }
-
-  /**
-   * @param property the property for which to retrieve the value
-   * @return the value of the <code>property</code>
-   */
-  public Object getValue(final Property property) {
-    return getValue(property.getPropertyID());//todo
+    return super.setValue(propertyID, value);
   }
 
   /**
@@ -633,6 +613,16 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
     return new Property.Event(source, entityID, property, newValue, oldValue, true, initialization);
   }
 
+  @Override
+  protected void notifyValueChange(final String key, final Object value, final boolean initialization, final Object oldValue) {
+    if (EntityRepository.hasLinkedTransientProperties(getEntityID(), key)) {
+      final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedTransientPropertyIDs(getEntityID(), key);
+      for (final String propertyID : linkedPropertyIDs)
+        super.notifyValueChange(propertyID, getValue(key), false, null);
+    }
+    super.notifyValueChange(key, value, initialization, oldValue);
+  }
+
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
     referencedPrimaryKeysCache = null;
     setForeignKeyValues(foreignKeyProperty, newValue);
@@ -679,7 +669,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
     final Entity valueOwner = getEntityValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
-    return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty()) : null;
+    return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID()) : null;
   }
 
   private String getDenormalizedViewValueAsString(final Property.DenormalizedViewProperty denormalizedViewProperty) {
@@ -746,7 +736,7 @@ public final class Entity extends ValueMapModel<String, Object> implements Seria
   /**
    * A class representing column key objects for entities, contains the values for those columns
    */
-  public static class Key extends ValueMapModel<String, Object> implements Serializable {
+  public static class Key extends ChangeValueMapModel<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1;
 

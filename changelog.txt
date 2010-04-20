@@ -1326,3 +1326,11 @@
   Entity.getOriginalCopy() bug fixed
   Entity.setValue() no longer accepts values for denormalized properties, these get their values via their respective parent properties
   Property.isDenormalized() added
+  TransientProperty.linkedPropertyIDs field added
+  EntityDefinition.transientPropertyChangeLinks field added
+  EntityRepository.hasLinkedTransientProperties() and getLinkedTransientPropertyIDs() added
+  ValueMapModel.notifyValueChange() added
+  Entity overrides the above to implement the transient property linkage
+  ValueMapModel renamed to ChangeValueMapModel
+  Entity.getValue(Property) removed
+  Entity.setValue(Property, Object) removed
