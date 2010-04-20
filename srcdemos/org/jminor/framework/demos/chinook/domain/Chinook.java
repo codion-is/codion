@@ -123,7 +123,7 @@ public class Chinook {
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ALBUM)
             .setStringProvider(new StringProvider<String, Object>(ALBUM_TITLE))
             .setLargeDataset(true)
             .setSearchPropertyIDs(ALBUM_TITLE));
@@ -133,7 +133,7 @@ public class Chinook {
             new Property(ARTIST_NAME, Type.STRING, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
             .setStringProvider(new StringProvider<String, Object>(ARTIST_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(ARTIST_NAME));
@@ -167,7 +167,7 @@ public class Chinook {
                     .setMaxLength(60),
             new Property.ForeignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
                     new Property(CUSTOMER_SUPPORTREPID)))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
             .setStringProvider(new StringProvider<String, Object>(CUSTOMER_LASTNAME)
             .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setLargeDataset(true)
@@ -203,7 +203,7 @@ public class Chinook {
                     .setMaxLength(24),
             new Property(EMPLOYEE_EMAIL, Type.STRING, "Email")
                     .setMaxLength(60))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
             .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_LASTNAME)
             .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL));
@@ -212,7 +212,7 @@ public class Chinook {
             new Property.PrimaryKeyProperty(GENRE_GENREID),
             new Property(GENRE_NAME, Type.STRING, "Name")
                     .setMaxLength(120))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
             .setStringProvider(new StringProvider<String, Object>(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME));
 
@@ -220,7 +220,7 @@ public class Chinook {
             new Property.PrimaryKeyProperty(MEDIATYPE_MEDIATYPEID),
             new Property(MEDIATYPE_NAME, Type.STRING, "Name")
                     .setMaxLength(120))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
             .setStringProvider(new StringProvider<String, Object>(MEDIATYPE_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_TRACK,
@@ -250,7 +250,7 @@ public class Chinook {
             new Property(TRACK_BYTES, Type.INT, "Bytes"),
             new Property(TRACK_UNITPRICE, Type.DOUBLE, "Price")
                     .setNullable(false))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
             .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(TRACK_NAME));
@@ -277,7 +277,7 @@ public class Chinook {
             new Property(PLAYLIST_NAME, Type.STRING, "Name")
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
             .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(PLAYLIST_NAME));
@@ -324,7 +324,7 @@ public class Chinook {
                     .setMaxLength(10),
             new Property(INVOICE_TOTAL, Type.DOUBLE, "Total")
                     .setNullable(false))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
             .setStringProvider(new StringProvider<String, Object>(INVOICE_INVOICEID))
             .setLargeDataset(true).setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING));
 
@@ -341,7 +341,7 @@ public class Chinook {
                     .setNullable(false),
             new Property(INVOICELINE_QUANTITY, Type.INT, "Quantity")
                     .setNullable(false))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
             .setLargeDataset(true));
   }
 }

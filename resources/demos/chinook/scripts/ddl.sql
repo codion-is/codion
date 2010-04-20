@@ -2,28 +2,28 @@ create schema chinook;
 
 CREATE TABLE Chinook.Genre
 (
-    GenreId INTEGER NOT NULL,
+    GenreId IDENTITY NOT NULL,
     Name VARCHAR(120) ,
     CONSTRAINT PK_Genre PRIMARY KEY (GenreId)
 );
 
 CREATE TABLE Chinook.MediaType
 (
-    MediaTypeId INTEGER NOT NULL,
+    MediaTypeId IDENTITY NOT NULL,
     Name VARCHAR(120) ,
     CONSTRAINT PK_MediaType PRIMARY KEY (MediaTypeId)
 );
 
 CREATE TABLE Chinook.Artist
 (
-    ArtistId INTEGER NOT NULL,
+    ArtistId IDENTITY NOT NULL,
     Name VARCHAR(120) ,
     CONSTRAINT PK_Artist PRIMARY KEY (ArtistId)
 );
 
 CREATE TABLE Chinook.Album
 (
-    AlbumId INTEGER NOT NULL,
+    AlbumId IDENTITY NOT NULL,
     Title VARCHAR(160) NOT NULL,
     ArtistId INTEGER NOT NULL,
     CONSTRAINT PK_ProductItem PRIMARY KEY (AlbumId)
@@ -31,7 +31,7 @@ CREATE TABLE Chinook.Album
 
 CREATE TABLE Chinook.Track
 (
-    TrackId INTEGER NOT NULL,
+    TrackId IDENTITY NOT NULL,
     Name VARCHAR(200) NOT NULL,
     AlbumId INTEGER ,
     MediaTypeId INTEGER NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE Chinook.Track
 
 CREATE TABLE Chinook.Employee
 (
-    EmployeeId INTEGER NOT NULL,
+    EmployeeId IDENTITY NOT NULL,
     LastName VARCHAR(20) NOT NULL,
     FirstName VARCHAR(20) NOT NULL,
     Title VARCHAR(30) ,
@@ -65,7 +65,7 @@ CREATE TABLE Chinook.Employee
 
 CREATE TABLE Chinook.Customer
 (
-    CustomerId INTEGER NOT NULL,
+    CustomerId IDENTITY NOT NULL,
     FirstName VARCHAR(40) NOT NULL,
     LastName VARCHAR(20) NOT NULL,
     Company VARCHAR(80) ,
@@ -83,7 +83,7 @@ CREATE TABLE Chinook.Customer
 
 CREATE TABLE Chinook.Invoice
 (
-    InvoiceId INTEGER NOT NULL,
+    InvoiceId IDENTITY NOT NULL,
     CustomerId INTEGER NOT NULL,
     InvoiceDate DATE NOT NULL,
     BillingAddress VARCHAR(70) ,
@@ -97,7 +97,7 @@ CREATE TABLE Chinook.Invoice
 
 CREATE TABLE Chinook.InvoiceLine
 (
-    InvoiceLineId INTEGER NOT NULL,
+    InvoiceLineId IDENTITY NOT NULL,
     InvoiceId INTEGER NOT NULL,
     TrackId INTEGER NOT NULL,
     UnitPrice DOUBLE NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE Chinook.InvoiceLine
 
 CREATE TABLE Chinook.Playlist
 (
-    PlaylistId INTEGER NOT NULL,
+    PlaylistId IDENTITY NOT NULL,
     Name VARCHAR(120) ,
     CONSTRAINT PK_Playlist PRIMARY KEY (PlaylistId)
 );
@@ -118,7 +118,6 @@ CREATE TABLE Chinook.PlaylistTrack
     TrackId INTEGER NOT NULL,
     CONSTRAINT PK_PlaylistTrack PRIMARY KEY (PlaylistId, TrackId)
 );
-
 
 /*******************************************************************************
    Create Foreign Keys
@@ -134,4 +133,3 @@ ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_ProductItem_InvoiceLine FOREIG
 ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_Invoice_InvoiceLine FOREIGN KEY (InvoiceId) REFERENCES Chinook.Invoice(InvoiceId);
 ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Track_PlaylistTrack FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
 ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Playlist_PlaylistTrack FOREIGN KEY (PlaylistId) REFERENCES Chinook.Playlist(PlaylistId);
-
