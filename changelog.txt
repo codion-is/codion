@@ -1335,3 +1335,5 @@
   Entity.getValue(Property) removed
   Entity.setValue(Property, Object) removed
   Chinook demo now uses IDENTITY for primary key columns, domain model changed accordingly
+  EntityApplicationPanel, call to new Messages() to initialize OptionPane messages moved from static initializer to start of startApplication()
+  EntityLookupField.defaultBackgroundColor field added

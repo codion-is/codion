@@ -45,4 +45,9 @@ public class ArtistPanel extends EntityPanel {
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return Arrays.asList(new EntityPanelProvider(AlbumModel.class, AlbumPanel.class));
   }
+
+  @Override
+  protected double getDetailSplitPaneResizeWeight() {
+    return 0.3;
+  }
 }

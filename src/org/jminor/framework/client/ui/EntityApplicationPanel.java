@@ -54,10 +54,6 @@ import java.util.Map;
  */
 public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler {
 
-  static {
-    new Messages();//OptionPane messages are statically loaded
-  }
-
   private static final Logger log = Util.getLogger(EntityApplicationPanel.class);
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
@@ -148,6 +144,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   public void startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                final Dimension frameSize, final User defaultUser, final boolean showFrame) {
     log.info(frameCaption + " starting");
+    new Messages();//OptionPane messages are statically loaded
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) :

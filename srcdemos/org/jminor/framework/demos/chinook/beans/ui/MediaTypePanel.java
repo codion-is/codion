@@ -24,7 +24,7 @@ import java.util.List;
 public class MediaTypePanel extends EntityPanel {
 
   public MediaTypePanel(final EntityModel model) {
-    super(model, "Media types");
+    super(model, "Media types", true, false, false, HIDDEN);
   }
 
   @Override

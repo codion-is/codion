@@ -30,6 +30,7 @@ import org.apache.log4j.Level;
 import javax.swing.UIManager;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * User: Björn Darri
@@ -42,12 +43,13 @@ public class ChinookAppPanel extends EntityApplicationPanel {
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(
             new EntityPanelProvider(ArtistModel.class, ArtistPanel.class),
-            new EntityPanelProvider(PlaylistModel.class, PlaylistPanel.class));
+            new EntityPanelProvider(PlaylistModel.class, PlaylistPanel.class),
+            new EntityPanelProvider(CustomerModel.class, CustomerPanel.class));
   }
 
   @Override
   protected List<EntityPanelProvider> getSupportEntityPanelProviders() {
-    return Arrays.asList(new EntityPanelProvider("Customers", CustomerModel.class, CustomerPanel.class),
+    return Arrays.asList(
             new EntityPanelProvider("Genres", GenreModel.class, GenrePanel.class),
             new EntityPanelProvider("Media types", MediaTypeModel.class, MediaTypePanel.class),
             new EntityPanelProvider("Employees", EmployeeModel.class, EmployeePanel.class));
@@ -73,6 +75,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     catch (Exception e) {
       e.printStackTrace();
     }
+    Locale.setDefault(new Locale("EN", "en"));
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 }

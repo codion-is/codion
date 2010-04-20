@@ -36,6 +36,7 @@ public class EntityLookupField extends JTextField {
   private final EntityLookupModel model;
 
   private Action enterAction;
+  private Color defaultBackgroundColor = getBackground();
 
   /**
    * Initializes a new EntityLookupField
@@ -93,6 +94,10 @@ public class EntityLookupField extends JTextField {
 
   public void setEnterAction(final Action enterAction) {
     this.enterAction = enterAction;
+  }
+
+  public void setDefaultBackgroundColor(final Color defaultBackgroundColor) {
+    this.defaultBackgroundColor = defaultBackgroundColor;
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -217,7 +222,7 @@ public class EntityLookupField extends JTextField {
   }
 
   private void updateBackgroundColor() {
-    setBackground(getModel().searchStringRepresentsSelected() ? Color.WHITE : Color.LIGHT_GRAY);
+    setBackground(getModel().searchStringRepresentsSelected() ? defaultBackgroundColor : Color.LIGHT_GRAY);
   }
 
   private List<Entity> toEntityList(final Object[] selectedValues) {
