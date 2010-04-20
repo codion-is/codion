@@ -30,15 +30,16 @@ public class AlbumPanel extends EntityPanel {
   @Override
   protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return new EntityEditPanel(editModel) {
+      @Override
       protected void initializeUI() {
         setLayout(new GridLayout(2, 1, 5, 5));
-        final JTextField txtTitle = createTextField(Chinook.ALBUM_TITLE);
-        txtTitle.setColumns(18);
-        setDefaultFocusComponent(txtTitle);
         final JTextField txtArtists = createEntityLookupField(Chinook.ALBUM_ARTISTID_FK);
         txtArtists.setColumns(18);
-        add(createPropertyPanel(Chinook.ALBUM_TITLE, txtTitle));
+        setDefaultFocusComponent(txtArtists);
+        final JTextField txtTitle = createTextField(Chinook.ALBUM_TITLE);
+        txtTitle.setColumns(18);
         add(createPropertyPanel(Chinook.ALBUM_ARTISTID_FK, txtArtists));
+        add(createPropertyPanel(Chinook.ALBUM_TITLE, txtTitle));
       }
     };
   }

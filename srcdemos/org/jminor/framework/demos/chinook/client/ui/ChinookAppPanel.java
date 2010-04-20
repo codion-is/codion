@@ -11,13 +11,13 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.demos.chinook.beans.AlbumModel;
+import org.jminor.framework.demos.chinook.beans.ArtistModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import org.jminor.framework.demos.chinook.beans.EmployeeModel;
 import org.jminor.framework.demos.chinook.beans.GenreModel;
 import org.jminor.framework.demos.chinook.beans.MediaTypeModel;
 import org.jminor.framework.demos.chinook.beans.PlaylistModel;
-import org.jminor.framework.demos.chinook.beans.ui.AlbumPanel;
+import org.jminor.framework.demos.chinook.beans.ui.ArtistPanel;
 import org.jminor.framework.demos.chinook.beans.ui.CustomerPanel;
 import org.jminor.framework.demos.chinook.beans.ui.EmployeePanel;
 import org.jminor.framework.demos.chinook.beans.ui.GenrePanel;
@@ -41,8 +41,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
   @Override
   protected List<EntityPanelProvider> getMainEntityPanelProviders() {
     return Arrays.asList(
-            new EntityPanelProvider(CustomerModel.class, CustomerPanel.class),
-            new EntityPanelProvider(AlbumModel.class, AlbumPanel.class),
+            new EntityPanelProvider(ArtistModel.class, ArtistPanel.class),
             new EntityPanelProvider(PlaylistModel.class, PlaylistPanel.class));
   }
 

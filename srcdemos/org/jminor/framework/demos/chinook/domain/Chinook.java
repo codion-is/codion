@@ -2,6 +2,7 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.common.db.IdSource;
 import org.jminor.common.model.StringProvider;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -98,6 +99,7 @@ public class Chinook {
   public static final String T_TRACK = "chinook.track";
   public static final String TRACK_TRACKID = "trackid";
   public static final String TRACK_NAME = "name";
+  public static final String TRACK_ARTIST_DENORM = "artist_denorm";
   public static final String TRACK_ALBUMID = "albumid";
   public static final String TRACK_ALBUMID_FK = "albumid_fk";
   public static final String TRACK_MEDIATYPEID = "mediatypeid";
@@ -106,18 +108,21 @@ public class Chinook {
   public static final String TRACK_GENREID_FK = "genreid_fk";
   public static final String TRACK_COMPOSER = "composer";
   public static final String TRACK_MILLISECONDS = "milliseconds";
+  public static final String TRACK_MINUTES_SECONDS_TRANSIENT = "minutes_seconds_transient";
   public static final String TRACK_BYTES = "bytes";
   public static final String TRACK_UNITPRICE = "unitprice";
 
   static {
     EntityRepository.add(new EntityDefinition(T_ALBUM,
             new Property.PrimaryKeyProperty(ALBUM_ALBUMID),
-            new Property(ALBUM_TITLE, Type.STRING, "Title")
-                    .setNullable(false)
-                    .setMaxLength(160),
             new Property.ForeignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
                     new Property(ALBUM_ARTISTID))
-                    .setNullable(false))
+                    .setNullable(false)
+                    .setPreferredColumnWidth(160),
+            new Property(ALBUM_TITLE, Type.STRING, "Title")
+                    .setNullable(false)
+                    .setMaxLength(160)
+                    .setPreferredColumnWidth(160))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(ALBUM_TITLE))
             .setLargeDataset(true)
@@ -126,7 +131,8 @@ public class Chinook {
     EntityRepository.add(new EntityDefinition(T_ARTIST,
             new Property.PrimaryKeyProperty(ARTIST_ARTISTID),
             new Property(ARTIST_NAME, Type.STRING, "Name")
-                    .setMaxLength(120))
+                    .setMaxLength(120)
+                    .setPreferredColumnWidth(160))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(ARTIST_NAME))
             .setLargeDataset(true)
@@ -219,20 +225,27 @@ public class Chinook {
 
     EntityRepository.add(new EntityDefinition(T_TRACK,
             new Property.PrimaryKeyProperty(TRACK_TRACKID),
+            new Property.DenormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
+                    EntityRepository.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+                    .setPreferredColumnWidth(160),
+            new Property.ForeignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
+                    new Property(TRACK_ALBUMID))
+                    .setPreferredColumnWidth(160),
             new Property(TRACK_NAME, Type.STRING, "Name")
                     .setNullable(false)
-                    .setMaxLength(200),
-            new Property.ForeignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
-                    new Property(TRACK_ALBUMID)),
-            new Property.ForeignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
-                    new Property(TRACK_MEDIATYPEID))
-                    .setNullable(false),
+                    .setMaxLength(200)
+                    .setPreferredColumnWidth(160),
             new Property.ForeignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
                     new Property(TRACK_GENREID)),
             new Property(TRACK_COMPOSER, Type.STRING, "Composer")
-                    .setMaxLength(220),
+                    .setMaxLength(220)
+                    .setPreferredColumnWidth(160),
+            new Property.ForeignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
+                    new Property(TRACK_MEDIATYPEID))
+                    .setNullable(false),
             new Property(TRACK_MILLISECONDS, Type.INT, "Milliseconds")
                     .setNullable(false),
+            new Property.TransientProperty(TRACK_MINUTES_SECONDS_TRANSIENT, Type.STRING, "Duration"),
             new Property(TRACK_BYTES, Type.INT, "Bytes"),
             new Property(TRACK_UNITPRICE, Type.DOUBLE, "Price")
                     .setNullable(false))
@@ -240,11 +253,29 @@ public class Chinook {
             .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
             .setLargeDataset(true)
             .setSearchPropertyIDs(TRACK_NAME));
+    Entity.setProxy(T_TRACK, new Entity.Proxy() {
+      @Override
+      public Object getValue(final Entity entity, final Property property) {
+        if (property.is(TRACK_MINUTES_SECONDS_TRANSIENT)) {
+          final int milliseconds = entity.getIntValue(TRACK_MILLISECONDS);
+          if (milliseconds <= 0)
+            return "";
+
+          final int seconds = ((milliseconds / 1000) % 60);
+          final int minutes = ((milliseconds / 1000) / 60);
+
+          return minutes + " min " + seconds + " sec";
+        }
+
+        return super.getValue(entity, property);
+      }
+    });
 
     EntityRepository.add(new EntityDefinition(T_PLAYLIST,
             new Property.PrimaryKeyProperty(PLAYLIST_PLAYLISTID),
             new Property(PLAYLIST_NAME, Type.STRING, "Name")
-                    .setMaxLength(120))
+                    .setMaxLength(120)
+                    .setPreferredColumnWidth(160))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setStringProvider(new StringProvider<String, Object>(PLAYLIST_NAME))
             .setLargeDataset(true)
@@ -253,15 +284,20 @@ public class Chinook {
     EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
             new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID).setUpdatable(true))
-                    .setNullable(false),
+                    .setNullable(false)
+                    .setPreferredColumnWidth(120),
             new Property.DenormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
-                    EntityRepository.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist"),
+                    EntityRepository.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+                    .setPreferredColumnWidth(160),
             new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
                             .setIndex(1).setUpdatable(true))
-                    .setNullable(false),
+                    .setNullable(false)
+                    .setPreferredColumnWidth(160),
             new Property.DenormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
-                    EntityRepository.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album"))
+                    EntityRepository.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
+                    .setPreferredColumnWidth(160))
+            .setIdSource(IdSource.NONE)
             .setStringProvider(new StringProvider<String, Object>(PLAYLISTTRACK_PLAYLISTID_FK)
             .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setLargeDataset(true));

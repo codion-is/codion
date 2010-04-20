@@ -12,9 +12,9 @@ import org.jminor.framework.demos.chinook.beans.TrackModel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import javax.swing.JTextField;
+import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
-import java.awt.GridLayout;
 
 /**
  * User: Björn Darri
@@ -24,7 +24,7 @@ import java.awt.GridLayout;
 public class GenrePanel extends EntityPanel {
 
   public GenrePanel(final EntityModel model) {
-    super(model, "Genres");
+    super(model, "Genres", true, false, false, HIDDEN);
   }
 
   @Override

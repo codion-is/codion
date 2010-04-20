@@ -9,6 +9,7 @@ import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.demos.chinook.beans.AlbumModel;
+import org.jminor.framework.demos.chinook.beans.ArtistModel;
 import org.jminor.framework.demos.chinook.beans.CustomerModel;
 import org.jminor.framework.demos.chinook.beans.GenreModel;
 import org.jminor.framework.demos.chinook.beans.InvoiceModel;
@@ -31,6 +32,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
     super(User.UNIT_TEST_USER);
   }
 
+  @Override
   protected void loadDomainModel() {
     new Chinook();
   }
@@ -38,6 +40,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
   @Override
   protected Collection<UsageScenario> initializeUsageScenarios() {
     final UsageScenario viewGenre = new UsageScenario("selectGenre") {
+      @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
         final EntityModel genreModel = model.getMainApplicationModel(GenreModel.class);
@@ -50,9 +53,11 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       }
     };
     final UsageScenario viewInvoice = new UsageScenario("viewInvoice") {
+      @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel customerModel = model.getMainApplicationModel(CustomerModel.class);
+        final EntityModel customerModel = new CustomerModel(model.getDbProvider());
+        customerModel.getTableModel().refresh();
         selectRandomRow(customerModel.getTableModel());
         final EntityModel invoiceModel = customerModel.getDetailModel(InvoiceModel.class);
         selectRandomRow(invoiceModel.getTableModel());
@@ -64,9 +69,12 @@ public class ChinookLoadTest extends EntityLoadTestModel {
       }
     };
     final UsageScenario viewAlbum = new UsageScenario("viewAlbum") {
+      @Override
       protected void performScenario(Object application) throws Exception {
         final EntityApplicationModel model = (EntityApplicationModel) application;
-        final EntityModel albumModel = model.getMainApplicationModel(AlbumModel.class);
+        final EntityModel artistModel = model.getMainApplicationModel(ArtistModel.class);
+        selectRandomRow(artistModel.getTableModel());
+        final EntityModel albumModel = artistModel.getDetailModel(AlbumModel.class);
         selectRandomRow(albumModel.getTableModel());
       }
 
@@ -79,6 +87,7 @@ public class ChinookLoadTest extends EntityLoadTestModel {
     return Arrays.asList(viewGenre, viewInvoice, viewAlbum);
   }
 
+  @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel appModel = new ChinookAppModel(User.UNIT_TEST_USER);
     appModel.refreshAll();

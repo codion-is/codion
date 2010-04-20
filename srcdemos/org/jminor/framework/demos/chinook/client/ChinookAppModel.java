@@ -7,8 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.provider.EntityDbProvider;
-import org.jminor.framework.demos.chinook.beans.AlbumModel;
-import org.jminor.framework.demos.chinook.beans.CustomerModel;
+import org.jminor.framework.demos.chinook.beans.ArtistModel;
 import org.jminor.framework.demos.chinook.beans.EmployeeModel;
 import org.jminor.framework.demos.chinook.beans.GenreModel;
 import org.jminor.framework.demos.chinook.beans.PlaylistModel;
@@ -30,8 +29,8 @@ public class ChinookAppModel extends EntityApplicationModel {
 
   @Override
   protected List<? extends EntityModel> initializeMainApplicationModels(EntityDbProvider dbProvider) {
-    return Arrays.asList(new GenreModel(getDbProvider()), new CustomerModel(getDbProvider()),
-            new AlbumModel(getDbProvider()), new EmployeeModel(getDbProvider()), new PlaylistModel(getDbProvider()));
+    return Arrays.asList(new GenreModel(getDbProvider()), new ArtistModel(getDbProvider()),
+            new EmployeeModel(getDbProvider()), new PlaylistModel(getDbProvider()));
   }
 
   @Override
