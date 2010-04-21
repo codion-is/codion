@@ -6,6 +6,8 @@ package org.jminor.framework.demos.empdept.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import org.junit.Test;
@@ -14,12 +16,12 @@ public class EmpDeptTest extends EntityTestUnit {
 
   @Test
   public void department() throws Exception {
-    testEntity(EmpDept.T_DEPARTMENT);
+    testEntity(T_DEPARTMENT);
   }
 
   @Test
   public void employee() throws Exception {
-    testEntity(EmpDept.T_EMPLOYEE);
+    testEntity(T_EMPLOYEE);
   }
 
   @Override

@@ -6,6 +6,7 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.petstore.domain.Petstore;
+import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import org.junit.Test;
@@ -19,37 +20,37 @@ public class PetstoreTest extends EntityTestUnit {
 
   @Test
   public void address() throws Exception {
-    testEntity(Petstore.T_ADDRESS);
+    testEntity(T_ADDRESS);
   }
 
   @Test
   public void category() throws Exception {
-    testEntity(Petstore.T_CATEGORY);
+    testEntity(T_CATEGORY);
   }
 
   @Test
   public void item() throws Exception {
-    testEntity(Petstore.T_ITEM);
+    testEntity(T_ITEM);
   }
 
   @Test
   public void product() throws Exception {
-    testEntity(Petstore.T_PRODUCT);
+    testEntity(T_PRODUCT);
   }
 
   @Test
   public void sellerInfo() throws Exception {
-    testEntity(Petstore.T_SELLER_CONTACT_INFO);
+    testEntity(T_SELLER_CONTACT_INFO);
   }
 
   @Test
   public void tag() throws Exception {
-    testEntity(Petstore.T_TAG);
+    testEntity(T_TAG);
   }
 
   @Test
   public void tagItem() throws Exception {
-    testEntity(Petstore.T_TAG_ITEM);
+    testEntity(T_TAG_ITEM);
   }
 
   @Override
