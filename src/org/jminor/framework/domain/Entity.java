@@ -340,6 +340,12 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     super.revertAll();
   }
 
+  @Override
+  public void clear() {
+    getPrimaryKey().clear();
+    super.clear();
+  }
+
   /**
    * @return true if the this entity instance has a null primary key
    */
@@ -441,8 +447,8 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    */
   @Override
   public void setAs(final ChangeValueMap<String, Object> valueMap) {
-    primaryKey.setAs(((Entity) valueMap).getPrimaryKey());
     super.setAs(valueMap);
+    primaryKey.setAs(((Entity) valueMap).getPrimaryKey());
     toString = valueMap.toString();
   }
 

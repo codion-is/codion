@@ -1359,3 +1359,5 @@
   ChangeValueMap.getValueKeys() and getOriginalValueKeys() added
   ChangeValueMapEditModel refactored from EntityEditModel
   EntityEditModel.clear() pushed up to ChangeValueMapEditModel
+  ChangeValueMapEditModel.setMap() renamed to setValueMap()
+  Entity overrides ChangeValueMap.clear() and clears the primary key as well

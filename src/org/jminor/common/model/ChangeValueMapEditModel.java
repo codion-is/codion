@@ -79,7 +79,7 @@ public abstract class ChangeValueMapEditModel<T, V> {
    * @see #evtEntityChanged
    * @see #getDefaultMap()
    */
-  public final void setMap(final ChangeValueMap<T, V> valueMap) {
+  public void setValueMap(final ChangeValueMap<T, V> valueMap) {
     if (valueMap != null && this.valueMap.equals(valueMap))
       return;
 

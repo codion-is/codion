@@ -627,7 +627,7 @@ public class EntityModel implements Refreshable {
 
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        getEditModel().setMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
+        getEditModel().setValueMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
       }
     });
 
@@ -635,8 +635,8 @@ public class EntityModel implements Refreshable {
       public void tableChanged(final TableModelEvent event) {
         //if the selected record is being updated via the table model refresh the one in the model
         if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
-          getEditModel().setMap(null);
-          getEditModel().setMap(getTableModel().getSelectedItem());
+          getEditModel().setValueMap(null);
+          getEditModel().setValueMap(getTableModel().getSelectedItem());
         }
       }
     });
