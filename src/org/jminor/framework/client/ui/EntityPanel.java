@@ -1021,7 +1021,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
                     stActive,
                     getModel().getEditModel().stateAllowUpdate(),
                     getEditModel().getEntityNullState().getReversedState(),
-                    getEditModel().getEntityModifiedState()),
+                    getEditModel().stateModified()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + " (ALT-" + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -1044,7 +1044,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
     final State stInsertUpdate = new AggregateState(AggregateState.Type.OR, getModel().getEditModel().stateAllowInsert(),
             new AggregateState(AggregateState.Type.AND, getModel().getEditModel().stateAllowUpdate(),
-                    getEditModel().getEntityModifiedState()));
+                    getEditModel().stateModified()));
     return ControlFactory.methodControl(this, "save", insertCaption,
             new AggregateState(AggregateState.Type.AND, stActive, stInsertUpdate),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),

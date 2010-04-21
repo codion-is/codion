@@ -258,7 +258,7 @@ public class EntityUiUtil {
         try {
           final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(panel),
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          editModel.setValue(foreignKeyProperty, selected.size() > 0 ? selected.get(0) : null);
+          editModel.setValue(foreignKeyProperty.getPropertyID(), selected.size() > 0 ? selected.get(0) : null);
         }
         catch (CancelException ex) {/**/}
       }
@@ -276,7 +276,7 @@ public class EntityUiUtil {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    editModel.getPropertyChangeEvent(foreignKeyProperty).addListener(new Property.Listener() {
+    editModel.getPropertyChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new Property.Listener() {
       @Override
       public void propertyChanged(final Property.Event e) {
         textField.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());

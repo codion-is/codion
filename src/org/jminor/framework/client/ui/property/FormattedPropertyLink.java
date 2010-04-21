@@ -103,7 +103,7 @@ public class FormattedPropertyLink extends TextPropertyLink {
       }
       public void changedUpdate(final DocumentEvent e) {}
     });
-    editModel.getPropertyChangeEvent(getProperty()).addListener(new Property.Listener() {
+    editModel.getPropertyChangeEvent(getProperty().getPropertyID()).addListener(new Property.Listener() {
       @Override
       protected void propertyChanged(final Property.Event e) {
         updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);

@@ -380,11 +380,11 @@ public class EntityRepository {
    * Returns the EntityDefinition object associated with <code>entityID</code>
    * @param entityID the entityID
    * @return the EntityDefinition for the given entityID
-   * @throws RuntimeException in case the entity has not been defined
+   * @throws IllegalArgumentException in case the entity has not been defined
    */
   private static EntityDefinition getEntityDefinition(final String entityID) {
     if (!entityDefinitions.containsKey(entityID))
-      throw new RuntimeException("Undefined entity: " + entityID);
+      throw new IllegalArgumentException("Undefined entity: " + entityID);
 
     return entityDefinitions.get(entityID);
   }

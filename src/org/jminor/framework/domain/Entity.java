@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.ChangeValueMap;
 import org.jminor.common.model.ChangeValueMapModel;
 
 import java.awt.Color;
@@ -406,8 +407,19 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    * @return a deep copy of this Entity
    */
   public Entity getCopy() {
+    return getCopy(true);
+  }
+
+  /**
+   * @param includePrimaryKey if true then primary key values are included
+   * @return a deep copy of this Entity
+   */
+  public Entity getCopy(final boolean includePrimaryKey) {
+    final Key key = getPrimaryKey().getCopy();
     final Entity copy = new Entity(getEntityID());
     copy.setAs(this);
+    if (!includePrimaryKey)
+      copy.getPrimaryKey().setAs(key);
 
     return copy;
   }
@@ -425,28 +437,13 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   /**
    * Makes this entity identical to <code>sourceEntity</code>.
    * Reference entity values, which are mutable, are deep copied with getCopy()
-   * @param sourceEntity the entity to copy
+   * @param valueMap the Entity to copy
    */
-  public void setAs(final Entity sourceEntity) {
-    primaryKey.setAs(sourceEntity.getPrimaryKey());
-    values.clear();
-    if (originalValues != null)
-      originalValues.clear();
-    for (final Map.Entry<String, Object> entry : sourceEntity.values.entrySet())
-      values.put(entry.getKey(), copyPropertyValue(sourceEntity.values.get(entry.getKey())));
-
-    if (sourceEntity.originalValues != null && !sourceEntity.originalValues.isEmpty()) {
-      if (originalValues == null)
-        originalValues = new HashMap<String, Object>();
-      for (final String key : sourceEntity.originalValues.keySet())
-        originalValues.put(key, copyPropertyValue(sourceEntity.originalValues.get(key)));
-    }
-    for (final Property property : EntityRepository.getProperties(getEntityID(), true))
-      eventPropertyChanged().fire(getValueChangeEvent(property.getPropertyID(), getRawValue(property.getPropertyID()), null, true));
-
-    toString = sourceEntity.toString;
-    if (stModified != null)
-      stModified.setActive(isModified());
+  @Override
+  public void setAs(final ChangeValueMap<String, Object> valueMap) {
+    primaryKey.setAs(((Entity) valueMap).getPrimaryKey());
+    super.setAs(valueMap);
+    toString = valueMap.toString();
   }
 
   /**
@@ -606,11 +603,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   @Override
   public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                          final boolean initialization) {
-    return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
-  }
-
-  static ActionEvent initValueChangeEvent(final Object source, final String entityID, final Property property, Object newValue, Object oldValue, boolean initialization) {
-    return new Property.Event(source, entityID, property, newValue, oldValue, true, initialization);
+    return EntityUtil.getValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
   }
 
   @Override
@@ -932,35 +925,28 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     }
 
     /**
-     * Copies the values from key to this entity key
-     * @param key the key to copy
+     * Copies the values from <code>valueMap</code> to this entity key
+     * @param valueMap the key to copy
      */
-    void setAs(final Key key) {
+    @Override
+    public void setAs(final ChangeValueMap<String, Object> valueMap) {
+      final Key key = (Key) valueMap;
       if (key != null && !key.getEntityID().equals(getEntityID()))
         throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());
 
       hashCodeDirty = true;
-      values.clear();
-      if (originalValues != null)
-        originalValues.clear();
-      if (key != null) {
-        for (final String entryKey : key.values.keySet())
-          values.put(entryKey, copyPropertyValue(key.values.get(entryKey)));
-        if (key.originalValues != null) {
-          if (originalValues == null)
-            originalValues = new HashMap<String, Object>();
-          for (final String entryKey : key.originalValues.keySet())
-            originalValues.put(entryKey, copyPropertyValue(key.originalValues.get(entryKey)));
-        }
-      }
-      if (stModified != null)
-        stModified.setActive(isModified());
+      super.setAs(valueMap);
+    }
+
+    @Override
+    public Object copyValue(final Object value) {
+      return copyPropertyValue(value);
     }
 
     @Override
     public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                            final boolean initialization) {
-      return initValueChangeEvent(this, getEntityID(), getProperty(key), newValue, oldValue, initialization);
+      return EntityUtil.getValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }
 
     /**

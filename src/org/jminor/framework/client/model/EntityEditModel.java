@@ -6,6 +6,8 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.ChangeValueMap;
+import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
@@ -28,6 +30,8 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +40,7 @@ import java.util.Map;
 /**
  * A class for editing a Entity instance, providing property change events and combobox models.
  */
-public class EntityEditModel {
+public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
 
   protected static final Logger log = Util.getLogger(EntityEditModel.class);
 
@@ -61,7 +65,6 @@ public class EntityEditModel {
   private final Event evtAfterUpdate = new Event();
   private final Event evtBeforeDelete = new Event();
   private final Event evtAfterDelete = new Event();
-  private final Event evtEntityChanged = new Event();
   private final Event evtEntitiesChanged = new Event();
   private final Event evtModelCleared = new Event();
 
@@ -69,11 +72,6 @@ public class EntityEditModel {
   private final State stAllowInsert = new State(true);
   private final State stAllowUpdate = new State(true);
   private final State stAllowDelete = new State(true);
-
-  /**
-   * The entity used for editing
-   */
-  protected final Entity entity;
 
   /**
    * The EntityDbProvider instance to use when populating combo boxes and such
@@ -88,28 +86,17 @@ public class EntityEditModel {
   private final Map<Property, ComboBoxModel> propertyComboBoxModels = new HashMap<Property, ComboBoxModel>();
 
   /**
-   * Holds events signaling property changes made to the active entity via the ui
-   */
-  private final Map<Property, Event> propertyValueSetEventMap = new HashMap<Property, Event>();
-
-  /**
-   * Holds events signaling property changes made to the active entity, via the model or ui
-   */
-  private final Map<Property, Event> propertyChangeEventMap = new HashMap<Property, Event>();
-
-  /**
    * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.   *
    * @param entityID the ID of the entity to base this EntityEditModel on
    * @param dbProvider the EntityDbProvider instance used when populating ComboBoxModels
    */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
+    super(entityID);
     if (entityID == null)
       throw new IllegalArgumentException("entityID is null");
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider is null");
     this.dbProvider = dbProvider;
-    this.entity = new Entity(entityID);
-    this.entity.setAs(getDefaultEntity());
     bindEventsInternal();
     bindEvents();
   }
@@ -198,11 +185,15 @@ public class EntityEditModel {
     return stAllowDelete;
   }
 
+  public Entity getEntity() {
+    return (Entity) getValueMap();
+  }
+
   /**
    * @return the ID of the entity this EntityEditModel is based on
    */
   public String getEntityID() {
-    return entity.getEntityID();
+    return getName();
   }
 
   /**
@@ -224,7 +215,7 @@ public class EntityEditModel {
    * @see org.jminor.framework.domain.Entity#isNull()
    */
   public boolean isEntityNull() {
-    return entity.isNull();
+    return ((Entity) getValueMap()).isNull();
   }
 
   /**
@@ -232,8 +223,19 @@ public class EntityEditModel {
    * @see #evtModelCleared
    */
   public final void clear() {
-    setEntity(null);
+    setMap(null);
     evtModelCleared.fire();
+  }
+
+  /**
+   * Returns the value associated with the given propertyID assuming it
+   * is an Entity instance
+   * @param propertyID the ID of the property
+   * @return the value assuming it is an Entity
+   * @throws ClassCastException in case the value was not an Entity
+   */
+  public Entity getEntityValue(final String propertyID) {
+    return (Entity) getValue(propertyID);
   }
 
   /**
@@ -250,21 +252,7 @@ public class EntityEditModel {
    * @see org.jminor.framework.domain.Entity#getCopy()
    */
   public Entity getEntityCopy(final boolean includePrimaryKeyValues) {
-    final Entity copy = entity.getCopy();
-    if (!includePrimaryKeyValues) {
-      for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(copy.getEntityID()))
-        copy.setValue(property.getPropertyID(), null);
-    }
-
-    return copy;
-  }
-
-  /**
-   * @return the state which indicates the modified state of the active entity
-   * @see org.jminor.framework.domain.Entity#stateModified()
-   */
-  public State getEntityModifiedState() {
-    return entity.stateModified();
+    return getEntity().getCopy(includePrimaryKeyValues);
   }
 
   /**
@@ -272,58 +260,7 @@ public class EntityEditModel {
    * @see org.jminor.framework.domain.Entity#isModified()
    */
   public boolean isEntityModified() {
-    return getEntityModifiedState().isActive();
-  }
-
-  /**
-   * @return an Event which fires when the underlying entities have changed, via insert, update or delete
-   */
-  public Event getEntityChangedEvent() {
-    return evtEntityChanged;
-  }
-
-  /**
-   * @param propertyID the ID of the property for which to retrieve the event
-   * @return an Event object which fires when the value of property <code>propertyID</code> is changed via
-   * the <code>setValue()</code> methods
-   * @see #setValue(String, Object)
-   * @see #setValue(org.jminor.framework.domain.Property, Object)
-   */
-  public Event getPropertyValueSetEvent(final String propertyID) {
-    return getPropertyValueSetEvent(EntityRepository.getProperty(getEntityID(), propertyID));
-  }
-
-  /**
-   * @param property the property for which to retrieve the event
-   * @return an Event object which fires when the value of <code>property</code> is changed via
-   * the <code>setValue()</code> methods
-   * @see #setValue(String, Object)
-   * @see #setValue(org.jminor.framework.domain.Property, Object)
-   */
-  public Event getPropertyValueSetEvent(final Property property) {
-    if (!propertyValueSetEventMap.containsKey(property))
-      propertyValueSetEventMap.put(property, new Event());
-
-    return propertyValueSetEventMap.get(property);
-  }
-
-  /**
-   * @param propertyID the ID of the property for which to retrieve the event
-   * @return an Event object which fires when the value of the property identified by <code>propertyID</code> changes
-   */
-  public Event getPropertyChangeEvent(final String propertyID) {
-    return getPropertyChangeEvent(EntityRepository.getProperty(getEntityID(), propertyID));
-  }
-
-  /**
-   * @param property the property for which to retrieve the event
-   * @return an Event object which fires when the value of <code>property</code> changes
-   */
-  public Event getPropertyChangeEvent(final Property property) {
-    if (!propertyChangeEventMap.containsKey(property))
-      propertyChangeEventMap.put(property, new Event());
-
-    return propertyChangeEventMap.get(property);
+    return stateModified().isActive();
   }
 
   /**
@@ -490,7 +427,7 @@ public class EntityEditModel {
    * @see Configuration#PERFORM_NULL_VALIDATION
    */
   public void validate(final Property property, final int action) throws ValidationException {
-    validate(entity, property, action);
+    validate(getEntity(), property, action);
   }
 
   /**
@@ -509,36 +446,6 @@ public class EntityEditModel {
       performNullValidation(entity, property, action);
     if (property.isNumerical())
       performRangeValidation(entity, property);
-  }
-
-  protected void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-    if (entity.isValueNull(property.getPropertyID()))
-      return;
-
-    final Double value = property.getPropertyType() == Type.DOUBLE ? (Double) entity.getValue(property.getPropertyID())
-            : (Integer) entity.getValue(property.getPropertyID());
-    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
-      throw new RangeValidationException(property, value, "'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
-    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax()))
-      throw new RangeValidationException(property, value, "'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
-  }
-
-  protected void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
-    if (!isPropertyNullable(entity, property) && entity.isValueNull(property.getPropertyID())) {
-      if (action == INSERT) {
-        if (!property.columnHasDefaultValue() || (property instanceof Property.PrimaryKeyProperty &&
-                !EntityRepository.isPrimaryKeyAutoGenerated(getEntityID())))
-          throw new NullValidationException(property,
-                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-      }
-      else {
-        throw new NullValidationException(property,
-                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
-        
-      }
-    }
   }
 
   /**
@@ -674,84 +581,6 @@ public class EntityEditModel {
   }
 
   /**
-   * Sets the active entity, that is, the entity to be edited
-   * @param entity the entity to set as active, if null then the default entity value is set as active
-   * @see #evtEntityChanged
-   * @see #getDefaultEntity()
-   */
-  public final void setEntity(final Entity entity) {
-    if (entity != null && this.entity.propertyValuesEqual(entity))
-      return;
-
-    this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-    stEntityNull.setActive(this.entity.isNull());
-    evtEntityChanged.fire();
-  }
-
-  /**
-   * Sets the value of the property with name <code>propertyID</code> in the active entity to <code>value</code>,
-   * basic type validation is performed.
-   * @param propertyID the ID of the property to update
-   * @param value the new value
-   */
-  public void setValue(final String propertyID, final Object value) {
-    setValue(EntityRepository.getProperty(getEntityID(), propertyID), value);
-  }
-
-  /**
-   * Sets the value of <code>property</code> in the active entity to <code>value</code>
-   * @param property the property to update
-   * @param value the new value
-   */
-  public void setValue(final Property property, final Object value) {
-    final Object oldValue = getValue(property);
-    final Object newValue = doSetValue(property, value, true);
-
-    if (!Util.equal(newValue, oldValue))
-      notifyPropertyValueSet(new Property.Event(this, getEntityID(), property, newValue, oldValue, false, false));
-  }
-
-  /**
-   * @param propertyID the property identifier
-   * @return true if the value of the given property is null
-   */
-  public boolean isValueNull(final String propertyID) {
-    return entity.isValueNull(propertyID);
-  }
-
-  /**
-   * @param property the property for which to retrieve the value
-   * @return the value associated with <code>property</code>
-   */
-  public Object getValue(final Property property) {
-    return getValue(property.getPropertyID());
-  }
-
-  /**
-   * @param propertyID the id of the property for which to retrieve the value
-   * @return the value associated with the property identified by <code>propertyID</code>
-   */
-  public Object getValue(final String propertyID) {
-    return entity.getValue(propertyID);
-  }
-
-  /**
-   * @param propertyID the id of the property for which to retrieve the value
-   * @return the value associated with the property identified by <code>propertyID</code>
-   */
-  public Entity getEntityValue(final String propertyID) {
-    return entity.getEntityValue(propertyID);
-  }
-
-  /**
-   * @param foreignKeyProperty the foreign key property for which to retrieve the value
-   * @return the value associated with <code>property</code>
-   */
-  public Entity getEntityValue(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return getEntityValue(foreignKeyProperty.getPropertyID());
-  }
-
-  /**
    * Creates a default EntityComboBoxModel for the given property, override to provide
    * specific EntityComboBoxModels (filtered for example) for properties.
    * This method is called when creating a EntityComboBoxModel for entity properties, both
@@ -766,7 +595,7 @@ public class EntityEditModel {
    */
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     return new EntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), getDbProvider(), false,
-            isPropertyNullable(entity, foreignKeyProperty) ?
+            isPropertyNullable(getEntity(), foreignKeyProperty) ?
                     (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null, true);
   }
 
@@ -787,13 +616,20 @@ public class EntityEditModel {
    * @return the default entity for this EntityModel, it is set as active when no item is selected
    * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
-  public Entity getDefaultEntity() {
-    final Entity defaultEntity = new Entity(getEntityID());
+  @Override
+  public ChangeValueMap<String, Object> getDefaultMap() {
+    final ChangeValueMap<String, Object> defaultEntity = initializeMap();
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
         defaultEntity.setValue(property.getPropertyID(), getDefaultValue(property));
 
     return defaultEntity;
+  }
+
+  @Override
+  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+                                         final boolean initialization) {
+    return EntityUtil.getValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
   }
 
   /**
@@ -809,7 +645,7 @@ public class EntityEditModel {
    * @see #persistValueOnClear(org.jminor.framework.domain.Property)
    */
   public Object getDefaultValue(final Property property) {
-    return persistValueOnClear(property) ? getValue(property) : property.getDefaultValue();
+    return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
   }
 
   /**
@@ -860,13 +696,6 @@ public class EntityEditModel {
    */
   public Event eventEntitiesChanged() {
     return evtEntitiesChanged;
-  }
-
-  /**
-   * @return an Event fired when the active entity has been changed
-   */
-  public Event eventEntityChanged() {
-    return evtEntityChanged;
   }
 
   /**
@@ -932,6 +761,36 @@ public class EntityEditModel {
     }
   }
 
+  protected void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
+    if (entity.isValueNull(property.getPropertyID()))
+      return;
+
+    final Double value = property.getPropertyType() == Type.DOUBLE ? (Double) entity.getValue(property.getPropertyID())
+            : (Integer) entity.getValue(property.getPropertyID());
+    if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
+      throw new RangeValidationException(property, value, "'" + property + "' " +
+              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
+    if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax()))
+      throw new RangeValidationException(property, value, "'" + property + "' " +
+              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
+  }
+
+  protected void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
+    if (!isPropertyNullable(entity, property) && entity.isValueNull(property.getPropertyID())) {
+      if (action == INSERT) {
+        if (!property.columnHasDefaultValue() || (property instanceof Property.PrimaryKeyProperty &&
+                !EntityRepository.isPrimaryKeyAutoGenerated(getEntityID())))
+          throw new NullValidationException(property,
+                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+      }
+      else {
+        throw new NullValidationException(property,
+                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+
+      }
+    }
+  }
+
   /**
    * Returns true if the given property accepts a null value, by default this
    * method simply returns <code>property.isNullable()</code>
@@ -942,20 +801,6 @@ public class EntityEditModel {
   @SuppressWarnings({"UnusedDeclaration"})
   protected boolean isPropertyNullable(final Entity entity, final Property property) {
     return property.isNullable();
-  }
-
-  /**
-   * Sets the value in the underlying entity
-   * @param property the property for which to set the value
-   * @param value the value
-   * @param validateType if true then type validation should be performed
-   * @return the value that was just set
-   */
-  @SuppressWarnings({"UnusedDeclaration"})
-  protected Object doSetValue(final Property property, final Object value, final boolean validateType) {
-    entity.setValue(property.getPropertyID(), value);
-
-    return value;
   }
 
   /**
@@ -973,6 +818,11 @@ public class EntityEditModel {
             && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
+  @Override
+  protected ChangeValueMap<String, Object> initializeMap() {
+    return new Entity(getEntityID());
+  }
+
   /**
    * Override to add event bindings
    */
@@ -982,16 +832,13 @@ public class EntityEditModel {
     evtAfterDelete.addListener(evtEntitiesChanged);
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);
-    entity.addPropertyListener(new Property.Listener() {
-      @Override
-      protected void propertyChanged(final Property.Event event) {
-        final Event propertyEvent = propertyChangeEventMap.get(event.getProperty());
-        if (propertyEvent != null)
-          propertyEvent.fire(event);
+    eventEntityChanged().addListener(new ActionListener() {
+      public void actionPerformed(final ActionEvent e) {
+        stEntityNull.setActive(getEntity().isNull());
       }
     });
     if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      entity.addPropertyListener(new Property.Listener() {
+      getEntity().addPropertyListener(new Property.Listener() {
         @Override
         protected void propertyChanged(final Property.Event event) {
           final String msg = getPropertyChangeDebugString(event);
@@ -1013,15 +860,6 @@ public class EntityEditModel {
       throw new RuntimeException("ComboBoxModel already associated with property: " + property);
 
     propertyComboBoxModels.put(property, model);
-  }
-
-  private void notifyPropertyValueSet(final Property.Event event) {
-    if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      final String msg = getPropertyChangeDebugString(event);
-      System.out.println(msg);
-      log.trace(msg);
-    }
-    getPropertyValueSetEvent(event.getProperty()).fire(event);
   }
 
   private static String getPropertyChangeDebugString(final Property.Event event) {

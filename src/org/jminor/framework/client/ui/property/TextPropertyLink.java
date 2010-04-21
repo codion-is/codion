@@ -160,7 +160,7 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
     final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
     final String defaultToolTip = textComponent.getToolTipText();
     updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
-    editModel.getPropertyChangeEvent(getProperty()).addListener(new ActionListener() {
+    editModel.getPropertyChangeEvent(getProperty().getPropertyID()).addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateValidityInfo(textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
       }

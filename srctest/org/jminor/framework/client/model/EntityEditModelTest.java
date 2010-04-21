@@ -55,7 +55,7 @@ public class EntityEditModelTest {
 
     employeeModel.getTableModel().refresh();
     assertTrue(editModel.isEntityNull());
-    assertFalse(editModel.getEntityModifiedState().isActive());
+    assertFalse(editModel.stateModified().isActive());
 
     employeeModel.getTableModel().setSelectedItemIndex(0);
 
@@ -65,10 +65,10 @@ public class EntityEditModelTest {
             editModel.getEntityCopy().propertyValuesEqual(employeeModel.getTableModel().getItemAtViewIndex(0)));
 
     assertFalse("Active entity is null after an entity is selected", editModel.isEntityNull());
-    assertFalse(editModel.getEntityModifiedState().isActive());
+    assertFalse(editModel.stateModified().isActive());
     employeeModel.getTableModel().getSelectionModel().clearSelection();
     assertTrue("Active entity is not null after selection is cleared", editModel.isEntityNull());
-    assertFalse(editModel.getEntityModifiedState().isActive());
+    assertFalse(editModel.stateModified().isActive());
     assertTrue("Active entity is not null after selection is cleared", editModel.getEntityCopy().isNull());
 
     employeeModel.getTableModel().setSelectedItemIndex(0);
@@ -82,7 +82,7 @@ public class EntityEditModelTest {
     final String name = "Mr. Mr";
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    assertTrue(editModel.getEntityModifiedState().isActive());
+    assertTrue(editModel.stateModified().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
     editModel.setValue(EmpDept.EMPLOYEE_NAME, name);
 
@@ -92,7 +92,7 @@ public class EntityEditModelTest {
 
     editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, originalCommission);
     assertTrue(editModel.isEntityModified());
-    assertTrue(editModel.getEntityModifiedState().isActive());
+    assertTrue(editModel.stateModified().isActive());
     editModel.setValue(EmpDept.EMPLOYEE_HIREDATE, originalHiredate);
     assertTrue(editModel.isEntityModified());
     editModel.setValue(EmpDept.EMPLOYEE_NAME, originalName);

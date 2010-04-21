@@ -1,6 +1,8 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
 
 /**
  * A ValueMap extension which keeps track of value modifications.
@@ -16,6 +18,12 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
    * @return an Event fired when a value changes
    */
   Event eventPropertyChanged();
+
+  /**
+   * Adds a ActionListener, this listener will be notified each time a value changes
+   * @param valueListener the ActionListener
+   */
+  void addValueListener(final ActionListener valueListener);
 
   /**
    * Returns the original value associated with the given key
@@ -51,6 +59,34 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
    * Reverts all value changes that have been made
    */
   void revertAll();
+
+  /**
+   * Removes all items and change history from this map
+   */
+  void clear();
+
+  /**
+   * After a call to this method this ValueMap should contain the same values and original values as the given map
+   * @param map the map to copy
+   */
+  void setAs(final ChangeValueMap<T, V> map);
+
+  /**
+   * Returns a copy of the given value, if the value is immutable then returning the same instance is fine
+   * @param value the value to copy
+   * @return a copy of the given value, or the same instance in case the value is immutable
+   */
+  V copyValue(final V value);
+
+  /**
+   * @return the keys mapping the values in this ChangeValueMap
+   */
+  Collection<T> getValueKeys();
+
+/**
+   * @return the keys mapping the original values in this ChangeValueMap
+   */
+  Collection<T> getOriginalValueKeys();
 
   /**
    * Returns an ActionEvent describing the value change.

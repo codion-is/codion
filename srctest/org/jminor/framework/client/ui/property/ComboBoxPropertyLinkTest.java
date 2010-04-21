@@ -38,6 +38,6 @@ public class ComboBoxPropertyLinkTest {
     assertEquals(comboBox.getSelectedItem(), department);
     department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
     comboBox.setSelectedItem(department);
-    assertEquals(model.getValue(fkProperty), department);
+    assertEquals(model.getValue(fkProperty.getPropertyID()), department);
   }
 }

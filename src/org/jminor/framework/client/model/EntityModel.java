@@ -389,7 +389,7 @@ public class EntityModel implements Refreshable {
       getTableModel().filterByReference(masterEntityID, selectedMasterEntities);
 
     for (final Property.ForeignKeyProperty foreignKeyProperty : EntityRepository.getForeignKeyProperties(getEntityID(), masterEntityID))
-      getEditModel().setValue(foreignKeyProperty, selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
+      getEditModel().setValue(foreignKeyProperty.getPropertyID(), selectedMasterEntities != null && selectedMasterEntities.size() > 0 ? selectedMasterEntities.get(0) : null);
   }
 
   /**
@@ -500,7 +500,7 @@ public class EntityModel implements Refreshable {
           final EntityEditModel detailEditModel = detailModel.getEditModel();
           if (detailEditModel.containsComboBoxModel(foreignKeyProperty))
             detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
-          detailEditModel.setValue(foreignKeyProperty, insertedEntity);
+          detailEditModel.setValue(foreignKeyProperty.getPropertyID(), insertedEntity);
         }
       }
     }
@@ -607,7 +607,7 @@ public class EntityModel implements Refreshable {
       }
     });
     if (!containsTableModel()) {
-      getEditModel().getEntityChangedEvent().addListener(new ActionListener() {
+      getEditModel().eventEntityChanged().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
           updateDetailModelsByActiveEntity();
         }
@@ -627,7 +627,7 @@ public class EntityModel implements Refreshable {
 
     getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
-        getEditModel().setEntity(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
+        getEditModel().setMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
       }
     });
 
@@ -635,8 +635,8 @@ public class EntityModel implements Refreshable {
       public void tableChanged(final TableModelEvent event) {
         //if the selected record is being updated via the table model refresh the one in the model
         if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
-          getEditModel().setEntity(null);
-          getEditModel().setEntity(getTableModel().getSelectedItem());
+          getEditModel().setMap(null);
+          getEditModel().setMap(getTableModel().getSelectedItem());
         }
       }
     });

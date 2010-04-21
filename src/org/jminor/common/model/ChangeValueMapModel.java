@@ -4,7 +4,9 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -157,8 +159,55 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
   /** {@inheritDoc} */
   public void revertAll() {
-    for (final T key : values.keySet())
+    for (final T key : getValueKeys())
       revertValue(key);
+  }
+
+  /** {@inheritDoc} */
+  public void clear() {
+    values.clear();
+    if (originalValues != null)
+      originalValues.clear();
+  }
+
+  /** {@inheritDoc} */
+  public void setAs(final ChangeValueMap<T, V> changeValueMap) {
+    clear();
+    if (changeValueMap != null) {
+      for (final T entryKey : changeValueMap.getValueKeys())
+        values.put(entryKey, copyValue(changeValueMap.getValue(entryKey)));
+      if (changeValueMap.isModified()) {
+        if (originalValues == null)
+          originalValues = new HashMap<T, V>();
+        for (final T entryKey : changeValueMap.getOriginalValueKeys())
+          originalValues.put(entryKey, copyValue(changeValueMap.getOriginalValue(entryKey)));
+      }
+    }
+    if (stModified != null)
+      stModified.setActive(isModified());
+  }
+
+  /** {@inheritDoc} */
+  public V copyValue(final V value) {
+    return value;
+  }
+
+  /** {@inheritDoc} */
+  public Collection<T> getOriginalValueKeys() {
+    return originalValues.keySet();
+  }
+
+  /** {@inheritDoc} */
+  public Collection<T> getValueKeys() {
+    return values.keySet();
+  }
+
+  /**
+   * Adds a ActionListener, this listener will be notified each time a property value changes
+   * @param valueListener the ActionListener
+   */
+  public void addValueListener(final ActionListener valueListener) {
+    eventPropertyChanged().addListener(valueListener);
   }
 
   /** {@inheritDoc} */

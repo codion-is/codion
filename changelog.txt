@@ -1354,3 +1354,7 @@
   EntityUtilTest.testJSON() was failing because JSON did not guarantee the order of items returned when parsing, entity equality tested instead
   Chinook demo, removed duplicates from ddl.sql
   BeanPropertyLink renamed to the more appropriate AbstractBeanPropertyLink
+  Entity.setAs() pushed up to ChangeValueMap
+  ChangeValueMap.copyValue() added
+  ChangeValueMap.getValueKeys() and getOriginalValueKeys() added
+  ChangeValueMapEditModel refactored from EntityEditModel
