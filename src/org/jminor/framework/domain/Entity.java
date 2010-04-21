@@ -584,6 +584,10 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     return defaultProxy;
   }
 
+  public static ActionEvent createValueChangeEvent(final Object source, final String entityID, final Property property, Object newValue, Object oldValue, boolean initialization) {
+    return new Property.Event(source, entityID, property, newValue, oldValue, true, initialization);
+  }
+
   static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
@@ -601,7 +605,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   @Override
   public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                          final boolean initialization) {
-    return EntityUtil.getValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
+    return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
   }
 
   @Override
@@ -947,7 +951,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     @Override
     public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                            final boolean initialization) {
-      return EntityUtil.getValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
+      return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }
 
     /**

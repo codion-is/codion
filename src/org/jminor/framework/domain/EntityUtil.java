@@ -10,7 +10,6 @@ import org.jminor.common.model.ValueProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -364,9 +363,5 @@ public class EntityUtil {
     }
 
     return null;
-  }
-
-  public static ActionEvent getValueChangeEvent(final Object source, final String entityID, final Property property, Object newValue, Object oldValue, boolean initialization) {
-    return new Property.Event(source, entityID, property, newValue, oldValue, true, initialization);
   }
 }

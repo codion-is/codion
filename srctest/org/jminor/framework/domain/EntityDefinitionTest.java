@@ -1,6 +1,6 @@
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.IdSource;
+import org.jminor.common.model.IdSource;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petstore.domain;
 
-import org.jminor.common.db.IdSource;
+import org.jminor.common.model.IdSource;
 import org.jminor.common.model.StringProvider;
 import org.jminor.common.model.Version;
 import org.jminor.framework.domain.EntityDefinition;

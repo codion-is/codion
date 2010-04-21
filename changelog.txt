@@ -1364,3 +1364,7 @@
   ChangeValueMapModel.setAs() bug fixed, it did not notify a value change
   ChangeValueMap.removeValueListener() added
   ValueMap.getValues() added
+  IdSource moved from common.db to common.model
+  EntityUtil.getValueChangeEvent() renamed to createValueChangeEvent() and moved to Entity
+  EntityTablePanel.showEntityMenu() added, SHIFT-click or CTR-V for value tree
+  UiUtil.addKeyEvent() overloaded

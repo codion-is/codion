@@ -4,7 +4,6 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.DbConnection;
-import org.jminor.common.db.IdSource;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.SimpleCriteria;
@@ -12,6 +11,7 @@ import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.model.IdSource;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;

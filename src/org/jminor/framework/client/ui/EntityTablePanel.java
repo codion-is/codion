@@ -27,25 +27,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
@@ -645,11 +627,16 @@ public class EntityTablePanel extends JPanel {
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null)
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
-    table.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_G,
-            KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "showPopupMenu");
-    table.getActionMap().put("showPopupMenu", new AbstractAction() {
+    UiUtil.addKeyEvent(table, JComponent.WHEN_FOCUSED, KeyEvent.VK_G,
+            KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, new AbstractAction("showPopupMenu") {
       public void actionPerformed(ActionEvent event) {
         popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
+      }
+    });
+    UiUtil.addKeyEvent(table, JComponent.WHEN_FOCUSED, KeyEvent.VK_V,
+            KeyEvent.CTRL_DOWN_MASK, new AbstractAction("showEntityMenu") {
+      public void actionPerformed(ActionEvent event) {
+        showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
       }
     });
   }
@@ -791,6 +778,9 @@ public class EntityTablePanel extends JPanel {
           final Action doubleClickAction = getTableDoubleClickAction();
           if (doubleClickAction != null)
             doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
+        }
+        else if (event.isShiftDown()) {
+          showEntityMenu(event.getPoint());
         }
       }
     };
@@ -951,6 +941,40 @@ public class EntityTablePanel extends JPanel {
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
   }
 
+  private JMenu createEntityMenu(final Entity entity, final String caption) {
+    final JMenu menu = new JMenu(caption + ": " );
+    if (entity == null)
+      return menu;
+
+    for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entity.getEntityID()))
+      menu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
+    for (final Property.ForeignKeyProperty property : EntityRepository.getForeignKeyProperties(entity.getEntityID()))
+      menu.add(createEntityMenu(entity.getEntityValue(property.getPropertyID()), "[FK] " + property.getCaption() + ": "
+              + entity.getValueAsString(property.getPropertyID())));
+    final List<Property> properties = new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false));
+    Collections.sort(properties, new Comparator<Property>() {
+      final Collator collator = Collator.getInstance();
+      public int compare(final Property propertyOne, final Property propertyTwo) {
+        return collator.compare(propertyOne.toString(), propertyTwo.toString());
+      }
+    });
+    for (final Property property : properties) {
+      if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
+        final String prefix = "[" + property.getPropertyType().toString().substring(0, 1)
+                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
+                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+        final String value = entity.getValueAsString(property.getPropertyID());
+        final boolean longValue = value != null && value.length() > 20;
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
+        if (longValue)
+          menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
+        menu.add(menuItem);
+      }
+    }
+
+    return menu;
+  }
+
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
       final String status = getTableModel().getStatusMessage();
@@ -1052,6 +1076,15 @@ public class EntityTablePanel extends JPanel {
     final TableColumn column = getTableModel().getTableColumn(property);
     getTableModel().getColumnModel().removeColumn(column);
     hiddenColumns.add(column);
+  }
+
+  private void showEntityMenu(final Point location) {
+    final Entity entity = getTableModel().getSelectedItem();
+    if (entity != null) {
+      final JPopupMenu popupMenu = new JPopupMenu();
+      popupMenu.add(createEntityMenu(entity, entity.toString()));
+      popupMenu.show(this, location.x, location.y);
+    }
   }
 
   /**

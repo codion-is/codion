@@ -619,7 +619,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   @Override
   public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
                                          final boolean initialization) {
-    return EntityUtil.getValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
+    return Entity.createValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
   }
 
   /**

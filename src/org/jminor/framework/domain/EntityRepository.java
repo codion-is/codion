@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.IdSource;
+import org.jminor.common.model.IdSource;
 import org.jminor.common.model.ValueMap;
 
 import java.util.ArrayList;

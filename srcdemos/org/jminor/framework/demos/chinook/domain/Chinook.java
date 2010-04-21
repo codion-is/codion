@@ -1,6 +1,6 @@
 package org.jminor.framework.demos.chinook.domain;
 
-import org.jminor.common.db.IdSource;
+import org.jminor.common.model.IdSource;
 import org.jminor.common.model.StringProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;

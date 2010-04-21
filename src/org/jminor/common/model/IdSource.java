@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.model;
 
 /**
- * A enum representing the possible ways of retrieving a new  ID value.<br>
+ * A enum representing the possible ways of retrieving a new ID value.<br>
  * User: Bjorn Darri<br>
  * Date: 12.1.2008<br>
  * Time: 20:42:34<br>
