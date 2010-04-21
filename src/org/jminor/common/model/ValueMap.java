@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import java.util.Collection;
+
 /**
  * An interface describing an object containing values mapped to keys.
  */
@@ -14,6 +16,12 @@ public interface ValueMap<T, V> {
    * @return the value mapped to the given key, null if no such mapping exists
    */
   V getValue(final T key);
+
+  /**
+   * Returns the values found in this map
+   * @return the values in this map
+   */
+  Collection<V> getValues();
 
   /**
    * Maps the given value to the given key, returning the old value if any

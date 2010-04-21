@@ -6,6 +6,7 @@ package org.jminor.common.model;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,22 +21,22 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   /**
    * Holds the values contained in this value map.
    */
-  protected final Map<T, V> values;
+  private final Map<T, V> values;
 
   /**
    * Holds the original value for keys which values have changed.
    */
-  protected Map<T, V> originalValues;
+  private Map<T, V> originalValues;
 
   /**
    * Holds the modified state of this value map.
    */
-  protected transient State stModified;
+  private transient State stModified;
 
   /**
    * Fired when a value changes.
    */
-  protected transient Event evtPropertyChanged;
+  private transient Event evtPropertyChanged;
 
   /**
    * Instantiate a new ValueMapModel with a default size of 10.
@@ -84,6 +85,11 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   }
 
   /** {@inheritDoc} */
+  public Collection<V> getValues() {
+    return new ArrayList<V>(values.values());
+  }
+
+  /** {@inheritDoc} */
   public V getOriginalValue(final T key) {
     if (isModified(key))
       return originalValues.get(key);
@@ -122,9 +128,9 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
     if (!initialization) {
       if (isModified(key) && Util.equal(getOriginalValue(key), value))
-        doRemoveOriginalValue(key);//we're back to the original value
+        removeOriginalValue(key);//we're back to the original value
       else if (!isModified(key))
-        doSetOriginalValue(key, oldValue);
+        setOriginalValue(key, oldValue);
 
       if (stModified != null)
         stModified.setActive(isModified());
@@ -141,7 +147,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   public V removeValue(final T key) {
     final V value = getValue(key);
     doRemoveValue(key);
-    doRemoveOriginalValue(key);
+    removeOriginalValue(key);
 
     if (stModified != null)
       stModified.setActive(isModified());
@@ -174,8 +180,12 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   public void setAs(final ChangeValueMap<T, V> changeValueMap) {
     clear();
     if (changeValueMap != null) {
-      for (final T entryKey : changeValueMap.getValueKeys())
-        values.put(entryKey, copyValue(changeValueMap.getValue(entryKey)));
+      for (final T entryKey : changeValueMap.getValueKeys()) {
+        final V value = copyValue(changeValueMap.getValue(entryKey));
+        values.put(entryKey, value);
+        if (evtPropertyChanged != null)
+          notifyValueChange(entryKey, value, true, null);
+      }
       if (changeValueMap.isModified()) {
         if (originalValues == null)
           originalValues = new HashMap<T, V>();
@@ -202,12 +212,15 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
     return values.keySet();
   }
 
-  /**
-   * Adds a ActionListener, this listener will be notified each time a property value changes
-   * @param valueListener the ActionListener
-   */
+  /** {@inheritDoc} */
   public void addValueListener(final ActionListener valueListener) {
     eventPropertyChanged().addListener(valueListener);
+  }
+
+  /** {@inheritDoc} */
+  public void removeValueListener(final ActionListener valueListener) {
+    if (evtPropertyChanged != null)
+      evtPropertyChanged.removeListener(valueListener);
   }
 
   /** {@inheritDoc} */
@@ -238,11 +251,11 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
     evtPropertyChanged.fire(getValueChangeEvent(key, value, oldValue, initialization));
   }
 
-  private void doSetOriginalValue(final T key, final V oldValue) {
+  protected void setOriginalValue(final T key, final V oldValue) {
     (originalValues == null ? (originalValues = new HashMap<T, V>()) : originalValues).put(key, oldValue);
   }
 
-  private void doRemoveOriginalValue(final T key) {
+  protected void removeOriginalValue(final T key) {
     if (originalValues != null)
       originalValues.remove(key);
   }

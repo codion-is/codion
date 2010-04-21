@@ -1361,3 +1361,6 @@
   EntityEditModel.clear() pushed up to ChangeValueMapEditModel
   ChangeValueMapEditModel.setMap() renamed to setValueMap()
   Entity overrides ChangeValueMap.clear() and clears the primary key as well
+  ChangeValueMapModel.setAs() bug fixed, it did not notify a value change
+  ChangeValueMap.removeValueListener() added
+  ValueMap.getValues() added

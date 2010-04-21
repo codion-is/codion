@@ -113,15 +113,6 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   }
 
   /**
-   * Removes the given PropertyListener
-   * @param propertyListener the PropertyListener to remove
-   */
-  public void removePropertyListener(final Property.Listener propertyListener) {
-    if (evtPropertyChanged != null)
-      evtPropertyChanged.removeListener(propertyListener);
-  }
-
-  /**
    * @param propertyID the property ID
    * @return true if the property has been modified since the entity was instantiated
    */
@@ -599,8 +590,9 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       entity.setValue(entry.getKey(), entry.getValue());
     }
     if (originalValues != null) {
-      entity.originalValues = new HashMap<String, Object>(originalValues);
-      entity.originalValues.putAll(originalValues);
+      for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
+        entity.setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
+      }
     }
 
     return entity;
@@ -804,14 +796,17 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
      * @return the first key property
      */
     public Property getFirstKeyProperty() {
-      return getProperties().size() > 0 ? getProperties().get(0) : null;
+      if (getProperties().size() == 0)
+        throw new RuntimeException("No properties defined for primary key");
+
+      return getProperties().get(0);
     }
 
     /**
      * @return the first value contained in this key, useful for single property keys
      */
     public Object getFirstKeyValue() {
-      return values.values().iterator().next();
+      return getValue(getFirstKeyProperty().getPropertyID());
     }
 
     /**
@@ -890,7 +885,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     public int hashCode() {
       if (hashCodeDirty) {
         int hash = 0;
-        for (final Object value : values.values())
+        for (final Object value : getValues())
           hash = hash + (value == null ? 0 : value.hashCode());
 
         hashCode = hash == 0 ? -Integer.MAX_VALUE : hash;//in case all values were null
@@ -964,9 +959,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
 
     public Key getOriginalCopy() {
       final Key copy = getCopy();
-      if (originalValues != null)
-        for (final String key : originalValues.keySet())
-          copy.setValue(key, copyPropertyValue(originalValues.get(key)));
+      copy.revertAll();
 
       return copy;
     }

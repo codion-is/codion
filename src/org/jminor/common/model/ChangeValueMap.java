@@ -26,6 +26,12 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
   void addValueListener(final ActionListener valueListener);
 
   /**
+   * Removes the given value listener
+   * @param valueListener the ActionListener to remove
+   */
+  void removeValueListener(final ActionListener valueListener);
+
+  /**
    * Returns the original value associated with the given key
    * @param key the key for which to retrieve the original value
    * @return the original value
