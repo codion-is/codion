@@ -18,6 +18,8 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,7 +38,9 @@ public class EntityLookupField extends JTextField {
   private final EntityLookupModel model;
 
   private Action enterAction;
+  private String searchHint = "";
   private Color defaultBackgroundColor = getBackground();
+  private Color defaultForegroundColor = getForeground();
 
   /**
    * Initializes a new EntityLookupField
@@ -76,12 +80,14 @@ public class EntityLookupField extends JTextField {
     setEnterAction(enterAction);
     setComponentPopupMenu(initializePopupMenu());
     addActionListener(initializeLookupAction());
-    new TextBeanPropertyLink(this, model, "searchString", String.class, model.eventSearchStringChanged());
-    model.eventSearchStringChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-        updateBackgroundColor();
-      }
-    });
+    addFocusListener(initializeFocusListener());
+    addEscapeListener();
+    bindProperty();
+  }
+
+  public void setSearchHint(final String text) {
+    this.searchHint = text == null ? "" : text;
+    updateState(false);
   }
 
   public EntityLookupModel getModel() {
@@ -164,6 +170,67 @@ public class EntityLookupField extends JTextField {
     }
   }
 
+  private void bindProperty() {
+    new TextBeanPropertyLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
+      @Override
+      protected void setUIPropertyValue(final Object propertyValue) {
+        super.setUIPropertyValue(propertyValue);
+        updateState(false);
+      }
+    };
+    getModel().eventSearchStringChanged().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        updateState(true);
+      }
+    });
+  }
+
+  private void addEscapeListener() {
+    getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+    getActionMap().put("cancel", new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        getModel().refreshSearchText();
+      }
+    });
+  }
+
+  private FocusListener initializeFocusListener() {
+    return new FocusListener() {
+      public void focusGained(final FocusEvent e) {
+        updateState(false);
+      }
+      public void focusLost(final FocusEvent e) {
+        if (getText().length() == 0)
+          getModel().setSelectedEntity(null);
+        updateState(false);
+      }
+    };
+  }
+
+  private void updateState(final boolean colorsOnly) {
+    if (colorsOnly)
+      udpateColors();
+    else
+      updateHint();
+  }
+
+  private void updateHint() {
+    final boolean hideHint = hasFocus() && getText().equals(searchHint);
+    final boolean showHint = !hasFocus() && getText().length() == 0;
+    if (hideHint)
+      setText("");
+    else if (showHint)
+      setText(searchHint);
+  }
+
+  private void udpateColors() {
+    final boolean defaultBackground = getModel().searchStringRepresentsSelected() || getText().equals(searchHint);
+    setBackground(defaultBackground ? defaultBackgroundColor : Color.LIGHT_GRAY);
+    final boolean specificForeground = !hasFocus() && getText().equals(searchHint);
+    setForeground(specificForeground ? Color.LIGHT_GRAY : defaultForegroundColor);
+  }
+
   private AbstractAction initializeLookupAction() {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       public void actionPerformed(final ActionEvent e) {
@@ -219,10 +286,6 @@ public class EntityLookupField extends JTextField {
     });
 
     return popupMenu;
-  }
-
-  private void updateBackgroundColor() {
-    setBackground(getModel().searchStringRepresentsSelected() ? defaultBackgroundColor : Color.LIGHT_GRAY);
   }
 
   private List<Entity> toEntityList(final Object[] selectedValues) {

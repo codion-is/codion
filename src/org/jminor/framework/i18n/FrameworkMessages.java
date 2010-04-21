@@ -139,6 +139,8 @@ public class FrameworkMessages {
   public static final String PROPERTY_VALUE_TOO_LARGE = "property_value_too_large";
   public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
 
+  public static final String LOOKUP_FIELD_SEARCH_HINT = "lookup_field_search_hint";
+
   public static String get(final String key) {
     return bundle.getString(key);
   }

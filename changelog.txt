@@ -1337,3 +1337,14 @@
   Chinook demo now uses IDENTITY for primary key columns, domain model changed accordingly
   EntityApplicationPanel, call to new Messages() to initialize OptionPane messages moved from static initializer to start of startApplication()
   EntityLookupField.defaultBackgroundColor field added
+  EntityEditModel.performNullValidation() bug fixed, if action was unknown no validation was performed
+  EntityLookupField.searchHint field added, along with related functionality
+  ChangeValueMapModel.setValue() bug fixed, it overwrote the original value each time making it last value
+  EntityEditPanel.controls field added
+  EntityEditPanel.setControl() added
+  EntityEditPanel.selectControl() added
+  NullValidationException added
+  RangeValidationException added
+  EntityPanel now handles ValidationExceptions gracefully, shows a message and puts focus on the control
+  UiUtil.showInDialog() dialogs now close on escape
+  EntityLookupField now cancels search text edit on escape

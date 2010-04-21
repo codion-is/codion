@@ -26,6 +26,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A UI component based on the EntityEditModel.
@@ -34,6 +36,7 @@ import java.text.SimpleDateFormat;
 public abstract class EntityEditPanel extends JPanel {
 
   private final EntityEditModel model;
+  private final Map<String, JComponent> controls = new HashMap<String, JComponent>();
 
   /**
    * The component that should receive focus when the UI is prepared for a new record
@@ -80,6 +83,23 @@ public abstract class EntityEditPanel extends JPanel {
       getEditModel().clear();
     if (requestDefaultFocus && isVisible())
       setDefaultFocus();
+  }
+
+  public void selectControl(final Property property) {
+    if (controls.containsKey(property.getPropertyID()))
+      controls.get(property.getPropertyID()).requestFocusInWindow();
+  }
+
+  /**
+   * Associates the given input component with the given property, this should
+   * be called for all controls
+   * @param propertyID the propertyID
+   * @param component the input control
+   */
+  protected void setControl(final String propertyID, final JComponent component) {
+    if (controls.containsKey(propertyID))
+      throw new RuntimeException("Control already set for property: " + propertyID);
+    controls.put(propertyID, component);
   }
 
   /**
@@ -196,8 +216,11 @@ public abstract class EntityEditPanel extends JPanel {
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    return EntityUiUtil.createTextArea(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
+    final JTextArea textArea = EntityUiUtil.createTextArea(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID),
             getEditModel(), rows, columns);
+    setControl(propertyID, textArea);
+
+    return textArea;
   }
 
   /**
@@ -398,7 +421,10 @@ public abstract class EntityEditPanel extends JPanel {
   protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
                                                       final boolean includeButton, final State enabledState,
                                                       final LinkType linkType) {
-    return EntityUiUtil.createDateInputPanel(property, getEditModel(), dateFormat, linkType, includeButton, enabledState);
+    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, getEditModel(), dateFormat, linkType, includeButton, enabledState);
+    setControl(property.getPropertyID(), panel.getInputField());
+
+    return panel;
   }
 
   /**
@@ -544,8 +570,11 @@ public abstract class EntityEditPanel extends JPanel {
   protected final JTextField createTextField(final Property property, final LinkType linkType,
                                              final String maskString, final boolean immediateUpdate,
                                              final State enabledState, final boolean valueIncludesLiteralCharacters) {
-    return EntityUiUtil.createTextField(property, getEditModel(), linkType, maskString, immediateUpdate,
+    final JTextField txt = EntityUiUtil.createTextField(property, getEditModel(), linkType, maskString, immediateUpdate,
             null, enabledState, valueIncludesLiteralCharacters);
+    setControl(property.getPropertyID(), txt);
+
+    return txt;
   }
 
   /**
@@ -607,7 +636,10 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final JCheckBox createCheckBox(final Property property, final State enabledState,
                                            final boolean includeCaption) {
-    return EntityUiUtil.createCheckBox(property, getEditModel(), enabledState, includeCaption);
+    final JCheckBox box = EntityUiUtil.createCheckBox(property, getEditModel(), enabledState, includeCaption);
+    setControl(property.getPropertyID(), box);
+
+    return box;
   }
 
   /**
@@ -649,7 +681,10 @@ public abstract class EntityEditPanel extends JPanel {
    * @return JComboBox for the given property
    */
   protected final JComboBox createBooleanComboBox(final Property property, final State enabledState) {
-    return EntityUiUtil.createBooleanComboBox(property, getEditModel(), enabledState);
+    final JComboBox ret = EntityUiUtil.createBooleanComboBox(property, getEditModel(), enabledState);
+    setControl(property.getPropertyID(), ret);
+
+    return ret;
   }
 
   /**
@@ -707,6 +742,7 @@ public abstract class EntityEditPanel extends JPanel {
     final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState);
     if (maximumMatch)
       MaximumMatch.enable(comboBox);
+    setControl(property.getPropertyID(), comboBox);
 
     return comboBox;
   }
@@ -743,7 +779,10 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                          final State enabledState) {
-    return EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState, true);
+    final SteppedComboBox ret = EntityUiUtil.createComboBox(property, getEditModel(), comboBoxModel, enabledState, true);
+    setControl(property.getPropertyID(), ret);
+
+    return ret;
   }
 
   /**
@@ -840,7 +879,10 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,
                                                          final String nullValueString, final boolean editable) {
-    return EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValueString, editable);
+    final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, getEditModel(), null, enabledState, nullValueString, editable);
+    setControl(property.getPropertyID(), ret);
+
+    return ret;
   }
 
   /**
@@ -885,7 +927,10 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                       final State enabledState) {
-    return EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEditModel(), enabledState);
+    final EntityComboBox ret = EntityUiUtil.createEntityComboBox(foreignKeyProperty, getEditModel(), enabledState);
+    setControl(foreignKeyProperty.getPropertyID(), ret);
+
+    return ret;
   }
 
   /**
@@ -923,7 +968,10 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                             final String... searchPropertyIDs) {
-    return EntityUiUtil.createEntityLookupField(foreignKeyProperty, getEditModel(), searchPropertyIDs);
+    final EntityLookupField ret = EntityUiUtil.createEntityLookupField(foreignKeyProperty, getEditModel(), searchPropertyIDs);
+    setControl(foreignKeyProperty.getPropertyID(), ret);
+
+    return ret;
   }
 
   /**
@@ -941,7 +989,10 @@ public abstract class EntityEditPanel extends JPanel {
    * @return an uneditable JTextField bound to the property
    */
   protected final JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return EntityUiUtil.createEntityField(foreignKeyProperty, getEditModel());
+    final JTextField ret = EntityUiUtil.createEntityField(foreignKeyProperty, getEditModel());
+    setControl(foreignKeyProperty.getPropertyID(), ret);
+
+    return ret;
   }
 
   /**
@@ -965,7 +1016,10 @@ public abstract class EntityEditPanel extends JPanel {
    */
   protected final JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                                                 final EntityTableModel lookupModel) {
-    return EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
+    final JPanel ret = EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
+    setControl(foreignKeyProperty.getPropertyID(), ret);//todo get my hands on the text field
+
+    return ret;
   }
 
   /**

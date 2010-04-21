@@ -121,7 +121,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
     if (!initialization) {
       if (isModified(key) && Util.equal(getOriginalValue(key), value))
         doRemoveOriginalValue(key);//we're back to the original value
-      else
+      else if (!isModified(key))
         doSetOriginalValue(key, oldValue);
 
       if (stModified != null)

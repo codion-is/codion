@@ -620,7 +620,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   }
 
   public void handleException(final Throwable throwable) {
-    handleException(throwable, this);
+    if (throwable instanceof ValidationException) {
+      final Property property = ((ValidationException) throwable).getProperty();
+      JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
+              JOptionPane.ERROR_MESSAGE);
+      getEditPanel().selectControl(property);
+    }
+    else {
+      handleException(throwable, this);
+    }
   }
 
   /**

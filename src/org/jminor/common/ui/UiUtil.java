@@ -567,6 +567,13 @@ public class UiUtil {
         }
       }
     };
+    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+    dialog.getRootPane().getActionMap().put("cancel", new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        dialog.dispose();
+      }
+    });
     if (includeButtonPanel) {
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
       final JButton okButton = new JButton(ok);

@@ -320,6 +320,8 @@ public class EntityUiUtil {
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
     new LookupPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
+    if (Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
+      lookupField.setSearchHint(FrameworkMessages.get(FrameworkMessages.LOOKUP_FIELD_SEARCH_HINT));
     UiUtil.selectAllOnFocusGained(lookupField);
 
     return lookupField;

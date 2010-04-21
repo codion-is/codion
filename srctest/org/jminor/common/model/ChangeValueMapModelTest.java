@@ -41,6 +41,13 @@ public class ChangeValueMapModelTest {
     assertTrue(model.isModified());
     assertTrue(model.isModified(key));
 
+    model.setValue(key, 3);
+    assertTrue(model.containsValue(key));
+    assertEquals(Integer.valueOf(3), model.getValue(key));
+    assertEquals(Integer.valueOf(1), model.getOriginalValue(key));
+    assertTrue(model.isModified());
+    assertTrue(model.isModified(key));
+
     model.revertValue(key);
     assertEquals(Integer.valueOf(1), model.getValue(key));
     assertFalse(model.isModified());
