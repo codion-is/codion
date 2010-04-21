@@ -66,7 +66,6 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   private final Event evtBeforeDelete = new Event();
   private final Event evtAfterDelete = new Event();
   private final Event evtEntitiesChanged = new Event();
-  private final Event evtModelCleared = new Event();
 
   private final State stEntityNull = new State(true);
   private final State stAllowInsert = new State(true);
@@ -216,15 +215,6 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
    */
   public boolean isEntityNull() {
     return ((Entity) getValueMap()).isNull();
-  }
-
-  /**
-   * Clears the model by setting the active entity to null
-   * @see #evtModelCleared
-   */
-  public final void clear() {
-    setMap(null);
-    evtModelCleared.fire();
   }
 
   /**
@@ -696,13 +686,6 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
    */
   public Event eventEntitiesChanged() {
     return evtEntitiesChanged;
-  }
-
-  /**
-   * @return an Event fired when the model has been cleared
-   */
-  public Event eventModelCleared() {
-    return evtModelCleared;
   }
 
   /**

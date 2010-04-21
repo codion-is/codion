@@ -1358,3 +1358,4 @@
   ChangeValueMap.copyValue() added
   ChangeValueMap.getValueKeys() and getOriginalValueKeys() added
   ChangeValueMapEditModel refactored from EntityEditModel
+  EntityEditModel.clear() pushed up to ChangeValueMapEditModel

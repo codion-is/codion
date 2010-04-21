@@ -10,8 +10,9 @@ import java.util.Map;
 
 public abstract class ChangeValueMapEditModel<T, V> {
 
-  protected final ChangeValueMap<T, V> valueMap;
+  private final ChangeValueMap<T, V> valueMap;
   private final Event evtEntityChanged = new Event();
+  private final Event evtModelCleared = new Event();
 
   /**
    * The name of this ValueMap.
@@ -19,14 +20,14 @@ public abstract class ChangeValueMapEditModel<T, V> {
   private final String name;
 
   /**
-   * Holds events signaling property changes made to the active entity via the ui
+   * Holds events signaling value changes made via the ui
    */
-  private final Map<T, Event> propertyValueSetEventMap = new HashMap<T, Event>();
+  private final Map<T, Event> valueSetEventMap = new HashMap<T, Event>();
 
   /**
-   * Holds events signaling property changes made to the active entity, via the model or ui
+   * Holds events signaling value changes made via the model or ui
    */
-  private final Map<T, Event> propertyChangeEventMap = new HashMap<T, Event>();
+  private final Map<T, Event> valueChangeEventMap = new HashMap<T, Event>();
 
   public ChangeValueMapEditModel() {
     this(null);
@@ -40,7 +41,7 @@ public abstract class ChangeValueMapEditModel<T, V> {
   }
 
   /**
-   * @return the name of this ChangeValueMap, may be null
+   * @return the name of this ChangeValueMapEditModel, may be null
    */
   public String getName() {
     return name;
@@ -57,6 +58,11 @@ public abstract class ChangeValueMapEditModel<T, V> {
 
     if (!Util.equal(newValue, oldValue))
       notifyPropertyValueSet(key, getValueChangeEvent(key, newValue, oldValue, initialization));
+  }
+
+  public void clear() {
+    valueMap.clear();
+    evtModelCleared.fire();
   }
 
   /**
@@ -88,10 +94,10 @@ public abstract class ChangeValueMapEditModel<T, V> {
    * @see #setValue(Object, Object)
    */
   public Event getPropertyValueSetEvent(final T key) {
-    if (!propertyValueSetEventMap.containsKey(key))
-      propertyValueSetEventMap.put(key, new Event());
+    if (!valueSetEventMap.containsKey(key))
+      valueSetEventMap.put(key, new Event());
 
-    return propertyValueSetEventMap.get(key);
+    return valueSetEventMap.get(key);
   }
 
   /**
@@ -99,10 +105,10 @@ public abstract class ChangeValueMapEditModel<T, V> {
    * @return an Event object which fires when the value of <code>key</code> changes
    */
   public Event getPropertyChangeEvent(final T key) {
-    if (!propertyChangeEventMap.containsKey(key))
-      propertyChangeEventMap.put(key, new Event());
+    if (!valueChangeEventMap.containsKey(key))
+      valueChangeEventMap.put(key, new Event());
 
-    return propertyChangeEventMap.get(key);
+    return valueChangeEventMap.get(key);
   }
 
   /**
@@ -110,6 +116,13 @@ public abstract class ChangeValueMapEditModel<T, V> {
    */
   public Event eventEntityChanged() {
     return evtEntityChanged;
+  }
+
+  /**
+   * @return an Event fired when the model has been cleared
+   */
+  public Event eventModelCleared() {
+    return evtModelCleared;
   }
 
   public State stateModified() {
@@ -125,7 +138,7 @@ public abstract class ChangeValueMapEditModel<T, V> {
       @SuppressWarnings({"unchecked"})
       public void actionPerformed(final ActionEvent event) {
         final T key = (T) event.getSource();
-        final Event propertyEvent = propertyChangeEventMap.get(key);
+        final Event propertyEvent = valueChangeEventMap.get(key);
         if (propertyEvent != null)
           propertyEvent.fire(event);
       }
