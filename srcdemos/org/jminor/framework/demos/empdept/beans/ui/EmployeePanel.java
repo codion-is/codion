@@ -11,6 +11,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -32,13 +33,13 @@ public class EmployeePanel extends EntityPanel {
     return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
-        final JTextField txtName = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_NAME));
-        final JTextField txtJob = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_JOB));
-        final JComboBox boxManager = createEntityComboBox(EmpDept.EMPLOYEE_MGR_FK);
-        final JComboBox boxDepartment = createEntityComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
-        final JTextField txtSalary = createTextField(EmpDept.EMPLOYEE_SALARY);
-        final JTextField txtCommission = createTextField(EmpDept.EMPLOYEE_COMMISSION);
-        final DateInputPanel pnlHiredate = createDateInputPanel(EmpDept.EMPLOYEE_HIREDATE);
+        final JTextField txtName = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_NAME));
+        final JTextField txtJob = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_JOB));
+        final JComboBox boxManager = createEntityComboBox(EMPLOYEE_MGR_FK);
+        final JComboBox boxDepartment = createEntityComboBox(EMPLOYEE_DEPARTMENT_FK);
+        final JTextField txtSalary = createTextField(EMPLOYEE_SALARY);
+        final JTextField txtCommission = createTextField(EMPLOYEE_COMMISSION);
+        final DateInputPanel pnlHiredate = createDateInputPanel(EMPLOYEE_HIREDATE);
 
         setDefaultFocusComponent(txtName);
 
@@ -48,15 +49,15 @@ public class EmployeePanel extends EntityPanel {
 
         setLayout(new FlexibleGridLayout(3,3,5,5,true,false));
 
-        add(createPropertyPanel(EmpDept.EMPLOYEE_NAME, txtName));
-        add(createPropertyPanel(EmpDept.EMPLOYEE_JOB, txtJob));
-        add(createPropertyPanel(EmpDept.EMPLOYEE_DEPARTMENT_FK, boxDepartment));
+        add(createPropertyPanel(EMPLOYEE_NAME, txtName));
+        add(createPropertyPanel(EMPLOYEE_JOB, txtJob));
+        add(createPropertyPanel(EMPLOYEE_DEPARTMENT_FK, boxDepartment));
 
-        add(createPropertyPanel(EmpDept.EMPLOYEE_MGR_FK, boxManager));
-        add(createPropertyPanel(EmpDept.EMPLOYEE_SALARY, txtSalary));
-        add(createPropertyPanel(EmpDept.EMPLOYEE_COMMISSION, txtCommission));
+        add(createPropertyPanel(EMPLOYEE_MGR_FK, boxManager));
+        add(createPropertyPanel(EMPLOYEE_SALARY, txtSalary));
+        add(createPropertyPanel(EMPLOYEE_COMMISSION, txtCommission));
 
-        add(createPropertyPanel(EmpDept.EMPLOYEE_HIREDATE, pnlHiredate));
+        add(createPropertyPanel(EMPLOYEE_HIREDATE, pnlHiredate));
         add(new JLabel());
         add(new JLabel());
       }

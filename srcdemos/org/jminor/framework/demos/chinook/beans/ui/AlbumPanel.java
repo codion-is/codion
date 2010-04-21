@@ -9,7 +9,8 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.TrackModel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
+import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTISTID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -33,13 +34,13 @@ public class AlbumPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new GridLayout(2, 1, 5, 5));
-        final JTextField txtArtists = createEntityLookupField(Chinook.ALBUM_ARTISTID_FK);
+        final JTextField txtArtists = createEntityLookupField(ALBUM_ARTISTID_FK);
         txtArtists.setColumns(18);
         setDefaultFocusComponent(txtArtists);
-        final JTextField txtTitle = createTextField(Chinook.ALBUM_TITLE);
+        final JTextField txtTitle = createTextField(ALBUM_TITLE);
         txtTitle.setColumns(18);
-        add(createPropertyPanel(Chinook.ALBUM_ARTISTID_FK, txtArtists));
-        add(createPropertyPanel(Chinook.ALBUM_TITLE, txtTitle));
+        add(createPropertyPanel(ALBUM_ARTISTID_FK, txtArtists));
+        add(createPropertyPanel(ALBUM_TITLE, txtTitle));
       }
     };
   }

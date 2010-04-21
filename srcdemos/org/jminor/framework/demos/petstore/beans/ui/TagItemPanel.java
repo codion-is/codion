@@ -13,7 +13,8 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.demos.petstore.beans.TagModel;
-import org.jminor.framework.demos.petstore.domain.Petstore;
+import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
+import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
 
 import java.awt.Dimension;
 
@@ -34,13 +35,13 @@ public class TagItemPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(2,1,5,5));
-        EntityComboBox box = createEntityComboBox(Petstore.TAG_ITEM_ITEM_FK);
+        EntityComboBox box = createEntityComboBox(TAG_ITEM_ITEM_FK);
         setDefaultFocusComponent(box);
         box.setPopupWidth(240);
         box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
-        add(createPropertyPanel(Petstore.TAG_ITEM_ITEM_FK, box));
-        box = createEntityComboBox(Petstore.TAG_ITEM_TAG_FK);
-        add(createPropertyPanel(Petstore.TAG_ITEM_TAG_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
+        add(createPropertyPanel(TAG_ITEM_ITEM_FK, box));
+        box = createEntityComboBox(TAG_ITEM_TAG_FK);
+        add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEntityComboBoxNewRecordPanel(box,
                 new EntityPanelProvider("Tags", TagModel.class, TagPanel.class), false)));
       }
     };

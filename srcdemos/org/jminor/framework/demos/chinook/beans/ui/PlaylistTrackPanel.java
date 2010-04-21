@@ -7,7 +7,8 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
+import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLISTID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACKID_FK;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -30,12 +31,12 @@ public class PlaylistTrackPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new GridLayout(2, 1, 5, 5));
-        final JComboBox boxPlaylist = createEntityComboBox(Chinook.PLAYLISTTRACK_PLAYLISTID_FK);
+        final JComboBox boxPlaylist = createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
         setDefaultFocusComponent(boxPlaylist);
-        final JTextField txtTrack = createEntityLookupField(Chinook.PLAYLISTTRACK_TRACKID_FK);
-        txtTrack.setColumns(35);
-        add(createPropertyPanel(Chinook.PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
-        add(createPropertyPanel(Chinook.PLAYLISTTRACK_TRACKID_FK, txtTrack));
+        final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
+        txtTrack.setColumns(30);
+        add(createPropertyPanel(PLAYLISTTRACK_PLAYLISTID_FK, boxPlaylist));
+        add(createPropertyPanel(PLAYLISTTRACK_TRACKID_FK, txtTrack));
       }
     };
   }

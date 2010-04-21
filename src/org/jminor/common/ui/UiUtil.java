@@ -567,9 +567,7 @@ public class UiUtil {
         }
       }
     };
-    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-    dialog.getRootPane().getActionMap().put("cancel", new AbstractAction() {
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
       public void actionPerformed(ActionEvent e) {
         dialog.dispose();
       }
@@ -619,9 +617,7 @@ public class UiUtil {
         dialog.dispose();
       }
     };
-    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "closeDialog");
-    dialog.getRootPane().getActionMap().put("closeDialog", disposeActionListener);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, disposeActionListener);
     if (closeEvent != null)
       closeEvent.addListener(disposeActionListener);
 
@@ -705,6 +701,13 @@ public class UiUtil {
     return null;
   }
 
+  public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
+    final Object name = action.getValue(Action.NAME);
+    component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(keyEvent, 0), name);
+    component.getActionMap().put(name, action);
+  }
+
   public static void addLookupDialog(final JTextField txtField, final ValueListProvider valueListProvider) {
     txtField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK), "valueLookup");
     txtField.getActionMap().put("valueLookup", new AbstractAction() {
@@ -748,9 +751,7 @@ public class UiUtil {
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
     btnOk.setMnemonic(okMnemonic.charAt(0));
     btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-    dialog.getRootPane().getActionMap().put("cancel", cancelAction);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
     list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     list.addMouseListener(new MouseAdapter() {

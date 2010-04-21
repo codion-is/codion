@@ -9,7 +9,7 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.chinook.beans.AlbumModel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
+import static org.jminor.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -33,10 +33,10 @@ public class ArtistPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new GridLayout(1, 1, 5, 5));
-        final JTextField txtName = createTextField(Chinook.ARTIST_NAME);
+        final JTextField txtName = createTextField(ARTIST_NAME);
         txtName.setColumns(18);
         setDefaultFocusComponent(txtName);
-        add(createPropertyPanel(Chinook.ARTIST_NAME, txtName));
+        add(createPropertyPanel(ARTIST_NAME, txtName));
       }
     };
   }

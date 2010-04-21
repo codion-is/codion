@@ -23,7 +23,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.io.IOException;
@@ -234,14 +233,11 @@ public class ExceptionDialog extends JDialog {
   }
 
   private void initUI() {
-    addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyPressed(KeyEvent e) {
-       if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-          close();
+    UiUtil.addKeyEvent(this.getRootPane(), KeyEvent.VK_ESCAPE, new AbstractAction("close") {
+      public void actionPerformed(final ActionEvent e) {
+        close();
       }
     });
-
     final JPanel basePanel = new JPanel(new BorderLayout(5,5));
     basePanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);

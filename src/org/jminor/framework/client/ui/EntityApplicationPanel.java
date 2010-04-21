@@ -526,9 +526,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       };
       final JButton btnClose = new JButton(closeAction);
       btnClose.setMnemonic('L');
-      dialog.getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-              KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
-      dialog.getRootPane().getActionMap().put("close", closeAction);
+      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, closeAction);
       final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
       buttonPanel.add(btnClose);
       dialog.add(buttonPanel, BorderLayout.SOUTH);

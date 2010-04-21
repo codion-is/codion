@@ -140,9 +140,7 @@ public class EntityLookupField extends JTextField {
       final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
       btnOk.setMnemonic(okMnemonic.charAt(0));
       btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-      dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-              KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-      dialog.getRootPane().getActionMap().put("cancel", cancelAction);
+      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, cancelAction);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
@@ -186,11 +184,10 @@ public class EntityLookupField extends JTextField {
   }
 
   private void addEscapeListener() {
-    getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-    getActionMap().put("cancel", new AbstractAction() {
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, new AbstractAction("cancel") {
       public void actionPerformed(ActionEvent e) {
         getModel().refreshSearchText();
+        selectAll();
       }
     });
   }

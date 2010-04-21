@@ -10,7 +10,7 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.TagItemModel;
-import org.jminor.framework.demos.petstore.domain.Petstore;
+import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
 import javax.swing.JTextField;
 import java.util.Arrays;
@@ -38,10 +38,10 @@ public class TagPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(1,1,5,5));
-        final JTextField txt = createTextField(Petstore.TAG_TAG);
+        final JTextField txt = createTextField(TAG_TAG);
         setDefaultFocusComponent(txt);
         txt.setColumns(16);
-        add(createPropertyPanel(Petstore.TAG_TAG, txt));
+        add(createPropertyPanel(TAG_TAG, txt));
       }
     };
   }

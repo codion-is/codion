@@ -15,6 +15,7 @@ import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 import org.jminor.framework.domain.EntityUtil;
 
 import javax.swing.JTextField;
@@ -63,9 +64,9 @@ public class DepartmentPanel extends EntityPanel {
     return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
-        final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID);
-        final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-        final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
+        final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
+        final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
+        final JTextField txtDepartmentLocation = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
 
         setDefaultFocusComponent(txtDepartmentNumber);
         txtDepartmentNumber.setColumns(10);
@@ -85,9 +86,9 @@ public class DepartmentPanel extends EntityPanel {
         });
 
         setLayout(new GridLayout(3,1,5,5));
-        add(createPropertyPanel(EmpDept.DEPARTMENT_ID, txtDepartmentNumber));
-        add(createPropertyPanel(EmpDept.DEPARTMENT_NAME, txtDepartmentName));
-        add(createPropertyPanel(EmpDept.DEPARTMENT_LOCATION, txtDepartmentLocation));
+        add(createPropertyPanel(DEPARTMENT_ID, txtDepartmentNumber));
+        add(createPropertyPanel(DEPARTMENT_NAME, txtDepartmentName));
+        add(createPropertyPanel(DEPARTMENT_LOCATION, txtDepartmentLocation));
       }
     };
   }

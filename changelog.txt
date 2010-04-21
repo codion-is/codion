@@ -1348,3 +1348,7 @@
   EntityPanel now handles ValidationExceptions gracefully, shows a message and puts focus on the control
   UiUtil.showInDialog() dialogs now close on escape
   EntityLookupField now cancels search text edit on escape
+  PropertySearchModel.bindLookupModelEvents() bug fixed, it did not handle an empty entity lookup model correctly by setting selected item to null
+  UiUtil.addKeyEvent() added, used throughout
+  Static imports used for domain classes in demo entity panels
+  EntityUtilTest.testJSON() was failing because JSON did not guarantee the order of items returned when parsing, entity equality tested instead

@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class EntityUtilTest {
 
@@ -28,8 +28,8 @@ public class EntityUtilTest {
     dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
 
     String dept10JSON = "{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}}";
-    String json = EntityUtil.getJSONString(Arrays.asList(dept10));
-    assertEquals(dept10JSON, json);
+    String jsonString = EntityUtil.getJSONString(Arrays.asList(dept10));
+    assertEquals(dept10JSON, jsonString);
 
     final Entity dept20 = new Entity(EmpDept.T_DEPARTMENT);
     dept20.setValue(EmpDept.DEPARTMENT_ID, -20);
@@ -37,8 +37,8 @@ public class EntityUtilTest {
     dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
 
     String dept20JSON = "{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}}";
-    json = EntityUtil.getJSONString(Arrays.asList(dept20));
-    assertEquals(dept20JSON, json);
+    jsonString = EntityUtil.getJSONString(Arrays.asList(dept20));
+    assertEquals(dept20JSON, jsonString);
 
     final Entity mgr30 = new Entity(EmpDept.T_EMPLOYEE);
     mgr30.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
@@ -68,8 +68,8 @@ public class EntityUtilTest {
     emp1.setValue(EmpDept.EMPLOYEE_NAME, "A NAME");
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
     String emp1JSON = "{\"employee" + EmpDept.version + " PK[empno:-500]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-500,\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-30]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-30,\"mgr_fk\":null,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}}";
-    json = EntityUtil.getJSONString(Arrays.asList(emp1));
-    assertEquals(emp1JSON, json);
+    jsonString = EntityUtil.getJSONString(Arrays.asList(emp1));
+    assertEquals(emp1JSON, jsonString);
 
     final Date newHiredate = format.parse("2002-11-21");
     emp1.setValue(EmpDept.EMPLOYEE_COMMISSION, 550.55);
@@ -81,8 +81,8 @@ public class EntityUtilTest {
     emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, newHiredate);
 
     emp1JSON = "{\"employee" + EmpDept.version + " PK[empno:-500]\":{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}},\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-30]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-30,\"mgr_fk\":null,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"propertyValues\":{\"hiredate\":\"2002-11-21\",\"comm\":550.55,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-500,\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-50]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-50,\"mgr_fk\":null,\"ename\":\"MGR2 NAME\",\"job\":\"MGR2\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"employee" + EmpDept.version + "\"}}";
-    json = EntityUtil.getJSONString(Arrays.asList(emp1));
-    assertEquals(emp1JSON, json);
+    jsonString = EntityUtil.getJSONString(Arrays.asList(emp1));
+    assertEquals(emp1JSON, jsonString);
 
     final Entity emp2 = new Entity(EmpDept.T_EMPLOYEE);
     emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 300.5);
@@ -94,11 +94,16 @@ public class EntityUtilTest {
     emp2.setValue(EmpDept.EMPLOYEE_NAME, "NAME");
     emp2.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
 
-    final String emp12JSON = "{\"employee" + EmpDept.version + " PK[empno:-200]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":300.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-200,\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-50]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-50,\"mgr_fk\":null,\"ename\":\"MGR2 NAME\",\"job\":\"MGR2\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"NAME\",\"job\":\"JOB\",\"deptno\":-10,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"employee" + EmpDept.version + "\"},\"employee" + EmpDept.version + " PK[empno:-500]\":{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}},\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-30]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-30,\"mgr_fk\":null,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"propertyValues\":{\"hiredate\":\"2002-11-21\",\"comm\":550.55,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-500,\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-50]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-50,\"mgr_fk\":null,\"ename\":\"MGR2 NAME\",\"job\":\"MGR2\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"employee" + EmpDept.version + "\"}}";
-    json = EntityUtil.getJSONString(Arrays.asList(emp1, emp2));
-    assertEquals(emp12JSON, json);
+    //final String emp12JSON = "{\"employee" + EmpDept.version + " PK[empno:-200]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":300.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-200,\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-50]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-50,\"mgr_fk\":null,\"ename\":\"MGR2 NAME\",\"job\":\"MGR2\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"NAME\",\"job\":\"JOB\",\"deptno\":-10,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"employee" + EmpDept.version + "\"},\"employee" + EmpDept.version + " PK[empno:-500]\":{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-10]\":{\"propertyValues\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"department" + EmpDept.version + "\"}},\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-30]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-30,\"mgr_fk\":null,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"propertyValues\":{\"hiredate\":\"2002-11-21\",\"comm\":550.55,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-500,\"mgr_fk\":{\"employee" + EmpDept.version + " PK[empno:-50]\":{\"propertyValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"department" + EmpDept.version + " PK[deptno:-20]\":{\"propertyValues\":{\"dname\":\"ADEPT\",\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"department" + EmpDept.version + "\"}},\"empno\":-50,\"mgr_fk\":null,\"ename\":\"MGR2 NAME\",\"job\":\"MGR2\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"employee" + EmpDept.version + "\"}},\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"employee" + EmpDept.version + "\"}}";
+    final List<Entity> entityList = Arrays.asList(emp1, emp2);
+    jsonString = EntityUtil.getJSONString(entityList);
+    final List<Entity> parsedEntities = EntityUtil.parseJSONString(jsonString);
+    for (final Entity entity : entityList) {
+      final Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
+      assertTrue(parsed.propertyValuesEqual(entity));
+    }
 
-    final Collection<Entity> entities = EntityUtil.parseJSONString(emp1JSON);
+    final List<Entity> entities = EntityUtil.parseJSONString(emp1JSON);
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
     assertTrue(emp1.propertyValuesEqual(parsedEntity));

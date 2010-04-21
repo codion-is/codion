@@ -10,7 +10,7 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.ProductModel;
-import org.jminor.framework.demos.petstore.domain.Petstore;
+import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
 import java.util.Arrays;
@@ -38,14 +38,14 @@ public class CategoryPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(2,2,5,5));
-        final JTextField txtName = createTextField(Petstore.CATEGORY_NAME);
+        final JTextField txtName = createTextField(CATEGORY_NAME);
         setDefaultFocusComponent(txtName);
         txtName.setColumns(10);
-        add(createPropertyPanel(Petstore.CATEGORY_NAME, txtName));
-        final JTextField txtDesc = createTextField(Petstore.CATEGORY_DESCRIPTION);
+        add(createPropertyPanel(CATEGORY_NAME, txtName));
+        final JTextField txtDesc = createTextField(CATEGORY_DESCRIPTION);
         txtDesc.setColumns(18);
-        add(createPropertyPanel(Petstore.CATEGORY_DESCRIPTION, txtDesc));
-        add(createPropertyPanel(Petstore.CATEGORY_IMAGE_URL, createTextField(Petstore.CATEGORY_IMAGE_URL)));
+        add(createPropertyPanel(CATEGORY_DESCRIPTION, txtDesc));
+        add(createPropertyPanel(CATEGORY_IMAGE_URL, createTextField(CATEGORY_IMAGE_URL)));
       }
     };
   }

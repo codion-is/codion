@@ -150,7 +150,8 @@ public class PropertySearchModel extends AbstractSearchModel {
       public void actionPerformed(ActionEvent event) {
         try {
           updatingModel = true;
-          setUpperBound(new ArrayList<Entity>(entityLookupModel.getSelectedEntities()));
+          final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
+          setUpperBound(selectedEntities.size() == 0 ? null : new ArrayList<Entity>(selectedEntities));
         }
         finally {
           updatingModel = false;

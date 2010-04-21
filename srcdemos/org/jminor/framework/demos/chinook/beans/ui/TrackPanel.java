@@ -9,7 +9,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -33,33 +33,33 @@ public class TrackPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new GridLayout(5, 2, 5, 5));
-        final JTextField txtAlbum = createEntityLookupField(Chinook.TRACK_ALBUMID_FK);
+        final JTextField txtAlbum = createEntityLookupField(TRACK_ALBUMID_FK);
         txtAlbum.setColumns(18);
         setDefaultFocusComponent(txtAlbum);
-        final JTextField txtName = createTextField(Chinook.TRACK_NAME);
+        final JTextField txtName = createTextField(TRACK_NAME);
         txtName.setColumns(18);
-        final JComboBox cmbMediaType = createEntityComboBox(Chinook.TRACK_MEDIATYPEID_FK);
-        final JComboBox cmbGenre = createEntityComboBox(Chinook.TRACK_GENREID_FK);
-        final TextInputPanel txtComposer = createTextInputPanel(Chinook.TRACK_COMPOSER);
+        final JComboBox cmbMediaType = createEntityComboBox(TRACK_MEDIATYPEID_FK);
+        final JComboBox cmbGenre = createEntityComboBox(TRACK_GENREID_FK);
+        final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
         ((JTextField) txtComposer.getTextComponent()).setColumns(18);
-        final JTextField txtMilliseconds = createTextField(Chinook.TRACK_MILLISECONDS);
+        final JTextField txtMilliseconds = createTextField(TRACK_MILLISECONDS);
         txtMilliseconds.setColumns(18);
-        final JTextField txtBytes = createTextField(Chinook.TRACK_BYTES);
+        final JTextField txtBytes = createTextField(TRACK_BYTES);
         txtBytes.setColumns(18);
-        final JTextField txtUnitPrice = createTextField(Chinook.TRACK_UNITPRICE);
+        final JTextField txtUnitPrice = createTextField(TRACK_UNITPRICE);
         txtUnitPrice.setColumns(18);
-        final JTextField txtDuration = createTextField(Chinook.TRACK_MINUTES_SECONDS_TRANSIENT, LinkType.READ_ONLY);
+        final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_TRANSIENT, LinkType.READ_ONLY);
 
-        add(createPropertyPanel(Chinook.TRACK_ALBUMID_FK, txtAlbum));
-        add(createPropertyPanel(Chinook.TRACK_NAME, txtName));
-        add(createPropertyPanel(Chinook.TRACK_GENREID_FK, cmbGenre));
-        add(createPropertyPanel(Chinook.TRACK_COMPOSER, txtComposer));
-        add(createPropertyPanel(Chinook.TRACK_MEDIATYPEID_FK, cmbMediaType));
-        add(createPropertyPanel(Chinook.TRACK_BYTES, txtBytes));
-        add(createPropertyPanel(Chinook.TRACK_UNITPRICE, txtUnitPrice));
-        add(createPropertyPanel(Chinook.TRACK_MILLISECONDS, txtMilliseconds));
+        add(createPropertyPanel(TRACK_ALBUMID_FK, txtAlbum));
+        add(createPropertyPanel(TRACK_NAME, txtName));
+        add(createPropertyPanel(TRACK_GENREID_FK, cmbGenre));
+        add(createPropertyPanel(TRACK_COMPOSER, txtComposer));
+        add(createPropertyPanel(TRACK_MEDIATYPEID_FK, cmbMediaType));
+        add(createPropertyPanel(TRACK_BYTES, txtBytes));
+        add(createPropertyPanel(TRACK_UNITPRICE, txtUnitPrice));
+        add(createPropertyPanel(TRACK_MILLISECONDS, txtMilliseconds));
         add(new JLabel());
-        add(createPropertyPanel(Chinook.TRACK_MINUTES_SECONDS_TRANSIENT, txtDuration));
+        add(createPropertyPanel(TRACK_MINUTES_SECONDS_TRANSIENT, txtDuration));
       }
     };
   }

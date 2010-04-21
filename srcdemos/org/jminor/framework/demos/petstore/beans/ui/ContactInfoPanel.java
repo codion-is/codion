@@ -10,7 +10,7 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
-import org.jminor.framework.demos.petstore.domain.Petstore;
+import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
 import java.util.Arrays;
@@ -38,12 +38,12 @@ public class ContactInfoPanel extends EntityPanel {
       @Override
       protected void initializeUI() {
         setLayout(new FlexibleGridLayout(3,1,5,5));
-        final JTextField txt = createTextField(Petstore.SELLER_CONTACT_INFO_LAST_NAME);
+        final JTextField txt = createTextField(SELLER_CONTACT_INFO_LAST_NAME);
         setDefaultFocusComponent(txt);
         txt.setColumns(10);
-        add(createPropertyPanel(Petstore.SELLER_CONTACT_INFO_LAST_NAME, txt));
-        add(createPropertyPanel(Petstore.SELLER_CONTACT_INFO_FIRST_NAME, createTextField(Petstore.SELLER_CONTACT_INFO_FIRST_NAME)));
-        add(createPropertyPanel(Petstore.SELLER_CONTACT_INFO_EMAIL, createTextField(Petstore.SELLER_CONTACT_INFO_EMAIL)));
+        add(createPropertyPanel(SELLER_CONTACT_INFO_LAST_NAME, txt));
+        add(createPropertyPanel(SELLER_CONTACT_INFO_FIRST_NAME, createTextField(SELLER_CONTACT_INFO_FIRST_NAME)));
+        add(createPropertyPanel(SELLER_CONTACT_INFO_EMAIL, createTextField(SELLER_CONTACT_INFO_EMAIL)));
       }
     };
   }
