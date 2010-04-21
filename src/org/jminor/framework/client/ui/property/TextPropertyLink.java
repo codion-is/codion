@@ -136,9 +136,9 @@ public class TextPropertyLink extends AbstractEntityPropertyLink implements Docu
   }
 
   /**
-   * Returns a String representation of the given value object
+   * Returns a String representation of the given value object, null is returned in case of a null value
    * @param value the value to return as String
-   * @return a String representation of the given value
+   * @return a String representation of the given value, null if the value is null
    */
   protected String getValueAsString(final Object value) {
     return Entity.isValueNull(getProperty().getPropertyType(), value) ? null : value.toString();

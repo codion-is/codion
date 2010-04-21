@@ -73,7 +73,7 @@ public abstract class AbstractEntityPropertyLink extends AbstractPropertyLink {
   }
 
   /**
-   * @return the property owner, in this case a EntityEditorModel
+   * @return the property owner, in this case a EntityEditModel
    */
   private EntityEditModel getEditModel() {
     return (EntityEditModel) super.getPropertyOwner();

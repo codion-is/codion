@@ -29,6 +29,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -675,8 +676,10 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
       return Double.class;
     if (type == Type.BOOLEAN)
       return Boolean.class;
-    if (type == Type.DATE || type == Type.TIMESTAMP)
+    if (type == Type.DATE)
       return Date.class;
+    if (type == Type.TIMESTAMP)
+      return Timestamp.class;
     if (type == Type.CHAR)
       return Character.class;
     if (type == Type.ENTITY)
