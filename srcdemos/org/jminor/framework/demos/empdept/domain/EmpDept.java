@@ -24,7 +24,7 @@ public class EmpDept {
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 
-  public static final Version version = new Version(EmpDept.class.getPackage().getName(), "1");
+  public static final Version version = new Version("EmpDept", "v1.0");
 
   /**Used for i18n*/
   public static final String DEPARTMENT = "department";
