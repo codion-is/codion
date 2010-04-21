@@ -14,7 +14,7 @@ import javax.swing.text.JTextComponent;
 /**
  * Binds a JTextComponent to a text based bean property.
  */
-public class TextBeanPropertyLink extends BeanPropertyLink implements DocumentListener {
+public class TextBeanPropertyLink extends AbstractBeanPropertyLink implements DocumentListener {
 
   private final Document document;
 

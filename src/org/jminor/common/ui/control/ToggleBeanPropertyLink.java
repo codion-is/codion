@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 /**
  * Binds a ButtonModel to a boolean based bean property.
  */
-public class ToggleBeanPropertyLink extends BeanPropertyLink {
+public class ToggleBeanPropertyLink extends AbstractBeanPropertyLink {
 
   private final ButtonModel buttonModel;
 

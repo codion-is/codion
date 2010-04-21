@@ -10,20 +10,20 @@ import java.lang.reflect.Method;
 /**
  * A bean based implementation of the AbstractPropertyLink class.
  */
-public abstract class BeanPropertyLink extends AbstractPropertyLink {
+public abstract class AbstractBeanPropertyLink extends AbstractPropertyLink {
 
   private final String propertyName;
   private final Class<?> propertyClass;
   private final Method getMethod;
   private final Method setMethod;
 
-  public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent) {
+  public AbstractBeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
+                                  final Event propertyChangeEvent) {
     this(owner, propertyName, propertyClass, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
-  public BeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                          final Event propertyChangeEvent, final LinkType linkType) {
+  public AbstractBeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
+                                  final Event propertyChangeEvent, final LinkType linkType) {
     super(owner, propertyChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);

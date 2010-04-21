@@ -1353,3 +1353,4 @@
   Static imports used for domain classes in demo entity panels
   EntityUtilTest.testJSON() was failing because JSON did not guarantee the order of items returned when parsing, entity equality tested instead
   Chinook demo, removed duplicates from ddl.sql
+  BeanPropertyLink renamed to the more appropriate AbstractBeanPropertyLink

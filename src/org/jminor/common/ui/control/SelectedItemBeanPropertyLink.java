@@ -14,7 +14,7 @@ import java.awt.event.ItemListener;
 /**
  * Binds a JComboBox to an Object based bean property.
  */
-public class SelectedItemBeanPropertyLink extends BeanPropertyLink {
+public class SelectedItemBeanPropertyLink extends AbstractBeanPropertyLink {
 
   private final ComboBoxModel comboBoxModel;
 

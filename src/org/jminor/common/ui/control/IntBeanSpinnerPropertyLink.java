@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
  * Date: 14.12.2007
  * Time: 23:58:50
  */
-public class IntBeanSpinnerPropertyLink extends BeanPropertyLink {
+public class IntBeanSpinnerPropertyLink extends AbstractBeanPropertyLink {
 
   private final SpinnerNumberModel spinnerModel;
 
