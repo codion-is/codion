@@ -6,9 +6,9 @@ package org.jminor.framework.client.model.exception;
 import org.jminor.framework.domain.Property;
 
 /**
- * User: Björn Darri
- * Date: 20.4.2010
- * Time: 23:15:02
+ * User: Björn Darri<br>
+ * Date: 20.4.2010<br>
+ * Time: 23:15:02<br>
  */
 public class RangeValidationException extends ValidationException {
 

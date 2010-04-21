@@ -8,10 +8,10 @@ import org.jminor.common.model.User;
 import java.io.Serializable;
 
 /**
- * Contains basic information about a remote client.
- * User: Bjorn Darri
- * Date: 11.12.2007
- * Time: 13:19:13
+ * Contains basic information about a remote client.<br>
+ * User: Bjorn Darri<br>
+ * Date: 11.12.2007<br>
+ * Time: 13:19:13<br>
  */
 public class ClientInfo implements Serializable {
 

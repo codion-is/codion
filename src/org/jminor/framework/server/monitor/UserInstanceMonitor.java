@@ -11,9 +11,9 @@ import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri
- * Date: 11.12.2007
- * Time: 11:28:28
+ * User: Bjorn Darri<br>
+ * Date: 11.12.2007<br>
+ * Time: 11:28:28<br>
  */
 public class UserInstanceMonitor {
 

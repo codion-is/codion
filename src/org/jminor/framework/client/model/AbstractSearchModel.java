@@ -16,10 +16,10 @@ import java.util.Date;
 
 /**
  * Encapsulates the property search parameters search type, upper bound and lower bound,
- * as well as relevant events and states.
- * User: Bjorn Darri
- * Date: 26.12.2007
- * Time: 14:48:22
+ * as well as relevant events and states.<br>
+ * User: Bjorn Darri<br>
+ * Date: 26.12.2007<br>
+ * Time: 14:48:22<br>
  */
 public abstract class AbstractSearchModel {
 

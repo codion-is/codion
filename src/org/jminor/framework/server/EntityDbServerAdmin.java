@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the server admin service methods.
- * User: darri
- * Date: 19.2.2007
- * Time: 09:41:35
+ * Defines the server admin service methods.<br>
+ * User: darri<br>
+ * Date: 19.2.2007<br>
+ * Time: 09:41:35<br>
  */
 public interface EntityDbServerAdmin extends Remote {
 

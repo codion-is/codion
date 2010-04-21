@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * User: Bjorn Darri
- * Date: 4.12.2007
- * Time: 17:46:40
+ * User: Bjorn Darri<br>
+ * Date: 4.12.2007<br>
+ * Time: 17:46:40<br>
  */
 public class HostMonitor {
 

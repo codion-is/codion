@@ -12,10 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A class encapsulating a simple collection of server access log entries and basic connection access info.
- * User: Bjorn Darri
- * Date: 7.12.2007
- * Time: 12:07:44
+ * A class encapsulating a simple collection of server access log entries and basic connection access info.<br>
+ * User: Bjorn Darri<br>
+ * Date: 7.12.2007<br>
+ * Time: 12:07:44<br>
  */
 public class ServerLog implements Serializable {
 

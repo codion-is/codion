@@ -28,10 +28,10 @@ import java.util.Map;
 /**
  * This class encapsulates filtering functionality, which refers to showing/hiding entities already available
  * in a table model and searching functionality, which refers to configuring the underlying query,
- * which then needs to be re-run.
- * User: Bjorn Darri
- * Date: 24.7.2008
- * Time: 21:29:55
+ * which then needs to be re-run.<br>
+ * User: Bjorn Darri<br>
+ * Date: 24.7.2008<br>
+ * Time: 21:29:55<br>
  */
 public class EntityTableSearchModel implements FilterCriteria<Entity> {
 

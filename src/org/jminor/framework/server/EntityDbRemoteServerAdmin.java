@@ -35,10 +35,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.
- * User: Bjorn Darri
- * Date: 28.6.2009
- * Time: 16:17:14
+ * Implements the EntityDbServerAdmin interface, providing admin access to a EntityDbRemoteServer instance.<br>
+ * User: Bjorn Darri<br>
+ * Date: 28.6.2009<br>
+ * Time: 16:17:14<br>
  */
 public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements EntityDbServerAdmin {
 

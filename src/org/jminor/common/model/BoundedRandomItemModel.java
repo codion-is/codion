@@ -6,10 +6,10 @@ package org.jminor.common.model;
 /**
  * A RandomItemModel with the added constraint that the total item weights can not exceed a defined maximum.
  * When the weight of one item is incremented the weight of another is decremented in a round robin kind of fashion
- * and when a item weight is decremented the weight of another is incremented.
- * User: Björn Darri
- * Date: 6.4.2010
- * Time: 21:26:00
+ * and when a item weight is decremented the weight of another is incremented.<br>
+ * User: Björn Darri<br>
+ * Date: 6.4.2010<br>
+ * Time: 21:26:00<br>
  */
 public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 

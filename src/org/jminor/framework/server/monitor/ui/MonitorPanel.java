@@ -24,9 +24,9 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri
- * Date: 4.12.2007
- * Time: 18:11:06
+ * User: Bjorn Darri<br>
+ * Date: 4.12.2007<br>
+ * Time: 18:11:06<br>
  */
 public class MonitorPanel extends JPanel {
 

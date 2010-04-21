@@ -4,10 +4,10 @@
 package org.jminor.common.db;
 
 /**
- * A enum representing the possible ways of retrieving a new  ID value.
- * User: Bjorn Darri
- * Date: 12.1.2008
- * Time: 20:42:34
+ * A enum representing the possible ways of retrieving a new  ID value.<br>
+ * User: Bjorn Darri<br>
+ * Date: 12.1.2008<br>
+ * Time: 20:42:34<br>
  */
 public enum IdSource {
   /**

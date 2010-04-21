@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * User: Bjorn Darri
- * Date: 4.12.2007
- * Time: 17:31:09
+ * User: Bjorn Darri<br>
+ * Date: 4.12.2007<br>
+ * Time: 17:31:09<br>
  */
 public class MonitorModel {
 

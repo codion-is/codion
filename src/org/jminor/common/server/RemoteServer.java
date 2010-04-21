@@ -9,10 +9,10 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Defines the methods available to remote clients.
- * User: darri
- * Date: 4.3.2005
- * Time: 10:59:16
+ * Defines the methods available to remote clients.<br>
+ * User: darri<br>
+ * Date: 4.3.2005<br>
+ * Time: 10:59:16<br>
  */
 public interface RemoteServer<T> extends Remote {
 

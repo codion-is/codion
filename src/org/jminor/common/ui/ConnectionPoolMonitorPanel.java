@@ -33,9 +33,9 @@ import java.rmi.RemoteException;
 import java.text.NumberFormat;
 
 /**
- * User: Bjorn Darri
- * Date: 4.12.2007
- * Time: 22:49:27
+ * User: Bjorn Darri<br>
+ * Date: 4.12.2007<br>
+ * Time: 22:49:27<br>
  */
 public class ConnectionPoolMonitorPanel extends JPanel {
 

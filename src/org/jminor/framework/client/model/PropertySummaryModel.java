@@ -16,10 +16,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.
- * User: Bjorn Darri
- * Date: 5.9.2009
- * Time: 21:47:06
+ * A class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
+ * User: Bjorn Darri<br>
+ * Date: 5.9.2009<br>
+ * Time: 21:47:06<br>
  */
 public class PropertySummaryModel {
 

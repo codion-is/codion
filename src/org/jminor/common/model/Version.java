@@ -6,10 +6,10 @@ package org.jminor.common.model;
 import java.io.Serializable;
 
 /**
- * A class encapsulating a version.
- * User: Bjorn Darri
- * Date: 4.4.2010
- * Time: 14:32:05
+ * A class encapsulating a version.<br>
+ * User: Bjorn Darri<br>
+ * Date: 4.4.2010<br>
+ * Time: 14:32:05<br>
  */
 public class Version implements Serializable {
 

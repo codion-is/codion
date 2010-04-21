@@ -4,10 +4,10 @@
 package org.jminor.common.model;
 
 /**
- * Provides values mapped to keys.
- * User: Bjorn Darri
- * Date: 4.4.2010
- * Time: 21:06:22
+ * Provides values mapped to keys.<br>
+ * User: Bjorn Darri<br>
+ * Date: 4.4.2010<br>
+ * Time: 21:06:22<br>
  */
 public interface ValueProvider<T, V> {
   public V getValue(final T key);

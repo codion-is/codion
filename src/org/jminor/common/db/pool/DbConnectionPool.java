@@ -23,10 +23,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A simple connection pool implementation, pools connections on username basis.
- * User: Bjorn Darri
- * Date: 7.12.2007
- * Time: 00:04:08
+ * A simple connection pool implementation, pools connections on username basis.<br>
+ * User: Bjorn Darri<br>
+ * Date: 7.12.2007<br>
+ * Time: 00:04:08<br>
  */
 public class DbConnectionPool implements ConnectionPool {
 

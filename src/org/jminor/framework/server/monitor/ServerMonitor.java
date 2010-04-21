@@ -23,9 +23,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * User: Bjorn Darri
- * Date: 4.12.2007
- * Time: 17:53:50
+ * User: Bjorn Darri<br>
+ * Date: 4.12.2007<br>
+ * Time: 17:53:50<br>
  */
 public class ServerMonitor {
 

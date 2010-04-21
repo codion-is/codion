@@ -28,10 +28,10 @@ import java.util.ListIterator;
  * JTable table = new JTable(tableModel.getTableSorter(),
  *                           tableModel.getColumnModel(),
  *                           tableModel.getSelectionModel());
- * </pre>
- * User: Björn Darri
- * Date: 18.4.2010
- * Time: 09:48:07
+ * </pre><br>
+ * User: Björn Darri<br>
+ * Date: 18.4.2010<br>
+ * Time: 09:48:07<br>
  */
 public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel implements FilterCriteria<T> {
 
@@ -358,7 +358,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel i
   /**
    * Filters this table model
    * @see #eventFilteringStarted()
-   * @see #eventFilteringDone() 
+   * @see #eventFilteringDone()
    */
   public void filterTable() {
     try {

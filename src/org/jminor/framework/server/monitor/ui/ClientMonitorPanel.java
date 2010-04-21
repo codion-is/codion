@@ -28,9 +28,9 @@ import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri
- * Date: 10.12.2007
- * Time: 17:32:53
+ * User: Bjorn Darri<br>
+ * Date: 10.12.2007<br>
+ * Time: 17:32:53<br>
  */
 public class ClientMonitorPanel extends JPanel {
 

@@ -17,10 +17,10 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- * A static utility class for working with jasper reports.
- * User: Bjorn Darri
- * Date: 30.7.2009
- * Time: 17:58:09
+ * A static utility class for working with jasper reports.<br>
+ * User: Bjorn Darri<br>
+ * Date: 30.7.2009<br>
+ * Time: 17:58:09<br>
  */
 public class EntityReportUtil {
 

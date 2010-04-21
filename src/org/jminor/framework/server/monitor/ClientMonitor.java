@@ -10,9 +10,9 @@ import java.rmi.RemoteException;
 import java.util.Enumeration;
 
 /**
- * User: Bjorn Darri
- * Date: 11.12.2007
- * Time: 12:58:44
+ * User: Bjorn Darri<br>
+ * Date: 11.12.2007<br>
+ * Time: 12:58:44<br>
  */
 public class ClientMonitor {
 

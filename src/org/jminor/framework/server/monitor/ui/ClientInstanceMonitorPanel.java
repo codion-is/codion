@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * User: Bjorn Darri
- * Date: 4.12.2007
- * Time: 22:49:42
+ * User: Bjorn Darri<br>
+ * Date: 4.12.2007<br>
+ * Time: 22:49:42<br>
  */
 public class ClientInstanceMonitorPanel extends JPanel {
 

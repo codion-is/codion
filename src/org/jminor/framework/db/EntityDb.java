@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the database methods the db layer offers.
- * User: darri
- * Date: 7.1.2005
- * Time: 11:35:59
+ * Defines the database methods the db layer offers.<br>
+ * User: darri<br>
+ * Date: 7.1.2005<br>
+ * Time: 11:35:59<br>
  */
 public interface EntityDb {
 

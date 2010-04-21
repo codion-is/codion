@@ -8,10 +8,10 @@ import org.jminor.common.model.User;
 import java.sql.SQLException;
 
 /**
- * Defines an interface responsible for creating DbConnection instances.
- * User: Bjorn Darri
- * Date: 28.3.2010
- * Time: 13:19:41
+ * Defines an interface responsible for creating DbConnection instances.<br>
+ * User: Bjorn Darri<br>
+ * Date: 28.3.2010<br>
+ * Time: 13:19:41<br>
  */
 public interface DbConnectionProvider {
 

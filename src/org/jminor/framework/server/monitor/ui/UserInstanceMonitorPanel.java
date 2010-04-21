@@ -19,9 +19,9 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 /**
- * User: Bjorn Darri
- * Date: 11.12.2007
- * Time: 11:31:45
+ * User: Bjorn Darri<br>
+ * Date: 11.12.2007<br>
+ * Time: 11:31:45<br>
  */
 public class UserInstanceMonitorPanel extends JPanel {
 

@@ -11,9 +11,9 @@ import java.rmi.RemoteException;
 import java.util.Enumeration;
 
 /**
- * User: Bjorn Darri
- * Date: 11.12.2007
- * Time: 11:26:21
+ * User: Bjorn Darri<br>
+ * Date: 11.12.2007<br>
+ * Time: 11:26:21<br>
  */
 public class UserMonitor {
 

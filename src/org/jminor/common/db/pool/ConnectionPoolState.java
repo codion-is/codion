@@ -6,10 +6,10 @@ package org.jminor.common.db.pool;
 import java.io.Serializable;
 
 /**
-* A class containing the state of a connection pool at a given time.
-* User: Bjorn Darri
-* Date: 8.12.2007
-* Time: 16:17:01
+* A class containing the state of a connection pool at a given time.<br>
+* User: Bjorn Darri<br>
+* Date: 8.12.2007<br>
+* Time: 16:17:01<br>
 */
 public class ConnectionPoolState implements Serializable {
 

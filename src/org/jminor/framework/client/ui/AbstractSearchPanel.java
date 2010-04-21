@@ -29,10 +29,10 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
 /**
- * An abstract panel for showing search/filter configuration.
- * User: Bjorn Darri
- * Date: 26.12.2007
- * Time: 15:17:20
+ * An abstract panel for showing search/filter configuration.<br>
+ * User: Bjorn Darri<br>
+ * Date: 26.12.2007<br>
+ * Time: 15:17:20<br>
  */
 public abstract class AbstractSearchPanel extends JPanel {
 

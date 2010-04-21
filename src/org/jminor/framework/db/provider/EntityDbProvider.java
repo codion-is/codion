@@ -6,10 +6,10 @@ package org.jminor.framework.db.provider;
 import org.jminor.framework.db.EntityDb;
 
 /**
- * Interface for a class responsible for providing EntityDb objects.
- * User: darri
- * Date: 9.5.2005
- * Time: 11:39:13
+ * Interface for a class responsible for providing EntityDb objects.<br>
+ * User: darri<br>
+ * Date: 9.5.2005<br>
+ * Time: 11:39:13<br>
  */
 public interface EntityDbProvider {
 

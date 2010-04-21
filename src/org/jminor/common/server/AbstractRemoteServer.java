@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A default RemoteServer implementation.
- * User: Björn Darri
- * Date: 17.4.2010
- * Time: 22:15:55
+ * A default RemoteServer implementation.<br>
+ * User: Björn Darri<br>
+ * Date: 17.4.2010<br>
+ * Time: 22:15:55<br>
  */
 public abstract class AbstractRemoteServer<T> extends UnicastRemoteObject implements RemoteServer<T> {
 

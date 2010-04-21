@@ -11,10 +11,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * A static utility class for date handling.
- * User: Bjorn Darri
- * Date: 3.8.2009
- * Time: 00:09:47
+ * A static utility class for date handling.<br>
+ * User: Bjorn Darri<br>
+ * Date: 3.8.2009<br>
+ * Time: 00:09:47<br>
  */
 public class DateUtil {
 

@@ -28,9 +28,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * User: Bjorn Darri
- * Date: 22.8.2009
- * Time: 16:17:21
+ * User: Bjorn Darri<br>
+ * Date: 22.8.2009<br>
+ * Time: 16:17:21<br>
  */
 public class DomainClassGenerator {
 

@@ -6,9 +6,9 @@ package org.jminor.framework.client.model.exception;
 import org.jminor.framework.domain.Property;
 
 /**
- * User: Björn Darri
- * Date: 20.4.2010
- * Time: 23:13:09
+ * User: Björn Darri<br>
+ * Date: 20.4.2010<br>
+ * Time: 23:13:09<br>
  */
 public class NullValidationException extends ValidationException {
 
