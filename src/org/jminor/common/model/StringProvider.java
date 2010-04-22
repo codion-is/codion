@@ -99,6 +99,21 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
     return this;
   }
 
+  /**
+   * Returns true if the given key is referenced
+   * @param referenceKey the key
+   * @return true if the given key is referenced
+   */
+  public boolean references(final T referenceKey) {
+    for (final ValueProvider provider : valueProviders) {
+      if (provider instanceof ReferencedValueProvider) {
+        if (((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey))
+          return true;
+      }
+    }
+    return false;
+  }
+
   private static interface ValueProvider<T, V> {
     public String toString(final ValueMap<T, V> valueMap);
   }
@@ -141,6 +156,10 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
         return "";
 
       return foreignKeyEntity.getValue(key).toString();
+    }
+
+    public T getReferenceKey() {
+      return referenceKey;
     }
   }
 
