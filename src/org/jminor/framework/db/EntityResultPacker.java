@@ -23,10 +23,10 @@ import java.util.List;
 public class EntityResultPacker implements ResultPacker<Entity> {
 
   private final String entityID;
-  private final Collection<Property> properties;
+  private final Collection<? extends Property> properties;
   private final Collection<Property.TransientProperty> transientProperties;
 
-  public EntityResultPacker(final String entityID, final Collection<Property> properties,
+  public EntityResultPacker(final String entityID, final Collection<? extends Property> properties,
                             final Collection<Property.TransientProperty> transientProperties) {
     if (entityID == null)
       throw new IllegalArgumentException("EntityResultPacker requires a non-null entityID");
@@ -57,8 +57,13 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     return entities;
   }
 
-  private Entity loadEntity(final ResultSet resultSet) throws SQLException {
+  protected Collection<? extends Property> getProperties() {
+    return properties;
+  }
+
+  protected Entity loadEntity(final ResultSet resultSet) throws SQLException {
     final Entity entity = new Entity(entityID);
+    entity.setLoaded(true);
     if (transientProperties != null && transientProperties.size() > 0) {
       for (final Property.TransientProperty transientProperty : transientProperties) {
         if (!(transientProperty instanceof Property.DenormalizedViewProperty))
@@ -79,7 +84,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     return entity;
   }
 
-  private Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
+  protected Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
     switch (property.getPropertyType()) {
       case ENTITY:
         throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
