@@ -269,6 +269,27 @@ public class EntityRepository {
   }
 
   /**
+   * @param entityID the entity ID
+   * @param foreignKeyPropertyID the foreign key id
+   * @return a collection containing all denormalized properties of the entity identified by <code>entityID</code>
+   * which source is the entity identified by <code>propertyOwnerEntityID</code>
+   */
+  public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
+                                                                                    final String foreignKeyPropertyID) {
+    return getEntityDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param foreignKeyPropertyID the foreign key id
+   * @return true if the entity identified by <code>entityID</code> contains denormalized properties
+   * which source is the entity identified by <code>propertyOwnerEntityID</code>
+   */
+  public static boolean hasDenormalizedProperties(final String entityID, final String foreignKeyPropertyID) {
+    return getEntityDefinition(entityID).hasDenormalizedProperties(foreignKeyPropertyID);
+  }
+
+  /**
    * Returns true if the property identified by <code>propertyID</code> in the entity identified
    * by <code>entityID</code> has any linked transient properties, that is transient properties which
    * values depend on the value of the given property
@@ -289,17 +310,6 @@ public class EntityRepository {
    */
   public static Collection<String> getLinkedTransientPropertyIDs(final String entityID, final String propertyID) {
     return getEntityDefinition(entityID).getLinkedPropertyIDs(propertyID);
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param foreignKeyPropertyID the foreign key id
-   * @return a collection containing all denormalized properties of the entity identified by <code>entityID</code>
-   * which source is the entity identified by <code>propertyOwnerEntityID</code>
-   */
-  public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
-                                                                                    final String foreignKeyPropertyID) {
-    return getEntityDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
   }
 
   /**
