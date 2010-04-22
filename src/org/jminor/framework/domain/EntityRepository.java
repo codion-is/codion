@@ -293,13 +293,13 @@ public class EntityRepository {
 
   /**
    * @param entityID the entity ID
-   * @param propertyOwnerEntityID the entity ID of the actual property owner entity
+   * @param foreignKeyPropertyID the foreign key id
    * @return a collection containing all denormalized properties of the entity identified by <code>entityID</code>
    * which source is the entity identified by <code>propertyOwnerEntityID</code>
    */
   public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
-                                                                                    final String propertyOwnerEntityID) {
-    return getEntityDefinition(entityID).getDenormalizedProperties(propertyOwnerEntityID);
+                                                                                    final String foreignKeyPropertyID) {
+    return getEntityDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
   }
 
   /**
