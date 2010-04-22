@@ -121,13 +121,13 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
     final boolean initialization = !containsValue(key);
     V oldValue = null;
     if (!initialization) {
-      oldValue = getValue(key);
+      oldValue = values.get(key);
       if (Util.equal(oldValue, value))
         return oldValue;
     }
 
     if (!initialization) {
-      if (isModified(key) && Util.equal(getOriginalValue(key), value))
+      if (isModified(key) && Util.equal(originalValues.get(key), value))
         removeOriginalValue(key);//we're back to the original value
       else if (!isModified(key))
         setOriginalValue(key, oldValue);
@@ -145,8 +145,8 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
   /** {@inheritDoc} */
   public V removeValue(final T key) {
-    final V value = getValue(key);
-    doRemoveValue(key);
+    final V value = values.get(key);
+    values.remove(key);
     removeOriginalValue(key);
 
     if (stModified != null)
@@ -160,7 +160,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   /** {@inheritDoc} */
   public void revertValue(final T key) {
     if (isModified(key))
-      setValue(key, getOriginalValue(key));
+      setValue(key, originalValues.get(key));
   }
 
   /** {@inheritDoc} */
@@ -209,7 +209,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
   /** {@inheritDoc} */
   public Collection<T> getValueKeys() {
-    return values.keySet();
+    return new ArrayList<T>(values.keySet());
   }
 
   /** {@inheritDoc} */
@@ -239,12 +239,16 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
       return false;
 
     for (final T key : otherMap.values.keySet()) {
-      if (!containsValue(key) || !Util.equal(otherMap.getValue(key), getValue(key))) {
+      if (!containsValue(key) || !valuesEqual(otherMap.values.get(key), values.get(key))) {
         return false;
       }
     }
 
     return true;
+  }
+
+  protected boolean valuesEqual(final V valueOne, final V valueTwo) {
+    return Util.equal(valueOne, valueTwo);
   }
 
   protected void notifyValueChange(final T key, final V value, final boolean initialization, final V oldValue) {
@@ -258,9 +262,5 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   protected void removeOriginalValue(final T key) {
     if (originalValues != null)
       originalValues.remove(key);
-  }
-
-  private void doRemoveValue(final T key) {
-    values.remove(key);
   }
 }

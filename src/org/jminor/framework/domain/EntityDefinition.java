@@ -259,10 +259,16 @@ public class EntityDefinition implements Serializable {
     return denormalizedProperties.size() > 0;
   }
 
-  public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String propertyOwnerEntityID) {
+  public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null)
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-    return denormalizedProperties.get(propertyOwnerEntityID);
+    return denormalizedProperties.containsKey(foreignKeyPropertyID);
+  }
+
+  public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
+    if (denormalizedProperties == null)
+      denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
+    return denormalizedProperties.get(foreignKeyPropertyID);
   }
 
   @Override
