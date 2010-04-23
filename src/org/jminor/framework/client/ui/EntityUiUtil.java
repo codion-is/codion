@@ -536,7 +536,14 @@ public class EntityUiUtil {
   public static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) throws Exception {
     for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entity.getEntityID()))
       rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
-    for (final Property.ForeignKeyProperty property : EntityRepository.getForeignKeyProperties(entity.getEntityID())) {
+    final List<Property.ForeignKeyProperty> fkProperties = new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID()));
+    Collections.sort(fkProperties, new Comparator<Property.ForeignKeyProperty>() {
+      final Collator collator = Collator.getInstance();
+      public int compare(final Property.ForeignKeyProperty propertyOne, final Property.ForeignKeyProperty propertyTwo) {
+        return collator.compare(propertyOne.toString(), propertyTwo.toString());
+      }
+    });
+    for (final Property.ForeignKeyProperty property : fkProperties) {
       Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
       if (referencedEntity != null && !referencedEntity.isLoaded() && dbProvider != null) {
         referencedEntity = dbProvider.getEntityDb().selectSingle(referencedEntity.getPrimaryKey());

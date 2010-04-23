@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Collator;
 import java.text.DateFormat;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1079,7 +1080,9 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     }
 
     public String getValueAsString(final Entity entity, final Property property) {
-      return entity.isValueNull(property.getPropertyID()) ? "" : getValue(entity, property).toString();
+      final Format format = property.getFormat();
+      final Object value = getValue(entity, property);
+      return entity.isValueNull(property.getPropertyID()) ? "" : (format != null ? format.format(value) : value.toString());
     }
 
     public Object getTableValue(final Entity entity, final Property property) {

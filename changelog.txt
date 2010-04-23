@@ -1381,3 +1381,4 @@
   ChangeValueMapEditModel takes the initial map as parameter
   ChangeValueMapEditModel.defaultValueMap field + getter/setter added
   EntityTablePanel.createEntityMenu() renamed to populateEntityMenu() and moved to EntityUiUtil
+  Entity.Proxy.valueAsString() now takes Property.format into account
