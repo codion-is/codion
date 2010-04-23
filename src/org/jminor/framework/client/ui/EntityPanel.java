@@ -365,10 +365,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
         bindTablePanelEvents();
         initialize();
 
-        if (refreshOnInit)
-          getModel().refresh();//refreshes combo models
-        else
-          getEditModel().refreshComboBoxModels();
+        if (refreshOnInit && getModel().containsTableModel())
+          getModel().getTableModel().refresh();
       }
       finally {
         panelInitialized = true;
