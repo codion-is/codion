@@ -1382,3 +1382,6 @@
   ChangeValueMapEditModel.defaultValueMap field + getter/setter added
   EntityTablePanel.createEntityMenu() renamed to populateEntityMenu() and moved to EntityUiUtil
   Entity.Proxy.valueAsString() now takes Property.format into account
+  EntityUtil no longer export whole entity object graph when exporting JSON
+  Entity.isLoaded(fkPropertyID) added
+  Entity.removeValue() overridden

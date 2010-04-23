@@ -19,8 +19,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -494,5 +496,14 @@ public class Util {
 
   public static String sqlEscapeString(final String val) {
     return val.replaceAll("'", "''");
+  }
+
+  public static void collate(final List<?> values) {
+    Collections.sort(values, new Comparator<Object>() {
+      final Collator collator = Collator.getInstance();
+      public int compare(final Object objOne, final Object objTwo) {
+        return collator.compare(objOne.toString(), objTwo.toString());
+      }
+    });
   }
 }

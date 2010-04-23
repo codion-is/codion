@@ -214,6 +214,20 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     return getProxy(getEntityID()).getValue(this, property);
   }
 
+  @Override
+  public Object removeValue(final String propertyID) {
+    final Property property = getProperty(propertyID);
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.removeValue(propertyID);
+    if (property instanceof Property.ForeignKeyProperty) {
+      for (final Property fkProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties())
+        removeValue(fkProperty.getPropertyID());
+      return foreignKeyValues.removeValue(propertyID);
+    }
+
+    return super.removeValue(propertyID);
+  }
+
   /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
@@ -226,6 +240,16 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       return foreignKeyValues.getValue(property.getPropertyID());
 
     throw new RuntimeException(propertyID + " is not a foreign key property");
+  }
+
+  /**
+   * Returns true if the entity referenced via the given foreign key property has been loaded
+   * @param foreignKeyPropertyID the property id
+   * @return true if the reference entity has been loaded
+   */
+  public boolean isLoaded(final String foreignKeyPropertyID) {
+    final Entity entity = getEntityValue(foreignKeyPropertyID);
+    return entity != null && entity.isLoaded();
   }
 
   /**
@@ -600,6 +624,19 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   }
 
   /**
+   * Returns true if one or more of the properties involved in the given foreign key is null
+   * @param foreignKeyProperty the foreign key property
+   * @return true if the foreign key is null
+   */
+  public boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty) {
+    for (final Property property : foreignKeyProperty.getReferenceProperties())
+      if (isValueNull(property.getPropertyID()))
+        return true;
+
+    return false;
+  }
+
+  /**
    * Returns a copy of the given value.
    * If the value is an entity it is deep copied.
    * @param value the value to copy
@@ -672,13 +709,14 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
-      entity.setValue(entry.getKey(), entry.getValue());//todo
+      entity.setValue(entry.getKey(), entry.getValue());
     }
     if (originalValues != null) {
       for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
         entity.setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
       }
     }
+    entity.setLoaded(true);
 
     return entity;
   }

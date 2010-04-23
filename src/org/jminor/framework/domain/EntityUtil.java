@@ -259,8 +259,10 @@ public class EntityUtil {
 
   private static JSONObject getPropertyValuesJSONObject(final Entity entity) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true))
-      propertyValues.put(property.getPropertyID(), getJSONValue(entity, property));
+    for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
+      if (!(property instanceof Property.ForeignKeyProperty))
+        propertyValues.put(property.getPropertyID(), getJSONValue(entity, property));
+    }
 
     return propertyValues;
   }

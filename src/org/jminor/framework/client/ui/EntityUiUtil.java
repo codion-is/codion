@@ -51,12 +51,9 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -534,27 +531,33 @@ public class EntityUiUtil {
    * @throws Exception in case of an exception
    */
   public static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) throws Exception {
-    for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entity.getEntityID()))
+    populatePrimaryKeyMenu(rootMenu, entity, EntityRepository.getPrimaryKeyProperties(entity.getEntityID()));
+    populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID())));
+    populateValueMenu(rootMenu, entity, new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false)));
+  }
+
+  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
+    Util.collate(primaryKeyProperties);
+    for (final Property.PrimaryKeyProperty property : primaryKeyProperties)
       rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
-    final List<Property.ForeignKeyProperty> fkProperties = new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID()));
-    Collections.sort(fkProperties, new Comparator<Property.ForeignKeyProperty>() {
-      final Collator collator = Collator.getInstance();
-      public int compare(final Property.ForeignKeyProperty propertyOne, final Property.ForeignKeyProperty propertyTwo) {
-        return collator.compare(propertyOne.toString(), propertyTwo.toString());
-      }
-    });
+  }
+
+  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider,
+                                             final List<Property.ForeignKeyProperty> fkProperties) throws Exception {
+    Util.collate(fkProperties);
     for (final Property.ForeignKeyProperty property : fkProperties) {
-      Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
-      if (referencedEntity != null && !referencedEntity.isLoaded() && dbProvider != null) {
-        referencedEntity = dbProvider.getEntityDb().selectSingle(referencedEntity.getPrimaryKey());
-        System.out.println("Loaded: " + referencedEntity);
-        entity.setValue(property.getPropertyID(), referencedEntity);
-      }
       final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": ");
-      if (referencedEntity != null && referencedEntity.isLoaded()) {
+      final boolean fkValueNull = entity.isForeignKeyNull(property);
+      if (!fkValueNull) {
+        Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
+        if (referencedEntity == null || !referencedEntity.isLoaded()) {
+          referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
+          entity.removeValue(property.getPropertyID());
+          entity.setValue(property.getPropertyID(), referencedEntity);
+        }
         text.append(referencedEntity.toString());
         final JMenu foreignKeyMenu = new JMenu(text.toString());
-        populateEntityMenu(foreignKeyMenu, referencedEntity, dbProvider);
+        populateEntityMenu(foreignKeyMenu, entity.getEntityValue(property.getPropertyID()), dbProvider);
         rootMenu.add(foreignKeyMenu);
       }
       else {
@@ -562,13 +565,10 @@ public class EntityUiUtil {
         rootMenu.add(new JMenuItem(text.toString()));
       }
     }
-    final List<Property> properties = new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false));
-    Collections.sort(properties, new Comparator<Property>() {
-      final Collator collator = Collator.getInstance();
-      public int compare(final Property propertyOne, final Property propertyTwo) {
-        return collator.compare(propertyOne.toString(), propertyTwo.toString());
-      }
-    });
+  }
+
+  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
+    Util.collate(properties);
     for (final Property property : properties) {
       if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
         final String prefix = "[" + property.getPropertyType().toString().substring(0, 1)
