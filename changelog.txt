@@ -1376,3 +1376,8 @@
   EntityDbConnection.setForeignKeyValues() uses the above fields to decide when to stop loading foreign key references
   EntityTablePanel.showEntityMenu() and createEntityMenu() added
   Property.ForeignKeyProperty.lazyLoading field removed
+  ChangeValueMapEditModel.name field removed
+  EntityEditModel.entityID field added
+  ChangeValueMapEditModel takes the initial map as parameter
+  ChangeValueMapEditModel.defaultValueMap field + getter/setter added
+  EntityTablePanel.createEntityMenu() renamed to populateEntityMenu() and moved to EntityUiUtil

@@ -34,6 +34,7 @@ import org.jminor.framework.client.ui.property.FormattedPropertyLink;
 import org.jminor.framework.client.ui.property.IntPropertyLink;
 import org.jminor.framework.client.ui.property.LookupPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -50,9 +51,12 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -520,6 +524,57 @@ public class EntityUiUtil {
                                                        final boolean filterButtonTakesFocus) {
     return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
             filterButtonTakesFocus);
+  }
+
+  /**
+   * Populates the given root menu with the property values of the given entity
+   * @param rootMenu the menu to populate
+   * @param entity the entity
+   * @param dbProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
+   * @throws Exception in case of an exception
+   */
+  public static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) throws Exception {
+    for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entity.getEntityID()))
+      rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
+    for (final Property.ForeignKeyProperty property : EntityRepository.getForeignKeyProperties(entity.getEntityID())) {
+      Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
+      if (referencedEntity != null && !referencedEntity.isLoaded() && dbProvider != null) {
+        referencedEntity = dbProvider.getEntityDb().selectSingle(referencedEntity.getPrimaryKey());
+        System.out.println("Loaded: " + referencedEntity);
+        entity.setValue(property.getPropertyID(), referencedEntity);
+      }
+      final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": ");
+      if (referencedEntity != null && referencedEntity.isLoaded()) {
+        text.append(referencedEntity.toString());
+        final JMenu foreignKeyMenu = new JMenu(text.toString());
+        populateEntityMenu(foreignKeyMenu, referencedEntity, dbProvider);
+        rootMenu.add(foreignKeyMenu);
+      }
+      else {
+        text.append("<null>");
+        rootMenu.add(new JMenuItem(text.toString()));
+      }
+    }
+    final List<Property> properties = new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false));
+    Collections.sort(properties, new Comparator<Property>() {
+      final Collator collator = Collator.getInstance();
+      public int compare(final Property propertyOne, final Property propertyTwo) {
+        return collator.compare(propertyOne.toString(), propertyTwo.toString());
+      }
+    });
+    for (final Property property : properties) {
+      if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
+        final String prefix = "[" + property.getPropertyType().toString().substring(0, 1)
+                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
+                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
+        final boolean longValue = value != null && value.length() > 20;
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
+        if (longValue)
+          menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
+        rootMenu.add(menuItem);
+      }
+    }
   }
 
   private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,

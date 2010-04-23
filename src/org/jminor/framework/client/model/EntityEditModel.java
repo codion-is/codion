@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.ChangeValueMap;
 import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
@@ -73,6 +72,11 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   private final State stAllowDelete = new State(true);
 
   /**
+   * The ID of the entity this edit model is based on
+   */
+  private final String entityID;
+
+  /**
    * The EntityDbProvider instance to use when populating combo boxes and such
    */
   private final EntityDbProvider dbProvider;
@@ -85,17 +89,20 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   private final Map<Property, ComboBoxModel> propertyComboBoxModels = new HashMap<Property, ComboBoxModel>();
 
   /**
-   * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.   *
+   * Instantiates a new EntityEditModel based on the entity identified by <code>entityID</code>.
    * @param entityID the ID of the entity to base this EntityEditModel on
    * @param dbProvider the EntityDbProvider instance used when populating ComboBoxModels
    */
   public EntityEditModel(final String entityID, final EntityDbProvider dbProvider) {
-    super(entityID);
+    super(new Entity(entityID));
     if (entityID == null)
       throw new IllegalArgumentException("entityID is null");
     if (dbProvider == null)
       throw new IllegalArgumentException("dbProvider is null");
+    this.entityID = entityID;
     this.dbProvider = dbProvider;
+    this.setDefaultValueMap(getDefaultEntity());
+    setValueMap(null);
     bindEventsInternal();
     bindEvents();
   }
@@ -184,15 +191,19 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     return stAllowDelete;
   }
 
-  public Entity getEntity() {
-    return (Entity) getValueMap();
+  /**
+   * Sets the Entity instance to edit
+   * @param entity the entity
+   */
+  public void setEntity(final Entity entity) {
+    setValueMap(entity);
   }
 
   /**
    * @return the ID of the entity this EntityEditModel is based on
    */
   public String getEntityID() {
-    return getName();
+    return entityID;
   }
 
   /**
@@ -606,9 +617,8 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
    * @return the default entity for this EntityModel, it is set as active when no item is selected
    * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
-  @Override
-  public ChangeValueMap<String, Object> getDefaultMap() {
-    final ChangeValueMap<String, Object> defaultEntity = initializeMap();
+  public Entity getDefaultEntity() {
+    final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
         defaultEntity.setValue(property.getPropertyID(), getDefaultValue(property));
@@ -801,9 +811,11 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
             && Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
   }
 
-  @Override
-  protected ChangeValueMap<String, Object> initializeMap() {
-    return new Entity(getEntityID());
+  /**
+   * @return the Entity instance being edited
+   */
+  protected Entity getEntity() {
+    return (Entity) getValueMap();
   }
 
   /**

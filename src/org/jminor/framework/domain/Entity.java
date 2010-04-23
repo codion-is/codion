@@ -34,15 +34,13 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   private final Key primaryKey;
 
   /**
-   *
+   * The foreign key values referenced by this entity
    */
-  private final ChangeValueMap<String, Entity> foreignKeyValues = new ChangeValueMapModel<String, Entity>() {
-    @Override
-    public ActionEvent getValueChangeEvent(String key, Entity newValue, Entity oldValue, boolean initialization) {
-      return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
-    }
-  };
+  private final ForeignKeys foreignKeyValues = new ForeignKeys();
 
+  /**
+   * True if property values have been loaded for this entity
+   */
   private boolean loaded = false;
 
   /**
@@ -1077,8 +1075,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       final String entityID = entity.getEntityID();
       final ToString<String, Object> stringProvider = EntityRepository.getStringProvider(entityID);
 
-      return stringProvider == null || !entity.isLoaded() ?
-              new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
+      return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }
 
     public String getValueAsString(final Entity entity, final Property property) {
@@ -1092,6 +1089,13 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     @SuppressWarnings({"UnusedDeclaration"})
     public Color getBackgroundColor(final Entity entity) {
       return null;
+    }
+  }
+
+  private class ForeignKeys extends ChangeValueMapModel<String, Entity> {
+    @Override
+    public ActionEvent getValueChangeEvent(final String key, final Entity newValue, final Entity oldValue, final boolean initialization) {
+      return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }
   }
 }

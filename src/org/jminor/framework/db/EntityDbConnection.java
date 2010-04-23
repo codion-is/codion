@@ -628,6 +628,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   /**
    * @param entities the entities for which to set the reference entities
+   * @param criteria the criteria
    * @throws DbException in case of a database exception
    */
   private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {

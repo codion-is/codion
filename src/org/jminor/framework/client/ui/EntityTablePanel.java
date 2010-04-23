@@ -946,54 +946,13 @@ public class EntityTablePanel extends JPanel {
       final Entity entity = getTableModel().getSelectedItem();
       if (entity != null) {
         final JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(createEntityMenu(entity.getCopy(), entity.toString()));
+        EntityUiUtil.populateEntityMenu(popupMenu, entity.getCopy(), getTableModel().getDbProvider());
         popupMenu.show(this, location.x, location.y);
       }
     }
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private JMenu createEntityMenu(final Entity entity, final String caption) throws Exception {
-    final JMenu menu = new JMenu(caption + ": " );
-    if (entity == null)
-      return menu;
-
-    for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entity.getEntityID()))
-      menu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
-    for (final Property.ForeignKeyProperty property : EntityRepository.getForeignKeyProperties(entity.getEntityID())) {
-      Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
-      if (referencedEntity != null && !referencedEntity.isLoaded()) {
-        referencedEntity = getTableModel().getDbProvider().getEntityDb().selectSingle(referencedEntity.getPrimaryKey());
-        System.out.println("Loaded: " + referencedEntity);
-        entity.setValue(property.getPropertyID(), referencedEntity);
-      }
-      final String text = "[FK] " + property.getCaption() + ": " + (referencedEntity != null ? referencedEntity.toString() : "");
-      menu.add(referencedEntity != null && referencedEntity.isLoaded() ? createEntityMenu(referencedEntity, text) : new JMenuItem(text));
-    }
-    final List<Property> properties = new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false));
-    Collections.sort(properties, new Comparator<Property>() {
-      final Collator collator = Collator.getInstance();
-      public int compare(final Property propertyOne, final Property propertyTwo) {
-        return collator.compare(propertyOne.toString(), propertyTwo.toString());
-      }
-    });
-    for (final Property property : properties) {
-      if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
-        final String prefix = "[" + property.getPropertyType().toString().substring(0, 1)
-                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
-                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.getValueAsString(property.getPropertyID());
-        final boolean longValue = value != null && value.length() > 20;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
-        if (longValue)
-          menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
-        menu.add(menuItem);
-      }
-    }
-
-    return menu;
   }
 
   private void updateStatusMessage() {

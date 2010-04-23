@@ -14,10 +14,7 @@ public abstract class ChangeValueMapEditModel<T, V> {
   private final Event evtEntityChanged = new Event();
   private final Event evtModelCleared = new Event();
 
-  /**
-   * The name of this ValueMap.
-   */
-  private final String name;
+  private ChangeValueMap<T, V> defaultValueMap;
 
   /**
    * Holds events signaling value changes made via the ui
@@ -29,22 +26,9 @@ public abstract class ChangeValueMapEditModel<T, V> {
    */
   private final Map<T, Event> valueChangeEventMap = new HashMap<T, Event>();
 
-  public ChangeValueMapEditModel() {
-    this(null);
-  }
-
-  public ChangeValueMapEditModel(final String name) {
-    this.name = name;
-    this.valueMap = initializeMap();
-    this.valueMap.setAs(getDefaultMap());
+  public ChangeValueMapEditModel(final ChangeValueMap<T, V> initialMap) {
+    this.valueMap = initialMap;
     bindEventsInternal();
-  }
-
-  /**
-   * @return the name of this ChangeValueMapEditModel, may be null
-   */
-  public String getName() {
-    return name;
   }
 
   public V getValue(final T key) {
@@ -61,7 +45,7 @@ public abstract class ChangeValueMapEditModel<T, V> {
   }
 
   public void clear() {
-    valueMap.clear();
+    setValueMap(null);
     evtModelCleared.fire();
   }
 
@@ -77,14 +61,28 @@ public abstract class ChangeValueMapEditModel<T, V> {
    * Sets the active entity, that is, the entity to be edited
    * @param valueMap the map to set as active, if null then the default map value is set as active
    * @see #evtEntityChanged
-   * @see #getDefaultMap()
    */
   public void setValueMap(final ChangeValueMap<T, V> valueMap) {
     if (valueMap != null && this.valueMap.equals(valueMap))
       return;
 
-    this.valueMap.setAs(valueMap == null ? getDefaultMap() : valueMap);
+    this.valueMap.setAs(valueMap == null ? getDefaultValueMap() : valueMap);
     evtEntityChanged.fire();
+  }
+
+  /**
+   * @return a value map containing the default values
+   */
+  public ChangeValueMap<T, V> getDefaultValueMap() {
+    return defaultValueMap;
+  }
+
+  /**
+   * Sets the value map containing the default values
+   * @param defaultValueMap the default values
+   */
+  public void setDefaultValueMap(final ChangeValueMap<T, V> defaultValueMap) {
+    this.defaultValueMap = defaultValueMap;
   }
 
   /**
@@ -160,10 +158,6 @@ public abstract class ChangeValueMapEditModel<T, V> {
   protected ChangeValueMap<T, V> getValueMap() {
     return valueMap;
   }
-
-  protected abstract ChangeValueMap<T, V> getDefaultMap();
-
-  protected abstract ChangeValueMap<T, V> initializeMap();
 
   /**
    * Initializes a ActionEvent describing the value change.
