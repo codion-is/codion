@@ -19,32 +19,32 @@ import org.junit.Test;
 public class ChinookTest extends EntityTestUnit {
 
   @Test
-  public void album() throws Exception{
+  public void album() throws Exception {
     testEntity(T_ALBUM);
   }
 
   @Test
-  public void artist() throws Exception{
+  public void artist() throws Exception {
     testEntity(T_ARTIST);
   }
 
   @Test
-  public void customer() throws Exception{
+  public void customer() throws Exception {
     testEntity(T_CUSTOMER);
   }
 
   @Test
-  public void employee() throws Exception{
+  public void employee() throws Exception {
     testEntity(T_EMPLOYEE);
   }
 
   @Test
-  public void genre() throws Exception{
+  public void genre() throws Exception {
     testEntity(T_GENRE);
   }
 
   @Test
-  public void invoce() throws Exception{
+  public void invoce() throws Exception {
     testEntity(T_INVOICE);
   }
 
@@ -54,22 +54,22 @@ public class ChinookTest extends EntityTestUnit {
   }
 
   @Test
-  public void mediaType() throws Exception{
+  public void mediaType() throws Exception {
     testEntity(T_MEDIATYPE);
   }
 
   @Test
-  public void playlist() throws Exception{
+  public void playlist() throws Exception {
     testEntity(T_PLAYLIST);
   }
 
   @Test
-  public void playlistTrack() throws Exception{
+  public void playlistTrack() throws Exception {
     testEntity(T_PLAYLISTTRACK);
   }
 
   @Test
-  public void track() throws Exception{
+  public void track() throws Exception {
     testEntity(T_TRACK);
   }
 

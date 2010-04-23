@@ -225,7 +225,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
       if (!lastQueryResultCached())
-        setForeignKeyValues(result);
+        setForeignKeyValues(result, criteria);
 
       return result;
     }
@@ -630,18 +630,32 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param entities the entities for which to set the reference entities
    * @throws DbException in case of a database exception
    */
-  private void setForeignKeyValues(final List<Entity> entities) throws DbException {
+  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
     if (entities == null || entities.size() == 0)
       return;
 
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
+      if (criteria.getForeignKeyFetchDepth() == 0) {//first level, set the maximum depth
+        criteria.setMaxFetchDepth(foreignKeyProperty.getFetchDepth());
+      }
       final List<Entity.Key> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
-      final Map<Entity.Key, Entity> hashedReferencedEntities = foreignKeyProperty.isLazyLoading()
-              ? initLazyLoaded(referencedPrimaryKeys)
-              : EntityUtil.hashByPrimaryKey(selectMany(referencedPrimaryKeys));
-      for (final Entity entity : entities)
-        entity.setValue(foreignKeyProperty.getPropertyID(), hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+      if (referencedPrimaryKeys.size() > 0) {
+        Map<Entity.Key, Entity> hashedReferencedEntities;
+        if (criteria.getForeignKeyFetchDepth() >= criteria.getMaxFetchDepth()) {//lazy loading
+          hashedReferencedEntities = initLazyLoaded(referencedPrimaryKeys);
+        }
+        else {//standard loading
+          final EntitySelectCriteria selectCriteria =
+                  EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys)//propogate the original criteria paremeters forward
+                          .setForeignKeyFetchDepth(criteria.getForeignKeyFetchDepth() + 1).setMaxFetchDepth(criteria.getMaxFetchDepth());
+          hashedReferencedEntities = EntityUtil.hashByPrimaryKey(selectMany(selectCriteria));
+        }
+        for (final Entity entity : entities) {
+          entity.setValue(foreignKeyProperty.getPropertyID(),
+                  hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+        }
+      }
     }
   }
 
@@ -658,7 +672,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
-      if (key != null)
+      if (key != null && !key.isNull())
         keySet.add(key);
     }
 

@@ -5,9 +5,11 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.ChangeValueMap;
 import org.jminor.common.model.ChangeValueMapModel;
+import org.jminor.common.model.Event;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Collator;
@@ -30,6 +32,18 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    * The primary key of this entity
    */
   private final Key primaryKey;
+
+  /**
+   *
+   */
+  private final ChangeValueMap<String, Entity> foreignKeyValues = new ChangeValueMapModel<String, Entity>() {
+    @Override
+    public ActionEvent getValueChangeEvent(String key, Entity newValue, Entity oldValue, boolean initialization) {
+      return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
+    }
+  };
+
+  private boolean loaded = false;
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -66,7 +80,6 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     if (primaryKey == null)
       throw new IllegalArgumentException("Can not instantiate a Entity without a primary key");
     this.primaryKey = primaryKey;
-    this.primaryKey.eventPropertyChanged().addListener(eventPropertyChanged());
   }
 
   /**
@@ -81,6 +94,23 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    */
   public Key getPrimaryKey() {
     return primaryKey;
+  }
+
+  /**
+   * Sets the loaded status of this entity, true means that property
+   * values have been loaded, but does not imply that foreign key
+   * entities have been set
+   * @param loaded the loaded status
+   */
+  public void setLoaded(final boolean loaded) {
+    this.loaded = loaded;
+  }
+
+  /**
+   * @return true if property values have been loaded for this entity
+   */
+  public boolean isLoaded() {
+    return loaded;
   }
 
   /**
@@ -109,7 +139,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    * @see org.jminor.framework.domain.Property.Event
    */
   public void addPropertyListener(final Property.Listener propertyListener) {
-    eventPropertyChanged().addListener(propertyListener);
+    eventValueChanged().addListener(propertyListener);
   }
 
   /**
@@ -159,10 +189,13 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     validateType(property, value);
 
     toString = null;
-    if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity))
+    if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
       propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value);
-
-    return super.setValue(propertyID, value);
+      return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value);
+    }
+    else {
+      return super.setValue(propertyID, value);
+    }
   }
 
   /**
@@ -174,6 +207,8 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
       return primaryKey.getValue(propertyID);
+    if (property instanceof Property.ForeignKeyProperty)
+      return foreignKeyValues.getValue(property.getPropertyID());
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
 
@@ -184,10 +219,14 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is an Entity
-   * @throws ClassCastException if the value is not an Entity instance
+   * @throws RuntimeException if the property is not a foreign key property
    */
   public Entity getEntityValue(final String propertyID) {
-    return (Entity) getValue(propertyID);
+    final Property property = getProperty(propertyID);
+    if (property instanceof Property.ForeignKeyProperty)
+      return foreignKeyValues.getValue(property.getPropertyID());
+
+    throw new RuntimeException(propertyID + " is not a foreign key property");
   }
 
   /**
@@ -320,20 +359,24 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   public void revertValue(final String key) {
     final Property property = getProperty(key);
     if (property instanceof Property.PrimaryKeyProperty)
-      getPrimaryKey().revertValue(key);
+      primaryKey.revertValue(key);
+    else if (property instanceof Property.ForeignKeyProperty)
+      foreignKeyValues.revertValue(key);
     else
       super.revertValue(key);
   }
 
   @Override
   public void revertAll() {
-    getPrimaryKey().revertAll();
+    primaryKey.revertAll();
+    foreignKeyValues.revertAll();
     super.revertAll();
   }
 
   @Override
   public void clear() {
-    getPrimaryKey().clear();
+    primaryKey.clear();
+    foreignKeyValues.clear();
     super.clear();
   }
 
@@ -345,14 +388,16 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   }
 
   /**
-   * @param propertyID the property identifier
+   * @param property the property
    * @return the value of the property, bypassing the Entity.Proxy
    */
-  public Object getRawValue(final String propertyID) {
-    if (primaryKey.containsProperty(propertyID))
-      return primaryKey.getValue(propertyID);
+  public Object getRawValue(final Property property) {
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.getValue(property.getPropertyID());
+    else if (property instanceof Property.ForeignKeyProperty)
+      return foreignKeyValues.getValue(property.getPropertyID());
 
-    return super.getValue(propertyID);
+    return super.getValue(property.getPropertyID());
   }
 
   /**
@@ -361,6 +406,14 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
    */
   public boolean propertyValuesEqual(final Entity entity) {
     return entity.primaryKey.equals(primaryKey) && super.equals(entity);
+  }
+
+  @Override
+  protected boolean valuesEqual(final Object valueOne, final Object valueTwo) {
+    if (valueOne instanceof Entity && valueTwo instanceof Entity) {
+      return ((Entity) valueOne).getPrimaryKey().equals(((Entity) valueTwo).getPrimaryKey());
+    }
+    return super.valuesEqual(valueOne, valueTwo);
   }
 
   /**
@@ -439,8 +492,11 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   @Override
   public void setAs(final ChangeValueMap<String, Object> valueMap) {
     super.setAs(valueMap);
-    primaryKey.setAs(((Entity) valueMap).getPrimaryKey());
+    final Entity entity = (Entity) valueMap;
+    primaryKey.setAs(entity.getPrimaryKey());
+    foreignKeyValues.setAs(entity.foreignKeyValues);
     toString = valueMap.toString();
+    loaded = ((Entity) valueMap).loaded;
   }
 
   /**
@@ -471,6 +527,24 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     return primaryKey;
   }
 
+  @Override
+  public void addValueListener(ActionListener valueListener) {
+    primaryKey.addValueListener(valueListener);
+    foreignKeyValues.addValueListener(valueListener);
+    super.addValueListener(valueListener);
+  }
+
+  @Override
+  public boolean containsValue(String key) {
+    final Property property = getProperty(key);
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.containsValue(key);
+    if (property instanceof Property.ForeignKeyProperty)
+      return foreignKeyValues.containsValue(property.getPropertyID());
+
+    return super.containsValue(key);
+  }
+
   /**
    * @param propertyID the property identifier
    * @return true if the value of the given property is null
@@ -478,9 +552,17 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   @Override
   public boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
-    final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(propertyID);
+    final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(property);
 
     return isValueNull(property.getPropertyType(), value);
+  }
+
+  @Override
+  public Event eventValueChanged() {
+    if (evtValueChanged == null)
+      primaryKey.addValueListener(evtValueChanged = new Event());
+
+    return evtValueChanged;
   }
 
   /**
@@ -591,7 +673,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
-      entity.setValue(entry.getKey(), entry.getValue());
+      entity.setValue(entry.getKey(), entry.getValue());//todo
     }
     if (originalValues != null) {
       for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
@@ -643,7 +725,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty))
-        setValue(referenceProperty.getPropertyID(), referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty.getPropertyID()) : null);
+        setValue(referenceProperty.getPropertyID(), referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty) : null);
     }
   }
 
@@ -656,19 +738,19 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         super.setValue(denormalizedProperty.getPropertyID(),
-                entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
+                entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty()));
       }
     }
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = getEntityValue(denormalizedViewProperty.getForeignKeyPropertyID());
+    final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID()) : null;
   }
 
   private String getDenormalizedViewValueAsString(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = getEntityValue(denormalizedViewProperty.getForeignKeyPropertyID());
+    final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
     return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.getDenormalizedProperty()) : null;
   }
@@ -982,7 +1064,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       else if (property instanceof Property.PrimaryKeyProperty)
         return entity.getPrimaryKey().getValue(property.getPropertyID());
       else if (entity.containsValue(property.getPropertyID()))
-        return entity.getRawValue(property.getPropertyID());
+        return entity.getRawValue(property);
       else
         return property.getDefaultValue();
     }
@@ -995,7 +1077,8 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       final String entityID = entity.getEntityID();
       final ToString<String, Object> stringProvider = EntityRepository.getStringProvider(entityID);
 
-      return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
+      return stringProvider == null || !entity.isLoaded() ?
+              new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }
 
     public String getValueAsString(final Entity entity, final Property property) {

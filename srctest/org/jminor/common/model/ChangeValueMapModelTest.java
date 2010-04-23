@@ -16,7 +16,7 @@ public class ChangeValueMapModelTest {
     final ChangeValueMap<String, Integer> model = new ChangeValueMapModel<String, Integer>();
 
     model.stateModified();
-    model.eventPropertyChanged();
+    model.eventValueChanged();
 
     assertFalse(model.containsValue(key));
 

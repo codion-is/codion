@@ -238,6 +238,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160),
             new Property.ForeignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
                     new Property(TRACK_ALBUMID))
+                    .setFetchDepth(2)
                     .setPreferredColumnWidth(160),
             new Property(TRACK_NAME, Type.STRING, "Name")
                     .setNullable(false)
@@ -302,7 +303,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160),
             new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
-                            .setIndex(1).setUpdatable(true))
+                            .setIndex(1).setUpdatable(true)).setFetchDepth(3)
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
             new Property.DenormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,

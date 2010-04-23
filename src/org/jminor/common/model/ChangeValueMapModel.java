@@ -36,7 +36,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   /**
    * Fired when a value changes.
    */
-  private transient Event evtPropertyChanged;
+  protected transient Event evtValueChanged;
 
   /**
    * Instantiate a new ValueMapModel with a default size of 10.
@@ -62,11 +62,11 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   }
 
   /** {@inheritDoc} */
-  public Event eventPropertyChanged() {
-    if (evtPropertyChanged == null)
-      evtPropertyChanged = new Event();
+  public Event eventValueChanged() {
+    if (evtValueChanged == null)
+      evtValueChanged = new Event();
 
-    return evtPropertyChanged;
+    return evtValueChanged;
   }
 
   /** {@inheritDoc} */
@@ -121,13 +121,13 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
     final boolean initialization = !containsValue(key);
     V oldValue = null;
     if (!initialization) {
-      oldValue = values.get(key);
+      oldValue = getValue(key);
       if (Util.equal(oldValue, value))
         return oldValue;
     }
 
     if (!initialization) {
-      if (isModified(key) && Util.equal(originalValues.get(key), value))
+      if (isModified(key) && Util.equal(getOriginalValue(key), value))
         removeOriginalValue(key);//we're back to the original value
       else if (!isModified(key))
         setOriginalValue(key, oldValue);
@@ -137,7 +137,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
     }
 
     values.put(key, value);
-    if (evtPropertyChanged != null)
+    if (evtValueChanged != null)
       notifyValueChange(key, value, initialization, oldValue);
 
     return oldValue;
@@ -151,7 +151,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
     if (stModified != null)
       stModified.setActive(isModified());
-    if (evtPropertyChanged != null)
+    if (evtValueChanged != null)
       notifyValueChange(key, null, false, value);
 
     return value;
@@ -160,7 +160,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   /** {@inheritDoc} */
   public void revertValue(final T key) {
     if (isModified(key))
-      setValue(key, originalValues.get(key));
+      setValue(key, getOriginalValue(key));
   }
 
   /** {@inheritDoc} */
@@ -183,7 +183,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
       for (final T entryKey : changeValueMap.getValueKeys()) {
         final V value = copyValue(changeValueMap.getValue(entryKey));
         values.put(entryKey, value);
-        if (evtPropertyChanged != null)
+        if (evtValueChanged != null)
           notifyValueChange(entryKey, value, true, null);
       }
       if (changeValueMap.isModified()) {
@@ -214,18 +214,18 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
   /** {@inheritDoc} */
   public void addValueListener(final ActionListener valueListener) {
-    eventPropertyChanged().addListener(valueListener);
+    eventValueChanged().addListener(valueListener);
   }
 
   /** {@inheritDoc} */
   public void removeValueListener(final ActionListener valueListener) {
-    if (evtPropertyChanged != null)
-      evtPropertyChanged.removeListener(valueListener);
+    if (evtValueChanged != null)
+      evtValueChanged.removeListener(valueListener);
   }
 
   /** {@inheritDoc} */
   public ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization) {
-    return new ActionEvent(this, 0, key.toString());
+    return new ActionEvent(key, 0, key.toString());
   }
 
   @SuppressWarnings({"unchecked"})
@@ -239,7 +239,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
       return false;
 
     for (final T key : otherMap.values.keySet()) {
-      if (!containsValue(key) || !valuesEqual(otherMap.values.get(key), values.get(key))) {
+      if (!containsValue(key) || !valuesEqual(otherMap.getValue(key), getValue(key))) {
         return false;
       }
     }
@@ -252,7 +252,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
   }
 
   protected void notifyValueChange(final T key, final V value, final boolean initialization, final V oldValue) {
-    evtPropertyChanged.fire(getValueChangeEvent(key, value, oldValue, initialization));
+    evtValueChanged.fire(getValueChangeEvent(key, value, oldValue, initialization));
   }
 
   protected void setOriginalValue(final T key, final V oldValue) {

@@ -1368,3 +1368,11 @@
   EntityUtil.getValueChangeEvent() renamed to createValueChangeEvent() and moved to Entity
   EntityTablePanel.showEntityMenu() added, SHIFT-click or CTR-V for value tree
   UiUtil.addKeyEvent() overloaded
+  Entity.loaded boolean field added
+  EntityResultPacker sets the loaded entity attribute
+  Entity.foreignKeyValues field added, stores entities referenced via foreign keys
+  Entity.setValue(), getValue() and others takes the above into account
+  EntitySelectCriteria.foreignKeyFetchDepth and maxFetchDepth fields added
+  EntityDbConnection.setForeignKeyValues() uses the above fields to decide when to stop loading foreign key references
+  EntityTablePanel.showEntityMenu() and createEntityMenu() added
+  Property.ForeignKeyProperty.lazyLoading field removed

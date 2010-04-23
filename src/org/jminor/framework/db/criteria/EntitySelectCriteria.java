@@ -14,6 +14,8 @@ public class EntitySelectCriteria extends EntityCriteria {
 
   private final int fetchCount;
   private final String orderByClause;
+  private int foreignKeyFetchDepth = 0;
+  private int maxFetchDepth = -1;
 
   /**
    * Instantiates a new EntityCriteria, which includes all the underlying entities
@@ -101,5 +103,23 @@ public class EntitySelectCriteria extends EntityCriteria {
    */
   public String getOrderByClause() {
     return orderByClause;
+  }
+
+  public int getForeignKeyFetchDepth() {
+    return foreignKeyFetchDepth;
+  }
+
+  public EntitySelectCriteria setForeignKeyFetchDepth(final int foreignKeyFetchDepth) {
+    this.foreignKeyFetchDepth = foreignKeyFetchDepth;
+    return this;
+  }
+
+  public EntitySelectCriteria setMaxFetchDepth(final int maxFetchDepth) {
+    this.maxFetchDepth = maxFetchDepth;
+    return this;
+  }
+
+  public int getMaxFetchDepth() {
+    return maxFetchDepth;
   }
 }

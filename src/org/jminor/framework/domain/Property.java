@@ -608,7 +608,7 @@ public class Property implements Serializable {
 
     private final List<Property> referenceProperties;
 
-    private boolean lazyLoading;
+    private int fetchDepth = 1;
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
@@ -619,7 +619,6 @@ public class Property implements Serializable {
      */
     public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final Property... referenceProperties) {
-
       super(propertyID, Type.ENTITY, caption);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
@@ -656,27 +655,18 @@ public class Property implements Serializable {
       return this.referenceProperties.size() > 1;
     }
 
-    /**
-     * if true a shallow entity instance with only the primary key is loaded as opposed to
-     * loading the referenced entity with all property values populated
-     * @return true if this foreign key value should be lazy loaded
-     */
-    public boolean isLazyLoading() {
-      return lazyLoading;
-    }
-
-    /**
-     * @param lazyLoading if true then the actual values of this reference property are not automatically loaded
-     * @return this ForeignKeyProperty instance
-     */
-    public ForeignKeyProperty setLazyLoading(final boolean lazyLoading) {
-      this.lazyLoading = lazyLoading;
-      return this;
-    }
-
     @Override
     public final String getColumnName() {
       throw new RuntimeException("Foreign key properties do not have column names");
+    }
+
+    public int getFetchDepth() {
+      return fetchDepth;
+    }
+
+    public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
+      this.fetchDepth = fetchDepth;
+      return this;
     }
   }
 

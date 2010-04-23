@@ -941,16 +941,37 @@ public class EntityTablePanel extends JPanel {
     Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
   }
 
-  private JMenu createEntityMenu(final Entity entity, final String caption) {
+  private void showEntityMenu(final Point location) {
+    try {
+      final Entity entity = getTableModel().getSelectedItem();
+      if (entity != null) {
+        final JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(createEntityMenu(entity.getCopy(), entity.toString()));
+        popupMenu.show(this, location.x, location.y);
+      }
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private JMenu createEntityMenu(final Entity entity, final String caption) throws Exception {
     final JMenu menu = new JMenu(caption + ": " );
     if (entity == null)
       return menu;
 
     for (final Property.PrimaryKeyProperty property : EntityRepository.getPrimaryKeyProperties(entity.getEntityID()))
       menu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
-    for (final Property.ForeignKeyProperty property : EntityRepository.getForeignKeyProperties(entity.getEntityID()))
-      menu.add(createEntityMenu(entity.getEntityValue(property.getPropertyID()), "[FK] " + property.getCaption() + ": "
-              + entity.getValueAsString(property.getPropertyID())));
+    for (final Property.ForeignKeyProperty property : EntityRepository.getForeignKeyProperties(entity.getEntityID())) {
+      Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
+      if (referencedEntity != null && !referencedEntity.isLoaded()) {
+        referencedEntity = getTableModel().getDbProvider().getEntityDb().selectSingle(referencedEntity.getPrimaryKey());
+        System.out.println("Loaded: " + referencedEntity);
+        entity.setValue(property.getPropertyID(), referencedEntity);
+      }
+      final String text = "[FK] " + property.getCaption() + ": " + (referencedEntity != null ? referencedEntity.toString() : "");
+      menu.add(referencedEntity != null && referencedEntity.isLoaded() ? createEntityMenu(referencedEntity, text) : new JMenuItem(text));
+    }
     final List<Property> properties = new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false));
     Collections.sort(properties, new Comparator<Property>() {
       final Collator collator = Collator.getInstance();
@@ -1076,15 +1097,6 @@ public class EntityTablePanel extends JPanel {
     final TableColumn column = getTableModel().getTableColumn(property);
     getTableModel().getColumnModel().removeColumn(column);
     hiddenColumns.add(column);
-  }
-
-  private void showEntityMenu(final Point location) {
-    final Entity entity = getTableModel().getSelectedItem();
-    if (entity != null) {
-      final JPopupMenu popupMenu = new JPopupMenu();
-      popupMenu.add(createEntityMenu(entity, entity.toString()));
-      popupMenu.show(this, location.x, location.y);
-    }
   }
 
   /**

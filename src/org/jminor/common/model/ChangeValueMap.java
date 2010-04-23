@@ -17,7 +17,7 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
   /**
    * @return an Event fired when a value changes
    */
-  Event eventPropertyChanged();
+  Event eventValueChanged();
 
   /**
    * Adds a ActionListener, this listener will be notified each time a value changes
