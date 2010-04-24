@@ -208,8 +208,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /** {@inheritDoc} */
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
-    addCacheQueriesRequest();
-
     String sql = null;
     try {
       final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
@@ -224,8 +222,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
-      if (!lastQueryResultCached())
-        setForeignKeyValues(result, criteria);
+      setForeignKeyValues(result, criteria);
 
       return result;
     }
@@ -233,9 +230,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       log.info(sql);
       log.error(this, exception);
       throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
-    }
-    finally {
-      removeCacheQueriesRequest();
     }
   }
 
@@ -299,21 +293,15 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (entities == null || entities.size() == 0)
       return dependencyMap;
 
-    try {
-      addCacheQueriesRequest();
-      final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
-      for (final Dependency dependency : dependencies) {
-        final List<Entity> dependentEntities = selectMany(new EntitySelectCriteria(dependency.entityID,
-                new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
-        if (dependentEntities.size() > 0)
-          dependencyMap.put(dependency.entityID, dependentEntities);
-      }
+    final Set<Dependency> dependencies = resolveEntityDependencies(entities.get(0).getEntityID());
+    for (final Dependency dependency : dependencies) {
+      final List<Entity> dependentEntities = selectMany(new EntitySelectCriteria(dependency.entityID,
+              new EntityKeyCriteria(dependency.foreignKeyProperties, EntityUtil.getPrimaryKeys(entities))));
+      if (dependentEntities.size() > 0)
+        dependencyMap.put(dependency.entityID, dependentEntities);
+    }
 
-      return dependencyMap;
-    }
-    finally {
-      removeCacheQueriesRequest();
-    }
+    return dependencyMap;
   }
 
   /** {@inheritDoc} */
@@ -634,27 +622,28 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria) throws DbException {
     if (entities == null || entities.size() == 0)
       return;
-
-    for (final Property.ForeignKeyProperty foreignKeyProperty :
-            EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
-      final int maxFetchDepth = criteria.getForeignKeyFetchDepth() == 0 ? foreignKeyProperty.getFetchDepth() : criteria.getMaxFetchDepth();
-      if (criteria.getForeignKeyFetchDepth() < maxFetchDepth) {
-        final List<Entity.Key> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
-        if (referencedPrimaryKeys.size() > 0) {
-          final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys)
-                  .setForeignKeyFetchDepth(criteria.getForeignKeyFetchDepth() + 1).setMaxFetchDepth(maxFetchDepth);
-          final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(selectMany(selectCriteria));
+    //Any sufficiently complex algorithm is indistinguishable from evil
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID());
+    for (final Property.ForeignKeyProperty property : foreignKeyProperties) {
+      final int maxFetchDepth = criteria.getCurrentFetchDepth() == 0 ? criteria.getFetchDepth(property.getPropertyID()) : criteria.getFetchDepth();
+      if (criteria.getCurrentFetchDepth() < maxFetchDepth) {
+        final List<Entity.Key> referencedKeys = getReferencedPrimaryKeys(entities, property);
+        if (referencedKeys.size() > 0) {
+          final EntitySelectCriteria referenceCriteria = EntityCriteriaUtil.selectCriteria(referencedKeys)
+                  .setCurrentFetchDepth(criteria.getCurrentFetchDepth() + 1)
+                  .setFetchDepth(maxFetchDepth);
+          final List<Entity> referencedEntities = selectMany(referenceCriteria);
+          final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            entity.setValue(foreignKeyProperty.getPropertyID(),
-                    hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+            entity.setValue(property.getPropertyID(), hashedReferencedEntities.get(entity.getReferencedPrimaryKey(property)));
           }
         }
       }
     }
   }
 
-  private static List<Entity.Key> getPrimaryKeysOfEntityValues(final List<Entity> entities,
-                                                               final Property.ForeignKeyProperty foreignKeyProperty) {
+  private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
+                                                           final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);

@@ -101,6 +101,34 @@ public class EntityDbConnectionTest {
     assertEquals(2, result.size());
     result = DB_PROVIDER.getEntityDb().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
     assertTrue(result.size() > 0);
+
+    final EntitySelectCriteria criteria = new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria("ename = 'BLAKE'"));
+    result = DB_PROVIDER.getEntityDb().selectMany(criteria);
+    Entity emp = result.get(0);
+    assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
+    emp = emp.getEntityValue(EmpDept.EMPLOYEE_MGR_FK);
+    assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
+
+    result = DB_PROVIDER.getEntityDb().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_DEPARTMENT_FK, 0));
+    assertEquals(1, result.size());
+    emp = result.get(0);
+    assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
+
+    result = DB_PROVIDER.getEntityDb().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 0));
+    assertEquals(1, result.size());
+    emp = result.get(0);
+    assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
+
+    result = DB_PROVIDER.getEntityDb().selectMany(criteria.setFetchDepth(EmpDept.EMPLOYEE_MGR_FK, 2));
+    assertEquals(1, result.size());
+    emp = result.get(0);
+    assertFalse(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
+    emp = emp.getEntityValue(EmpDept.EMPLOYEE_MGR_FK);
+    assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_MGR_FK));
   }
 
   @Test(expected = DbException.class)

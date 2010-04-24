@@ -135,15 +135,6 @@ public class DbConnectionTest {
   }
 
   @Test
-  public void setAllowCaching() throws Exception {
-    dbConnection.setAllowCaching(true);
-    assertTrue(dbConnection.getAllowCaching());
-    dbConnection.setAllowCaching(false);
-    assertFalse(dbConnection.getAllowCaching());
-    assertEquals(dbConnection.getCacheQueriesRequests(), 0);
-  }
-
-  @Test
   public void beginTransaction() throws Exception {
     dbConnection.beginTransaction();
     assertTrue(dbConnection.isTransactionOpen());

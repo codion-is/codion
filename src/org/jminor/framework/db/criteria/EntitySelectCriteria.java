@@ -6,6 +6,10 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class encapsulating select query parameters.
@@ -14,8 +18,9 @@ public class EntitySelectCriteria extends EntityCriteria {
 
   private final int fetchCount;
   private final String orderByClause;
-  private int foreignKeyFetchDepth = 0;
-  private int maxFetchDepth = -1;
+  private int currentFetchDepth = 0;
+  private Map<String, Integer> foreignKeyFetchDepths;
+  private int fetchDepth;
 
   /**
    * Instantiates a new EntityCriteria, which includes all the underlying entities
@@ -74,7 +79,7 @@ public class EntitySelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
   public EntitySelectCriteria(final String entityID, final Criteria criteria, final String orderByClause,
-                        final int fetchCount) {
+                              final int fetchCount) {
     super(entityID, criteria);
     this.fetchCount = fetchCount;
     this.orderByClause = orderByClause;
@@ -105,21 +110,36 @@ public class EntitySelectCriteria extends EntityCriteria {
     return orderByClause;
   }
 
-  public int getForeignKeyFetchDepth() {
-    return foreignKeyFetchDepth;
+  public int getCurrentFetchDepth() {
+    return currentFetchDepth;
   }
 
-  public EntitySelectCriteria setForeignKeyFetchDepth(final int foreignKeyFetchDepth) {
-    this.foreignKeyFetchDepth = foreignKeyFetchDepth;
+  public EntitySelectCriteria setCurrentFetchDepth(final int currentFetchDepth) {
+    this.currentFetchDepth = currentFetchDepth;
     return this;
   }
 
-  public EntitySelectCriteria setMaxFetchDepth(final int maxFetchDepth) {
-    this.maxFetchDepth = maxFetchDepth;
+  public EntitySelectCriteria setFetchDepth(final String fkPropertyID, final int maxFetchDepth) {
+    if (foreignKeyFetchDepths == null)
+      foreignKeyFetchDepths = new HashMap<String, Integer>();
+
+    this.foreignKeyFetchDepths.put(fkPropertyID, maxFetchDepth);
     return this;
   }
 
-  public int getMaxFetchDepth() {
-    return maxFetchDepth;
+  public int getFetchDepth(final String fkPropertyID) {
+    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(fkPropertyID))
+      return foreignKeyFetchDepths.get(fkPropertyID);
+
+    return Configuration.getIntValue(Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+  }
+
+  public int getFetchDepth() {
+    return fetchDepth;
+  }
+
+  public EntitySelectCriteria setFetchDepth(int fetchDepth) {
+    this.fetchDepth = fetchDepth;
+    return this;
   }
 }

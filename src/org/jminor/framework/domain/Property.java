@@ -608,7 +608,7 @@ public class Property implements Serializable {
 
     private final List<Property> referenceProperties;
 
-    private int fetchDepth = 1;
+    private int fetchDepth = 0;
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
@@ -742,7 +742,7 @@ public class Property implements Serializable {
    * The Entity.Proxy class can be used to provide the values of transient properties, by overriding it's getValue() method.
    * @see Entity#setDefaultProxy(org.jminor.framework.domain.Entity.Proxy)
    * @see Entity#setProxy(String, org.jminor.framework.domain.Entity.Proxy)
-   * @see org.jminor.framework.domain.Entity.Proxy#getValue(Entity, Property)
+   * @see org.jminor.framework.domain.Entity.Proxy#getTransientValue(Entity, org.jminor.framework.domain.Property.TransientProperty)
    */
   public static class TransientProperty extends Property {
 

@@ -25,9 +25,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,7 +39,6 @@ public class DbConnection {
   private static final Logger log = Util.getLogger(DbConnection.class);
 
   private final Properties connectionProperties = new Properties();
-  private final Map<String, List> queryCache = new HashMap<String, List>();
   private final User user;
   private final Database database;
 
@@ -49,10 +46,6 @@ public class DbConnection {
   private Statement checkConnectionStatement;
   private boolean transactionOpen = false;
   private boolean connected = false;
-  private boolean allowCaching = true;
-
-  private int cacheQueriesRequests = 0;
-  private boolean lastResultCached = false;
 
   private long poolTime = -1;
 
@@ -226,65 +219,6 @@ public class DbConnection {
   }
 
   /**
-   * @return true if the last query result was retrieved from the cache
-   */
-  public boolean lastQueryResultCached() {
-    return lastResultCached;
-  }
-
-  /**
-   * Turns the query cache mechanism on or off.
-   * If the query cache is being turned off all query cache requests are removed and the cache is cleared.
-   * @param value true if query caching should be allowed
-   * @see #addCacheQueriesRequest()
-   * @see #removeCacheQueriesRequest()
-   */
-  public void setAllowCaching(final boolean value) {
-    allowCaching = value;
-    if (!value) {
-      queryCache.clear();
-      cacheQueriesRequests = 0;
-    }
-  }
-
-  /**
-   * @return true if this connection allows query caching
-   */
-  public boolean getAllowCaching() {
-    return allowCaching;
-  }
-
-  /**
-   * Activates a simple query cache, based on the query string.
-   * A call to this method adds a request for turning on the caching mechanism,
-   * must be balanced with a call to <code>removeCacheQueriesRequest</code>
-   * @see #removeCacheQueriesRequest()
-   */
-  public void addCacheQueriesRequest() {
-    if (allowCaching)
-      this.cacheQueriesRequests++;
-  }
-
-  /**
-   * Removes a single query cache request, the cache is deactivated and cleared
-   * when all query cache requests have been removed.
-   * @see #addCacheQueriesRequest()
-   */
-  public void removeCacheQueriesRequest() {
-    if (this.cacheQueriesRequests > 0)
-      this.cacheQueriesRequests--;
-    if (cacheQueriesRequests == 0)
-      queryCache.clear();
-  }
-
-  /**
-   * @return the number of cache query requests
-   */
-  public int getCacheQueriesRequests() {
-    return cacheQueriesRequests;
-  }
-
-  /**
    * Performs the given sql query and returns the result in a List
    * @param sql the query
    * @param resultPacker a ResultPacker instance for creating the return List
@@ -295,25 +229,13 @@ public class DbConnection {
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
     counter.count(sql);
     methodLogger.logAccess("query", new Object[] {sql});
-    if (cacheQueriesRequests > 0 && fetchCount < 0) {
-      if (queryCache.containsKey(sql)) {
-        log.debug(user.getUsername() + " (cached): " + sql.toUpperCase() + ";");
-        lastResultCached = true;
-        counter.incrementCachedQueriesPerSecondCounter();
-        methodLogger.logExit("query", null, null);
-        return queryCache.get(sql);
-      }
-    }
     final long time = System.currentTimeMillis();
-    lastResultCached = false;
     Statement statement = null;
     SQLException exception = null;
     try {
       statement = connection.createStatement();
       final List result = resultPacker.pack(statement.executeQuery(sql), fetchCount);
-      if (cacheQueriesRequests > 0 && fetchCount < 0)
-        queryCache.put(sql, result);
-
+    
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + "ms)");
 
       return result;
@@ -569,7 +491,7 @@ public class DbConnection {
   }
 
   public static DatabaseStatistics getDatabaseStatistics() {
-    return new DatabaseStatistics(counter.getQueriesPerSecond(), counter.getCachedQueriesPerSecond(),
+    return new DatabaseStatistics(counter.getQueriesPerSecond(),
             counter.getSelectsPerSecond(), counter.getInsertsPerSecond(),
             counter.getDeletesPerSecond(), counter.getUpdatesPerSecond());
   }
@@ -679,8 +601,6 @@ public class DbConnection {
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
     private int queriesPerSecondCounter = 0;
-    private int cachedQueriesPerSecond = 0;
-    private int cachedPerSecondCounter = 0;
     private int selectsPerSecond = 0;
     private int selectsPerSecondCounter = 0;
     private int insertsPerSecond = 0;
@@ -711,10 +631,6 @@ public class DbConnection {
         deletesPerSecondCounter++;
     }
 
-    public void incrementCachedQueriesPerSecondCounter() {
-      cachedPerSecondCounter++;
-    }
-
     public int getQueriesPerSecond() {
       return queriesPerSecond;
     }
@@ -735,10 +651,6 @@ public class DbConnection {
       return updatesPerSecond;
     }
 
-    public int getCachedQueriesPerSecond() {
-      return cachedQueriesPerSecond;
-    }
-
     private void updateQueriesPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - queriesPerSecondTime)/ 1000;
@@ -748,8 +660,6 @@ public class DbConnection {
         insertsPerSecond = (int) ((double) insertsPerSecondCounter / seconds);
         deletesPerSecond = (int) ((double) deletesPerSecondCounter / seconds);
         updatesPerSecond = (int) ((double) updatesPerSecondCounter / seconds);
-        cachedQueriesPerSecond = (int) ((double) cachedPerSecondCounter / seconds);
-        cachedPerSecondCounter = 0;
         queriesPerSecondCounter = 0;
         selectsPerSecondCounter = 0;
         insertsPerSecondCounter = 0;

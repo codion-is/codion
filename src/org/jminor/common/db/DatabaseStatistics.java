@@ -14,25 +14,18 @@ public class DatabaseStatistics implements Serializable {
 
   private final long timestamp = System.currentTimeMillis();
   private final int queriesPerSecond;
-  private final int cachedQueriesPerSecond;
   private final int selectsPerSecond;
   private final int insertsPerSecond;
   private final int deletesPerSecond;
   private final int updatesPerSecond;
 
-  public DatabaseStatistics(final int queriesPerSecond, final int cachedQueriesPerSecond,
-                            final int selectsPerSecond, final int insertsPerSecond,
+  public DatabaseStatistics(final int queriesPerSecond, final int selectsPerSecond, final int insertsPerSecond,
                             final int deletesPerSecond, final int updatesPerSecond) {
     this.queriesPerSecond = queriesPerSecond;
-    this.cachedQueriesPerSecond = cachedQueriesPerSecond;
     this.selectsPerSecond = selectsPerSecond;
     this.insertsPerSecond = insertsPerSecond;
     this.deletesPerSecond = deletesPerSecond;
     this.updatesPerSecond = updatesPerSecond;
-  }
-
-  public int getCachedQueriesPerSecond() {
-    return cachedQueriesPerSecond;
   }
 
   public int getQueriesPerSecond() {

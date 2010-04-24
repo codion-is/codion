@@ -373,6 +373,13 @@ public class Configuration {
    */
   public static final String USE_LOOKUP_FIELD_SEARCH_HINT = "jminor.client.useLookupFieldSearchHint";
 
+  /**
+   * Specifies the default foreign key fetch depth<br>
+   * Value type: Integer<br>
+   * Default value: 1
+   */
+  public static final String DEFAULT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.foreignKeyFetchDepth";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -410,6 +417,7 @@ public class Configuration {
     setValue(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
     setValue(ALLOW_COLUMN_REORDERING, true);
     setValue(USE_LOOKUP_FIELD_SEARCH_HINT, true);
+    setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     parseSystemSettings();
   }
 
@@ -444,6 +452,7 @@ public class Configuration {
     parseStringSetting(SERVER_DOMAIN_MODEL_JARS);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
     parseBooleanSetting(USE_LOOKUP_FIELD_SEARCH_HINT);
+    parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
   }
 
   private static void parseIntegerSetting(final String setting) {

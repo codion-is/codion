@@ -1366,7 +1366,7 @@
   ValueMap.getValues() added
   IdSource moved from common.db to common.model
   EntityUtil.getValueChangeEvent() renamed to createValueChangeEvent() and moved to Entity
-  EntityTablePanel.showEntityMenu() added, SHIFT-click or CTR-V for value tree
+  EntityTablePanel.showEntityMenu() added, CTR-click or CTR-V for value tree
   UiUtil.addKeyEvent() overloaded
   Entity.loaded boolean field added
   EntityResultPacker sets the loaded entity attribute
@@ -1398,4 +1398,7 @@
   DbConnectionPool logs average check out time
   ClientInstanceMonitorPanel changed according to the above
   ClientMonitorPanel and ClientTypeMonitorPanel now use split panes
-  
+  DbConnection cache functionality removed
+  Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH added
+  Property.ForeignKeyProperty uses the above
+  EntitySelectCriteria can now override the max fk fetch depth on fk basis

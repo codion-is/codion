@@ -779,7 +779,7 @@ public class EntityTablePanel extends JPanel {
           if (doubleClickAction != null)
             doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
         }
-        else if (event.isShiftDown()) {
+        else if (event.isAltDown()) {
           showEntityMenu(event.getPoint());
         }
       }

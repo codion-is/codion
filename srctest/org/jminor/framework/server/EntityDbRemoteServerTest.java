@@ -87,7 +87,6 @@ public class EntityDbRemoteServerTest {
     final DatabaseStatistics stats = admin.getDatabaseStatistics();
     assertNotNull(stats.getTimestamp());
     assertNotNull(stats.getQueriesPerSecond());
-    assertNotNull(stats.getCachedQueriesPerSecond());
 
     final ServerLog log = server.getServerLog("UnitTestConnection1");
     assertEquals("selectAll", log.getLastAccessedMethod());
