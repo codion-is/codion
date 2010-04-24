@@ -210,11 +210,11 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       return foreignKeyValues.getValue(property.getPropertyID());
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
-    if (property instanceof Property.TransientProperty)
+    if (property instanceof Property.TransientProperty && !super.containsValue(property.getPropertyID()))
       return getProxy(getEntityID()).getTransientValue(this, (Property.TransientProperty) property);
 
     if (containsValue(propertyID))
-      return getRawValue(property);
+      return super.getValue(property.getPropertyID());
     else
       return property.getDefaultValue();
   }
@@ -416,19 +416,6 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   }
 
   /**
-   * @param property the property
-   * @return the value of the property, bypassing the Entity.Proxy
-   */
-  public Object getRawValue(final Property property) {
-    if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.getValue(property.getPropertyID());
-    else if (property instanceof Property.ForeignKeyProperty)
-      return foreignKeyValues.getValue(property.getPropertyID());
-
-    return super.getValue(property.getPropertyID());
-  }
-
-  /**
    * @param entity the entity to compare to
    * @return true if all property values are equal
    */
@@ -580,9 +567,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   @Override
   public boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
-    final Object value = property instanceof Property.TransientProperty ? getValue(propertyID) : getRawValue(property);
-
-    return isValueNull(property.getPropertyType(), value);
+    return isValueNull(property.getPropertyType(), getValue(propertyID));
   }
 
   @Override
@@ -767,7 +752,8 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty))
-        setValue(referenceProperty.getPropertyID(), referencedEntity != null ? referencedEntity.getRawValue(primaryKeyProperty) : null);
+        setValue(referenceProperty.getPropertyID(), referencedEntity != null ?
+                referencedEntity.getValue(primaryKeyProperty.getPropertyID()) : null);
     }
   }
 
@@ -780,7 +766,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         super.setValue(denormalizedProperty.getPropertyID(),
-                entity == null ? null : entity.getRawValue(denormalizedProperty.getDenormalizedProperty()));
+                entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
       }
     }
   }
@@ -1112,7 +1098,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     }
 
     public Object getTransientValue(final Entity entity, final Property.TransientProperty property) {
-      return entity.getRawValue(property);
+      return null;
     }
 
     public String getValueAsString(final Entity entity, final Property property) {

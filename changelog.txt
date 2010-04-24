@@ -1404,3 +1404,4 @@
   EntitySelectCriteria can now override the max fk fetch depth on fk basis
   Fixed fetch depth issue
   EntityTablePanel.showEntityMenu now takes scrolling into account
+  Entity.getRawValue() removed

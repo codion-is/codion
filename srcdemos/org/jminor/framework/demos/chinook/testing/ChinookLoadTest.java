@@ -99,6 +99,8 @@ public class ChinookLoadTest extends EntityLoadTestModel {
 
     model = appModel.getMainApplicationModel(CustomerModel.class);
     model.setLinkedDetailModel(model.getDetailModels().get(0));
+    model = model.getDetailModel(InvoiceModel.class);
+    model.setLinkedDetailModel(model.getDetailModels().get(0));
 
     model = appModel.getMainApplicationModel(PlaylistModel.class);
     model.setLinkedDetailModel(model.getDetailModels().get(0));
