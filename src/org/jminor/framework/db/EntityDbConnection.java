@@ -637,35 +637,20 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID())) {
-      if (criteria.getForeignKeyFetchDepth() == 0) {//first level, set the maximum depth
-        criteria.setMaxFetchDepth(foreignKeyProperty.getFetchDepth());
-      }
-      final List<Entity.Key> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
-      if (referencedPrimaryKeys.size() > 0) {
-        Map<Entity.Key, Entity> hashedReferencedEntities;
-        if (criteria.getForeignKeyFetchDepth() >= criteria.getMaxFetchDepth()) {//lazy loading
-          hashedReferencedEntities = initLazyLoaded(referencedPrimaryKeys);
-        }
-        else {//standard loading
-          final EntitySelectCriteria selectCriteria =
-                  EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys)//propogate the original criteria paremeters forward
-                          .setForeignKeyFetchDepth(criteria.getForeignKeyFetchDepth() + 1).setMaxFetchDepth(criteria.getMaxFetchDepth());
-          hashedReferencedEntities = EntityUtil.hashByPrimaryKey(selectMany(selectCriteria));
-        }
-        for (final Entity entity : entities) {
-          entity.setValue(foreignKeyProperty.getPropertyID(),
-                  hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+      final int maxFetchDepth = criteria.getForeignKeyFetchDepth() == 0 ? foreignKeyProperty.getFetchDepth() : criteria.getMaxFetchDepth();
+      if (criteria.getForeignKeyFetchDepth() < maxFetchDepth) {
+        final List<Entity.Key> referencedPrimaryKeys = getPrimaryKeysOfEntityValues(entities, foreignKeyProperty);
+        if (referencedPrimaryKeys.size() > 0) {
+          final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys)
+                  .setForeignKeyFetchDepth(criteria.getForeignKeyFetchDepth() + 1).setMaxFetchDepth(maxFetchDepth);
+          final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(selectMany(selectCriteria));
+          for (final Entity entity : entities) {
+            entity.setValue(foreignKeyProperty.getPropertyID(),
+                    hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+          }
         }
       }
     }
-  }
-
-  private Map<Entity.Key, Entity> initLazyLoaded(final List<Entity.Key> referencedPrimaryKeys) {
-    final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
-    for (final Entity.Key key : referencedPrimaryKeys)
-      entityMap.put(key, new Entity(key));
-
-    return entityMap;
   }
 
   private static List<Entity.Key> getPrimaryKeysOfEntityValues(final List<Entity> entities,

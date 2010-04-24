@@ -266,7 +266,7 @@ public class Chinook {
             .setOrderByClause(TRACK_NAME));
     Entity.setProxy(T_TRACK, new Entity.Proxy() {
       @Override
-      public Object getValue(final Entity entity, final Property property) {
+      public Object getTransientValue(final Entity entity, final Property.TransientProperty property) {
         if (property.is(TRACK_MINUTES_SECONDS_TRANSIENT)) {
           final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
           if (milliseconds == null || milliseconds <= 0)
@@ -278,7 +278,7 @@ public class Chinook {
           return minutes + " min " + seconds + " sec";
         }
 
-        return super.getValue(entity, property);
+        return super.getTransientValue(entity, property);
       }
     });
 

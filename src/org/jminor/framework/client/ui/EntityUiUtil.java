@@ -546,22 +546,25 @@ public class EntityUiUtil {
                                              final List<Property.ForeignKeyProperty> fkProperties) throws Exception {
     Util.collate(fkProperties);
     for (final Property.ForeignKeyProperty property : fkProperties) {
-      final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": ");
       final boolean fkValueNull = entity.isForeignKeyNull(property);
       if (!fkValueNull) {
+        boolean queried = false;
         Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
         if (referencedEntity == null || !referencedEntity.isLoaded()) {
           referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
           entity.removeValue(property.getPropertyID());
           entity.setValue(property.getPropertyID(), referencedEntity);
+          queried = true;
         }
+        final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")
+                .append("] ").append(property.getCaption()).append(": ");
         text.append(referencedEntity.toString());
         final JMenu foreignKeyMenu = new JMenu(text.toString());
         populateEntityMenu(foreignKeyMenu, entity.getEntityValue(property.getPropertyID()), dbProvider);
         rootMenu.add(foreignKeyMenu);
       }
       else {
-        text.append("<null>");
+        final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
         rootMenu.add(new JMenuItem(text.toString()));
       }
     }

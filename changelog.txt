@@ -1386,3 +1386,5 @@
   Entity.isLoaded(fkPropertyID) added
   Entity.removeValue() overridden
   EntityPanel.initializePanel() now refreshes only table model if refresh on init, combo box models seem to be refreshed on creation
+  Entity.Proxy.getValue() removed, getTransientValue() added
+  EntityDbConnection.setForeignKeyValues() no longer initializes fk values with an empty entity

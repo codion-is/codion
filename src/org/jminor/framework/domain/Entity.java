@@ -210,8 +210,13 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       return foreignKeyValues.getValue(property.getPropertyID());
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
+    if (property instanceof Property.TransientProperty)
+      return getProxy(getEntityID()).getTransientValue(this, (Property.TransientProperty) property);
 
-    return getProxy(getEntityID()).getValue(this, property);
+    if (containsValue(propertyID))
+      return getRawValue(property);
+    else
+      return property.getDefaultValue();
   }
 
   @Override
@@ -1095,17 +1100,6 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   public static class Proxy {
     protected final Collator collator = Collator.getInstance();
 
-    public Object getValue(final Entity entity, final Property property) {
-      if (property instanceof Property.DenormalizedViewProperty)
-        throw new IllegalArgumentException("Entity.Proxy.getValue does not handle denormalized view properties (Property.DenormalizedViewProperty)");
-      else if (property instanceof Property.PrimaryKeyProperty)
-        return entity.getPrimaryKey().getValue(property.getPropertyID());
-      else if (entity.containsValue(property.getPropertyID()))
-        return entity.getRawValue(property);
-      else
-        return property.getDefaultValue();
-    }
-
     public int compareTo(final Entity entity, final Entity entityToCompare) {
       return collator.compare(entity.toString(), entityToCompare.toString());
     }
@@ -1117,14 +1111,18 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
       return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }
 
+    public Object getTransientValue(final Entity entity, final Property.TransientProperty property) {
+      return entity.getRawValue(property);
+    }
+
     public String getValueAsString(final Entity entity, final Property property) {
       final Format format = property.getFormat();
-      final Object value = getValue(entity, property);
+      final Object value = entity.getValue(property.getPropertyID());
       return entity.isValueNull(property.getPropertyID()) ? "" : (format != null ? format.format(value) : value.toString());
     }
 
     public Object getTableValue(final Entity entity, final Property property) {
-      return getValue(entity, property);
+      return entity.getValue(property.getPropertyID());
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
