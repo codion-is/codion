@@ -5,10 +5,10 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.DatabaseStatistics;
 import org.jminor.common.db.dbms.DatabaseProvider;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
-import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -100,8 +100,8 @@ public class EntityDbRemoteServerTest {
     assertNotNull(log.getLastExitDateFormatted());
     assertNotNull(log.getLastExitDate());
 
-    final ServerLogEntry entry = log.getLog().get(0);
-    assertEquals("selectAll", entry.getMethod());
+    final LogEntry entry = log.getLog().get(0);
+    assertEquals("getConnection", entry.getMethod());
     assertNotNull(entry.getEntryKey());
     assertNotNull(entry.getDelta());
     assertNotNull(entry.getEntryTimeFormatted());

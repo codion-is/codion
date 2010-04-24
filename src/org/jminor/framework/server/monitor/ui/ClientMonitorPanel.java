@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -70,9 +71,18 @@ public class ClientMonitorPanel extends JPanel {
             "Disconnect all", null, "Disconnect all")));
 
     setLayout(new BorderLayout());
-    add(clientTypeBase, BorderLayout.WEST);
-    add(actionBase, BorderLayout.NORTH);
-    add(clientTypeMonitorPanel, BorderLayout.CENTER);
+
+    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    
+    splitPane.setLeftComponent(clientTypeBase);
+
+    final JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
+    rightPanel.add(actionBase, BorderLayout.NORTH);
+    rightPanel.add(clientTypeMonitorPanel, BorderLayout.CENTER);
+
+    splitPane.setRightComponent(rightPanel);
+
+    add(splitPane, BorderLayout.CENTER);
   }
 
   private JComponent initCheckIntervalComponent() throws RemoteException {

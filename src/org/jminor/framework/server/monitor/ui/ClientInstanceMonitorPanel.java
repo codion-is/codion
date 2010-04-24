@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.ServerLog;
-import org.jminor.common.server.ServerLogEntry;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
@@ -20,10 +20,9 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Collections;
 
 /**
  * User: Bjorn Darri<br>
@@ -58,11 +57,13 @@ public class ClientInstanceMonitorPanel extends JPanel {
     final StringBuilder log = new StringBuilder();
     if (model != null) {
       final ServerLog serverLog = model.getLog();
-      if (serverLog != null)
-        for (final ServerLogEntry logEntry : sortAndRemoveNullEntries(serverLog.getLog()))
-          log.append(logEntry.toString());
-      else
+      if (serverLog != null) {
+        final List<LogEntry> logEntries = serverLog.getLog();
+        appendLogEntries(log, logEntries, 0);
+      }
+      else {
         log.append("Disconnected!");
+      }
 
       txtCreationDate.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
     }
@@ -82,14 +83,14 @@ public class ClientInstanceMonitorPanel extends JPanel {
       model.setLoggingOn(status);
   }
 
-  private List<ServerLogEntry> sortAndRemoveNullEntries(final List<ServerLogEntry> log) {
-    Collections.sort(log);
-    final ListIterator<ServerLogEntry> iterator = log.listIterator();
-    while (iterator.hasNext())
-      if (iterator.next().getEntryTime() == 0)
-        iterator.remove();
-
-    return log;
+  private void appendLogEntries(StringBuilder log, List<LogEntry> logEntries, final int indentation) {
+    Collections.sort(logEntries);
+    for (final LogEntry logEntry : logEntries) {
+      log.append(logEntry.toString(indentation));
+      final List<LogEntry> subLog = logEntry.getSubLog();
+      if (subLog != null)
+        appendLogEntries(log, subLog, indentation + 1);
+    }
   }
 
   private void initUI() throws RemoteException {

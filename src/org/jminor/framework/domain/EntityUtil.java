@@ -360,7 +360,8 @@ public class EntityUtil {
           return (int) (min + (random.nextDouble() * ((max - min) + 1)));
         }
         case STRING:
-          return Util.createRandomString(1, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
+          final int minLength = property.isNullable() ? 0 : 1;
+          return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
       }
     }
 

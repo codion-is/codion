@@ -32,6 +32,8 @@ public class ConnectionPoolStatistics implements Serializable {
   private int requestsDelayedPerSecond;
   private int requestsPerSecond;
   private int liveConnectionCount;
+  private int averageCheckOutTime;
+  private int maxCheckOutTime;
 
   public ConnectionPoolStatistics(final User user) {
     this.user = user;
@@ -127,6 +129,22 @@ public class ConnectionPoolStatistics implements Serializable {
 
   public int getRequestsPerSecond() {
     return requestsPerSecond;
+  }
+
+  public int getAverageCheckOutTime() {
+    return averageCheckOutTime;
+  }
+
+  public void setAverageCheckOutTime(final int averageCheckOutTime) {
+    this.averageCheckOutTime = averageCheckOutTime;
+  }
+
+  public void setMaxCheckOutTime(int maxCheckOutTime) {
+    this.maxCheckOutTime = maxCheckOutTime;
+  }
+
+  public int getMaxCheckOutTime() {
+    return maxCheckOutTime;
   }
 
   public void setLiveConnectionCount(final int liveConnectionCount) {

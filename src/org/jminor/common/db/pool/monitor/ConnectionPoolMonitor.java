@@ -49,6 +49,9 @@ public class ConnectionPoolMonitor {
   private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed requests per second");
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Connection requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
+  private final XYSeries averageCheckOutTime = new XYSeries("Average check out time");
+  private final XYSeriesCollection checkOutTimeCollection = new XYSeriesCollection();
+
   private long lastStatsUpdateTime = 0;
 
   private Timer updateTimer;
@@ -65,6 +68,7 @@ public class ConnectionPoolMonitor {
     this.macroStatsCollection.addSeries(maximumPoolSizeSeries);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(delayedRequestsPerSecond);
+    this.checkOutTimeCollection.addSeries(averageCheckOutTime);
     updateStats();
     setStatsUpdateInterval(3);
   }
@@ -132,6 +136,10 @@ public class ConnectionPoolMonitor {
     return connectionRequestsPerSecondCollection;
   }
 
+  public XYSeriesCollection getCheckOutTimeCollection() {
+    return checkOutTimeCollection;
+  }
+
   public void resetStats() throws RemoteException {
     pool.resetPoolStatistics();
   }
@@ -144,6 +152,7 @@ public class ConnectionPoolMonitor {
     poolSizeSeries.clear();
     minimumPoolSizeSeries.clear();
     maximumPoolSizeSeries.clear();
+    averageCheckOutTime.clear();
   }
 
   public void setCollectFineGrainedStats(final boolean value) throws RemoteException {
@@ -198,6 +207,7 @@ public class ConnectionPoolMonitor {
     inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getConnectionsInUse());
     connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());
     delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsDelayedPerSecond());
+    averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageCheckOutTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getPoolStatistics());
     if (stats.size() > 0) {
       final XYSeries inPoolSeries = new XYSeries("Connections available in pool");

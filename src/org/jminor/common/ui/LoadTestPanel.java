@@ -157,7 +157,14 @@ public class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY);
+    new IntBeanPropertyLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY) {
+      @Override
+      protected void setUIPropertyValue(Object propertyValue) {
+        synchronized (this) {
+          super.setUIPropertyValue(propertyValue);
+        }
+      }
+    };
 
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));

@@ -1388,3 +1388,14 @@
   EntityPanel.initializePanel() now refreshes only table model if refresh on init, combo box models seem to be refreshed on creation
   Entity.Proxy.getValue() removed, getTransientValue() added
   EntityDbConnection.setForeignKeyValues() no longer initializes fk values with an empty entity
+  CallLogger refactored from EntityDbRemoteAdapter.MethodLogger
+  DbConnection.MethodLogger added
+  ServerLogEntry renamed to LogEntry and moved to common.model
+  LogEntry.subLog field added
+  EntityRbRemoteAdapter logs calls to the connection pool
+  LogEntry.toString() overloaded with indentation parameter to handle sub logs
+  EntityDbRemoteAdapter adds the DbConnection log as a sub log
+  DbConnectionPool logs average check out time
+  ClientInstanceMonitorPanel changed according to the above
+  ClientMonitorPanel and ClientTypeMonitorPanel now use split panes
+  

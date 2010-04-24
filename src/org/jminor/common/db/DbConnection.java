@@ -5,6 +5,8 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.CallLogger;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
@@ -57,6 +59,11 @@ public class DbConnection {
   private static final QueryCounter counter = new QueryCounter();
 
   /**
+   * The object containing the method call log
+   */
+  private final CallLogger methodLogger = new MethodLogger(true);
+
+  /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
    * @param database the database
    * @param user the user for the db-connection
@@ -102,6 +109,10 @@ public class DbConnection {
    */
   public User getUser() {
     return user;
+  }
+
+  public void setLoggingEnabled(final boolean enabled) {
+    methodLogger.setEnabled(enabled);
   }
 
   /**
@@ -158,7 +169,9 @@ public class DbConnection {
     if (transactionOpen)
       throw new IllegalStateException("Transaction already open");
 
+    methodLogger.logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
+    methodLogger.logExit("beginTransaction", null, null);
   }
 
   /**
@@ -167,15 +180,21 @@ public class DbConnection {
    * @throws IllegalStateException in case transaction is not open
    */
   public void rollbackTransaction() throws SQLException {
+    SQLException exception = null;
     try {
       if (!transactionOpen)
         throw new IllegalStateException("Transaction is not open");
 
       log.debug(user.getUsername() + ": rollback transaction;");
+      methodLogger.logAccess("rollbackTransaction", new Object[0]);
       connection.rollback();
+    }
+    catch (SQLException e) {
+      exception = e;
     }
     finally {
       transactionOpen = false;
+      methodLogger.logExit("rollbackTransaction", exception, null);
     }
   }
 
@@ -190,10 +209,12 @@ public class DbConnection {
         throw new IllegalStateException("Transaction is not open");
 
       log.debug(user.getUsername() + ": commit transaction;");
+      methodLogger.logAccess("commitTransaction", new Object[0]);
       connection.commit();
     }
     finally {
       transactionOpen = false;
+      methodLogger.logExit("commitTransaction", null, null);
     }
   }
 
@@ -273,17 +294,20 @@ public class DbConnection {
    */
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
     counter.count(sql);
+    methodLogger.logAccess("query", new Object[] {sql});
     if (cacheQueriesRequests > 0 && fetchCount < 0) {
       if (queryCache.containsKey(sql)) {
         log.debug(user.getUsername() + " (cached): " + sql.toUpperCase() + ";");
         lastResultCached = true;
         counter.incrementCachedQueriesPerSecondCounter();
+        methodLogger.logExit("query", null, null);
         return queryCache.get(sql);
       }
     }
     final long time = System.currentTimeMillis();
     lastResultCached = false;
     Statement statement = null;
+    SQLException exception = null;
     try {
       statement = connection.createStatement();
       final List result = resultPacker.pack(statement.executeQuery(sql), fetchCount);
@@ -295,6 +319,7 @@ public class DbConnection {
       return result;
     }
     catch (SQLException e) {
+      exception = e;
       log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis() - time) + "ms): " + sql + ";", e);
       throw e;
     }
@@ -304,6 +329,7 @@ public class DbConnection {
           statement.close();//also closes the result set
       }
       catch (SQLException e) {/**/}
+      methodLogger.logExit("query", exception, null);
     }
   }
 
@@ -388,6 +414,8 @@ public class DbConnection {
     PreparedStatement statement = null;
     final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
     counter.count(sql);
+    methodLogger.logAccess("writeBlobField", new Object[] {sql});
+    SQLException exception = null;
     try {
       statement = connection.prepareStatement(sql);
       inputStream = new ByteArrayInputStream(blobData);
@@ -395,6 +423,7 @@ public class DbConnection {
       statement.execute();
     }
     catch (SQLException e) {
+      exception = e;
       log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
@@ -411,6 +440,7 @@ public class DbConnection {
           statement.close();
       }
       catch (SQLException e) {/**/}
+      methodLogger.logExit("writeBlobField", exception, null);
     }
   }
 
@@ -424,7 +454,18 @@ public class DbConnection {
       throw new IllegalStateException("Can not perform a commit during an open transaction");
 
     log.debug(user.getUsername() + ": " + "commit;");
-    connection.commit();
+    methodLogger.logAccess("commit", new Object[0]);
+    SQLException exception = null;
+    try {
+      connection.commit();
+    }
+    catch (SQLException e) {
+      exception = e;
+      e.printStackTrace();
+    }
+    finally {
+      methodLogger.logExit("commit", exception, null);
+    }
   }
 
   /**
@@ -437,14 +478,27 @@ public class DbConnection {
       throw new IllegalStateException("Can not perform a rollback during an open transaction");
 
     log.debug(user.getUsername() + ": " + "rollback;");
-    connection.rollback();
+    methodLogger.logAccess("rollback", new Object[0]);
+    SQLException exception = null;
+    try {
+      connection.rollback();
+    }
+    catch (SQLException e) {
+      exception = e;
+      e.printStackTrace();
+    }
+    finally {
+      methodLogger.logExit("rollback", exception, null);
+    }
   }
 
   public Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
     counter.count(sqlStatement);
+    methodLogger.logAccess("executeCallableStatement", new Object[] {sqlStatement, outParameterType});
     final long time = System.currentTimeMillis();
     log.debug(sqlStatement);
     CallableStatement statement = null;
+    SQLException exception = null;
     try {
       final boolean hasOutParameter = outParameterType == Types.NULL;
       statement = connection.prepareCall(sqlStatement);
@@ -458,6 +512,7 @@ public class DbConnection {
       return hasOutParameter ? statement.getObject(1) : null;
     }
     catch (SQLException e) {
+      exception = e;
       log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sqlStatement+";", e);
       throw e;
     }
@@ -467,6 +522,7 @@ public class DbConnection {
           statement.close();
       }
       catch (SQLException e) {/**/}
+      methodLogger.logExit("executeCallableStatement", exception, null);
     }
   }
 
@@ -477,14 +533,17 @@ public class DbConnection {
    */
   public final void execute(final String sql) throws SQLException {
     counter.count(sql);
+    methodLogger.logAccess("execute", new Object[] {sql});
     final long time = System.currentTimeMillis();
     log.debug(sql);
     Statement statement = null;
+    SQLException exception = null;
     try {
       (statement = connection.createStatement()).executeUpdate(sql);
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
     }
     catch (SQLException e) {
+      exception = e;
       log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): " + sql+";", e);
       throw e;
     }
@@ -494,6 +553,7 @@ public class DbConnection {
           statement.close();
       }
       catch (SQLException e) {/**/}
+      methodLogger.logExit("execute", exception, null);
     }
   }
 
@@ -512,6 +572,14 @@ public class DbConnection {
     return new DatabaseStatistics(counter.getQueriesPerSecond(), counter.getCachedQueriesPerSecond(),
             counter.getSelectsPerSecond(), counter.getInsertsPerSecond(),
             counter.getDeletesPerSecond(), counter.getUpdatesPerSecond());
+  }
+
+  public List<LogEntry> getLogEntries() {
+    return methodLogger.getLogEntries();
+  }
+
+  public void resetLog() {
+    methodLogger.reset();
   }
 
   private void connect() throws ClassNotFoundException, SQLException {
@@ -585,6 +653,27 @@ public class DbConnection {
       return strings;
     }
   };
+
+  private static class MethodLogger extends CallLogger {
+
+    public MethodLogger(final boolean enabled) {
+      super(40, enabled);
+    }
+
+    protected String parameterArrayToString(final Object[] arguments) {
+      if (arguments == null)
+        return "";
+
+      final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);
+      for (int i = 0; i < arguments.length; i++) {
+        stringBuilder.append(String.valueOf(arguments[i]));
+        if (i < arguments.length-1)
+          stringBuilder.append(", ");
+      }
+
+      return stringBuilder.toString();
+    }
+  }
 
   private static class QueryCounter {
     private long queriesPerSecondTime = System.currentTimeMillis();

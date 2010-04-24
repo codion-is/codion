@@ -49,10 +49,13 @@ public class ConnectionPoolMonitorPanel extends JPanel {
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
         null, null, null, PlotOrientation.VERTICAL, true, true, false);
+  private final JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
+        null, null, null, PlotOrientation.VERTICAL, true, true, false);
 
   private final ChartPanel inPoolChartPanel = new ChartPanel(inPoolChart);
   private final ChartPanel inPoolChartPanelMacro = new ChartPanel(inPoolMacroChart);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
+  private final ChartPanel checkOutTimePanel = new ChartPanel(checkOutTimeChart);
 
   private final JTextField txtPoolSize = new JTextField();
   private final JTextField txtCreated = new JTextField();
@@ -107,6 +110,8 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     requestsPerSecondChart.getXYPlot().setDataset(model.getRequestsPerSecondDataSet());
     requestsPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     inPoolChart.getXYPlot().setBackgroundPaint(Color.BLACK);
+    checkOutTimeChart.getXYPlot().setDataset(model.getCheckOutTimeCollection());
+    checkOutTimeChart.getXYPlot().setBackgroundPaint(Color.BLACK);
   }
 
   private void bindEvents() {
@@ -206,10 +211,11 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(ControlProvider.createButton(
             ControlFactory.methodControl(model, "resetInPoolStats", "Reset")), BorderLayout.EAST);
 
-    final JPanel chartBase = new JPanel(new GridLayout(3,1));
+    final JPanel chartBase = new JPanel(new GridLayout(2,2));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanelMacro);
     chartBase.add(inPoolChartPanel);
+    chartBase.add(checkOutTimePanel);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));

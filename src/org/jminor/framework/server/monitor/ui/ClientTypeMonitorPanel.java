@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -68,7 +69,10 @@ public class ClientTypeMonitorPanel extends JPanel {
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
     clientInstanceBase.add(ControlProvider.createButton(ControlFactory.methodControl(this, "refresh", "Refresh")), BorderLayout.SOUTH);
 
-    add(clientInstanceBase, BorderLayout.WEST);
-    add(clientInstancePanel, BorderLayout.CENTER);
+    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    splitPane.setLeftComponent(clientInstanceBase);
+    splitPane.setRightComponent(clientInstancePanel);
+
+    add(splitPane, BorderLayout.CENTER);
   }
 }

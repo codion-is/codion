@@ -4,6 +4,7 @@
 package org.jminor.common.server;
 
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.model.LogEntry;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -22,7 +23,7 @@ public class ServerLog implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final Date logCreationDate = new Date();
-  private final List<ServerLogEntry> log;
+  private final List<LogEntry> log;
   private final String connectionKey;
   private final long lastAccessDate;
   private final long lastExitDate;
@@ -33,12 +34,12 @@ public class ServerLog implements Serializable {
 
   private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
 
-  public ServerLog(final String connectionKey, final long connectionCreationDate, final List<ServerLogEntry> log,
+  public ServerLog(final String connectionKey, final long connectionCreationDate, final List<LogEntry> log,
                    final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
                    final String lastAccessedMessage, final String lastExitedMethod) {
     this.connectionKey = connectionKey;
     this.connectionCreationDate = connectionCreationDate;
-    this.log = log == null ? new ArrayList<ServerLogEntry>(0) : log;
+    this.log = log == null ? new ArrayList<LogEntry>(0) : log;
     this.lastAccessDate = lastAccessDate;
     this.lastExitDate = lastExitDate;
     this.lastAccessedMethod = lastAccessedMethod;
@@ -49,7 +50,7 @@ public class ServerLog implements Serializable {
   /**
    * @return the log entry list
    */
-  public List<ServerLogEntry> getLog() {
+  public List<LogEntry> getLog() {
     return log;
   }
 

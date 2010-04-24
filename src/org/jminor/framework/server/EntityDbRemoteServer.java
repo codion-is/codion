@@ -181,7 +181,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final ClientInfo client = new ClientInfo(connectionKey);
     for (final EntityDbRemote connection : getConnections().values()) {
       if (((EntityDbRemoteAdapter) connection).getClientInfo().equals(client)) {
-        return ((EntityDbRemoteAdapter) connection).getMethodLogger().isLoggingEnabled();
+        return ((EntityDbRemoteAdapter) connection).getMethodLogger().isEnabled();
       }
     }
 
@@ -192,7 +192,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final ClientInfo client = new ClientInfo(connectionKey);
     for (final EntityDbRemote adapter : getConnections().values()) {
       if (((EntityDbRemoteAdapter) adapter).getClientInfo().equals(client)) {
-        ((EntityDbRemoteAdapter) adapter).getMethodLogger().setLoggingEnabled(status);
+        ((EntityDbRemoteAdapter) adapter).getMethodLogger().setEnabled(status);
         return;
       }
     }

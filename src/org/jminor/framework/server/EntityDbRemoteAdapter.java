@@ -12,11 +12,11 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.DbConnectionPool;
+import org.jminor.common.model.CallLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
-import org.jminor.common.server.ServerLogEntry;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.EntityDbConnection;
@@ -86,7 +86,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * The object containing the method call log
    */
-  private final MethodLogger methodLogger;
+  private final CallLogger methodLogger;
   /**
    * Indicates whether or not a SSL client socket factory should be used when establishing the connection
    */
@@ -127,8 +127,8 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     this.database = database;
     this.clientInfo = clientInfo;
     this.loggingEntityDbProxy = initializeProxy();
-    this.methodLogger = new MethodLogger(database);
-    this.methodLogger.setLoggingEnabled(loggingEnabled);
+    this.methodLogger = new MethodLogger(database, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
+    this.methodLogger.setEnabled(loggingEnabled);
     try {
       clientInfo.setClientHost(getClientHost());
     }
@@ -493,14 +493,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    */
   public ServerLog getServerLog() {
     return new ServerLog(getClientInfo().getClientID(), creationDate, methodLogger.getLogEntries(),
-            methodLogger.lastAccessDate, methodLogger.lastExitDate,methodLogger.lastAccessedMethod,
-            methodLogger.lastAccessMessage, methodLogger.lastExitedMethod);
+            methodLogger.getLastAccessDate(), methodLogger.getLastExitDate(), methodLogger.getLastAccessedMethod(),
+            methodLogger.getLastAccessMessage(), methodLogger.getLastExitedMethod());
   }
 
   /**
    * @return the object containing the method call log
    */
-  public MethodLogger getMethodLogger() {
+  public CallLogger getMethodLogger() {
     return methodLogger;
   }
 
@@ -509,7 +509,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
    * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
    */
   public boolean hasBeenInactive(final long timeout) {
-    return System.currentTimeMillis() - methodLogger.lastAccessDate > timeout;
+    return System.currentTimeMillis() - methodLogger.getLastAccessDate() > timeout;
   }
 
   /**
@@ -629,11 +629,18 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                 final String methodName = method.getName();
                 Throwable ex = null;
                 EntityDbConnection connection = null;
+                final boolean logMethod = shouldMethodBeLogged(methodName.hashCode());
                 try {
                   active.add(EntityDbRemoteAdapter.this);
-                  methodLogger.logAccess(methodName, arguments, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
+                  if (logMethod)
+                    methodLogger.logAccess("getConnection", new Object[] {clientInfo.getUser()});
+                  connection = getConnection(clientInfo.getUser());
+                  if (logMethod) {
+                    methodLogger.logExit("getConnection", null, null);
+                    methodLogger.logAccess(methodName, arguments);
+                  }
 
-                  return method.invoke(connection = getConnection(clientInfo.getUser()), arguments);
+                  return method.invoke(connection, arguments);
                 }
                 catch (InvocationTargetException ie) {
                   log.error(this, ie);
@@ -643,11 +650,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
                 finally {
                   try {
                     active.remove(EntityDbRemoteAdapter.this);
-                    final long time = methodLogger.logExit(methodName, ex);
+                    if (logMethod) {
+                      final long time = methodLogger.logExit(methodName, ex,
+                              connection != null ? connection.getLogEntries() : null);
+                      if (time > RequestCounter.warningThreshold)
+                        RequestCounter.warningTimeExceededCounter++;
+                    }
                     if (connection != null && !connection.isTransactionOpen())
                       returnConnection(clientInfo.getUser(), connection);
-                    if (time > RequestCounter.warningThreshold)
-                      RequestCounter.warningTimeExceededCounter++;
                   }
                   catch (Exception e) {
                     log.error(this, e);
@@ -659,8 +669,10 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
   private void returnConnection(final User user, final EntityDbConnection connection) {
     final ConnectionPool connectionPool = connectionPools.get(user);
-    if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled())
+    if (connectionPool != null && connectionPool.getConnectionPoolSettings().isEnabled()) {
+      connection.setLoggingEnabled(false);
       connectionPool.checkInConnection(connection);
+    }
   }
 
   private EntityDbConnection getConnection(final User user) throws ClassNotFoundException, SQLException {
@@ -671,119 +683,44 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
         entityDbConnection.disconnect();//discard
         entityDbConnection = null;
       }
+      pooledDbConnection.setLoggingEnabled(methodLogger.isEnabled());
 
       return pooledDbConnection;
     }
 
-    if (entityDbConnection == null)
+    if (entityDbConnection == null) {
       entityDbConnection = new EntityDbConnection(database, clientInfo.getUser());
+      entityDbConnection.setLoggingEnabled(methodLogger.isEnabled());
+    }
 
     return entityDbConnection;
   }
+  private static final int IS_CONNECTED = "isConnected".hashCode();
+  private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
+  private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
 
-  static class MethodLogger {
+  private static  boolean shouldMethodBeLogged(final int hashCode) {
+    return hashCode != IS_CONNECTED && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
+  }
 
-    private static final int LOG_SIZE = Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40"));
-    private static final int IS_CONNECTED = "isConnected".hashCode();
-    private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
-    private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
+  static class MethodLogger extends CallLogger {
 
     private final Database database;
-    private boolean loggingEnabled = false;
-    private List<ServerLogEntry> logEntries;
-    private int currentLogEntryIndex = 0;
+    private final Criteria.ValueProvider valueProvider;
 
-    long lastAccessDate = System.currentTimeMillis();
-    long lastExitDate = System.currentTimeMillis();
-    String lastAccessedMethod;
-    String lastAccessMessage;
-    String lastExitedMethod;
-
-    public MethodLogger(final Database database) {
+    public MethodLogger(final Database database, final Criteria.ValueProvider valueProvider) {
+      super(Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40")));
       this.database = database;
+      this.valueProvider = valueProvider;
     }
 
-    public List<ServerLogEntry> getLogEntries() {
-      final ArrayList<ServerLogEntry> entries = new ArrayList<ServerLogEntry>();
-      if (logEntries == null)
-        entries.add(new ServerLogEntry("Server logging is not enabled", "", System.currentTimeMillis(), null));
-      else
-        entries.addAll(logEntries);
-
-      return entries;
-    }
-
-    public void logAccess(final String method, final Object[] arguments, final Criteria.ValueProvider valueProvider) {
-      this.lastAccessDate = System.currentTimeMillis();
-      this.lastAccessedMethod = method;
-      if (loggingEnabled && shouldMethodBeLogged(lastAccessedMethod.hashCode())) {
-        this.lastAccessMessage = parameterArrayToString(database, arguments, valueProvider);
-        addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, false, null);
-      }
-    }
-
-    public long logExit(final String method, final Throwable exception) {
-      this.lastExitDate = System.currentTimeMillis();
-      this.lastExitedMethod = method;
-      if (loggingEnabled && shouldMethodBeLogged(lastExitedMethod.hashCode()))
-        return addLogEntry(lastExitedMethod, lastAccessMessage, lastExitDate, true, exception);
-
-      return -1;
-    }
-
-    public boolean isLoggingEnabled() {
-      return loggingEnabled;
-    }
-
-    public void setLoggingEnabled(final boolean loggingEnabled) {
-      this.loggingEnabled = loggingEnabled;
-      if (loggingEnabled)
-        logEntries = initializeLogEntryList();
-      else {
-        logEntries = null;
-        currentLogEntryIndex = 0;
-      }
-    }
-
-    private boolean shouldMethodBeLogged(final int hashCode) {
-      return hashCode != IS_CONNECTED && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
-    }
-
-    private long addLogEntry(final String method, final String message, final long time, final boolean isExit,
-                             final Throwable exception) {
-      if (!isExit) {
-        if (currentLogEntryIndex > logEntries.size()-1)
-          currentLogEntryIndex = 0;
-
-        logEntries.get(currentLogEntryIndex).set(method, message, time, exception);
-
-        return -1;
-      }
-      else {//add to last log entry
-        final ServerLogEntry lastEntry = logEntries.get(currentLogEntryIndex);
-        assert lastEntry.getMethod().equals(method);
-        currentLogEntryIndex++;
-
-        return lastEntry.setException(exception).setExitTime(time);
-      }
-    }
-
-    private static List<ServerLogEntry> initializeLogEntryList() {
-      final List<ServerLogEntry> logEntries = new ArrayList<ServerLogEntry>(LOG_SIZE);
-      for (int i = 0; i < LOG_SIZE; i++)
-        logEntries.add(new ServerLogEntry());
-
-      return logEntries;
-    }
-
-    private static String parameterArrayToString(final Database database, final Object[] arguments,
-                                                 final Criteria.ValueProvider valueProvider) {
+    protected String parameterArrayToString(final Object[] arguments) {
       if (arguments == null)
         return "";
 
       final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);//best guess ?
       for (int i = 0; i < arguments.length; i++) {
-        parameterToString(database, arguments[i], stringBuilder, valueProvider);
+        parameterToString(arguments[i], stringBuilder);
         if (i < arguments.length-1)
           stringBuilder.append(", ");
       }
@@ -791,15 +728,14 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       return stringBuilder.toString();
     }
 
-    private static void parameterToString(final Database database, final Object arg, final StringBuilder destination,
-                                          final Criteria.ValueProvider valueProvider) {
+    private void parameterToString(final Object arg, final StringBuilder destination) {
       if (arg instanceof Object[]) {
         if (((Object[]) arg).length > 0)
-          destination.append("[").append(parameterArrayToString(database, (Object[]) arg, valueProvider)).append("]");
+          destination.append("[").append(parameterArrayToString((Object[]) arg)).append("]");
       }
       else if (arg instanceof Collection) {
         if (((Collection) arg).size() > 0)
-          destination.append("[").append(parameterArrayToString(database, ((Collection) arg).toArray(), valueProvider)).append("]");
+          destination.append("[").append(parameterArrayToString(((Collection) arg).toArray())).append("]");
       }
       else if (arg instanceof EntityCriteria)
         destination.append(((EntityCriteria) arg).asString(database, valueProvider));

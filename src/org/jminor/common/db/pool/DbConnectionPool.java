@@ -62,6 +62,7 @@ public class DbConnectionPool implements ConnectionPool {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
+    final long time = System.currentTimeMillis();
     counter.incrementRequestCounter();
     DbConnection connection = getConnectionFromPool();
     if (connection == null) {
@@ -75,7 +76,6 @@ public class DbConnectionPool implements ConnectionPool {
         }
       }
       int retryCount = 0;
-      final long time = System.currentTimeMillis();
       while (connection == null) {
         try {
           synchronized (connectionPool) {
@@ -94,6 +94,7 @@ public class DbConnectionPool implements ConnectionPool {
       }
     }
 
+    counter.addCheckOutTime(System.currentTimeMillis() - time);
     return connection;
   }
 
@@ -160,6 +161,8 @@ public class DbConnectionPool implements ConnectionPool {
     statistics.setConnectionRequestsDelayed(counter.getConnectionRequestsDelayed());
     statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
     statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
+    statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
+    statistics.setMaxCheckOutTime(counter.getMaxCheckOutTime());
     statistics.setResetDate(counter.getResetDate());
     statistics.setTimestamp(System.currentTimeMillis());
     if (since >= 0)
@@ -270,6 +273,9 @@ public class DbConnectionPool implements ConnectionPool {
     private int requestsDelayedPerSecondCounter = 0;
     private int requestsPerSecond = 0;
     private int requestsPerSecondCounter = 0;
+    private int averageCheckOutTime = 0;
+    private int maxCheckOutTime = 0;
+    private final List<Integer> checkOutTimes = new ArrayList<Integer>();
     private long requestsPerSecondTime = System.currentTimeMillis();
 
     public Counter() {
@@ -317,15 +323,20 @@ public class DbConnectionPool implements ConnectionPool {
       return requestsPerSecond;
     }
 
-    public void resetPoolStatistics() {
+    public synchronized void addCheckOutTime(final long time) {
+      checkOutTimes.add((int) time);
+    }
+
+    public synchronized void resetPoolStatistics() {
       connectionsCreated = 0;
       connectionsDestroyed = 0;
       connectionRequests = 0;
       connectionRequestsDelayed = 0;
+      checkOutTimes.clear();
       resetDate = new Date();
     }
 
-    public void updateStatistics() {
+    public synchronized void updateStatistics() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - requestsPerSecondTime) / 1000d;
       requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
@@ -333,6 +344,17 @@ public class DbConnectionPool implements ConnectionPool {
       requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);
       requestsDelayedPerSecondCounter = 0;
       requestsPerSecondTime = current;
+      averageCheckOutTime = 0;
+      maxCheckOutTime = 0;
+      if (checkOutTimes.size() > 0) {
+        int total = 0;
+        for (final Integer time : checkOutTimes) {
+          total += time;
+          maxCheckOutTime = Math.max(maxCheckOutTime, time);
+        }
+        averageCheckOutTime = total / checkOutTimes.size();
+        checkOutTimes.clear();
+      }
     }
 
     public void incrementConnectionsDestroyedCounter() {
@@ -353,6 +375,14 @@ public class DbConnectionPool implements ConnectionPool {
     public void incrementRequestCounter() {
       connectionRequests++;
       requestsPerSecondCounter++;
+    }
+
+    public int getAverageCheckOutTime() {
+      return averageCheckOutTime;
+    }
+
+    public int getMaxCheckOutTime() {
+      return maxCheckOutTime;
     }
   }
 }
