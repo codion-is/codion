@@ -6,8 +6,9 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.Property;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +84,7 @@ public class EntitySelectCriteria extends EntityCriteria {
     super(entityID, criteria);
     this.fetchCount = fetchCount;
     this.orderByClause = orderByClause;
+    this.foreignKeyFetchDepths = initializeForeignKeyFetchDepths(entityID);
   }
 
   /**
@@ -120,18 +122,15 @@ public class EntitySelectCriteria extends EntityCriteria {
   }
 
   public EntitySelectCriteria setFetchDepth(final String fkPropertyID, final int maxFetchDepth) {
-    if (foreignKeyFetchDepths == null)
-      foreignKeyFetchDepths = new HashMap<String, Integer>();
-
     this.foreignKeyFetchDepths.put(fkPropertyID, maxFetchDepth);
     return this;
   }
 
   public int getFetchDepth(final String fkPropertyID) {
-    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(fkPropertyID))
+    if (foreignKeyFetchDepths.containsKey(fkPropertyID))
       return foreignKeyFetchDepths.get(fkPropertyID);
 
-    return Configuration.getIntValue(Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+    return 0;
   }
 
   public int getFetchDepth() {
@@ -141,5 +140,14 @@ public class EntitySelectCriteria extends EntityCriteria {
   public EntitySelectCriteria setFetchDepth(int fetchDepth) {
     this.fetchDepth = fetchDepth;
     return this;
+  }
+
+  private Map<String, Integer> initializeForeignKeyFetchDepths(String entityID) {
+    final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(entityID);
+    final Map<String, Integer> depths = new HashMap<String, Integer>(properties.size());
+    for (final Property.ForeignKeyProperty property : properties)
+      depths.put(property.getPropertyID(), property.getFetchDepth());
+
+    return depths;
   }
 }

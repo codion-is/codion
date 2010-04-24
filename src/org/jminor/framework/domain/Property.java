@@ -608,7 +608,7 @@ public class Property implements Serializable {
 
     private final List<Property> referenceProperties;
 
-    private int fetchDepth = 0;
+    private int fetchDepth = Configuration.getIntValue(Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not

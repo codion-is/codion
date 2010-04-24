@@ -947,7 +947,7 @@ public class EntityTablePanel extends JPanel {
       if (entity != null) {
         final JPopupMenu popupMenu = new JPopupMenu();
         EntityUiUtil.populateEntityMenu(popupMenu, entity.getCopy(), getTableModel().getDbProvider());
-        popupMenu.show(this, location.x, location.y);
+        popupMenu.show(tableScrollPane, location.x, (int) location.getY() - (int) tableScrollPane.getViewport().getViewPosition().getY());
       }
     }
     catch (Exception e) {
