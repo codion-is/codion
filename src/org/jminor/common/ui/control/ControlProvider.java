@@ -19,7 +19,7 @@ public class ControlProvider {
 
   public static void bindItemSelector(final JComboBox combo, final Object owner, final String property,
                                       final Class propertyClass, final Event changedEvent) {
-    new SelectedItemBeanPropertyLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);
+    new SelectedItemBeanValueLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);
   }
 
   public static JButton createButton(final Control control) {
@@ -59,14 +59,14 @@ public class ControlProvider {
     return iterator.getMenu();
   }
 
-  public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleBeanPropertyLink propertyLink) {
+  public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleBeanValueLink propertyLink) {
     final JCheckBoxMenuItem box = new JCheckBoxMenuItem(propertyLink);
     box.setModel(propertyLink.getButtonModel());
 
     return box;
   }
 
-  public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleBeanPropertyLink propertyLink) {
+  public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleBeanValueLink propertyLink) {
     final JRadioButtonMenuItem box = new JRadioButtonMenuItem(propertyLink);
     box.setModel(propertyLink.getButtonModel());
 
@@ -125,7 +125,7 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void handleToggleControl(final ToggleBeanPropertyLink control) {
+    public void handleToggleControl(final ToggleBeanValueLink control) {
       btnPanel.add(createCheckBox(control));
     }
 
@@ -187,7 +187,7 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void handleToggleControl(final ToggleBeanPropertyLink control) {
+    public void handleToggleControl(final ToggleBeanValueLink control) {
       menu.add(createCheckBoxMenuItem(control));
     }
 
@@ -229,7 +229,7 @@ public class ControlProvider {
     }
 
     /** {@inheritDoc} */
-    public void handleToggleControl(final ToggleBeanPropertyLink control) {
+    public void handleToggleControl(final ToggleBeanValueLink control) {
       toolbar.add(createToggleButton(control, includeCaption));
     }
 
@@ -244,18 +244,18 @@ public class ControlProvider {
     }
   }
 
-  public static JCheckBox createCheckBox(final ToggleBeanPropertyLink propertyLink) {
+  public static JCheckBox createCheckBox(final ToggleBeanValueLink propertyLink) {
     final JCheckBox checkBox = new JCheckBox(propertyLink);
     checkBox.setModel(propertyLink.getButtonModel());
 
     return checkBox;
   }
 
-  public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink) {
+  public static JToggleButton createToggleButton(final ToggleBeanValueLink propertyLink) {
     return createToggleButton(propertyLink, true);
   }
 
-  public static JToggleButton createToggleButton(final ToggleBeanPropertyLink propertyLink, final boolean includeCaption) {
+  public static JToggleButton createToggleButton(final ToggleBeanValueLink propertyLink, final boolean includeCaption) {
     final JToggleButton toggleButton = new JToggleButton(propertyLink);
     toggleButton.setModel(propertyLink.getButtonModel());
     toggleButton.setText(includeCaption ? propertyLink.getName() : null);
@@ -270,8 +270,8 @@ public class ControlProvider {
     for (final Action action : controlSet.getActions()) {
       if (action == null)
         controlIterator.handleSeparator();
-      else if (action instanceof ToggleBeanPropertyLink)
-        controlIterator.handleToggleControl((ToggleBeanPropertyLink) action);
+      else if (action instanceof ToggleBeanValueLink)
+        controlIterator.handleToggleControl((ToggleBeanValueLink) action);
       else if (action instanceof ControlSet)
         controlIterator.handleControlSet((ControlSet) action);
       else if (action instanceof Control)

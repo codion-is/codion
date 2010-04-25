@@ -7,12 +7,12 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.DoubleBeanPropertyLink;
-import org.jminor.common.ui.control.FormattedTextBeanPropertyLink;
-import org.jminor.common.ui.control.IntBeanPropertyLink;
+import org.jminor.common.ui.control.DoubleBeanValueLink;
+import org.jminor.common.ui.control.FormattedTextBeanValueLink;
+import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.TextBeanPropertyLink;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
+import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.PropertyFilterModel;
@@ -212,30 +212,30 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-    new ToggleBeanPropertyLink(checkBox.getModel(), getModel(),
+    new ToggleBeanValueLink(checkBox.getModel(), getModel(),
             isUpperBound ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
             isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
   }
 
-  private TextBeanPropertyLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
+  private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
     switch(getModel().getPropertyType()) {
       case INT:
-        return new IntBeanPropertyLink((IntField) component, getModel(),
+        return new IntBeanValueLink((IntField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
       case DOUBLE:
-        return new DoubleBeanPropertyLink((DoubleField) component, getModel(),
+        return new DoubleBeanValueLink((DoubleField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
       case DATE:
       case TIMESTAMP:
-        return new FormattedTextBeanPropertyLink((JFormattedTextField) component, getModel(),
+        return new FormattedTextBeanValueLink((JFormattedTextField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 getModel().getPropertyType() == Type.TIMESTAMP ? Timestamp.class : Date.class,
                 isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE, format) {
           @Override
-          protected Object getUIPropertyValue() {
-            final Date date = (Date) super.getUIPropertyValue();
+          protected Object getUIValue() {
+            final Date date = (Date) super.getUIValue();
             if (date != null)
               return getModel().getPropertyType() == Type.TIMESTAMP ? new Timestamp(date.getTime()) : date;
 
@@ -243,7 +243,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
           }
         };
       default:
-        return new TextBeanPropertyLink((JTextField) component, getModel(),
+        return new TextBeanValueLink((JTextField) component, getModel(),
                 isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
                 String.class, isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
     }

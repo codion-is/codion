@@ -8,8 +8,8 @@ import org.jminor.common.db.pool.monitor.ConnectionPoolMonitor;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
+import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -125,9 +125,9 @@ public class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getPoolConfigPanel() {
     final JPanel configBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 
-    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerPropertyLink(model, "pooledConnectionTimeout", null, null).getSpinnerModel());
-    final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerPropertyLink(model, "maximumPoolSize", null, null).getSpinnerModel());
-    final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerPropertyLink(model, "minimumPoolSize", null, null).getSpinnerModel());
+    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null, null).getSpinnerModel());
+    final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumPoolSize", null, null).getSpinnerModel());
+    final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null, null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
@@ -171,7 +171,7 @@ public class ConnectionPoolMonitorPanel extends JPanel {
     txtCreatedDestroyedResetTime.setHorizontalAlignment(JLabel.CENTER);
 
     final JCheckBox chkCollectStats = new JCheckBox();
-    chkCollectStats.setModel(new ToggleBeanPropertyLink(model, "collectFineGrainedStats", model.eventCollectFineGrainedStatsChanged(), null).getButtonModel());
+    chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.eventCollectFineGrainedStatsChanged(), null).getButtonModel());
 
     statsBase.add(new JLabel("Fine grained statistics"));
     statsBase.add(chkCollectStats);
@@ -197,7 +197,7 @@ public class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerPropertyLink(model, "statsUpdateInterval",
+    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
             model.eventStatsUpdateIntervalChanged(), null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);

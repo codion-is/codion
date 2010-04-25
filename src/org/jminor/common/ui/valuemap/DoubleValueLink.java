@@ -11,10 +11,10 @@ import org.jminor.common.ui.textfield.DoubleField;
 /**
  * A class for linking a DoubleField to a ChangeValueMapEditModel double property value.
  */
-public class DoublePropertyLink extends TextPropertyLink {
+public class DoubleValueLink extends TextValueLink {
 
-  public DoublePropertyLink(final DoubleField textField, final ChangeValueMapEditModel<String, Object> editModel,
-                            final String key, final boolean immediateUpdate, final LinkType linkType) {
+  public DoubleValueLink(final DoubleField textField, final ChangeValueMapEditModel<String, Object> editModel,
+                         final String key, final boolean immediateUpdate, final LinkType linkType) {
     super(textField, editModel, key, immediateUpdate, linkType);
   }
 

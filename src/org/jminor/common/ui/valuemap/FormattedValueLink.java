@@ -19,7 +19,7 @@ import java.text.ParseException;
 /**
  * A class for linking a JFormattedTextField to a ChangeValueMapEditModel property value.
  */
-public class FormattedPropertyLink extends TextPropertyLink {
+public class FormattedValueLink extends TextValueLink {
 
   private final Format format;
   private final JFormattedTextField.AbstractFormatter formatter;
@@ -33,9 +33,9 @@ public class FormattedPropertyLink extends TextPropertyLink {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * @param linkType the link type
    */
-  public FormattedPropertyLink(final JFormattedTextField textComponent, final ChangeValueMapEditModel<String, Object> editModel,
-                               final String key, final Format format, final boolean immediateUpdate,
-                               final LinkType linkType) {
+  public FormattedValueLink(final JFormattedTextField textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+                            final String key, final Format format, final boolean immediateUpdate,
+                            final LinkType linkType) {
     super(textComponent, editModel, key, immediateUpdate, linkType);
     this.format = format;
     this.formatter = textComponent.getFormatter();

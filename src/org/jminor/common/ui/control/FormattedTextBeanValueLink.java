@@ -13,16 +13,16 @@ import java.text.ParseException;
 /**
  * Binds a JFormattedField to a string based bean property.
  */
-public class FormattedTextBeanPropertyLink extends TextBeanPropertyLink {
+public class FormattedTextBeanValueLink extends TextBeanValueLink {
 
   private final Format format;
   private final String placeholder;
 
-  public FormattedTextBeanPropertyLink(final JFormattedTextField textComponent, final Object owner,
-                                       final String propertyName, final Class<?> valueClass,
-                                       final Event propertyChangeEvent, final LinkType linkType,
-                                       final Format format) {
-    super(textComponent, owner, propertyName, valueClass, propertyChangeEvent, linkType);
+  public FormattedTextBeanValueLink(final JFormattedTextField textComponent, final Object owner,
+                                    final String propertyName, final Class<?> valueClass,
+                                    final Event valueChangeEvent, final LinkType linkType,
+                                    final Format format) {
+    super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType);
     if (format == null)
       throw new RuntimeException("Format is null");
     this.format = format;
@@ -31,7 +31,7 @@ public class FormattedTextBeanPropertyLink extends TextBeanPropertyLink {
   }
 
   @Override
-  protected String getPropertyValueAsString(final Object propertyValue) {
+  protected String getValueAsString(final Object propertyValue) {
     return propertyValue == null ? null : format.format(propertyValue);
   }
 
@@ -41,7 +41,7 @@ public class FormattedTextBeanPropertyLink extends TextBeanPropertyLink {
    * @return the value, if a formatter is present, the formatted value is returned
    */
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     final String text = getText();
     if (text != null && text.contains(placeholder))
       return null;

@@ -10,21 +10,21 @@ import java.lang.reflect.Method;
 /**
  * A bean based implementation of the AbstractPropertyLink class.
  */
-public abstract class AbstractBeanPropertyLink extends AbstractPropertyLink {
+public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Object> {
 
   private final String propertyName;
   private final Class<?> propertyClass;
   private final Method getMethod;
   private final Method setMethod;
 
-  public AbstractBeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                                  final Event propertyChangeEvent) {
-    this(owner, propertyName, propertyClass, propertyChangeEvent, LinkType.READ_WRITE);
+  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> propertyClass,
+                               final Event valueChangeEvent) {
+    this(owner, propertyName, propertyClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
-  public AbstractBeanPropertyLink(final Object owner, final String propertyName, final Class<?> propertyClass,
-                                  final Event propertyChangeEvent, final LinkType linkType) {
-    super(owner, propertyChangeEvent, linkType);
+  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> propertyClass,
+                               final Event valueChangeEvent, final LinkType linkType) {
+    super(owner, valueChangeEvent, linkType);
     try {
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.propertyClass = propertyClass;
@@ -45,9 +45,9 @@ public abstract class AbstractBeanPropertyLink extends AbstractPropertyLink {
 
   /** {@inheritDoc} */
   @Override
-  public Object getModelPropertyValue() {
+  public Object getModelValue() {
     try {
-      return getMethod.invoke(getPropertyOwner());
+      return getMethod.invoke(getValueOwner());
     }
     catch (RuntimeException re) {
       throw re;
@@ -59,9 +59,9 @@ public abstract class AbstractBeanPropertyLink extends AbstractPropertyLink {
 
   /** {@inheritDoc} */
   @Override
-  public void setModelPropertyValue(final Object obj) {
+  public void setModelValue(final Object obj) {
     try {
-      setMethod.invoke(getPropertyOwner(), obj);
+      setMethod.invoke(getValueOwner(), obj);
     }
     catch (RuntimeException re) {
       throw re;
@@ -76,7 +76,7 @@ public abstract class AbstractBeanPropertyLink extends AbstractPropertyLink {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   protected Method getSetMethod() throws NoSuchMethodException {
-    return getPropertyOwner().getClass().getMethod("set" + propertyName, propertyClass);
+    return getValueOwner().getClass().getMethod("set" + propertyName, propertyClass);
   }
 
   /**
@@ -84,6 +84,6 @@ public abstract class AbstractBeanPropertyLink extends AbstractPropertyLink {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   protected Method getGetMethod() throws NoSuchMethodException {
-    return getPropertyOwner().getClass().getMethod("get" + propertyName);
+    return getValueOwner().getClass().getMethod("get" + propertyName);
   }
 }

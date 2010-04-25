@@ -19,7 +19,7 @@ public class DoubleBeanPropertyLinkTest {
   public void test() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    new DoubleBeanPropertyLink(txtDouble, this, "doubleValue", evtDoubleValueChanged);
+    new DoubleBeanValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged);
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());

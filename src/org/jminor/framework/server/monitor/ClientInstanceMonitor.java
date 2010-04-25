@@ -6,7 +6,7 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import javax.swing.ButtonModel;
@@ -28,7 +28,7 @@ public class ClientInstanceMonitor {
   public ClientInstanceMonitor(final ClientInfo client, final EntityDbServerAdmin server) {
     this.client = client;
     this.server = server;
-    loggingEnabledButtonModel = new ToggleBeanPropertyLink(this, "loggingOn", evtLogginStatusChanged, null).getButtonModel();
+    loggingEnabledButtonModel = new ToggleBeanValueLink(this, "loggingOn", evtLogginStatusChanged, null).getButtonModel();
   }
 
   public ButtonModel getLoggingEnabledButtonModel() {

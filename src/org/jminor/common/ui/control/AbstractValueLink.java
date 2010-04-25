@@ -9,14 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * An abstract base class for linking a UI component to a property value.
+ * An abstract base class for linking a UI component to a model value.
  */
-public abstract class AbstractPropertyLink<K, T> extends Control {
+public abstract class AbstractValueLink<K, T> extends Control {
 
   /**
    * The Object that owns the linked property
    */
-  private final K propertyOwner;
+  private final K valueOwner;
 
   /**
    * The link type
@@ -35,20 +35,20 @@ public abstract class AbstractPropertyLink<K, T> extends Control {
 
   /**
    * Instantiates a new AbstractPropertyLink
-   * @param propertyOwner the owner of the property value
-   * @param modelPropertyValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
+   * @param valueOwner the owner of the property value
+   * @param modelValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type
    */
-  public AbstractPropertyLink(final K propertyOwner, final Event modelPropertyValueChangeEvent,
-                              final LinkType linkType) {
-    if (propertyOwner == null)
+  public AbstractValueLink(final K valueOwner, final Event modelValueChangeEvent,
+                           final LinkType linkType) {
+    if (valueOwner == null)
       throw new IllegalArgumentException("Property owner cannot be null");
 
-    this.propertyOwner = propertyOwner;
+    this.valueOwner = valueOwner;
     this.linkType = linkType;
 
-    if (linkType != LinkType.WRITE_ONLY && modelPropertyValueChangeEvent != null) {
-      modelPropertyValueChangeEvent.addListener(new ActionListener() {
+    if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
+      modelValueChangeEvent.addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
           updateUI();
         }
@@ -65,12 +65,12 @@ public abstract class AbstractPropertyLink<K, T> extends Control {
   /**
    * @return the owner of the linked property, the model
    */
-  public K getPropertyOwner() {
-    return propertyOwner;
+  public K getValueOwner() {
+    return valueOwner;
   }
 
   /**
-   * @return the type of this property link
+   * @return the type of this link
    */
   public LinkType getLinkType() {
     return linkType;
@@ -80,7 +80,7 @@ public abstract class AbstractPropertyLink<K, T> extends Control {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
         isUpdatingModel = true;
-        setModelPropertyValue(getUIPropertyValue());
+        setModelValue(getUIValue());
       }
       finally {
         isUpdatingModel = false;
@@ -92,7 +92,7 @@ public abstract class AbstractPropertyLink<K, T> extends Control {
     if (linkType != LinkType.WRITE_ONLY && !isUpdatingModel) {
       try {
         isUpdatingUI = true;
-        setUIPropertyValue(getModelPropertyValue());
+        setUIValue(getModelValue());
       }
       finally {
         isUpdatingUI = false;
@@ -103,22 +103,22 @@ public abstract class AbstractPropertyLink<K, T> extends Control {
   /**
    * @return the model value of the linked property
    */
-  public abstract T getModelPropertyValue();
+  public abstract T getModelValue();
 
   /**
-   * Sets the property value in the model
+   * Sets the value in the model
    * @param value the value to set for property
    */
-  public abstract void setModelPropertyValue(final T value);
+  public abstract void setModelValue(final T value);
 
   /**
-   * @return the property value according to the UI
+   * @return the value according to the UI
    */
-  protected abstract T getUIPropertyValue();
+  protected abstract T getUIValue();
 
   /**
-   * Sets the property value in the UI
-   * @param propertyValue the value to represent in the UI
+   * Sets the value in the UI
+   * @param value the value to represent in the UI
    */
-  protected abstract void setUIPropertyValue(final T propertyValue);
+  protected abstract void setUIValue(final T value);
 }

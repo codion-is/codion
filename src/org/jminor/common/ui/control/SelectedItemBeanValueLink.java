@@ -14,19 +14,19 @@ import java.awt.event.ItemListener;
 /**
  * Binds a JComboBox to an Object based bean property.
  */
-public class SelectedItemBeanPropertyLink extends AbstractBeanPropertyLink {
+public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
 
   private final ComboBoxModel comboBoxModel;
 
-  public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
-                                      final Class propertyClass, final Event propertyChangeEvent) {
-    this(box, owner, propertyName, propertyClass, propertyChangeEvent, LinkType.READ_WRITE);
+  public SelectedItemBeanValueLink(final JComboBox box, final Object owner, final String propertyName,
+                                   final Class propertyClass, final Event valueChangeEvent) {
+    this(box, owner, propertyName, propertyClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
-  public SelectedItemBeanPropertyLink(final JComboBox box, final Object owner, final String propertyName,
-                                      final Class propertyClass, final Event propertyChangeEvent,
-                                      final LinkType linkType) {
-    super(owner, propertyName, propertyClass, propertyChangeEvent, linkType);
+  public SelectedItemBeanValueLink(final JComboBox box, final Object owner, final String propertyName,
+                                   final Class propertyClass, final Event valueChangeEvent,
+                                   final LinkType linkType) {
+    super(owner, propertyName, propertyClass, valueChangeEvent, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();
     box.addItemListener(new ItemListener() {
@@ -39,7 +39,7 @@ public class SelectedItemBeanPropertyLink extends AbstractBeanPropertyLink {
 
   /** {@inheritDoc} */
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     if (comboBoxModel instanceof ItemComboBoxModel)
       return ((ItemComboBoxModel.Item) comboBoxModel.getSelectedItem()).getItem();
     else
@@ -48,7 +48,7 @@ public class SelectedItemBeanPropertyLink extends AbstractBeanPropertyLink {
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIPropertyValue(final Object propertyValue) {
+  protected void setUIValue(final Object propertyValue) {
     comboBoxModel.setSelectedItem(propertyValue);
   }
 }

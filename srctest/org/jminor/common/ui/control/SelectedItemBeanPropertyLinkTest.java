@@ -24,7 +24,7 @@ public class SelectedItemBeanPropertyLinkTest {
   @Test
   public void test() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
-    new SelectedItemBeanPropertyLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);
+    new SelectedItemBeanValueLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);
     assertNull("selected item should be null", getSelectedItem());
     setSelectedItem("s");
     assertEquals("selected item should be 's'", "s", box.getSelectedItem());

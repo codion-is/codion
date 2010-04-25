@@ -15,15 +15,15 @@ import javax.swing.event.ChangeListener;
  * Date: 14.12.2007<br>
  * Time: 23:58:50<br>
  */
-public class IntBeanSpinnerPropertyLink extends AbstractBeanPropertyLink {
+public class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
 
   private final SpinnerNumberModel spinnerModel;
 
-  public IntBeanSpinnerPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent) {
+  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final Event propertyChangeEvent) {
     this(owner, propertyName, propertyChangeEvent, LinkType.READ_WRITE);
   }
 
-  public IntBeanSpinnerPropertyLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
+  public IntBeanSpinnerValueLink(final Object owner, final String propertyName, final Event propertyChangeEvent,
                                     final LinkType linkType) {
     super(owner, propertyName, int.class, propertyChangeEvent, linkType);
     spinnerModel = new SpinnerNumberModel();
@@ -40,12 +40,12 @@ public class IntBeanSpinnerPropertyLink extends AbstractBeanPropertyLink {
   }
 
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     return spinnerModel.getValue();
   }
 
   @Override
-  protected void setUIPropertyValue(final Object propertyValue) {
+  protected void setUIValue(final Object propertyValue) {
     spinnerModel.setValue(propertyValue);
   }
 }

@@ -25,7 +25,7 @@ public class DoublePropertyLinkTest {
   public void test() throws Exception {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    new DoublePropertyLink(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
+    new DoubleValueLink(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);
     assertEquals("Double value should be 1000.5", 1000.5, model.getValue(EmpDept.EMPLOYEE_COMMISSION));

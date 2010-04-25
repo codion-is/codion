@@ -14,18 +14,18 @@ import javax.swing.text.JTextComponent;
 /**
  * Binds a JTextComponent to a text based bean property.
  */
-public class TextBeanPropertyLink extends AbstractBeanPropertyLink implements DocumentListener {
+public class TextBeanValueLink extends AbstractBeanValueLink implements DocumentListener {
 
   private final Document document;
 
-  public TextBeanPropertyLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                              final Class<?> valueClass, final Event propertyChangeEvent) {
-    this(textComponent, owner, propertyName, valueClass, propertyChangeEvent, LinkType.READ_WRITE);
+  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
+                           final Class<?> valueClass, final Event valueChangeEvent) {
+    this(textComponent, owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
-  public TextBeanPropertyLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                              final Class<?> valueClass, final Event propertyChangeEvent, final LinkType linkType) {
-    super(owner, propertyName, valueClass, propertyChangeEvent, linkType);
+  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
+                           final Class<?> valueClass, final Event valueChangeEvent, final LinkType linkType) {
+    super(owner, propertyName, valueClass, valueChangeEvent, linkType);
     this.document = textComponent.getDocument();
     if (linkType == LinkType.READ_ONLY)
       textComponent.setEditable(false);
@@ -47,12 +47,12 @@ public class TextBeanPropertyLink extends AbstractBeanPropertyLink implements Do
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIPropertyValue(final Object propertyValue) {
+  protected void setUIValue(final Object propertyValue) {
     try {
       synchronized (document) {
         document.remove(0, document.getLength());
         if (propertyValue != null)
-          document.insertString(0, getPropertyValueAsString(propertyValue), null);
+          document.insertString(0, getValueAsString(propertyValue), null);
       }
     }
     catch (BadLocationException e) {
@@ -64,12 +64,12 @@ public class TextBeanPropertyLink extends AbstractBeanPropertyLink implements Do
    * @return the value from the UI component
    */
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     return getText();
   }
 
-  protected String getPropertyValueAsString(final Object propertyValue) {
-    return propertyValue != null ? propertyValue.toString() : null;
+  protected String getValueAsString(final Object value) {
+    return value != null ? value.toString() : null;
   }
 
   protected String getText() {

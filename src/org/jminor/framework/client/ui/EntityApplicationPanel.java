@@ -17,7 +17,7 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -353,7 +353,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     controlSet.add(ControlFactory.methodControl(this, "viewApplicationTree",
             FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
     controlSet.addSeparator();
-    final ToggleBeanPropertyLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
+    final ToggleBeanValueLink ctrAlwaysOnTop = ControlFactory.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
     controlSet.add(ctrAlwaysOnTop);
 

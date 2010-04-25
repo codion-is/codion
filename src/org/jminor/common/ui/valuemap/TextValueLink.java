@@ -21,7 +21,7 @@ import java.awt.event.FocusEvent;
 /**
  * A class for linking a text component to a ChangeValueMapEditModel text property value.
  */
-public class TextPropertyLink extends AbstractValueMapPropertyLink<String, Object> implements DocumentListener {
+public class TextValueLink extends AbstractValueMapLink<String, Object> implements DocumentListener {
 
   private final Document document;
   /**
@@ -36,8 +36,8 @@ public class TextPropertyLink extends AbstractValueMapPropertyLink<String, Objec
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    */
-  public TextPropertyLink(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
-                          final String key, final boolean immediateUpdate) {
+  public TextValueLink(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+                       final String key, final boolean immediateUpdate) {
     this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE);
   }
 
@@ -50,8 +50,8 @@ public class TextPropertyLink extends AbstractValueMapPropertyLink<String, Objec
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    */
-  public TextPropertyLink(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
-                          final String key, final boolean immediateUpdate, final LinkType linkType) {
+  public TextValueLink(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+                       final String key, final boolean immediateUpdate, final LinkType linkType) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
     this.immediateUpdate = immediateUpdate;
@@ -94,13 +94,13 @@ public class TextPropertyLink extends AbstractValueMapPropertyLink<String, Objec
 
   /** {@inheritDoc} */
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     return valueFromText(getText());
   }
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIPropertyValue(final Object value) {
+  protected void setUIValue(final Object value) {
     try {
       document.remove(0, document.getLength());
       if (value != null)

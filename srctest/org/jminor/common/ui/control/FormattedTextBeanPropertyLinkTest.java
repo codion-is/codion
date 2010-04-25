@@ -23,7 +23,7 @@ public class FormattedTextBeanPropertyLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    new FormattedTextBeanPropertyLink(txtString, this, "dateValue", Date.class, evtDateValueChanged, LinkType.READ_WRITE, format);
+    new FormattedTextBeanValueLink(txtString, this, "dateValue", Date.class, evtDateValueChanged, LinkType.READ_WRITE, format);
     assertEquals("String value should be empty on initialization", "__.__.____", txtString.getText());
 
     final Date date = format.parse("03.10.1975");

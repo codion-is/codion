@@ -4,7 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.RandomItemModel;
-import org.jminor.common.ui.control.AbstractPropertyLink;
+import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
@@ -73,28 +73,28 @@ public class RandomItemPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(getModel().getWeight(item), 0, Integer.MAX_VALUE, 1);
-    final AbstractPropertyLink<RandomItemPanel, Integer> propertyLink = new AbstractPropertyLink<RandomItemPanel, Integer>(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
+    final AbstractValueLink<RandomItemPanel, Integer> valueLink = new AbstractValueLink<RandomItemPanel, Integer>(this, getModel().eventWeightsChanged(), LinkType.READ_WRITE) {
       @Override
-      public Integer getModelPropertyValue() {
+      public Integer getModelValue() {
         return getModel().getWeight(item);
       }
       @Override
-      protected Integer getUIPropertyValue() {
+      protected Integer getUIValue() {
         return (Integer) spinnerModel.getValue();
       }
       @Override
-      public void setModelPropertyValue(final Integer value) {
+      public void setModelValue(final Integer value) {
         getModel().setWeight(item, value);
       }
       @Override
-      protected void setUIPropertyValue(final Integer propertyValue) {
+      protected void setUIValue(final Integer propertyValue) {
         spinnerModel.setValue(propertyValue);
       }
     };
-    propertyLink.updateUI();
+    valueLink.updateUI();
     spinnerModel.addChangeListener(new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
-        propertyLink.updateModel();
+        valueLink.updateModel();
       }
     });
 

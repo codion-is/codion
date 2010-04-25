@@ -1425,3 +1425,4 @@
   AbstractEntityPropertyLink renamed to AbstractValueMapLink and moved to common.ui.valuemap
   Descendants of above moved if possible
   ValidationException and descendantd moved to common.ui.valuemap.exception
+  Renamed classes/methods in common.ui.control

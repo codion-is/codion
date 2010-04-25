@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.TextBeanPropertyLink;
+import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -169,10 +169,10 @@ public class EntityLookupField extends JTextField {
   }
 
   private void bindProperty() {
-    new TextBeanPropertyLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
+    new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().eventSearchStringChanged()) {
       @Override
-      protected void setUIPropertyValue(final Object propertyValue) {
-        super.setUIPropertyValue(propertyValue);
+      protected void setUIValue(final Object propertyValue) {
+        super.setUIValue(propertyValue);
         updateState(false);
       }
     };

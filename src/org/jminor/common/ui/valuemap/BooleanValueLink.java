@@ -13,17 +13,17 @@ import java.awt.event.ItemListener;
 /**
  * A class for linking a UI component to a boolean value.
  */
-public class BooleanPropertyLink extends AbstractValueMapPropertyLink<String, Object> {
+public class BooleanValueLink extends AbstractValueMapLink<String, Object> {
 
   private final ButtonModel buttonModel;
 
-  public BooleanPropertyLink(final ButtonModel buttonModel, final ChangeValueMapEditModel<String, Object> editModel,
-                             final String key) {
+  public BooleanValueLink(final ButtonModel buttonModel, final ChangeValueMapEditModel<String, Object> editModel,
+                          final String key) {
     this(buttonModel, editModel, key, LinkType.READ_WRITE);
   }
 
-  public BooleanPropertyLink(final ButtonModel buttonModel, final ChangeValueMapEditModel<String, Object> editModel,
-                             final String key, final LinkType linkType) {
+  public BooleanValueLink(final ButtonModel buttonModel, final ChangeValueMapEditModel<String, Object> editModel,
+                          final String key, final LinkType linkType) {
     super(editModel, key, linkType);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
@@ -36,13 +36,13 @@ public class BooleanPropertyLink extends AbstractValueMapPropertyLink<String, Ob
 
   /** {@inheritDoc} */
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     return buttonModel.isSelected();
   }
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIPropertyValue(final Object propertyValue) {
+  protected void setUIValue(final Object propertyValue) {
     buttonModel.setSelected(propertyValue != null && (Boolean) propertyValue);
   }
 }

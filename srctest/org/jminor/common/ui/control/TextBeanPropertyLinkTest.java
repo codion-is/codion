@@ -18,7 +18,7 @@ public class TextBeanPropertyLinkTest {
   @Test
   public void test() throws Exception {
     final JTextField txtString = new JTextField();
-    new TextBeanPropertyLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
+    new TextBeanValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
     assertEquals("String value should be empty on initialization", "", txtString.getText());
     setStringValue("hello");
     assertEquals("String value should be 'hello'", "hello", txtString.getText());

@@ -8,12 +8,12 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
-import org.jminor.common.ui.control.DoubleBeanPropertyLink;
-import org.jminor.common.ui.control.FormattedTextBeanPropertyLink;
-import org.jminor.common.ui.control.IntBeanPropertyLink;
+import org.jminor.common.ui.control.DoubleBeanValueLink;
+import org.jminor.common.ui.control.FormattedTextBeanValueLink;
+import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
-import org.jminor.common.ui.control.TextBeanPropertyLink;
+import org.jminor.common.ui.control.SelectedItemBeanValueLink;
+import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.Configuration;
@@ -121,36 +121,36 @@ public class PropertySearchPanel extends AbstractSearchPanel {
     switch (getModel().getPropertyType()) {
       case TIMESTAMP:
       case DATE:
-        new FormattedTextBeanPropertyLink((JFormattedTextField) field, getModel(),
+        new FormattedTextBeanValueLink((JFormattedTextField) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Timestamp.class,  isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
                 LinkType.READ_WRITE, format) {
           @Override
-          protected Object getUIPropertyValue() {
-            final Date value = (Date) super.getUIPropertyValue();
+          protected Object getUIValue() {
+            final Date value = (Date) super.getUIValue();
             return value == null ? null : new Timestamp(value.getTime());
           }
         };
         break;
       case DOUBLE:
-        new DoubleBeanPropertyLink((DoubleField) field, getModel(),
+        new DoubleBeanValueLink((DoubleField) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
         break;
       case INT:
-        new IntBeanPropertyLink((IntField) field, getModel(),
+        new IntBeanValueLink((IntField) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
         break;
       case BOOLEAN:
-        new SelectedItemBeanPropertyLink((JComboBox) field, getModel(),
+        new SelectedItemBeanValueLink((JComboBox) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
                 Object.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE);
         break;
       case ENTITY:
         break;//property is bound in the model
       default: {
-        new TextBeanPropertyLink((JTextField) field, getModel(),
+        new TextBeanValueLink((JTextField) field, getModel(),
                 isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY, String.class,
                 isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged());
       }

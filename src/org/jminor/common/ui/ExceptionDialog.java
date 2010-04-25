@@ -11,7 +11,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.*;
@@ -50,7 +50,7 @@ public class ExceptionDialog extends JDialog {
   private JButton btnCopy;
   private JButton btnEmail;
   //controls
-  private ToggleBeanPropertyLink ctrDetails;
+  private ToggleBeanValueLink ctrDetails;
   private Control ctrClose;
   private Control ctrPrint;
   private Control ctrSave;

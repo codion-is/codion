@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.valuemap.AbstractValueMapPropertyLink;
+import org.jminor.common.ui.valuemap.AbstractValueMapLink;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * A class for linking an EntityLookupModel to a EntityEditModel foreign key property value.
  */
-public class LookupPropertyLink extends AbstractValueMapPropertyLink<String, Object> {
+public class LookupValueLink extends AbstractValueMapLink<String, Object> {
 
   private final EntityLookupModel lookupModel;
 
@@ -28,8 +28,8 @@ public class LookupPropertyLink extends AbstractValueMapPropertyLink<String, Obj
    * @param editModel the EntityEditModel instance
    * @param foreignKeyProperty the foreign key property to link
    */
-  public LookupPropertyLink(final EntityLookupModel lookupModel, final ChangeValueMapEditModel<String, Object> editModel,
-                            final Property.ForeignKeyProperty foreignKeyProperty) {
+  public LookupValueLink(final EntityLookupModel lookupModel, final ChangeValueMapEditModel<String, Object> editModel,
+                         final Property.ForeignKeyProperty foreignKeyProperty) {
     super(editModel, foreignKeyProperty.getPropertyID(), LinkType.READ_WRITE);
     this.lookupModel = lookupModel;
     updateUI();
@@ -42,16 +42,16 @@ public class LookupPropertyLink extends AbstractValueMapPropertyLink<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  protected Object getUIPropertyValue() {
+  protected Object getUIValue() {
     final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
     return selectedEntities.size() == 0 ? null : selectedEntities.get(0);
   }
 
   /** {@inheritDoc} */
   @Override
-  protected void setUIPropertyValue(final Object propertyValue) {
+  protected void setUIValue(final Object propertyValue) {
     final List<Entity> value = new ArrayList<Entity>();
-    if (getModelPropertyValue() != null)
+    if (getModelValue() != null)
       value.add((Entity) propertyValue);
     lookupModel.setSelectedEntities(value);
   }

@@ -14,14 +14,14 @@ import javax.swing.KeyStroke;
  */
 public class ControlFactory {
 
-  public static ToggleBeanPropertyLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                     final Event changeEvent) {
+  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
+                                                  final Event changeEvent) {
     return toggleControl(owner, propertyName, caption, changeEvent, null);
   }
 
-  public static ToggleBeanPropertyLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                     final Event changeEvent, final String description) {
-    return (ToggleBeanPropertyLink) new ToggleBeanPropertyLink(owner, propertyName, changeEvent, caption,
+  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
+                                                  final Event changeEvent, final String description) {
+    return (ToggleBeanValueLink) new ToggleBeanValueLink(owner, propertyName, changeEvent, caption,
             LinkType.READ_WRITE).setDescription(description);
   }
 

@@ -20,20 +20,20 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
-import org.jminor.common.ui.valuemap.BooleanPropertyLink;
-import org.jminor.common.ui.valuemap.DatePropertyLink;
-import org.jminor.common.ui.valuemap.DoublePropertyLink;
-import org.jminor.common.ui.valuemap.FormattedPropertyLink;
-import org.jminor.common.ui.valuemap.IntPropertyLink;
-import org.jminor.common.ui.valuemap.TextPropertyLink;
+import org.jminor.common.ui.valuemap.BooleanValueLink;
+import org.jminor.common.ui.valuemap.DateValueLink;
+import org.jminor.common.ui.valuemap.DoubleValueLink;
+import org.jminor.common.ui.valuemap.FormattedValueLink;
+import org.jminor.common.ui.valuemap.IntValueLink;
+import org.jminor.common.ui.valuemap.TextValueLink;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyValueListProvider;
 import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
-import org.jminor.framework.client.ui.property.LookupPropertyLink;
+import org.jminor.framework.client.ui.property.ComboBoxValueLink;
+import org.jminor.framework.client.ui.property.LookupValueLink;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -207,7 +207,7 @@ public class EntityUiUtil {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
       checkBox.setToolTipText(property.getCaption());
-    new BooleanPropertyLink(checkBox.getModel(), editModel, property.getPropertyID());
+    new BooleanValueLink(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
@@ -239,7 +239,7 @@ public class EntityUiUtil {
     if (!boxModel.isDataInitialized())
       boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    new ComboBoxPropertyLink(comboBox, editModel, foreignKeyProperty);
+    new ComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -316,7 +316,7 @@ public class EntityUiUtil {
             new EntityLookupField(editModel.createEntityLookupModel(foreignKeyProperty.getReferencedEntityID(),
                     additionalSearchCriteria, searchProperties),
                     Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER));
-    new LookupPropertyLink(lookupField.getModel(), editModel, foreignKeyProperty);
+    new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     if (Configuration.getBooleanValue(Configuration.USE_LOOKUP_FIELD_SEARCH_HINT))
       lookupField.setSearchHint(FrameworkMessages.get(FrameworkMessages.LOOKUP_FIELD_SEARCH_HINT));
@@ -335,7 +335,7 @@ public class EntityUiUtil {
                                                final boolean editable) {
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    new ComboBoxPropertyLink(comboBox, editModel, property);
+    new ComboBoxValueLink(comboBox, editModel, property);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -377,7 +377,7 @@ public class EntityUiUtil {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
 
-    new TextPropertyLink(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
+    new TextValueLink(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -416,21 +416,21 @@ public class EntityUiUtil {
     switch (property.getPropertyType()) {
       case STRING:
         if (formatMaskString != null)
-          new FormattedPropertyLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
+          new FormattedValueLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
         else
-          new TextPropertyLink(textField, editModel, propertyID, immediateUpdate, linkType);
+          new TextValueLink(textField, editModel, propertyID, immediateUpdate, linkType);
         break;
       case INT:
-        new IntPropertyLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
+        new IntValueLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoublePropertyLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
+        new DoubleValueLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
         break;
       case DATE:
-        new DatePropertyLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
+        new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
         break;
       case TIMESTAMP:
-        new DatePropertyLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
+        new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);

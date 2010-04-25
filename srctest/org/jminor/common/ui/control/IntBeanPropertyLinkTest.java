@@ -18,7 +18,7 @@ public class IntBeanPropertyLinkTest {
   @Test
   public void test() throws Exception {
     final IntField txtInt = new IntField();
-    new IntBeanPropertyLink(txtInt, this, "intValue", evtIntValueChanged);
+    new IntBeanValueLink(txtInt, this, "intValue", evtIntValueChanged);
     assertNull("Int value should be null on initialization", txtInt.getInt());
     setIntValue(2);
     assertEquals("Int value should be 2", 2, txtInt.getInt().intValue());

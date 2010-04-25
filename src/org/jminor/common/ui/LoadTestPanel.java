@@ -8,11 +8,11 @@ import org.jminor.common.model.User;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.IntBeanPropertyLink;
-import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
+import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
+import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.MethodControl;
-import org.jminor.common.ui.control.ToggleBeanPropertyLink;
+import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
@@ -157,11 +157,11 @@ public class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanPropertyLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY) {
+    new IntBeanValueLink(applicationCountField, getModel(), "applicationCount", getModel().eventApplicationCountChanged(), LinkType.READ_ONLY) {
       @Override
-      protected void setUIPropertyValue(Object propertyValue) {
+      protected void setUIValue(Object propertyValue) {
         synchronized (this) {
-          super.setUIPropertyValue(propertyValue);
+          super.setUIValue(propertyValue);
         }
       }
     };
@@ -169,7 +169,7 @@ public class LoadTestPanel extends JPanel {
     final JPanel applicationPanel = new JPanel(new BorderLayout(5, 5));
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerPropertyLink(getModel(), "applicationBatchSize",
+    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(getModel(), "applicationBatchSize",
             getModel().eventApplicationBatchSizeChanged(), null).getSpinnerModel());
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
@@ -268,26 +268,26 @@ public class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    SpinnerNumberModel spinnerModel = new IntBeanSpinnerPropertyLink(getModel(), "maximumThinkTime",
+    SpinnerNumberModel spinnerModel = new IntBeanSpinnerValueLink(getModel(), "maximumThinkTime",
             getModel().eventMaximumThinkTimeChanged(), null).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    spinnerModel = new IntBeanSpinnerPropertyLink(getModel(), "minimumThinkTime",
+    spinnerModel = new IntBeanSpinnerValueLink(getModel(), "minimumThinkTime",
             getModel().eventMinimumThinkTimeChanged(), null).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    spinnerModel = new IntBeanSpinnerPropertyLink(getModel(), "warningTime",
+    spinnerModel = new IntBeanSpinnerValueLink(getModel(), "warningTime",
             getModel().eventWarningTimeChanged(), null).getSpinnerModel();
     spinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(spinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanPropertyLink pauseControl = ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
+    final ToggleBeanValueLink pauseControl = ControlFactory.toggleControl(getModel(), "paused", "Pause", getModel().eventPausedChanged());
     pauseControl.setMnemonic('P');
     final MethodControl gcControl = ControlFactory.methodControl(getModel(), "performGC", "Perform GC");
 

@@ -14,7 +14,7 @@ public interface ControlIterator {
 
   void handleControl(final Control control);
 
-  void handleToggleControl(final ToggleBeanPropertyLink control);
+  void handleToggleControl(final ToggleBeanValueLink control);
 
   void handleControlSet(final ControlSet controlSet);
 

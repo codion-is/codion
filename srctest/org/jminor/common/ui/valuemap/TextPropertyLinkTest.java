@@ -26,7 +26,7 @@ public class TextPropertyLinkTest {
   @Test
   public void test() throws Exception {
     final JTextField txt = new JTextField();
-    new TextPropertyLink(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
+    new TextValueLink(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
     assertEquals("String value should be 'darri", "darri", model.getValue(EmpDept.EMPLOYEE_NAME));

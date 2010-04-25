@@ -5,13 +5,13 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.common.ui.control.AbstractPropertyLink;
+import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 
 /**
  * An abstract class for linking a UI component to a ChangeValueMapEditModel key value.
  */
-public abstract class AbstractValueMapPropertyLink<T, V> extends AbstractPropertyLink<ChangeValueMapEditModel<T, V>, V> {
+public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<ChangeValueMapEditModel<T, V>, V> {
 
   /**
    * The linked key
@@ -23,20 +23,20 @@ public abstract class AbstractValueMapPropertyLink<T, V> extends AbstractPropert
    * @param key the key of the value to link
    * @param linkType the link type
    */
-  public AbstractValueMapPropertyLink(final ChangeValueMapEditModel<T, V> editModel, final T key, final LinkType linkType) {
+  public AbstractValueMapLink(final ChangeValueMapEditModel<T, V> editModel, final T key, final LinkType linkType) {
     super(editModel, editModel.getPropertyChangeEvent(key), linkType);
     this.key = key;
   }
 
   /** {@inheritDoc} */
   @Override
-  public V getModelPropertyValue() {
+  public V getModelValue() {
     return isModelPropertyValueNull() ? null : getEditModel().getValue(key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setModelPropertyValue(final V value) {
+  public void setModelValue(final V value) {
     getEditModel().setValue(key, value);
   }
 
@@ -89,6 +89,6 @@ public abstract class AbstractValueMapPropertyLink<T, V> extends AbstractPropert
    * @return the property owner, in this case a ChangeValueMapEditModel
    */
   private ChangeValueMapEditModel<T, V> getEditModel() {
-    return super.getPropertyOwner();
+    return super.getValueOwner();
   }
 }

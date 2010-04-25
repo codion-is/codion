@@ -6,7 +6,7 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.IntBeanSpinnerPropertyLink;
+import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -54,7 +54,7 @@ public class DatabaseMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerPropertyLink(model, "statsUpdateInterval",
+    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
             model.eventStatsUpdateIntervalChanged(), null).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);

@@ -11,10 +11,10 @@ import org.jminor.common.ui.textfield.IntField;
 /**
  * A class for linking a IntField to a ChangeValueMapEditModel int key value.
  */
-public class IntPropertyLink extends TextPropertyLink {
+public class IntValueLink extends TextValueLink {
 
-  public IntPropertyLink(final IntField textField, final ChangeValueMapEditModel<String, Object> editModel,
-                         final String key, final boolean immediateUpdate, final LinkType linkType) {
+  public IntValueLink(final IntField textField, final ChangeValueMapEditModel<String, Object> editModel,
+                      final String key, final boolean immediateUpdate, final LinkType linkType) {
     super(textField, editModel, key, immediateUpdate, linkType);
   }
 

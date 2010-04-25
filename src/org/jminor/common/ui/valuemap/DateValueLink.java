@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * A class for linking a formatted text field to a ChangeValueMapEditModel date property value.
  */
-public class DatePropertyLink extends FormattedPropertyLink {
+public class DateValueLink extends FormattedValueLink {
 
   private final boolean isTimestamp;
 
@@ -26,12 +26,12 @@ public class DatePropertyLink extends FormattedPropertyLink {
    * @param linkType the link type
    * @param dateFormat the date format to use
    */
-  public DatePropertyLink(final JFormattedTextField textField, final ChangeValueMapEditModel<String, Object> editModel,
-                          final String key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
+  public DateValueLink(final JFormattedTextField textField, final ChangeValueMapEditModel<String, Object> editModel,
+                       final String key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textField, editModel, key, dateFormat, true, linkType);
     this.isTimestamp = isTimestamp;
     if (dateFormat == null)
-      throw new IllegalArgumentException("DatePropertyLink must have a date format");
+      throw new IllegalArgumentException("DateValueLink must have a date format");
   }
 
   /** {@inheritDoc} */
