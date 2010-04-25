@@ -9,7 +9,7 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.ValueListProvider;
+import org.jminor.common.model.valuemap.ValueListProvider;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
@@ -722,7 +722,7 @@ public class UiUtil {
     txtField.getActionMap().put("valueLookup", new AbstractAction() {
       public void actionPerformed(final ActionEvent e) {
         try {
-          final Object value = selectPropertyValue(txtField, valueListProvider.getValueList());
+          final Object value = selectPropertyValue(txtField, valueListProvider.getValues());
           if (value != null)
             txtField.setText(value.toString());
         }

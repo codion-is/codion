@@ -1419,4 +1419,6 @@
   TableSorter moved from common.model.table to common.model
   EntityDefinition.rowColoring field added
   EntityRepository.isRowColoring() added
+  ValueMap now extends ValueProvider and ValueListProvider
   ValueMap and associates moved to common.model.valuemap
+  Entity overrides getValues(), returns values from pk and fk as well

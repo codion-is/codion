@@ -5,7 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.ValueProvider;
+import org.jminor.common.model.valuemap.ValueProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;

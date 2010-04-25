@@ -15,7 +15,7 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.ValueProvider;
+import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -400,21 +400,6 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   /**
-   * Constructs a where condition based on the given primary key
-   * @param database the Database instance
-   * @param entityKey the EntityKey instance
-   * @return a where clause using this EntityKey instance, without the 'where' keyword
-   * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
-   */
-  public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
-    return getWhereCondition(database, entityKey.getProperties(), new ValueProvider<String, Object>() {
-      public Object getValue(final String propertyID) {
-        return entityKey.getValue(propertyID);
-      }
-    });
-  }
-
-  /**
    * Constructs a where condition based on the primary key of the given entity, using the
    * original property values. This method should be used when updating an entity in case
    * a primary key property value has changed, hence using the original value.
@@ -424,11 +409,18 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity entity) {
-    return getWhereCondition(database, entity.getPrimaryKey().getProperties(), new ValueProvider<String, Object>() {
-      public Object getValue(final String propertyID) {
-        return entity.getOriginalValue(propertyID);
-      }
-    });
+    return getWhereCondition(database, entity.getPrimaryKey().getOriginalCopy());
+  }
+
+  /**
+   * Constructs a where condition based on the given primary key
+   * @param database the Database instance
+   * @param entityKey the EntityKey instance
+   * @return a where clause using this EntityKey instance, without the 'where' keyword
+   * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
+   */
+  public static String getWhereCondition(final Database database, final Entity.Key entityKey) {
+    return getWhereCondition(database, entityKey.getProperties(), entityKey);
   }
 
   /**

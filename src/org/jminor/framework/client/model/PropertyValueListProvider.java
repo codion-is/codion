@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.ValueListProvider;
+import org.jminor.common.model.valuemap.ValueListProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class PropertyValueListProvider implements ValueListProvider<Object> {
     this.propertyID = propertyID;
   }
 
-  public List<Object> getValueList() throws Exception {
+  public List<Object> getValues() throws Exception {
     return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
   }
 }

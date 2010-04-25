@@ -220,6 +220,15 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   }
 
   @Override
+  public List<Object> getValues() {
+    final List<Object> values = new ArrayList<Object>(primaryKey.getValues());
+    values.addAll(foreignKeyValues.getValues());
+    values.addAll(super.getValues());
+    
+    return values;
+  }
+
+  @Override
   public Object removeValue(final String propertyID) {
     final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)

@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,7 +90,7 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public Collection<V> getValues() {
+  public List<V> getValues() {
     return new ArrayList<V>(values.values());
   }
 

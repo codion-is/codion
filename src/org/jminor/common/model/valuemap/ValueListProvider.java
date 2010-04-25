@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.valuemap;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
  * @param <T>
  */
 public interface ValueListProvider<T> {
-  List<T> getValueList() throws Exception;
+  List<T> getValues() throws Exception;
 }

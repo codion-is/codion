@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.input;
 
-import org.jminor.common.model.ValueListProvider;
+import org.jminor.common.model.valuemap.ValueListProvider;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
 
