@@ -4,10 +4,10 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DbException;
-import org.jminor.common.model.ChangeValueMapModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.ChangeValueMapModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;

@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.valuemap;
+
+import org.jminor.common.model.AbstractFilteredTableModel;
+import org.jminor.common.model.Refreshable;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;

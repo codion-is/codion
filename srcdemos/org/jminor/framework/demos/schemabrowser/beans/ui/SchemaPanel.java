@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
-import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;

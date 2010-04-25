@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.ValueMap;
+import org.jminor.common.model.valuemap.ValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;

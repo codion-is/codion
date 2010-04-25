@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.ValueMap;
+import org.jminor.common.model.valuemap.ValueMap;
 
 import java.io.Serializable;
 import java.util.*;
@@ -54,7 +54,7 @@ public class EntityDefinition implements Serializable {
   private boolean largeDataset;
   /**
    * The StringProvider used when toString() is called for this entity
-   * @see org.jminor.common.model.ValueMap.ToString
+   * @see org.jminor.common.model.valuemap.ValueMap.ToString
    */
   private ValueMap.ToString<String, Object> stringProvider;
   /**

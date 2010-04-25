@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;

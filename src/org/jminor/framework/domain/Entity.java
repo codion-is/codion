@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.ChangeValueMap;
-import org.jminor.common.model.ChangeValueMapImpl;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.valuemap.ChangeValueMap;
+import org.jminor.common.model.valuemap.ChangeValueMapImpl;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

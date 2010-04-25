@@ -1,7 +1,12 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.valuemap;
+
+import org.jminor.common.model.Event;
+import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.State;
+import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

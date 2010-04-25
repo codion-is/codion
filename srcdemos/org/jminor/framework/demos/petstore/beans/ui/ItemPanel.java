@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petstore.beans.ui;
 
-import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;

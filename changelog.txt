@@ -1419,3 +1419,4 @@
   TableSorter moved from common.model.table to common.model
   EntityDefinition.rowColoring field added
   EntityRepository.isRowColoring() added
+  ValueMap and associates moved to common.model.valuemap

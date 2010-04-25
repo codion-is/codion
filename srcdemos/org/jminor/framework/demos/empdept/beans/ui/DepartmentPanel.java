@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;

@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.StringProvider;
 import org.jminor.common.model.Version;
+import org.jminor.common.model.valuemap.StringProvider;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
