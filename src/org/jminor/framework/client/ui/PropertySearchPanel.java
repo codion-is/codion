@@ -16,11 +16,11 @@ import org.jminor.common.ui.control.SelectedItemBeanPropertyLink;
 import org.jminor.common.ui.control.TextBeanPropertyLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;

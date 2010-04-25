@@ -1,17 +1,16 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityRepository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,7 +22,7 @@ import java.util.Date;
 
 public class DatePropertyLinkTest {
 
-  private EntityEditModel model;
+  private ChangeValueMapEditModel<String, Object> model;
 
   public DatePropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
@@ -33,8 +32,7 @@ public class DatePropertyLinkTest {
   public void test() throws Exception {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
-    new DatePropertyLink(txtDate, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_HIREDATE),
-            LinkType.READ_WRITE, format, false);
+    new DatePropertyLink(txtDate, model, EmpDept.EMPLOYEE_HIREDATE, LinkType.READ_WRITE, format, false);
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date dateValue = format.parse("03-10-1975");
     txtDate.setText(format.format(dateValue));

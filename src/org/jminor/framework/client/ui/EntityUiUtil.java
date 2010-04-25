@@ -20,20 +20,20 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
+import org.jminor.common.ui.valuemap.BooleanPropertyLink;
+import org.jminor.common.ui.valuemap.DatePropertyLink;
+import org.jminor.common.ui.valuemap.DoublePropertyLink;
+import org.jminor.common.ui.valuemap.FormattedPropertyLink;
+import org.jminor.common.ui.valuemap.IntPropertyLink;
+import org.jminor.common.ui.valuemap.TextPropertyLink;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyValueListProvider;
 import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.ui.property.BooleanPropertyLink;
 import org.jminor.framework.client.ui.property.ComboBoxPropertyLink;
-import org.jminor.framework.client.ui.property.DatePropertyLink;
-import org.jminor.framework.client.ui.property.DoublePropertyLink;
-import org.jminor.framework.client.ui.property.FormattedPropertyLink;
-import org.jminor.framework.client.ui.property.IntPropertyLink;
 import org.jminor.framework.client.ui.property.LookupPropertyLink;
-import org.jminor.framework.client.ui.property.TextPropertyLink;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -207,7 +207,7 @@ public class EntityUiUtil {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
       checkBox.setToolTipText(property.getCaption());
-    new BooleanPropertyLink(checkBox.getModel(), editModel, property);
+    new BooleanPropertyLink(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
@@ -377,7 +377,7 @@ public class EntityUiUtil {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
 
-    new TextPropertyLink(textArea, editModel, property, true, LinkType.READ_WRITE);
+    new TextPropertyLink(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -412,24 +412,25 @@ public class EntityUiUtil {
                                            final boolean immediateUpdate, final SimpleDateFormat dateFormat,
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final String propertyID = property.getPropertyID();
     switch (property.getPropertyType()) {
       case STRING:
         if (formatMaskString != null)
-          new FormattedPropertyLink((JFormattedTextField) textField, editModel, property, null, immediateUpdate, linkType);
+          new FormattedPropertyLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
         else
-          new TextPropertyLink(textField, editModel, property, immediateUpdate, linkType);
+          new TextPropertyLink(textField, editModel, propertyID, immediateUpdate, linkType);
         break;
       case INT:
-        new IntPropertyLink((IntField) textField, editModel, property, immediateUpdate, linkType);
+        new IntPropertyLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
         break;
       case DOUBLE:
-        new DoublePropertyLink((DoubleField) textField, editModel, property, immediateUpdate, linkType);
+        new DoublePropertyLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
         break;
       case DATE:
-        new DatePropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat, false);
+        new DatePropertyLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
         break;
       case TIMESTAMP:
-        new DatePropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat, true);
+        new DatePropertyLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);

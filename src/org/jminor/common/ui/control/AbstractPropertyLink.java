@@ -11,12 +11,12 @@ import java.awt.event.ActionListener;
 /**
  * An abstract base class for linking a UI component to a property value.
  */
-public abstract class AbstractPropertyLink<T> extends Control {
+public abstract class AbstractPropertyLink<K, T> extends Control {
 
   /**
    * The Object that owns the linked property
    */
-  private final Object propertyOwner;
+  private final K propertyOwner;
 
   /**
    * The link type
@@ -39,7 +39,7 @@ public abstract class AbstractPropertyLink<T> extends Control {
    * @param modelPropertyValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type
    */
-  public AbstractPropertyLink(final Object propertyOwner, final Event modelPropertyValueChangeEvent,
+  public AbstractPropertyLink(final K propertyOwner, final Event modelPropertyValueChangeEvent,
                               final LinkType linkType) {
     if (propertyOwner == null)
       throw new IllegalArgumentException("Property owner cannot be null");
@@ -65,7 +65,7 @@ public abstract class AbstractPropertyLink<T> extends Control {
   /**
    * @return the owner of the linked property, the model
    */
-  public Object getPropertyOwner() {
+  public K getPropertyOwner() {
     return propertyOwner;
   }
 

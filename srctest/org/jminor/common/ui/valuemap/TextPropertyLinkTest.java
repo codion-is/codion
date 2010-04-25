@@ -1,14 +1,13 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityRepository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -18,7 +17,7 @@ import javax.swing.JTextField;
 
 public class TextPropertyLinkTest {
 
-  private EntityEditModel model;
+  private ChangeValueMapEditModel<String, Object> model;
 
   public TextPropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
@@ -27,8 +26,7 @@ public class TextPropertyLinkTest {
   @Test
   public void test() throws Exception {
     final JTextField txt = new JTextField();
-    new TextPropertyLink(txt, model, EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-            true, LinkType.READ_WRITE);
+    new TextPropertyLink(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
     assertEquals("String value should be 'darri", "darri", model.getValue(EmpDept.EMPLOYEE_NAME));

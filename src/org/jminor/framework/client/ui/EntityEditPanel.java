@@ -4,13 +4,13 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.State;
-import org.jminor.common.ui.ChangeValueMapEditPanel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
+import org.jminor.common.ui.valuemap.ChangeValueMapEditPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;

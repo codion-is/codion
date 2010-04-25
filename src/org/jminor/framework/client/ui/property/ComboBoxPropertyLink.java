@@ -4,9 +4,10 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.combobox.ItemComboBoxModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.valuemap.AbstractValueMapPropertyLink;
 import org.jminor.framework.client.model.EntityComboBoxModel;
-import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.PropertyComboBoxModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.Type;
@@ -22,7 +23,7 @@ import java.awt.event.ItemListener;
 /**
  * A class for linking a ComboBox to a EntityEditModel property value.
  */
-public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
+public class ComboBoxPropertyLink extends AbstractValueMapPropertyLink<String, Object> {
 
   /**
    * The linked ComboBoxModel
@@ -35,7 +36,8 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
    * @param editModel the EntityEditModel instance
    * @param property the property to link to
    */
-  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityEditModel editModel, final Property property) {
+  public ComboBoxPropertyLink(final JComboBox comboBox, final ChangeValueMapEditModel<String, Object> editModel,
+                              final Property property) {
     this(comboBox, editModel, property, LinkType.READ_WRITE);
   }
 
@@ -46,9 +48,9 @@ public class ComboBoxPropertyLink extends AbstractEntityPropertyLink {
    * @param property the property to link to
    * @param linkType the link type
    */
-  public ComboBoxPropertyLink(final JComboBox comboBox, final EntityEditModel editModel, final Property property,
-                              final LinkType linkType) {
-    super(editModel, property, linkType);
+  public ComboBoxPropertyLink(final JComboBox comboBox, final ChangeValueMapEditModel<String, Object> editModel,
+                              final Property property, final LinkType linkType) {
+    super(editModel, property.getPropertyID(), linkType);
     this.boxModel = comboBox.getModel();
     updateUI();
     comboBox.addItemListener(new ItemListener() {

@@ -20,9 +20,9 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Collections;
 
 /**
  * User: Bjorn Darri<br>

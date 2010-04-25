@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.domain.Property;
 
 import javax.swing.JFormattedTextField;
 import java.sql.Timestamp;
@@ -13,7 +12,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * A class for linking a formatted text field to a EntityEditModel date property value.
+ * A class for linking a formatted text field to a ChangeValueMapEditModel date property value.
  */
 public class DatePropertyLink extends FormattedPropertyLink {
 
@@ -22,14 +21,14 @@ public class DatePropertyLink extends FormattedPropertyLink {
   /**
    * Instantiates a new DateTextPropertyLink
    * @param textField the text field to link
-   * @param editModel the EntityEditModel instance
-   * @param property the property to link
+   * @param editModel the ChangeValueMapEditModel instance
+   * @param key the key to link
    * @param linkType the link type
    * @param dateFormat the date format to use
    */
-  public DatePropertyLink(final JFormattedTextField textField, final EntityEditModel editModel, final Property property,
-                          final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
-    super(textField, editModel, property, dateFormat, true, linkType);
+  public DatePropertyLink(final JFormattedTextField textField, final ChangeValueMapEditModel<String, Object> editModel,
+                          final String key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
+    super(textField, editModel, key, dateFormat, true, linkType);
     this.isTimestamp = isTimestamp;
     if (dateFormat == null)
       throw new IllegalArgumentException("DatePropertyLink must have a date format");

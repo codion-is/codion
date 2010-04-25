@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 

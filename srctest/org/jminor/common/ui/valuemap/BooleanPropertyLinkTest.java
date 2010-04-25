@@ -1,14 +1,12 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
-import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.Property;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +17,7 @@ import javax.swing.JCheckBox;
 
 public class BooleanPropertyLinkTest {
 
-  private EntityEditModel model;
+  private ChangeValueMapEditModel<String, Object> model;
 
   public BooleanPropertyLinkTest() {
     model = new ItemModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
@@ -27,10 +25,9 @@ public class BooleanPropertyLinkTest {
 
   @Test
   public void test() throws Exception {
-    final Property disabledProperty = EntityRepository.getProperty(Petstore.T_ITEM, Petstore.ITEM_DISABLED);
     final JCheckBox chkBox = new JCheckBox();
     final ButtonModel buttonModel = chkBox.getModel();
-    new BooleanPropertyLink(buttonModel, model, disabledProperty);
+    new BooleanPropertyLink(buttonModel, model, Petstore.ITEM_DISABLED);
     assertFalse(buttonModel.isSelected());
     model.setValue(Petstore.ITEM_DISABLED, true);
     assertTrue(buttonModel.isSelected());

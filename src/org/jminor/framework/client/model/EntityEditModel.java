@@ -12,13 +12,13 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ChangeValueMap;
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.exception.NullValidationException;
+import org.jminor.common.model.valuemap.exception.RangeValidationException;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
-import org.jminor.framework.client.model.exception.NullValidationException;
-import org.jminor.framework.client.model.exception.RangeValidationException;
-import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -43,21 +43,6 @@ import java.util.Map;
 public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
 
   protected static final Logger log = Util.getLogger(EntityEditModel.class);
-
-  /**
-   * Code for the insert action, used during validation
-   */
-  public static final int INSERT = 1;
-
-  /**
-   * Code for the update action, used during validation
-   */
-  public static final int UPDATE = 2;
-
-  /**
-   * Code for an unknown action, used during validation
-   */
-  public static final int UNKNOWN = 3;
 
   private final Event evtBeforeInsert = new Event();
   private final Event evtAfterInsert = new Event();
@@ -268,7 +253,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
    * Performs a insert on the active entity
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws ValidationException in case validation fails
+   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see #validateEntities(java.util.List, int)
    */
   public final void insert() throws CancelException, DbException, ValidationException {
@@ -305,7 +290,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
    * @throws DbException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
-   * @throws ValidationException in case validation fails
+   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see #validateEntities(java.util.List, int)
    */
   public final void update() throws CancelException, DbException, ValidationException {
@@ -380,73 +365,40 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   }
 
   /**
-   * Returns true if the given value is valid for the given property, using the <code>validate</code> method
-   * @param property the property
-   * @return true if the value is valid
-   * @see #validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property,int)
-   * @see #validate(org.jminor.framework.domain.Property,int)
-   */
-  public final boolean isValid(final Property property) {
-    try {
-      validate(property, isEntityNull() ? INSERT : UPDATE);
-      return true;
-    }
-    catch (ValidationException e) {
-      return false;
-    }
-  }
-
-  /**
    * Validates the given Entity objects.
    * @param entities the entities to validate
    * @param action describes the action requiring validation,
    * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @throws ValidationException in case the validation fails
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Entity,org.jminor.framework.domain.Property,int)
-   * @see EntityEditModel#validate(org.jminor.framework.domain.Property,int)
-   * @see #INSERT
-   * @see #UPDATE
-   * @see #UNKNOWN
    */
   @SuppressWarnings({"UnusedDeclaration"})
   public void validateEntities(final List<Entity> entities, final int action) throws ValidationException {
     for (final Entity entity : entities) {
       for (final Property property : EntityRepository.getProperties(entity.getEntityID()).values()) {
-        validate(entity, property, action);
+        validate(entity, property.getPropertyID(), action);
       }
     }
   }
 
-  /**
-   * Checks if the value of the given property is valid, throws a ValidationException if not,
-   * this default implementation performs a null value validation if the corresponding configuration parameter is set
-   * @param property the property
-   * @param action describes the action requiring validation,
-   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
-   * @throws ValidationException if the given value is not valid for the given property
-   * @see Property#setNullable(boolean)
-   * @see Configuration#PERFORM_NULL_VALIDATION
-   */
-  public void validate(final Property property, final int action) throws ValidationException {
+  public void validate(final String property, final int action) throws ValidationException {
     validate(getEntity(), property, action);
   }
 
-  /**
-   * Checks if the value of the given property is valid, throws a ValidationException if not,
-   * this default implementation performs a null value validation if the corresponding configuration parameter is set
-   * @param entity the entity to validate
-   * @param property the property
-   * @param action describes the action requiring validation,
-   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
-   * @throws ValidationException if the given value is not valid for the given property
-   * @see Property#setNullable(boolean)
-   * @see Configuration#PERFORM_NULL_VALIDATION
-   */
-  public void validate(final Entity entity, final Property property, final int action) throws ValidationException {
+  public void validate(final ChangeValueMap<String, Object> valueMap, final String propertyID, final int action) throws ValidationException {
+    final Entity entity = (Entity) valueMap;
+    final Property property = entity.getProperty(propertyID);
     if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION))
       performNullValidation(entity, property, action);
     if (property.isNumerical())
       performRangeValidation(entity, property);
+  }
+
+  public boolean isNull(final String key, Object value) {
+    return Entity.isValueNull(EntityRepository.getProperty(getEntityID(), key).getPropertyType(), value);
+  }
+
+  public boolean isNullable(String key) {
+    return EntityRepository.getProperty(getEntityID(), key).isNullable();
   }
 
   public void refresh() {
@@ -760,10 +712,10 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     final Double value = property.getPropertyType() == Type.DOUBLE ? (Double) entity.getValue(property.getPropertyID())
             : (Integer) entity.getValue(property.getPropertyID());
     if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
-      throw new RangeValidationException(property, value, "'" + property + "' " +
+      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
     if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax()))
-      throw new RangeValidationException(property, value, "'" + property + "' " +
+      throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
   }
 
@@ -772,11 +724,11 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
       if (action == INSERT) {
         if (!property.columnHasDefaultValue() || (property instanceof Property.PrimaryKeyProperty &&
                 !EntityRepository.isPrimaryKeyAutoGenerated(getEntityID())))
-          throw new NullValidationException(property,
+          throw new NullValidationException(property.getPropertyID(),
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
       }
       else {
-        throw new NullValidationException(property,
+        throw new NullValidationException(property.getPropertyID(),
                 FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
 
       }

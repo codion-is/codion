@@ -1,24 +1,23 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.Format;
 import java.text.ParseException;
 
 /**
- * A class for linking a JFormattedTextField to a EntityEditModel property value.
+ * A class for linking a JFormattedTextField to a ChangeValueMapEditModel property value.
  */
 public class FormattedPropertyLink extends TextPropertyLink {
 
@@ -28,16 +27,16 @@ public class FormattedPropertyLink extends TextPropertyLink {
   /**
    * Instantiates a new FormattedTextPropertyLink
    * @param textComponent the text component to link
-   * @param editModel the EntityEditModel instance
-   * @param property the property to link
+   * @param editModel the ChangeValueMapEditModel instance
+   * @param key the key to link
    * @param format the format
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * @param linkType the link type
    */
-  public FormattedPropertyLink(final JFormattedTextField textComponent, final EntityEditModel editModel,
-                               final Property property, final Format format, final boolean immediateUpdate,
+  public FormattedPropertyLink(final JFormattedTextField textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+                               final String key, final Format format, final boolean immediateUpdate,
                                final LinkType linkType) {
-    super(textComponent, editModel, property, immediateUpdate, linkType);
+    super(textComponent, editModel, key, immediateUpdate, linkType);
     this.format = format;
     this.formatter = textComponent.getFormatter();
     updateUI();
@@ -67,7 +66,7 @@ public class FormattedPropertyLink extends TextPropertyLink {
   /** {@inheritDoc} */
   @Override
   protected String getValueAsString(final Object value) {
-    if (Entity.isValueNull(getProperty().getPropertyType(), value))
+    if (isNull(value))
       return null;
 
     return format == null ? value.toString() : format.format(value);
@@ -89,9 +88,9 @@ public class FormattedPropertyLink extends TextPropertyLink {
 
   /** {@inheritDoc} */
   @Override
-  protected void addValidator(final JTextComponent textComponent, final EntityEditModel editModel) {
+  protected void addValidator(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel) {
     final Color defaultTextFieldBackground = textComponent.getBackground();
-    final Color invalidBackgroundColor = (Color) Configuration.getValue(Configuration.INVALID_VALUE_BACKGROUND_COLOR);
+    final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
     final String maskString = textComponent.getText();
     textComponent.getDocument().addDocumentListener(new DocumentListener() {
@@ -103,18 +102,17 @@ public class FormattedPropertyLink extends TextPropertyLink {
       }
       public void changedUpdate(final DocumentEvent e) {}
     });
-    editModel.getPropertyChangeEvent(getProperty().getPropertyID()).addListener(new Property.Listener() {
-      @Override
-      protected void propertyChanged(final Property.Event e) {
+    editModel.getPropertyChangeEvent(getKey()).addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
         updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
       }
     });
   }
 
-  private void updateValidityInfo(final JTextComponent textComponent, final EntityEditModel editModel,
+  private void updateValidityInfo(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
                                   final String maskString, final Color validBackground, final Color invalidBackground,
                                   final String defaultToolTip) {
-    final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && getProperty().isNullable());
+    final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && isNullable());
     final String validationMessage = getValidationMessage(editModel);
     textComponent.setBackground(validInput && validationMessage == null ? validBackground : invalidBackground);
     textComponent.setToolTipText(validationMessage == null ? defaultToolTip :

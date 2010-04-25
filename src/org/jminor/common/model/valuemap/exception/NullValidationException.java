@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model.exception;
-
-import org.jminor.framework.domain.Property;
+package org.jminor.common.model.valuemap.exception;
 
 /**
  * User: Björn Darri<br>
@@ -12,7 +10,7 @@ import org.jminor.framework.domain.Property;
  */
 public class NullValidationException extends ValidationException {
 
-  public NullValidationException(final Property property, final String message) {
-    super(property, null, message);
+  public NullValidationException(final Object key, final String message) {
+    super(key, null, message);
   }
 }

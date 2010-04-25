@@ -3,8 +3,8 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.LogEntry;
+import org.jminor.common.model.formats.DateFormats;
 
 import java.io.Serializable;
 import java.text.DateFormat;

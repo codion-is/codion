@@ -5,15 +5,17 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.State;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
-import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import static org.junit.Assert.*;
@@ -101,14 +103,15 @@ public class EntityEditModelTest {
     //test validation
     try {
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
-      editModel.validate(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), EntityEditModel.INSERT);
+      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, ChangeValueMapEditModel.INSERT);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {
-      assertEquals(EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_COMMISSION), e.getProperty());
+      assertEquals(EmpDept.EMPLOYEE_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
-      assertEquals("Validation message should fit", "'" + e.getProperty() + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + e.getProperty().getMin(), e.getMessage());
+      final Property property = EntityRepository.getProperty(EmpDept.T_EMPLOYEE, (String) e.getKey());
+      assertEquals("Validation message should fit", "'" + property + "' " +
+              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }
 
     editModel.clear();

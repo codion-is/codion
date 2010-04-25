@@ -12,9 +12,8 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
-import org.jminor.common.ui.ChangeValueMapEditPanel;
-import org.jminor.common.ui.ChangeValueMapPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -30,12 +29,13 @@ import org.jminor.common.ui.input.InputProvider;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.input.IntInputProvider;
 import org.jminor.common.ui.input.TextInputProvider;
+import org.jminor.common.ui.valuemap.ChangeValueMapEditPanel;
+import org.jminor.common.ui.valuemap.ChangeValueMapPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyValueListProvider;
-import org.jminor.framework.client.model.exception.ValidationException;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
 import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
@@ -362,7 +362,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
-   * @see ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
+   * @see org.jminor.common.ui.valuemap.ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
    */
   public EntityTablePanel getTablePanel() {
     return (EntityTablePanel) super.getTablePanel();
@@ -586,10 +586,9 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
 
   public void handleException(final Throwable throwable) {
     if (throwable instanceof ValidationException) {
-      final Property property = ((ValidationException) throwable).getProperty();
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
-      getEditPanel().selectControl(property.getPropertyID());
+      getEditPanel().selectControl((String) ((ValidationException) throwable).getKey());
     }
     else {
       handleException(throwable, this);

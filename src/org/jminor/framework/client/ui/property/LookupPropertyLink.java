@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.client.ui.property;
 
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.common.ui.valuemap.AbstractValueMapPropertyLink;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * A class for linking an EntityLookupModel to a EntityEditModel foreign key property value.
  */
-public class LookupPropertyLink extends AbstractEntityPropertyLink {
+public class LookupPropertyLink extends AbstractValueMapPropertyLink<String, Object> {
 
   private final EntityLookupModel lookupModel;
 
@@ -27,9 +28,9 @@ public class LookupPropertyLink extends AbstractEntityPropertyLink {
    * @param editModel the EntityEditModel instance
    * @param foreignKeyProperty the foreign key property to link
    */
-  public LookupPropertyLink(final EntityLookupModel lookupModel, final EntityEditModel editModel,
+  public LookupPropertyLink(final EntityLookupModel lookupModel, final ChangeValueMapEditModel<String, Object> editModel,
                             final Property.ForeignKeyProperty foreignKeyProperty) {
-    super(editModel, foreignKeyProperty, LinkType.READ_WRITE);
+    super(editModel, foreignKeyProperty.getPropertyID(), LinkType.READ_WRITE);
     this.lookupModel = lookupModel;
     updateUI();
     lookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {

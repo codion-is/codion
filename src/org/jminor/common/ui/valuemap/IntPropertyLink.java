@@ -1,22 +1,21 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.domain.Property;
 
 /**
- * A class for linking a IntField to a EntityEditModel int property value.
+ * A class for linking a IntField to a ChangeValueMapEditModel int key value.
  */
 public class IntPropertyLink extends TextPropertyLink {
 
-  public IntPropertyLink(final IntField textField, final EntityEditModel editModel, final Property property,
-                         final boolean immediateUpdate, final LinkType linkType) {
-    super(textField, editModel, property, immediateUpdate, linkType);
+  public IntPropertyLink(final IntField textField, final ChangeValueMapEditModel<String, Object> editModel,
+                         final String key, final boolean immediateUpdate, final LinkType linkType) {
+    super(textField, editModel, key, immediateUpdate, linkType);
   }
 
   /** {@inheritDoc} */

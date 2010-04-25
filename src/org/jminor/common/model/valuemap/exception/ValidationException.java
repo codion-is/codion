@@ -1,30 +1,28 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model.exception;
-
-import org.jminor.framework.domain.Property;
+package org.jminor.common.model.valuemap.exception;
 
 /**
  * An exception used to indicate an invalid property value.
  */
 public class ValidationException extends Exception {
 
-  private final Property property;
+  private final Object key;
   private final Object value;
 
   public ValidationException(final String message) {
     this(null, null, message);
   }
 
-  public ValidationException(final Property property, final Object value, final String message) {
+  public ValidationException(final Object key, final Object value, final String message) {
     super(message);
-    this.property = property;
+    this.key = key;
     this.value = value;
   }
 
-  public Property getProperty() {
-    return property;
+  public Object getKey() {
+    return key;
   }
 
   public Object getValue() {

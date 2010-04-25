@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
+
+  /**
+   * Code for the insert action, used during validation
+   */
+  public static final int INSERT = 1;
+
+  /**
+   * Code for the update action, used during validation
+   */
+  public static final int UPDATE = 2;
+
+  /**
+   * Code for an unknown action, used during validation
+   */
+  public static final int UNKNOWN = 3;
 
   private final ChangeValueMap<T, V> valueMap;
   private final Event evtEntityChanged = new Event();
@@ -71,9 +87,63 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
   }
 
   /**
+   * Returns true if the given value is valid for the given property, using the <code>validate</code> method
+   * @param key the key
+   * @param action describes the action requiring validation,
+   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * @return true if the value is valid
+   * @see #validate(Object, int)
+   * @see #validate(ChangeValueMap, String, int)
+   */
+  public boolean isValid(final T key, final int action) {
+    try {
+      validate(key, action);
+      return true;
+    }
+    catch (ValidationException e) {
+      return false;
+    }
+  }
+
+  /**
    * @return a value map containing the default values
    */
   public abstract ChangeValueMap<T, V> getDefaultValueMap();
+
+  /**
+   * @param value the value
+   * @return true it the value is or represents null
+   */
+  public abstract boolean isNull(final T key, final V value);
+
+  /**
+   * @return true if this value is allowed to be null
+   */
+  public abstract boolean isNullable(final T key);
+
+  /**
+   * Checks if the value of the given property is valid, throws a ValidationException if not,
+   * this default implementation performs a null value validation if the corresponding configuration parameter is set
+   * @param key the key
+   * @param action describes the action requiring validation,
+   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given property
+   * @see org.jminor.framework.domain.Property#setNullable(boolean)
+   * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
+   */
+  public abstract void validate(final T key, final int action) throws ValidationException;  /**
+
+   * Checks if the value of the given property is valid, throws a ValidationException if not,
+   * this default implementation performs a null value validation if the corresponding configuration parameter is set
+   * @param entity the entity to validate
+   * @param propertyID the propertyID
+   * @param action describes the action requiring validation,
+   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * @throws ValidationException if the given value is not valid for the given property
+   * @see org.jminor.framework.domain.Property#setNullable(boolean)
+   * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
+   */
+  public abstract void validate(final ChangeValueMap<T, V> entity, final String propertyID, final int action) throws ValidationException;
 
   /**
    * @param key the key for which to retrieve the event

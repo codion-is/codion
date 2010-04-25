@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model.exception;
-
-import org.jminor.framework.domain.Property;
+package org.jminor.common.model.valuemap.exception;
 
 /**
  * User: Björn Darri<br>
@@ -12,7 +10,7 @@ import org.jminor.framework.domain.Property;
  */
 public class RangeValidationException extends ValidationException {
 
-  public RangeValidationException(final Property property, final Object value, final String message) {
-    super(property, value, message);
+  public RangeValidationException(final Object key, final Object value, final String message) {
+    super(key, value, message);
   }
 }

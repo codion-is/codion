@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.domain.Property;
 
 import javax.swing.ButtonModel;
 import java.awt.event.ItemEvent;
@@ -14,16 +13,18 @@ import java.awt.event.ItemListener;
 /**
  * A class for linking a UI component to a boolean value.
  */
-public class BooleanPropertyLink extends AbstractEntityPropertyLink {
+public class BooleanPropertyLink extends AbstractValueMapPropertyLink<String, Object> {
 
   private final ButtonModel buttonModel;
 
-  public BooleanPropertyLink(final ButtonModel buttonModel, final EntityEditModel editModel, final Property property) {
-    this(buttonModel, editModel, property, LinkType.READ_WRITE);
+  public BooleanPropertyLink(final ButtonModel buttonModel, final ChangeValueMapEditModel<String, Object> editModel,
+                             final String key) {
+    this(buttonModel, editModel, key, LinkType.READ_WRITE);
   }
 
-  public BooleanPropertyLink(final ButtonModel buttonModel, final EntityEditModel editModel, final Property property, final LinkType linkType) {
-    super(editModel, property, linkType);
+  public BooleanPropertyLink(final ButtonModel buttonModel, final ChangeValueMapEditModel<String, Object> editModel,
+                             final String key, final LinkType linkType) {
+    super(editModel, key, linkType);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
       public void itemStateChanged(final ItemEvent e) {
