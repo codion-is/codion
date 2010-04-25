@@ -724,7 +724,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
    * @return the TableCellRenderer
    */
   protected TableCellRenderer initializeTableCellRenderer() {
-    return new EntityTableCellRenderer(getTableModel());
+    return new EntityTableCellRenderer(getTableModel(), EntityRepository.isRowColoring(getTableModel().getEntityID()));
   }
 
   /**
@@ -754,6 +754,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
   /**
    * Initializes the JTable instance
    * @return the JTable instance
+   * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
    * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
   protected JTable initializeJTable() {
