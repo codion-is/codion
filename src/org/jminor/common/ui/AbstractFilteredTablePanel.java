@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui;
 
-import org.jminor.common.model.table.AbstractFilteredTableModel;
+import org.jminor.common.model.AbstractFilteredTableModel;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

@@ -3,9 +3,9 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.ChangeValueMapModel;
-import org.jminor.common.model.table.AbstractFilteredTableModel;
 
 import javax.swing.JPanel;
 

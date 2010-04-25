@@ -1415,3 +1415,5 @@
   ChangeValueMapPanel refactored from EntityPanel
   ChangeValueMapEditPanel refactored from EntityEditPanel
   AbstractFilteredTablePanel refactored from EntityTablePanel
+  AbstractFilteredTableModel moved from common.model.table to common.model
+  TableSorter moved from common.model.table to common.model

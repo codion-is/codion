@@ -5,10 +5,10 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.framework.client.model.reporting.EntityJRDataSource;
 import org.jminor.framework.db.EntityDb;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;

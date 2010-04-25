@@ -4,12 +4,10 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DbException;
-import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.ChangeValueMapModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -25,8 +23,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.log4j.Logger;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -431,14 +427,14 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
   /**
    * @return the EntityTableModel used by this EntityModel
    */
-  protected AbstractFilteredTableModel initializeTableModel() {
+  protected EntityTableModel initializeTableModel() {
     return new EntityTableModel(getEntityID(), this);
   }
 
   /**
    * @return the EntityEditModel used by this EntityModel
    */
-  protected ChangeValueMapEditModel initializeEditModel() {
+  protected EntityEditModel initializeEditModel() {
     return includeTableModel ? new EntityEditModel(getEntityID(), this) : null;
   }
 
@@ -616,22 +612,6 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
     getTableModel().eventSelectionChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         updateDetailModelsByActiveEntity();
-      }
-    });
-
-    getTableModel().eventSelectedIndexChanged().addListener(new ActionListener() {
-      public void actionPerformed(final ActionEvent event) {
-        getEditModel().setValueMap(getTableModel().getSelectionModel().isSelectionEmpty() ? null : getTableModel().getSelectedItem());
-      }
-    });
-
-    getTableModel().addTableModelListener(new TableModelListener() {
-      public void tableChanged(final TableModelEvent event) {
-        //if the selected record is being updated via the table model refresh the one in the model
-        if (event.getType() == TableModelEvent.UPDATE && event.getFirstRow() == getTableModel().getSelectedIndex()) {
-          getEditModel().setValueMap(null);
-          getEditModel().setValueMap(getTableModel().getSelectedItem());
-        }
       }
     });
   }

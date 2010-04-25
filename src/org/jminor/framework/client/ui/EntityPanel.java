@@ -5,13 +5,13 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
-import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.ChangeValueMapEditPanel;
 import org.jminor.common.ui.ChangeValueMapPanel;
@@ -380,7 +380,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
-   * @see ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.table.AbstractFilteredTableModel)
+   * @see ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
    */
   public EntityTablePanel getTablePanel() {
     return (EntityTablePanel) super.getTablePanel();
@@ -1082,7 +1082,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
                                                     final String entityID) {
     return new EntityPanel(new EntityModel(entityID, dbProvider) {
       @Override
-      protected AbstractFilteredTableModel initializeTableModel() {
+      protected EntityTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider, false) {
           @Override
           protected List<Entity> performQuery(final Criteria criteria) {
@@ -1092,7 +1092,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
       }
     }, entityID, true, false, false, EMBEDDED) {
       @Override
-      protected ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+      protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
         return null;
       }
     }.initializePanel();

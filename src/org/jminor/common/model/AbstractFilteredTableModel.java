@@ -1,12 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.table;
-
-import org.jminor.common.model.Event;
-import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.State;
+package org.jminor.common.model;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;

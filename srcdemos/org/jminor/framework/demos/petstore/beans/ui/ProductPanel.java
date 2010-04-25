@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.model.ChangeValueMapEditModel;
-import org.jminor.common.ui.ChangeValueMapEditPanel;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -36,7 +35,7 @@ public class ProductPanel extends EntityPanel {
   }
 
   @Override
-  protected ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+  protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
     return new EntityEditPanel((EntityEditModel) editModel) {
       @Override
       protected void initializeUI() {

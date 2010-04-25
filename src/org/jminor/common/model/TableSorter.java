@@ -29,9 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.jminor.common.model.table;
-
-import org.jminor.common.model.Event;
+package org.jminor.common.model;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;

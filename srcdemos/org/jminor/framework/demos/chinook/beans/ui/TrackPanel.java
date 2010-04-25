@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.common.model.ChangeValueMapEditModel;
-import org.jminor.common.ui.ChangeValueMapEditPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -30,7 +29,7 @@ public class TrackPanel extends EntityPanel {
   }
 
   @Override
-  protected ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+  protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
     return new EntityEditPanel((EntityEditModel) editModel) {
       @Override
       protected void initializeUI() {
