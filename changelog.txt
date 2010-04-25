@@ -1410,3 +1410,8 @@
   ChangeValueMapEditModel.defaultValueMap field removed
   Entity.getDefaultEntity() renamed to getDefaultValueMap(), overriding
   ChangeValueMapModel.getOriginalValueKeys() bug fixed, did not check for null
+  ChangeValueMapModel renamed to ChangeValueMapImpl
+  ChangeValueMapModel refactored from EntityModel
+  ChangeValueMapPanel refactored from EntityPanel
+  ChangeValueMapEditPanel refactored from EntityEditPanel
+  AbstractFilteredTablePanel refactored from EntityTablePanel

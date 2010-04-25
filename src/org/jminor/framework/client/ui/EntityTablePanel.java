@@ -9,6 +9,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlFactory;
@@ -17,11 +18,11 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.client.model.PropertySearchModel;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -84,7 +85,7 @@ import java.util.Map;
  * </pre>
  * The search and summary panels can be hidden
  */
-public class EntityTablePanel extends JPanel {
+public class EntityTablePanel extends AbstractFilteredTablePanel {
 
   public static final char FILTER_INDICATOR = '*';
 
@@ -93,24 +94,9 @@ public class EntityTablePanel extends JPanel {
   private final Event evtSummaryPanelVisibilityChanged = new Event();
 
   /**
-   * the EntityTableModel instance used by this EntityTablePanel
-   */
-  private final EntityTableModel tableModel;
-
-  /**
-   * the JTable for showing the underlying entities
-   */
-  private final JTable entityTable;
-
-  /**
    * Contains columns that have been hidden
    */
   private final List<TableColumn> hiddenColumns = new ArrayList<TableColumn>();
-
-  /**
-   * the scroll pane used by the JTable instance
-   */
-  private final JScrollPane tableScrollPane;
 
   /**
    * the horizontal table scroll bar
@@ -168,6 +154,11 @@ public class EntityTablePanel extends JPanel {
   private Action tableDoubleClickAction;
 
   /**
+   * true if each row should be colored according to the underlying entity
+   */
+  private final boolean rowColoring;
+
+  /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param popupControls a ControlSet on which the table popup menu is based
@@ -184,11 +175,8 @@ public class EntityTablePanel extends JPanel {
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
                           final boolean rowColoring) {
-    if (tableModel == null)
-      throw new IllegalArgumentException("EntityTablePanel can not be constructed without a EntityTableModel instance");
-    this.tableModel = tableModel;
-    this.entityTable = initializeJTable(rowColoring);
-    this.tableScrollPane = new JScrollPane(entityTable);
+    super(tableModel);
+    this.rowColoring = rowColoring;
     this.searchPanel = initializeSearchPanel();
     this.summaryPanel = initializeSummaryPanel();
     this.propertyFilterPanels = initializeFilterPanels();
@@ -196,13 +184,6 @@ public class EntityTablePanel extends JPanel {
     bindEventsInternal();
     bindEvents();
     updateStatusMessage();
-  }
-
-  /**
-   * @return the JTable instance used by this EntityTablePanel
-   */
-  public JTable getJTable() {
-    return entityTable;
   }
 
   /**
@@ -216,7 +197,7 @@ public class EntityTablePanel extends JPanel {
    * @return the EntityTableModel used by this EntityTablePanel
    */
   public EntityTableModel getTableModel() {
-    return tableModel;
+    return (EntityTableModel) super.getTableModel();
   }
 
   /**
@@ -277,7 +258,7 @@ public class EntityTablePanel extends JPanel {
       }
       else {
         summaryBasePanel.remove(horizontalTableScrollBar);
-        tableScrollPane.setHorizontalScrollBar(horizontalTableScrollBar);
+        getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
       }
 
       revalidate();
@@ -533,7 +514,7 @@ public class EntityTablePanel extends JPanel {
       searchScrollPane = new JScrollPane(searchPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
       if (searchPanel instanceof EntityTableSearchPanel)
-        searchScrollPane.getHorizontalScrollBar().setModel(tableScrollPane.getHorizontalScrollBar().getModel());
+        searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
       base.add(searchScrollPane, BorderLayout.NORTH);
     }
 
@@ -561,6 +542,7 @@ public class EntityTablePanel extends JPanel {
     popupControls.add(new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl()));
     setTablePopupMenu(getJTable(), popupControls);
 
+    final JScrollPane tableScrollPane = getTableScrollPane();
     base.add(tableScrollPane, BorderLayout.CENTER);
     add(base, BorderLayout.CENTER);
     if (summaryPanel != null) {
@@ -789,11 +771,10 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes the JTable instance
-   * @param rowColoring if true then the JTable should paint each row according to the underlying entity
    * @return the JTable instance
    * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
-  protected JTable initializeJTable(final boolean rowColoring) {
+  protected JTable initializeJTable() {
     final TableColumnModel columnModel = getTableModel().getColumnModel();
     final JTable table = new JTable(getTableModel().getTableSorter(), columnModel, getTableModel().getSelectionModel());
     final TableCellRenderer tableCellRenderer = initializeTableCellRenderer(rowColoring);
@@ -816,7 +797,7 @@ public class EntityTablePanel extends JPanel {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
         label.setFont(getTableModel().getSearchModel().isSearchEnabled(
-                tableModel.getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
+                getTableModel().getColumnProperty(column).getPropertyID()) ? searchFont : defaultFont);
 
         return label;
       }
@@ -948,7 +929,7 @@ public class EntityTablePanel extends JPanel {
       if (entity != null) {
         final JPopupMenu popupMenu = new JPopupMenu();
         populateEntityMenu(popupMenu, entity.getCopy(), getTableModel().getDbProvider());
-        popupMenu.show(tableScrollPane, location.x, (int) location.getY() - (int) tableScrollPane.getViewport().getViewPosition().getY());
+        popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
       }
     }
     catch (Exception e) {

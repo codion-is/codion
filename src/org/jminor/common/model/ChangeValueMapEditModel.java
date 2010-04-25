@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ChangeValueMapEditModel<T, V> {
+public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
 
   private final ChangeValueMap<T, V> valueMap;
   private final Event evtEntityChanged = new Event();

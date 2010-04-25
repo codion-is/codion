@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.ChangeValueMap;
-import org.jminor.common.model.ChangeValueMapModel;
+import org.jminor.common.model.ChangeValueMapImpl;
 import org.jminor.common.model.Event;
 
 import java.awt.Color;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
  */
-public final class Entity extends ChangeValueMapModel<String, Object> implements Serializable, Comparable<Entity> {
+public final class Entity extends ChangeValueMapImpl<String, Object> implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -841,7 +841,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
   /**
    * A class representing column key objects for entities, contains the values for those columns
    */
-  public static class Key extends ChangeValueMapModel<String, Object> implements Serializable {
+  public static class Key extends ChangeValueMapImpl<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -1117,7 +1117,7 @@ public final class Entity extends ChangeValueMapModel<String, Object> implements
     }
   }
 
-  private class ForeignKeys extends ChangeValueMapModel<String, Entity> {
+  private class ForeignKeys extends ChangeValueMapImpl<String, Entity> {
     @Override
     public ActionEvent getValueChangeEvent(final String key, final Entity newValue, final Entity oldValue, final boolean initialization) {
       return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);

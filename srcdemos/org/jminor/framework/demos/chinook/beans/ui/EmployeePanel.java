@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
+import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.ui.ChangeValueMapEditPanel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -31,8 +33,8 @@ public class EmployeePanel extends EntityPanel {
   }
 
   @Override
-  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
-    return new EntityEditPanel(editModel) {
+  protected ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+    return new EntityEditPanel((EntityEditModel) editModel) {
       @Override
       protected void initializeUI() {
         final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);

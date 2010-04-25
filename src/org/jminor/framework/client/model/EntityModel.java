@@ -4,10 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DbException;
+import org.jminor.common.model.ChangeValueMapEditModel;
+import org.jminor.common.model.ChangeValueMapModel;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -35,7 +37,7 @@ import java.util.Map;
 /**
  * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
  */
-public class EntityModel implements Refreshable {
+public class EntityModel extends ChangeValueMapModel<String, Object> implements EntityDbProvider {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
@@ -56,14 +58,9 @@ public class EntityModel implements Refreshable {
   private final EntityDbProvider dbProvider;
 
   /**
-   * The EntityEditModel instance
+   * True if this EntityModel should contain a table model
    */
-  private final EntityEditModel editModel;
-
-  /**
-   * The table model
-   */
-  private final EntityTableModel tableModel;
+  private final boolean includeTableModel;
 
   /**
    * Holds the detail EntityModels used by this EntityModel
@@ -112,8 +109,7 @@ public class EntityModel implements Refreshable {
       throw new IllegalArgumentException("dbProvider can not be null");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.editModel = initializeEditModel();
-    this.tableModel = includeTableModel ? initializeTableModel() : null;
+    this.includeTableModel = includeTableModel;
     addDetailModels();
     initializeAssociatedModels();
     bindEventsInternal();
@@ -136,6 +132,14 @@ public class EntityModel implements Refreshable {
     return dbProvider;
   }
 
+  public void disconnect() {
+    dbProvider.disconnect();
+  }
+
+  public String getDescription() {
+    return dbProvider.getDescription();
+  }
+
   /**
    * Returns the EntityDb connection, the instance returned by this
    * method should not be viewed as long lived since it does not survive
@@ -143,7 +147,7 @@ public class EntityModel implements Refreshable {
    * @return the database connection
    */
   public EntityDb getEntityDb() {
-    return getDbProvider().getEntityDb();
+    return dbProvider.getEntityDb();
   }
 
   /**
@@ -204,21 +208,14 @@ public class EntityModel implements Refreshable {
    * @return the EntityEditor instance used by this EntityModel
    */
   public EntityEditModel getEditModel() {
-    return editModel;
+    return (EntityEditModel) super.getEditModel();
   }
 
   /**
    * @return the EntityTableModel, null if none is specified
    */
   public EntityTableModel getTableModel() {
-    return tableModel;
-  }
-
-  /**
-   * @return true if this EntityModel contains a EntityTableModel
-   */
-  public boolean containsTableModel() {
-    return getTableModel() != null;
+    return (EntityTableModel) super.getTableModel();
   }
 
   /**
@@ -319,7 +316,7 @@ public class EntityModel implements Refreshable {
    * @throws JRException in case of a report exception
    */
   public JasperPrint fillJdbcReport(final String reportPath, final Map reportParameters) throws JRException {
-    return EntityReportUtil.fillJdbcReport(getDbProvider().getEntityDb(), reportPath, reportParameters);
+    return EntityReportUtil.fillJdbcReport(getEntityDb(), reportPath, reportParameters);
   }
 
   /**
@@ -362,10 +359,7 @@ public class EntityModel implements Refreshable {
       log.trace(this + " refreshing");
       isRefreshing = true;
       evtRefreshStarted.fire();
-      if (tableModel != null)
-        tableModel.refresh();
-
-      getEditModel().refreshComboBoxModels();
+      super.refresh();
       if (isCascadeRefresh())
         refreshDetailModels();
 
@@ -437,15 +431,15 @@ public class EntityModel implements Refreshable {
   /**
    * @return the EntityTableModel used by this EntityModel
    */
-  protected EntityTableModel initializeTableModel() {
-    return new EntityTableModel(getEntityID(), getDbProvider());
+  protected AbstractFilteredTableModel initializeTableModel() {
+    return new EntityTableModel(getEntityID(), this);
   }
 
   /**
-   * @return the EntityEditMOdel used by this EntityModel
+   * @return the EntityEditModel used by this EntityModel
    */
-  protected EntityEditModel initializeEditModel() {
-    return new EntityEditModel(getEntityID(), getDbProvider());
+  protected ChangeValueMapEditModel initializeEditModel() {
+    return includeTableModel ? new EntityEditModel(getEntityID(), this) : null;
   }
 
   /**

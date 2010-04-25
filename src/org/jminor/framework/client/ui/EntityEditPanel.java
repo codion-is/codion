@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.State;
+import org.jminor.common.ui.ChangeValueMapEditPanel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -26,80 +27,26 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A UI component based on the EntityEditModel.
  * @see EntityEditModel
  */
-public abstract class EntityEditPanel extends JPanel {
-
-  private final EntityEditModel model;
-  private final Map<String, JComponent> controls = new HashMap<String, JComponent>();
-
-  /**
-   * The component that should receive focus when the UI is prepared for a new record
-   */
-  private JComponent defaultFocusComponent;
+public abstract class EntityEditPanel extends ChangeValueMapEditPanel {
 
   /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel
    * @param editModel the EntityEditModel instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final EntityEditModel editModel) {
-    this.model = editModel;
+    super(editModel);
     initializeUI();
     bindEvents();
   }
 
-  /**
-   * @return the EntityEditModel instance to bind controls to
-   */
+  @Override
   public EntityEditModel getEditModel() {
-    return model;
-  }
-
-  /**
-   * Sets the component that should receive the focus when the UI is initialized after
-   * a new record has been inserted or the panel is activated
-   * @param defaultFocusComponent the component
-   * @return the component
-   */
-  public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
-    return this.defaultFocusComponent = defaultFocusComponent;
-  }
-
-  public void setDefaultFocus() {
-    final JComponent defaultFocusComponent = getDefaultFocusComponent();
-    if (defaultFocusComponent == null)
-      requestFocusInWindow();
-    else
-      defaultFocusComponent.requestFocusInWindow();
-  }
-
-  public void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
-    if (clearUI)
-      getEditModel().clear();
-    if (requestDefaultFocus && isVisible())
-      setDefaultFocus();
-  }
-
-  public void selectControl(final Property property) {
-    if (controls.containsKey(property.getPropertyID()))
-      controls.get(property.getPropertyID()).requestFocusInWindow();
-  }
-
-  /**
-   * Associates the given input component with the given property, this should
-   * be called for all controls
-   * @param propertyID the propertyID
-   * @param component the input control
-   */
-  protected void setControl(final String propertyID, final JComponent component) {
-    if (controls.containsKey(propertyID))
-      throw new RuntimeException("Control already set for property: " + propertyID);
-    controls.put(propertyID, component);
+    return (EntityEditModel) super.getEditModel();
   }
 
   /**
@@ -111,10 +58,6 @@ public abstract class EntityEditPanel extends JPanel {
    * Performs event binding, for overriding
    */
   protected void bindEvents() {}
-
-  protected JComponent getDefaultFocusComponent() {
-    return defaultFocusComponent;
-  }
 
   /**
    * Creates a panel containing a label and the given component.

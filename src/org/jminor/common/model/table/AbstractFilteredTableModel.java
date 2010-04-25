@@ -5,6 +5,7 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 
 import javax.swing.DefaultListSelectionModel;
@@ -33,7 +34,8 @@ import java.util.ListIterator;
  * Date: 18.4.2010<br>
  * Time: 09:48:07<br>
  */
-public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel implements FilterCriteria<T> {
+public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
+        implements FilterCriteria<T>, Refreshable {
 
   private final Event evtFilteringStarted = new Event();
   private final Event evtFilteringDone = new Event();

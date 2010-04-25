@@ -6,12 +6,12 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.ChangeValueMap;
 import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.ChangeValueMap;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
@@ -447,6 +447,10 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
       performNullValidation(entity, property, action);
     if (property.isNumerical())
       performRangeValidation(entity, property);
+  }
+
+  public void refresh() {
+    refreshComboBoxModels();
   }
 
   /**

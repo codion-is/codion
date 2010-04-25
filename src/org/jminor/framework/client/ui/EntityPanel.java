@@ -7,9 +7,14 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.AggregateState;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.ChangeValueMapEditModel;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
+import org.jminor.common.model.table.AbstractFilteredTableModel;
+import org.jminor.common.ui.AbstractFilteredTablePanel;
+import org.jminor.common.ui.ChangeValueMapEditPanel;
+import org.jminor.common.ui.ChangeValueMapPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -70,7 +75,7 @@ import java.util.*;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  */
-public abstract class EntityPanel extends JPanel implements ExceptionHandler {
+public abstract class EntityPanel extends ChangeValueMapPanel implements ExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
 
@@ -134,16 +139,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   private final String caption;
 
   /**
-   * The EntityModel instance used by this EntityPanel
-   */
-  private final EntityModel model;
-
-  /**
-   * The EntityTablePanel instance used by this EntityPanel
-   */
-  private final EntityTablePanel entityTablePanel;
-
-  /**
    * A List containing the detail panels, if any
    */
   private final List<EntityPanel> detailEntityPanels;
@@ -152,11 +147,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * The edit panel which contains the controls required for editing a entity
    */
   private JPanel editControlPanel;
-
-  /**
-   * The EntityEditPanel instance
-   */
-  private EntityEditPanel editPanel;
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -189,6 +179,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * The dialog used when the edit panel is undocked
    */
   private JDialog editPanelDialog;
+
+  private final boolean rowColoring;
 
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
@@ -296,20 +288,17 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
                      final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState,
                      final boolean compactDetailLayout) {
-    if (model == null)
-      throw new IllegalArgumentException("Can not construct a EntityPanel without a EntityModel instance");
+    super(model);
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE))
       activeStateGroup.addState(stActive);
-    this.model = model;
     this.caption = caption;
+    this.rowColoring = rowColoring;
     this.refreshOnInit = refreshOnInit;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
     this.detailEntityPanels = new ArrayList<EntityPanel>(initializeDetailPanels());
     this.compactDetailLayout = compactDetailLayout && this.detailEntityPanels.size() > 0;
     setupControls();
-    this.entityTablePanel = model.containsTableModel() ? initializeTablePanel(model.getTableModel(),
-            getTablePopupControlSet(), rowColoring) : null;
     this.stActive.eventStateChanged().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent event) {
         if (isActive()) {
@@ -322,11 +311,15 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     });
   }
 
+  protected AbstractFilteredTablePanel initializeTablePanel(final AbstractFilteredTableModel tableModel) {
+    return new EntityTablePanel((EntityTableModel) tableModel, getTablePopupControlSet(), rowColoring);
+  }
+
   /**
    * @return the EntityModel
    */
   public EntityModel getModel() {
-    return model;
+    return (EntityModel) super.getModel();
   }
 
   /**
@@ -387,10 +380,10 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
-   * @see #initializeTablePanel(org.jminor.framework.client.model.EntityTableModel, org.jminor.common.ui.control.ControlSet, boolean)
+   * @see ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.table.AbstractFilteredTableModel)
    */
   public EntityTablePanel getTablePanel() {
-    return entityTablePanel;
+    return (EntityTablePanel) super.getTablePanel();
   }
 
   /**
@@ -399,14 +392,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   public JPanel getEditControlPanel() {
     return editControlPanel;
-  }
-
-  /**
-   * @return the edit panel
-   * @see #initializeEditPanel(org.jminor.framework.client.model.EntityEditModel)
-   */
-  public EntityEditPanel getEditPanel() {
-    return editPanel;
   }
 
   /**
@@ -586,8 +571,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     if (!isPanelInitialized())
       return;
 
-    if (entityTablePanel != null)
-      entityTablePanel.setFilterPanelsVisible(value);
+    if (getTablePanel() != null)
+      getTablePanel().setFilterPanelsVisible(value);
     for (final EntityPanel detailEntityPanel : detailEntityPanels)
       detailEntityPanel.setFilterPanelsVisible(value);
   }
@@ -622,7 +607,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       final Property property = ((ValidationException) throwable).getProperty();
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
-      getEditPanel().selectControl(property);
+      getEditPanel().selectControl(property.getPropertyID());
     }
     else {
       handleException(throwable, this);
@@ -833,8 +818,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * Prints the table if one is available
    */
   public void printTable() {
-    if (entityTablePanel != null)
-      entityTablePanel.printTable();
+    if (getTablePanel() != null)
+      getTablePanel().printTable();
   }
 
   /**
@@ -867,7 +852,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * @see EntityEditPanel#setDefaultFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
-    final EntityEditPanel editPanel = getEditPanel();
+    final ChangeValueMapEditPanel editPanel = getEditPanel();
     if (editPanel != null) {
       editPanel.prepareUI(requestDefaultFocus, clearUI);
     }
@@ -1097,7 +1082,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
                                                     final String entityID) {
     return new EntityPanel(new EntityModel(entityID, dbProvider) {
       @Override
-      protected EntityTableModel initializeTableModel() {
+      protected AbstractFilteredTableModel initializeTableModel() {
         return new EntityTableModel(entityID, dbProvider, false) {
           @Override
           protected List<Entity> performQuery(final Criteria criteria) {
@@ -1107,7 +1092,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       }
     }, entityID, true, false, false, EMBEDDED) {
       @Override
-      protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+      protected ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
         return null;
       }
     }.initializePanel();
@@ -1193,6 +1178,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   protected void initializeUI() {
     editControlPanel = initializeEditControlPanel();
+    final EntityTablePanel entityTablePanel = getTablePanel();
     if (entityTablePanel != null) {
       entityTablePanel.initializeSouthPanelToolBar(getTablePanelControlSet(entityTablePanel));
       entityTablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
@@ -1282,8 +1268,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * returns null then by default this method returns null as well
    */
   protected JPanel initializeEditControlPanel() {
-    editPanel = initializeEditPanel(getEditModel());
-    if (editPanel == null)
+    if (getEditPanel() == null)
       return null;
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
@@ -1292,7 +1277,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     final JPanel propertyBase =
             new JPanel(new FlowLayout(buttonPlacement.equals(BorderLayout.SOUTH) ? FlowLayout.CENTER : FlowLayout.LEADING,5,5));
     panel.addMouseListener(new ActivationFocusAdapter(propertyBase));
-    propertyBase.add(editPanel);
+    propertyBase.add(getEditPanel());
     panel.add(propertyBase, BorderLayout.CENTER);
     final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
             initializeControlToolBar() : initializeControlPanel();
@@ -1428,27 +1413,6 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   protected List<EntityPanelProvider> getDetailPanelProviders() {
     return new ArrayList<EntityPanelProvider>(0);
-  }
-
-  /**
-   * Initializes the EntityEditPanel, that is, the panel containing the UI controls for editing the active entity,
-   * this method should return null if editing is not required
-   * @param editModel the EntityEditModel
-   * @return the EntityEditPanel panel
-   */
-  protected abstract EntityEditPanel initializeEditPanel(final EntityEditModel editModel);
-
-  /**
-   * Initializes the EntityTablePanel instance using the EntityTableModel instance
-   * provided by the getTableModel() method in the underlying EntityModel
-   * @param tableModel the EntityTableModel
-   * @param popupMenuControlSet the ControlSet to use when creating the popup menu for the EntityTablePanel
-   * @param rowColoring true if the a table row should be colored according to the underlying entity
-   * @return the EntityTablePanel
-   */
-  protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel, final ControlSet popupMenuControlSet,
-                                                  final boolean rowColoring) {
-    return new EntityTablePanel(tableModel, popupMenuControlSet, rowColoring);
   }
 
   /**
@@ -1659,11 +1623,11 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    * this method is called during initialization after the UI is initialized
    */
   protected void bindTablePanelEvents() {
-    if (entityTablePanel == null)
+    if (getTablePanel() == null)
       return;
 
     if (!getModel().getEditModel().isReadOnly() && getModel().getEditModel().isDeleteAllowed()) {
-      entityTablePanel.getJTable().addKeyListener(new KeyAdapter() {
+      getTablePanel().getJTable().addKeyListener(new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent event) {
           if (event.getKeyChar() == KeyEvent.VK_DELETE && !getModel().getTableModel().stateSelectionEmpty().isActive())
@@ -1673,7 +1637,7 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
     }
     getModel().eventEntitiesChanged().addListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        entityTablePanel.getJTable().repaint();
+        getTablePanel().getJTable().repaint();
       }
     });
   }
