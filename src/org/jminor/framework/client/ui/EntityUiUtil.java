@@ -34,7 +34,6 @@ import org.jminor.framework.client.ui.property.FormattedPropertyLink;
 import org.jminor.framework.client.ui.property.IntPropertyLink;
 import org.jminor.framework.client.ui.property.LookupPropertyLink;
 import org.jminor.framework.client.ui.property.TextPropertyLink;
-import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -427,8 +426,10 @@ public class EntityUiUtil {
         new DoublePropertyLink((DoubleField) textField, editModel, property, immediateUpdate, linkType);
         break;
       case DATE:
+        new DatePropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat, false);
+        break;
       case TIMESTAMP:
-        new DatePropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat);
+        new DatePropertyLink((JFormattedTextField) textField, editModel, property, linkType, dateFormat, true);
         break;
       default:
         throw new IllegalArgumentException("Not a text based property: " + property);
@@ -521,70 +522,6 @@ public class EntityUiUtil {
                                                        final boolean filterButtonTakesFocus) {
     return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
             filterButtonTakesFocus);
-  }
-
-  /**
-   * Populates the given root menu with the property values of the given entity
-   * @param rootMenu the menu to populate
-   * @param entity the entity
-   * @param dbProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
-   * @throws Exception in case of an exception
-   */
-  public static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) throws Exception {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(EntityRepository.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false)));
-  }
-
-  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
-    Util.collate(primaryKeyProperties);
-    for (final Property.PrimaryKeyProperty property : primaryKeyProperties)
-      rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
-  }
-
-  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider,
-                                             final List<Property.ForeignKeyProperty> fkProperties) throws Exception {
-    Util.collate(fkProperties);
-    for (final Property.ForeignKeyProperty property : fkProperties) {
-      final boolean fkValueNull = entity.isForeignKeyNull(property);
-      if (!fkValueNull) {
-        boolean queried = false;
-        Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
-        if (referencedEntity == null || !referencedEntity.isLoaded()) {
-          referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
-          entity.removeValue(property.getPropertyID());
-          entity.setValue(property.getPropertyID(), referencedEntity);
-          queried = true;
-        }
-        final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")
-                .append("] ").append(property.getCaption()).append(": ");
-        text.append(referencedEntity.toString());
-        final JMenu foreignKeyMenu = new JMenu(text.toString());
-        populateEntityMenu(foreignKeyMenu, entity.getEntityValue(property.getPropertyID()), dbProvider);
-        rootMenu.add(foreignKeyMenu);
-      }
-      else {
-        final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-        rootMenu.add(new JMenuItem(text.toString()));
-      }
-    }
-  }
-
-  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
-    Util.collate(properties);
-    for (final Property property : properties) {
-      if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
-        final String prefix = "[" + property.getPropertyType().toString().substring(0, 1)
-                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
-                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
-        final boolean longValue = value != null && value.length() > 20;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
-        if (longValue)
-          menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
-        rootMenu.add(menuItem);
-      }
-    }
   }
 
   private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,

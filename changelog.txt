@@ -1405,3 +1405,8 @@
   Fixed fetch depth issue
   EntityTablePanel.showEntityMenu now takes scrolling into account
   Entity.getRawValue() removed
+  DatePropertyLink.isTimestamp field added
+  EntityUiUtil.populateEntityMenu() and co. moved to EntityTablePanel to resolve an ugly dep. cycle
+  ChangeValueMapEditModel.defaultValueMap field removed
+  Entity.getDefaultEntity() renamed to getDefaultValueMap(), overriding
+  ChangeValueMapModel.getOriginalValueKeys() bug fixed, did not check for null

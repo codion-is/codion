@@ -702,13 +702,18 @@ public class UiUtil {
   }
 
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
-    addKeyEvent(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, keyEvent, 0, action);
+    addKeyEvent(component, keyEvent, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, 0, action);
   }
 
-  public static void addKeyEvent(final JComponent component, final int condition, final int keyEvent,
+  public static void addKeyEvent(final JComponent component, final int keyEvent, final int condition,
                                  final int modifiers, final Action action) {
+    addKeyEvent(component, keyEvent,  condition, modifiers, false, action);
+  }
+
+  public static void addKeyEvent(final JComponent component, final int keyEvent, final int condition,
+                                 final int modifiers, final boolean onKeyRelease, final Action action) {
     final Object name = action.getValue(Action.NAME);
-    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers), name);
+    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), name);
     component.getActionMap().put(name, action);
   }
 

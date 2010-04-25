@@ -11,6 +11,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.ChangeValueMap;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
@@ -101,7 +102,6 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
       throw new IllegalArgumentException("dbProvider is null");
     this.entityID = entityID;
     this.dbProvider = dbProvider;
-    this.setDefaultValueMap(getDefaultEntity());
     setValueMap(null);
     bindEventsInternal();
     bindEvents();
@@ -612,24 +612,19 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     return new EntityLookupModel(entityID, getDbProvider(), additionalSearchCriteria, lookupProperties);
   }
 
-  /**
-   * If this method is overridden then calling super.getDefaultEntity() would be proper
-   * @return the default entity for this EntityModel, it is set as active when no item is selected
-   * @see #getDefaultValue(org.jminor.framework.domain.Property)
-   */
-  public Entity getDefaultEntity() {
+  @Override
+  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
+                                         final boolean initialization) {
+    return Entity.createValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
+  }
+
+  public ChangeValueMap<String, Object> getDefaultValueMap() {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
         defaultEntity.setValue(property.getPropertyID(), getDefaultValue(property));
 
     return defaultEntity;
-  }
-
-  @Override
-  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                         final boolean initialization) {
-    return Entity.createValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
   }
 
   /**

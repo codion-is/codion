@@ -17,6 +17,7 @@ import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.ToggleBeanPropertyLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertyFilterModel;
@@ -627,13 +628,13 @@ public class EntityTablePanel extends JPanel {
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null)
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
-    UiUtil.addKeyEvent(table, JComponent.WHEN_FOCUSED, KeyEvent.VK_G,
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, JComponent.WHEN_FOCUSED,
             KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, new AbstractAction("showPopupMenu") {
       public void actionPerformed(ActionEvent event) {
         popupMenu.show(table, 100, table.getSelectedRow() * table.getRowHeight());
       }
     });
-    UiUtil.addKeyEvent(table, JComponent.WHEN_FOCUSED, KeyEvent.VK_V,
+    UiUtil.addKeyEvent(table, KeyEvent.VK_V, JComponent.WHEN_FOCUSED,
             KeyEvent.CTRL_DOWN_MASK, new AbstractAction("showEntityMenu") {
       public void actionPerformed(ActionEvent event) {
         showEntityMenu(new Point(100, table.getSelectedRow() * table.getRowHeight()));
@@ -946,7 +947,7 @@ public class EntityTablePanel extends JPanel {
       final Entity entity = getTableModel().getSelectedItem();
       if (entity != null) {
         final JPopupMenu popupMenu = new JPopupMenu();
-        EntityUiUtil.populateEntityMenu(popupMenu, entity.getCopy(), getTableModel().getDbProvider());
+        populateEntityMenu(popupMenu, entity.getCopy(), getTableModel().getDbProvider());
         popupMenu.show(tableScrollPane, location.x, (int) location.getY() - (int) tableScrollPane.getViewport().getViewPosition().getY());
       }
     }
@@ -1106,5 +1107,69 @@ public class EntityTablePanel extends JPanel {
       val = val.substring(1);
 
     column.setHeaderValue(val);
+  }
+
+  /**
+   * Populates the given root menu with the property values of the given entity
+   * @param rootMenu the menu to populate
+   * @param entity the entity
+   * @param dbProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
+   * @throws Exception in case of an exception
+   */
+  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider) throws Exception {
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(EntityRepository.getPrimaryKeyProperties(entity.getEntityID())));
+    populateForeignKeyMenu(rootMenu, entity, dbProvider, new ArrayList<Property.ForeignKeyProperty>(EntityRepository.getForeignKeyProperties(entity.getEntityID())));
+    populateValueMenu(rootMenu, entity, new ArrayList<Property>(EntityRepository.getProperties(entity.getEntityID(), false)));
+  }
+
+  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
+    Util.collate(primaryKeyProperties);
+    for (final Property.PrimaryKeyProperty property : primaryKeyProperties)
+      rootMenu.add(new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID())));
+  }
+
+  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity, final EntityDbProvider dbProvider,
+                                             final List<Property.ForeignKeyProperty> fkProperties) throws Exception {
+    Util.collate(fkProperties);
+    for (final Property.ForeignKeyProperty property : fkProperties) {
+      final boolean fkValueNull = entity.isForeignKeyNull(property);
+      if (!fkValueNull) {
+        boolean queried = false;
+        Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
+        if (referencedEntity == null || !referencedEntity.isLoaded()) {
+          referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
+          entity.removeValue(property.getPropertyID());
+          entity.setValue(property.getPropertyID(), referencedEntity);
+          queried = true;
+        }
+        final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")
+                .append("] ").append(property.getCaption()).append(": ");
+        text.append(referencedEntity.toString());
+        final JMenu foreignKeyMenu = new JMenu(text.toString());
+        populateEntityMenu(foreignKeyMenu, entity.getEntityValue(property.getPropertyID()), dbProvider);
+        rootMenu.add(foreignKeyMenu);
+      }
+      else {
+        final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
+        rootMenu.add(new JMenuItem(text.toString()));
+      }
+    }
+  }
+
+  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
+    Util.collate(properties);
+    for (final Property property : properties) {
+      if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
+        final String prefix = "[" + property.getPropertyType().toString().substring(0, 1)
+                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
+                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
+        final boolean longValue = value != null && value.length() > 20;
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, 20) + "..." : value));
+        if (longValue)
+          menuItem.setToolTipText(value.length() > 1000 ? value.substring(0, 1000) : value);
+        rootMenu.add(menuItem);
+      }
+    }
   }
 }

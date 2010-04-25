@@ -204,7 +204,7 @@ public class ChangeValueMapModel<T, V> implements ChangeValueMap<T, V>, Serializ
 
   /** {@inheritDoc} */
   public Collection<T> getOriginalValueKeys() {
-    return originalValues.keySet();
+    return originalValues == null ? new ArrayList<T>() : originalValues.keySet();
   }
 
   /** {@inheritDoc} */

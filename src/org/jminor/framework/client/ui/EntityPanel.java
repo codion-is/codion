@@ -1233,18 +1233,16 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
    */
   protected void setupKeyboardActions() {
     if (getTablePanel() != null) {
-      getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectTablePanel");
-      getActionMap().put("selectTablePanel", new AbstractAction() {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_T, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectTablePanel") {
         public void actionPerformed(ActionEvent event) {
           getTablePanel().getJTable().requestFocusInWindow();
         }
       });
     }
     if (getEditControlPanel() != null) {
-      getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_E,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectEditPanel");
-      getActionMap().put("selectEditPanel", new AbstractAction() {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_E, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectEditPanel") {
         public void actionPerformed(ActionEvent event) {
           if (getEditPanelState() == HIDDEN)
             setEditPanelState(EMBEDDED);
@@ -1253,9 +1251,8 @@ public abstract class EntityPanel extends JPanel implements ExceptionHandler {
       });
     }
     if (getTablePanel().getSearchPanel() != null) {
-      getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true), "selectSearchPanel");
-      getActionMap().put("selectSearchPanel", new AbstractAction() {
+      UiUtil.addKeyEvent(this, KeyEvent.VK_S, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectSearchPanel") {
         public void actionPerformed(ActionEvent event) {
           getTablePanel().setSearchPanelVisible(true);
           getTablePanel().getSearchPanel().requestFocusInWindow();

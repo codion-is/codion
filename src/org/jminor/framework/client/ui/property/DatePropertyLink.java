@@ -17,6 +17,8 @@ import java.util.Date;
  */
 public class DatePropertyLink extends FormattedPropertyLink {
 
+  private final boolean isTimestamp;
+
   /**
    * Instantiates a new DateTextPropertyLink
    * @param textField the text field to link
@@ -26,8 +28,9 @@ public class DatePropertyLink extends FormattedPropertyLink {
    * @param dateFormat the date format to use
    */
   public DatePropertyLink(final JFormattedTextField textField, final EntityEditModel editModel, final Property property,
-                          final LinkType linkType, final DateFormat dateFormat) {
+                          final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textField, editModel, property, dateFormat, true, linkType);
+    this.isTimestamp = isTimestamp;
     if (dateFormat == null)
       throw new IllegalArgumentException("DatePropertyLink must have a date format");
   }
@@ -36,6 +39,6 @@ public class DatePropertyLink extends FormattedPropertyLink {
   @Override
   protected Object valueFromText(final String text) {
     final Date formatted = (Date) super.valueFromText(text);
-    return formatted == null ? null : new Timestamp(formatted.getTime());
+    return formatted == null ? null : isTimestamp ? new Timestamp(formatted.getTime()) : new Date(formatted.getTime());
   }
 }

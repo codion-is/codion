@@ -219,8 +219,8 @@ public abstract class EntityTestUnit {
               testEntity.getPrimaryKey(), tmp.getPrimaryKey());
       for (final Property property : EntityRepository.getProperties(testEntity.getEntityID()).values()) {
         if (!property.isReadOnly() && property.isUpdatable()) {
-          final Object beforeUpdate = testEntity.getRawValue(property);
-          final Object afterUpdate = tmp.getRawValue(property);
+          final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
+          final Object afterUpdate = tmp.getValue(property.getPropertyID());
           assertTrue("Values of property " + property + " should be equal after update ["
                   + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                   + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",

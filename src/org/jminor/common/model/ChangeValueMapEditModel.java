@@ -14,8 +14,6 @@ public abstract class ChangeValueMapEditModel<T, V> {
   private final Event evtEntityChanged = new Event();
   private final Event evtModelCleared = new Event();
 
-  private ChangeValueMap<T, V> defaultValueMap;
-
   /**
    * Holds events signaling value changes made via the ui
    */
@@ -70,17 +68,7 @@ public abstract class ChangeValueMapEditModel<T, V> {
   /**
    * @return a value map containing the default values
    */
-  public ChangeValueMap<T, V> getDefaultValueMap() {
-    return defaultValueMap;
-  }
-
-  /**
-   * Sets the value map containing the default values
-   * @param defaultValueMap the default values
-   */
-  public void setDefaultValueMap(final ChangeValueMap<T, V> defaultValueMap) {
-    this.defaultValueMap = defaultValueMap;
-  }
+  public abstract ChangeValueMap<T, V> getDefaultValueMap();
 
   /**
    * @param key the key for which to retrieve the event
