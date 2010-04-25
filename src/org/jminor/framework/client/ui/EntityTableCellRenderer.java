@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.JCheckBox;
@@ -33,10 +34,10 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
-  public EntityTableCellRenderer(final EntityTableModel tableModel, final boolean rowColoring) {
+  public EntityTableCellRenderer(final EntityTableModel tableModel) {
     if (tableModel == null)
       throw new IllegalArgumentException("EntityTableCellRenderer requires a EntityTableModel instance");
-    this.rowColoring = rowColoring;
+    this.rowColoring = EntityRepository.isRowColoring(tableModel.getEntityID());
     this.tableModel = tableModel;
   }
 

@@ -62,6 +62,10 @@ public class EntityDefinition implements Serializable {
    */
   private String selectQuery;
   /**
+   * True if this entity should be color specifically in table views
+   */
+  private boolean rowColoring;
+  /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
   private List<String> searchPropertyIDs;
@@ -189,6 +193,15 @@ public class EntityDefinition implements Serializable {
 
   public EntityDefinition setStringProvider(final ValueMap.ToString<String, Object> stringProvider) {
     this.stringProvider = stringProvider;
+    return this;
+  }
+
+  public boolean isRowColoring() {
+    return rowColoring;
+  }
+
+  public EntityDefinition setRowColoring(final boolean rowColoring) {
+    this.rowColoring = rowColoring;
     return this;
   }
 

@@ -18,7 +18,7 @@ import java.util.List;
 public class DbObjectPanel extends EntityPanel {
 
   public DbObjectPanel(final EntityModel model) {
-    super(model, "Tables", false, false, false, EMBEDDED);
+    super(model, "Tables", false, false, EMBEDDED);
   }
 
   @Override

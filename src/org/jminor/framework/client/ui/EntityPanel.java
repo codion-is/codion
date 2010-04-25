@@ -180,8 +180,6 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    */
   private JDialog editPanelDialog;
 
-  private final boolean rowColoring;
-
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
    */
@@ -229,7 +227,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit) {
-    this(model, caption, refreshOnInit, true);
+    this(model, caption, refreshOnInit, false);
   }
 
   /**
@@ -237,25 +235,12 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param rowColoring if true then each row in the table model (if any)
-   */
-  public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit, final boolean rowColoring) {
-    this(model, caption, refreshOnInit, rowColoring, false);
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until initialize() is called.
-   * @param model the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param rowColoring if true then each row in the table model (if any)
-   * is colored according to the underlying entity
    * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
    * otherwise vertically on its right side
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
-                     final boolean rowColoring, final boolean horizontalButtons) {
-    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, EMBEDDED);//embedded perhaps not default?
+                     final boolean horizontalButtons) {
+    this(model, caption, refreshOnInit, horizontalButtons, EMBEDDED);//embedded perhaps not default?
   }
 
   /**
@@ -263,14 +248,13 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
-                     final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState) {
-    this(model, caption, refreshOnInit, rowColoring, horizontalButtons, detailPanelState,
+                     final boolean horizontalButtons, final int detailPanelState) {
+    this(model, caption, refreshOnInit, horizontalButtons, detailPanelState,
             Configuration.getBooleanValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT));
   }
 
@@ -279,20 +263,18 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    * @param model the EntityModel
    * @param caption the caption to use when presenting this entity panel
    * @param refreshOnInit if true then the underlying data model should be refreshed during initialization
-   * @param rowColoring if true then each row in the table model (if any) is colored according to the underlying entity
    * @param horizontalButtons if true the control panel buttons are laid out horizontally below the edit panel,
    * otherwise vertically on its right side
    * @param detailPanelState the initial detail panel state (HIDDEN or EMBEDDED, DIALOG is not available upon initialization)
    * @param compactDetailLayout true if this panel should be laid out in a compact state
    */
   public EntityPanel(final EntityModel model, final String caption, final boolean refreshOnInit,
-                     final boolean rowColoring, final boolean horizontalButtons, final int detailPanelState,
+                     final boolean horizontalButtons, final int detailPanelState,
                      final boolean compactDetailLayout) {
     super(model);
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE))
       activeStateGroup.addState(stActive);
     this.caption = caption;
-    this.rowColoring = rowColoring;
     this.refreshOnInit = refreshOnInit;
     this.buttonPlacement = horizontalButtons ? BorderLayout.SOUTH : BorderLayout.EAST;
     this.detailPanelState = detailPanelState;
@@ -312,7 +294,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
   }
 
   protected AbstractFilteredTablePanel initializeTablePanel(final AbstractFilteredTableModel tableModel) {
-    return new EntityTablePanel((EntityTableModel) tableModel, getTablePopupControlSet(), rowColoring);
+    return new EntityTablePanel((EntityTableModel) tableModel, getTablePopupControlSet());
   }
 
   /**
@@ -1090,7 +1072,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
           }
         };
       }
-    }, entityID, true, false, false, EMBEDDED) {
+    }, entityID, true, false, EMBEDDED) {
       @Override
       protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
         return null;

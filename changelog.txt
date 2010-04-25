@@ -1417,3 +1417,5 @@
   AbstractFilteredTablePanel refactored from EntityTablePanel
   AbstractFilteredTableModel moved from common.model.table to common.model
   TableSorter moved from common.model.table to common.model
+  EntityDefinition.rowColoring field added
+  EntityRepository.isRowColoring() added

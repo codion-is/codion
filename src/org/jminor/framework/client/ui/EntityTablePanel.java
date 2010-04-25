@@ -154,29 +154,12 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
   private Action tableDoubleClickAction;
 
   /**
-   * true if each row should be colored according to the underlying entity
-   */
-  private final boolean rowColoring;
-
-  /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param popupControls a ControlSet on which the table popup menu is based
    */
   public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls) {
-    this(tableModel, popupControls, false);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param popupControls a ControlSet on which the table popup menu is based
-   * @param rowColoring true if each row should be colored according to the underlying entity
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final ControlSet popupControls,
-                          final boolean rowColoring) {
     super(tableModel);
-    this.rowColoring = rowColoring;
     this.searchPanel = initializeSearchPanel();
     this.summaryPanel = initializeSummaryPanel();
     this.propertyFilterPanels = initializeFilterPanels();
@@ -738,11 +721,10 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
 
   /**
    * Returns the TableCellRenderer used for this EntityTablePanel
-   * @param rowColoring if true then the underlying Entity has specific background coloring
    * @return the TableCellRenderer
    */
-  protected TableCellRenderer initializeTableCellRenderer(final boolean rowColoring) {
-    return new EntityTableCellRenderer(getTableModel(), rowColoring);
+  protected TableCellRenderer initializeTableCellRenderer() {
+    return new EntityTableCellRenderer(getTableModel());
   }
 
   /**
@@ -777,7 +759,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
   protected JTable initializeJTable() {
     final TableColumnModel columnModel = getTableModel().getColumnModel();
     final JTable table = new JTable(getTableModel().getTableSorter(), columnModel, getTableModel().getSelectionModel());
-    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer(rowColoring);
+    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();

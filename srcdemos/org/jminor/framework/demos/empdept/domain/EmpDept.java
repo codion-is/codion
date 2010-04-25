@@ -104,7 +104,8 @@ public class EmpDept {
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
-            .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_NAME)));
+            .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_NAME))
+            .setRowColoring(true));
 
     /*Set a Proxy implementation to provide a custom background color for managers*/
     Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {

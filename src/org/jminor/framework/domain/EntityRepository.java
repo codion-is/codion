@@ -358,6 +358,10 @@ public class EntityRepository {
     return getEntityDefinition(entityID).getIdValueSource();
   }
 
+  public static boolean isRowColoring(final String entityID) {
+    return getEntityDefinition(entityID).isRowColoring();
+  }
+
   public static Collection<String> getDefinedEntities() {
     return new ArrayList<String>(entityDefinitions.keySet());
   }
