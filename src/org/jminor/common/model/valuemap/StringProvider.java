@@ -26,6 +26,8 @@ import java.util.List;
  * <br>
  * outputs the following String:<br><br>
  * <code>key1=value1, key3='value3' referenced value=refValue</code>
+ * @param <T> the type of the map keys
+ * @param <V> the type of the map values
  */
 public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializable {
 

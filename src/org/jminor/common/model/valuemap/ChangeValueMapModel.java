@@ -12,9 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * User: Björn Darri
- * Date: 25.4.2010
- * Time: 13:10:14
+ * A base model class for associating a ChangeValueMapEditModel with a AbstractFilterTableModel,
+ * so that the value map selected in the table model is set in the edit model.
+ * User: Björn Darri<br>
+ * Date: 25.4.2010<br>
+ * Time: 13:10:14<br>
  */
 public abstract class ChangeValueMapModel<T, V> implements Refreshable {
 
@@ -36,7 +38,7 @@ public abstract class ChangeValueMapModel<T, V> implements Refreshable {
       editModel = initializeEditModel();
       bindEvents();
     }
-    
+
     return editModel;
   }
 

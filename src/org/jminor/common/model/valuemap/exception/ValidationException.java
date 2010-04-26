@@ -4,7 +4,7 @@
 package org.jminor.common.model.valuemap.exception;
 
 /**
- * An exception used to indicate an invalid property value.
+ * An exception used to indicate that an invalid value is being associated with a key.
  */
 public class ValidationException extends Exception {
 

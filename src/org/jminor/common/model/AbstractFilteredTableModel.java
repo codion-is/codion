@@ -28,6 +28,7 @@ import java.util.ListIterator;
  * User: Björn Darri<br>
  * Date: 18.4.2010<br>
  * Time: 09:48:07<br>
+ * @param <T> the type of the values in this table model
  */
 public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
         implements FilterCriteria<T>, Refreshable {

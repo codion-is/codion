@@ -10,13 +10,15 @@ import java.awt.event.ActionListener;
 
 /**
  * An abstract base class for linking a UI component to a model value.
+ * @param <T> the type of the value owner
+ * @param <V> the type of the value
  */
-public abstract class AbstractValueLink<K, T> extends Control {
+public abstract class AbstractValueLink<T, V> extends Control {
 
   /**
    * The Object that owns the linked property
    */
-  private final K valueOwner;
+  private final T valueOwner;
 
   /**
    * The link type
@@ -39,7 +41,7 @@ public abstract class AbstractValueLink<K, T> extends Control {
    * @param modelValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type
    */
-  public AbstractValueLink(final K valueOwner, final Event modelValueChangeEvent,
+  public AbstractValueLink(final T valueOwner, final Event modelValueChangeEvent,
                            final LinkType linkType) {
     if (valueOwner == null)
       throw new IllegalArgumentException("Property owner cannot be null");
@@ -65,7 +67,7 @@ public abstract class AbstractValueLink<K, T> extends Control {
   /**
    * @return the owner of the linked property, the model
    */
-  public K getValueOwner() {
+  public T getValueOwner() {
     return valueOwner;
   }
 
@@ -103,22 +105,22 @@ public abstract class AbstractValueLink<K, T> extends Control {
   /**
    * @return the model value of the linked property
    */
-  public abstract T getModelValue();
+  public abstract V getModelValue();
 
   /**
    * Sets the value in the model
    * @param value the value to set for property
    */
-  public abstract void setModelValue(final T value);
+  public abstract void setModelValue(final V value);
 
   /**
    * @return the value according to the UI
    */
-  protected abstract T getUIValue();
+  protected abstract V getUIValue();
 
   /**
    * Sets the value in the UI
    * @param value the value to represent in the UI
    */
-  protected abstract void setUIValue(final T value);
+  protected abstract void setUIValue(final V value);
 }

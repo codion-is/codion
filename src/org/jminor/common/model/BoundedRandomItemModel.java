@@ -10,6 +10,7 @@ package org.jminor.common.model;
  * User: Björn Darri<br>
  * Date: 6.4.2010<br>
  * Time: 21:26:00<br>
+ * @param <T> the type of item this random item model returns
  */
 public class BoundedRandomItemModel<T> extends RandomItemModel<T> {
 

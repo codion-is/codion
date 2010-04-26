@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A UI class based on the ChangeValueMapEditModel.
  * User: Björn Darri<br>
  * Date: 25.4.2010<br>
  * Time: 12:29:37<br>

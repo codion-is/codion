@@ -18,6 +18,8 @@ import java.util.Map;
 
 /**
  * A default ChangeValueMap implementation.
+ * @param <T> the type of the map keys
+ * @param <V> the type of the map values
  */
 public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializable {
 

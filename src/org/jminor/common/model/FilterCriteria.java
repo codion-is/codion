@@ -5,6 +5,7 @@ package org.jminor.common.model;
 
 /**
  * An interface describing a filtering criteria.
+ * @param <T> the type of items this criteria filters.
  */
 public interface FilterCriteria<T> {
   /**

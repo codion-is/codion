@@ -11,6 +11,7 @@ import org.jminor.common.ui.AbstractFilteredTablePanel;
 import javax.swing.JPanel;
 
 /**
+ * A UI class which associates a ChangeValueMapEditPanel with a AbstractFilteredTablePanel.
  * User: Björn Darri<br>
  * Date: 25.4.2010<br>
  * Time: 13:42:51<br>

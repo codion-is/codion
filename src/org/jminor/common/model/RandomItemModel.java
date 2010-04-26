@@ -25,6 +25,7 @@ import java.util.Random;
  * //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
  * Object random = model.getRandomItem();
  * </pre>
+ * @param <T> the type of item this random item model returns
  */
 public class RandomItemModel<T> {
 

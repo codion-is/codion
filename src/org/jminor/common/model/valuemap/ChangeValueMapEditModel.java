@@ -14,6 +14,11 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class for editing the contents a a ChangeValueMap instance.
+ * @param <T> the type of the keys in the value map
+ * @param <V> the type of the values in the value map
+ */
 public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
 
   /**
@@ -111,12 +116,14 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
   public abstract ChangeValueMap<T, V> getDefaultValueMap();
 
   /**
+   * @param key the key
    * @param value the value
    * @return true it the value is or represents null
    */
   public abstract boolean isNull(final T key, final V value);
 
   /**
+   * @param key the key
    * @return true if this value is allowed to be null
    */
   public abstract boolean isNullable(final T key);

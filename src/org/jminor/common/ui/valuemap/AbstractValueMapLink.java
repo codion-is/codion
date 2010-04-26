@@ -10,6 +10,8 @@ import org.jminor.common.ui.control.LinkType;
 
 /**
  * An abstract class for linking a UI component to a ChangeValueMapEditModel key value.
+ * @param <T> the type of the map keys
+ * @param <V> the type of the map values
  */
 public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<ChangeValueMapEditModel<T, V>, V> {
 

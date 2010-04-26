@@ -1430,3 +1430,4 @@
   EntityEditModel.validate() overloaded, finalized the overridden one
   EntityTablePanel.isRowColoring() added
   EntityEditModel.getDefaultValueMap() finalized, getDefaultEntity() added
+  Minor javadoc improvements in common.model.valuemap and common.ui.valuemap

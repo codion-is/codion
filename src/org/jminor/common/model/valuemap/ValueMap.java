@@ -5,6 +5,8 @@ package org.jminor.common.model.valuemap;
 
 /**
  * An interface describing an object containing values mapped to keys.
+ * @param <T> the type of the map keys
+ * @param <V> the type of the map values
  */
 public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V> {
 

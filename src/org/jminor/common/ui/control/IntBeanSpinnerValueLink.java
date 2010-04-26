@@ -10,7 +10,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- * Binds a SpinnerModel to a int based bean property.<br>
+ * Binds a SpinnerModel to a int based bean property.
  * User: Bjorn Darri<br>
  * Date: 14.12.2007<br>
  * Time: 23:58:50<br>

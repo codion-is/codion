@@ -19,12 +19,13 @@ public class DateValueLink extends FormattedValueLink {
   private final boolean isTimestamp;
 
   /**
-   * Instantiates a new DateTextPropertyLink
+   * Instantiates a new DateTextPropertyLink.
    * @param textField the text field to link
    * @param editModel the ChangeValueMapEditModel instance
    * @param key the key to link
    * @param linkType the link type
    * @param dateFormat the date format to use
+   * @param isTimestamp true if the date being linked is a timestamp
    */
   public DateValueLink(final JFormattedTextField textField, final ChangeValueMapEditModel<String, Object> editModel,
                        final String key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {

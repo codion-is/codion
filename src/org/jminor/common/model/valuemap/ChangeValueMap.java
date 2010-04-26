@@ -12,6 +12,8 @@ import java.util.Collection;
 
 /**
  * A ValueMap extension which keeps track of value modifications.
+ * @param <T> the type of the keys in the map
+ * @param <V> the type of the values in the map
  */
 public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
 
