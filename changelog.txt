@@ -1433,3 +1433,5 @@
   Minor javadoc improvements in common.model.valuemap and common.ui.valuemap
   Property now inherits updatable, readOnly and nullable from its parent property
   Type removed, replaced with Class
+  Entity.Key singleIntegerKey field added
+  Entity.setValue(Property, Object) added

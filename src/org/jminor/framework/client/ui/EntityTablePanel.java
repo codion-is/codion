@@ -1114,7 +1114,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
         if (referencedEntity == null || !referencedEntity.isLoaded()) {
           referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
           entity.removeValue(property.getPropertyID());
-          entity.setValue(property.getPropertyID(), referencedEntity);
+          entity.setValue(property, referencedEntity);
           queried = true;
         }
         final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")

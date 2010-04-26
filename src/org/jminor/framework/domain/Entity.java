@@ -175,9 +175,12 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
 
   @Override
   public Object setValue(final String propertyID, final Object value) {
-    final Property property = getProperty(propertyID);
+    return setValue(getProperty(propertyID), value);
+  }
+
+  public Object setValue(final Property property, final Object value) {
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.setValue(propertyID, value);
+      return primaryKey.setValue(property.getPropertyID(), value);
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     if (property instanceof Property.DenormalizedProperty)
@@ -193,7 +196,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value);
     }
     else {
-      return super.setValue(propertyID, value);
+      return super.setValue(property.getPropertyID(), value);
     }
   }
 
@@ -834,6 +837,8 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
      */
     private boolean hashCodeDirty = true;
 
+    private boolean singleIntegerKey;
+
     /**
      * Caching this extremely frequently referenced attribute
      */
@@ -849,6 +854,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
         throw new IllegalArgumentException("Key can not be instantiated without an entityID");
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
+      this.singleIntegerKey = getPropertyCount() == 1 && getFirstKeyProperty().isType(Integer.class);
     }
 
     /**
@@ -1042,7 +1048,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
      * @return true if this is a single integer column key
      */
     private boolean isSingleIntegerKey() {
-      return getPropertyCount() == 1 && getFirstKeyProperty().getType().equals(Integer.class);
+      return singleIntegerKey;
     }
 
     public Key getOriginalCopy() {
