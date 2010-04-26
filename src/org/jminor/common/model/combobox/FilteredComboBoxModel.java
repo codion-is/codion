@@ -32,7 +32,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   private Object selectedItem;
   private String nullValueString;
 
-  private FilterCriteria<Object> filterCriteria;
+  private FilterCriteria filterCriteria;
   private boolean sortContents = false;
   private boolean emptyStringIsNull = false;
 
@@ -119,7 +119,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
   /**
    * @param criteria the FilterCriteria to use
    */
-  public void setFilterCriteria(final FilterCriteria<Object> criteria) {
+  public void setFilterCriteria(final FilterCriteria criteria) {
     this.filterCriteria = criteria;
     filterContents();
   }
@@ -254,6 +254,7 @@ public class FilteredComboBoxModel implements ComboBoxModel, Refreshable {
    * @return true if the object should be included
    * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
    */
+  @SuppressWarnings({"unchecked"})
   protected boolean include(final Object object) {
     return filterCriteria == null || filterCriteria.include(object);
   }

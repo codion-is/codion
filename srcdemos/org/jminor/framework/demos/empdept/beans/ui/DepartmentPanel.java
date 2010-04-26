@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlSet;
@@ -61,8 +60,8 @@ public class DepartmentPanel extends EntityPanel {
   }
 
   @Override
-  protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
-    return new EntityEditPanel((EntityEditModel) editModel) {
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
+    return new EntityEditPanel(editModel) {
       @Override
       protected void initializeUI() {
         final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);

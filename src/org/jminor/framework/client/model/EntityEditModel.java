@@ -380,12 +380,17 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     }
   }
 
+  @Override
   public void validate(final String property, final int action) throws ValidationException {
     validate(getEntity(), property, action);
   }
 
-  public void validate(final ChangeValueMap<String, Object> valueMap, final String propertyID, final int action) throws ValidationException {
-    final Entity entity = (Entity) valueMap;
+  @Override
+  public final void validate(final ChangeValueMap<String, Object> valueMap, final String propertyID, final int action) throws ValidationException {
+    validate((Entity) valueMap, propertyID, action);
+  }
+
+  public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
     final Property property = entity.getProperty(propertyID);
     if (Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION))
       performNullValidation(entity, property, action);
@@ -393,11 +398,13 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
       performRangeValidation(entity, property);
   }
 
-  public boolean isNull(final String key, Object value) {
+  @Override
+  public boolean isNull(final String key, final Object value) {
     return Entity.isValueNull(EntityRepository.getProperty(getEntityID(), key).getPropertyType(), value);
   }
 
-  public boolean isNullable(String key) {
+  @Override
+  public boolean isNullable(final String key) {
     return EntityRepository.getProperty(getEntityID(), key).isNullable();
   }
 
@@ -574,13 +581,18 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     return Entity.createValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
   }
 
-  public ChangeValueMap<String, Object> getDefaultValueMap() {
+  @Override
+  public final Entity getDefaultValueMap() {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
         defaultEntity.setValue(property.getPropertyID(), getDefaultValue(property));
 
     return defaultEntity;
+  }
+
+  public Entity getDefaultEntity() {
+    return getDefaultValueMap();
   }
 
   /**

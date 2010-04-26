@@ -179,6 +179,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
+  @Override
   public EntityTableModel getTableModel() {
     return (EntityTableModel) super.getTableModel();
   }
@@ -724,7 +725,17 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
    * @return the TableCellRenderer
    */
   protected TableCellRenderer initializeTableCellRenderer() {
-    return new EntityTableCellRenderer(getTableModel(), EntityRepository.isRowColoring(getTableModel().getEntityID()));
+    return new EntityTableCellRenderer(getTableModel(), isRowColoring());
+  }
+
+  /**
+   * By default this returns the result of isRowColoring from the EntityRepository
+   * @return true if the table rows should be colored according to the underlying entity
+   * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
+   * @see org.jminor.framework.domain.EntityRepository#isRowColoring(String)
+   */
+  protected boolean isRowColoring() {
+    return EntityRepository.isRowColoring(getTableModel().getEntityID());
   }
 
   /**
@@ -757,6 +768,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
    * @see org.jminor.framework.domain.EntityDefinition#setRowColoring(boolean)
    * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
    */
+  @Override
   protected JTable initializeJTable() {
     final TableColumnModel columnModel = getTableModel().getColumnModel();
     final JTable table = new JTable(getTableModel().getTableSorter(), columnModel, getTableModel().getSelectionModel());

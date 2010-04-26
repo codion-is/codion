@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.schemabrowser.beans.ui;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanel;
@@ -39,7 +39,7 @@ public class DbObjectPanel extends EntityPanel {
   }
 
   @Override
-  protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+  protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
     return null;
   }
 }

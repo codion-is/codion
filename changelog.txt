@@ -1426,3 +1426,7 @@
   Descendants of above moved if possible
   ValidationException and descendantd moved to common.ui.valuemap.exception
   Renamed classes/methods in common.ui.control
+  EntityPanel added overloaded initializeEditPanel() and initializeTablePanel() methods, finalized the overridden ones
+  EntityEditModel.validate() overloaded, finalized the overridden one
+  EntityTablePanel.isRowColoring() added
+  EntityEditModel.getDefaultValueMap() finalized, getDefaultEntity() added

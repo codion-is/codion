@@ -293,13 +293,10 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
     });
   }
 
-  protected AbstractFilteredTablePanel initializeTablePanel(final AbstractFilteredTableModel tableModel) {
-    return new EntityTablePanel((EntityTableModel) tableModel, getTablePopupControlSet());
-  }
-
   /**
    * @return the EntityModel
    */
+  @Override
   public EntityModel getModel() {
     return (EntityModel) super.getModel();
   }
@@ -364,6 +361,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    * @return the EntityTablePanel used by this EntityPanel
    * @see org.jminor.common.ui.valuemap.ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
    */
+  @Override
   public EntityTablePanel getTablePanel() {
     return (EntityTablePanel) super.getTablePanel();
   }
@@ -1073,7 +1071,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
       }
     }, entityID, true, false, EMBEDDED) {
       @Override
-      protected EntityEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+      protected EntityEditPanel initializeEditPanel(final EntityEditModel editModel) {
         return null;
       }
     }.initializePanel();
@@ -1268,6 +1266,22 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
               (buttonPlacement.equals(BorderLayout.SOUTH) ? BorderLayout.SOUTH : BorderLayout.EAST));
 
     return panel;
+  }
+
+  @Override
+  protected final ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+    return initializeEditPanel((EntityEditModel) editModel);
+  }
+
+  protected abstract EntityEditPanel initializeEditPanel(final EntityEditModel editModel);
+
+  @Override
+  protected final AbstractFilteredTablePanel initializeTablePanel(final AbstractFilteredTableModel tableModel) {
+    return initializeTablePanel((EntityTableModel) tableModel);
+  }
+
+  protected EntityTablePanel initializeTablePanel(final EntityTableModel tableModel) {
+    return new EntityTablePanel(tableModel, getTablePopupControlSet());
   }
 
   /**
