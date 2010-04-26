@@ -310,7 +310,7 @@ public class EntityUiUtil {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
-      if (searchProperty.isType(String.class))
+      if (!searchProperty.isType(String.class))
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
     final EntityLookupField lookupField =
@@ -371,7 +371,7 @@ public class EntityUiUtil {
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns) {
-    if (property.isType(String.class))
+    if (!property.isType(String.class))
       throw new RuntimeException("Cannot create a text area for a non-string property");
 
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();

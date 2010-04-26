@@ -26,7 +26,7 @@ public class Property implements Serializable {
 
   /**
    * The property identifier, should be unique within an Entity.
-   * This ID serves as column name for database properties.
+   * By default this ID serves as column name for database properties.
    * @see #getPropertyID
    */
   private final String propertyID;
