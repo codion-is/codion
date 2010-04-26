@@ -237,8 +237,8 @@ public class Property implements Serializable {
     return false;
   }
 
-  public boolean isValueClass(final Class typeClass) {
-    return valueClass.equals(typeClass);
+  public boolean isValueClass(final Class valueClass) {
+    return this.valueClass.equals(valueClass);
   }
 
   /**
@@ -624,12 +624,12 @@ public class Property implements Serializable {
       this(propertyID, Integer.class);
     }
 
-    public PrimaryKeyProperty(final String propertyID, final Class propertyType) {
-      this(propertyID, propertyType, null);
+    public PrimaryKeyProperty(final String propertyID, final Class valueClass) {
+      this(propertyID, valueClass, null);
     }
 
-    public PrimaryKeyProperty(final String propertyID, final Class propertyType, final String caption) {
-      super(propertyID, propertyType, caption);
+    public PrimaryKeyProperty(final String propertyID, final Class valueClass, final String caption) {
+      super(propertyID, valueClass, caption);
       setUpdatable(false);
     }
 
@@ -800,20 +800,20 @@ public class Property implements Serializable {
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
-     * @param type the data type of this property
+     * @param valueClass the data type of this property
      */
-    public TransientProperty(final String propertyID, final Class type) {
-      this(propertyID, type, null);
+    public TransientProperty(final String propertyID, final Class valueClass) {
+      this(propertyID, valueClass, null);
     }
 
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
-     * @param type the data type of this property
+     * @param valueClass the data type of this property
      * @param caption the caption of this property
      */
-    public TransientProperty(final String propertyID, final Class type, final String caption) {
-      super(propertyID, type, caption);
+    public TransientProperty(final String propertyID, final Class valueClass, final String caption) {
+      super(propertyID, valueClass, caption);
       super.setUpdatable(false);
       super.setSearchable(false);
     }
@@ -927,12 +927,12 @@ public class Property implements Serializable {
     /**
      * @param propertyID the property ID, since SubqueryProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
-     * @param type the data type of this property
+     * @param valueClass the data type of this property
      * @param caption the caption of this property
      * @param subquery the sql query
      */
-    public SubqueryProperty(final String propertyID, final Class type, final String caption, final String subquery) {
-      super(propertyID, type, caption);
+    public SubqueryProperty(final String propertyID, final Class valueClass, final String caption, final String subquery) {
+      super(propertyID, valueClass, caption);
       super.setReadOnly(true);
       super.setUpdatable(false);
       this.subquery = subquery;
