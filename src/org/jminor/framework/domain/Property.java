@@ -247,14 +247,23 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setUpdatable(final boolean updatable) {
+    if (hasParentProperty())
+      throw new RuntimeException("Can not set the upatable status of a property with a parent property");
+
     this.updatable = updatable;
     return this;
   }
 
   /**
+   * Specifies whether or not this property is updatable, in case of
+   * properties that have parent properties (properties which comprise a fk property fx)
+   * inherit the updatable state of the parent property.
    * @return true if this property is updatable
    */
   public boolean isUpdatable() {
+    if (parentProperty != null)
+      return parentProperty.isUpdatable();
+
     return this.updatable;
   }
 
@@ -263,14 +272,23 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setReadOnly(final boolean readOnly) {
+    if (hasParentProperty())
+      throw new RuntimeException("Can not set the read only status of a property with a parent property");
+
     this.readOnly = readOnly;
     return this;
   }
 
   /**
+   * Specifies whether or not this property is read only, in case of
+   * properties that have parent properties (properties which comprise a fk property fx)
+   * inherit the read only state of the parent property.
    * @return true if this property is for select only
    */
   public boolean isReadOnly() {
+    if (parentProperty != null)
+      return parentProperty.isReadOnly();
+
     return this.readOnly;
   }
 
@@ -279,14 +297,23 @@ public class Property implements Serializable {
    * @return this Property instance
    */
   public Property setNullable(final boolean nullable) {
+    if (hasParentProperty())
+      throw new RuntimeException("Can not set the nullable status of a property with a parent property");
+
     this.nullable = nullable;
     return this;
   }
 
   /**
+   * Specifies whether or not this property is nullable, in case of
+   * properties that have parent properties (properties which comprise a fk property fx)
+   * inherit the nullable state of the parent property.
    * @return true if this property accepts a null value
    */
   public boolean isNullable() {
+    if (parentProperty != null)
+      return parentProperty.isNullable();
+
     return nullable;
   }
 

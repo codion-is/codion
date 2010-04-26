@@ -295,7 +295,7 @@ public class Chinook {
 
     EntityRepository.add(new EntityDefinition(T_PLAYLISTTRACK,
             new Property.ForeignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID).setUpdatable(true))
+                    new Property.PrimaryKeyProperty(PLAYLISTTRACK_PLAYLISTID))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
             new Property.DenormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
@@ -303,7 +303,8 @@ public class Chinook {
                     .setPreferredColumnWidth(160),
             new Property.ForeignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     new Property.PrimaryKeyProperty(PLAYLISTTRACK_TRACKID, Type.INT)
-                            .setIndex(1).setUpdatable(true)).setFetchDepth(3)
+                            .setIndex(1))
+                    .setFetchDepth(3)
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
             new Property.DenormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
