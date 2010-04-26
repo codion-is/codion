@@ -806,7 +806,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       return value;
 
     final Class type = property.getType();
-    if (!type.equals(value.getClass()))
+    if (!type.equals(value.getClass()) && !type.isAssignableFrom(value.getClass()))
       throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
 
     return value;
