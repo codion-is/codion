@@ -397,9 +397,10 @@ public class EntityRepository {
    * @throws IllegalArgumentException in case the entity has not been defined
    */
   private static EntityDefinition getEntityDefinition(final String entityID) {
-    if (!entityDefinitions.containsKey(entityID))
+    final EntityDefinition definition = entityDefinitions.get(entityID);
+    if (definition == null)
       throw new IllegalArgumentException("Undefined entity: " + entityID);
 
-    return entityDefinitions.get(entityID);
+    return definition;
   }
 }
