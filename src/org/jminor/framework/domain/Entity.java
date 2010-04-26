@@ -545,7 +545,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
                   : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.getReferencedEntityID()));
-        primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value);
+        primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value, true);
       }
       else
         break;
