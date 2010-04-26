@@ -236,6 +236,10 @@ public class Property implements Serializable {
     return false;
   }
 
+  public boolean isType(final Class typeClass) {
+    return propertyType.equals(typeClass);
+  }
+
   /**
    * @return the name of the underlying column
    */
