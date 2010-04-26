@@ -70,7 +70,7 @@ public class EntityCriteriaUtil {
         }
 
         public boolean isValueNull(final Object columnKey, final Object value) {
-          return Entity.isValueNull(((Property) columnKey).getValueClass(), value);
+          return Entity.valueNull(value);
         }
       };
 

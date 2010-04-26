@@ -6,7 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.valuemap.ChangeValueMap;
 import org.jminor.common.model.valuemap.ChangeValueMapImpl;
-import org.jminor.common.model.valuemap.ValueMap;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -175,17 +174,15 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   }
 
   @Override
-  public Object setValue(final String propertyID, final Object value, final boolean initialization) {
-    return setValue(getProperty(propertyID), value, initialization);
+  public Object setValue(final String propertyID, final Object value) {
+    return setValue(getProperty(propertyID), value);
   }
 
-  public Object setValue(final Property property, final Object value, final boolean initialization) {
+  public Object setValue(final Property property, final Object value) {
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.setValue(property.getPropertyID(), value, initialization);
+      return primaryKey.setValue(property.getPropertyID(), value);
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
-    if (property instanceof Property.DenormalizedProperty)
-      throw new IllegalArgumentException("Can not set the value of a denormalized property");
     if (value != null && value instanceof Entity && value.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
 
@@ -194,10 +191,10 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
       propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value);
-      return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value, initialization);
+      return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value);
     }
     else {
-      return super.setValue(property.getPropertyID(), value, initialization);
+      return super.setValue(property.getPropertyID(), value);
     }
   }
 
@@ -258,6 +255,11 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       return foreignKeyValues.getValue(property.getPropertyID());
 
     throw new RuntimeException(propertyID + " is not a foreign key property");
+  }
+
+  @Override
+  public boolean isNull(final Object value) {
+    return valueNull(value);
   }
 
   /**
@@ -542,11 +544,11 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
               : super.getValue(referenceKeyProperty.getPropertyID());
-      if (!isValueNull(referenceKeyProperty.getValueClass(), value)) {
+      if (!isNull(value)) {
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
                   : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.getReferencedEntityID()));
-        primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value, true);
+        primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value);
       }
       else
         break;
@@ -573,16 +575,6 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     return super.containsValue(propertyID);
   }
 
-  /**
-   * @param propertyID the property identifier
-   * @return true if the value of the given property is null
-   */
-  @Override
-  public boolean isValueNull(final String propertyID) {
-    final Property property = getProperty(propertyID);
-    return isValueNull(property.getValueClass(), getValue(propertyID));
-  }
-
   @Override
   public Event eventValueChanged() {
     if (evtValueChanged == null)
@@ -593,14 +585,13 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
 
   /**
    * True if the given objects are equal. Both objects being null results in true.
-   * @param type the type
    * @param one the first object
    * @param two the second object
    * @return true if the given objects are equal
    */
-  public static boolean isEqual(final Class type, final Object one, final Object two) {
-    final boolean oneNull = isValueNull(type, one);
-    final boolean twoNull = isValueNull(type, two);
+  public static boolean isEqual(final Object one, final Object two) {
+    final boolean oneNull = valueNull(one);
+    final boolean twoNull = valueNull(two);
 
     return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
   }
@@ -608,22 +599,11 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   /**
    * Returns true if <code>value</code> represents a null value for the given property type.
    * An empty string is regarded as null.
-   * @param propertyType the property type
    * @param value the value to check
    * @return true if <code>value</code> represents null
    */
-  public static boolean isValueNull(final Class propertyType, final Object value) {
-    if (value == null)
-      return true;
-
-    if (propertyType.equals(String.class))
-      return ((String) value).length() == 0;
-    if (ValueMap.class.isAssignableFrom(propertyType)) {
-      final Entity.Key key = value instanceof Entity ? ((Entity) value).getPrimaryKey() : (Entity.Key) value;
-      return key.isNull();
-    }
-
-    return false;
+  public static boolean valueNull(final Object value) {
+    return value == null || value instanceof String && ((String) value).length() == 0;
   }
 
   /**
@@ -778,9 +758,8 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   private void setDenormalizedValues(final Entity entity, final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        super.setValue(denormalizedProperty.getPropertyID(),
-                entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()),
-                super.containsValue(denormalizedProperty.getPropertyID()));
+        setValue(denormalizedProperty.getPropertyID(),
+                entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
       }
     }
   }
@@ -1009,8 +988,8 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     }
 
     @Override
-    public boolean isValueNull(final String propertyID) {
-      return Entity.isValueNull(getProperty(propertyID).getValueClass(), getValue(propertyID));
+    public boolean isNull(final Object value) {
+      return Entity.valueNull(value);
     }
 
     public static List<Key> copy(final List<Key> entityKeys) {

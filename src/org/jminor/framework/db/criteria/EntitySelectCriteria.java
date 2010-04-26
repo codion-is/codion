@@ -137,12 +137,12 @@ public class EntitySelectCriteria extends EntityCriteria {
     return fetchDepth;
   }
 
-  public EntitySelectCriteria setFetchDepth(int fetchDepth) {
+  public EntitySelectCriteria setFetchDepth(final int fetchDepth) {
     this.fetchDepth = fetchDepth;
     return this;
   }
 
-  private Map<String, Integer> initializeForeignKeyFetchDepths(String entityID) {
+  private Map<String, Integer> initializeForeignKeyFetchDepths(final String entityID) {
     final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(entityID);
     final Map<String, Integer> depths = new HashMap<String, Integer>(properties.size());
     for (final Property.ForeignKeyProperty property : properties)

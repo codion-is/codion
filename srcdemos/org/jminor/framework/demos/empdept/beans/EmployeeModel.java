@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -67,9 +66,8 @@ public class EmployeeModel extends EntityModel {
           getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
             public boolean include(final Object item) {
               return item instanceof String //the item representing null
-                      || (Entity.isEqual(ValueMap.class,
-                      ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), e.getNewValue())
-                      && !Entity.isEqual(ValueMap.class, item, getEditModel().getEntityCopy()));
+                      || (Entity.isEqual(((Entity) item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), e.getNewValue())
+                      && !Entity.isEqual(item, getEditModel().getEntityCopy()));
             }
           });
         }

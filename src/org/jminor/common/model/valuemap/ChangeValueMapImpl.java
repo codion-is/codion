@@ -83,7 +83,12 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
 
   /** {@inheritDoc} */
   public boolean isValueNull(final T key) {
-    return containsValue(key) && getValue(key) == null;
+    return isNull(getValue(key));
+  }
+
+  /** {@inheritDoc} */
+  public boolean isNull(final V value) {
+    return value == null;
   }
 
   /** {@inheritDoc} */
@@ -125,11 +130,7 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
 
   /** {@inheritDoc} */
   public V setValue(final T key, final V value) {
-    return setValue(key, value, !containsValue(key));
-  }
-
-  /** {@inheritDoc} */
-  public V setValue(final T key, final V value, final boolean initialization) {
+    final boolean initialization = !containsValue(key);
     V oldValue = null;
     if (!initialization) {
       oldValue = getValue(key);

@@ -399,7 +399,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
 
   @Override
   public boolean isNull(final String key, final Object value) {
-    return Entity.isValueNull(EntityRepository.getProperty(getEntityID(), key).getValueClass(), value);
+    return Entity.valueNull(value);
   }
 
   @Override
@@ -585,7 +585,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
-        defaultEntity.setValue(property, getDefaultValue(property), true);
+        defaultEntity.setValue(property, getDefaultValue(property));
 
     return defaultEntity;
   }
@@ -830,24 +830,23 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     if (!event.isInitialization()) {
       if (event.getOldValue() != null)
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");
-      stringBuilder.append(getValueString(event.getProperty(), event.getOldValue()));
+      stringBuilder.append(getValueString(event.getOldValue()));
     }
     if (!event.isInitialization())
       stringBuilder.append(" -> ");
     if (event.getNewValue() != null)
       stringBuilder.append(event.getNewValue().getClass().getSimpleName()).append(" ");
-    stringBuilder.append(getValueString(event.getProperty(), event.getNewValue()));
+    stringBuilder.append(getValueString(event.getNewValue()));
 
     return stringBuilder.toString();
   }
 
   /**
-   * @param property the property
    * @param value the value
    * @return a string representing the given property value for debug output
    */
-  private static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = Entity.isValueNull(property.getValueClass(), value);
+  private static String getValueString(final Object value) {
+    final boolean valueIsNull = Entity.valueNull(value);
     final StringBuilder stringBuilder = new StringBuilder("[").append(valueIsNull
             ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)
