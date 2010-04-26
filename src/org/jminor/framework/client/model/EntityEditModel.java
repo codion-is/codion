@@ -585,7 +585,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
       if (!property.hasParentProperty() && !property.isDenormalized())//these are set via their respective parent properties
-        defaultEntity.setValue(property, getDefaultValue(property));
+        defaultEntity.setValue(property, getDefaultValue(property), true);
 
     return defaultEntity;
   }

@@ -626,7 +626,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
           final List<Entity> referencedEntities = selectMany(referenceCriteria);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            entity.setValue(property, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(property)));
+            entity.setValue(property, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(property)), true);
           }
         }
       }

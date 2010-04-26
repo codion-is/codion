@@ -19,6 +19,15 @@ public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V
   V setValue(final T key, final V value);
 
   /**
+   * Maps the given value to the given key, returning the old value if any
+   * @param key the key
+   * @param value the value
+   * @param initialization if true then it is assumed that no previous value existed for the key
+   * @return the previous value mapped to the given key, null if no such value existed
+   */
+  V setValue(final T key, final V value, final boolean initialization);
+
+  /**
    * Removes the given key and value from this value map
    * @param key the key to remove
    * @return the value

@@ -174,13 +174,13 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   }
 
   @Override
-  public Object setValue(final String propertyID, final Object value) {
-    return setValue(getProperty(propertyID), value);
+  public Object setValue(final String propertyID, final Object value, final boolean initialization) {
+    return setValue(getProperty(propertyID), value, initialization);
   }
 
-  public Object setValue(final Property property, final Object value) {
+  public Object setValue(final Property property, final Object value, final boolean initialization) {
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.setValue(property.getPropertyID(), value);
+      return primaryKey.setValue(property.getPropertyID(), value, initialization);
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     if (property instanceof Property.DenormalizedProperty)
@@ -193,10 +193,10 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
       propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value);
-      return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value);
+      return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value, initialization);
     }
     else {
-      return super.setValue(property.getPropertyID(), value);
+      return super.setValue(property.getPropertyID(), value, initialization);
     }
   }
 
@@ -555,21 +555,21 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   }
 
   @Override
-  public void addValueListener(ActionListener valueListener) {
+  public void addValueListener(final ActionListener valueListener) {
     primaryKey.addValueListener(valueListener);
     foreignKeyValues.addValueListener(valueListener);
     super.addValueListener(valueListener);
   }
 
   @Override
-  public boolean containsValue(String key) {
-    final Property property = getProperty(key);
+  public boolean containsValue(final String propertyID) {
+    final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.containsValue(key);
+      return primaryKey.containsValue(propertyID);
     if (property instanceof Property.ForeignKeyProperty)
       return foreignKeyValues.containsValue(property.getPropertyID());
 
-    return super.containsValue(key);
+    return super.containsValue(propertyID);
   }
 
   /**
@@ -778,7 +778,8 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
         super.setValue(denormalizedProperty.getPropertyID(),
-                entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
+                entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()),
+                super.containsValue(denormalizedProperty.getPropertyID()));
       }
     }
   }

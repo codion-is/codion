@@ -66,13 +66,13 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     if (transientProperties != null && transientProperties.size() > 0) {
       for (final Property.TransientProperty transientProperty : transientProperties) {
         if (!(transientProperty instanceof Property.DenormalizedViewProperty))
-          entity.setValue(transientProperty, null);
+          entity.setValue(transientProperty, null, true);
       }
     }
     for (final Property property : properties) {
       if (!(property instanceof Property.ForeignKeyProperty) && !property.isDenormalized()) {
         try {
-          entity.setValue(property, getValue(resultSet, property));
+          entity.setValue(property, getValue(resultSet, property), true);
         }
         catch (Exception e) {
           throw new SQLException("Unable to load property: " + property, e);
