@@ -1432,3 +1432,4 @@
   EntityEditModel.getDefaultValueMap() finalized, getDefaultEntity() added
   Minor javadoc improvements in common.model.valuemap and common.ui.valuemap
   Property now inherits updatable, readOnly and nullable from its parent property
+  Type removed, replaced with Class

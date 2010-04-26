@@ -203,6 +203,7 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
   /**
    * @return the EntityEditor instance used by this EntityModel
    */
+  @Override
   public EntityEditModel getEditModel() {
     return (EntityEditModel) super.getEditModel();
   }
@@ -210,6 +211,7 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
   /**
    * @return the EntityTableModel, null if none is specified
    */
+  @Override
   public EntityTableModel getTableModel() {
     return (EntityTableModel) super.getTableModel();
   }
@@ -347,6 +349,7 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
    * @see #evtRefreshDone
    * @see #isCascadeRefresh
    */
+  @Override
   public void refresh() {
     if (isRefreshing)
       return;
@@ -427,6 +430,7 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
   /**
    * @return the EntityTableModel used by this EntityModel
    */
+  @Override
   protected EntityTableModel initializeTableModel() {
     return new EntityTableModel(getEntityID(), this);
   }
@@ -434,6 +438,7 @@ public class EntityModel extends ChangeValueMapModel<String, Object> implements 
   /**
    * @return the EntityEditModel used by this EntityModel
    */
+  @Override
   protected EntityEditModel initializeEditModel() {
     return includeTableModel ? new EntityEditModel(getEntityID(), this) : null;
   }

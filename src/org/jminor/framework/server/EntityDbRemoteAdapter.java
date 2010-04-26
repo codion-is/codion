@@ -714,6 +714,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
       this.valueProvider = valueProvider;
     }
 
+    @Override
     protected String parameterArrayToString(final Object[] arguments) {
       if (arguments == null)
         return "";

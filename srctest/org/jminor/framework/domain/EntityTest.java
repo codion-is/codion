@@ -61,17 +61,17 @@ public class EntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     //assert types
-    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getPropertyType(), Type.INT);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getPropertyType(), Type.INT);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getPropertyType(), Type.DOUBLE);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getPropertyType(), Type.STRING);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DATE).getPropertyType(), Type.DATE);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_TIMESTAMP).getPropertyType(), Type.TIMESTAMP);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getPropertyType(), Type.BOOLEAN);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).getPropertyType(), Type.ENTITY);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).getPropertyType(), Type.INT);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getPropertyType(), Type.STRING);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getPropertyType(), Type.INT);
+    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getType(), Integer.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getType(), Integer.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getType(), Double.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getType(), String.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DATE).getType(), Date.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_TIMESTAMP).getType(), Timestamp.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getType(), Boolean.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).getType(), Entity.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).getType(), Integer.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getType(), String.class);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getType(), Integer.class);
 
     //assert column names
     assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getPropertyID(), EntityTestDomain.DETAIL_ID);

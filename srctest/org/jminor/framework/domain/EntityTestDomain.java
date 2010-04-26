@@ -3,6 +3,9 @@
  */
 package org.jminor.framework.domain;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 public class EntityTestDomain {
 
   public static final String T_MASTER = "test.master_entity";
@@ -28,17 +31,17 @@ public class EntityTestDomain {
   static {
     EntityRepository.add(new EntityDefinition(T_MASTER,
             new Property.PrimaryKeyProperty(MASTER_ID),
-            new Property(MASTER_NAME, Type.STRING),
-            new Property(MASTER_CODE, Type.INT)));
+            new Property(MASTER_NAME, String.class),
+            new Property(MASTER_CODE, Integer.class)));
 
     EntityRepository.add(new EntityDefinition(T_DETAIL,
             new Property.PrimaryKeyProperty(DETAIL_ID).setDefaultValue(42),
-            new Property(DETAIL_INT, Type.INT, DETAIL_INT),
-            new Property(DETAIL_DOUBLE, Type.DOUBLE, DETAIL_DOUBLE),
-            new Property(DETAIL_STRING, Type.STRING, DETAIL_STRING),
-            new Property(DETAIL_DATE, Type.DATE, DETAIL_DATE),
-            new Property(DETAIL_TIMESTAMP, Type.TIMESTAMP, DETAIL_TIMESTAMP),
-            new Property(DETAIL_BOOLEAN, Type.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(true),
+            new Property(DETAIL_INT, Integer.class, DETAIL_INT),
+            new Property(DETAIL_DOUBLE, Double.class, DETAIL_DOUBLE),
+            new Property(DETAIL_STRING, String.class, DETAIL_STRING),
+            new Property(DETAIL_DATE, Date.class, DETAIL_DATE),
+            new Property(DETAIL_TIMESTAMP, Timestamp.class, DETAIL_TIMESTAMP),
+            new Property(DETAIL_BOOLEAN, Boolean.class, DETAIL_BOOLEAN).setDefaultValue(true),
             new Property.ForeignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     new Property(DETAIL_ENTITY_ID)),
             new Property.DenormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,

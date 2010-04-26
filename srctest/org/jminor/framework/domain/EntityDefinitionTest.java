@@ -11,7 +11,7 @@ public class EntityDefinitionTest {
   public void test() {
     final EntityDefinition definition = new EntityDefinition("entityID", "tableName",
             new Property.PrimaryKeyProperty("id"),
-            new Property("name", Type.STRING)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
+            new Property("name", String.class)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
             .setSelectQuery("select * from dual").setLargeDataset(true).setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName");
 

@@ -12,6 +12,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -31,41 +32,44 @@ public class EntityCriteriaUtil {
           if (isValueNull(property, value))
             return "null";
 
-          switch (property.getPropertyType()) {
-            case INT:
-            case DOUBLE:
-              return value.toString();//localize?
-            case TIMESTAMP:
-              if (!(value instanceof Date))
-                throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
-              return database.getSQLDateString((Date) value, true);
-            case DATE:
-              if (!(value instanceof Date))
-                throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
-              return database.getSQLDateString((Date) value, false);
-            case CHAR:
-              return "'" + value + "'";
-            case STRING:
-              if (!(value instanceof String))
-                throw new IllegalArgumentException("String value expected for: " + columnKey + ", got: " + value.getClass());
-              return "'" + Util.sqlEscapeString((String) value) + "'";
-            case BOOLEAN:
-              if (!(value instanceof Boolean))
-                throw new IllegalArgumentException("Boolean value expected for property: " + property + ", got: " + value.getClass());
-              if (property instanceof Property.BooleanProperty)
-                return ((Property.BooleanProperty) property).toSQLString((Boolean) value);
-              else
-                return getBooleanSQLString((Boolean) value);
-            case ENTITY:
-              return value instanceof Entity ? getSQLString(database, columnKey, ((Entity) value).getPrimaryKey().getFirstKeyValue())
-                      : getSQLString(database, ((Entity.Key) value).getFirstKeyProperty(), ((Entity.Key) value).getFirstKeyValue());
-            default:
-              throw new IllegalArgumentException("Undefined property type: " + property.getPropertyType());
+          if (property.isNumerical())
+            return value.toString();//localize?
+          else if (property.isType(Timestamp.class)) {
+            if (!(value instanceof Date))
+              throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
+            return database.getSQLDateString((Date) value, true);
           }
+          else if (property.isType(Date.class)) {
+            if (!(value instanceof Date))
+              throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
+            return database.getSQLDateString((Date) value, false);
+          }
+          else if (property.isType(Character.class)) {
+            return "'" + value + "'";
+          }
+          else if (property.isType(String.class)) {
+            if (!(value instanceof String))
+              throw new IllegalArgumentException("String value expected for: " + columnKey + ", got: " + value.getClass());
+            return "'" + Util.sqlEscapeString((String) value) + "'";
+          }
+          else if (property.isType(Boolean.class)) {
+            if (!(value instanceof Boolean))
+              throw new IllegalArgumentException("Boolean value expected for property: " + property + ", got: " + value.getClass());
+            if (property instanceof Property.BooleanProperty)
+              return ((Property.BooleanProperty) property).toSQLString((Boolean) value);
+            else
+              return getBooleanSQLString((Boolean) value);
+          }
+          else if (property.isType(Entity.class)) {
+            return value instanceof Entity ? getSQLString(database, columnKey, ((Entity) value).getPrimaryKey().getFirstKeyValue())
+                    : getSQLString(database, ((Entity.Key) value).getFirstKeyProperty(), ((Entity.Key) value).getFirstKeyValue());
+          }
+          else
+            throw new IllegalArgumentException("Undefined property type: " + property.getType());
         }
 
         public boolean isValueNull(final Object columnKey, final Object value) {
-          return Entity.isValueNull(((Property) columnKey).getPropertyType(), value);
+          return Entity.isValueNull(((Property) columnKey).getType(), value);
         }
       };
 

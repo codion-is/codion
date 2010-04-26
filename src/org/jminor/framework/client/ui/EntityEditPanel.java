@@ -768,7 +768,7 @@ public abstract class EntityEditPanel extends ChangeValueMapEditPanel {
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
-   * @param editable true if the combo box should be editable, only works with combo boxes based on Type.STRING properties
+   * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final State enabledState,
@@ -817,7 +817,7 @@ public abstract class EntityEditPanel extends ChangeValueMapEditPanel {
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
-   * @param editable true if the combo box should be editable, only works with combo boxes based on Type.STRING properties
+   * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property property, final State enabledState,

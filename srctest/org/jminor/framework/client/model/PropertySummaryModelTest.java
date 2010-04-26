@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -20,7 +19,7 @@ import java.util.Collection;
  */
 public class PropertySummaryModelTest {
 
-  final PropertySummaryModel testIntModel = new PropertySummaryModel(new Property("TestProperty", Type.INT),
+  final PropertySummaryModel testIntModel = new PropertySummaryModel(new Property("TestProperty", Integer.class),
           new PropertySummaryModel.PropertyValueProvider() {
     public Collection<?> getValues() {
       return Arrays.asList(1,2,3,4,5);
@@ -31,7 +30,7 @@ public class PropertySummaryModelTest {
     public void bindValuesChangedEvent(Event event) {}
   });
 
-  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new Property("TestProperty", Type.DOUBLE),
+  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new Property("TestProperty", Double.class),
           new PropertySummaryModel.PropertyValueProvider() {
     public Collection<?> getValues() {
       return Arrays.asList(1.1, 2.2, 3.3, 4.4, 5.5);

@@ -61,6 +61,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel {
     ((EntityApplicationModel) applicationModel).getDbProvider().disconnect();
   }
 
+  @Override
   protected abstract EntityApplicationModel initializeApplication() throws CancelException;
 
   protected abstract void loadDomainModel();

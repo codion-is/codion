@@ -14,7 +14,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,9 +66,9 @@ public class EmployeeModel extends EntityModel {
           getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {
             public boolean include(final Object item) {
               return item instanceof String //the item representing null
-                      || (Entity.isEqual(Type.ENTITY,
+                      || (Entity.isEqual(Entity.class,
                       ((Entity)item).getEntityValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), e.getNewValue())
-                      && !Entity.isEqual(Type.ENTITY, item, getEditModel().getEntityCopy()));
+                      && !Entity.isEqual(Entity.class, item, getEditModel().getEntityCopy()));
             }
           });
         }

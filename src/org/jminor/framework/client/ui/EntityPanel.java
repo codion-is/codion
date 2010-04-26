@@ -70,6 +70,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -1200,29 +1201,29 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
     if (getTablePanel() != null) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectTablePanel") {
-        public void actionPerformed(ActionEvent event) {
-          getTablePanel().getJTable().requestFocusInWindow();
-        }
-      });
+                public void actionPerformed(ActionEvent event) {
+                  getTablePanel().getJTable().requestFocusInWindow();
+                }
+              });
     }
     if (getEditControlPanel() != null) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectEditPanel") {
-        public void actionPerformed(ActionEvent event) {
-          if (getEditPanelState() == HIDDEN)
-            setEditPanelState(EMBEDDED);
-          getEditPanel().prepareUI(true, false);
-        }
-      });
+                public void actionPerformed(ActionEvent event) {
+                  if (getEditPanelState() == HIDDEN)
+                    setEditPanelState(EMBEDDED);
+                  getEditPanel().prepareUI(true, false);
+                }
+              });
     }
     if (getTablePanel().getSearchPanel() != null) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_S, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectSearchPanel") {
-        public void actionPerformed(ActionEvent event) {
-          getTablePanel().setSearchPanelVisible(true);
-          getTablePanel().getSearchPanel().requestFocusInWindow();
-        }
-      });
+                public void actionPerformed(ActionEvent event) {
+                  getTablePanel().setSearchPanelVisible(true);
+                  getTablePanel().getSearchPanel().requestFocusInWindow();
+                }
+              });
     }
   }
 
@@ -1680,25 +1681,23 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    switch (property.getPropertyType()) {
-      case TIMESTAMP:
-        return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
-      case DATE:
-        return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
-      case DOUBLE:
-        return new DoubleInputProvider((Double) currentValue);
-      case INT:
-        return new IntInputProvider((Integer) currentValue);
-      case BOOLEAN:
-        return new BooleanInputProvider((Boolean) currentValue);
-      case STRING:
-        return new TextInputProvider(property.getCaption(), new PropertyValueListProvider(getModel().getDbProvider(),
-                getModel().getEntityID(), property.getPropertyID()), (String) currentValue);
-      case ENTITY:
-        return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue);
-    }
+    if (property.isType(Timestamp.class))
+      return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
+    if (property.isType(Date.class))
+      return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
+    if (property.isType(Double.class))
+      return new DoubleInputProvider((Double) currentValue);
+    if (property.isType(Integer.class))
+      return new IntInputProvider((Integer) currentValue);
+    if (property.isType(Boolean.class))
+      return new BooleanInputProvider((Boolean) currentValue);
+    if (property.isType(String.class))
+      return new TextInputProvider(property.getCaption(), new PropertyValueListProvider(getModel().getDbProvider(),
+              getModel().getEntityID(), property.getPropertyID()), (String) currentValue);
+    if (property.isType(Entity.class))
+      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue);
 
-    throw new IllegalArgumentException("Unsupported property type: " + property.getPropertyType());
+    throw new IllegalArgumentException("Unsupported property type: " + property.getType());
   }
 
   /**

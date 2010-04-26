@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.text.Format;
@@ -71,14 +70,14 @@ public class PropertySummaryModel {
   }
 
   public List<Summary> getSummaryTypes() {
-    if (property.getPropertyType() == Type.INT || property.getPropertyType() == Type.DOUBLE)
+    if (property.isNumerical())
       return Arrays.asList(NONE, SUM, AVERAGE, MINIMUM, MAXIMUM, MINIMUM_MAXIMUM);
 
     return new ArrayList<Summary>();
   }
 
   public String getSummaryText() {
-    final String summaryTxt = summaryType.getSummary(valueProvider.getValues(), property.getPropertyType(), format);
+    final String summaryTxt = summaryType.getSummary(valueProvider.getValues(), property, format);
     return summaryTxt.length() > 0 ? summaryTxt + (valueProvider.isValueSubset() ? "*" : "") : summaryTxt;
   }
 
@@ -126,7 +125,7 @@ public class PropertySummaryModel {
    * Provides a String containing a summary value based on a collection of values.
    */
   public interface Summary {
-    String getSummary(final Collection<?> values, final Type propertyType, final Format format);
+    String getSummary(final Collection<?> values, final Property property, final Format format);
   }
 
   private static class None implements Summary {
@@ -136,7 +135,7 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.NONE);
     }
 
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
+    public String getSummary(final Collection<?> values, final Property property, final Format format) {
       return "";
     }
   }
@@ -148,15 +147,15 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.SUM);
     }
 
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
+    public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (propertyType == Type.INT) {
+      if (property.isType(Integer.class)) {
         int sum = 0;
         for (final Object obj : values)
           sum += (Integer)obj;
         txt = format.format(sum);
       }
-      else if (propertyType == Type.DOUBLE) {
+      else if (property.isType(Double.class)) {
         double sum = 0;
         for (final Object obj : values)
           sum += (Double)obj;
@@ -174,9 +173,9 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.AVERAGE);
     }
 
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
+    public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (propertyType == Type.INT) {
+      if (property.isType(Integer.class)) {
         double sum = 0;
         int count = 0;
         for (final Object obj : values) {
@@ -186,7 +185,7 @@ public class PropertySummaryModel {
         if (count > 0)
           txt = format.format(sum / count);
       }
-      else if (propertyType == Type.DOUBLE) {
+      else if (property.isType(Double.class)) {
         double sum = 0;
         int count = 0;
         for (final Object obj : values) {
@@ -208,16 +207,16 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM);
     }
 
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
+    public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (propertyType == Type.INT) {
+      if (property.isType(Integer.class)) {
         int min = Integer.MAX_VALUE;
         for (final Object obj : values)
           min = Math.min(min, (Integer) obj);
         if (min != Integer.MAX_VALUE)
           txt = format.format(min);
       }
-      else if (propertyType == Type.DOUBLE) {
+      else if (property.isType(Double.class)) {
         double min = Double.MAX_VALUE;
         for (final Object obj : values)
           min = Math.min(min, (Double) obj);
@@ -236,16 +235,16 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
     }
 
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
+    public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (propertyType == Type.INT) {
+      if (property.isType(Integer.class)) {
         int max = Integer.MIN_VALUE;
         for (final Object obj : values)
           max = Math.max(max, (Integer) obj);
         if (max != Integer.MIN_VALUE)
           txt = format.format(max);
       }
-      else if (propertyType == Type.DOUBLE) {
+      else if (property.isType(Double.class)) {
         double max = Double.MIN_VALUE;
         for (final Object obj : values)
           max = Math.max(max, (Double) obj);
@@ -264,9 +263,9 @@ public class PropertySummaryModel {
       return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
     }
 
-    public String getSummary(final Collection<?> values, final Type propertyType, final Format format) {
+    public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (propertyType == Type.INT) {
+      if (property.isType(Integer.class)) {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
         for (final Object obj : values) {
@@ -276,7 +275,7 @@ public class PropertySummaryModel {
         if (max != Integer.MIN_VALUE)
           txt = format.format(min) + "/" + format.format(max);
       }
-      else if (propertyType == Type.DOUBLE) {
+      else if (property.isType(Double.class)) {
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
         for (final Object obj : values) {

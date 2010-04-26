@@ -17,7 +17,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -29,10 +28,8 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -245,7 +242,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   public Class<?> getColumnClass(final int columnIndex) {
     final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
-    return getValueClass(columnProperty.getPropertyType(), getItemAtViewIndex(0).getValue(columnProperty.getPropertyID()));
+    return columnProperty.getType();
   }
 
   /** {@inheritDoc} */
@@ -667,24 +664,5 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
         tableSearchModel.setSearchModelState();
       }
     });
-  }
-
-  private static Class<?> getValueClass(final Type type, final Object value) {
-    if (type == Type.INT)
-      return Integer.class;
-    if (type == Type.DOUBLE)
-      return Double.class;
-    if (type == Type.BOOLEAN)
-      return Boolean.class;
-    if (type == Type.DATE)
-      return Date.class;
-    if (type == Type.TIMESTAMP)
-      return Timestamp.class;
-    if (type == Type.CHAR)
-      return Character.class;
-    if (type == Type.ENTITY)
-      return Entity.class;
-
-    return value == null ? Object.class : value.getClass();
   }
 }

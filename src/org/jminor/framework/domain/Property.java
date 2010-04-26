@@ -8,10 +8,12 @@ import org.jminor.framework.Configuration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class Property implements Serializable {
   /**
    * The property type
    */
-  private final Type propertyType;
+  private final Class propertyType;
 
   /**
    * The caption to use when this property is presented
@@ -142,18 +144,18 @@ public class Property implements Serializable {
   private Format format;
 
   /**
-   * Instantiates a new property of the type Type.INT
+   * Instantiates a new property of the type Integer.class
    * @param propertyID the property ID, this is used as the underlying column name
    */
   public Property(final String propertyID) {
-    this(propertyID, Type.INT);
+    this(propertyID, Integer.class);
   }
 
   /**
    * @param propertyID the property ID, this is used as the underlying column name
    * @param propertyType the data type of this property
    */
-  public Property(final String propertyID, final Type propertyType) {
+  public Property(final String propertyID, final Class propertyType) {
     this(propertyID, propertyType, null);
   }
 
@@ -162,7 +164,7 @@ public class Property implements Serializable {
    * @param propertyType the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
-  public Property(final String propertyID, final Type propertyType, final String caption) {
+  public Property(final String propertyID, final Class propertyType, final String caption) {
     if (propertyID == null)
       throw new IllegalArgumentException("Property ID must be specified");
     if (propertyType == null)
@@ -191,10 +193,17 @@ public class Property implements Serializable {
   }
 
   /**
-   * @return true if this is a numerical Property, that is, INT or DOUBLE
+   * @return true if this is a numerical Property, that is, Integer or Double
    */
   public boolean isNumerical() {
-    return propertyType == Type.DOUBLE || propertyType == Type.INT;
+    return isType(Integer.class, Double.class);
+  }
+
+  /**
+   * @return true if this is a time based property, Date or Timestamp
+   */
+  public boolean isTime() {
+    return isType(Date.class, Timestamp.class);
   }
 
   /**
@@ -215,8 +224,16 @@ public class Property implements Serializable {
   /**
    * @return the data type of the value of this property
    */
-  public Type getPropertyType() {
+  public Class getType() {
     return propertyType;
+  }
+
+  public boolean isType(final Class... typeClasses) {
+    for (final Class typeClass : Arrays.asList(typeClasses))
+      if (propertyType.equals(typeClass))
+        return true;
+
+    return false;
   }
 
   /**
@@ -293,6 +310,9 @@ public class Property implements Serializable {
   }
 
   /**
+   * Specifies whether or not this property is nullable, in case of
+   * properties that have parent properties (properties which comprise a fk property fx)
+   * inherit the nullable state of the parent property.
    * @param nullable specifies whether or not this property accepts a null value
    * @return this Property instance
    */
@@ -305,9 +325,6 @@ public class Property implements Serializable {
   }
 
   /**
-   * Specifies whether or not this property is nullable, in case of
-   * properties that have parent properties (properties which comprise a fk property fx)
-   * inherit the nullable state of the parent property.
    * @return true if this property accepts a null value
    */
   public boolean isNullable() {
@@ -599,14 +616,14 @@ public class Property implements Serializable {
     private int index = 0;
 
     public PrimaryKeyProperty(final String propertyID) {
-      this(propertyID, Type.INT);
+      this(propertyID, Integer.class);
     }
 
-    public PrimaryKeyProperty(final String propertyID, final Type propertyType) {
+    public PrimaryKeyProperty(final String propertyID, final Class propertyType) {
       this(propertyID, propertyType, null);
     }
 
-    public PrimaryKeyProperty(final String propertyID, final Type propertyType, final String caption) {
+    public PrimaryKeyProperty(final String propertyID, final Class propertyType, final String caption) {
       super(propertyID, propertyType, caption);
       setUpdatable(false);
     }
@@ -646,7 +663,7 @@ public class Property implements Serializable {
      */
     public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final Property... referenceProperties) {
-      super(propertyID, Type.ENTITY, caption);
+      super(propertyID, Entity.class, caption);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
           throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
@@ -780,7 +797,7 @@ public class Property implements Serializable {
      * the property ID should not be column name, only be unique for this entity
      * @param type the data type of this property
      */
-    public TransientProperty(final String propertyID, final Type type) {
+    public TransientProperty(final String propertyID, final Class type) {
       this(propertyID, type, null);
     }
 
@@ -790,7 +807,7 @@ public class Property implements Serializable {
      * @param type the data type of this property
      * @param caption the caption of this property
      */
-    public TransientProperty(final String propertyID, final Type type, final String caption) {
+    public TransientProperty(final String propertyID, final Class type, final String caption) {
       super(propertyID, type, caption);
       super.setUpdatable(false);
       super.setSearchable(false);
@@ -909,7 +926,7 @@ public class Property implements Serializable {
      * @param caption the caption of this property
      * @param subquery the sql query
      */
-    public SubqueryProperty(final String propertyID, final Type type, final String caption, final String subquery) {
+    public SubqueryProperty(final String propertyID, final Class type, final String caption, final String subquery) {
       super(propertyID, type, caption);
       super.setReadOnly(true);
       super.setUpdatable(false);
@@ -945,7 +962,7 @@ public class Property implements Serializable {
    */
   public static class BooleanProperty extends Property {
 
-    private final Type columnType;
+    private final Class columnType;
     /**
      * the Object value representing true
      */
@@ -973,7 +990,7 @@ public class Property implements Serializable {
      * @param caption the caption of this property
      */
     public BooleanProperty(final String propertyID, final String caption) {
-      this(propertyID, Type.INT, caption);
+      this(propertyID, Integer.class, caption);
     }
 
     /**
@@ -981,7 +998,7 @@ public class Property implements Serializable {
      * @param columnType the data type of the underlying column
      * @param caption the caption of this property
      */
-    public BooleanProperty(final String propertyID, final Type columnType, final String caption) {
+    public BooleanProperty(final String propertyID, final Class columnType, final String caption) {
       this(propertyID, columnType, caption, Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE),
               Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
     }
@@ -993,7 +1010,7 @@ public class Property implements Serializable {
      * @param trueValue the Object value representing 'true'
      * @param falseValue the Object value representing 'false'
      */
-    public BooleanProperty(final String propertyID, final Type columnType, final String caption,
+    public BooleanProperty(final String propertyID, final Class columnType, final String caption,
                            final Object trueValue, final Object falseValue) {
       this(propertyID, columnType, caption, trueValue, falseValue,
               Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL));
@@ -1007,9 +1024,9 @@ public class Property implements Serializable {
      * @param falseValue the Object value representing 'false'
      * @param nullValue the Object value representing 'null'
      */
-    public BooleanProperty(final String propertyID, final Type columnType, final String caption,
+    public BooleanProperty(final String propertyID, final Class columnType, final String caption,
                            final Object trueValue, final Object falseValue, final Object nullValue) {
-      super(propertyID, Type.BOOLEAN, caption);
+      super(propertyID, Boolean.class, caption);
       this.columnType = columnType;
       this.nullValue = nullValue;
       this.trueValue = trueValue;
@@ -1021,7 +1038,7 @@ public class Property implements Serializable {
     /**
      * @return the data type of the underlying column
      */
-    public Type getColumnType() {
+    public Class getColumnType() {
       return columnType;
     }
 
@@ -1045,7 +1062,7 @@ public class Property implements Serializable {
      */
     public String toSQLString(final Boolean value) {
       final Object result = value == null ? nullValue : (value ? trueValue : falseValue);
-      if (columnType == Type.STRING)
+      if (columnType == String.class)
         return "'" + result + "'";
       else
         return result == null ? "null" : result.toString();
@@ -1064,7 +1081,7 @@ public class Property implements Serializable {
     private final String blobColumnName;
 
     public BlobProperty(final String propertyID, final String blobColumnName, final String caption) {
-      super(propertyID, Type.STRING, caption);
+      super(propertyID, String.class, caption);
       super.setHidden(true);
       this.blobColumnName = blobColumnName;
     }

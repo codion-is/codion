@@ -224,7 +224,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     final List<Object> values = new ArrayList<Object>(primaryKey.getValues());
     values.addAll(foreignKeyValues.getValues());
     values.addAll(super.getValues());
-    
+
     return values;
   }
 
@@ -538,7 +538,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
               : super.getValue(referenceKeyProperty.getPropertyID());
-      if (!isValueNull(referenceKeyProperty.getPropertyType(), value)) {
+      if (!isValueNull(referenceKeyProperty.getType(), value)) {
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
                   : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.getReferencedEntityID()));
@@ -576,7 +576,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   @Override
   public boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
-    return isValueNull(property.getPropertyType(), getValue(propertyID));
+    return isValueNull(property.getType(), getValue(propertyID));
   }
 
   @Override
@@ -594,7 +594,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
    * @param two the second object
    * @return true if the given objects are equal
    */
-  public static boolean isEqual(final Type type, final Object one, final Object two) {
+  public static boolean isEqual(final Class type, final Object one, final Object two) {
     final boolean oneNull = isValueNull(type, one);
     final boolean twoNull = isValueNull(type, two);
 
@@ -608,13 +608,13 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
    * @param value the value to check
    * @return true if <code>value</code> represents null
    */
-  public static boolean isValueNull(final Type propertyType, final Object value) {
+  public static boolean isValueNull(final Class propertyType, final Object value) {
     if (value == null)
       return true;
 
-    if (propertyType == Type.STRING)
+    if (propertyType.equals(String.class))
       return ((String) value).length() == 0;
-    if (propertyType == Type.ENTITY) {
+    if (Entity.class.isAssignableFrom(propertyType)) {
       final Entity.Key key = value instanceof Entity ? ((Entity) value).getPrimaryKey() : (Entity.Key) value;
       return key.isNull();
     }
@@ -805,44 +805,9 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     if (value == null)
       return value;
 
-    final String propertyID = property.getPropertyID();
-    switch (property.getPropertyType()) {
-      case INT:
-        if (!(value instanceof Integer))
-          throw new IllegalArgumentException("Integer value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-      case DOUBLE:
-        if (!(value instanceof Double))
-          throw new IllegalArgumentException("Double value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-      case BOOLEAN:
-        if (!(value instanceof Boolean))
-          throw new IllegalArgumentException("Boolean value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-      case TIMESTAMP:
-        if (!(value instanceof Timestamp))
-          throw new IllegalArgumentException("Timestamp value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-      case DATE:
-        if (!(value instanceof Date))
-          throw new IllegalArgumentException("Date value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-      case ENTITY:
-        if (!(value instanceof Entity))
-          throw new IllegalArgumentException("Entity value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        final String requiredEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
-        if (!(((Entity) value).is(requiredEntityID)))
-          throw new IllegalArgumentException("Entity of type " + requiredEntityID + " required, got " + ((Entity) value).getEntityID());
-        break;
-      case CHAR:
-        if (!(value instanceof Character))
-          throw new IllegalArgumentException("Character value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-      case STRING:
-        if (!(value instanceof String))
-          throw new IllegalArgumentException("String value expected for property: " + propertyID + " (" + value.getClass() + ")");
-        break;
-    }
+    final Class type = property.getType();
+    if (!type.isAssignableFrom(value.getClass()))
+      throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
 
     return value;
   }
@@ -1037,7 +1002,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
 
     @Override
     public boolean isValueNull(final String propertyID) {
-      return Entity.isValueNull(getProperty(propertyID).getPropertyType(), getValue(propertyID));
+      return Entity.isValueNull(getProperty(propertyID).getType(), getValue(propertyID));
     }
 
     public static List<Key> copy(final List<Key> entityKeys) {
@@ -1077,7 +1042,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
      * @return true if this is a single integer column key
      */
     private boolean isSingleIntegerKey() {
-      return getPropertyCount() == 1 && getFirstKeyProperty().getPropertyType() == Type.INT;
+      return getPropertyCount() == 1 && getFirstKeyProperty().getType().equals(Integer.class);
     }
 
     public Key getOriginalCopy() {

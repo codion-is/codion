@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -76,20 +77,18 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   protected TableCellRenderer initializeRenderer(final Property property) {
-    switch (property.getPropertyType()) {
-      case BOOLEAN:
-        return new BooleanRenderer();
-      case DOUBLE:
-        return new DoubleRenderer(property);
-      case INT:
-        return new IntegerRenderer(property);
-      case DATE:
-        return new DateRenderer(property);
-      case TIMESTAMP:
-        return new TimestampRenderer(property);
-      default:
-        return new DefaultTableCellRenderer();
-    }
+    if (property.isType(Boolean.class))
+      return new BooleanRenderer();
+    if (property.isType(Double.class))
+      return new DoubleRenderer(property);
+    if (property.isType(Integer.class))
+      return new IntegerRenderer(property);
+    if (property.isType(Date.class))
+      return new DateRenderer(property);
+    if (property.isType(Timestamp.class))
+      return new TimestampRenderer(property);
+    else
+      return new DefaultTableCellRenderer();
   }
 
   /**

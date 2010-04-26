@@ -12,7 +12,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.domain.Type;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -148,20 +147,20 @@ public class DomainClassGenerator {
     String ret;
     if (column.foreignKey != null) {
       ret = "        new Property.ForeignKeyProperty(" + getPropertyID(table, column, true) + ", \"Caption\", " + getEntityID(column.foreignKey.getReferencedTable()) + ",\n"
-              + "                new Property(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + "))";
+              + "                new Property(" + getPropertyID(table, column, false) + ", " + column.columnType + "))";
     }
     else if (column.primaryKey != null) {
-      ret = "        new Property.PrimaryKeyProperty(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + ")";
+      ret = "        new Property.PrimaryKeyProperty(" + getPropertyID(table, column, false) + ", " + column.columnType + ")";
     }
     else {
-      ret = "        new Property(" + getPropertyID(table, column, false) + ", " + "Type." + column.columnType + ", \"Caption\")";
+      ret = "        new Property(" + getPropertyID(table, column, false) + ", " + column.columnType + ", \"Caption\")";
     }
 
     if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKey == null)
       ret += "\n                .setNullable(false)";
     if (column.hasDefaultValue)
       ret += "\n                .setColumnHasDefaultValue(false)";
-    if (column.columnType == Type.STRING)
+    if (column.columnType.equals("String.class"))
       ret += "\n                .setMaxLength(" + column.columnSize + ")";
 
     return ret;
@@ -196,33 +195,33 @@ public class DomainClassGenerator {
     return null;
   }
 
-  public static Type translateType(final int sqlType) {
+  public static String translateType(final int sqlType) {
     switch (sqlType) {
       case Types.BIGINT:
       case Types.INTEGER:
       case Types.ROWID:
       case Types.SMALLINT:
-        return Type.INT;
+        return "Integer.class";
       case Types.CHAR:
-        return Type.CHAR;
+        return "Character.class";
       case Types.DATE:
-        return Type.DATE;
+        return "Date.class";
       case Types.DECIMAL:
       case Types.DOUBLE:
       case Types.FLOAT:
       case Types.NUMERIC:
       case Types.REAL:
-        return Type.DOUBLE;
+        return "Double.class";
       case Types.TIME:
       case Types.TIMESTAMP:
-        return Type.TIMESTAMP;
+        return "Timestamp.class";
       case Types.LONGVARCHAR:
       case Types.VARCHAR:
-        return Type.STRING;
+        return "String.class";
       case Types.BLOB:
-        return Type.BLOB;
+        return "Blob.class";
       case Types.BOOLEAN:
-        return Type.BOOLEAN;
+        return "Boolean.class";
     }
 
     return null;
@@ -310,14 +309,14 @@ public class DomainClassGenerator {
     final String schemaName;
     final String tableName;
     final String columnName;
-    final Type columnType;
+    final String columnType;
     final int columnSize;
     final int nullable;
     final boolean hasDefaultValue;
     ForeignKey foreignKey;
     PrimaryKey primaryKey;
 
-    public Column(final String schemaName, final String tableName, final String columnName, final Type columnType,
+    public Column(final String schemaName, final String tableName, final String columnName, final String columnType,
                   final int columnSize, final int nullable, final boolean hasDefaultValue) {
       this.schemaName = schemaName;
       this.tableName = tableName;
@@ -347,7 +346,7 @@ public class DomainClassGenerator {
       final List<Column> columns = new ArrayList<Column>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        final Type translatedType = translateType(resultSet.getInt("DATA_TYPE"));
+        final String translatedType = translateType(resultSet.getInt("DATA_TYPE"));
         if (translatedType != null)
           columns.add(new Column(resultSet.getString("TABLE_SCHEM"), resultSet.getString("TABLE_NAME"),
                   resultSet.getString("COLUMN_NAME"), translatedType,

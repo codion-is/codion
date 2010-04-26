@@ -7,7 +7,6 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import java.sql.Timestamp;
 import java.util.regex.Pattern;
@@ -84,7 +83,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
     if (comparable == null)
       return false;
 
-    if (getPropertyType() == Type.STRING || getPropertyType() == Type.ENTITY)
+    if (getProperty().isType(String.class, Entity.class))
       return !includeExactWildcard((String) comparable);
 
     return comparable.compareTo(getUpperBound()) != 0;
@@ -166,7 +165,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return null;
 
     final Object value = entity.getValue(getPropertyID());
-    if (getPropertyType() ==  Type.ENTITY)
+    if (getProperty().isType(Entity.class))
       return value.toString();
     else
       return (Comparable) value;

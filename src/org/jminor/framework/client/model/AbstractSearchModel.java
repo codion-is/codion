@@ -9,7 +9,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -53,10 +52,6 @@ public abstract class AbstractSearchModel {
 
   public Property getProperty() {
     return property;
-  }
-
-  public Type getPropertyType() {
-    return property.getPropertyType();
   }
 
   public String getPropertyID() {
@@ -168,7 +163,7 @@ public abstract class AbstractSearchModel {
    * @return the upper bound
    */
   public Object getUpperBound() {
-    if (getPropertyType() == Type.STRING && automaticWildcard)
+    if (getProperty().isType(String.class) && automaticWildcard)
       return getWildcard() + upperBound + getWildcard();
     else
       return upperBound;
@@ -247,7 +242,7 @@ public abstract class AbstractSearchModel {
    * @return the lower bound
    */
   public Object getLowerBound() {
-    if (getPropertyType() == Type.STRING && automaticWildcard)
+    if (getProperty().isType(String.class) && automaticWildcard)
       return getWildcard() + lowerBound + getWildcard();
     else
       return lowerBound;

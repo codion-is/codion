@@ -14,7 +14,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.AbstractSearchModel;
-import org.jminor.framework.domain.Type;
+import org.jminor.framework.domain.Property;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -26,7 +26,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * An abstract panel for showing search/filter configuration.<br>
@@ -80,7 +82,7 @@ public abstract class AbstractSearchPanel extends JPanel {
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
     this.searchTypeCombo = initSearchTypeComboBox();
     this.upperBoundField = getInputField(true);
-    this.lowerBoundField = isLowerBoundFieldRequired(model.getPropertyType()) ? getInputField(false) : null;
+    this.lowerBoundField = isLowerBoundFieldRequired(model.getProperty()) ? getInputField(false) : null;
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(model, "searchEnabled", null, model.stateSearchEnabled().eventStateChanged()));
@@ -197,15 +199,15 @@ public abstract class AbstractSearchPanel extends JPanel {
   protected abstract JComponent getInputField(final boolean isUpperBound);
 
   /**
-   * @param type the Type
-   * @return true if a lower bound field is required given the data type
+   * @param property the Property
+   * @return true if a lower bound field is required given the property
    */
-  protected abstract boolean isLowerBoundFieldRequired(final Type type);
+  protected abstract boolean isLowerBoundFieldRequired(final Property property);
 
   protected SimpleDateFormat getInputFormat() {
-    if (model.getPropertyType() == Type.TIMESTAMP)
+    if (model.getProperty().isType(Timestamp.class))
       return Configuration.getDefaultTimestampFormat();
-    if (model.getPropertyType() == Type.DATE)
+    if (model.getProperty().isType(Date.class))
       return Configuration.getDefaultDateFormat();
 
     return null;

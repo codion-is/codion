@@ -10,9 +10,9 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import java.awt.Color;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -72,32 +72,32 @@ public class EmpDept {
   static {
     /*Defining the entity type T_DEPARTMENT*/
     EntityRepository.add(new EntityDefinition(T_DEPARTMENT, "scott.dept",
-            new Property.PrimaryKeyProperty(DEPARTMENT_ID, Type.INT, getString(DEPARTMENT_ID))
+            new Property.PrimaryKeyProperty(DEPARTMENT_ID, Integer.class, getString(DEPARTMENT_ID))
                     .setNullable(false),
-            new Property(DEPARTMENT_NAME, Type.STRING, getString(DEPARTMENT_NAME))
+            new Property(DEPARTMENT_NAME, String.class, getString(DEPARTMENT_NAME))
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            new Property(DEPARTMENT_LOCATION, Type.STRING, getString(DEPARTMENT_LOCATION))
+            new Property(DEPARTMENT_LOCATION, String.class, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13)).setOrderByClause(DEPARTMENT_NAME)
             .setIdSource(IdSource.NONE)
             .setStringProvider(new StringProvider<String, Object>(DEPARTMENT_NAME)));
 
     /*Defining the entity type T_EMPLOYEE*/
     EntityRepository.add(new EntityDefinition(T_EMPLOYEE, "scott.emp",
-            new Property.PrimaryKeyProperty(EMPLOYEE_ID, Type.INT, getString(EMPLOYEE_ID)),
-            new Property(EMPLOYEE_NAME, Type.STRING, getString(EMPLOYEE_NAME))
+            new Property.PrimaryKeyProperty(EMPLOYEE_ID, Integer.class, getString(EMPLOYEE_ID)),
+            new Property(EMPLOYEE_NAME, String.class, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),
             new Property.ForeignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
                     new Property(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
-            new Property(EMPLOYEE_JOB, Type.STRING, getString(EMPLOYEE_JOB))
+            new Property(EMPLOYEE_JOB, String.class, getString(EMPLOYEE_JOB))
                     .setMaxLength(9),
-            new Property(EMPLOYEE_SALARY, Type.DOUBLE, getString(EMPLOYEE_SALARY))
+            new Property(EMPLOYEE_SALARY, Double.class, getString(EMPLOYEE_SALARY))
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            new Property(EMPLOYEE_COMMISSION, Type.DOUBLE, getString(EMPLOYEE_COMMISSION))
+            new Property(EMPLOYEE_COMMISSION, Double.class, getString(EMPLOYEE_COMMISSION))
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
             new Property.ForeignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
                     new Property(EMPLOYEE_MGR)),
-            new Property(EMPLOYEE_HIREDATE, Type.DATE, getString(EMPLOYEE_HIREDATE))
+            new Property(EMPLOYEE_HIREDATE, Date.class, getString(EMPLOYEE_HIREDATE))
                     .setNullable(false),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),

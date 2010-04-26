@@ -37,7 +37,6 @@ import org.jminor.framework.client.ui.property.LookupValueLink;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.log4j.Level;
@@ -50,9 +49,11 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -309,7 +310,7 @@ public class EntityUiUtil {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
-      if (searchProperty.getPropertyType() != Type.STRING)
+      if (searchProperty.isType(String.class))
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
     final EntityLookupField lookupField =
@@ -355,7 +356,7 @@ public class EntityUiUtil {
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final SimpleDateFormat dateFormat, final LinkType linkType,
                                                     final boolean includeButton, final State enabledState) {
-    if (property.getPropertyType() != Type.DATE && property.getPropertyType() != Type.TIMESTAMP)
+    if (!property.isTime())
       throw new IllegalArgumentException("Property " + property + " is not a date property");
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, linkType,
@@ -370,7 +371,7 @@ public class EntityUiUtil {
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns) {
-    if (property.getPropertyType() != Type.STRING)
+    if (property.isType(String.class))
       throw new RuntimeException("Cannot create a text area for a non-string property");
 
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
@@ -413,28 +414,26 @@ public class EntityUiUtil {
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
-    switch (property.getPropertyType()) {
-      case STRING:
-        if (formatMaskString != null)
-          new FormattedValueLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
-        else
-          new TextValueLink(textField, editModel, propertyID, immediateUpdate, linkType);
-        break;
-      case INT:
-        new IntValueLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
-        break;
-      case DOUBLE:
-        new DoubleValueLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
-        break;
-      case DATE:
-        new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
-        break;
-      case TIMESTAMP:
-        new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
-        break;
-      default:
-        throw new IllegalArgumentException("Not a text based property: " + property);
+    if (property.isType(String.class)) {
+      if (formatMaskString != null)
+        new FormattedValueLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
+      else
+        new TextValueLink(textField, editModel, propertyID, immediateUpdate, linkType);
     }
+    else if (property.isType(Integer.class)) {
+      new IntValueLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
+    }
+    else if (property.isType(Double.class)) {
+      new DoubleValueLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
+    }
+    else if (property.isType(Date.class)) {
+      new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
+    }
+    else if (property.isType(Timestamp.class)) {
+      new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
+    }
+    else
+      throw new IllegalArgumentException("Not a text based property: " + property);
 
     return textField;
   }
@@ -542,23 +541,17 @@ public class EntityUiUtil {
                                           final State enabledState, final String formatMaskString,
                                           final boolean valueContainsLiteralCharacters) {
     final JTextField field;
-    switch (property.getPropertyType()) {
-      case INT:
-        field = new IntField(0);
-        break;
-      case DOUBLE:
-        field = new DoubleField(0);
-        break;
-      case DATE:
-      case TIMESTAMP:
-        field = UiUtil.createFormattedField(formatMaskString, true);
-        break;
-      case STRING:
-        field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
-        break;
-      default:
-        throw new RuntimeException("Unable to create text field for property type: " + property.getPropertyType());
-    }
+    if (property.isType(Integer.class))
+      field = new IntField(0);
+    else if (property.isType(Double.class))
+      field = new DoubleField(0);
+    else if (property.isTime())
+      field = UiUtil.createFormattedField(formatMaskString, true);
+    else if (property.isType(String.class))
+      field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+    else
+      throw new RuntimeException("Unable to create text field for property type: " + property.getType());
+
     UiUtil.linkToEnabledState(enabledState, field);
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(field);

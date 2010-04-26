@@ -24,7 +24,6 @@ import org.jminor.framework.domain.EntityTest;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -57,7 +56,7 @@ public class EntityDbConnectionTest {
     new EmpDept();
     EntityRepository.add(new EntityDefinition(COMBINED_ENTITY_ID,
             new Property.PrimaryKeyProperty("empno"),
-            new Property("deptno", Type.INT))
+            new Property("deptno", Integer.class))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno"));
   }
 

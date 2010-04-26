@@ -12,7 +12,6 @@ import org.jminor.framework.db.provider.EntityDbProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -383,7 +382,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
     final Collection<Property> databaseProperties = EntityRepository.getDatabaseProperties(entityID);
     final List<Property> stringProperties = new ArrayList<Property>();
     for (final Property property : databaseProperties)
-      if (property.getPropertyType() == Type.STRING)
+      if (property.isType(String.class))
         stringProperties.add(property);
 
     return stringProperties;

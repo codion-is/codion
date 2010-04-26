@@ -10,7 +10,6 @@ import org.jminor.common.ui.valuemap.AbstractValueMapLink;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.PropertyComboBoxModel;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.Type;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -60,7 +59,7 @@ public class ComboBoxValueLink extends AbstractValueMapLink<String, Object> {
       }
     });
     //this allows editable string based combo boxes to post their edits after each keystroke
-    if (comboBox.isEditable() && property.getPropertyType() == Type.STRING) {
+    if (comboBox.isEditable() && property.isType(String.class)) {
       ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
         public void insertUpdate(DocumentEvent e) {
           boxModel.setSelectedItem(comboBox.getEditor().getItem());
