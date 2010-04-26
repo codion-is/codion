@@ -77,15 +77,15 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   }
 
   protected TableCellRenderer initializeRenderer(final Property property) {
-    if (property.isType(Boolean.class))
+    if (property.isValueClass(Boolean.class))
       return new BooleanRenderer();
-    if (property.isType(Double.class))
+    if (property.isValueClass(Double.class))
       return new DoubleRenderer(property);
-    if (property.isType(Integer.class))
+    if (property.isValueClass(Integer.class))
       return new IntegerRenderer(property);
-    if (property.isType(Date.class))
+    if (property.isValueClass(Date.class))
       return new DateRenderer(property);
-    if (property.isType(Timestamp.class))
+    if (property.isValueClass(Timestamp.class))
       return new TimestampRenderer(property);
     else
       return new DefaultTableCellRenderer();

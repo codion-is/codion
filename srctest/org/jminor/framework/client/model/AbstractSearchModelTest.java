@@ -22,7 +22,7 @@ public class AbstractSearchModelTest {
     };
     assertEquals(property.getPropertyID(), model.getPropertyID());
     assertEquals(property.getCaption(), model.getCaption());
-    assertEquals(property.getType(), model.getProperty().getType());
+    assertEquals(property.getValueClass(), model.getProperty().getValueClass());
 
     model.setCaseSensitive(true);
     assertTrue(model.isCaseSensitive());

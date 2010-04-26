@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.client.ui.property;
 
+import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.EntityLookupModel;
+import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -16,29 +17,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-import java.util.Arrays;
-
-public class LookupPropertyLinkTest {
+public class ComboBoxValueLinkTest {
 
   private EntityEditModel model;
 
-  public LookupPropertyLinkTest() {
+  public ComboBoxValueLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 
   @Test
   public void test() throws Exception {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    final Property deptName = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
-    final EntityLookupModel lookupModel = model.createEntityLookupModel(fkProperty.getReferencedEntityID(), null, Arrays.asList(deptName));
-    new LookupValueLink(lookupModel, model, fkProperty);
-    assertTrue(lookupModel.getSelectedEntities().size() == 0);
+    final EntityComboBoxModel comboBoxModel = model.createEntityComboBoxModel(fkProperty);
+    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+    comboBoxModel.refresh();
+    new ComboBoxValueLink(comboBox, model, fkProperty);
+    assertTrue(comboBox.getSelectedItem() == null);
     Entity department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-    assertEquals(lookupModel.getSelectedEntities().size(), 1);
-    assertEquals(lookupModel.getSelectedEntities().get(0), department);
+    assertEquals(comboBox.getSelectedItem(), department);
     department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
-    lookupModel.setSelectedEntity(department);
+    comboBox.setSelectedItem(department);
     assertEquals(model.getValue(fkProperty.getPropertyID()), department);
   }
 }

@@ -6,6 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.valuemap.ChangeValueMap;
 import org.jminor.common.model.valuemap.ChangeValueMapImpl;
+import org.jminor.common.model.valuemap.ValueMap;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -541,7 +542,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
               ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
               : super.getValue(referenceKeyProperty.getPropertyID());
-      if (!isValueNull(referenceKeyProperty.getType(), value)) {
+      if (!isValueNull(referenceKeyProperty.getValueClass(), value)) {
         if (primaryKey == null)
           (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
                   : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.getReferencedEntityID()));
@@ -579,7 +580,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   @Override
   public boolean isValueNull(final String propertyID) {
     final Property property = getProperty(propertyID);
-    return isValueNull(property.getType(), getValue(propertyID));
+    return isValueNull(property.getValueClass(), getValue(propertyID));
   }
 
   @Override
@@ -617,7 +618,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
 
     if (propertyType.equals(String.class))
       return ((String) value).length() == 0;
-    if (Entity.class.isAssignableFrom(propertyType)) {
+    if (ValueMap.class.isAssignableFrom(propertyType)) {
       final Entity.Key key = value instanceof Entity ? ((Entity) value).getPrimaryKey() : (Entity.Key) value;
       return key.isNull();
     }
@@ -809,7 +810,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     if (value == null)
       return value;
 
-    final Class type = property.getType();
+    final Class type = property.getValueClass();
     if (!type.equals(value.getClass()) && !type.isAssignableFrom(value.getClass()))
       throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
 
@@ -855,7 +856,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
         throw new IllegalArgumentException("Key can not be instantiated without an entityID");
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
-      this.singleIntegerKey = getPropertyCount() == 1 && getFirstKeyProperty().isType(Integer.class);
+      this.singleIntegerKey = getPropertyCount() == 1 && getFirstKeyProperty().isValueClass(Integer.class);
     }
 
     /**
@@ -1009,7 +1010,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
 
     @Override
     public boolean isValueNull(final String propertyID) {
-      return Entity.isValueNull(getProperty(propertyID).getType(), getValue(propertyID));
+      return Entity.isValueNull(getProperty(propertyID).getValueClass(), getValue(propertyID));
     }
 
     public static List<Key> copy(final List<Key> entityKeys) {

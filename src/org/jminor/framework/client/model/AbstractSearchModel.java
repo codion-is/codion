@@ -163,7 +163,7 @@ public abstract class AbstractSearchModel {
    * @return the upper bound
    */
   public Object getUpperBound() {
-    if (getProperty().isType(String.class) && automaticWildcard)
+    if (getProperty().isValueClass(String.class) && automaticWildcard)
       return getWildcard() + upperBound + getWildcard();
     else
       return upperBound;
@@ -242,7 +242,7 @@ public abstract class AbstractSearchModel {
    * @return the lower bound
    */
   public Object getLowerBound() {
-    if (getProperty().isType(String.class) && automaticWildcard)
+    if (getProperty().isValueClass(String.class) && automaticWildcard)
       return getWildcard() + lowerBound + getWildcard();
     else
       return lowerBound;

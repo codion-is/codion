@@ -1436,3 +1436,5 @@
   Entity.Key singleIntegerKey field added
   Entity.setValue(Property, Object) added
   ValueMap.setValue() overloaded with initialization parameter
+  Property.propertyType renamed to valueClass
+  Entity.class references changed to ValueMap.class

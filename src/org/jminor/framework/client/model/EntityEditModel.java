@@ -399,7 +399,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
 
   @Override
   public boolean isNull(final String key, final Object value) {
-    return Entity.isValueNull(EntityRepository.getProperty(getEntityID(), key).getType(), value);
+    return Entity.isValueNull(EntityRepository.getProperty(getEntityID(), key).getValueClass(), value);
   }
 
   @Override
@@ -720,7 +720,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     if (entity.isValueNull(property.getPropertyID()))
       return;
 
-    final Double value = property.isType(Double.class) ? (Double) entity.getValue(property.getPropertyID())
+    final Double value = property.isValueClass(Double.class) ? (Double) entity.getValue(property.getPropertyID())
             : (Integer) entity.getValue(property.getPropertyID());
     if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
       throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
@@ -847,7 +847,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
    * @return a string representing the given property value for debug output
    */
   private static String getValueString(final Property property, final Object value) {
-    final boolean valueIsNull = Entity.isValueNull(property.getType(), value);
+    final boolean valueIsNull = Entity.isValueNull(property.getValueClass(), value);
     final StringBuilder stringBuilder = new StringBuilder("[").append(valueIsNull
             ? (value == null ? "null" : "null value") : value).append("]");
     if (value instanceof Entity)

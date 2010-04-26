@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.framework.Configuration;
 
 import java.awt.event.ActionEvent;
@@ -34,7 +35,7 @@ public class Property implements Serializable {
   /**
    * The property type
    */
-  private final Class propertyType;
+  private final Class valueClass;
 
   /**
    * The caption to use when this property is presented
@@ -153,25 +154,25 @@ public class Property implements Serializable {
 
   /**
    * @param propertyID the property ID, this is used as the underlying column name
-   * @param propertyType the data type of this property
+   * @param valueClass the data type of this property
    */
-  public Property(final String propertyID, final Class propertyType) {
-    this(propertyID, propertyType, null);
+  public Property(final String propertyID, final Class valueClass) {
+    this(propertyID, valueClass, null);
   }
 
   /**
    * @param propertyID the property ID, this is used as the underlying column name
-   * @param propertyType the data type of this property
+   * @param valueClass the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
-  public Property(final String propertyID, final Class propertyType, final String caption) {
+  public Property(final String propertyID, final Class valueClass, final String caption) {
     if (propertyID == null)
       throw new IllegalArgumentException("Property ID must be specified");
-    if (propertyType == null)
+    if (valueClass == null)
       throw new IllegalArgumentException("Property type must be specified");
     setHidden(caption == null);
     this.propertyID = propertyID;
-    this.propertyType = propertyType;
+    this.valueClass = valueClass;
     this.caption = caption;
     this.columnName = propertyID;
   }
@@ -196,14 +197,14 @@ public class Property implements Serializable {
    * @return true if this is a numerical Property, that is, Integer or Double
    */
   public boolean isNumerical() {
-    return isType(Integer.class, Double.class);
+    return isValueClass(Integer.class, Double.class);
   }
 
   /**
    * @return true if this is a time based property, Date or Timestamp
    */
   public boolean isTime() {
-    return isType(Date.class, Timestamp.class);
+    return isValueClass(Date.class, Timestamp.class);
   }
 
   /**
@@ -224,20 +225,20 @@ public class Property implements Serializable {
   /**
    * @return the data type of the value of this property
    */
-  public Class getType() {
-    return propertyType;
+  public Class getValueClass() {
+    return valueClass;
   }
 
-  public boolean isType(final Class... typeClasses) {
-    for (final Class typeClass : Arrays.asList(typeClasses))
-      if (propertyType.equals(typeClass))
+  public boolean isValueClass(final Class... valueClasses) {
+    for (final Class typeClass : Arrays.asList(valueClasses))
+      if (valueClass.equals(typeClass))
         return true;
 
     return false;
   }
 
-  public boolean isType(final Class typeClass) {
-    return propertyType.equals(typeClass);
+  public boolean isValueClass(final Class typeClass) {
+    return valueClass.equals(typeClass);
   }
 
   /**
@@ -667,7 +668,7 @@ public class Property implements Serializable {
      */
     public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final Property... referenceProperties) {
-      super(propertyID, Entity.class, caption);
+      super(propertyID, ValueMap.class, caption);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
           throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
@@ -759,7 +760,7 @@ public class Property implements Serializable {
      */
     public DenormalizedProperty(final String propertyID, final String foreignKeyPropertyID,
                                 final Property denormalizedProperty, final String caption) {
-      super(propertyID, denormalizedProperty.propertyType, caption);
+      super(propertyID, denormalizedProperty.getValueClass(), caption);
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = denormalizedProperty;
     }
@@ -890,7 +891,7 @@ public class Property implements Serializable {
      */
     public DenormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID, final Property property,
                                     final String caption) {
-      super(propertyID, property.propertyType, caption);
+      super(propertyID, property.getValueClass(), caption);
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = property;
     }

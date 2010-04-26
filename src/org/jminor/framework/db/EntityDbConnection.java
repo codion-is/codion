@@ -679,16 +679,16 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private ResultPacker getPropertyResultPacker(final Property property) {
-    ResultPacker packer = propertyResultPackers.get(property.getType());
+    ResultPacker packer = propertyResultPackers.get(property.getValueClass());
     if (packer == null) {
-      propertyResultPackers.put(property.getType(), packer = new ResultPacker() {
+      propertyResultPackers.put(property.getValueClass(), packer = new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
           final List<Object> result = new ArrayList<Object>(50);
           int counter = 0;
           while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-            if (property.isType(Integer.class))
+            if (property.isValueClass(Integer.class))
               result.add(resultSet.getInt(1));
-            else if (property.isType(Double.class))
+            else if (property.isValueClass(Double.class))
               result.add(resultSet.getDouble(1));
             else
               result.add(resultSet.getObject(1));

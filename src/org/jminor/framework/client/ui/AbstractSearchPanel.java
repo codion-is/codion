@@ -205,9 +205,9 @@ public abstract class AbstractSearchPanel extends JPanel {
   protected abstract boolean isLowerBoundFieldRequired(final Property property);
 
   protected SimpleDateFormat getInputFormat() {
-    if (model.getProperty().isType(Timestamp.class))
+    if (model.getProperty().isValueClass(Timestamp.class))
       return Configuration.getDefaultTimestampFormat();
-    if (model.getProperty().isType(Date.class))
+    if (model.getProperty().isValueClass(Date.class))
       return Configuration.getDefaultDateFormat();
 
     return null;

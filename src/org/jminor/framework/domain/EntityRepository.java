@@ -56,7 +56,7 @@ public class EntityRepository {
               getDatabaseProperties(entityID);
       searchProperties = new ArrayList<Property>();
       for (final Property property : properties)
-        if (property.isType(String.class))
+        if (property.isValueClass(String.class))
           searchProperties.add(property);
     }
 

@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueProvider;
 
 import org.json.JSONException;
@@ -227,8 +228,8 @@ public class EntityUtil {
     if (propertyValues.isNull(propertyID))
       return null;
 
-    final Class type = property.getType();
-    if (type.equals(Entity.class)) {
+    final Class type = property.getValueClass();
+    if (type.equals(ValueMap.class)) {
       return parseJSONString(propertyValues.getString(propertyID)).get(0);
     }
     else if (type.equals(String.class)) {
@@ -279,7 +280,7 @@ public class EntityUtil {
     if (property instanceof Property.ForeignKeyProperty)
       return getJSONObject(Arrays.asList(entity.getEntityValue(property.getPropertyID())));
     if (property.isTime())
-      return entity.getFormattedDate(property.getPropertyID(), property.isType(Date.class) ? jsonDateFormat : jsonTimestampFormat);
+      return entity.getFormattedDate(property.getPropertyID(), property.isValueClass(Date.class) ? jsonDateFormat : jsonTimestampFormat);
 
     return entity.getValue(property.getPropertyID());
   }
@@ -295,13 +296,13 @@ public class EntityUtil {
   }
 
   private static Object getJSONOriginalValue(final Entity entity, final Property property) throws JSONException {
-    if (Entity.isValueNull(property.getType(), entity.getOriginalValue(property.getPropertyID())))
+    if (Entity.isValueNull(property.getValueClass(), entity.getOriginalValue(property.getPropertyID())))
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
       return getJSONObject(Arrays.asList((Entity) entity.getOriginalValue(property.getPropertyID())));
     if (property.isTime()) {
       final Date date = (Date) entity.getOriginalValue(property.getPropertyID());
-      return property.isType(Date.class) ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
+      return property.isValueClass(Date.class) ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
     }
 
     return entity.getOriginalValue(property.getPropertyID());
@@ -341,15 +342,15 @@ public class EntityUtil {
       return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
     }
     else {
-      if (property.isType(Boolean.class))
+      if (property.isValueClass(Boolean.class))
         return random.nextBoolean();
-      else if (property.isType(Character.class))
+      else if (property.isValueClass(Character.class))
         return (char) random.nextInt();
-      else if (property.isType(Date.class))
+      else if (property.isValueClass(Date.class))
         return DateUtil.floorDate(new Date());
-      else if (property.isType(Timestamp.class))
+      else if (property.isValueClass(Timestamp.class))
         return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
-      else if (property.isType(Double.class)) {
+      else if (property.isValueClass(Double.class)) {
         double min = property.getMin() == null ? -10000000 : property.getMin();
         double max = property.getMax() == null ? 10000000 : property.getMax();
         //Min + (int)(Math.random() * ((Max - Min) + 1))
@@ -359,13 +360,13 @@ public class EntityUtil {
         else
           return ret;
       }
-      else if (property.isType(Integer.class)) {
+      else if (property.isValueClass(Integer.class)) {
         double min = property.getMin() == null ? -10000000 : property.getMin();
         double max = property.getMax() == null ? 10000000 : property.getMax();
 
         return (int) (min + (random.nextDouble() * ((max - min) + 1)));
       }
-      else if (property.isType(String.class)) {
+      else if (property.isValueClass(String.class)) {
         final int minLength = property.isNullable() ? 0 : 1;
         return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
       }

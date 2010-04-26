@@ -310,7 +310,7 @@ public class EntityUiUtil {
       throw new RuntimeException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     final List<Property> searchProperties = EntityRepository.getProperties(foreignKeyProperty.getReferencedEntityID(), searchPropertyIDs);
     for (final Property searchProperty : searchProperties)
-      if (!searchProperty.isType(String.class))
+      if (!searchProperty.isValueClass(String.class))
         throw new IllegalArgumentException("Can only create EntityLookupField with a search property of STRING type");
 
     final EntityLookupField lookupField =
@@ -371,7 +371,7 @@ public class EntityUiUtil {
 
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns) {
-    if (!property.isType(String.class))
+    if (!property.isValueClass(String.class))
       throw new RuntimeException("Cannot create a text area for a non-string property");
 
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
@@ -414,22 +414,22 @@ public class EntityUiUtil {
                                            final State enabledState, final boolean valueContainsLiteralCharacters) {
     final JTextField textField = initTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
-    if (property.isType(String.class)) {
+    if (property.isValueClass(String.class)) {
       if (formatMaskString != null)
         new FormattedValueLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
       else
         new TextValueLink(textField, editModel, propertyID, immediateUpdate, linkType);
     }
-    else if (property.isType(Integer.class)) {
+    else if (property.isValueClass(Integer.class)) {
       new IntValueLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
-    else if (property.isType(Double.class)) {
+    else if (property.isValueClass(Double.class)) {
       new DoubleValueLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
-    else if (property.isType(Date.class)) {
+    else if (property.isValueClass(Date.class)) {
       new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
     }
-    else if (property.isType(Timestamp.class)) {
+    else if (property.isValueClass(Timestamp.class)) {
       new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
     }
     else
@@ -541,16 +541,16 @@ public class EntityUiUtil {
                                           final State enabledState, final String formatMaskString,
                                           final boolean valueContainsLiteralCharacters) {
     final JTextField field;
-    if (property.isType(Integer.class))
+    if (property.isValueClass(Integer.class))
       field = new IntField(0);
-    else if (property.isType(Double.class))
+    else if (property.isValueClass(Double.class))
       field = new DoubleField(0);
     else if (property.isTime())
       field = UiUtil.createFormattedField(formatMaskString, true);
-    else if (property.isType(String.class))
+    else if (property.isValueClass(String.class))
       field = formatMaskString == null ? new TextFieldPlus() : UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
     else
-      throw new RuntimeException("Unable to create text field for property type: " + property.getType());
+      throw new RuntimeException("Unable to create text field for property type: " + property.getValueClass());
 
     UiUtil.linkToEnabledState(enabledState, field);
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
