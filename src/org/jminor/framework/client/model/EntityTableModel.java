@@ -242,7 +242,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   public Class<?> getColumnClass(final int columnIndex) {
     final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
-    return columnProperty.getValueClass();
+    return Property.getTypeClass(columnProperty.getType());
   }
 
   /** {@inheritDoc} */

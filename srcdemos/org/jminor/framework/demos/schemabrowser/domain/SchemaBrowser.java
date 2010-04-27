@@ -10,6 +10,7 @@ import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
+import java.sql.Types;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -51,7 +52,7 @@ public class SchemaBrowser {
 
   static {
     EntityRepository.add(new EntityDefinition(T_SCHEMA, bundle.getString("t_schema"),
-            new Property.PrimaryKeyProperty(SCHEMA_NAME, String.class, "Name"))
+            new Property.PrimaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderByClause(SCHEMA_NAME)
             .setReadOnly(true));
 
@@ -64,39 +65,39 @@ public class SchemaBrowser {
 
     EntityRepository.add(new EntityDefinition(T_TABLE, bundle.getString("t_table"),
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
-                    new Property.PrimaryKeyProperty(TABLE_SCHEMA, String.class).setIndex(0)),
-            new Property.PrimaryKeyProperty(TABLE_NAME, String.class, "Name").setIndex(1))
+                    new Property.PrimaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setIndex(0)),
+            new Property.PrimaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true)
             .setStringProvider(new StringProvider<String, Object>(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_COLUMN, bundle.getString("t_column"),
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
-                    new Property.PrimaryKeyProperty(COLUMN_SCHEMA, String.class).setIndex(0),
-                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, String.class).setIndex(1)),
-            new Property.PrimaryKeyProperty(COLUMN_NAME, String.class, "Column name").setIndex(2),
-            new Property(COLUMN_DATA_TYPE, String.class, "Data type"))
+                    new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setIndex(0),
+                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setIndex(1)),
+            new Property.PrimaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setIndex(2),
+            new Property(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true)
             .setStringProvider(new StringProvider<String, Object>(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_CONSTRAINT, bundle.getString("t_constraint"),
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
-                    new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, String.class).setIndex(0),
-                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, String.class).setIndex(1)),
-            new Property.PrimaryKeyProperty(CONSTRAINT_NAME, String.class, "Constraint name").setIndex(2),
-            new Property(CONSTRAINT_TYPE, String.class, "Type"))
+                    new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
+                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1)),
+            new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setIndex(2),
+            new Property(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true).setLargeDataset(true)
             .setStringProvider(new StringProvider<String, Object>(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, String.class).setIndex(0),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, String.class).setIndex(1),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, String.class).setIndex(2)),
-            new Property(COLUMN_CONSTRAINT_COLUMN_NAME, String.class, "Column name"),
-            new Property(COLUMN_CONSTRAINT_POSITION, Integer.class, "Position"))
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1),
+                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setIndex(2)),
+            new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
+            new Property(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
             .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)
             .setReadOnly(true));
   }

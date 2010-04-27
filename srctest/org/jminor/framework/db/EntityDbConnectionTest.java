@@ -32,6 +32,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class EntityDbConnectionTest {
     new EmpDept();
     EntityRepository.add(new EntityDefinition(COMBINED_ENTITY_ID,
             new Property.PrimaryKeyProperty("empno"),
-            new Property("deptno", Integer.class))
+            new Property("deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno"));
   }
 

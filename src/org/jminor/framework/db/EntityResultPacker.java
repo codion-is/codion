@@ -4,13 +4,13 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -85,12 +85,12 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   protected Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
-    if (property.isValueClass(ValueMap.class))
+    if (property.isReference())
       throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
-    else if (property.isValueClass(Boolean.class))
+    else if (property.isBoolean())
       return getBoolean(resultSet, property);
     else
-      return getValue(resultSet, property.getValueClass(), property.getSelectIndex());
+      return getValue(resultSet, property.getType(), property.getSelectIndex());
   }
 
   private Boolean getBoolean(final ResultSet resultSet, final Property property) throws SQLException {
@@ -110,18 +110,20 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     }
   }
 
-  private Object getValue(final ResultSet resultSet, final Class valueClass, final int selectIndex) throws SQLException {
-    if (valueClass.equals(Integer.class))
+  private Object getValue(final ResultSet resultSet, final int sqlType, final int selectIndex) throws SQLException {
+    if (sqlType == Types.INTEGER)
       return getInteger(resultSet, selectIndex);
-    else if (valueClass.equals(Double.class))
+    else if (sqlType == Types.DOUBLE)
       return getDouble(resultSet, selectIndex);
-    else if (valueClass.equals(Date.class))
+    else if (sqlType == Types.DATE)
       return getDate(resultSet, selectIndex);
-    else if (valueClass.equals(Timestamp.class))
+    else if (sqlType == Types.TIMESTAMP)
       return getTimestamp(resultSet, selectIndex);
-    else if (valueClass.equals(String.class))
+    else if (sqlType == Types.VARCHAR)
       return getString(resultSet, selectIndex);
-    else if (valueClass.equals(Character.class)) {
+    else if (sqlType == Types.BOOLEAN)
+      return getBoolean(resultSet, selectIndex);
+    else if (sqlType == Types.CHAR) {
       final String val = getString(resultSet, selectIndex);
       if (val != null && val.length() > 0)
         return val.charAt(0);
@@ -129,7 +131,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
         return null;
     }
     else
-      throw new IllegalArgumentException("Unknown value class: " + valueClass);
+      throw new IllegalArgumentException("Unknown value type: " + sqlType);
   }
 
   private Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -148,6 +150,10 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     final String string = resultSet.getString(columnIndex);
 
     return string == null ? "" : string;
+  }
+
+  private Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return resultSet.getBoolean(columnIndex);
   }
 
   private Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {

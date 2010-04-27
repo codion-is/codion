@@ -141,13 +141,13 @@ public class PropertySummaryModel {
 
     public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (property.isValueClass(Integer.class)) {
+      if (property.isInteger()) {
         int sum = 0;
         for (final Object obj : values)
           sum += (Integer)obj;
         txt = format.format(sum);
       }
-      else if (property.isValueClass(Double.class)) {
+      else if (property.isDouble()) {
         double sum = 0;
         for (final Object obj : values)
           sum += (Double)obj;
@@ -167,7 +167,7 @@ public class PropertySummaryModel {
 
     public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (property.isValueClass(Integer.class)) {
+      if (property.isInteger()) {
         double sum = 0;
         int count = 0;
         for (final Object obj : values) {
@@ -177,7 +177,7 @@ public class PropertySummaryModel {
         if (count > 0)
           txt = format.format(sum / count);
       }
-      else if (property.isValueClass(Double.class)) {
+      else if (property.isDouble()) {
         double sum = 0;
         int count = 0;
         for (final Object obj : values) {
@@ -201,14 +201,14 @@ public class PropertySummaryModel {
 
     public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (property.isValueClass(Integer.class)) {
+      if (property.isInteger()) {
         int min = Integer.MAX_VALUE;
         for (final Object obj : values)
           min = Math.min(min, (Integer) obj);
         if (min != Integer.MAX_VALUE)
           txt = format.format(min);
       }
-      else if (property.isValueClass(Double.class)) {
+      else if (property.isDouble()) {
         double min = Double.MAX_VALUE;
         for (final Object obj : values)
           min = Math.min(min, (Double) obj);
@@ -229,14 +229,14 @@ public class PropertySummaryModel {
 
     public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (property.isValueClass(Integer.class)) {
+      if (property.isInteger()) {
         int max = Integer.MIN_VALUE;
         for (final Object obj : values)
           max = Math.max(max, (Integer) obj);
         if (max != Integer.MIN_VALUE)
           txt = format.format(max);
       }
-      else if (property.isValueClass(Double.class)) {
+      else if (property.isDouble()) {
         double max = Double.MIN_VALUE;
         for (final Object obj : values)
           max = Math.max(max, (Double) obj);
@@ -257,7 +257,7 @@ public class PropertySummaryModel {
 
     public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
-      if (property.isValueClass(Integer.class)) {
+      if (property.isInteger()) {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
         for (final Object obj : values) {
@@ -267,7 +267,7 @@ public class PropertySummaryModel {
         if (max != Integer.MIN_VALUE)
           txt = format.format(min) + "/" + format.format(max);
       }
-      else if (property.isValueClass(Double.class)) {
+      else if (property.isDouble()) {
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
         for (final Object obj : values) {

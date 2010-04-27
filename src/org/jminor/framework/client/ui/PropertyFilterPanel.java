@@ -135,7 +135,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   @Override
   protected boolean isLowerBoundFieldRequired(final Property property) {
-    return property.isValueClass(Boolean.class);
+    return property.isBoolean();
   }
 
   /** {@inheritDoc} */
@@ -149,7 +149,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   protected JComponent getInputField(final boolean isUpperBound) {
     final SimpleDateFormat format = getInputFormat();
     final JComponent field = initField(format);
-    if (getModel().getProperty().isValueClass(Boolean.class))
+    if (getModel().getProperty().isBoolean())
       createToggleProperty((JCheckBox) field, isUpperBound);
     else
       createTextProperty(field, isUpperBound, format);
@@ -168,13 +168,13 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   private JComponent initField(final SimpleDateFormat format) {
     final Property property = getModel().getProperty();
-    if (property.isValueClass(Date.class, Timestamp.class))
+    if (property.isTime())
       return UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    else if (property.isValueClass(Double.class))
+    else if (property.isDouble())
       return new DoubleField(4);
-    else if (property.isValueClass(Integer.class))
+    else if (property.isInteger())
       return new IntField(4);
-    else if (property.isValueClass(Boolean.class))
+    else if (property.isBoolean())
       return new JCheckBox();
     else
       return new JTextField(4);
@@ -217,24 +217,24 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
   private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
     final Property property = getModel().getProperty();
-    if (property.isValueClass(Integer.class))
+    if (property.isInteger())
       return new IntBeanValueLink((IntField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
               isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
-    if (property.isValueClass(Double.class))
+    if (property.isDouble())
       return new DoubleBeanValueLink((DoubleField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
               isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), null);
-    if (property.isValueClass(Date.class, Timestamp.class)) {
+    if (property.isTime()) {
       return new FormattedTextBeanValueLink((JFormattedTextField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,
-              property.isValueClass(Timestamp.class) ? Timestamp.class : Date.class,
+              property.isTimestamp() ? Timestamp.class : Date.class,
               isUpper ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE, format) {
         @Override
         protected Object getUIValue() {
           final Date date = (Date) super.getUIValue();
           if (date != null)
-            return property.isValueClass(Timestamp.class) ? new Timestamp(date.getTime()) : date;
+            return property.isTimestamp() ? new Timestamp(date.getTime()) : date;
 
           return null;
         }

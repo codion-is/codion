@@ -5,13 +5,15 @@ import org.jminor.common.model.IdSource;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+import java.sql.Types;
+
 public class EntityDefinitionTest {
 
   @Test
   public void test() {
     final EntityDefinition definition = new EntityDefinition("entityID", "tableName",
             new Property.PrimaryKeyProperty("id"),
-            new Property("name", String.class)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
+            new Property("name", Types.VARCHAR)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
             .setSelectQuery("select * from dual").setLargeDataset(true).setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName");
 

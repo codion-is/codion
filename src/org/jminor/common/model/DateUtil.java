@@ -21,8 +21,7 @@ public class DateUtil {
   /**
    * @param date the date to check for validity
    * @param formats the date formats to use for validation
-   * @return true if the date is valid, using the default short date format
-   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
+   * @return true if the date is valid
    */
   public static boolean isDateValid(final String date, final DateFormat... formats) {
     return isDateValid(date, false, formats);
@@ -32,7 +31,7 @@ public class DateUtil {
    * @param date the date to check for validity
    * @param emptyStringOk if true then an empty string is regarded as a valid date
    * @param formats the date formats to use for validation
-   * @return true if the date is valid, using the given date format
+   * @return true if the date is valid, using the given date formats
    */
   public static boolean isDateValid(final String date, final boolean emptyStringOk, final DateFormat... formats) {
     if (formats == null || formats.length == 0)

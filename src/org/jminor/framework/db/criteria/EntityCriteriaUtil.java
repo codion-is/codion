@@ -7,13 +7,11 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -35,25 +33,25 @@ public class EntityCriteriaUtil {
 
           if (property.isNumerical())
             return value.toString();//localize?
-          else if (property.isValueClass(Timestamp.class)) {
+          else if (property.isTimestamp()) {
             if (!(value instanceof Date))
               throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
             return database.getSQLDateString((Date) value, true);
           }
-          else if (property.isValueClass(Date.class)) {
+          else if (property.isDate()) {
             if (!(value instanceof Date))
               throw new IllegalArgumentException("Date value expected for: " + columnKey + ", got: " + value.getClass());
             return database.getSQLDateString((Date) value, false);
           }
-          else if (property.isValueClass(Character.class)) {
+          else if (property.isCharacter()) {
             return "'" + value + "'";
           }
-          else if (property.isValueClass(String.class)) {
+          else if (property.isString()) {
             if (!(value instanceof String))
               throw new IllegalArgumentException("String value expected for: " + columnKey + ", got: " + value.getClass());
             return "'" + Util.sqlEscapeString((String) value) + "'";
           }
-          else if (property.isValueClass(Boolean.class)) {
+          else if (property.isBoolean()) {
             if (!(value instanceof Boolean))
               throw new IllegalArgumentException("Boolean value expected for property: " + property + ", got: " + value.getClass());
             if (property instanceof Property.BooleanProperty)
@@ -61,12 +59,12 @@ public class EntityCriteriaUtil {
             else
               return getBooleanSQLString((Boolean) value);
           }
-          else if (property.isValueClass(ValueMap.class)) {
+          else if (property.isReference()) {
             return value instanceof Entity ? getSQLString(database, columnKey, ((Entity) value).getPrimaryKey().getFirstKeyValue())
                     : getSQLString(database, ((Entity.Key) value).getFirstKeyProperty(), ((Entity.Key) value).getFirstKeyValue());
           }
           else
-            throw new IllegalArgumentException("Undefined property type: " + property.getValueClass());
+            throw new IllegalArgumentException("Undefined property type: " + property.getType());
         }
 
         public boolean isValueNull(final Object columnKey, final Object value) {

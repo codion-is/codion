@@ -201,27 +201,27 @@ public class DomainClassGenerator {
       case Types.INTEGER:
       case Types.ROWID:
       case Types.SMALLINT:
-        return "Integer.class";
+        return "Types.INTEGER";
       case Types.CHAR:
-        return "Character.class";
+        return "Types.CHAR";
       case Types.DATE:
-        return "Date.class";
+        return "Types.DATE";
       case Types.DECIMAL:
       case Types.DOUBLE:
       case Types.FLOAT:
       case Types.NUMERIC:
       case Types.REAL:
-        return "Double.class";
+        return "Types.DOUBLE";
       case Types.TIME:
       case Types.TIMESTAMP:
-        return "Timestamp.class";
+        return "Types.TIMESTAMP";
       case Types.LONGVARCHAR:
       case Types.VARCHAR:
-        return "String.class";
+        return "Types.VARCHAR";
       case Types.BLOB:
-        return "Blob.class";
+        return "Types.BLOB";
       case Types.BOOLEAN:
-        return "Boolean.class";
+        return "Types.BOOLEAN";
     }
 
     return null;

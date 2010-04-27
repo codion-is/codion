@@ -720,7 +720,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     if (entity.isValueNull(property.getPropertyID()))
       return;
 
-    final Double value = property.isValueClass(Double.class) ? (Double) entity.getValue(property.getPropertyID())
+    final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
             : (Integer) entity.getValue(property.getPropertyID());
     if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin()))
       throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +

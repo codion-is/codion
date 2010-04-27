@@ -5,13 +5,13 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Date;
 
 public class EntityTest {
@@ -62,17 +62,17 @@ public class EntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     //assert types
-    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getValueClass(), Integer.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getValueClass(), Integer.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getValueClass(), Double.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getValueClass(), String.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DATE).getValueClass(), Date.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_TIMESTAMP).getValueClass(), Timestamp.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getValueClass(), Boolean.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).getValueClass(), ValueMap.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).getValueClass(), Integer.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getValueClass(), String.class);
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getValueClass(), Integer.class);
+    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.INTEGER);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getType(), Types.INTEGER);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getType(), Types.DOUBLE);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getType(), Types.VARCHAR);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DATE).getType(), Types.DATE);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_TIMESTAMP).getType(), Types.TIMESTAMP);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_BOOLEAN).getType(), Types.BOOLEAN);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_FK).getType(), Types.REF);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ENTITY_ID).getType(), Types.INTEGER);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_NAME).getType(), Types.VARCHAR);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);
 
     //assert column names
     assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getPropertyID(), EntityTestDomain.DETAIL_ID);

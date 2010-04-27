@@ -12,7 +12,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -71,7 +70,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -1682,23 +1680,23 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    if (property.isValueClass(Timestamp.class))
+    if (property.isTimestamp())
       return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
-    if (property.isValueClass(Date.class))
+    if (property.isDate())
       return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
-    if (property.isValueClass(Double.class))
+    if (property.isDouble())
       return new DoubleInputProvider((Double) currentValue);
-    if (property.isValueClass(Integer.class))
+    if (property.isInteger())
       return new IntInputProvider((Integer) currentValue);
-    if (property.isValueClass(Boolean.class))
+    if (property.isBoolean())
       return new BooleanInputProvider((Boolean) currentValue);
-    if (property.isValueClass(String.class))
+    if (property.isString())
       return new TextInputProvider(property.getCaption(), new PropertyValueListProvider(getModel().getDbProvider(),
               getModel().getEntityID(), property.getPropertyID()), (String) currentValue);
-    if (property.isValueClass(ValueMap.class))
+    if (property.isReference())
       return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue);
 
-    throw new IllegalArgumentException("Unsupported property type: " + property.getValueClass());
+    throw new IllegalArgumentException("Unsupported property type: " + property.getType());
   }
 
   /**

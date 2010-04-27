@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueProvider;
 
 import org.json.JSONException;
@@ -228,28 +227,20 @@ public class EntityUtil {
     if (propertyValues.isNull(propertyID))
       return null;
 
-    final Class type = property.getValueClass();
-    if (type.equals(ValueMap.class)) {
+    if (property.isReference())
       return parseJSONString(propertyValues.getString(propertyID)).get(0);
-    }
-    else if (type.equals(String.class)) {
+    else if (property.isString())
       return propertyValues.getString(propertyID);
-    }
-    else if (type.equals(Boolean.class)) {
+    else if (property.isBoolean())
       return propertyValues.getBoolean(propertyID);
-    }
-    else if (type.equals(Date.class)) {
+    else if (property.isDate())
       return jsonDateFormat.parse(propertyValues.getString(propertyID));
-    }
-    else if (type.equals(Timestamp.class)) {
+    else if (property.isTimestamp())
       return jsonTimestampFormat.parse(propertyValues.getString(propertyID));
-    }
-    else if (type.equals(Double.class)) {
+    else if (property.isDouble())
       return propertyValues.getDouble(propertyID);
-    }
-    else if (type.equals(Integer.class)) {
+    else if (property.isInteger())
       return propertyValues.getInt(propertyID);
-    }
 
     return propertyValues.getString(propertyID);
   }
@@ -280,7 +271,7 @@ public class EntityUtil {
     if (property instanceof Property.ForeignKeyProperty)
       return getJSONObject(Arrays.asList(entity.getEntityValue(property.getPropertyID())));
     if (property.isTime())
-      return entity.getFormattedDate(property.getPropertyID(), property.isValueClass(Date.class) ? jsonDateFormat : jsonTimestampFormat);
+      return entity.getFormattedDate(property.getPropertyID(), property.isDate() ? jsonDateFormat : jsonTimestampFormat);
 
     return entity.getValue(property.getPropertyID());
   }
@@ -302,7 +293,7 @@ public class EntityUtil {
       return getJSONObject(Arrays.asList((Entity) entity.getOriginalValue(property.getPropertyID())));
     if (property.isTime()) {
       final Date date = (Date) entity.getOriginalValue(property.getPropertyID());
-      return property.isValueClass(Date.class) ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
+      return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
     }
 
     return entity.getOriginalValue(property.getPropertyID());
@@ -342,15 +333,15 @@ public class EntityUtil {
       return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
     }
     else {
-      if (property.isValueClass(Boolean.class))
+      if (property.isBoolean())
         return random.nextBoolean();
-      else if (property.isValueClass(Character.class))
+      else if (property.isCharacter())
         return (char) random.nextInt();
-      else if (property.isValueClass(Date.class))
+      else if (property.isDate())
         return DateUtil.floorDate(new Date());
-      else if (property.isValueClass(Timestamp.class))
+      else if (property.isTimestamp())
         return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
-      else if (property.isValueClass(Double.class)) {
+      else if (property.isDouble()) {
         double min = property.getMin() == null ? -10000000 : property.getMin();
         double max = property.getMax() == null ? 10000000 : property.getMax();
         //Min + (int)(Math.random() * ((Max - Min) + 1))
@@ -360,13 +351,13 @@ public class EntityUtil {
         else
           return ret;
       }
-      else if (property.isValueClass(Integer.class)) {
+      else if (property.isInteger()) {
         double min = property.getMin() == null ? -10000000 : property.getMin();
         double max = property.getMax() == null ? 10000000 : property.getMax();
 
         return (int) (min + (random.nextDouble() * ((max - min) + 1)));
       }
-      else if (property.isValueClass(String.class)) {
+      else if (property.isString()) {
         final int minLength = property.isNullable() ? 0 : 1;
         return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
       }

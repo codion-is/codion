@@ -382,7 +382,7 @@ public class EntityTableSearchModel implements FilterCriteria<Entity> {
     final Collection<Property> databaseProperties = EntityRepository.getDatabaseProperties(entityID);
     final List<Property> stringProperties = new ArrayList<Property>();
     for (final Property property : databaseProperties)
-      if (property.isValueClass(String.class))
+      if (property.isString())
         stringProperties.add(property);
 
     return stringProperties;

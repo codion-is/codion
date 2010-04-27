@@ -54,7 +54,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   public static final Criteria.ValueProvider ENTITY_SQL_VALUE_PROVIDER = EntityCriteriaUtil.getCriteriaValueProvider();
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
-  private final Map<Class, ResultPacker> propertyResultPackers = new HashMap<Class, ResultPacker>();
+  private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<Integer, ResultPacker>();
   private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
 
   /**
@@ -679,16 +679,16 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   }
 
   private ResultPacker getPropertyResultPacker(final Property property) {
-    ResultPacker packer = propertyResultPackers.get(property.getValueClass());
+    ResultPacker packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
-      propertyResultPackers.put(property.getValueClass(), packer = new ResultPacker() {
+      propertyResultPackers.put(property.getType(), packer = new ResultPacker() {
         public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
           final List<Object> result = new ArrayList<Object>(50);
           int counter = 0;
           while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-            if (property.isValueClass(Integer.class))
+            if (property.isInteger())
               result.add(resultSet.getInt(1));
-            else if (property.isValueClass(Double.class))
+            else if (property.isDouble())
               result.add(resultSet.getDouble(1));
             else
               result.add(resultSet.getObject(1));

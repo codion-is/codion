@@ -814,7 +814,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     if (value == null)
       return value;
 
-    final Class type = property.getValueClass();
+    final Class type = Property.getTypeClass(property.getType());
     if (!type.equals(value.getClass()) && !type.isAssignableFrom(value.getClass()))
       throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
 
@@ -860,7 +860,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
         throw new IllegalArgumentException("Key can not be instantiated without an entityID");
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
-      this.singleIntegerKey = getPropertyCount() == 1 && getFirstKeyProperty().isValueClass(Integer.class);
+      this.singleIntegerKey = getPropertyCount() == 1 && getFirstKeyProperty().isInteger();
     }
 
     /**

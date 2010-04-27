@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -84,7 +83,8 @@ public class PropertyFilterModel extends AbstractSearchModel {
     if (comparable == null)
       return false;
 
-    if (getProperty().isValueClass(String.class, ValueMap.class))
+    final Property property = getProperty();
+    if (property.isString() || property.isReference())
       return !includeExactWildcard((String) comparable);
 
     return comparable.compareTo(getUpperBound()) != 0;
@@ -166,7 +166,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
       return null;
 
     final Object value = entity.getValue(getPropertyID());
-    if (getProperty().isValueClass(ValueMap.class))
+    if (getProperty().isReference())
       return value.toString();
     else
       return (Comparable) value;

@@ -211,7 +211,7 @@ public class EntityDefinition implements Serializable {
 
   public EntityDefinition setSearchPropertyIDs(final String... searchPropertyIDs) {
     for (final String propertyID : searchPropertyIDs)
-      if (!properties.get(propertyID).isValueClass(String.class))
+      if (!properties.get(propertyID).isString())
         throw new RuntimeException("Entity search property must be of type String: " + properties.get(propertyID));
 
     this.searchPropertyIDs = Arrays.asList(searchPropertyIDs);

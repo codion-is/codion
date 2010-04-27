@@ -9,6 +9,7 @@ import org.jminor.framework.domain.Property;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -19,7 +20,7 @@ import java.util.Collection;
  */
 public class PropertySummaryModelTest {
 
-  final PropertySummaryModel testIntModel = new PropertySummaryModel(new Property("TestProperty", Integer.class),
+  final PropertySummaryModel testIntModel = new PropertySummaryModel(new Property("TestProperty", Types.INTEGER),
           new PropertySummaryModel.PropertyValueProvider() {
     public Collection<?> getValues() {
       return Arrays.asList(1,2,3,4,5);
@@ -30,7 +31,7 @@ public class PropertySummaryModelTest {
     public void bindValuesChangedEvent(Event event) {}
   });
 
-  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new Property("TestProperty", Double.class),
+  final PropertySummaryModel testDoubleModel = new PropertySummaryModel(new Property("TestProperty", Types.DOUBLE),
           new PropertySummaryModel.PropertyValueProvider() {
     public Collection<?> getValues() {
       return Arrays.asList(1.1, 2.2, 3.3, 4.4, 5.5);

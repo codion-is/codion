@@ -137,7 +137,7 @@ public class PropertyCriteria implements Criteria, Serializable {
   }
 
   private String getSqlValue(final String sqlStringValue) {
-    return property.isValueClass(String.class) && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
+    return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
   }
 
   private String getConditionString(final Database database, final ValueProvider valueProvider) {
@@ -217,7 +217,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     for (int i = 0; i < getValues().size(); i++) {
       final String sqlValue = valueProvider.getSQLString(database, getProperty(),
               getValues().get(i));
-      if (getProperty().isValueClass(String.class) && !isCaseSensitive())
+      if (getProperty().isString() && !isCaseSensitive())
         stringBuilder.append("upper(").append(sqlValue).append(")");
       else
         stringBuilder.append(sqlValue);
@@ -236,14 +236,14 @@ public class PropertyCriteria implements Criteria, Serializable {
   private String getNotLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
                                      final ValueProvider valueProvider) {
     return getValueCount() > 1 ? getInList(database, columnIdentifier, true, valueProvider) :
-            columnIdentifier + (getProperty().isValueClass(String.class) && containsWildcard(sqlValue)
+            columnIdentifier + (getProperty().isString() && containsWildcard(sqlValue)
             ? " not like " + sqlValue : " <> " + sqlValue);
   }
 
   private String getLikeCondition(final Database database, final String columnIdentifier, final String sqlValue,
                                   final ValueProvider valueProvider) {
     return getValueCount() > 1 ? getInList(database, columnIdentifier, false, valueProvider) :
-            columnIdentifier + (getProperty().isValueClass(String.class) && containsWildcard(sqlValue)
+            columnIdentifier + (getProperty().isString() && containsWildcard(sqlValue)
             ? " like " + sqlValue : " = " + sqlValue);
   }
 
@@ -258,7 +258,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     else
       columnName = getProperty().getColumnName();
 
-    if (!isNullCriteria && getProperty().isValueClass(String.class) && !isCaseSensitive())
+    if (!isNullCriteria && getProperty().isString() && !isCaseSensitive())
       columnName = "upper(" + columnName + ")";
 
     return columnName;

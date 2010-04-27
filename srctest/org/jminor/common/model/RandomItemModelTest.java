@@ -15,7 +15,7 @@ public class RandomItemModelTest {
     final Object two = "two";
     final Object three = "three";
 
-    final RandomItemModel model = new RandomItemModel(0, one, two, three);
+    final RandomItemModel<Object> model = new RandomItemModel<Object>(0, one, two, three);
 
     model.increment(three);
     assertEquals(three, model.getRandomItem());

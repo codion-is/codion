@@ -858,7 +858,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
     }
     else {
       for (final Property property : EntityRepository.getDatabaseProperties(getTableModel().getEntityID())) {
-        if (property.isValueClass(String.class) && !property.isHidden())
+        if (property.isString() && !property.isHidden())
           searchableProperties.add(property);
       }
     }
@@ -1135,7 +1135,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
     Util.collate(properties);
     for (final Property property : properties) {
       if (!property.hasParentProperty() && !(property instanceof Property.ForeignKeyProperty)) {
-        final String prefix = "[" + property.getValueClass().getSimpleName().substring(0, 1)
+        final String prefix = "[" + Property.getTypeClass(property.getType()).getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());

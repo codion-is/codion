@@ -26,9 +26,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * An abstract panel for showing search/filter configuration.<br>
@@ -205,9 +203,9 @@ public abstract class AbstractSearchPanel extends JPanel {
   protected abstract boolean isLowerBoundFieldRequired(final Property property);
 
   protected SimpleDateFormat getInputFormat() {
-    if (model.getProperty().isValueClass(Timestamp.class))
+    if (model.getProperty().isTimestamp())
       return Configuration.getDefaultTimestampFormat();
-    if (model.getProperty().isValueClass(Date.class))
+    if (model.getProperty().isDate())
       return Configuration.getDefaultDateFormat();
 
     return null;
