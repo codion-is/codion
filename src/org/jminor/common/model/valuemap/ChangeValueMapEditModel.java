@@ -138,8 +138,9 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
    * @see org.jminor.framework.domain.Property#setNullable(boolean)
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
-  public abstract void validate(final T key, final int action) throws ValidationException;  /**
+  public abstract void validate(final T key, final int action) throws ValidationException;
 
+  /**
    * Checks if the value of the given property is valid, throws a ValidationException if not,
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param entity the entity to validate
