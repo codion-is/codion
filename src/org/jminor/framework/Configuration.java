@@ -369,7 +369,7 @@ public class Configuration {
    * Specifies whether EntityLookupFields should contain a search hint text when empty<br>
    * Value type: Boolean<br>
    * Default value: true
-   * @see org.jminor.framework.client.ui.EntityLookupField#setSearchHint(String) 
+   * @see org.jminor.framework.client.ui.EntityLookupField#setSearchHint(String)
    */
   public static final String USE_LOOKUP_FIELD_SEARCH_HINT = "jminor.client.useLookupFieldSearchHint";
 
@@ -509,7 +509,7 @@ public class Configuration {
    */
   public static SimpleDateFormat getDefaultDateFormat() {
     return new SimpleDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
-  }
+}
 
   /**
    * @return A SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT

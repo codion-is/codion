@@ -1445,3 +1445,4 @@
   Property initializes a default format for time and numerical properties
   Entity.getFormattedValue() added
   Property.valueClass changed to int and renamed to type, uses java.sql.Types values
+  Entity.setValue() overloaded with a validateType parameter

@@ -181,6 +181,17 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   }
 
   public Object setValue(final Property property, final Object value) {
+    return setValue(property, value, true);
+  }
+
+  /**
+   * Sets the property value
+   * @param property the property
+   * @param value the value
+   * @param validateType if true then type validation is performed
+   * @return the old value
+   */
+  public Object setValue(final Property property, final Object value, final boolean validateType) {
     if (property instanceof Property.PrimaryKeyProperty)
       return primaryKey.setValue(property.getPropertyID(), value);
     if (property instanceof Property.DenormalizedViewProperty)
@@ -188,7 +199,8 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     if (value != null && value instanceof Entity && value.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
 
-    validateType(property, value);
+    if (validateType)
+      validateType(property, value);
 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
