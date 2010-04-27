@@ -169,6 +169,8 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
       return primaryKey.getOriginalValue(propertyID);
+    if (property instanceof Property.ForeignKeyProperty)
+      return foreignKeyValues.getOriginalValue(propertyID);
 
     return super.getOriginalValue(propertyID);
   }
@@ -398,6 +400,11 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     return value == null ? "" : dateFormat.format(value);
   }
 
+  public String getFormattedValue(final String propertyID) {
+    final Format format = getProperty(propertyID).getFormat();
+    return isValueNull(propertyID) ? "" : format.format(getValue(propertyID));
+  }
+
   @Override
   public void revertValue(final String key) {
     final Property property = getProperty(key);
@@ -528,6 +535,24 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     toString = valueMap.toString();
     loaded = ((Entity) valueMap).loaded;
   }
+
+//  private static Map<String, Map<Key, Entity>> cache = new HashMap<String, Map<Key, Entity>>();
+//  public Object readResolve() throws ObjectStreamException {
+//    Map<Key, Entity> entityCache = cache.get(getEntityID());
+//    if (entityCache == null) {
+//      entityCache = new HashMap<Key, Entity>();
+//      cache.put(getEntityID(), entityCache);
+//    }
+//    Entity entity = entityCache.get(primaryKey);
+//    if (entity == null) {
+//      entityCache.put(primaryKey, entity = this);
+//      System.out.println("cached: " + this);
+//    }
+//    else
+//      System.out.println("from cache: " + entity);
+//
+//    return entity;
+//  }
 
   /**
    * Returns the primary key of the entity referenced by the given ForeignKeyProperty

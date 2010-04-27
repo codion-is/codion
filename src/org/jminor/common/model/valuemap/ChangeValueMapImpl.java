@@ -258,7 +258,7 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
 
     return true;
   }
-
+  
   protected boolean valuesEqual(final V valueOne, final V valueTwo) {
     return Util.equal(valueOne, valueTwo);
   }

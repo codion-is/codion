@@ -8,7 +8,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.text.Format;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -90,14 +89,7 @@ public class PropertySummaryModel {
   }
 
   protected Format initializeFormat(final Property property) {
-    final NumberFormat format = NumberFormat.getInstance();
-    if (property.getMaximumFractionDigits() != -1)
-      format.setMaximumFractionDigits(property.getMaximumFractionDigits());
-    else
-      format.setMaximumFractionDigits(4);
-    format.setGroupingUsed(property.useNumberFormatGrouping());
-
-    return format;
+    return property.getFormat();
   }
 
   /**

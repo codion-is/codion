@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Format;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -100,12 +101,6 @@ public class Property implements Serializable {
   private int maxLength = -1;
 
   /**
-   * The maximum number of fraction digits for this property.
-   * Only applicable to DOUBLE properties
-   */
-  private int maximumFractionDigits = -1;
-
-  /**
    * The maximum value for this property.
    * Only applicable to numerical properties
    */
@@ -116,13 +111,6 @@ public class Property implements Serializable {
    * Only applicable to numerical properties
    */
   private Double min;
-
-  /**
-   * Specifies whether or not to use number format grouping in table views,
-   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
-   * Only applicable to numerical properties
-   */
-  private boolean useNumberFormatGrouping = Configuration.getBooleanValue(Configuration.USE_NUMBER_FORMAT_GROUPING);
 
   /**
    * A string describing this property
@@ -170,11 +158,12 @@ public class Property implements Serializable {
       throw new IllegalArgumentException("Property ID must be specified");
     if (valueClass == null)
       throw new IllegalArgumentException("Property type must be specified");
-    setHidden(caption == null);
     this.propertyID = propertyID;
     this.valueClass = valueClass;
     this.caption = caption;
     this.columnName = propertyID;
+    setHidden(caption == null);
+    setFormat(initializeFormat());
   }
 
   /**
@@ -407,11 +396,15 @@ public class Property implements Serializable {
 
   /**
    * Sets the maximum fraction digits to show for this property, only applicable to DOUBLE properties
+   * This setting is overridden during subsquence calls to <code>setFormat</code>
    * @param maximumFractionDigits the maximum fraction digits
    * @return this Property instance
    */
   public Property setMaximumFractionDigits(final int maximumFractionDigits) {
-    this.maximumFractionDigits = maximumFractionDigits;
+    if (!(format instanceof NumberFormat))
+      throw new RuntimeException("Maximum fraction digits only good for number formats");
+
+    ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
     return this;
   }
 
@@ -419,7 +412,7 @@ public class Property implements Serializable {
    * @return the maximum number of fraction digits to show for this property value
    */
   public int getMaximumFractionDigits() {
-    return maximumFractionDigits;
+    return ((NumberFormat) format).getMaximumFractionDigits();
   }
 
   /**
@@ -461,20 +454,17 @@ public class Property implements Serializable {
   /**
    * Specifies whether to use number grouping when presenting this value.
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
-   * Only applicable to numerical properties
+   * Only applicable to numerical properties.
+   * This setting is overridden during subsquence calls to <code>setFormat</code>
    * @param useGrouping if true then number grouping is used
    * @return this Property instance
    */
   public Property setUseNumberFormatGrouping(final boolean useGrouping) {
-    this.useNumberFormatGrouping = useGrouping;
-    return this;
-  }
+    if (!(format instanceof NumberFormat))
+      throw new RuntimeException("Grouping only good for number formats");
 
-  /**
-   * @return whether or not number grouping is used when this property value is presented
-   */
-  public boolean useNumberFormatGrouping() {
-    return useNumberFormatGrouping;
+    ((NumberFormat) format).setGroupingUsed(useGrouping);
+    return this;
   }
 
   /**
@@ -599,6 +589,15 @@ public class Property implements Serializable {
   @Override
   public boolean equals(final Object object) {
     return this == object || object instanceof Property && this.propertyID.equals(((Property) object).propertyID);
+  }
+
+  private Format initializeFormat() {
+    if (isTime())
+      return isValueClass(Date.class) ? Configuration.getDefaultDateFormat() : Configuration.getDefaultTimestampFormat();
+    else if (isNumerical())
+      return NumberFormat.getInstance();
+
+    return null;
   }
 
   /**

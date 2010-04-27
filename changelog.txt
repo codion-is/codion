@@ -1442,3 +1442,5 @@
   ValueMap.isNull(value) added
   ValueMap.setValue() unoverloaded, initialize parameter removed (for now)
   Null value checking simplified
+  Property initializes a default format for time and numerical properties
+  Entity.getFormattedValue() added

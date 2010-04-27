@@ -115,15 +115,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     private static NumberFormat initNumberFormat(final Property property) {
-      if (property.getFormat() != null)
-        return (NumberFormat) property.getFormat();
-
-      final NumberFormat format = NumberFormat.getInstance();
-      if (property.getMaximumFractionDigits() != -1)
-        format.setMaximumFractionDigits(property.getMaximumFractionDigits());
-      format.setGroupingUsed(property.useNumberFormatGrouping());
-
-      return format;
+      return (NumberFormat) property.getFormat();
     }
   }
 
@@ -151,13 +143,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     }
 
     private static NumberFormat initNumberFormat(final Property property) {
-      if (property.getFormat() != null)
-        return (NumberFormat) property.getFormat();
-
-      final NumberFormat format = NumberFormat.getIntegerInstance();
-      format.setGroupingUsed(property.useNumberFormatGrouping());
-
-      return format;
+      return (NumberFormat) property.getFormat();
     }
   }
 
