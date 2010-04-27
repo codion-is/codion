@@ -14,7 +14,7 @@ import java.util.Collection;
  * @param <T> the type of the keys in the map
  * @param <V> the type of the values in the map
  */
-public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
+public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
 
   /**
    * @return a State active when this value map has been modified
@@ -64,7 +64,7 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
   boolean isModified(final T key);
 
   /**
-   * Clears the orignal values rendering the entity unmodified
+   * Clears the orignal values rendering the map unmodified
    */
   public void clearOriginalValues();
 
@@ -88,22 +88,22 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
    * After a call to this method this ValueMap should contain the same values and original values as the given map
    * @param map the map to copy
    */
-  void setAs(final ChangeValueMap<T, V> map);
+  void setAs(final ValueChangeMap<T, V> map);
 
   /**
-   * Returns a copy of the given value, if the value is immutable then returning the same instance is fine
+   * Returns a deep copy of the given value, if the value is immutable then returning the same instance is fine
    * @param value the value to copy
-   * @return a copy of the given value, or the same instance in case the value is immutable
+   * @return a deep copy of the given value, or the same instance in case the value is immutable
    */
   V copyValue(final V value);
 
   /**
-   * @return the keys mapping the values in this ChangeValueMap
+   * @return the keys mapping the values in this ValueChangeMap
    */
   Collection<T> getValueKeys();
 
 /**
-   * @return the keys mapping the original values in this ChangeValueMap
+   * @return the keys mapping the original values in this ValueChangeMap
    */
   Collection<T> getOriginalValueKeys();
 }

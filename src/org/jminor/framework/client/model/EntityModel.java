@@ -7,7 +7,7 @@ import org.jminor.common.db.exception.DbException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ChangeValueMapModel;
+import org.jminor.common.model.valuemap.ValueChangeMapModel;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
 import org.jminor.framework.client.model.event.UpdateEvent;
@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
  */
-public class EntityModel extends ChangeValueMapModel<String, Object> implements EntityDbProvider {
+public class EntityModel extends ValueChangeMapModel<String, Object> implements EntityDbProvider {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 

@@ -1448,3 +1448,4 @@
   Entity.setValue() overloaded with a validateType parameter
   Property.Event renamed to ValueChangeEvent and moved to common.model.valuemap
   Property.Listener renamed to ValueChangeListener and moved to common.model.valuemap
+  ChangeValueMap... classes renamed to ValueChangeMap...

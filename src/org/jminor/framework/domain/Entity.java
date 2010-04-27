@@ -4,8 +4,8 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.valuemap.ChangeValueMap;
-import org.jminor.common.model.valuemap.ChangeValueMapImpl;
+import org.jminor.common.model.valuemap.ValueChangeMap;
+import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the ValueMap interface.
  */
-public final class Entity extends ChangeValueMapImpl<String, Object> implements Serializable, Comparable<Entity> {
+public final class Entity extends ValueChangeMapImpl<String, Object> implements Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -36,7 +36,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   /**
    * The foreign key values referenced by this entity
    */
-  private final ChangeValueMapImpl<String, Entity> foreignKeyValues = new ChangeValueMapImpl<String, Entity>();
+  private final ValueChangeMapImpl<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>();
 
   /**
    * True if property values have been loaded for this entity
@@ -534,7 +534,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
    * @param valueMap the Entity to copy
    */
   @Override
-  public void setAs(final ChangeValueMap<String, Object> valueMap) {
+  public void setAs(final ValueChangeMap<String, Object> valueMap) {
     super.setAs(valueMap);
     final Entity entity = (Entity) valueMap;
     primaryKey.setAs(entity.getPrimaryKey());
@@ -828,7 +828,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   /**
    * A class representing column key objects for entities, contains the values for those columns
    */
-  public static class Key extends ChangeValueMapImpl<String, Object> implements Serializable {
+  public static class Key extends ValueChangeMapImpl<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -1034,7 +1034,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
      * @param valueMap the key to copy
      */
     @Override
-    public void setAs(final ChangeValueMap<String, Object> valueMap) {
+    public void setAs(final ValueChangeMap<String, Object> valueMap) {
       final Key key = (Key) valueMap;
       if (key != null && !key.getEntityID().equals(getEntityID()))
         throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());

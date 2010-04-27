@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.Configuration;
 
@@ -19,7 +19,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 /**
- * A class for linking a text component to a ChangeValueMapEditModel text property value.
+ * A class for linking a text component to a ValueChangeMapEditModel text property value.
  */
 public class TextValueLink extends AbstractValueMapLink<String, Object> implements DocumentListener {
 
@@ -32,11 +32,11 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
   /**
    * Instantiates a new TextPropertyLink
    * @param textComponent the text component to link
-   * @param editModel the ChangeValueMapEditModel instance
+   * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    */
-  public TextValueLink(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
                        final String key, final boolean immediateUpdate) {
     this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE);
   }
@@ -44,13 +44,13 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
   /**
    * Instantiates a new TextPropertyLink
    * @param textComponent the text component to link
-   * @param editModel the ChangeValueMapEditModel instance
+   * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    */
-  public TextValueLink(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
                        final String key, final boolean immediateUpdate, final LinkType linkType) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
@@ -150,7 +150,7 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
    * @param editModel the underlying edit model
    * @see Configuration#INVALID_VALUE_BACKGROUND_COLOR
    */
-  protected void addValidator(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel) {
+  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel) {
     final Color validBackgroundColor = textComponent.getBackground();
     final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
@@ -162,7 +162,7 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
     });
   }
 
-  private void updateValidityInfo(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
                                   final Color validBackgroundColor, final Color invalidBackgroundColor,
                                   final String defaultToolTip) {
     final String validationMessage = getValidationMessage(editModel);

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.JFormattedTextField;
@@ -17,7 +17,7 @@ import java.text.Format;
 import java.text.ParseException;
 
 /**
- * A class for linking a JFormattedTextField to a ChangeValueMapEditModel property value.
+ * A class for linking a JFormattedTextField to a ValueChangeMapEditModel property value.
  */
 public class FormattedValueLink extends TextValueLink {
 
@@ -27,13 +27,13 @@ public class FormattedValueLink extends TextValueLink {
   /**
    * Instantiates a new FormattedTextPropertyLink
    * @param textComponent the text component to link
-   * @param editModel the ChangeValueMapEditModel instance
+   * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link
    * @param format the format
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * @param linkType the link type
    */
-  public FormattedValueLink(final JFormattedTextField textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+  public FormattedValueLink(final JFormattedTextField textComponent, final ValueChangeMapEditModel<String, Object> editModel,
                             final String key, final Format format, final boolean immediateUpdate,
                             final LinkType linkType) {
     super(textComponent, editModel, key, immediateUpdate, linkType);
@@ -88,7 +88,7 @@ public class FormattedValueLink extends TextValueLink {
 
   /** {@inheritDoc} */
   @Override
-  protected void addValidator(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel) {
+  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel) {
     final Color defaultTextFieldBackground = textComponent.getBackground();
     final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
@@ -109,7 +109,7 @@ public class FormattedValueLink extends TextValueLink {
     });
   }
 
-  private void updateValidityInfo(final JTextComponent textComponent, final ChangeValueMapEditModel<String, Object> editModel,
+  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
                                   final String maskString, final Color validBackground, final Color invalidBackground,
                                   final String defaultToolTip) {
     final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && isNullable());

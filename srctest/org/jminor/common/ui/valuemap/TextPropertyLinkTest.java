@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 
 public class TextPropertyLinkTest {
 
-  private ChangeValueMapEditModel<String, Object> model;
+  private ValueChangeMapEditModel<String, Object> model;
 
   public TextPropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();

@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.State;
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.model.event.DeleteEvent;
 import org.jminor.framework.client.model.event.InsertEvent;
@@ -103,7 +103,7 @@ public class EntityEditModelTest {
     //test validation
     try {
       editModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
-      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, ChangeValueMapEditModel.INSERT);
+      editModel.validate(EmpDept.EMPLOYEE_COMMISSION, ValueChangeMapEditModel.INSERT);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {

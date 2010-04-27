@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A default ChangeValueMap implementation.
+ * A default ValueChangeMap implementation.
  * @param <T> the type of the map keys
  * @param <V> the type of the map values
  */
-public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializable {
+public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -47,7 +47,7 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
   /**
    * Instantiate a new ValueMapModel with a default size of 10.
    */
-  public ChangeValueMapImpl() {
+  public ValueChangeMapImpl() {
     this(10);
   }
 
@@ -55,7 +55,7 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
    * Instantiates a new ValueMapModel with a size of <code>initialSize</code>.
    * @param initialSize the initial size
    */
-  public ChangeValueMapImpl(final int initialSize) {
+  public ValueChangeMapImpl(final int initialSize) {
     values = new HashMap<T, V>(initialSize);
   }
 
@@ -193,7 +193,7 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void setAs(final ChangeValueMap<T, V> changeValueMap) {
+  public void setAs(final ValueChangeMap<T, V> changeValueMap) {
     clear();
     if (changeValueMap != null) {
       for (final T entryKey : changeValueMap.getValueKeys()) {
@@ -242,10 +242,10 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
   @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object object) {
-    if (!(object instanceof ChangeValueMapImpl))
+    if (!(object instanceof ValueChangeMapImpl))
       return false;
 
-    final ChangeValueMapImpl<T, V> otherMap = (ChangeValueMapImpl<T, V>) object;
+    final ValueChangeMapImpl<T, V> otherMap = (ValueChangeMapImpl<T, V>) object;
     if (values.size() != otherMap.values.size())
       return false;
 

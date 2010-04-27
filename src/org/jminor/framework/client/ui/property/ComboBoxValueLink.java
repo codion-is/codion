@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui.property;
 
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.valuemap.AbstractValueMapLink;
 import org.jminor.framework.client.model.EntityComboBoxModel;
@@ -35,7 +35,7 @@ public class ComboBoxValueLink extends AbstractValueMapLink<String, Object> {
    * @param editModel the EntityEditModel instance
    * @param property the property to link to
    */
-  public ComboBoxValueLink(final JComboBox comboBox, final ChangeValueMapEditModel<String, Object> editModel,
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
                            final Property property) {
     this(comboBox, editModel, property, LinkType.READ_WRITE);
   }
@@ -47,7 +47,7 @@ public class ComboBoxValueLink extends AbstractValueMapLink<String, Object> {
    * @param property the property to link to
    * @param linkType the link type
    */
-  public ComboBoxValueLink(final JComboBox comboBox, final ChangeValueMapEditModel<String, Object> editModel,
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
                            final Property property, final LinkType linkType) {
     super(editModel, property.getPropertyID(), linkType);
     this.boxModel = comboBox.getModel();

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.petstore.beans.ItemModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
@@ -17,7 +17,7 @@ import javax.swing.JCheckBox;
 
 public class BooleanPropertyLinkTest {
 
-  private ChangeValueMapEditModel<String, Object> model;
+  private ValueChangeMapEditModel<String, Object> model;
 
   public BooleanPropertyLinkTest() {
     model = new ItemModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();

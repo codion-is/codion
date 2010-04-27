@@ -5,7 +5,7 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.db.EntityDbConnectionTest;
@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class DatePropertyLinkTest {
 
-  private ChangeValueMapEditModel<String, Object> model;
+  private ValueChangeMapEditModel<String, Object> model;
 
   public DatePropertyLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();

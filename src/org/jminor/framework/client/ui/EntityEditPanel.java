@@ -10,7 +10,7 @@ import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.common.ui.valuemap.ChangeValueMapEditPanel;
+import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat;
  * A UI component based on the EntityEditModel.
  * @see EntityEditModel
  */
-public abstract class EntityEditPanel extends ChangeValueMapEditPanel {
+public abstract class EntityEditPanel extends ValueChangeMapEditPanel {
 
   /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel

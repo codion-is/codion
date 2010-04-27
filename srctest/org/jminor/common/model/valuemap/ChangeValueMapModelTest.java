@@ -13,7 +13,7 @@ public class ChangeValueMapModelTest {
   @Test
   public void test() {
     final String key = "key";
-    final ChangeValueMap<String, Integer> model = new ChangeValueMapImpl<String, Integer>();
+    final ValueChangeMap<String, Integer> model = new ValueChangeMapImpl<String, Integer>();
 
     model.stateModified();
     model.eventValueChanged();
@@ -65,8 +65,8 @@ public class ChangeValueMapModelTest {
 
   @Test
   public void equals() {
-    final ChangeValueMap<String, Integer> mapOne = new ChangeValueMapImpl<String, Integer>();
-    final ChangeValueMap<String, Integer> mapTwo = new ChangeValueMapImpl<String, Integer>();
+    final ValueChangeMap<String, Integer> mapOne = new ValueChangeMapImpl<String, Integer>();
+    final ValueChangeMap<String, Integer> mapTwo = new ValueChangeMapImpl<String, Integer>();
 
     mapOne.setValue("keyOne", 1);
     mapOne.setValue("keyTwo", 2);

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui.property;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.valuemap.AbstractValueMapLink;
 import org.jminor.framework.client.model.EntityLookupModel;
@@ -28,7 +28,7 @@ public class LookupValueLink extends AbstractValueMapLink<String, Object> {
    * @param editModel the EntityEditModel instance
    * @param foreignKeyProperty the foreign key property to link
    */
-  public LookupValueLink(final EntityLookupModel lookupModel, final ChangeValueMapEditModel<String, Object> editModel,
+  public LookupValueLink(final EntityLookupModel lookupModel, final ValueChangeMapEditModel<String, Object> editModel,
                          final Property.ForeignKeyProperty foreignKeyProperty) {
     super(editModel, foreignKeyProperty.getPropertyID(), LinkType.READ_WRITE);
     this.lookupModel = lookupModel;

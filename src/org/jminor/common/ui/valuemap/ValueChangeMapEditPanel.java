@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -11,14 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A UI class based on the ChangeValueMapEditModel.
+ * A UI class based on the ValueChangeMapEditModel.
  * User: Björn Darri<br>
  * Date: 25.4.2010<br>
  * Time: 12:29:37<br>
  */
-public abstract class ChangeValueMapEditPanel extends JPanel {
+public abstract class ValueChangeMapEditPanel extends JPanel {
 
-  private final ChangeValueMapEditModel model;
+  private final ValueChangeMapEditModel model;
 
   private final Map<String, JComponent> controls = new HashMap<String, JComponent>();
 
@@ -27,11 +27,11 @@ public abstract class ChangeValueMapEditPanel extends JPanel {
    */
   private JComponent defaultFocusComponent;
 
-  public ChangeValueMapEditPanel(final ChangeValueMapEditModel model) {
+  public ValueChangeMapEditPanel(final ValueChangeMapEditModel model) {
     this.model = model;
   }
 
-  public ChangeValueMapEditModel getEditModel() {
+  public ValueChangeMapEditModel getEditModel() {
     return model;
   }
 

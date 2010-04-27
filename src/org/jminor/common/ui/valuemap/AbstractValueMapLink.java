@@ -3,17 +3,17 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 
 /**
- * An abstract class for linking a UI component to a ChangeValueMapEditModel key value.
+ * An abstract class for linking a UI component to a ValueChangeMapEditModel key value.
  * @param <T> the type of the map keys
  * @param <V> the type of the map values
  */
-public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<ChangeValueMapEditModel<T, V>, V> {
+public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<ValueChangeMapEditModel<T, V>, V> {
 
   /**
    * The linked key
@@ -21,11 +21,11 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Chang
   private final T key;
 
   /**
-   * @param editModel the ChangeValueMapEditModel instance
+   * @param editModel the ValueChangeMapEditModel instance
    * @param key the key of the value to link
    * @param linkType the link type
    */
-  public AbstractValueMapLink(final ChangeValueMapEditModel<T, V> editModel, final T key, final LinkType linkType) {
+  public AbstractValueMapLink(final ValueChangeMapEditModel<T, V> editModel, final T key, final LinkType linkType) {
     super(editModel, editModel.getPropertyChangeEvent(key), linkType);
     this.key = key;
   }
@@ -74,12 +74,12 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Chang
   /**
    * If the current value is invalid this method should return a string describing the nature of
    * the invalidity, if the value is valid this method should return null
-   * @param editModel the underlying ChangeValueMapEditModel
+   * @param editModel the underlying ValueChangeMapEditModel
    * @return a validation string if the value is invalid, null otherwise
    */
-  protected String getValidationMessage(final ChangeValueMapEditModel<T, V> editModel) {
+  protected String getValidationMessage(final ValueChangeMapEditModel<T, V> editModel) {
     try {
-      editModel.validate(getKey(), ChangeValueMapEditModel.UNKNOWN);
+      editModel.validate(getKey(), ValueChangeMapEditModel.UNKNOWN);
       return null;
     }
     catch (ValidationException e) {
@@ -88,9 +88,9 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Chang
   }
 
   /**
-   * @return the property owner, in this case a ChangeValueMapEditModel
+   * @return the property owner, in this case a ValueChangeMapEditModel
    */
-  private ChangeValueMapEditModel<T, V> getEditModel() {
+  private ValueChangeMapEditModel<T, V> getEditModel() {
     return super.getValueOwner();
   }
 }

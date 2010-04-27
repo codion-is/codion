@@ -11,7 +11,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
@@ -29,8 +29,8 @@ import org.jminor.common.ui.input.InputProvider;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.input.IntInputProvider;
 import org.jminor.common.ui.input.TextInputProvider;
-import org.jminor.common.ui.valuemap.ChangeValueMapEditPanel;
-import org.jminor.common.ui.valuemap.ChangeValueMapPanel;
+import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
+import org.jminor.common.ui.valuemap.ValueChangeMapPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -75,7 +75,7 @@ import java.util.*;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  */
-public abstract class EntityPanel extends ChangeValueMapPanel implements ExceptionHandler {
+public abstract class EntityPanel extends ValueChangeMapPanel implements ExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
 
@@ -359,7 +359,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
 
   /**
    * @return the EntityTablePanel used by this EntityPanel
-   * @see org.jminor.common.ui.valuemap.ChangeValueMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
+   * @see org.jminor.common.ui.valuemap.ValueChangeMapPanel#initializeTablePanel(org.jminor.common.model.AbstractFilteredTableModel)
    */
   @Override
   public EntityTablePanel getTablePanel() {
@@ -831,7 +831,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
    * @see EntityEditPanel#setDefaultFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
-    final ChangeValueMapEditPanel editPanel = getEditPanel();
+    final ValueChangeMapEditPanel editPanel = getEditPanel();
     if (editPanel != null) {
       editPanel.prepareUI(requestDefaultFocus, clearUI);
     }
@@ -1269,7 +1269,7 @@ public abstract class EntityPanel extends ChangeValueMapPanel implements Excepti
   }
 
   @Override
-  protected final ChangeValueMapEditPanel initializeEditPanel(final ChangeValueMapEditModel editModel) {
+  protected final ValueChangeMapEditPanel initializeEditPanel(final ValueChangeMapEditModel editModel) {
     return initializeEditPanel((EntityEditModel) editModel);
   }
 

@@ -27,7 +27,7 @@ public class StringProviderTest {
 
   @Test
   public void test() {
-    final ValueMap<String, Object> department = new ChangeValueMapImpl<String, Object>() {
+    final ValueMap<String, Object> department = new ValueChangeMapImpl<String, Object>() {
       @Override
       public String toString() {
         return (String) getValue(DEPARTMENT_NAME);
@@ -37,7 +37,7 @@ public class StringProviderTest {
     department.setValue(DEPARTMENT_LOCATION, "Reykjavik");
     department.setValue(DEPARTMENT_NAME, "Sales");
 
-    final ValueMap<String, Object> employee = new ChangeValueMapImpl<String, Object>();
+    final ValueMap<String, Object> employee = new ValueChangeMapImpl<String, Object>();
     final Date hiredate = new Date();
     employee.setValue(EMPLOYEE_DEPARTMENT_FK, department);
     employee.setValue(EMPLOYEE_NAME, "Darri");

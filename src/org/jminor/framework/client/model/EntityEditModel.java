@@ -10,10 +10,10 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ChangeValueMap;
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.common.model.valuemap.ValueChangeMap;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -41,7 +41,7 @@ import java.util.Map;
 /**
  * A class for editing a Entity instance, providing property change events and combobox models.
  */
-public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
+public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
 
   protected static final Logger log = Util.getLogger(EntityEditModel.class);
 
@@ -387,7 +387,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   }
 
   @Override
-  public final void validate(final ChangeValueMap<String, Object> valueMap, final String propertyID, final int action) throws ValidationException {
+  public final void validate(final ValueChangeMap<String, Object> valueMap, final String propertyID, final int action) throws ValidationException {
     validate((Entity) valueMap, propertyID, action);
   }
 

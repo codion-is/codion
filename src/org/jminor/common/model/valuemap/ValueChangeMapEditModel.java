@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class for editing the contents a a ChangeValueMap instance.
+ * A class which facilitates the editing the contents a a ValueChangeMap instance.
  * @param <T> the type of the keys in the value map
  * @param <V> the type of the values in the value map
  */
-public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
+public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
 
   /**
    * Code for the insert action, used during validation
@@ -35,7 +35,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
    */
   public static final int UNKNOWN = 3;
 
-  private final ChangeValueMap<T, V> valueMap;
+  private final ValueChangeMap<T, V> valueMap;
   private final Event evtEntityChanged = new Event();
   private final Event evtModelCleared = new Event();
 
@@ -49,7 +49,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
    */
   private final Map<T, Event> valueChangeEventMap = new HashMap<T, Event>();
 
-  public ChangeValueMapEditModel(final ChangeValueMap<T, V> initialMap) {
+  public ValueChangeMapEditModel(final ValueChangeMap<T, V> initialMap) {
     this.valueMap = initialMap;
     bindEventsInternal();
   }
@@ -85,7 +85,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
    * @param valueMap the map to set as active, if null then the default map value is set as active
    * @see #evtEntityChanged
    */
-  public void setValueMap(final ChangeValueMap<T, V> valueMap) {
+  public void setValueMap(final ValueChangeMap<T, V> valueMap) {
     this.valueMap.setAs(valueMap == null ? getDefaultValueMap() : valueMap);
     evtEntityChanged.fire();
   }
@@ -97,7 +97,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
    * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
-   * @see #validate(ChangeValueMap, String, int)
+   * @see #validate(ValueChangeMap , String, int)
    */
   public boolean isValid(final T key, final int action) {
     try {
@@ -112,7 +112,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
   /**
    * @return a value map containing the default values
    */
-  public abstract ChangeValueMap<T, V> getDefaultValueMap();
+  public abstract ValueChangeMap<T, V> getDefaultValueMap();
 
   /**
    * @param key the key
@@ -150,7 +150,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
    * @see org.jminor.framework.domain.Property#setNullable(boolean)
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
-  public abstract void validate(final ChangeValueMap<T, V> entity, final String propertyID, final int action) throws ValidationException;
+  public abstract void validate(final ValueChangeMap<T, V> entity, final String propertyID, final int action) throws ValidationException;
 
   /**
    * @param key the key for which to retrieve the event
@@ -221,7 +221,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
     return value;
   }
 
-  protected ChangeValueMap<T, V> getValueMap() {
+  protected ValueChangeMap<T, V> getValueMap() {
     return valueMap;
   }
 }

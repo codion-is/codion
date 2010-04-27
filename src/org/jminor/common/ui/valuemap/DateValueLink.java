@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.JFormattedTextField;
@@ -12,7 +12,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * A class for linking a formatted text field to a ChangeValueMapEditModel date property value.
+ * A class for linking a formatted text field to a ValueChangeMapEditModel date property value.
  */
 public class DateValueLink extends FormattedValueLink {
 
@@ -21,13 +21,13 @@ public class DateValueLink extends FormattedValueLink {
   /**
    * Instantiates a new DateTextPropertyLink.
    * @param textField the text field to link
-   * @param editModel the ChangeValueMapEditModel instance
+   * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link
    * @param linkType the link type
    * @param dateFormat the date format to use
    * @param isTimestamp true if the date being linked is a timestamp
    */
-  public DateValueLink(final JFormattedTextField textField, final ChangeValueMapEditModel<String, Object> editModel,
+  public DateValueLink(final JFormattedTextField textField, final ValueChangeMapEditModel<String, Object> editModel,
                        final String key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textField, editModel, key, dateFormat, true, linkType);
     this.isTimestamp = isTimestamp;
