@@ -11,6 +11,8 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -275,9 +277,9 @@ public class EntityUiUtil {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    editModel.getPropertyChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new Property.Listener() {
+    editModel.getPropertyChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
       @Override
-      public void propertyChanged(final Property.Event e) {
+      public void valueChanged(final ValueChangeEvent e) {
         textField.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());
       }
     });

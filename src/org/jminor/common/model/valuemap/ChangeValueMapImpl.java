@@ -7,7 +7,6 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -74,6 +73,11 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
       evtValueChanged = new Event();
 
     return evtValueChanged;
+  }
+
+  /** {@inheritDoc} */
+  public String getMapTypeID() {
+    return getClass().getSimpleName();
   }
 
   /** {@inheritDoc} */
@@ -235,11 +239,6 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
       evtValueChanged.removeListener(valueListener);
   }
 
-  /** {@inheritDoc} */
-  public ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization) {
-    return new ActionEvent(key, 0, key.toString());
-  }
-
   @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object object) {
@@ -258,13 +257,13 @@ public class ChangeValueMapImpl<T, V> implements ChangeValueMap<T, V>, Serializa
 
     return true;
   }
-  
+
   protected boolean valuesEqual(final V valueOne, final V valueTwo) {
     return Util.equal(valueOne, valueTwo);
   }
 
   protected void notifyValueChange(final T key, final V value, final boolean initialization, final V oldValue) {
-    evtValueChanged.fire(getValueChangeEvent(key, value, oldValue, initialization));
+    evtValueChanged.fire(new ValueChangeEvent<T, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
   }
 
   protected void setOriginalValue(final T key, final V oldValue) {

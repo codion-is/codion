@@ -10,7 +10,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +64,7 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
     final V newValue = doSetValue(key, value);
 
     if (!Util.equal(newValue, oldValue))
-      notifyPropertyValueSet(key, getValueChangeEvent(key, newValue, oldValue, initialization));
+      notifyPropertyValueSet(key, new ValueChangeEvent<T, V>(this, getValueMap().getMapTypeID(), key, newValue, oldValue, true, initialization));
   }
 
   public void clear() {
@@ -200,11 +199,10 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
   }
 
   private void bindEventsInternal() {
-    valueMap.addValueListener(new ActionListener() {
-      @SuppressWarnings({"unchecked"})
-      public void actionPerformed(final ActionEvent event) {
-        final T key = (T) event.getSource();
-        final Event propertyEvent = valueChangeEventMap.get(key);
+    valueMap.addValueListener(new ValueChangeListener<T, V>() {
+      @Override
+      protected void valueChanged(final ValueChangeEvent<T, V> event) {
+        final Event propertyEvent = valueChangeEventMap.get(event.getKey());
         if (propertyEvent != null)
           propertyEvent.fire(event);
       }
@@ -226,15 +224,4 @@ public abstract class ChangeValueMapEditModel<T, V> implements Refreshable {
   protected ChangeValueMap<T, V> getValueMap() {
     return valueMap;
   }
-
-  /**
-   * Initializes a ActionEvent describing the value change.
-   * The ActionEvent must have <code>key</code> as source so that event.getSource() == key.
-   * @param key the key of the value being changed
-   * @param newValue the new value
-   * @param oldValue the old value
-   * @param initialization if true then the value was being initialized
-   * @return the ActionEvent describing the value change
-   */
-  protected abstract ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization);
 }

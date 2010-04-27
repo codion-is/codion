@@ -12,6 +12,8 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ChangeValueMap;
 import org.jminor.common.model.valuemap.ChangeValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -458,8 +460,7 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
 
   /**
    * @param property the property for which to get the ComboBoxModel
-   * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified EntityModel.eventEntitiesChanged is used
+   * @param refreshEvent the combo box model is refreshed when this event fires
    * @param nullValue the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
    * @return a new PropertyComboBoxModel based on the given property
@@ -575,12 +576,6 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
   }
 
   @Override
-  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                         final boolean initialization) {
-    return Entity.createValueChangeEvent(key, getEntityID(), EntityRepository.getProperty(getEntityID(), key), newValue, oldValue, initialization);
-  }
-
-  @Override
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = new Entity(getEntityID());
     for (final Property property : EntityRepository.getDatabaseProperties(getEntityID()))
@@ -588,10 +583,6 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
         defaultEntity.setValue(property, getDefaultValue(property));
 
     return defaultEntity;
-  }
-
-  public Entity getDefaultEntity() {
-    return getDefaultValueMap();
   }
 
   /**
@@ -795,9 +786,9 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
       }
     });
     if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      getEntity().addPropertyListener(new Property.Listener() {
+      getEntity().addValueListener(new ValueChangeListener<String, Object>() {
         @Override
-        protected void propertyChanged(final Property.Event event) {
+        protected void valueChanged(final ValueChangeEvent<String, Object> event) {
           final String msg = getPropertyChangeDebugString(event);
           System.out.println(msg);
           log.trace(msg);
@@ -819,14 +810,15 @@ public class EntityEditModel extends ChangeValueMapEditModel<String, Object> {
     propertyComboBoxModels.put(property, model);
   }
 
-  private static String getPropertyChangeDebugString(final Property.Event event) {
+  private static String getPropertyChangeDebugString(final ValueChangeEvent<String, Object> event) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (event.getSource() instanceof Entity)
       stringBuilder.append("[entity] ");
     else
       stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
-    stringBuilder.append(event.getEntityID()).append(" : ").append(event.getProperty()).append(
-            event.getProperty().hasParentProperty() ? " [fk]" : "").append("; ");
+    final Property property = EntityRepository.getProperty(event.getPropertyOwnerTypeID(), event.getKey());
+    stringBuilder.append(event.getPropertyOwnerTypeID()).append(" : ").append(property).append(
+            property.hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (event.getOldValue() != null)
         stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");

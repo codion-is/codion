@@ -8,7 +8,6 @@ import org.jminor.common.model.formats.DateFormats;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -33,22 +32,12 @@ public class StringProviderTest {
       public String toString() {
         return (String) getValue(DEPARTMENT_NAME);
       }
-      @Override
-      public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                             final boolean initialization) {
-        return new ActionEvent(this, 0, "none");
-      }
     };
     department.setValue(DEPARTMENT_ID, -10);
     department.setValue(DEPARTMENT_LOCATION, "Reykjavik");
     department.setValue(DEPARTMENT_NAME, "Sales");
 
-    final ValueMap<String, Object> employee = new ChangeValueMapImpl<String, Object>() {
-      @Override
-      public ActionEvent getValueChangeEvent(String key, Object newValue, Object oldValue, boolean initialization) {
-        return new ActionEvent(this, 0, "none");
-      }
-    };
+    final ValueMap<String, Object> employee = new ChangeValueMapImpl<String, Object>();
     final Date hiredate = new Date();
     employee.setValue(EMPLOYEE_DEPARTMENT_FK, department);
     employee.setValue(EMPLOYEE_NAME, "Darri");

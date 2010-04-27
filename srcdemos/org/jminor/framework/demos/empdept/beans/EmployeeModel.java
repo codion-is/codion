@@ -5,6 +5,8 @@ package org.jminor.framework.demos.empdept.beans;
 
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
@@ -58,9 +60,9 @@ public class EmployeeModel extends EntityModel {
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed
-    getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new Property.Listener() {
+    getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
       @Override
-      public void propertyChanged(final Property.Event e) {
+      public void valueChanged(final ValueChangeEvent e) {
         //only show managers in the same department as the active entity
         if (getEditModel().containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
           getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Object>() {

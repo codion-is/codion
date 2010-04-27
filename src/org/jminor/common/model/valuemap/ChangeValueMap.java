@@ -6,7 +6,6 @@ package org.jminor.common.model.valuemap;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 
@@ -26,6 +25,12 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
    * @return an Event fired when a value changes
    */
   Event eventValueChanged();
+
+  /**
+   * @return a String identifying the map type, for example a table name
+   * in case this value map represents a table row
+   */
+  String getMapTypeID();
 
   /**
    * Adds a ActionListener, this listener will be notified each time a value changes
@@ -101,14 +106,4 @@ public interface ChangeValueMap<T, V> extends ValueMap<T, V> {
    * @return the keys mapping the original values in this ChangeValueMap
    */
   Collection<T> getOriginalValueKeys();
-
-  /**
-   * Returns an ActionEvent describing the value change.
-   * @param key the key of the value being changed
-   * @param newValue the new value
-   * @param oldValue the old value
-   * @param initialization true if the value is being initialized
-   * @return an ActionEvent describing the value change
-   */
-  ActionEvent getValueChangeEvent(final T key, final V newValue, final V oldValue, final boolean initialization);
 }

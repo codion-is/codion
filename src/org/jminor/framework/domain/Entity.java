@@ -8,7 +8,6 @@ import org.jminor.common.model.valuemap.ChangeValueMap;
 import org.jminor.common.model.valuemap.ChangeValueMapImpl;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -37,7 +36,7 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   /**
    * The foreign key values referenced by this entity
    */
-  private final ForeignKeys foreignKeyValues = new ForeignKeys();
+  private final ChangeValueMapImpl<String, Entity> foreignKeyValues = new ChangeValueMapImpl<String, Entity>();
 
   /**
    * True if property values have been loaded for this entity
@@ -88,6 +87,11 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     return primaryKey.getEntityID();
   }
 
+  @Override
+  public String getMapTypeID() {
+    return getEntityID();
+  }
+
   /**
    * @return the primary key of this entity
    */
@@ -130,15 +134,6 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       properties = EntityRepository.getProperties(getEntityID());
 
     return properties.get(propertyID);
-  }
-
-  /**
-   * Adds a Property.Listener, this listener will be notified each time a property value changes
-   * @param propertyListener the Property.Listener
-   * @see org.jminor.framework.domain.Property.Event
-   */
-  public void addPropertyListener(final Property.Listener propertyListener) {
-    eventValueChanged().addListener(propertyListener);
   }
 
   /**
@@ -602,6 +597,13 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
   }
 
   @Override
+  public void removeValueListener(final ActionListener valueListener) {
+    primaryKey.removeValueListener(valueListener);
+    foreignKeyValues.removeValueListener(valueListener);
+    super.removeValueListener(valueListener);
+  }
+
+  @Override
   public boolean containsValue(final String propertyID) {
     final Property property = getProperty(propertyID);
     if (property instanceof Property.PrimaryKeyProperty)
@@ -722,10 +724,6 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     return defaultProxy;
   }
 
-  public static ActionEvent createValueChangeEvent(final Object source, final String entityID, final Property property, Object newValue, Object oldValue, boolean initialization) {
-    return new Property.Event(source, entityID, property, newValue, oldValue, true, initialization);
-  }
-
   static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
     final Entity entity = new Entity(entityID);
     for (final Map.Entry<String, Object> entry : values.entrySet()) {
@@ -739,12 +737,6 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     entity.setLoaded(true);
 
     return entity;
-  }
-
-  @Override
-  public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                         final boolean initialization) {
-    return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
   }
 
   @Override
@@ -1056,12 +1048,6 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
       return copyPropertyValue(value);
     }
 
-    @Override
-    public ActionEvent getValueChangeEvent(final String key, final Object newValue, final Object oldValue,
-                                           final boolean initialization) {
-      return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
-    }
-
     /**
      * @return true if this is a single integer column key
      */
@@ -1112,13 +1098,6 @@ public final class Entity extends ChangeValueMapImpl<String, Object> implements 
     @SuppressWarnings({"UnusedDeclaration"})
     public Color getBackgroundColor(final Entity entity) {
       return null;
-    }
-  }
-
-  private class ForeignKeys extends ChangeValueMapImpl<String, Entity> {
-    @Override
-    public ActionEvent getValueChangeEvent(final String key, final Entity newValue, final Entity oldValue, final boolean initialization) {
-      return createValueChangeEvent(key, getEntityID(), getProperty(key), newValue, oldValue, initialization);
     }
   }
 }
