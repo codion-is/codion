@@ -80,7 +80,7 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
   }
 
   /**
-   * Adds the value mapped to the given key in the Entity instance mapped to the given foreignKeyPropertyID
+   * Adds the value mapped to the given key in the ValueMap instance mapped to the given foreignKeyPropertyID
    * to this StringProvider
    * @param referenceKey the reference key
    * @param key the key
@@ -150,14 +150,14 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
     public String toString(final ValueMap<T, V> valueMap) {
       if (valueMap.isValueNull(referenceKey))
         return "";
-      final Object referencedValue = valueMap.getValue(referenceKey);
+      final V referencedValue = valueMap.getValue(referenceKey);
       if (!(referencedValue instanceof ValueMap))
         throw new RuntimeException(referenceKey + " does not refer to a ValueMap instance");
-      final ValueMap<T, V> foreignKeyEntity = (ValueMap<T, V>) referencedValue;
-      if (foreignKeyEntity.isValueNull(key))
+      final ValueMap<T, V> referencedValueMap = (ValueMap<T, V>) referencedValue;
+      if (referencedValueMap.isValueNull(key))
         return "";
 
-      return foreignKeyEntity.getValue(key).toString();
+      return referencedValueMap.getValue(key).toString();
     }
 
     public T getReferenceKey() {

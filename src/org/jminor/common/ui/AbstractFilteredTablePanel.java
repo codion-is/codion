@@ -21,7 +21,7 @@ public abstract class AbstractFilteredTablePanel extends JPanel {
   /**
    * the JTable for showing the underlying entities
    */
-  private final JTable entityTable;
+  private final JTable table;
 
   /**
    * the scroll pane used by the JTable instance
@@ -33,12 +33,12 @@ public abstract class AbstractFilteredTablePanel extends JPanel {
       throw new IllegalArgumentException("Table model must not be null");
 
     this.model = model;
-    this.entityTable = initializeJTable();
-    this.tableScrollPane = new JScrollPane(entityTable);
+    this.table = initializeJTable();
+    this.tableScrollPane = new JScrollPane(table);
   }
 
   /**
-   * @return the EntityTableModel used by this EntityTablePanel
+   * @return the TableModel used by this TablePanel
    */
   public AbstractFilteredTableModel getTableModel() {
     return model;
@@ -48,7 +48,7 @@ public abstract class AbstractFilteredTablePanel extends JPanel {
    * @return the JTable instance
    */
   public JTable getJTable() {
-    return entityTable;
+    return table;
   }
 
   public JScrollPane getTableScrollPane() {

@@ -733,7 +733,7 @@ public class UiUtil {
     });
   }
 
-  public static Object selectPropertyValue(final JComponent dialogOwner, List<?> values) {
+  public static Object selectPropertyValue(final JComponent dialogOwner, Collection<?> values) {
     final DefaultListModel listModel = new DefaultListModel();
     for (final Object value : values)
       listModel.addElement(value);

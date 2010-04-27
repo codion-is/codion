@@ -62,7 +62,7 @@ public class DbConnectionPool implements ConnectionPool {
     if (closed)
       throw new IllegalStateException("Can not check out a connection from a closed connection pool!");
 
-    final long time = System.currentTimeMillis();
+    final long time = System.nanoTime();
     counter.incrementRequestCounter();
     DbConnection connection = getConnectionFromPool();
     if (connection == null) {
@@ -94,7 +94,7 @@ public class DbConnectionPool implements ConnectionPool {
       }
     }
 
-    counter.addCheckOutTime(System.currentTimeMillis() - time);
+    counter.addCheckOutTime(System.nanoTime() - time);
     return connection;
   }
 
@@ -162,7 +162,6 @@ public class DbConnectionPool implements ConnectionPool {
     statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
     statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
     statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
-    statistics.setMaxCheckOutTime(counter.getMaxCheckOutTime());
     statistics.setResetDate(counter.getResetDate());
     statistics.setTimestamp(System.currentTimeMillis());
     if (since >= 0)
@@ -273,9 +272,8 @@ public class DbConnectionPool implements ConnectionPool {
     private int requestsDelayedPerSecondCounter = 0;
     private int requestsPerSecond = 0;
     private int requestsPerSecondCounter = 0;
-    private int averageCheckOutTime = 0;
-    private int maxCheckOutTime = 0;
-    private final List<Integer> checkOutTimes = new ArrayList<Integer>();
+    private long averageCheckOutTime = 0;
+    private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = System.currentTimeMillis();
 
     public Counter() {
@@ -324,7 +322,7 @@ public class DbConnectionPool implements ConnectionPool {
     }
 
     public synchronized void addCheckOutTime(final long time) {
-      checkOutTimes.add((int) time);
+      checkOutTimes.add(time);
     }
 
     public synchronized void resetPoolStatistics() {
@@ -345,12 +343,10 @@ public class DbConnectionPool implements ConnectionPool {
       requestsDelayedPerSecondCounter = 0;
       requestsPerSecondTime = current;
       averageCheckOutTime = 0;
-      maxCheckOutTime = 0;
       if (checkOutTimes.size() > 0) {
-        int total = 0;
-        for (final Integer time : checkOutTimes) {
+        long total = 0;
+        for (final Long time : checkOutTimes) {
           total += time;
-          maxCheckOutTime = Math.max(maxCheckOutTime, time);
         }
         averageCheckOutTime = total / checkOutTimes.size();
         checkOutTimes.clear();
@@ -377,12 +373,8 @@ public class DbConnectionPool implements ConnectionPool {
       requestsPerSecondCounter++;
     }
 
-    public int getAverageCheckOutTime() {
+    public long getAverageCheckOutTime() {
       return averageCheckOutTime;
-    }
-
-    public int getMaxCheckOutTime() {
-      return maxCheckOutTime;
     }
   }
 }

@@ -36,7 +36,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
   private boolean isUpdatingModel = false;
 
   /**
-   * Instantiates a new AbstractPropertyLink
+   * Instantiates a new AbstractValueLink
    * @param valueOwner the owner of the property value
    * @param modelValueChangeEvent an Event on which the UI should be updated to reflect changes in the model
    * @param linkType the link Type

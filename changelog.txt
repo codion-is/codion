@@ -1449,3 +1449,5 @@
   Property.Event renamed to ValueChangeEvent and moved to common.model.valuemap
   Property.Listener renamed to ValueChangeListener and moved to common.model.valuemap
   ChangeValueMap... classes renamed to ValueChangeMap...
+  CallLogger renamed to MethodLogger
+  AbstractValueMapLink.isModelPropertyValueNull() renamed to isModelValueNull()

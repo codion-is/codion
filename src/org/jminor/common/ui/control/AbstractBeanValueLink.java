@@ -8,7 +8,7 @@ import org.jminor.common.model.Event;
 import java.lang.reflect.Method;
 
 /**
- * A bean based implementation of the AbstractPropertyLink class.
+ * A bean based implementation of the AbstractValueLink class.
  */
 public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Object> {
 

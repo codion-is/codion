@@ -31,7 +31,7 @@ public abstract class ValueChangeMapModel<T, V> implements Refreshable {
   private AbstractFilteredTableModel<? extends ValueChangeMap<T, V>> tableModel;
 
   /**
-   * @return the ValueChangeMapEditModel instance used by this EntityModel
+   * @return the ValueChangeMapEditModel instance used by this ValueChangeMapModel
    */
   public ValueChangeMapEditModel<T, V> getEditModel() {
     if (editModel == null) {
@@ -86,7 +86,7 @@ public abstract class ValueChangeMapModel<T, V> implements Refreshable {
   }
 
   /**
-   * @return true if this EntityModel contains a EntityTableModel
+   * @return true if this ValueChangeMapModel contains a TableModel
    */
   public boolean containsTableModel() {
     return getTableModel() != null;

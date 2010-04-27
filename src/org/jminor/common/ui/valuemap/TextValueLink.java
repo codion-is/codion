@@ -30,7 +30,7 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
   private final boolean immediateUpdate;
 
   /**
-   * Instantiates a new TextPropertyLink
+   * Instantiates a new TextValueLink
    * @param textComponent the text component to link
    * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link
@@ -42,7 +42,7 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
   }
 
   /**
-   * Instantiates a new TextPropertyLink
+   * Instantiates a new TextValueLink
    * @param textComponent the text component to link
    * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link

@@ -5,8 +5,8 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.dbms.Database;
 import org.jminor.common.db.exception.DbException;
-import org.jminor.common.model.CallLogger;
 import org.jminor.common.model.LogEntry;
+import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
@@ -54,7 +54,7 @@ public class DbConnection {
   /**
    * The object containing the method call log
    */
-  private final CallLogger methodLogger = new MethodLogger(true);
+  private final MethodLogger methodLogger = new DbLogger(true);
 
   /**
    * Constructs a new instance of the DbConnection class, initialized and ready for usage
@@ -576,9 +576,9 @@ public class DbConnection {
     }
   };
 
-  private static class MethodLogger extends CallLogger {
+  private static class DbLogger extends MethodLogger {
 
-    public MethodLogger(final boolean enabled) {
+    public DbLogger(final boolean enabled) {
       super(40, enabled);
     }
 

@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 public class ValueChangeEvent<T, V> extends ActionEvent {
 
   /**
-   * The ID of the entity owning the property
+   * The ID of the type of object owning the property
    */
   private final String propertyOwnerTypeID;
 
@@ -63,7 +63,7 @@ public class ValueChangeEvent<T, V> extends ActionEvent {
   }
 
   /**
-   * @return the ID of the entity owning the property
+   * @return the ID of the type of object owning the property
    */
   public String getPropertyOwnerTypeID() {
     return propertyOwnerTypeID;

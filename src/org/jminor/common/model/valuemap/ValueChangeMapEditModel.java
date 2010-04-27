@@ -36,7 +36,7 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
   public static final int UNKNOWN = 3;
 
   private final ValueChangeMap<T, V> valueMap;
-  private final Event evtEntityChanged = new Event();
+  private final Event evtValueMapChanged = new Event();
   private final Event evtModelCleared = new Event();
 
   /**
@@ -81,20 +81,21 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
   }
 
   /**
-   * Sets the active entity, that is, the entity to be edited
+   * Sets the active value map, that is, the map to be edited
    * @param valueMap the map to set as active, if null then the default map value is set as active
-   * @see #evtEntityChanged
+   * @see #evtValueMapChanged
+   * @see #eventValueMapChanged()
    */
   public void setValueMap(final ValueChangeMap<T, V> valueMap) {
     this.valueMap.setAs(valueMap == null ? getDefaultValueMap() : valueMap);
-    evtEntityChanged.fire();
+    evtValueMapChanged.fire();
   }
 
   /**
    * Returns true if the given value is valid for the given property, using the <code>validate</code> method
    * @param key the key
    * @param action describes the action requiring validation,
-   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
    * @see #validate(ValueChangeMap , String, int)
@@ -132,7 +133,7 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param key the key
    * @param action describes the action requiring validation,
-   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given property
    * @see org.jminor.framework.domain.Property#setNullable(boolean)
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
@@ -142,15 +143,15 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
   /**
    * Checks if the value of the given property is valid, throws a ValidationException if not,
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
-   * @param entity the entity to validate
+   * @param valueMap the value map to validate
    * @param propertyID the propertyID
    * @param action describes the action requiring validation,
-   * EntityEditModel.INSERT, EntityEditModel.UPDATE or EntityEditModel.UNKNOWN
+   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @throws ValidationException if the given value is not valid for the given property
    * @see org.jminor.framework.domain.Property#setNullable(boolean)
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
-  public abstract void validate(final ValueChangeMap<T, V> entity, final String propertyID, final int action) throws ValidationException;
+  public abstract void validate(final ValueChangeMap<T, V> valueMap, final String propertyID, final int action) throws ValidationException;
 
   /**
    * @param key the key for which to retrieve the event
@@ -177,10 +178,10 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
   }
 
   /**
-   * @return an Event fired when the active entity has been changed
+   * @return an Event fired when the active value map has been changed
    */
-  public Event eventEntityChanged() {
-    return evtEntityChanged;
+  public Event eventValueMapChanged() {
+    return evtValueMapChanged;
   }
 
   /**
@@ -210,7 +211,7 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
   }
 
   /**
-   * Sets the value in the underlying entity
+   * Sets the value in the underlying value map
    * @param key the key for which to set the value
    * @param value the value
    * @return the value that was just set

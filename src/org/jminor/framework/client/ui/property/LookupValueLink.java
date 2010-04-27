@@ -23,7 +23,7 @@ public class LookupValueLink extends AbstractValueMapLink<String, Object> {
   private final EntityLookupModel lookupModel;
 
   /**
-   * Instantiates a new LookupModelPropertyLink
+   * Instantiates a new LookupModelValueLink
    * @param lookupModel the lookup model to link
    * @param editModel the EntityEditModel instance
    * @param foreignKeyProperty the foreign key property to link

@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 24.4.2010<br>
  * Time: 10:10:55<br>
  */
-public abstract class CallLogger {
+public abstract class MethodLogger {
 
   private int logSize;
   private boolean enabled = false;
@@ -25,11 +25,11 @@ public abstract class CallLogger {
   String lastAccessMessage;
   String lastExitedMethod;
 
-  public CallLogger(final int logSize) {
+  public MethodLogger(final int logSize) {
     this(logSize, false);
   }
 
-  public CallLogger(final int logSize, final boolean enabled) {
+  public MethodLogger(final int logSize, final boolean enabled) {
     this.logSize = logSize;
     this.logEntries = initializeLogEntryList();
     setEnabled(enabled);

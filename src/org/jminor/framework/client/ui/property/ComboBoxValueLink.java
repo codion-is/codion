@@ -30,7 +30,7 @@ public class ComboBoxValueLink extends AbstractValueMapLink<String, Object> {
   private final ComboBoxModel boxModel;
 
   /**
-   * Instantiate a new ComboBoxPropertyLink
+   * Instantiate a new ComboBoxValueLink
    * @param comboBox the combo box to link
    * @param editModel the EntityEditModel instance
    * @param property the property to link to
@@ -41,7 +41,7 @@ public class ComboBoxValueLink extends AbstractValueMapLink<String, Object> {
   }
 
   /**
-   * Instantiate a new ComboBoxPropertyLink
+   * Instantiate a new ComboBoxValueLink
    * @param comboBox the combo box to link
    * @param editModel the EntityEditModel instance
    * @param property the property to link to

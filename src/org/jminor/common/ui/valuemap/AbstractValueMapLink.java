@@ -33,7 +33,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   /** {@inheritDoc} */
   @Override
   public V getModelValue() {
-    return isModelPropertyValueNull() ? null : getEditModel().getValue(key);
+    return isModelValueNull() ? null : getEditModel().getValue(key);
   }
 
   /** {@inheritDoc} */
@@ -45,7 +45,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   /**
    * @return true if the underlying model value associated with this key is null
    */
-  protected boolean isModelPropertyValueNull() {
+  protected boolean isModelValueNull() {
     return getEditModel().isValueNull(key);
   }
 
@@ -88,7 +88,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   }
 
   /**
-   * @return the property owner, in this case a ValueChangeMapEditModel
+   * @return the value owner, in this case a ValueChangeMapEditModel
    */
   private ValueChangeMapEditModel<T, V> getEditModel() {
     return super.getValueOwner();

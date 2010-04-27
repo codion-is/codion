@@ -25,7 +25,7 @@ public class FormattedValueLink extends TextValueLink {
   private final JFormattedTextField.AbstractFormatter formatter;
 
   /**
-   * Instantiates a new FormattedTextPropertyLink
+   * Instantiates a new FormattedValueLink
    * @param textComponent the text component to link
    * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link
@@ -112,7 +112,7 @@ public class FormattedValueLink extends TextValueLink {
   private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
                                   final String maskString, final Color validBackground, final Color invalidBackground,
                                   final String defaultToolTip) {
-    final boolean validInput = !isModelPropertyValueNull() || (textComponent.getText().equals(maskString) && isNullable());
+    final boolean validInput = !isModelValueNull() || (textComponent.getText().equals(maskString) && isNullable());
     final String validationMessage = getValidationMessage(editModel);
     textComponent.setBackground(validInput && validationMessage == null ? validBackground : invalidBackground);
     textComponent.setToolTipText(validationMessage == null ? defaultToolTip :

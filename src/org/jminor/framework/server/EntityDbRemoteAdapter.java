@@ -12,7 +12,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolSettings;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.DbConnectionPool;
-import org.jminor.common.model.CallLogger;
+import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
@@ -86,7 +86,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * The object containing the method call log
    */
-  private final CallLogger methodLogger;
+  private final MethodLogger methodLogger;
   /**
    * Indicates whether or not a SSL client socket factory should be used when establishing the connection
    */
@@ -127,7 +127,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     this.database = database;
     this.clientInfo = clientInfo;
     this.loggingEntityDbProxy = initializeProxy();
-    this.methodLogger = new MethodLogger(database, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
+    this.methodLogger = new RemoteLogger(database, EntityDbConnection.ENTITY_SQL_VALUE_PROVIDER);
     this.methodLogger.setEnabled(loggingEnabled);
     try {
       clientInfo.setClientHost(getClientHost());
@@ -500,7 +500,7 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
   /**
    * @return the object containing the method call log
    */
-  public CallLogger getMethodLogger() {
+  public MethodLogger getMethodLogger() {
     return methodLogger;
   }
 
@@ -621,50 +621,17 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
     }
   }
 
+  private void setActive() {
+    active.add(this);
+  }
+
+  private void setInactive() {
+    active.remove(this);
+  }
+
   private EntityDb initializeProxy() {
     return (EntityDb) Proxy.newProxyInstance(EntityDbConnection.class.getClassLoader(),
-            EntityDbConnection.class.getInterfaces(), new InvocationHandler() {
-              public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
-                RequestCounter.requestsPerSecondCounter++;
-                final String methodName = method.getName();
-                Throwable ex = null;
-                EntityDbConnection connection = null;
-                final boolean logMethod = shouldMethodBeLogged(methodName.hashCode());
-                try {
-                  active.add(EntityDbRemoteAdapter.this);
-                  if (logMethod)
-                    methodLogger.logAccess("getConnection", new Object[] {clientInfo.getUser()});
-                  connection = getConnection(clientInfo.getUser());
-                  if (logMethod) {
-                    methodLogger.logExit("getConnection", null, null);
-                    methodLogger.logAccess(methodName, arguments);
-                  }
-
-                  return method.invoke(connection, arguments);
-                }
-                catch (InvocationTargetException ie) {
-                  log.error(this, ie);
-                  ex = ie.getCause();
-                  throw ie.getTargetException();
-                }
-                finally {
-                  try {
-                    active.remove(EntityDbRemoteAdapter.this);
-                    if (logMethod) {
-                      final long time = methodLogger.logExit(methodName, ex,
-                              connection != null ? connection.getLogEntries() : null);
-                      if (time > RequestCounter.warningThreshold)
-                        RequestCounter.warningTimeExceededCounter++;
-                    }
-                    if (connection != null && !connection.isTransactionOpen())
-                      returnConnection(clientInfo.getUser(), connection);
-                  }
-                  catch (Exception e) {
-                    log.error(this, e);
-                  }
-                }
-              }
-            });
+            EntityDbConnection.class.getInterfaces(), new EntityDbRemoteProxy(this));
   }
 
   private void returnConnection(final User user, final EntityDbConnection connection) {
@@ -695,20 +662,70 @@ public class EntityDbRemoteAdapter extends UnicastRemoteObject implements Entity
 
     return entityDbConnection;
   }
-  private static final int IS_CONNECTED = "isConnected".hashCode();
-  private static final int CONNECTION_VALID = "isConnectionValid".hashCode();
-  private static final int GET_ACTIVE_USER = "getActiveUser".hashCode();
 
-  private static  boolean shouldMethodBeLogged(final int hashCode) {
-    return hashCode != IS_CONNECTED && hashCode != CONNECTION_VALID && hashCode != GET_ACTIVE_USER;
+  private static final String IS_CONNECTED = "isConnected";
+  private static final String CONNECTION_VALID = "isConnectionValid";
+  private static final String GET_ACTIVE_USER = "getActiveUser";
+
+  private static boolean shouldMethodBeLogged(final String hashCode) {
+    return !(hashCode.equals(IS_CONNECTED) || hashCode.equals(CONNECTION_VALID) || hashCode.equals(GET_ACTIVE_USER));
   }
 
-  static class MethodLogger extends CallLogger {
+  static class EntityDbRemoteProxy implements InvocationHandler {
+    private final EntityDbRemoteAdapter remoteAdapter;
+
+    public EntityDbRemoteProxy(final EntityDbRemoteAdapter remoteAdapter) {
+      this.remoteAdapter = remoteAdapter;
+    }
+
+    public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
+      RequestCounter.requestsPerSecondCounter++;
+      final String methodName = method.getName();
+      Throwable ex = null;
+      EntityDbConnection connection = null;
+      final boolean logMethod = shouldMethodBeLogged(methodName);
+      try {
+        remoteAdapter.setActive();
+        if (logMethod)
+          remoteAdapter.methodLogger.logAccess("getConnection", new Object[] {remoteAdapter.clientInfo.getUser()});
+        connection = remoteAdapter.getConnection(remoteAdapter.clientInfo.getUser());
+        if (logMethod) {
+          remoteAdapter.methodLogger.logExit("getConnection", null, null);
+          remoteAdapter.methodLogger.logAccess(methodName, arguments);
+        }
+
+        return method.invoke(connection, arguments);
+      }
+      catch (InvocationTargetException ie) {
+        log.error(this, ie);
+        ex = ie.getCause();
+        throw ie.getTargetException();
+      }
+      finally {
+        try {
+          remoteAdapter.setInactive();
+          if (logMethod) {
+            final long time = remoteAdapter.methodLogger.logExit(methodName, ex,
+                    connection != null ? connection.getLogEntries() : null);
+            if (time > RequestCounter.warningThreshold)
+              RequestCounter.warningTimeExceededCounter++;
+          }
+          if (connection != null && !connection.isTransactionOpen())
+            remoteAdapter.returnConnection(remoteAdapter.clientInfo.getUser(), connection);
+        }
+        catch (Exception e) {
+          log.error(this, e);
+        }
+      }
+    }
+  }
+
+  static class RemoteLogger extends MethodLogger {
 
     private final Database database;
     private final Criteria.ValueProvider valueProvider;
 
-    public MethodLogger(final Database database, final Criteria.ValueProvider valueProvider) {
+    public RemoteLogger(final Database database, final Criteria.ValueProvider valueProvider) {
       super(Integer.parseInt(System.getProperty(Configuration.SERVER_CONNECTION_LOG_SIZE, "40")));
       this.database = database;
       this.valueProvider = valueProvider;

@@ -19,7 +19,7 @@ public class DateValueLink extends FormattedValueLink {
   private final boolean isTimestamp;
 
   /**
-   * Instantiates a new DateTextPropertyLink.
+   * Instantiates a new DateValueLink.
    * @param textField the text field to link
    * @param editModel the ValueChangeMapEditModel instance
    * @param key the key to link

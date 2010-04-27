@@ -133,7 +133,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   }
 
   /**
-   * Clears all entities from this EntityTableModel
+   * Clears all entities from this TableModel
    */
   public void clear() {
     hiddenItems.clear();
@@ -145,14 +145,14 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   }
 
   /**
-   * @return the TableSorter used by this EntityTableModel
+   * @return the TableSorter used by this TableModel
    */
   public TableSorter getTableSorter() {
     return tableSorter;
   }
 
   /**
-   * @return the ListSelectionModel this EntityTableModel uses
+   * @return the ListSelectionModel this TableModel uses
    */
   public DefaultListSelectionModel getSelectionModel() {
     return selectionModel;
