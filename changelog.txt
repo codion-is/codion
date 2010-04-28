@@ -1451,3 +1451,6 @@
   ChangeValueMap... classes renamed to ValueChangeMap...
   CallLogger renamed to MethodLogger
   AbstractValueMapLink.isModelPropertyValueNull() renamed to isModelValueNull()
+  Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH added
+  EntityDbConnection.limitForeignKeyFetchDepth field added, intialized according to the above
+  Entity.Key and Entity.foreignKeyValues maps override getMapTypeID()

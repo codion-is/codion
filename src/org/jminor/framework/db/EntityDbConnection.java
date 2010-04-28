@@ -56,6 +56,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
   private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<Integer, ResultPacker>();
   private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
+  private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
 
   /**
    * Constructs a new EntityDbConnection instance
@@ -74,6 +75,14 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
   public void setOptimisticLocking(final boolean optimisticLocking) {
     this.optimisticLocking = optimisticLocking;
+  }
+
+  public boolean isLimitForeignKeyFetchDepth() {
+    return limitForeignKeyFetchDepth;
+  }
+
+  public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
+    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   /** {@inheritDoc} */
@@ -617,7 +626,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = EntityRepository.getForeignKeyProperties(entities.get(0).getEntityID());
     for (final Property.ForeignKeyProperty property : foreignKeyProperties) {
       final int maxFetchDepth = criteria.getCurrentFetchDepth() == 0 ? criteria.getFetchDepth(property.getPropertyID()) : criteria.getFetchDepth();
-      if (criteria.getCurrentFetchDepth() < maxFetchDepth) {
+      if (!limitForeignKeyFetchDepth || criteria.getCurrentFetchDepth() < maxFetchDepth) {
         final List<Entity.Key> referencedKeys = getReferencedPrimaryKeys(entities, property);
         if (referencedKeys.size() > 0) {
           final EntitySelectCriteria referenceCriteria = EntityCriteriaUtil.selectCriteria(referencedKeys)

@@ -36,7 +36,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   /**
    * The foreign key values referenced by this entity
    */
-  private final ValueChangeMapImpl<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>();
+  private final ValueChangeMapImpl<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>() {
+    @Override
+    public String getMapTypeID() {
+      return getEntityID();
+    }
+  };
 
   /**
    * True if property values have been loaded for this entity
@@ -872,6 +877,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      */
     public String getEntityID() {
       return entityID;
+    }
+
+    @Override
+    public String getMapTypeID() {
+      return getEntityID();
     }
 
     /**

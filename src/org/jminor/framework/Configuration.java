@@ -380,6 +380,14 @@ public class Configuration {
    */
   public static final String DEFAULT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.foreignKeyFetchDepth";
 
+  /**
+   * Specifies whether the foreign key value graph should be fully populated instead of
+   * being limited by the foreign key fetch depth setting.
+   * Value type: Boolean<br>
+   * Default value: true<br>
+   */
+  public static final String LIMIT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.limitForeignKeyFetchDepth";
+
   private static Map<String, Object> settings = new HashMap<String, Object>();
 
   static {
@@ -418,6 +426,7 @@ public class Configuration {
     setValue(ALLOW_COLUMN_REORDERING, true);
     setValue(USE_LOOKUP_FIELD_SEARCH_HINT, true);
     setValue(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
+    setValue(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     parseSystemSettings();
   }
 
@@ -453,6 +462,7 @@ public class Configuration {
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
     parseBooleanSetting(USE_LOOKUP_FIELD_SEARCH_HINT);
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+    parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
   }
 
   private static void parseIntegerSetting(final String setting) {
