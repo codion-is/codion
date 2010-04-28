@@ -16,7 +16,7 @@ import java.util.List;
 public class SchemaPanel extends EntityPanel {
 
   public SchemaPanel(final EntityModel model) {
-    super(model, "Schema Users", true, false);
+    super(model, "Schema Users", true);
   }
 
   @Override

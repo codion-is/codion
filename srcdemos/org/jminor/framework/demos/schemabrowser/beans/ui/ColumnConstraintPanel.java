@@ -11,7 +11,7 @@ import org.jminor.framework.client.ui.EntityPanel;
 public class ColumnConstraintPanel extends EntityPanel {
 
   public ColumnConstraintPanel(final EntityModel model) {
-    super(model, "Column constraints", false, false);
+    super(model, "Column constraints", false);
   }
 
   @Override
