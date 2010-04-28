@@ -13,6 +13,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -23,6 +24,7 @@ import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 import org.jminor.common.ui.valuemap.BooleanValueLink;
+import org.jminor.common.ui.valuemap.ComboBoxValueLink;
 import org.jminor.common.ui.valuemap.DateValueLink;
 import org.jminor.common.ui.valuemap.DoubleValueLink;
 import org.jminor.common.ui.valuemap.FormattedValueLink;
@@ -32,9 +34,9 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.PropertyComboBoxModel;
 import org.jminor.framework.client.model.PropertyValueListProvider;
 import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.ui.property.ComboBoxValueLink;
 import org.jminor.framework.client.ui.property.LookupValueLink;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
@@ -57,7 +59,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A static utility class.
+ * A static utility class concerned with UI related tasks.
  */
 public class EntityUiUtil {
 
@@ -240,7 +242,7 @@ public class EntityUiUtil {
     if (!boxModel.isDataInitialized())
       boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    new ComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
+    new EntityComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -336,7 +338,7 @@ public class EntityUiUtil {
                                                final boolean editable) {
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    new ComboBoxValueLink(comboBox, editModel, property);
+    new EntityComboBoxValueLink(comboBox, editModel, property);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -616,5 +618,23 @@ public class EntityUiUtil {
     button.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
 
     return button;
+  }
+
+  private static class EntityComboBoxValueLink extends ComboBoxValueLink {
+    public EntityComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
+                                   final Property property) {
+      super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE, property.isString());
+    }
+
+    @Override
+    protected Object getUIValue() {
+      final ComboBoxModel boxModel = getModel();
+      if (boxModel instanceof EntityComboBoxModel)
+        return ((EntityComboBoxModel) boxModel).getSelectedEntity();
+      else if (boxModel instanceof PropertyComboBoxModel)
+        return ((PropertyComboBoxModel) boxModel).isNullValueItemSelected() ? null : boxModel.getSelectedItem();
+      else
+        return super.getUIValue();
+    }
   }
 }
