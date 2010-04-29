@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat;
  * A UI component based on the EntityEditModel.
  * @see EntityEditModel
  */
-public abstract class EntityEditPanel extends ValueChangeMapEditPanel {
+public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Object> {
 
   /**
    * Instantiates a new EntityEditPanel based on the provided EntityEditModel

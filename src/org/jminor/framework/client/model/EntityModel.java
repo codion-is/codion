@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
  */
-public class EntityModel extends ValueChangeMapModel<String, Object> implements EntityDbProvider {
+public class EntityModel extends ValueChangeMapModel<String, Object> {
 
   protected static final Logger log = Util.getLogger(EntityModel.class);
 
@@ -126,14 +126,6 @@ public class EntityModel extends ValueChangeMapModel<String, Object> implements 
    */
   public EntityDbProvider getDbProvider() {
     return dbProvider;
-  }
-
-  public void disconnect() {
-    dbProvider.disconnect();
-  }
-
-  public String getDescription() {
-    return dbProvider.getDescription();
   }
 
   /**
@@ -432,7 +424,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> implements 
    */
   @Override
   protected EntityTableModel initializeTableModel() {
-    return new EntityTableModel(getEntityID(), this);
+    return includeTableModel ? new EntityTableModel(getEntityID(), getDbProvider()) : null;
   }
 
   /**
@@ -440,7 +432,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> implements 
    */
   @Override
   protected EntityEditModel initializeEditModel() {
-    return includeTableModel ? new EntityEditModel(getEntityID(), this) : null;
+    return new EntityEditModel(getEntityID(), getDbProvider());
   }
 
   /**

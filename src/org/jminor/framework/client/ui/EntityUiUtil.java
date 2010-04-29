@@ -210,7 +210,7 @@ public class EntityUiUtil {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     if (!includeCaption)
       checkBox.setToolTipText(property.getCaption());
-    new BooleanValueLink(checkBox.getModel(), editModel, property.getPropertyID());
+    new BooleanValueLink<String>(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
@@ -380,7 +380,7 @@ public class EntityUiUtil {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
 
-    new TextValueLink(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
+    new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, LinkType.READ_WRITE);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -418,21 +418,21 @@ public class EntityUiUtil {
     final String propertyID = property.getPropertyID();
     if (property.isString()) {
       if (formatMaskString != null)
-        new FormattedValueLink((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
+        new FormattedValueLink<String>((JFormattedTextField) textField, editModel, propertyID, null, immediateUpdate, linkType);
       else
-        new TextValueLink(textField, editModel, propertyID, immediateUpdate, linkType);
+        new TextValueLink<String>(textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isInteger()) {
-      new IntValueLink((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
+      new IntValueLink<String>((IntField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isDouble()) {
-      new DoubleValueLink((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
+      new DoubleValueLink<String>((DoubleField) textField, editModel, propertyID, immediateUpdate, linkType);
     }
     else if (property.isDate()) {
-      new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
+      new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
     }
     else if (property.isTimestamp()) {
-      new DateValueLink((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
+      new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
     }
     else
       throw new IllegalArgumentException("Not a text based property: " + property);
@@ -620,7 +620,7 @@ public class EntityUiUtil {
     return button;
   }
 
-  private static class EntityComboBoxValueLink extends ComboBoxValueLink {
+  private static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
     public EntityComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
                                    final Property property) {
       super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE, property.isString());

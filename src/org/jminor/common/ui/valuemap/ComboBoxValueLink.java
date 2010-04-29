@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.common.ui.valuemap;
+
+import org.jminor.common.model.combobox.ItemComboBoxModel;
+import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.ui.control.LinkType;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+/**
+ * A class for linking a ComboBox to a ValueChangeMapEditModel property value.
+ */
+public class ComboBoxValueLink<T> extends AbstractValueMapLink<T, Object> {
+
+  /**
+   * The linked ComboBoxModel
+   */
+  private final ComboBoxModel boxModel;
+
+  /**
+   * Instantiate a new ComboBoxValueLink
+   * @param comboBox the combo box to link
+   * @param editModel the ValueChangeMapEditModel instance
+   * @param property the property to link to
+   */
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<T, Object> editModel,
+                           final T property) {
+    this(comboBox, editModel, property, LinkType.READ_WRITE, false);
+  }
+
+  /**
+   * Instantiate a new ComboBoxValueLink
+   * @param comboBox the combo box to link
+   * @param editModel the ValueChangeMapEditModel instance
+   * @param property the property to link to
+   * @param linkType the link type
+   */
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<T, Object> editModel,
+                           final T property, final LinkType linkType, final boolean isString) {
+    super(editModel, property, linkType);
+    this.boxModel = comboBox.getModel();
+    updateUI();
+    comboBox.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED)
+          updateModel();
+      }
+    });
+    //this allows editable string based combo boxes to post their edits after each keystroke
+    if (comboBox.isEditable() && isString) {
+      ((JTextField)comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
+        public void insertUpdate(DocumentEvent e) {
+          boxModel.setSelectedItem(comboBox.getEditor().getItem());
+        }
+        public void removeUpdate(DocumentEvent e) {
+          boxModel.setSelectedItem(comboBox.getEditor().getItem());
+        }
+        public void changedUpdate(DocumentEvent e) {}
+      });
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected Object getUIValue() {
+    if (boxModel instanceof ItemComboBoxModel)
+      return ((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem();
+    
+    return boxModel.getSelectedItem();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void setUIValue(final Object propertyValue) {
+    boxModel.setSelectedItem(propertyValue);
+  }
+
+  protected ComboBoxModel getModel() {
+    return boxModel;
+  }
+}

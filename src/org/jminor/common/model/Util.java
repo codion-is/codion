@@ -380,7 +380,6 @@ public class Util {
       final FileWriter fileWriter = new FileWriter(file, append);
       writer = new BufferedWriter(fileWriter);
       writer.write(contents);
-      writer.flush();
     }
     catch (IOException e) {
       e.printStackTrace();

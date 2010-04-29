@@ -16,18 +16,18 @@ import java.util.Map;
  * Date: 25.4.2010<br>
  * Time: 12:29:37<br>
  */
-public abstract class ValueChangeMapEditPanel extends JPanel {
+public abstract class ValueChangeMapEditPanel<T, V> extends JPanel {
 
-  private final ValueChangeMapEditModel model;
+  private final ValueChangeMapEditModel<T, V> model;
 
-  private final Map<String, JComponent> controls = new HashMap<String, JComponent>();
+  private final Map<T, JComponent> controls = new HashMap<T, JComponent>();
 
   /**
    * The component that should receive focus when the UI is prepared for a new record
    */
   private JComponent defaultFocusComponent;
 
-  public ValueChangeMapEditPanel(final ValueChangeMapEditModel model) {
+  public ValueChangeMapEditPanel(final ValueChangeMapEditModel<T, V> model) {
     this.model = model;
   }
 
@@ -64,7 +64,7 @@ public abstract class ValueChangeMapEditPanel extends JPanel {
       defaultFocusComponent.requestFocusInWindow();
   }
 
-  public void selectControl(final String key) {
+  public void selectControl(final T key) {
     if (controls.containsKey(key))
       controls.get(key).requestFocusInWindow();
   }
@@ -75,7 +75,7 @@ public abstract class ValueChangeMapEditPanel extends JPanel {
    * @param key the propertyID
    * @param component the input control
    */
-  protected void setControl(final String key, final JComponent component) {
+  protected void setControl(final T key, final JComponent component) {
     if (controls.containsKey(key))
       throw new RuntimeException("Control already set for key: " + key);
     controls.put(key, component);

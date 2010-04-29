@@ -27,7 +27,7 @@ public class BooleanPropertyLinkTest {
   public void test() throws Exception {
     final JCheckBox chkBox = new JCheckBox();
     final ButtonModel buttonModel = chkBox.getModel();
-    new BooleanValueLink(buttonModel, model, Petstore.ITEM_DISABLED);
+    new BooleanValueLink<String>(buttonModel, model, Petstore.ITEM_DISABLED);
     assertFalse(buttonModel.isSelected());
     model.setValue(Petstore.ITEM_DISABLED, true);
     assertTrue(buttonModel.isSelected());

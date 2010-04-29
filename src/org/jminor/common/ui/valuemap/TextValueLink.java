@@ -21,7 +21,7 @@ import java.awt.event.FocusEvent;
 /**
  * A class for linking a text component to a ValueChangeMapEditModel text property value.
  */
-public class TextValueLink extends AbstractValueMapLink<String, Object> implements DocumentListener {
+public class TextValueLink<T> extends AbstractValueMapLink<T, Object> implements DocumentListener {
 
   private final Document document;
   /**
@@ -36,8 +36,8 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    */
-  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
-                       final String key, final boolean immediateUpdate) {
+  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<T, Object> editModel,
+                       final T key, final boolean immediateUpdate) {
     this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE);
   }
 
@@ -50,8 +50,8 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    */
-  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
-                       final String key, final boolean immediateUpdate, final LinkType linkType) {
+  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<T, Object> editModel,
+                       final T key, final boolean immediateUpdate, final LinkType linkType) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
     this.immediateUpdate = immediateUpdate;
@@ -150,7 +150,7 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
    * @param editModel the underlying edit model
    * @see Configuration#INVALID_VALUE_BACKGROUND_COLOR
    */
-  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel) {
+  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<T, Object> editModel) {
     final Color validBackgroundColor = textComponent.getBackground();
     final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
@@ -162,7 +162,7 @@ public class TextValueLink extends AbstractValueMapLink<String, Object> implemen
     });
   }
 
-  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
+  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<T, Object> editModel,
                                   final Color validBackgroundColor, final Color invalidBackgroundColor,
                                   final String defaultToolTip) {
     final String validationMessage = getValidationMessage(editModel);

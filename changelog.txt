@@ -1455,4 +1455,5 @@
   EntityDbConnection.limitForeignKeyFetchDepth field added, intialized according to the above
   Entity.Key and Entity.foreignKeyValues maps override getMapTypeID()
   common.ui.valuemap.ComboBoxValueLink refactored from framework.client.ui.property.ComboBoxValueLink
-  EntityUiUtil.EntityComboBoxValueLink class added to deal with framework specific
+  EntityUiUtil.EntityComboBoxValueLink class added to deal with framework specific stuff
+  AbstractValueMapLink descendants generified

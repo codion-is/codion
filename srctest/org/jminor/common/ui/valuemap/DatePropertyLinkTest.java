@@ -32,7 +32,7 @@ public class DatePropertyLinkTest {
   public void test() throws Exception {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
-    new DateValueLink(txtDate, model, EmpDept.EMPLOYEE_HIREDATE, LinkType.READ_WRITE, format, false);
+    new DateValueLink<String>(txtDate, model, EmpDept.EMPLOYEE_HIREDATE, LinkType.READ_WRITE, format, false);
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date dateValue = format.parse("03-10-1975");
     txtDate.setText(format.format(dateValue));

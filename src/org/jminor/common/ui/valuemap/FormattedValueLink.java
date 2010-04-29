@@ -19,7 +19,7 @@ import java.text.ParseException;
 /**
  * A class for linking a JFormattedTextField to a ValueChangeMapEditModel property value.
  */
-public class FormattedValueLink extends TextValueLink {
+public class FormattedValueLink<T> extends TextValueLink<T> {
 
   private final Format format;
   private final JFormattedTextField.AbstractFormatter formatter;
@@ -33,8 +33,8 @@ public class FormattedValueLink extends TextValueLink {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * @param linkType the link type
    */
-  public FormattedValueLink(final JFormattedTextField textComponent, final ValueChangeMapEditModel<String, Object> editModel,
-                            final String key, final Format format, final boolean immediateUpdate,
+  public FormattedValueLink(final JFormattedTextField textComponent, final ValueChangeMapEditModel<T, Object> editModel,
+                            final T key, final Format format, final boolean immediateUpdate,
                             final LinkType linkType) {
     super(textComponent, editModel, key, immediateUpdate, linkType);
     this.format = format;
@@ -88,7 +88,7 @@ public class FormattedValueLink extends TextValueLink {
 
   /** {@inheritDoc} */
   @Override
-  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel) {
+  protected void addValidator(final JTextComponent textComponent, final ValueChangeMapEditModel<T, Object> editModel) {
     final Color defaultTextFieldBackground = textComponent.getBackground();
     final Color invalidBackgroundColor = Color.LIGHT_GRAY;
     final String defaultToolTip = textComponent.getToolTipText();
@@ -109,7 +109,7 @@ public class FormattedValueLink extends TextValueLink {
     });
   }
 
-  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<String, Object> editModel,
+  private void updateValidityInfo(final JTextComponent textComponent, final ValueChangeMapEditModel<T, Object> editModel,
                                   final String maskString, final Color validBackground, final Color invalidBackground,
                                   final String defaultToolTip) {
     final boolean validInput = !isModelValueNull() || (textComponent.getText().equals(maskString) && isNullable());

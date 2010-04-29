@@ -31,7 +31,7 @@ public class ComboBoxValueLinkTest {
     final EntityComboBoxModel comboBoxModel = model.createEntityComboBoxModel(fkProperty);
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
     comboBoxModel.refresh();
-    new ComboBoxValueLink(comboBox, model, fkProperty.getPropertyID());
+    new ComboBoxValueLink<String>(comboBox, model, fkProperty.getPropertyID());
     assertTrue(comboBox.getSelectedItem() == null);
     Entity department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
