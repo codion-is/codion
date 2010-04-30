@@ -45,7 +45,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   protected transient Event evtValueChanged;
 
   /**
-   * Instantiate a new ValueMapModel with a default size of 10.
+   * Instantiate a new ValueChangeMapModel with a default size of 10.
    */
   public ValueChangeMapImpl() {
     this(10);

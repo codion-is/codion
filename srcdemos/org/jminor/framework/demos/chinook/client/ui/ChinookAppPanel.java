@@ -65,6 +65,7 @@ public class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
+    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     Util.setLoggingLevel(Level.DEBUG);
   }
 

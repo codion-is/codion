@@ -225,7 +225,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return foreignKeyValues.getValue(property.getPropertyID());
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
-    if (property instanceof Property.TransientProperty && !super.containsValue(property.getPropertyID()))
+    if (property instanceof Property.TransientProperty)//todo && !super.containsValue(property.getPropertyID()))
       return getProxy(getEntityID()).getTransientValue(this, (Property.TransientProperty) property);
 
     if (containsValue(propertyID))
@@ -749,7 +749,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     if (EntityRepository.hasLinkedTransientProperties(getEntityID(), key)) {
       final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedTransientPropertyIDs(getEntityID(), key);
       for (final String propertyID : linkedPropertyIDs)
-        super.notifyValueChange(propertyID, getValue(key), false, null);
+        super.notifyValueChange(propertyID, getValue(propertyID), false, null);
     }
     super.notifyValueChange(key, value, initialization, oldValue);
   }
