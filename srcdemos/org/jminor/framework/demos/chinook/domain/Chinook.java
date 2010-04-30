@@ -109,7 +109,7 @@ public class Chinook {
   public static final String TRACK_GENREID_FK = "genreid_fk";
   public static final String TRACK_COMPOSER = "composer";
   public static final String TRACK_MILLISECONDS = "milliseconds";
-  public static final String TRACK_MINUTES_SECONDS_TRANSIENT = "minutes_seconds_transient";
+  public static final String TRACK_MINUTES_SECONDS_DERIVED = "minutes_seconds_transient";
   public static final String TRACK_BYTES = "bytes";
   public static final String TRACK_UNITPRICE = "unitprice";
 
@@ -255,7 +255,7 @@ public class Chinook {
                     .setNullable(false),
             new Property(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
                     .setNullable(false),
-            new Property.TransientProperty(TRACK_MINUTES_SECONDS_TRANSIENT, Types.VARCHAR, "Duration (min/sec)")
+            new Property.DerivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)")
                     .addLinkedPropertyIDs(TRACK_MILLISECONDS),
             new Property(TRACK_BYTES, Types.INTEGER, "Bytes"),
             new Property(TRACK_UNITPRICE, Types.DOUBLE, "Price")
@@ -267,8 +267,8 @@ public class Chinook {
             .setOrderByClause(TRACK_NAME));
     Entity.setProxy(T_TRACK, new Entity.Proxy() {
       @Override
-      public Object getTransientValue(final Entity entity, final Property.TransientProperty property) {
-        if (property.is(TRACK_MINUTES_SECONDS_TRANSIENT)) {
+      public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
+        if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
           final Integer milliseconds = (Integer) entity.getValue(TRACK_MILLISECONDS);
           if (milliseconds == null || milliseconds <= 0)
             return "";
@@ -279,7 +279,7 @@ public class Chinook {
           return minutes + " min " + seconds + " sec";
         }
 
-        return super.getTransientValue(entity, property);
+        return super.getDerivedValue(entity, property);
       }
     });
 

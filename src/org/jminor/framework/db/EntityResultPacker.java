@@ -66,8 +66,10 @@ public class EntityResultPacker implements ResultPacker<Entity> {
     entity.setLoaded(true);
     if (transientProperties != null && transientProperties.size() > 0) {
       for (final Property.TransientProperty transientProperty : transientProperties) {
-        if (!(transientProperty instanceof Property.DenormalizedViewProperty))
+        if (!(transientProperty instanceof Property.DenormalizedViewProperty)
+                && !(transientProperty instanceof Property.DerivedProperty)) {
           entity.setValue(transientProperty, null, false);
+        }
       }
     }
     for (final Property property : properties) {

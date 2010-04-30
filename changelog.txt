@@ -1457,3 +1457,4 @@
   common.ui.valuemap.ComboBoxValueLink refactored from framework.client.ui.property.ComboBoxValueLink
   EntityUiUtil.EntityComboBoxValueLink class added to deal with framework specific stuff
   AbstractValueMapLink descendants generified
+  Property.DerivedProperty added, takes over some of the transient property functionality

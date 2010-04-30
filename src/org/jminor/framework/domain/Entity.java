@@ -196,6 +196,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return primaryKey.setValue(property.getPropertyID(), value);
     if (property instanceof Property.DenormalizedViewProperty)
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
+    if (property instanceof Property.DerivedProperty)
+      throw new IllegalArgumentException("Can not set the value of a derived property");
     if (value != null && value instanceof Entity && value.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());
 
@@ -225,8 +227,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return foreignKeyValues.getValue(property.getPropertyID());
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
-    if (property instanceof Property.TransientProperty)//todo && !super.containsValue(property.getPropertyID()))
-      return getProxy(getEntityID()).getTransientValue(this, (Property.TransientProperty) property);
+    if (property instanceof Property.DerivedProperty)
+      return getProxy(getEntityID()).getDerivedValue(this, (Property.DerivedProperty) property);
 
     if (containsValue(propertyID))
       return super.getValue(property.getPropertyID());
@@ -1091,7 +1093,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
     }
 
-    public Object getTransientValue(final Entity entity, final Property.TransientProperty property) {
+    public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
       return null;
     }
 

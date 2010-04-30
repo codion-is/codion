@@ -70,9 +70,9 @@ public class EntityDefinition implements Serializable {
    */
   private List<String> searchPropertyIDs;
   /**
-   * Links a set of transient property ids to a parent property id
+   * Links a set of derived property ids to a parent property id
    */
-  private Map<String, Set<String>> transientPropertyChangeLinks = new HashMap<String, Set<String>>();
+  private Map<String, Set<String>> derivedPropertyChangeLinks = new HashMap<String, Set<String>>();
 
   private transient List<Property.PrimaryKeyProperty> primaryKeyProperties;
   private transient List<Property.ForeignKeyProperty> foreignKeyProperties;
@@ -105,7 +105,7 @@ public class EntityDefinition implements Serializable {
     final String[] selectColumnNames = initSelectColumnNames(getDatabaseProperties());
     for (int idx = 0; idx < selectColumnNames.length; idx++)
       properties.get(selectColumnNames[idx]).setSelectIndex(idx + 1);
-    initializeTransientPropertyChangeLinks();
+    initializeDerivedPropertyChangeLinks();
   }
 
   public String getEntityID() {
@@ -223,11 +223,11 @@ public class EntityDefinition implements Serializable {
   }
 
   public boolean hasLinkedProperties(final String propertyID) {
-    return transientPropertyChangeLinks.containsKey(propertyID);
+    return derivedPropertyChangeLinks.containsKey(propertyID);
   }
 
   public Collection<String> getLinkedPropertyIDs(final String propertyID) {
-    return transientPropertyChangeLinks.get(propertyID);
+    return derivedPropertyChangeLinks.get(propertyID);
   }
 
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
@@ -312,22 +312,22 @@ public class EntityDefinition implements Serializable {
     return properties;
   }
 
-  private void initializeTransientPropertyChangeLinks() {
+  private void initializeDerivedPropertyChangeLinks() {
     for (final Property property : properties.values()) {
-      if (property instanceof Property.TransientProperty) {
-        final Collection<String> linkedProperties = ((Property.TransientProperty) property).getLinkedPropertyIDs();
+      if (property instanceof Property.DerivedProperty) {
+        final Collection<String> linkedProperties = ((Property.DerivedProperty) property).getLinkedPropertyIDs();
         if (linkedProperties != null && linkedProperties.size()  > 0) {
           for (final String parentLinkPropertyID : linkedProperties)
-            addTransientPropertyChangeLink(parentLinkPropertyID, property.getPropertyID());
+            addDerivedPropertyChangeLink(parentLinkPropertyID, property.getPropertyID());
         }
       }
     }
   }
 
-  private void addTransientPropertyChangeLink(final String parentPropertyID, final String transientPropertyID) {
-    if (!transientPropertyChangeLinks.containsKey(parentPropertyID))
-      transientPropertyChangeLinks.put(parentPropertyID, new HashSet<String>());
-    transientPropertyChangeLinks.get(parentPropertyID).add(transientPropertyID);
+  private void addDerivedPropertyChangeLink(final String parentPropertyID, final String transientPropertyID) {
+    if (!derivedPropertyChangeLinks.containsKey(parentPropertyID))
+      derivedPropertyChangeLinks.put(parentPropertyID, new HashSet<String>());
+    derivedPropertyChangeLinks.get(parentPropertyID).add(transientPropertyID);
   }
 
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {

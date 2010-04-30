@@ -853,15 +853,11 @@ public class Property implements Serializable {
 
   /**
    * A property that does not map to an underlying database column. The value of a transient property
-   * is initialized to null when entities are loaded.
-   * The Entity.Proxy class can be used to provide the values of transient properties, by overriding it's getValue() method.
-   * @see Entity#setDefaultProxy(org.jminor.framework.domain.Entity.Proxy)
-   * @see Entity#setProxy(String, org.jminor.framework.domain.Entity.Proxy)
-   * @see org.jminor.framework.domain.Entity.Proxy#getTransientValue(Entity, org.jminor.framework.domain.Property.TransientProperty)
+   * is initialized to null when entities are loaded, which means transient properties always have
+   * a original value of null.
+   * The value of transient properties can be set and retrieved like normal properties.
    */
   public static class TransientProperty extends Property {
-
-    private Collection<String> linkedPropertyIDs;
 
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
@@ -906,6 +902,27 @@ public class Property implements Serializable {
     public final String getColumnName() {
       throw new RuntimeException("Transient properties do not have column names");
     }
+  }
+
+  /**
+   * A property which value is derived from the values of one or more properties.
+   * For the property to be updated when the parent properties are you must
+   * link the properties together using the <code>addLinkedPropertyIDs()</code>method.
+   * @see org.jminor.framework.domain.Entity.Proxy#getDerivedValue(Entity, org.jminor.framework.domain.Property.DerivedProperty)
+   */
+  public static class DerivedProperty extends TransientProperty {
+
+    private Collection<String> linkedPropertyIDs;
+
+    public DerivedProperty(final String propertyID, final int type, final String caption) {
+      super(propertyID, type, caption);
+      super.setReadOnly(true);
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new RuntimeException("Derived properties are read only by definition");
+    }
 
     /**
      * @return the IDs of properties that trigger a change event for this property
@@ -920,7 +937,7 @@ public class Property implements Serializable {
      * @param linkedPropertyIDs the IDs of the properties on which to link
      * @return this TransientProperty instance
      */
-    public TransientProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
+    public DerivedProperty addLinkedPropertyIDs(final String... linkedPropertyIDs) {
       if (this.linkedPropertyIDs == null)
         this.linkedPropertyIDs = new HashSet<String>();
       this.linkedPropertyIDs.addAll(Arrays.asList(linkedPropertyIDs));

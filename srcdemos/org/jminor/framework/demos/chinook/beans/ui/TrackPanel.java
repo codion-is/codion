@@ -48,7 +48,7 @@ public class TrackPanel extends EntityPanel {
         txtBytes.setColumns(18);
         final JTextField txtUnitPrice = createTextField(TRACK_UNITPRICE);
         txtUnitPrice.setColumns(18);
-        final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_TRANSIENT, LinkType.READ_ONLY);
+        final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_DERIVED, LinkType.READ_ONLY);
 
         add(createPropertyPanel(TRACK_ALBUMID_FK, txtAlbum));
         add(createPropertyPanel(TRACK_NAME, txtName));
@@ -59,7 +59,7 @@ public class TrackPanel extends EntityPanel {
         add(createPropertyPanel(TRACK_UNITPRICE, txtUnitPrice));
         add(createPropertyPanel(TRACK_MILLISECONDS, txtMilliseconds));
         add(new JLabel());
-        add(createPropertyPanel(TRACK_MINUTES_SECONDS_TRANSIENT, txtDuration));
+        add(createPropertyPanel(TRACK_MINUTES_SECONDS_DERIVED, txtDuration));
       }
     };
   }

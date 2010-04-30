@@ -19,7 +19,7 @@ import java.util.List;
  * </pre>
  * <code>
  * StringProvider provider = new StringProvider();<br>
- * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")
+ * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")<br>
  *         .addText("' referenced value=").addReferencedValue("key4", "refKey");<br>
  * System.out.println(provider.toString(valueMap));<br>
  * </code>
