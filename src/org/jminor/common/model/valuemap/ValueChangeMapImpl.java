@@ -52,7 +52,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /**
-   * Instantiates a new ValueMapModel with a size of <code>initialSize</code>.
+   * Instantiates a new ValueChangeMapModel with a size of <code>initialSize</code>.
    * @param initialSize the initial size
    */
   public ValueChangeMapImpl(final int initialSize) {
@@ -135,18 +135,19 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   /** {@inheritDoc} */
   public V setValue(final T key, final V value) {
     final boolean initialization = !containsValue(key);
-    V oldValue = null;
+    V previousValue = null;
     if (!initialization) {
-      oldValue = getValue(key);
-      if (Util.equal(oldValue, value))
-        return oldValue;
+      previousValue = getValue(key);
+      if (Util.equal(previousValue, value))
+        return previousValue;
     }
 
     if (!initialization) {
-      if (isModified(key) && Util.equal(getOriginalValue(key), value))
+      final boolean modified = isModified(key);
+      if (modified && Util.equal(getOriginalValue(key), value))
         removeOriginalValue(key);//we're back to the original value
-      else if (!isModified(key))
-        setOriginalValue(key, oldValue);
+      else if (!modified)
+        setOriginalValue(key, previousValue);
 
       if (stModified != null)
         stModified.setActive(isModified());
@@ -154,9 +155,9 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
 
     values.put(key, value);
     if (evtValueChanged != null)
-      notifyValueChange(key, value, initialization, oldValue);
+      notifyValueChange(key, value, initialization, previousValue);
 
-    return oldValue;
+    return previousValue;
   }
 
   /** {@inheritDoc} */
