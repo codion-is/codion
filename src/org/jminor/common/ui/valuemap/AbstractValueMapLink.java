@@ -90,7 +90,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   /**
    * @return the value owner, in this case a ValueChangeMapEditModel
    */
-  private ValueChangeMapEditModel<T, V> getEditModel() {
+  protected ValueChangeMapEditModel<T, V> getEditModel() {
     return super.getValueOwner();
   }
 }

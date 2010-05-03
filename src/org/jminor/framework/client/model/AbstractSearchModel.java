@@ -30,13 +30,14 @@ public abstract class AbstractSearchModel {
   private final Event evtSearchTypeChanged = new Event();
   private final Event evtSearchStateChanged = new Event();
   private final Event evtSearchModelCleared = new Event();
+  private final Event evtEnabledChanged = new Event();
 
   private final State stLocked = new State();
 
-  private final State stSearchEnabled = new State();
   private final Property property;
 
   private SearchType searchType = SearchType.LIKE;
+  private boolean enabled = false;
   private boolean automaticWildcard = false;
   private boolean caseSensitive = true;
   private Object upperBound = null;
@@ -287,7 +288,7 @@ public abstract class AbstractSearchModel {
    * @return true if this search model is enabled
    */
   public boolean isSearchEnabled() {
-    return stSearchEnabled.isActive();
+    return enabled;
   }
 
   /**
@@ -297,7 +298,10 @@ public abstract class AbstractSearchModel {
   public void setSearchEnabled(final boolean value) {
     if (stLocked.isActive())
       throw new IllegalStateException("Search model for property " + property + " is locked");
-    stSearchEnabled.setActive(value);
+    if (enabled != value) {
+      enabled = value;
+      evtEnabledChanged.fire();
+    }
   }
 
   /**
@@ -323,8 +327,8 @@ public abstract class AbstractSearchModel {
     return stLocked;
   }
 
-  public State stateSearchEnabled() {
-    return stSearchEnabled;
+  public Event eventEnabledChanged() {
+    return evtEnabledChanged;
   }
 
   public Event eventLowerBoundChanged() {
@@ -366,6 +370,6 @@ public abstract class AbstractSearchModel {
     evtUpperBoundChanged.addListener(evtSearchStateChanged);
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
-    stSearchEnabled.eventStateChanged().addListener(evtSearchStateChanged);
+    evtEnabledChanged.addListener(evtSearchStateChanged);
   }
 }

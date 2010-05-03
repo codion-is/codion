@@ -83,7 +83,7 @@ public abstract class AbstractSearchPanel extends JPanel {
     this.lowerBoundField = isLowerBoundFieldRequired(model.getProperty()) ? getInputField(false) : null;
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            ControlFactory.toggleControl(model, "searchEnabled", null, model.stateSearchEnabled().eventStateChanged()));
+            ControlFactory.toggleControl(model, "searchEnabled", null, model.eventEnabledChanged()));
     toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     this.toggleSearchAdvanced = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.eventStateChanged()));

@@ -676,19 +676,16 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @param entities the entities to check, assumes they are all of the same type
-   * @return true if any of the given entities has a modified primary key property
+   * @param entities the entities to check
+   * @return true if any of the given entities has a modified primary key
    */
   public static boolean isPrimaryKeyModified(final Collection<Entity> entities) {
     if (entities == null || entities.size() == 0)
       return false;
 
-    for (final Property.PrimaryKeyProperty property :
-            EntityRepository.getPrimaryKeyProperties(entities.iterator().next().getEntityID())) {
-      for (final Entity entity : entities)
-        if (entity.isModified(property.getPropertyID()))
-          return true;
-    }
+    for (final Entity entity : entities)
+      if (entity.primaryKey.isModified())
+        return true;
 
     return false;
   }
@@ -748,8 +745,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   @Override
   protected void notifyValueChange(final String key, final Object value, final boolean initialization, final Object oldValue) {
-    if (EntityRepository.hasLinkedTransientProperties(getEntityID(), key)) {
-      final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedTransientPropertyIDs(getEntityID(), key);
+    if (EntityRepository.hasLinkedDerivedProperties(getEntityID(), key)) {
+      final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedDerivedPropertyIDs(getEntityID(), key);
       for (final String propertyID : linkedPropertyIDs)
         super.notifyValueChange(propertyID, getValue(propertyID), false, null);
     }

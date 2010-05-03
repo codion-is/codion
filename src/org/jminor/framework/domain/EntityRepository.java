@@ -291,24 +291,24 @@ public class EntityRepository {
 
   /**
    * Returns true if the property identified by <code>propertyID</code> in the entity identified
-   * by <code>entityID</code> has any linked transient properties, that is transient properties which
+   * by <code>entityID</code> has any linked derived properties, that is derived properties which
    * values depend on the value of the given property
    * @param entityID the entityID
    * @param propertyID the propertyID
-   * @return true if any transient properties are linked to the given property
+   * @return true if any derived properties are linked to the given property
    */
-  public static boolean hasLinkedTransientProperties(final String entityID, final String propertyID) {
+  public static boolean hasLinkedDerivedProperties(final String entityID, final String propertyID) {
     return getEntityDefinition(entityID).hasLinkedProperties(propertyID);
   }
 
   /**
-   * Returns the IDs of any transient properties linked to the property identified by <code>propertyID</code>
+   * Returns the IDs of any derived properties linked to the property identified by <code>propertyID</code>
    * in the entity identified by <code>entityID</code>
    * @param entityID the entityID
    * @param propertyID the propertyID
-   * @return the IDs of any transient properties that are linked to the given property
+   * @return the IDs of any derived properties that are linked to the given property
    */
-  public static Collection<String> getLinkedTransientPropertyIDs(final String entityID, final String propertyID) {
+  public static Collection<String> getLinkedDerivedPropertyIDs(final String entityID, final String propertyID) {
     return getEntityDefinition(entityID).getLinkedPropertyIDs(propertyID);
   }
 
