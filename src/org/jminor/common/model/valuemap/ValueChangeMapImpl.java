@@ -87,12 +87,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
 
   /** {@inheritDoc} */
   public boolean isValueNull(final T key) {
-    return isNull(getValue(key));
-  }
-
-  /** {@inheritDoc} */
-  public boolean isNull(final V value) {
-    return value == null;
+    return getValue(key) == null;
   }
 
   /** {@inheritDoc} */

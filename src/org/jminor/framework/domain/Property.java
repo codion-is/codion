@@ -14,8 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a entity property, for example a database column.
@@ -722,6 +724,7 @@ public class Property implements Serializable {
     private final String referencedEntityID;
 
     private final List<Property> referenceProperties;
+    private Map<Property, String> linkedReferenceProperties;
 
     private int fetchDepth = Configuration.getIntValue(Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
@@ -730,19 +733,38 @@ public class Property implements Serializable {
      * be a underlying table column, it must only be unique for this entity
      * @param caption the property caption
      * @param referencedEntityID the ID of the referenced entity type
-     * @param referenceProperties the actual column properties involved in the reference
+     * @param referenceProperty the actual column property involved in the reference
      */
     public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
-                              final Property... referenceProperties) {
+                              final Property referenceProperty) {
+      this(propertyID, caption, referencedEntityID, new Property[] {referenceProperty}, new String[0]);
+    }
+
+    /**
+     * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
+     * be a underlying table column, it must only be unique for this entity
+     * @param caption the property caption
+     * @param referencedEntityID the ID of the referenced entity type
+     * @param referenceProperties the actual column properties involved in the reference
+     * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the properties
+     */
+    public ForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
+                              final Property[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
       for (final Property referenceProperty : referenceProperties)
         if (referenceProperty.propertyID.equals(propertyID))
           throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
       if (referencedEntityID == null)
         throw new IllegalArgumentException("referencedEntityID is null: " + propertyID);
+      if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length)
+        throw new IllegalArgumentException("Reference property count mismatch");
 
-      for (final Property referenceProperty : referenceProperties)
+      for (int i = 0; i < referenceProperties.length; i++) {
+        final Property referenceProperty = referenceProperties[i];
         referenceProperty.setParentProperty(this);
+        if (referencedPropertyIDs.length > i)
+          link(referenceProperty, referencedPropertyIDs[i]);
+      }
       this.referencedEntityID = referencedEntityID;
       this.referenceProperties = Collections.unmodifiableList(Arrays.asList(referenceProperties));
     }
@@ -782,6 +804,22 @@ public class Property implements Serializable {
     public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
+    }
+
+    public String getReferencedPropertyID(final Property referenceProperty) {
+      if (linkedReferenceProperties == null)
+        return null;
+
+      if (!linkedReferenceProperties.containsKey(referenceProperty))
+        throw new RuntimeException("No referenced property ID associated with reference property: " + referenceProperty);
+
+      return  linkedReferenceProperties.get(referenceProperty);
+    }
+
+    private void link(final Property referenceProperty, final String referencedPropertyID) {
+      if (linkedReferenceProperties == null)
+        linkedReferenceProperties = new HashMap<Property, String>();
+      linkedReferenceProperties.put(referenceProperty, referencedPropertyID);
     }
   }
 

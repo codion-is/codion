@@ -1469,3 +1469,7 @@
   ValueChangeMapEditModel.isNull(key, value) removed
   Criteria.isValueNull(key, value) removed
   TextInputProvider.getValue() now returns null if the text is empty
+  ValueMap.isNull(value) removed
+  ForeignKeyProperty now maps reference properties to referenced propertyIDs in case of multi column relations
+  Entity.Key.isSingleIntegerKey() removed, field kept
+  Entity.getReferencedPrimaryKey() refactored

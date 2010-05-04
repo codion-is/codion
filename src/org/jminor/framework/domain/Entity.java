@@ -573,20 +573,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     if (primaryKey != null)
       return primaryKey;
 
-    for (int i = 0; i < foreignKeyProperty.getReferenceProperties().size(); i++) {
-      final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(i);
-      final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
-              ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
-              : super.getValue(referenceKeyProperty.getPropertyID());
-      if (!isNull(value)) {
-        if (primaryKey == null)
-          (referencedPrimaryKeysCache == null ? referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>()
-                  : referencedPrimaryKeysCache).put(foreignKeyProperty, primaryKey = new Key(foreignKeyProperty.getReferencedEntityID()));
-        primaryKey.setValue(primaryKey.getProperties().get(i).getPropertyID(), value);
-      }
-      else
-        break;
-    }
+    primaryKey = foreignKeyProperty.getReferenceProperties().size() == 1 ?
+            initializeSinglePropertyKey(foreignKeyProperty) : initializeMultiPropertyKey(foreignKeyProperty);
+
+    if (referencedPrimaryKeysCache == null)
+      referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
+    referencedPrimaryKeysCache.put(foreignKeyProperty, primaryKey);
 
     return primaryKey;
   }
@@ -695,7 +687,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       proxies = new HashMap<String, Proxy>();
 
     if (proxies.containsKey(entityID))
-      throw new RuntimeException("Proxy already defined for: " + entityID);
+      throw new RuntimeException("Proxy already set for: " + entityID);
 
     proxies.put(entityID, entityProxy);
   }
@@ -719,9 +711,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       entity.setValue(entry.getKey(), entry.getValue());
     }
     if (originalValues != null) {
-      for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
+      for (final Map.Entry<String, Object> entry : originalValues.entrySet())
         entity.setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
-      }
     }
     entity.setLoaded(true);
 
@@ -763,8 +754,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty))
-        setValue(referenceProperty.getPropertyID(), referencedEntity != null ?
-                referencedEntity.getValue(primaryKeyProperty.getPropertyID()) : null);
+        setValue(referenceProperty, referencedEntity != null ?
+                referencedEntity.getValue(primaryKeyProperty.getPropertyID()) : null, false);
     }
   }
 
@@ -776,8 +767,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   private void setDenormalizedValues(final Entity entity, final Collection<Property.DenormalizedProperty> denormalizedProperties) {
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        setValue(denormalizedProperty.getPropertyID(),
-                entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()));
+        setValue(denormalizedProperty, entity == null ? null :
+                entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()), false);
       }
     }
   }
@@ -792,6 +783,30 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
     return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.getDenormalizedProperty()) : null;
+  }
+
+  private Key initializeSinglePropertyKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
+    final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
+            ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
+            : super.getValue(referenceKeyProperty.getPropertyID());
+
+    return new Entity.Key(foreignKeyProperty.getReferencedEntityID(), value);
+  }
+
+  private Key initializeMultiPropertyKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final Key primaryKey = new Entity.Key(foreignKeyProperty.getReferencedEntityID());
+    for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
+      final Object value = referenceKeyProperty instanceof Property.PrimaryKeyProperty
+              ? this.primaryKey.getValue(referenceKeyProperty.getPropertyID())
+              : super.getValue(referenceKeyProperty.getPropertyID());
+      if (value != null)
+        primaryKey.setValue(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
+      else
+        break;
+    }
+
+    return primaryKey;
   }
 
   /**
@@ -827,6 +842,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     private final String entityID;
 
     /**
+     * true if this key consists of a single integer value
+     */
+    private final boolean singleIntegerKey;
+
+    /**
      * Caching the hash code
      */
     private int hashCode = -Integer.MAX_VALUE;
@@ -836,15 +856,13 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      */
     private boolean hashCodeDirty = true;
 
-    private boolean singleIntegerKey;
-
     /**
      * Caching this extremely frequently referenced attribute
      */
     private transient List<Property.PrimaryKeyProperty> properties;
 
     /**
-     * Instantiates a new EntityKey for the given entity type
+     * Instantiates a new Key for the given entity type
      * @param entityID the entity ID
      */
     public Key(final String entityID) {
@@ -853,7 +871,20 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
         throw new IllegalArgumentException("Key can not be instantiated without an entityID");
       this.entityID = entityID;
       this.properties = EntityRepository.getPrimaryKeyProperties(entityID);
-      this.singleIntegerKey = getPropertyCount() == 1 && getFirstKeyProperty().isInteger();
+      this.singleIntegerKey = properties.size() == 1 && properties.get(0).isInteger();
+    }
+
+    /**
+     * Instantiates a new Key for the given entity type, assuming it is a single value key
+     * @param entityID the entity ID
+     * @param value the value
+     * @throws RuntimeException in case this key is a multi value key
+     */
+    public Key(final String entityID, final Object value) {
+      this(entityID);
+      if (properties.size() > 1)
+        throw new RuntimeException("Not a single value key");
+      setValue(properties.get(0).getPropertyID(), value);
     }
 
     /**
@@ -922,7 +953,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     @Override
     public Object setValue(final String propertyID, final Object newValue) {
       hashCodeDirty = true;
-      if (isSingleIntegerKey()) {
+      if (singleIntegerKey) {
         if (!(newValue == null || newValue instanceof Integer))
           throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
                   + propertyID + ", got " + newValue + "; " + newValue.getClass());
@@ -963,7 +994,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      * @return the number of properties comprising this key
      */
     public int getPropertyCount() {
-      return getProperties().size();
+      return singleIntegerKey ? 1 : getProperties().size();
     }
 
     /**
@@ -997,7 +1028,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      * @return true if one of the properties has a null value
      */
     public boolean isNull() {
-      if (isSingleIntegerKey())
+      if (singleIntegerKey)
         return hashCode() == -Integer.MAX_VALUE;
 
       if (hashCode() == -Integer.MAX_VALUE)
@@ -1035,13 +1066,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     @Override
     public Object copyValue(final Object value) {
       return copyPropertyValue(value);
-    }
-
-    /**
-     * @return true if this is a single integer column key
-     */
-    private boolean isSingleIntegerKey() {
-      return singleIntegerKey;
     }
 
     public Key getOriginalCopy() {

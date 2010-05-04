@@ -33,14 +33,8 @@ public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V
   boolean isValueNull(final T key);
 
   /**
-   * Returns true if the value is or represents null.
-   * @param value the value
-   * @return true if the value is or represents null
-   */
-  boolean isNull(final V value);
-
-  /**
-   * Returns true if this ValueMap contains a value for the given key
+   * Returns true if this ValueMap contains a value for the given key,
+   * that value can be null
    * @param key the key
    * @return true if a value is mapped to this key
    */

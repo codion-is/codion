@@ -73,8 +73,10 @@ public class SchemaBrowser {
 
     EntityRepository.add(new EntityDefinition(T_COLUMN, bundle.getString("t_column"),
             new Property.ForeignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
-                    new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setIndex(0),
-                    new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setIndex(1)),
+                    new Property[] {
+                            new Property.PrimaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setIndex(0),
+                            new Property.PrimaryKeyProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setIndex(1)},
+                    new String[] {TABLE_SCHEMA, TABLE_NAME}),
             new Property.PrimaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setIndex(2),
             new Property(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
@@ -83,8 +85,10 @@ public class SchemaBrowser {
 
     EntityRepository.add(new EntityDefinition(T_CONSTRAINT, bundle.getString("t_constraint"),
             new Property.ForeignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
-                    new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
-                    new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1)),
+                    new Property[] {
+                            new Property.PrimaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
+                            new Property.PrimaryKeyProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1)},
+                    new String[] {TABLE_SCHEMA, TABLE_NAME}),
             new Property.PrimaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setIndex(2),
             new Property(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
@@ -93,9 +97,11 @@ public class SchemaBrowser {
 
     EntityRepository.add(new EntityDefinition(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             new Property.ForeignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1),
-                    new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setIndex(2)),
+                    new Property[] {
+                            new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
+                            new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1),
+                            new Property.PrimaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setIndex(2)},
+                    new String[] {CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME}),
             new Property(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
             new Property(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
             .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)
