@@ -151,7 +151,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   private String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final String string = resultSet.getString(columnIndex);
 
-    return string == null ? "" : string;
+    return resultSet.wasNull() ? null : string;
   }
 
   private Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {

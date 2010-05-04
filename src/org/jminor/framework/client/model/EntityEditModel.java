@@ -400,11 +400,6 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   @Override
-  public boolean isNull(final String key, final Object value) {
-    return Entity.valueNull(value);
-  }
-
-  @Override
   public boolean isNullable(final String key) {
     return EntityRepository.getProperty(getEntityID(), key).isNullable();
   }
@@ -838,9 +833,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @return a string representing the given property value for debug output
    */
   private static String getValueString(final Object value) {
-    final boolean valueIsNull = Entity.valueNull(value);
-    final StringBuilder stringBuilder = new StringBuilder("[").append(valueIsNull
-            ? (value == null ? "null" : "null value") : value).append("]");
+    final StringBuilder stringBuilder = new StringBuilder("[").append(value == null ? "null value" : value).append("]");
     if (value instanceof Entity)
       stringBuilder.append(" PK{").append(((Entity)value).getPrimaryKey()).append("}");
 

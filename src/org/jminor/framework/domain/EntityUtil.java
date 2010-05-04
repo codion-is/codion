@@ -287,16 +287,17 @@ public class EntityUtil {
   }
 
   private static Object getJSONOriginalValue(final Entity entity, final Property property) throws JSONException {
-    if (Entity.valueNull(entity.getOriginalValue(property.getPropertyID())))
+    final Object originalValue = entity.getOriginalValue(property.getPropertyID());
+    if (originalValue == null)
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
-      return getJSONObject(Arrays.asList((Entity) entity.getOriginalValue(property.getPropertyID())));
+      return getJSONObject(Arrays.asList((Entity) originalValue));
     if (property.isTime()) {
-      final Date date = (Date) entity.getOriginalValue(property.getPropertyID());
+      final Date date = (Date) originalValue;
       return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
     }
 
-    return entity.getOriginalValue(property.getPropertyID());
+    return originalValue;
   }
 
   public static Entity createRandomEntity(final String entityID, final Map<String, Entity> referenceEntities) {

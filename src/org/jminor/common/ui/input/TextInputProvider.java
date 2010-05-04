@@ -20,7 +20,9 @@ public class TextInputProvider extends AbstractInputProvider<String> {
 
   @Override
   public String getValue() {
-    return ((TextInputPanel) getInputComponent()).getText();
+    final String value = ((TextInputPanel) getInputComponent()).getText();
+
+    return value.length() == 0 ? null : value;
   }
 
   private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueListProvider valueListProvider,

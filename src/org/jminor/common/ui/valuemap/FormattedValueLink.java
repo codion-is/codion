@@ -66,7 +66,7 @@ public class FormattedValueLink<T> extends TextValueLink<T> {
   /** {@inheritDoc} */
   @Override
   protected String getValueAsString(final Object value) {
-    if (isNull(value))
+    if (value == null)
       return null;
 
     return format == null ? value.toString() : format.format(value);

@@ -44,9 +44,9 @@ public interface Database {
   static final String DATABASE_PORT = "jminor.db.port";
 
   /**
-   * Specifies whether or not the database should be run in embedded mode, if applicable
-   * Values: "true"/"false"
-   * Default: "false"
+   * Specifies whether or not the database should be run in embedded mode, if applicable<br>
+   * Values: "true"/"false"<br>
+   * Default: "false"<br>
    */
   static final String DATABASE_EMBEDDED = "jminor.db.embedded";
 

@@ -65,7 +65,9 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
    */
   @Override
   protected Object getUIValue() {
-    return getText();
+    final String text = getText();
+
+    return text == null || text.length() == 0 ? null : text;
   }
 
   protected String getValueAsString(final Object value) {

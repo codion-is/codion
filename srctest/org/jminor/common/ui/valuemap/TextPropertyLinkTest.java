@@ -9,8 +9,7 @@ import org.jminor.framework.db.EntityDbConnectionTest;
 import org.jminor.framework.demos.empdept.beans.EmployeeModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.JTextField;
@@ -27,11 +26,13 @@ public class TextPropertyLinkTest {
   public void test() throws Exception {
     final JTextField txt = new JTextField();
     new TextValueLink<String>(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
+    assertTrue("String value should be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
+    assertFalse("String value should not be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     assertEquals("String value should be 'darri", "darri", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("");
-    assertEquals("String value should be empty", "", model.getValue(EmpDept.EMPLOYEE_NAME));
+    assertTrue("String value should be null", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     model.setValue(EmpDept.EMPLOYEE_NAME, "Björn");
     assertEquals("Text field should contain value", "Björn", txt.getText());
   }

@@ -117,13 +117,6 @@ public abstract class ValueChangeMapEditModel<T, V> implements Refreshable {
 
   /**
    * @param key the key
-   * @param value the value
-   * @return true it the value is or represents null
-   */
-  public abstract boolean isNull(final T key, final V value);
-
-  /**
-   * @param key the key
    * @return true if this value is allowed to be null
    */
   public abstract boolean isNullable(final T key);

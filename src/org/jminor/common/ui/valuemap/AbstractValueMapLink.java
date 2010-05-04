@@ -50,14 +50,6 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   }
 
   /**
-   * @param value the value
-   * @return true it the value is or represents null
-   */
-  protected boolean isNull(final V value) {
-    return getEditModel().isNull(getKey(), value);
-  }
-
-  /**
    * @return true if this value is allowed to be null
    */
   protected boolean isNullable() {

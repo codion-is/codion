@@ -30,12 +30,5 @@ public interface Criteria {
      * @return a SQL String representation of <code>value</code>
      */
     String getSQLString(final Database database, final Object columnKey, final Object value);
-
-    /**
-     * @param columnKey an object identifying the column which value should be returned
-     * @param value the value
-     * @return true if the given value is null
-     */
-    boolean isValueNull(final Object columnKey, final Object value);
   }
 }

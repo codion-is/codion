@@ -273,11 +273,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     throw new RuntimeException(propertyID + " is not a foreign key property");
   }
 
-  @Override
-  public boolean isNull(final Object value) {
-    return valueNull(value);
-  }
-
   /**
    * Returns true if the entity referenced via the given foreign key property has been loaded
    * @param foreignKeyPropertyID the property id
@@ -636,20 +631,10 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return true if the given objects are equal
    */
   public static boolean isEqual(final Object one, final Object two) {
-    final boolean oneNull = valueNull(one);
-    final boolean twoNull = valueNull(two);
+    final boolean oneNull = one == null;
+    final boolean twoNull = two == null;
 
     return oneNull && twoNull || !(oneNull ^ twoNull) && one.equals(two);
-  }
-
-  /**
-   * Returns true if <code>value</code> represents a null value for the given property type.
-   * An empty string is regarded as null.
-   * @param value the value to check
-   * @return true if <code>value</code> represents null
-   */
-  public static boolean valueNull(final Object value) {
-    return value == null || value instanceof String && ((String) value).length() == 0;
   }
 
   /**
@@ -1023,11 +1008,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
           return true;
 
       return false;
-    }
-
-    @Override
-    public boolean isNull(final Object value) {
-      return Entity.valueNull(value);
     }
 
     public static List<Key> copy(final List<Key> entityKeys) {

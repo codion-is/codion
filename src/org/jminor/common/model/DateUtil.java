@@ -81,6 +81,15 @@ public class DateUtil {
     return new Timestamp(cal.getTimeInMillis());
   }
 
+  public static Date getDate(int year, int month, int day) {
+    final Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.YEAR, year);
+    cal.set(Calendar.MONTH, month);
+    cal.set(Calendar.DAY_OF_MONTH, day);
+
+    return cal.getTime();
+  }
+
   public static Date getYesterday() {
     final Calendar c = Calendar.getInstance();
     c.add(Calendar.DAY_OF_MONTH, -1);

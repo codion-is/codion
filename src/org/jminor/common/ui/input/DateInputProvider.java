@@ -23,6 +23,8 @@ public class DateInputProvider extends AbstractInputProvider<Date> {
   public Date getValue() {
     try {
       final String dateText = ((DateInputPanel) getInputComponent()).getInputField().getText();
+      if (dateText.length() == 0)
+        return null;
       if (!dateText.contains("_"))
         return new Timestamp(((DateInputPanel) getInputComponent()).getDate().getTime());
       else

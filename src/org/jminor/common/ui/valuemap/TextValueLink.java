@@ -127,9 +127,12 @@ public class TextValueLink<T> extends AbstractValueMapLink<T, Object> implements
    * Returns a property value based on the given text, if the text can not
    * be parsed into a valid value, null is returned
    * @param text the text from which to parse a value
-   * @return a value, null if the input text does not yield a valid value
+   * @return a value, null if the input text has zero length or if it does not yield a valid value
    */
   protected Object valueFromText(final String text) {
+    if (text != null && text.length() == 0)
+      return null;
+
     return text;
   }
 
@@ -139,7 +142,7 @@ public class TextValueLink<T> extends AbstractValueMapLink<T, Object> implements
    * @return a String representation of the given value, null if the value is null
    */
   protected String getValueAsString(final Object value) {
-    return isNull(value) ? null : value.toString();
+    return value == null ? null : value.toString();
   }
 
   /**

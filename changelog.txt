@@ -1458,3 +1458,14 @@
   EntityUiUtil.EntityComboBoxValueLink class added to deal with framework specific stuff
   AbstractValueMapLink descendants generified
   Property.DerivedProperty added, takes over some of the transient property functionality
+  Empty string no longer equals null
+  EntityResultPacker returns null for empty strings
+  Entity.valueNull(value) removed
+  Entity.isNull(value) no longer overridden
+  Entity.Key.isNull(value) no longer overridden
+  AbstractValueMapLink.isNull() removed
+  TextValueLink.valueFromText() now returns null for empty strings, test changed accordingly
+  TextBeanValueLink.getUIValue() now returns null in case of an empty string
+  ValueChangeMapEditModel.isNull(key, value) removed
+  Criteria.isValueNull(key, value) removed
+  TextInputProvider.getValue() now returns null if the text is empty

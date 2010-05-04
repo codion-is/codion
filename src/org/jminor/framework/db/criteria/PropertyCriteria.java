@@ -144,7 +144,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (getProperty() instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaString(this, database, valueProvider);
 
-    final boolean isNullCriteria = getValueCount() == 1 && Entity.valueNull(getValues().get(0));
+    final boolean isNullCriteria = getValueCount() == 1 && getValues().get(0) == null;
     final String columnIdentifier = initializeColumnIdentifier(isNullCriteria);
     if (isNullCriteria)
       return columnIdentifier + (getSearchType() == SearchType.LIKE ? " is null" : " is not null");

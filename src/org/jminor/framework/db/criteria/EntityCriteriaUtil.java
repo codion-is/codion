@@ -28,7 +28,7 @@ public class EntityCriteriaUtil {
       valueProvider = new Criteria.ValueProvider() {
         public String getSQLString(final Database database, final Object columnKey, final Object value) {
           final Property property = (Property) columnKey;
-          if (isValueNull(property, value))
+          if (value == null)
             return "null";
 
           if (property.isNumerical())
@@ -65,10 +65,6 @@ public class EntityCriteriaUtil {
           }
           else
             throw new IllegalArgumentException("Undefined property type: " + property.getType());
-        }
-
-        public boolean isValueNull(final Object columnKey, final Object value) {
-          return Entity.valueNull(value);
         }
       };
 
