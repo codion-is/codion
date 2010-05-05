@@ -382,29 +382,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * Returns the value to use when the property is shown in a table
-   * @param propertyID the ID of the property for which to retrieve the value
-   * @return the table representation of the value of the property identified by <code>propertyID</code>
-   * @see org.jminor.framework.domain.Entity.Proxy#getTableValue(Entity, Property)
-   */
-  public Object getTableValue(final String propertyID) {
-    return getTableValue(getProperty(propertyID));
-  }
-
-  /**
-   * Returns the value to use when the property is shown in a table
-   * @param property the property for which to retrieve the value
-   * @return the table representation of the value of <code>property</code>
-   * @see org.jminor.framework.domain.Entity.Proxy#getTableValue(Entity, Property)
-   */
-  public Object getTableValue(final Property property) {
-    if (property instanceof Property.DenormalizedViewProperty)
-      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
-
-    return getProxy(getEntityID()).getTableValue(this, property);
-  }
-
-  /**
    * Returns a date value formatted with <code>dateFormat</code>, in case the value is null
    * and empty string is returned
    * @param propertyID the ID of the property for which to retrieve a formatted value
@@ -1116,14 +1093,10 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return null;
     }
 
-    public String getValueAsString(final Entity entity, final Property property) {
+    public String getValueAsString(final Entity entity, final Property property) {//todo getFormattedValue
       final Format format = property.getFormat();
       final Object value = entity.getValue(property);
       return entity.isValueNull(property.getPropertyID()) ? "" : (format != null ? format.format(value) : value.toString());
-    }
-
-    public Object getTableValue(final Entity entity, final Property property) {
-      return entity.getValue(property);
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

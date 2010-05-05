@@ -1482,3 +1482,4 @@
   EntityLookupModel.setSelectedEntities() now simply returns if the state does not change (only applies when no entities are selected)
   TableSorter no longer defines a empty string as null
   TableSorter.columnComparators field and setColumnComparator() removed for now
+  Entity.Proxy.getTableValue() removed, derived properties fit the bill where needed

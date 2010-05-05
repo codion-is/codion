@@ -247,7 +247,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
 
   /** {@inheritDoc} */
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    return getItemAt(rowIndex).getTableValue((Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
+    return getItemAt(rowIndex).getValue((Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier());
   }
 
   /**

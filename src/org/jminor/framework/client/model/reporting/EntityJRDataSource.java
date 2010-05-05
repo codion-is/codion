@@ -38,10 +38,10 @@ public class EntityJRDataSource implements JRDataSource {
    * @param jrField the report field which value to retrieve
    * @return the value of the property identified by <code>jrField.getName()</code>
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
-   * @see org.jminor.framework.domain.Entity#getTableValue(String)
+   * @see org.jminor.framework.domain.Entity#getValue(String)
    */
   public Object getFieldValue(final JRField jrField) throws JRException {
-    return getCurrentEntity().getTableValue(jrField.getName());
+    return getCurrentEntity().getValue(jrField.getName());
   }
 
   protected Entity getCurrentEntity() {
