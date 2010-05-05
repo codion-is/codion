@@ -131,6 +131,10 @@ public class Property implements Serializable {
    * The Format used when presenting this Property value
    */
   private Format format;
+  /**
+   * Caching this frequently referenced attribute
+   */
+  private Class<?> typeClass;
 
   /**
    * Instantiates a new property of the type Integer.class
@@ -645,7 +649,10 @@ public class Property implements Serializable {
    * @return the Class representing this property type
    */
   public Class<?> getTypeClass() {
-    return getTypeClass(type);
+    if (typeClass == null)
+      typeClass = getTypeClass(type);
+
+    return typeClass;
   }
 
   /**
@@ -653,22 +660,25 @@ public class Property implements Serializable {
    * @return the Class representing the given type
    */
   public static Class<?> getTypeClass(final int sqlType) {
-    if (sqlType == Types.INTEGER)
-      return Integer.class;
-    else if (sqlType == Types.DOUBLE)
-      return Double.class;
-    else if (sqlType == Types.DATE)
-      return Date.class;
-    else if (sqlType == Types.TIMESTAMP)
-      return Timestamp.class;
-    else if (sqlType == Types.VARCHAR)
-      return String.class;
-    else if (sqlType == Types.BOOLEAN)
-      return Boolean.class;
-    else if (sqlType == Types.CHAR)
-      return Character.class;
+    switch (sqlType) {
+      case Types.INTEGER:
+        return Integer.class;
+      case Types.DOUBLE:
+        return Double.class;
+      case Types.DATE:
+        return Date.class;
+      case Types.TIMESTAMP:
+        return Timestamp.class;
+      case Types.VARCHAR:
+        return String.class;
+      case Types.BOOLEAN:
+        return Boolean.class;
+      case Types.CHAR:
+        return Character.class;
 
-    return Object.class;
+      default:
+        return Object.class;
+    }
   }
 
   private Format initializeFormat() {
