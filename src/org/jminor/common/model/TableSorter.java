@@ -52,9 +52,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TableSorter is a decorator for TableModels; adding sorting
@@ -120,14 +118,14 @@ public class TableSorter extends AbstractTableModel {
   private final Event evtAfterSort = new Event();
 
   public static final Comparator COMPARABLE_COMPARATOR = new Comparator() {
-    public int compare(Object o1, Object o2) {
-      return ((Comparable) o1).compareTo(o2);
+    public int compare(Object objectOne, Object objectTwo) {
+      return ((Comparable) objectOne).compareTo(objectTwo);
     }
   };
   public static final Comparator LEXICAL_COMPARATOR = new Comparator() {
     private final Collator collator = Collator.getInstance();
-    public int compare(Object o1, Object o2) {
-      return collator.compare(o1.toString(), o2.toString());
+    public int compare(Object objectOne, Object objectTwo) {
+      return collator.compare(objectOne.toString(), objectTwo.toString());
     }
   };
 
@@ -138,7 +136,6 @@ public class TableSorter extends AbstractTableModel {
 
   private final MouseListener mouseListener;
   private final TableModelListener tableModelListener;
-  private final Map<Class, Comparator> columnComparators = new HashMap<Class, Comparator>();
   private final List<Directive> sortingColumns = new ArrayList<Directive>();
 
   private static final Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
@@ -228,14 +225,6 @@ public class TableSorter extends AbstractTableModel {
     sortingStatusChanged();
   }
 
-  public void setColumnComparator(Class type, Comparator comparator) {
-    if (comparator == null) {
-      columnComparators.remove(type);
-    } else {
-      columnComparators.put(type, comparator);
-    }
-  }
-
   public int modelIndex(int viewIndex) {
     final Row[] model = getViewToModel();
     if (model != null && model.length > 0) {
@@ -320,13 +309,10 @@ public class TableSorter extends AbstractTableModel {
   }
 
   protected Comparator getComparator(int column) {
-    Class columnType = tableModel.getColumnClass(column);
-    Comparator comparator = columnComparators.get(columnType);
-    if (comparator != null)
-      return comparator;
-    if (columnType.equals(String.class))
+    final Class columnClass = tableModel.getColumnClass(column);
+    if (columnClass.equals(String.class))
       return LEXICAL_COMPARATOR;
-    if (Comparable.class.isAssignableFrom(columnType))
+    if (Comparable.class.isAssignableFrom(columnClass))
       return COMPARABLE_COMPARATOR;
 
     return LEXICAL_COMPARATOR;
@@ -390,34 +376,34 @@ public class TableSorter extends AbstractTableModel {
   // Helper classes
 
   private class Row implements Comparable, Serializable {
-    private int modelIndex;
+    private final int modelIndex;
 
     public Row(int index) {
       this.modelIndex = index;
     }
 
-    public int compareTo(Object o) {
-      int row1 = modelIndex;
-      int row2 = ((Row) o).modelIndex;
+    public int compareTo(Object object) {
+      int rowOne = modelIndex;
+      int rowTwo = ((Row) object).modelIndex;
 
       for (final Directive directive : sortingColumns) {
         int column = directive.column;
-        Object o1 = tableModel.getValueAt(row1, column);
-        Object o2 = tableModel.getValueAt(row2, column);
+        Object objectOne = tableModel.getValueAt(rowOne, column);
+        Object objectTwo = tableModel.getValueAt(rowTwo, column);
 
         int comparison;
         // Define null less than everything, except null.
-        if (o1 == null && o2 == null) {
+        if (objectOne == null && objectTwo == null) {
           comparison = 0;
         }
-        else if (o1 == null) {
+        else if (objectOne == null) {
           comparison = -1;
         }
-        else if (o2 == null) {
+        else if (objectTwo == null) {
           comparison = 1;
         }
         else {
-          comparison = getComparator(column).compare(o1, o2);
+          comparison = getComparator(column).compare(objectOne, objectTwo);
         }
         if (comparison != 0) {
           return directive.direction == DESCENDING ? -comparison : comparison;
