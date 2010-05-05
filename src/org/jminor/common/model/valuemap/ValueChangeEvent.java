@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 /**
  * Used when value change events are fired
  */
-public class ValueChangeEvent<T, V> extends ActionEvent {
+public class ValueChangeEvent<K, V> extends ActionEvent {
 
   /**
    * The ID of the type of object owning the property
@@ -20,7 +20,7 @@ public class ValueChangeEvent<T, V> extends ActionEvent {
   /**
    * The property
    */
-  private final T key;
+  private final K key;
 
   /**
    * The new property value
@@ -53,7 +53,7 @@ public class ValueChangeEvent<T, V> extends ActionEvent {
    * @param isModelChange true if the value change originates from the model, false if it originates in the UI
    * @param initialization true if the property value was being initialized
    */
-  public ValueChangeEvent(final Object source, final String propertyOwnerTypeID, final T key, final V newValue,
+  public ValueChangeEvent(final Object source, final String propertyOwnerTypeID, final K key, final V newValue,
                           final V oldValue, final boolean isModelChange, final boolean initialization) {
     super(source, 0, key.toString());
     this.propertyOwnerTypeID = propertyOwnerTypeID;
@@ -74,7 +74,7 @@ public class ValueChangeEvent<T, V> extends ActionEvent {
   /**
    * @return the property which value just changed
    */
-  public T getKey() {
+  public K getKey() {
     return key;
   }
 

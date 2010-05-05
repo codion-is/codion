@@ -10,22 +10,22 @@ import org.jminor.common.ui.control.LinkType;
 
 /**
  * An abstract class for linking a UI component to a ValueChangeMapEditModel key value.
- * @param <T> the type of the map keys
+ * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<ValueChangeMapEditModel<T, V>, V> {
+public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<ValueChangeMapEditModel<K, V>, V> {
 
   /**
    * The linked key
    */
-  private final T key;
+  private final K key;
 
   /**
    * @param editModel the ValueChangeMapEditModel instance
    * @param key the key of the value to link
    * @param linkType the link type
    */
-  public AbstractValueMapLink(final ValueChangeMapEditModel<T, V> editModel, final T key, final LinkType linkType) {
+  public AbstractValueMapLink(final ValueChangeMapEditModel<K, V> editModel, final K key, final LinkType linkType) {
     super(editModel, editModel.getPropertyChangeEvent(key), linkType);
     this.key = key;
   }
@@ -59,7 +59,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   /**
    * @return the linked key
    */
-  protected T getKey() {
+  protected K getKey() {
     return key;
   }
 
@@ -69,7 +69,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
    * @param editModel the underlying ValueChangeMapEditModel
    * @return a validation string if the value is invalid, null otherwise
    */
-  protected String getValidationMessage(final ValueChangeMapEditModel<T, V> editModel) {
+  protected String getValidationMessage(final ValueChangeMapEditModel<K, V> editModel) {
     try {
       editModel.validate(getKey(), ValueChangeMapEditModel.UNKNOWN);
       return null;
@@ -82,7 +82,7 @@ public abstract class AbstractValueMapLink<T, V> extends AbstractValueLink<Value
   /**
    * @return the value owner, in this case a ValueChangeMapEditModel
    */
-  protected ValueChangeMapEditModel<T, V> getEditModel() {
+  protected ValueChangeMapEditModel<K, V> getEditModel() {
     return super.getValueOwner();
   }
 }

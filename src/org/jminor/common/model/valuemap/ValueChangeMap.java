@@ -11,10 +11,10 @@ import java.util.Collection;
 
 /**
  * A ValueMap extension which keeps track of value modifications.
- * @param <T> the type of the keys in the map
+ * @param <K> the type of the keys in the map
  * @param <V> the type of the values in the map
  */
-public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
+public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
    * @return a State active when this value map has been modified.
@@ -49,7 +49,7 @@ public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
    * @param key the key for which to retrieve the original value
    * @return the original value
    */
-  V getOriginalValue(final T key);
+  V getOriginalValue(final K key);
 
   /**
    * @return true if a value has been modified since this value map was initialized.
@@ -61,7 +61,7 @@ public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
    * @param key the key
    * @return true if the value has changed
    */
-  boolean isModified(final T key);
+  boolean isModified(final K key);
 
   /**
    * Clears the orignal values rendering the map unmodified.
@@ -73,7 +73,7 @@ public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
    * If the value has not been changed then calling this method has no effect.
    * @param key the key for which to revert the value
    */
-  void revertValue(final T key);
+  void revertValue(final K key);
 
   /**
    * Reverts all value changes that have been made.
@@ -90,7 +90,7 @@ public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
    * After a call to this method this ValueMap should contain the same values and original values as the given map.
    * @param map the map to copy
    */
-  void setAs(final ValueChangeMap<T, V> map);
+  void setAs(final ValueChangeMap<K, V> map);
 
   /**
    * Returns a deep copy of the given value, if the value is immutable then the same value is returned.
@@ -102,10 +102,10 @@ public interface ValueChangeMap<T, V> extends ValueMap<T, V> {
   /**
    * @return the keys mapping the values in this ValueChangeMap
    */
-  Collection<T> getValueKeys();
+  Collection<K> getValueKeys();
 
 /**
    * @return the keys mapping the original values in this ValueChangeMap
    */
-  Collection<T> getOriginalValueKeys();
+  Collection<K> getOriginalValueKeys();
 }

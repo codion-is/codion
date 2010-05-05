@@ -1488,3 +1488,6 @@
   EntityResultPacker uses the above
   EntityDbConnection uses the above
   DbConnectionPool.creatingConnection added
+  ValueChangeMapImpl.setValue() refactored, updateModifiedState() added
+  ValueChangeMapEditModel.isNullable() overloaded
+  EntityEditModel.isPropertyNullable() removed (replaced by the above)

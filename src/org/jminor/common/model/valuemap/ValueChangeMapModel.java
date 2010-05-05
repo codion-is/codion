@@ -13,27 +13,27 @@ import java.awt.event.ActionListener;
 
 /**
  * A base model class for associating a ValueChangeMapEditModel with a AbstractFilterTableModel,
- * so that the value map selected in the table model is set in the edit model.
+ * so that the value map selected in the table model is set in the edit model.<br>
  * User: Björn Darri<br>
  * Date: 25.4.2010<br>
  * Time: 13:10:14<br>
  */
-public abstract class ValueChangeMapModel<T, V> implements Refreshable {
+public abstract class ValueChangeMapModel<K, V> implements Refreshable {
 
   /**
    * The ValueChangeMapEditModel instance
    */
-  private ValueChangeMapEditModel<T, V> editModel;
+  private ValueChangeMapEditModel<K, V> editModel;
 
   /**
    * The table model
    */
-  private AbstractFilteredTableModel<? extends ValueChangeMap<T, V>> tableModel;
+  private AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> tableModel;
 
   /**
    * @return the ValueChangeMapEditModel instance used by this ValueChangeMapModel
    */
-  public ValueChangeMapEditModel<T, V> getEditModel() {
+  public ValueChangeMapEditModel<K, V> getEditModel() {
     if (editModel == null) {
       editModel = initializeEditModel();
       bindEvents();
@@ -45,7 +45,7 @@ public abstract class ValueChangeMapModel<T, V> implements Refreshable {
   /**
    * @return the AbstractFilteredTableModel, null if none is specified
    */
-  public AbstractFilteredTableModel<? extends ValueChangeMap<T, V>> getTableModel() {
+  public AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> getTableModel() {
     if (tableModel == null) {
       tableModel = initializeTableModel();
       bindEvents();
@@ -92,7 +92,7 @@ public abstract class ValueChangeMapModel<T, V> implements Refreshable {
     return getTableModel() != null;
   }
 
-  protected abstract ValueChangeMapEditModel<T, V> initializeEditModel();
+  protected abstract ValueChangeMapEditModel<K, V> initializeEditModel();
 
-  protected abstract AbstractFilteredTableModel<? extends ValueChangeMap<T, V>> initializeTableModel();
+  protected abstract AbstractFilteredTableModel<? extends ValueChangeMap<K, V>> initializeTableModel();
 }

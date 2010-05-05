@@ -5,10 +5,10 @@ package org.jminor.common.model.valuemap;
 
 /**
  * An interface describing an object containing values mapped to keys.
- * @param <T> the type of the map keys
+ * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V> {
+public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueListProvider<V> {
 
   /**
    * Maps the given value to the given key, returning the old value if any
@@ -16,7 +16,7 @@ public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V
    * @param value the value
    * @return the previous value mapped to the given key, null if no such value existed
    */
-  V setValue(final T key, final V value);
+  V setValue(final K key, final V value);
 
   /**
    * Initializes the value associated with the given key. This method assumes
@@ -24,21 +24,21 @@ public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V
    * @param key the key with which to associate the given value
    * @param value the value to associate with the given key
    */
-  void initializeValue(final T key, final V value);
+  void initializeValue(final K key, final V value);
 
   /**
    * Removes the given key and value from this value map
    * @param key the key to remove
    * @return the value
    */
-  V removeValue(final T key);
+  V removeValue(final K key);
 
   /**
    * Returns true if the value mapped to the given key is null
    * @param key the key
    * @return true if the value mapped to the given key is null
    */
-  boolean isValueNull(final T key);
+  boolean isValueNull(final K key);
 
   /**
    * Returns true if this ValueMap contains a value for the given key,
@@ -46,7 +46,7 @@ public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V
    * @param key the key
    * @return true if a value is mapped to this key
    */
-  boolean containsValue(final T key);
+  boolean containsValue(final K key);
 
   /**
    * Describes an object responsible for providing String representations of ValueMap instances

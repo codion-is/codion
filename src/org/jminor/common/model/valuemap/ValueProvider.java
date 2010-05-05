@@ -4,19 +4,19 @@
 package org.jminor.common.model.valuemap;
 
 /**
- * Provides values mapped to keys.
+ * Provides values mapped to keys.<br>
  * User: Bjorn Darri<br>
  * Date: 4.4.2010<br>
  * Time: 21:06:22<br>
- * @param <T> the type of the map keys
+ * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueProvider<T, V> {
+public interface ValueProvider<K, V> {
 
   /**
    * Retrieves the value mapped to the given key
    * @param key the key
    * @return the value mapped to the given key, null if no such mapping exists
    */
-  public V getValue(final T key);
+  public V getValue(final K key);
 }

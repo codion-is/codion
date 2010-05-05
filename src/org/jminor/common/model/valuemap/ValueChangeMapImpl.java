@@ -17,22 +17,22 @@ import java.util.Map;
 
 /**
  * A default ValueChangeMap implementation.
- * @param <T> the type of the map keys
+ * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializable {
+public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializable {
 
   private static final long serialVersionUID = 1;
 
   /**
    * Holds the values contained in this value map.
    */
-  private final Map<T, V> values;
+  private final Map<K, V> values;
 
   /**
    * Holds the original value for keys which values have changed.
    */
-  private Map<T, V> originalValues;
+  private Map<K, V> originalValues;
 
   /**
    * Holds the modified state of this value map.
@@ -56,7 +56,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
    * @param initialSize the initial size
    */
   public ValueChangeMapImpl(final int initialSize) {
-    values = new HashMap<T, V>(initialSize);
+    values = new HashMap<K, V>(initialSize);
   }
 
   /** {@inheritDoc} */
@@ -81,17 +81,17 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public boolean containsValue(final T key) {
+  public boolean containsValue(final K key) {
     return values.containsKey(key);
   }
 
   /** {@inheritDoc} */
-  public boolean isValueNull(final T key) {
+  public boolean isValueNull(final K key) {
     return getValue(key) == null;
   }
 
   /** {@inheritDoc} */
-  public V getValue(final T key) {
+  public V getValue(final K key) {
     return values.get(key);
   }
 
@@ -101,7 +101,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public V getOriginalValue(final T key) {
+  public V getOriginalValue(final K key) {
     if (isModified(key))
       return originalValues.get(key);
 
@@ -114,7 +114,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public boolean isModified(final T key) {
+  public boolean isModified(final K key) {
     return originalValues != null && originalValues.containsKey(key);
   }
 
@@ -128,14 +128,14 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void initializeValue(T key, V value) {
+  public void initializeValue(K key, V value) {
     values.put(key, value);
     if (evtValueChanged != null)
       notifyValueChange(key, value, true, null);
   }
 
   /** {@inheritDoc} */
-  public V setValue(final T key, final V value) {
+  public V setValue(final K key, final V value) {
     final boolean initialization = !containsValue(key);
     V previousValue = null;
     if (!initialization) {
@@ -144,16 +144,8 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
         return previousValue;
     }
 
-    if (!initialization) {
-      final boolean modified = isModified(key);
-      if (modified && Util.equal(getOriginalValue(key), value))
-        removeOriginalValue(key);//we're back to the original value
-      else if (!modified)
-        setOriginalValue(key, previousValue);
-
-      if (stModified != null)
-        stModified.setActive(isModified());
-    }
+    if (!initialization)
+      updateModifiedState(key, value, previousValue);
 
     values.put(key, value);
     if (evtValueChanged != null)
@@ -163,7 +155,7 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public V removeValue(final T key) {
+  public V removeValue(final K key) {
     final V value = values.get(key);
     values.remove(key);
     removeOriginalValue(key);
@@ -177,14 +169,14 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void revertValue(final T key) {
+  public void revertValue(final K key) {
     if (isModified(key))
       setValue(key, getOriginalValue(key));
   }
 
   /** {@inheritDoc} */
   public void revertAll() {
-    for (final T key : getValueKeys())
+    for (final K key : getValueKeys())
       revertValue(key);
   }
 
@@ -196,10 +188,10 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void setAs(final ValueChangeMap<T, V> changeValueMap) {
+  public void setAs(final ValueChangeMap<K, V> changeValueMap) {
     clear();
     if (changeValueMap != null) {
-      for (final T entryKey : changeValueMap.getValueKeys()) {
+      for (final K entryKey : changeValueMap.getValueKeys()) {
         final V value = copyValue(changeValueMap.getValue(entryKey));
         values.put(entryKey, value);
         if (evtValueChanged != null)
@@ -207,8 +199,8 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
       }
       if (changeValueMap.isModified()) {
         if (originalValues == null)
-          originalValues = new HashMap<T, V>();
-        for (final T entryKey : changeValueMap.getOriginalValueKeys())
+          originalValues = new HashMap<K, V>();
+        for (final K entryKey : changeValueMap.getOriginalValueKeys())
           originalValues.put(entryKey, copyValue(changeValueMap.getOriginalValue(entryKey)));
       }
     }
@@ -222,13 +214,13 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public Collection<T> getOriginalValueKeys() {
-    return originalValues == null ? new ArrayList<T>() : originalValues.keySet();
+  public Collection<K> getOriginalValueKeys() {
+    return originalValues == null ? new ArrayList<K>() : originalValues.keySet();
   }
 
   /** {@inheritDoc} */
-  public Collection<T> getValueKeys() {
-    return new ArrayList<T>(values.keySet());
+  public Collection<K> getValueKeys() {
+    return new ArrayList<K>(values.keySet());
   }
 
   /** {@inheritDoc} */
@@ -248,11 +240,11 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
     if (!(object instanceof ValueChangeMapImpl))
       return false;
 
-    final ValueChangeMapImpl<T, V> otherMap = (ValueChangeMapImpl<T, V>) object;
+    final ValueChangeMapImpl<K, V> otherMap = (ValueChangeMapImpl<K, V>) object;
     if (values.size() != otherMap.values.size())
       return false;
 
-    for (final T key : otherMap.values.keySet()) {
+    for (final K key : otherMap.values.keySet()) {
       if (!containsValue(key) || !valuesEqual(otherMap.getValue(key), getValue(key))) {
         return false;
       }
@@ -265,16 +257,27 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
     return Util.equal(valueOne, valueTwo);
   }
 
-  protected void notifyValueChange(final T key, final V value, final boolean initialization, final V oldValue) {
-    evtValueChanged.fire(new ValueChangeEvent<T, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
+  protected void notifyValueChange(final K key, final V value, final boolean initialization, final V oldValue) {
+    evtValueChanged.fire(new ValueChangeEvent<K, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
   }
 
-  protected void setOriginalValue(final T key, final V oldValue) {
-    (originalValues == null ? (originalValues = new HashMap<T, V>()) : originalValues).put(key, oldValue);
+  protected void setOriginalValue(final K key, final V oldValue) {
+    (originalValues == null ? (originalValues = new HashMap<K, V>()) : originalValues).put(key, oldValue);
   }
 
-  protected void removeOriginalValue(final T key) {
+  protected void removeOriginalValue(final K key) {
     if (originalValues != null)
       originalValues.remove(key);
+  }
+
+  protected void updateModifiedState(final K key, final V value, final V previousValue) {
+    final boolean modified = isModified(key);
+    if (modified && Util.equal(getOriginalValue(key), value))
+      removeOriginalValue(key);//we're back to the original value
+    else if (!modified)
+      setOriginalValue(key, previousValue);
+
+    if (stModified != null)
+      stModified.setActive(isModified());
   }
 }

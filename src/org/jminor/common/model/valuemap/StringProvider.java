@@ -26,15 +26,15 @@ import java.util.List;
  * <br>
  * outputs the following String:<br><br>
  * <code>key1=value1, key3='value3' referenced value=refValue</code>
- * @param <T> the type of the map keys
+ * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializable {
+public class StringProvider<K, V> implements ValueMap.ToString<K, V>, Serializable {
 
   /**
    * Holds the ValueProviders used when constructing the String representation
    */
-  private final List<ValueProvider<T, V>> valueProviders = new ArrayList<ValueProvider<T, V>>();
+  private final List<ValueProvider<K, V>> valueProviders = new ArrayList<ValueProvider<K, V>>();
 
   /**
    * Instantiates a new StringProvider instance
@@ -45,14 +45,14 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
    * Instantiates a new StringProvider instance, with the value mapped to the given key
    * @param key the key
    */
-  public StringProvider(final T key) {
+  public StringProvider(final K key) {
     addValue(key);
   }
 
   /** {@inheritDoc} */
-  public String toString(final ValueMap<T, V> valueMap) {
+  public String toString(final ValueMap<K, V> valueMap) {
     final StringBuilder builder = new StringBuilder();
-    for (final ValueProvider<T, V> valueProvider : valueProviders)
+    for (final ValueProvider<K, V> valueProvider : valueProviders)
       builder.append(valueProvider.toString(valueMap));
 
     return builder.toString();
@@ -63,8 +63,8 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
    * @param key the key
    * @return this StringProvider instance
    */
-  public StringProvider<T, V> addValue(final T key) {
-    valueProviders.add(new StringValueProvider<T, V>(key));
+  public StringProvider<K, V> addValue(final K key) {
+    valueProviders.add(new StringValueProvider<K, V>(key));
     return this;
   }
 
@@ -74,8 +74,8 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
    * @param format the Format to use when appending the value
    * @return this StringProvider instance
    */
-  public StringProvider<T, V> addFormattedValue(final T key, final Format format) {
-    valueProviders.add(new FormattedValueProvider<T, V>(key, format));
+  public StringProvider<K, V> addFormattedValue(final K key, final Format format) {
+    valueProviders.add(new FormattedValueProvider<K, V>(key, format));
     return this;
   }
 
@@ -86,8 +86,8 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
    * @param key the key
    * @return this StringProvider instance
    */
-  public StringProvider<T, V> addReferencedValue(final T referenceKey, final T key) {
-    valueProviders.add(new ReferencedValueProvider<T, V>(referenceKey, key));
+  public StringProvider<K, V> addReferencedValue(final K referenceKey, final K key) {
+    valueProviders.add(new ReferencedValueProvider<K, V>(referenceKey, key));
     return this;
   }
 
@@ -96,8 +96,8 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
    * @param text the text to add
    * @return this StringProvider instance
    */
-  public StringProvider<T, V> addText(final String text) {
-    valueProviders.add(new StaticTextProvider<T, V>(text));
+  public StringProvider<K, V> addText(final String text) {
+    valueProviders.add(new StaticTextProvider<K, V>(text));
     return this;
   }
 
@@ -106,7 +106,7 @@ public class StringProvider<T, V> implements ValueMap.ToString<T, V>, Serializab
    * @param referenceKey the key
    * @return true if the given key is referenced
    */
-  public boolean references(final T referenceKey) {
+  public boolean references(final K referenceKey) {
     for (final ValueProvider provider : valueProviders) {
       if (provider instanceof ReferencedValueProvider) {
         if (((ReferencedValueProvider) provider).getReferenceKey().equals(referenceKey))

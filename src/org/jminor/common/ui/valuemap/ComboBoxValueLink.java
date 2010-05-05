@@ -18,7 +18,7 @@ import java.awt.event.ItemListener;
 /**
  * A class for linking a ComboBox to a ValueChangeMapEditModel property value.
  */
-public class ComboBoxValueLink<T> extends AbstractValueMapLink<T, Object> {
+public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   /**
    * The linked ComboBoxModel
@@ -31,8 +31,8 @@ public class ComboBoxValueLink<T> extends AbstractValueMapLink<T, Object> {
    * @param editModel the ValueChangeMapEditModel instance
    * @param property the property to link to
    */
-  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<T, Object> editModel,
-                           final T property) {
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<K, Object> editModel,
+                           final K property) {
     this(comboBox, editModel, property, LinkType.READ_WRITE, false);
   }
 
@@ -43,8 +43,8 @@ public class ComboBoxValueLink<T> extends AbstractValueMapLink<T, Object> {
    * @param property the property to link to
    * @param linkType the link type
    */
-  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<T, Object> editModel,
-                           final T property, final LinkType linkType, final boolean isString) {
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<K, Object> editModel,
+                           final K property, final LinkType linkType, final boolean isString) {
     super(editModel, property, linkType);
     this.boxModel = comboBox.getModel();
     updateUI();

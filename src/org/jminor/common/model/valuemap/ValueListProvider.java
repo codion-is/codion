@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * Specifies an object that provides a List of values.
- * @param <T> the type of the values
+ * @param <V> the type of the values
  */
-public interface ValueListProvider<T> {
-  List<T> getValues() throws Exception;
+public interface ValueListProvider<V> {
+  List<V> getValues() throws Exception;
 }
