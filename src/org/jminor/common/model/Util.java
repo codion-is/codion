@@ -156,10 +156,12 @@ public class Util {
     if (text == null || text.length() == 0)
       return null;
 
+    final String noGrouping = text.replace(".", "");
+
     int value;
-    if ((text.length() > 0) && (!text.equals("-")))
-      value = Integer.parseInt(text);
-    else if (text.equals("-"))
+    if ((noGrouping.length() > 0) && (!noGrouping.equals("-")))
+      value = Integer.parseInt(noGrouping);
+    else if (noGrouping.equals("-"))
       value = -1;
     else
       value = 0;
@@ -186,10 +188,12 @@ public class Util {
     if (text == null || text.length() == 0)
       return null;
 
+    final String noGrouping = text.replace(".", "");
+
     long value;
-    if ((text.length() > 0) && (!text.equals("-")))
-      value = Long.parseLong(text);
-    else if (text.equals("-"))
+    if ((noGrouping.length() > 0) && (!noGrouping.equals("-")))
+      value = Long.parseLong(noGrouping);
+    else if (noGrouping.equals("-"))
       value = -1;
     else
       value = 0;

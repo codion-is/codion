@@ -1473,3 +1473,6 @@
   ForeignKeyProperty now maps reference properties to referenced propertyIDs in case of multi column relations
   Entity.Key.isSingleIntegerKey() removed, field kept
   Entity.getReferencedPrimaryKey() refactored
+  ValueChangeEvent.isNewValueNull(), isOldValueNull(), isNewValueEqual() and isOldValueEqual() added
+  Util.getInt()/getLong() now removes grouping char before parsing
+  Entity.valueEquals(propertyID, value) added

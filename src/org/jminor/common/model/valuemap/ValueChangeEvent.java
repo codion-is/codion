@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.Util;
+
 import java.awt.event.ActionEvent;
 
 /**
@@ -88,6 +90,38 @@ public class ValueChangeEvent<T, V> extends ActionEvent {
    */
   public Object getNewValue() {
     return newValue;
+  }
+
+  /**
+   * @return true if the new value is null
+   */
+  public boolean isNewValueNull() {
+    return newValue == null;
+  }
+
+  /**
+   * Returns true if the new value is equal to the given value
+   * @param value the value
+   * @return true if the given value is the new value
+   */
+  public boolean isNewValueEqual(final Object value) {
+    return Util.equal(newValue, value);
+  }
+
+  /**
+   * Returns true if the old value is equal to the given value
+   * @param value the value
+   * @return true if the given value is the old value
+   */
+  public boolean isOldValueEqual(final Object value) {
+    return Util.equal(oldValue, value);
+  }
+
+  /**
+   * @return true if the old value is null
+   */
+  public boolean isOldValueNull() {
+    return oldValue == null;
   }
 
   /**

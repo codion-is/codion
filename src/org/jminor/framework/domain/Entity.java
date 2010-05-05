@@ -220,9 +220,16 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   @Override
   public Object getValue(final String propertyID) {
-    final Property property = getProperty(propertyID);
+    return getValue(getProperty(propertyID));
+  }
+
+  /**
+   * @param property the property for which to retrieve the value
+   * @return the value of the given property
+   */
+  public Object getValue(final Property property) {
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.getValue(propertyID);
+      return primaryKey.getValue(property.getPropertyID());
     if (property instanceof Property.ForeignKeyProperty)
       return foreignKeyValues.getValue(property.getPropertyID());
     if (property instanceof Property.DenormalizedViewProperty)
@@ -230,7 +237,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     if (property instanceof Property.DerivedProperty)
       return getProxy(getEntityID()).getDerivedValue(this, (Property.DerivedProperty) property);
 
-    if (containsValue(propertyID))
+    if (containsValue(property.getPropertyID()))
       return super.getValue(property.getPropertyID());
     else
       return property.getDefaultValue();
@@ -452,6 +459,17 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   public boolean propertyValuesEqual(final Entity entity) {
     return entity.primaryKey.equals(primaryKey) && super.equals(entity);
+  }
+
+  /**
+   * Returns true if the value of the property identified by <code>propertyID</code>
+   * is equal to <code>value</code>
+   * @param propertyID the property ID
+   * @param value the value
+   * @return true if the given value is equal to the value identified by the given property ID
+   */
+  public boolean valueEquals(final String propertyID, final Object value) {
+    return valuesEqual(getValue(propertyID), value);
   }
 
   @Override
@@ -1100,12 +1118,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     public String getValueAsString(final Entity entity, final Property property) {
       final Format format = property.getFormat();
-      final Object value = entity.getValue(property.getPropertyID());
+      final Object value = entity.getValue(property);
       return entity.isValueNull(property.getPropertyID()) ? "" : (format != null ? format.format(value) : value.toString());
     }
 
     public Object getTableValue(final Entity entity, final Property property) {
-      return entity.getValue(property.getPropertyID());
+      return entity.getValue(property);
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
