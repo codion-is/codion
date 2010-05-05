@@ -215,6 +215,34 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
+   * Initializes the given value assuming it has no previously set value,
+   * this method does not propogate reference values for foreign key properties
+   * and should be used with care, if at all.
+   * @param propertyID the ID of the property for which to initialize the value
+   * @param value the value
+   */
+  @Override
+  public void initializeValue(final String propertyID, final Object value) {
+    initializeValue(getProperty(propertyID), value);
+  }
+
+  /**
+   * Initializes the given value assuming it has no previously set value,
+   * this method does not propogate reference values for foreign key properties
+   * and should be used with care, if at all.
+   * @param property the property for which to initialize the value
+   * @param value the value
+   */
+  public void initializeValue(final Property property, final Object value) {
+    if (property instanceof Property.PrimaryKeyProperty)
+      primaryKey.initializeValue(property.getPropertyID(), value);
+    else if (property instanceof Property.ForeignKeyProperty)
+      foreignKeyValues.initializeValue(property.getPropertyID(), (Entity) value);
+    else
+      initializeValue(property.getPropertyID(), value);
+  }
+
+  /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>
    */
@@ -594,13 +622,16 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   @Override
   public boolean containsValue(final String propertyID) {
-    final Property property = getProperty(propertyID);
+    return containsValue(getProperty(propertyID));
+  }
+
+  public boolean containsValue(final Property property) {
     if (property instanceof Property.PrimaryKeyProperty)
-      return primaryKey.containsValue(propertyID);
+      return primaryKey.containsValue(property.getPropertyID());
     if (property instanceof Property.ForeignKeyProperty)
       return foreignKeyValues.containsValue(property.getPropertyID());
 
-    return super.containsValue(propertyID);
+    return super.containsValue(property.getPropertyID());
   }
 
   @Override

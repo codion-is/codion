@@ -128,6 +128,13 @@ public class ValueChangeMapImpl<T, V> implements ValueChangeMap<T, V>, Serializa
   }
 
   /** {@inheritDoc} */
+  public void initializeValue(T key, V value) {
+    values.put(key, value);
+    if (evtValueChanged != null)
+      notifyValueChange(key, value, true, null);
+  }
+
+  /** {@inheritDoc} */
   public V setValue(final T key, final V value) {
     final boolean initialization = !containsValue(key);
     V previousValue = null;

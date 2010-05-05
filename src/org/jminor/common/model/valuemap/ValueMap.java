@@ -19,6 +19,14 @@ public interface ValueMap<T, V> extends ValueProvider<T, V>, ValueListProvider<V
   V setValue(final T key, final V value);
 
   /**
+   * Initializes the value associated with the given key. This method assumes
+   * no value has been associated with the key, use with care.
+   * @param key the key with which to associate the given value
+   * @param value the value to associate with the given key
+   */
+  void initializeValue(final T key, final V value);
+
+  /**
    * Removes the given key and value from this value map
    * @param key the key to remove
    * @return the value

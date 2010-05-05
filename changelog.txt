@@ -1483,3 +1483,8 @@
   TableSorter no longer defines a empty string as null
   TableSorter.columnComparators field and setColumnComparator() removed for now
   Entity.Proxy.getTableValue() removed, derived properties fit the bill where needed
+  ValueMap.initializeValue() added
+  Entity.initializeValue() added
+  EntityResultPacker uses the above
+  EntityDbConnection uses the above
+  DbConnectionPool.creatingConnection added

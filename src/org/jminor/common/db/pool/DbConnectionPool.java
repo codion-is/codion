@@ -46,6 +46,7 @@ public class DbConnectionPool implements ConnectionPool {
   private int poolStatisticsSize = 1000;
 
   private final Counter counter = new Counter();
+  private volatile boolean creatingConnection = false;
 
   public DbConnectionPool(final DbConnectionProvider dbConnectionProvider, final ConnectionPoolSettings settings) {
     this.dbConnectionProvider = dbConnectionProvider;
@@ -68,11 +69,17 @@ public class DbConnectionPool implements ConnectionPool {
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
       synchronized (connectionPool) {
-        if (counter.getLiveConnections() < connectionPoolSettings.getMaximumPoolSize()) {
-          counter.incrementConnectionsCreatedCounter();
-          if (log.isDebugEnabled())
-            log.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
-          checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
+        if (counter.getLiveConnections() < connectionPoolSettings.getMaximumPoolSize() && !creatingConnection) {
+          try {
+            creatingConnection = true;
+            counter.incrementConnectionsCreatedCounter();
+            if (log.isDebugEnabled())
+              log.debug("$$$$ adding a new connection to connection pool " + getConnectionPoolSettings().getUser());
+            checkInConnection(dbConnectionProvider.createConnection(getConnectionPoolSettings().getUser()));
+          }
+          finally {
+            creatingConnection = false;
+          }
         }
       }
       int retryCount = 0;
