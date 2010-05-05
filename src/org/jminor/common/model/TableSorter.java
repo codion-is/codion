@@ -405,12 +405,6 @@ public class TableSorter extends AbstractTableModel {
         Object o1 = tableModel.getValueAt(row1, column);
         Object o2 = tableModel.getValueAt(row2, column);
 
-        //darri - define empty strings as null
-        if (o1 instanceof String && ((String) o1).length() == 0)
-          o1 = null;
-        if (o2 instanceof String && ((String) o2).length() == 0)
-          o2 = null;
-
         int comparison;
         // Define null less than everything, except null.
         if (o1 == null && o2 == null) {

@@ -1480,3 +1480,4 @@
   AbstractFilteredTableModel.columnIndexCache added, reset on column move, remove and add
   Property.getTypeClass() added
   EntityLookupModel.setSelectedEntities() now simply returns if the state does not change (only applies when no entities are selected)
+  TableSorter no longer defines a empty string as null
