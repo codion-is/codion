@@ -242,7 +242,7 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   public Class<?> getColumnClass(final int columnIndex) {
     final Property columnProperty = (Property) getColumnModel().getColumn(convertColumnIndexToView(columnIndex)).getIdentifier();
 
-    return Property.getTypeClass(columnProperty.getType());
+    return columnProperty.getTypeClass();
   }
 
   /** {@inheritDoc} */
@@ -631,27 +631,6 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
    * Override to add event bindings
    */
   protected void bindEvents() {}
-
-  /**
-   * Maps the index of the column in the table model at
-   * <code>modelColumnIndex</code> to the index of the column
-   * in the view.  Returns the index of the
-   * corresponding column in the view; returns -1 if this column is not
-   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
-   * returns <code>modelColumnIndex</code>.
-   * @param modelColumnIndex the index of the column in the model
-   * @return the index of the corresponding column in the view
-   */
-  private int convertColumnIndexToView(final int modelColumnIndex) {
-    if (modelColumnIndex < 0)
-      return modelColumnIndex;
-
-    for (int index = 0; index < getColumnCount(); index++)
-      if (getColumnModel().getColumn(index).getModelIndex() == modelColumnIndex)
-        return index;
-
-    return -1;
-  }
 
   private void bindEventsInternal() {
     tableSearchModel.eventFilterStateChanged().addListener(new ActionListener() {

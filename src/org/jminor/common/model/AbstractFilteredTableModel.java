@@ -4,6 +4,10 @@
 package org.jminor.common.model;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -62,6 +66,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    */
   private final SelectionModel selectionModel = new SelectionModel();
 
+  private final int[] columnIndexCache;
 
   /**
    * true while the model data is being filtered
@@ -76,6 +81,7 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
   public AbstractFilteredTableModel(final String tableIdentifier) {
     this.tableSorter = new TableSorter(this);
     this.columnModel = initializeColumnModel(tableIdentifier);
+    this.columnIndexCache = new int[columnModel.getColumnCount()];
     bindEventsInternal();
   }
 
@@ -436,7 +442,34 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
    * @return the TableColumn associated with the given identifier
    */
   public TableColumn getTableColumn(final Object identifier) {
-    return getColumnModel().getColumn(columnModel.getColumnIndex(identifier));
+    return columnModel.getColumn(columnModel.getColumnIndex(identifier));
+  }
+
+  /**
+   * Maps the index of the column in the table model at
+   * <code>modelColumnIndex</code> to the index of the column
+   * in the view.  Returns the index of the
+   * corresponding column in the view; returns -1 if this column is not
+   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
+   * returns <code>modelColumnIndex</code>.
+   * @param modelColumnIndex the index of the column in the model
+   * @return the index of the corresponding column in the view
+   */
+  protected int convertColumnIndexToView(final int modelColumnIndex) {
+    if (modelColumnIndex < 0)
+      return modelColumnIndex;
+
+    final int cachedIndex = columnIndexCache[modelColumnIndex];
+    if (cachedIndex > 0)
+      return cachedIndex;
+
+    for (int index = 0; index < getColumnCount(); index++)
+      if (columnModel.getColumn(index).getModelIndex() == modelColumnIndex) {
+        columnIndexCache[modelColumnIndex] = index;
+        return index;
+      }
+
+    return -1;
   }
 
   /**
@@ -537,6 +570,19 @@ public abstract class AbstractFilteredTableModel<T> extends AbstractTableModel
         setSelectedItems(selectedItems);
         selectedItems.clear();
       }
+    });
+    columnModel.addColumnModelListener(new TableColumnModelListener() {
+      public void columnAdded(final TableColumnModelEvent e) {
+        Arrays.fill(columnIndexCache, -1);
+      }
+      public void columnRemoved(final TableColumnModelEvent e) {
+        Arrays.fill(columnIndexCache, -1);
+      }
+      public void columnMoved(final TableColumnModelEvent e) {
+        Arrays.fill(columnIndexCache, -1);
+      }
+      public void columnMarginChanged(final ChangeEvent e) {}
+      public void columnSelectionChanged(final ListSelectionEvent e) {}
     });
   }
 

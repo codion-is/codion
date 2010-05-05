@@ -641,23 +641,17 @@ public class Property implements Serializable {
     return this == object || object instanceof Property && this.propertyID.equals(((Property) object).propertyID);
   }
 
-  private Format initializeFormat() {
-    if (isTime())
-      return isDate() ? Configuration.getDefaultDateFormat() : Configuration.getDefaultTimestampFormat();
-    else if (isNumerical())
-      return NumberFormat.getInstance();
-
-    return null;
+  /**
+   * @return the Class representing this property type
+   */
+  public Class<?> getTypeClass() {
+    return getTypeClass(type);
   }
 
   /**
-   * Sets the parent property
-   * @param parentProperty the property to set as parent property
+   * @param sqlType the type
+   * @return the Class representing the given type
    */
-  private void setParentProperty(final ForeignKeyProperty parentProperty) {
-    this.parentProperty = parentProperty;
-  }
-
   public static Class<?> getTypeClass(final int sqlType) {
     if (sqlType == Types.INTEGER)
       return Integer.class;
@@ -675,6 +669,23 @@ public class Property implements Serializable {
       return Character.class;
 
     return Object.class;
+  }
+
+  private Format initializeFormat() {
+    if (isTime())
+      return isDate() ? Configuration.getDefaultDateFormat() : Configuration.getDefaultTimestampFormat();
+    else if (isNumerical())
+      return NumberFormat.getInstance();
+
+    return null;
+  }
+
+  /**
+   * Sets the parent property
+   * @param parentProperty the property to set as parent property
+   */
+  private void setParentProperty(final ForeignKeyProperty parentProperty) {
+    this.parentProperty = parentProperty;
   }
 
   /**

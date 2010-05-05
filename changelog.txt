@@ -1476,3 +1476,6 @@
   ValueChangeEvent.isNewValueNull(), isOldValueNull(), isNewValueEqual() and isOldValueEqual() added
   Util.getInt()/getLong() now removes grouping char before parsing
   Entity.valueEquals(propertyID, value) added
+  EntityTableModel.convertColumnIndexToView() moved up to AbstractFilteredTableModel
+  AbstractFilteredTableModel.columnIndexCache added, reset on column move, remove and add
+  Property.getTypeClass() added
