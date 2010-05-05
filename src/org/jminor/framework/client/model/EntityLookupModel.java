@@ -104,6 +104,8 @@ public class EntityLookupModel {
   }
 
   public void setSelectedEntities(final List<Entity> entities) {
+    if ((entities == null || entities.size() == 0) && this.selectedEntities.size() == 0)
+      return;//no change
     if (entities != null && entities.size() > 1 && !isMultipleSelectionAllowed())
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
 
