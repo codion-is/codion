@@ -84,7 +84,7 @@ public class EntitySelectCriteria extends EntityCriteria {
     super(entityID, criteria);
     this.fetchCount = fetchCount;
     this.orderByClause = orderByClause;
-    this.foreignKeyFetchDepths = initializeForeignKeyFetchDepths(entityID);
+    this.foreignKeyFetchDepths = initializeForeignKeyFetchDepths();
   }
 
   /**
@@ -142,8 +142,16 @@ public class EntitySelectCriteria extends EntityCriteria {
     return this;
   }
 
-  private Map<String, Integer> initializeForeignKeyFetchDepths(final String entityID) {
-    final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(entityID);
+  public EntitySelectCriteria setFetchDepthForAll(final int fetchDepth) {
+    final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(getEntityID());
+    for (final Property.ForeignKeyProperty property : properties)
+      foreignKeyFetchDepths.put(property.getPropertyID(), fetchDepth);
+
+    return this;
+  }
+
+  private Map<String, Integer> initializeForeignKeyFetchDepths() {
+    final Collection<Property.ForeignKeyProperty > properties = EntityRepository.getForeignKeyProperties(getEntityID());
     final Map<String, Integer> depths = new HashMap<String, Integer>(properties.size());
     for (final Property.ForeignKeyProperty property : properties)
       depths.put(property.getPropertyID(), property.getFetchDepth());

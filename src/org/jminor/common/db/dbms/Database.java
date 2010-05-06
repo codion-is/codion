@@ -201,4 +201,11 @@ public interface Database {
    * @return the message assigned to the given exception
    */
   String getErrorMessage(final SQLException exception);
+
+  /**
+   * Adds any dbms specific connection properties to the given properties map
+   * @param properties the properties map to add to
+   * @return the properties map
+   */
+  Properties addConnectionProperties(final Properties properties);
 }

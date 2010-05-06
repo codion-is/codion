@@ -148,8 +148,21 @@ public abstract class AbstractDatabase implements Database {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * This default implementation simply returns the error message from the exception
+   * @param exception the underlying SQLException
+   * @return the exception message
+   */
   public String getErrorMessage(final SQLException exception) {
     return exception.getMessage();
+  }
+
+  /**
+   * This default implementation simply returns the properties map.
+   * @param properties the properties map to add to
+   * @return the given properties map
+   */
+  public Properties addConnectionProperties(final Properties properties) {
+    return properties;
   }
 }

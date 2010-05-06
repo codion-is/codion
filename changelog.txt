@@ -1497,3 +1497,9 @@
   Entity.Proxy.getValueAsString() changed to getFormattedValue()
   Entity.isValueNull() added
   PropertyValueListProvider, added getters
+  Database.addConnectionProperties() added
+  DbConnection.execute(List<String>) added
+  EntityDbConnection.execute() renamed to executeStatements to avoid overriding the above
+  EntitySelectCriteria.setFetchDepthForAll() added
+  EntityDbConnection.checkIfModified() now uses 0 foreign key fetch depth
+  EntityDbConnection.checkIfModified() now only checks properties found in the current selected entity, to prevent denormalized property confusion due to the above fetch depth issue (which means no denorm. values are set)

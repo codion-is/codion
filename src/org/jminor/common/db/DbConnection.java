@@ -235,7 +235,7 @@ public class DbConnection {
     try {
       statement = connection.createStatement();
       final List result = resultPacker.pack(statement.executeQuery(sql), fetchCount);
-    
+
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + "ms)");
 
       return result;
@@ -480,6 +480,48 @@ public class DbConnection {
   }
 
   /**
+   * Executes the given statement, which can be anything except a select query.
+   * @param sqls the statements to execute
+   * @throws SQLException thrown if anything goes wrong during execution
+   */
+  public final void execute(final List<String> sqls) throws SQLException {
+    if (sqls == null)
+      throw new NullPointerException("No sql specified");
+    if (sqls.size() == 1) {
+      execute(sqls.get(0));
+      return;
+    }
+
+    methodLogger.logAccess("execute", sqls.toArray());
+    final long time = System.currentTimeMillis();
+    Statement statement = null;
+    SQLException exception = null;
+    try {
+      statement = connection.createStatement();
+      for (final String sql : sqls) {
+        statement.addBatch(sql);
+        counter.count(sql);
+        log.debug(sql);
+      }
+      statement.executeBatch();
+      log.debug("batch" + " --(" + Long.toString(System.currentTimeMillis()-time) + "ms)");
+    }
+    catch (SQLException e) {
+      exception = e;
+      log.error(user.getUsername() + " (" + Long.toString(System.currentTimeMillis()-time) + "ms): batch;", e);
+      throw e;
+    }
+    finally {
+      try {
+        if (statement != null)
+          statement.close();
+      }
+      catch (SQLException e) {/**/}
+      methodLogger.logExit("execute", exception, null);
+    }
+  }
+
+  /**
    * @return the underlying Connection object
    */
   public Connection getConnection() {
@@ -517,7 +559,8 @@ public class DbConnection {
     catch (SQLException e) {/**/}
 
     database.loadDriver();
-    connection = DriverManager.getConnection(database.getURL(connectionProperties), connectionProperties);
+    connection = DriverManager.getConnection(database.getURL(connectionProperties),
+            database.addConnectionProperties(connectionProperties));
     connection.setAutoCommit(false);
     checkConnectionStatement = connection.createStatement();
     connected = true;
@@ -582,6 +625,7 @@ public class DbConnection {
       super(40, enabled);
     }
 
+    @Override
     protected String parameterArrayToString(final Object[] arguments) {
       if (arguments == null)
         return "";

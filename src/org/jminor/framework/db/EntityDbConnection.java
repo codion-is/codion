@@ -145,7 +145,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       statements.add(getUpdateSQL(getDatabase(), entity));
     }
 
-    execute(statements);
+    executeStatements(statements);
 
     return selectMany(EntityUtil.getPrimaryKeys(entities));
   }
@@ -162,7 +162,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
       statements.add(0, getDeleteSQL(getDatabase(), entityKey));
     }
 
-    execute(statements);
+    executeStatements(statements);
   }
 
   /** {@inheritDoc} */
@@ -170,7 +170,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     if (EntityRepository.isReadOnly(criteria.getEntityID()))
       throw new DbException("Can not delete a read only entity");
 
-    execute(Arrays.asList(getDeleteSQL(getDatabase(), criteria)));
+    executeStatements(Arrays.asList(getDeleteSQL(getDatabase(), criteria)));
   }
 
   /** {@inheritDoc} */
@@ -578,11 +578,10 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     return properties;
   }
 
-  private void execute(final List<String> statements) throws DbException {
+  private void executeStatements(final List<String> statements) throws DbException {
     String sql = null;
     try {
-      for (final String statement : statements)
-        execute(sql = statement);
+      execute(statements);
       if (!isTransactionOpen())
         commit();
     }
@@ -609,9 +608,15 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    */
   private void checkIfModified(final Entity entity) throws DbException {
     final Entity current = selectSingle(new EntitySelectCriteria(entity.getEntityID(),
-            new SimpleCriteria(getWhereCondition(getDatabase(), entity))));
-    if (!current.propertyValuesEqual(entity.getOriginalCopy()))
+            new SimpleCriteria(getWhereCondition(getDatabase(), entity))).setFetchDepthForAll(0));
+
+    if (!current.getPrimaryKey().equals(entity.getPrimaryKey().getOriginalCopy()))
       throw new RecordModifiedException(entity, current);
+
+    for (final String propertyID : current.getValueKeys()) {
+      if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID)))
+        throw new RecordModifiedException(entity, current);
+    }
   }
 
   /**
