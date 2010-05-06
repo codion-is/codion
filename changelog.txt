@@ -1491,3 +1491,5 @@
   ValueChangeMapImpl.setValue() refactored, updateModifiedState() added
   ValueChangeMapEditModel.isNullable() overloaded
   EntityEditModel.isPropertyNullable() removed (replaced by the above)
+  Entity.initializeValue() now propagates denormalized values
+  Entity.propagateReferenceValues(), initialization parameter added

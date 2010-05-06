@@ -206,7 +206,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty && (value == null || value instanceof Entity)) {
-      propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value);
+      propagateReferenceValues((Property.ForeignKeyProperty) property, (Entity) value, false);
       return foreignKeyValues.setValue(property.getPropertyID(), (Entity) value);
     }
     else {
@@ -215,9 +215,9 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * Initializes the given value assuming it has no previously set value,
-   * this method does not propogate reference values for foreign key properties
-   * and should be used with care, if at all.
+   * Initializes the given value assuming it has no previously set value.
+   * This method does not propagate foreign key values but does set denormalized values if any exist.
+   * This method should be used with care, if at all.
    * @param propertyID the ID of the property for which to initialize the value
    * @param value the value
    */
@@ -227,19 +227,22 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * Initializes the given value assuming it has no previously set value,
-   * this method does not propogate reference values for foreign key properties
-   * and should be used with care, if at all.
+   * Initializes the given value assuming it has no previously set value.
+   * This method does not propagate foreign key values but does set denormalized values if any exist.
+   * This method should be used with care, if at all.
    * @param property the property for which to initialize the value
    * @param value the value
    */
   public void initializeValue(final Property property, final Object value) {
     if (property instanceof Property.PrimaryKeyProperty)
       primaryKey.initializeValue(property.getPropertyID(), value);
-    else if (property instanceof Property.ForeignKeyProperty)
+    else if (property instanceof Property.ForeignKeyProperty) {
       foreignKeyValues.initializeValue(property.getPropertyID(), (Entity) value);
+      if (EntityRepository.hasDenormalizedProperties(getEntityID()))
+        setDenormalizedValues((Entity) value, (Property.ForeignKeyProperty) property, true);
+    }
     else
-      initializeValue(property.getPropertyID(), value);
+      super.initializeValue(property.getPropertyID(), value);
   }
 
   /**
@@ -755,14 +758,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     super.notifyValueChange(key, value, initialization, oldValue);
   }
 
-  private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
+  private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
+                                        final boolean initialization) {
     referencedPrimaryKeysCache = null;
-    setForeignKeyValues(foreignKeyProperty, newValue);
-    if (EntityRepository.hasDenormalizedProperties(getEntityID())) {
-      final Collection<Property.DenormalizedProperty> denormalizedProperties =
-              EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
-      setDenormalizedValues(newValue, denormalizedProperties);
-    }
+    setForeignKeyValues(foreignKeyProperty, newValue, initialization);
+    if (EntityRepository.hasDenormalizedProperties(getEntityID()))
+      setDenormalizedValues(newValue, foreignKeyProperty, initialization);
   }
 
   /**
@@ -773,28 +774,39 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
    */
-  private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
+  private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
+                                   final boolean initialization) {
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             referencedEntity != null ? referencedEntity.primaryKey.getProperties()
                     : EntityRepository.getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
     for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
       final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
-      if (!(referenceProperty instanceof Property.MirrorProperty))
-        setValue(referenceProperty, referencedEntity != null ?
-                referencedEntity.getValue(primaryKeyProperty.getPropertyID()) : null, false);
+      if (!(referenceProperty instanceof Property.MirrorProperty)) {
+        final Object value = referencedEntity != null ? referencedEntity.getValue(primaryKeyProperty) : null;
+        if (initialization)
+          initializeValue(referenceProperty, value);
+        else
+          setValue(referenceProperty, value, false);
+      }
     }
   }
 
   /**
    * Sets the denormalized property values
    * @param entity the entity value owning the denormalized values
-   * @param denormalizedProperties the denormalized properties
+   * @param foreignKeyProperty the foreign key property refering to the value source
    */
-  private void setDenormalizedValues(final Entity entity, final Collection<Property.DenormalizedProperty> denormalizedProperties) {
+  private void setDenormalizedValues(final Entity entity, Property.ForeignKeyProperty foreignKeyProperty,
+                                     final boolean initialization) {    
+      final Collection<Property.DenormalizedProperty> denormalizedProperties =
+              EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
       for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        setValue(denormalizedProperty, entity == null ? null :
-                entity.getValue(denormalizedProperty.getDenormalizedProperty().getPropertyID()), false);
+        final Object value = entity == null ? null : entity.getValue(denormalizedProperty.getDenormalizedProperty());
+        if (initialization)
+          initializeValue(denormalizedProperty, value);
+        else
+          setValue(denormalizedProperty, value, false);
       }
     }
   }

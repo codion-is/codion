@@ -81,6 +81,7 @@ public class EntityDefinition implements Serializable {
   private transient List<Property> databaseProperties;
   private transient Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
   private transient String selectColumnsString;
+  private transient boolean hasDenormalizedProperties;
 
   /**
    * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
@@ -267,15 +268,17 @@ public class EntityDefinition implements Serializable {
   }
 
   public boolean hasDenormalizedProperties() {
-    if (denormalizedProperties == null)
+    if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-    return denormalizedProperties.size() > 0;
+      hasDenormalizedProperties = denormalizedProperties.size() > 0;
+    }
+    return hasDenormalizedProperties;
   }
 
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null)
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-    return denormalizedProperties.containsKey(foreignKeyPropertyID);
+    return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyID);
   }
 
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
