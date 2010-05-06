@@ -25,6 +25,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -206,6 +208,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     return startDate;
   }
 
+  @Override
   public void shutdown() throws RemoteException {
     super.shutdown();
     removeConnections(false);
@@ -248,13 +251,25 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
     log.info(message);
+    AccessController.doPrivileged(new PrivilegedAction() {
+      public Object run() {
+        try {
+          if (locations == null || locations.length == 0)
+            Class.forName(domainClassName);
+          else
+            Class.forName(domainClassName, true, new URLClassLoader(locations, ClassLoader.getSystemClassLoader()));
+
+          return null;
+        }
+        catch (ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
     System.out.println(message);
-    if (locations == null || locations.length == 0)
-      Class.forName(domainClassName);
-    else
-      Class.forName(domainClassName, true, new URLClassLoader(locations, ClassLoader.getSystemClassLoader()));
   }
 
+  @Override
   protected void doDisconnect(final EntityDbRemote adapter) throws RemoteException {
     try {
       if (adapter.isConnected())
@@ -265,6 +280,7 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     }
   }
 
+  @Override
   protected EntityDbRemoteAdapter doConnect(final ClientInfo client) throws RemoteException {
     final EntityDbRemoteAdapter remoteAdapter = new EntityDbRemoteAdapter(database, client, SERVER_DB_PORT, CLIENT_LOGGING_ENABLED);
     if (log.isDebugEnabled())

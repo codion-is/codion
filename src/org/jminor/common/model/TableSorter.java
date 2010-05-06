@@ -47,7 +47,6 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.Serializable;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -375,7 +374,7 @@ public class TableSorter extends AbstractTableModel {
 
   // Helper classes
 
-  private class Row implements Comparable, Serializable {
+  private class Row implements Comparable {
     private final int modelIndex;
 
     public Row(int index) {

@@ -604,8 +604,8 @@ public abstract class LoadTestModel {
       final long current = System.currentTimeMillis();
       final double seconds = (current - time)/1000;
       if (seconds > 5) {
-        workRequestsPerSecond = (int) ((double) workRequestCounter /seconds);
-        delayedWorkRequestsPerSecond = (int) ((double) delayedWorkRequestCounter /seconds);
+        workRequestsPerSecond = (int) (workRequestCounter / (double) seconds);
+        delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / (double) seconds);
         for (final UsageScenario scenario : usageScenarios)
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / seconds));
 

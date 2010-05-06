@@ -191,7 +191,7 @@ public class NavigableImagePanel extends JPanel {
   }
 
   //This class is required for high precision image coordinates translation.
-  private class Coords {
+  private static class Coords {
     public double x;
     public double y;
     public Coords(double x, double y) {

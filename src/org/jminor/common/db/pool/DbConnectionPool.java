@@ -360,22 +360,22 @@ public class DbConnectionPool implements ConnectionPool {
       }
     }
 
-    public void incrementConnectionsDestroyedCounter() {
+    public synchronized void incrementConnectionsDestroyedCounter() {
       liveConnections--;
       connectionsDestroyed++;
     }
 
-    public void incrementConnectionsCreatedCounter() {
+    public synchronized void incrementConnectionsCreatedCounter() {
       liveConnections++;
       connectionsCreated++;
     }
 
-    public void incrementDelayedRequestCounter() {
+    public synchronized void incrementDelayedRequestCounter() {
       connectionRequestsDelayed++;
       requestsDelayedPerSecondCounter++;
     }
 
-    public void incrementRequestCounter() {
+    public synchronized void incrementRequestCounter() {
       connectionRequests++;
       requestsPerSecondCounter++;
     }

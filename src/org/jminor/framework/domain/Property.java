@@ -645,6 +645,11 @@ public class Property implements Serializable {
     return this == object || object instanceof Property && this.propertyID.equals(((Property) object).propertyID);
   }
 
+  @Override
+  public int hashCode() {
+    return propertyID.hashCode();
+  }
+
   /**
    * @return the Class representing this property type
    */

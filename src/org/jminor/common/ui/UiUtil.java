@@ -424,7 +424,7 @@ public class UiUtil {
     ((PlainDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
       @Override
       public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
-        super.insertString(fb, offset, text == null ? text : text.toUpperCase(), attr);
+        super.insertString(fb, offset, text == null ? null : text.toUpperCase(), attr);
       }
       @Override
       public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
@@ -432,7 +432,7 @@ public class UiUtil {
       }
       @Override
       public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        super.replace(fb, offset, length, text == null ? text : text.toUpperCase(), attrs);
+        super.replace(fb, offset, length, text == null ? null : text.toUpperCase(), attrs);
       }
     });
 

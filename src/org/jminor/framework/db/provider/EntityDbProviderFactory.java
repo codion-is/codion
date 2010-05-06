@@ -4,10 +4,10 @@
 package org.jminor.framework.db.provider;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Random;
 
 /**
  * A factory class for handing out EntityDbProviders according to system properties.
@@ -26,7 +26,7 @@ public class EntityDbProviderFactory {
    * @return a EntityDbProvider
    */
   public static EntityDbProvider createEntityDbProvider(final User user, final String clientTypeID) {
-    return createEntityDbProvider(user, Long.toOctalString(new Random().nextLong()), clientTypeID);
+    return createEntityDbProvider(user, Long.toOctalString(Util.getRandom().nextLong()), clientTypeID);
   }
 
   /**

@@ -94,6 +94,16 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   @Override
+  public boolean equals(final Object obj) {
+    return obj instanceof LogEntry && this.entryTime == ((LogEntry) obj).entryTime;
+  }
+
+  @Override
+  public int hashCode() {
+    return new Long(this.entryTime).hashCode();
+  }
+
+  @Override
   public String toString() {
     return toString(0);
   }

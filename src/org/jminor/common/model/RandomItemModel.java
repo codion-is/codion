@@ -228,6 +228,11 @@ public class RandomItemModel<T> {
       return obj instanceof RandomItem && (((RandomItem) obj).getItem().equals(getItem()));
     }
 
+    @Override
+    public int hashCode() {
+      return item.hashCode();
+    }
+
     void increment() {
       weight++;
     }

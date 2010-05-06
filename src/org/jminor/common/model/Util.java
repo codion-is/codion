@@ -509,4 +509,8 @@ public class Util {
       }
     });
   }
+
+  public static Random getRandom() {
+    return random;
+  }
 }

@@ -77,6 +77,7 @@ public class DerbyDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get("user");
@@ -89,6 +90,7 @@ public class DerbyDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {
       final String authentication = getAuthenticationInfo(connectionProperties);

@@ -253,6 +253,15 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
     return true;
   }
 
+  @Override
+  public int hashCode() {
+    int hash = 23;
+    for (final Object value : values.values())
+      hash = hash + (value == null ? 0 : value.hashCode());
+
+    return hash;
+  }
+
   protected boolean valuesEqual(final V valueOne, final V valueTwo) {
     return Util.equal(valueOne, valueTwo);
   }

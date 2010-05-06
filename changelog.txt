@@ -1503,3 +1503,4 @@
   EntitySelectCriteria.setFetchDepthForAll() added
   EntityDbConnection.checkIfModified() now uses 0 foreign key fetch depth
   EntityDbConnection.checkIfModified() now only checks properties found in the current selected entity, to prevent denormalized property confusion due to the above fetch depth issue (which means no denorm. values are set)
+  FindBugs run

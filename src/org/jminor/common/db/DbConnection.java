@@ -232,9 +232,11 @@ public class DbConnection {
     final long time = System.currentTimeMillis();
     Statement statement = null;
     SQLException exception = null;
+    ResultSet resultSet = null;
     try {
       statement = connection.createStatement();
-      final List result = resultPacker.pack(statement.executeQuery(sql), fetchCount);
+      resultSet = statement.executeQuery(sql);
+      final List result = resultPacker.pack(resultSet, fetchCount);
 
       log.debug(sql + " --(" + Long.toString(System.currentTimeMillis() - time) + "ms)");
 
@@ -248,7 +250,9 @@ public class DbConnection {
     finally {
       try {
         if (statement != null)
-          statement.close();//also closes the result set
+          statement.close();
+        if (resultSet != null)
+          resultSet.close();
       }
       catch (SQLException e) {/**/}
       methodLogger.logExit("query", exception, null);
@@ -567,14 +571,22 @@ public class DbConnection {
   }
 
   private boolean checkConnection() throws SQLException {
+    ResultSet rs = null;
     if (connection != null) {
       try {
-        checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
+        rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
         return true;
       }
       catch (SQLException exception) {
         exception.printStackTrace();
         throw exception;
+      }
+      finally {
+        try {
+          if (rs != null)
+            rs.close();
+        }
+        catch (Exception e) {/**/}
       }
     }
 
@@ -699,11 +711,11 @@ public class DbConnection {
       final long current = System.currentTimeMillis();
       final double seconds = (current - queriesPerSecondTime)/ 1000;
       if (seconds > 5) {
-        queriesPerSecond = (int) ((double) queriesPerSecondCounter / seconds);
-        selectsPerSecond = (int) ((double) selectsPerSecondCounter / seconds);
-        insertsPerSecond = (int) ((double) insertsPerSecondCounter / seconds);
-        deletesPerSecond = (int) ((double) deletesPerSecondCounter / seconds);
-        updatesPerSecond = (int) ((double) updatesPerSecondCounter / seconds);
+        queriesPerSecond = (int) (queriesPerSecondCounter / (double) seconds);
+        selectsPerSecond = (int) (selectsPerSecondCounter / (double) seconds);
+        insertsPerSecond = (int) (insertsPerSecondCounter / (double) seconds);
+        deletesPerSecond = (int) (deletesPerSecondCounter / (double) seconds);
+        updatesPerSecond = (int) (updatesPerSecondCounter / (double) seconds);
         queriesPerSecondCounter = 0;
         selectsPerSecondCounter = 0;
         insertsPerSecondCounter = 0;
