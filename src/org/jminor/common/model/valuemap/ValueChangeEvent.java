@@ -18,7 +18,7 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   private final String propertyOwnerTypeID;
 
   /**
-   * The property
+   * The key
    */
   private final K key;
 
