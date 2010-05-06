@@ -20,7 +20,24 @@ public class PropertyValueListProvider implements ValueListProvider<Object> {
     this.propertyID = propertyID;
   }
 
-  public List<Object> getValues() throws Exception {
-    return dbProvider.getEntityDb().selectPropertyValues(entityID, propertyID, true);
+  public String getEntityID() {
+    return entityID;
+  }
+
+  public String getPropertyID() {
+    return propertyID;
+  }
+
+  public EntityDbProvider getDbProvider() {
+    return dbProvider;
+  }
+
+  public List<Object> getValues() {
+    try {
+      return getDbProvider().getEntityDb().selectPropertyValues(getEntityID(), getPropertyID(), true);
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }

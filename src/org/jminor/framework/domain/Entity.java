@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Collator;
-import java.text.DateFormat;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +35,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   /**
    * The foreign key values referenced by this entity
    */
-  private final ValueChangeMapImpl<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>() {
+  private final ValueChangeMap<String, Entity> foreignKeyValues = new ValueChangeMapImpl<String, Entity>() {
     @Override
     public String getMapTypeID() {
       return getEntityID();
@@ -297,6 +296,21 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     return super.removeValue(propertyID);
   }
 
+  @Override
+  public boolean isValueNull(final String propertyID) {
+    return isValueNull(getProperty(propertyID));
+  }
+
+  public boolean isValueNull(final Property property) {
+    if (property instanceof Property.PrimaryKeyProperty)
+      return primaryKey.isValueNull(property.getPropertyID());
+    if (property instanceof Property.ForeignKeyProperty) {
+      return foreignKeyValues.isValueNull(property.getPropertyID());
+    }
+
+    return super.isValueNull(property.getPropertyID());
+  }
+
   /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by <code>propertyID</code>,
@@ -394,39 +408,40 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
    * @return a String representation of the value of the property identified by <code>propertyID</code>
-   * @see org.jminor.framework.domain.Entity.Proxy#getValueAsString(Entity, Property)
+   * @see #getFormattedValue(Property, java.text.Format)
    */
   public String getValueAsString(final String propertyID) {
     return getValueAsString(getProperty(propertyID));
   }
 
   /**
+   * This method returns a String representation of the value associated with the given property,
+   * if the property has a format it is used.
    * @param property the property for which to retrieve the value
    * @return a String representation of the value of <code>property</code>
-   * @see org.jminor.framework.domain.Entity.Proxy#getValueAsString(Entity, Property)
+   * @see #getFormattedValue(Property, java.text.Format)
    */
   public String getValueAsString(final Property property) {
     if (property instanceof Property.DenormalizedViewProperty)
-      return getDenormalizedViewValueAsString((Property.DenormalizedViewProperty) property);
+      return getDenormalizedViewValueFormatted((Property.DenormalizedViewProperty) property);
 
-    return getProxy(getEntityID()).getValueAsString(this, property);
-  }
-
-  /**
-   * Returns a date value formatted with <code>dateFormat</code>, in case the value is null
-   * and empty string is returned
-   * @param propertyID the ID of the property for which to retrieve a formatted value
-   * @param dateFormat the DateFormat to use when formatting the value
-   * @return a formatted date value, an empty string in case of a null value
-   */
-  public String getFormattedDate(final String propertyID, final DateFormat dateFormat) {
-    final Date value = getDateValue(propertyID);
-    return value == null ? "" : dateFormat.format(value);
+    return getFormattedValue(property);
   }
 
   public String getFormattedValue(final String propertyID) {
-    final Format format = getProperty(propertyID).getFormat();
-    return isValueNull(propertyID) ? "" : format.format(getValue(propertyID));
+    return getFormattedValue(getProperty(propertyID));
+  }
+
+  public String getFormattedValue(final String propertyID, final Format format) {
+    return getFormattedValue(getProperty(propertyID), format);
+  }
+
+  public String getFormattedValue(final Property property) {
+    return getFormattedValue(property, property.getFormat());
+  }
+
+  public String getFormattedValue(final Property property, final Format format) {
+    return getProxy(getEntityID()).getFormattedValue(this, property, format);
   }
 
   @Override
@@ -773,6 +788,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * the corresponding reference values are set to null.
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
+   * @param initialization true if the values are being initialized
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final boolean initialization) {
@@ -795,9 +811,10 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * Sets the denormalized property values
    * @param entity the entity value owning the denormalized values
    * @param foreignKeyProperty the foreign key property refering to the value source
+   * @param initialization true if the values are being initialized
    */
   private void setDenormalizedValues(final Entity entity, Property.ForeignKeyProperty foreignKeyProperty,
-                                     final boolean initialization) {    
+                                     final boolean initialization) {
       final Collection<Property.DenormalizedProperty> denormalizedProperties =
               EntityRepository.getDenormalizedProperties(getEntityID(), foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
@@ -817,10 +834,10 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     return valueOwner != null ? valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID()) : null;
   }
 
-  private String getDenormalizedViewValueAsString(final Property.DenormalizedViewProperty denormalizedViewProperty) {
+  private String getDenormalizedViewValueFormatted(final Property.DenormalizedViewProperty denormalizedViewProperty) {
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
 
-    return valueOwner != null ? valueOwner.getValueAsString(denormalizedViewProperty.getDenormalizedProperty()) : null;
+    return valueOwner != null ? valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty()) : null;
   }
 
   private Key initializeSinglePropertyKey(final Property.ForeignKeyProperty foreignKeyProperty) {
@@ -1136,10 +1153,9 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       return null;
     }
 
-    public String getValueAsString(final Entity entity, final Property property) {//todo getFormattedValue
-      final Format format = property.getFormat();
+    public String getFormattedValue(final Entity entity, final Property property, final Format format) {
       final Object value = entity.getValue(property);
-      return entity.isValueNull(property.getPropertyID()) ? "" : (format != null ? format.format(value) : value.toString());
+      return entity.isValueNull(property) ? "" : (format != null ? format.format(value) : value.toString());
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

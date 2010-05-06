@@ -718,8 +718,7 @@ public class UiUtil {
   }
 
   public static void addLookupDialog(final JTextField txtField, final ValueListProvider valueListProvider) {
-    txtField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK), "valueLookup");
-    txtField.getActionMap().put("valueLookup", new AbstractAction() {
+    addKeyEvent(txtField, KeyEvent.VK_SPACE, 0, InputEvent.CTRL_DOWN_MASK, new AbstractAction("valueLookup") {
       public void actionPerformed(final ActionEvent e) {
         try {
           final Object value = selectPropertyValue(txtField, valueListProvider.getValues());

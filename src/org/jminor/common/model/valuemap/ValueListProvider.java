@@ -10,5 +10,5 @@ import java.util.List;
  * @param <V> the type of the values
  */
 public interface ValueListProvider<V> {
-  List<V> getValues() throws Exception;
+  List<V> getValues();
 }

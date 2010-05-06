@@ -265,6 +265,7 @@ public class Chinook {
             .setLargeDataset(true)
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME));
+
     Entity.setProxy(T_TRACK, new Entity.Proxy() {
       @Override
       public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
@@ -352,7 +353,7 @@ public class Chinook {
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
             new Property.DenormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
-                    EntityRepository.getProperty(T_TRACK, TRACK_UNITPRICE), "Price")
+                    EntityRepository.getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
             new Property(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false))

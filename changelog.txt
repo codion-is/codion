@@ -1493,3 +1493,7 @@
   EntityEditModel.isPropertyNullable() removed (replaced by the above)
   Entity.initializeValue() now propagates denormalized values
   Entity.propagateReferenceValues(), initialization parameter added
+  Entity.getFormattedDateValue() removed, getFormattedValue() handles it
+  Entity.Proxy.getValueAsString() changed to getFormattedValue()
+  Entity.isValueNull() added
+  PropertyValueListProvider, added getters

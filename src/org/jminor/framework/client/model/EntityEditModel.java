@@ -396,7 +396,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @param entity the entity to validate
    * @param propertyID the ID of the property to validate
    * @param action the action requiring validation
-   * @throws ValidationException
+   * @throws ValidationException in case the validation fails
    * @see org.jminor.framework.domain.Property#setNullable(boolean)
    * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
@@ -742,6 +742,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
    * @param propertyID the property ID
    * @return true if the property accepts a null value
    */
+  @Override
   public boolean isNullable(final String propertyID) {
     return isNullable(getEntity(), propertyID);
   }
