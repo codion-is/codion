@@ -72,7 +72,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
       }
     }
     for (final Property property : properties) {
-      if (!(property instanceof Property.ForeignKeyProperty) && !property.isDenormalized()) {
+      if (!(property instanceof Property.ForeignKeyProperty) && !(property instanceof Property.TransientProperty)) {
         try {
           entity.initializeValue(property, getValue(resultSet, property));
         }

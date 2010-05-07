@@ -1505,3 +1505,5 @@
   EntityDbConnection.checkIfModified() now only checks properties found in the current selected entity, to prevent denormalized property confusion due to the above fetch depth issue (which means no denorm. values are set)
   FindBugs run
   Entity.loaded field removed
+  EntityResultPacker now sets denormalized values
+  Entity.initializeValue() does not propagate denormalized values anymore

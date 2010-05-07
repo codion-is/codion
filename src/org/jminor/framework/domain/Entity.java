@@ -205,7 +205,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   /**
    * Initializes the given value assuming it has no previously set value.
-   * This method does not propagate foreign key values but does set denormalized values if any exist.
+   * This method does not propagate foreign key values nor set denormalized values.
    * This method should be used with care, if at all.
    * @param property the property for which to initialize the value
    * @param value the value
@@ -213,11 +213,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   public void initializeValue(final Property property, final Object value) {
     if (property instanceof Property.PrimaryKeyProperty)
       primaryKey.initializeValue(property.getPropertyID(), value);
-    else if (property instanceof Property.ForeignKeyProperty) {
+    else if (property instanceof Property.ForeignKeyProperty)
       foreignKeyValues.initializeValue(property.getPropertyID(), (Entity) value);
-      if (EntityRepository.hasDenormalizedProperties(getEntityID()))
-        setDenormalizedValues((Entity) value, (Property.ForeignKeyProperty) property, true);
-    }
     else
       super.initializeValue(property.getPropertyID(), value);
   }
@@ -309,7 +306,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return true if the reference entity has been loaded
    */
   public boolean isLoaded(final String foreignKeyPropertyID) {
-    return foreignKeyValues.isValueNull(foreignKeyPropertyID);
+    return !foreignKeyValues.isValueNull(foreignKeyPropertyID);
   }
 
   /**
