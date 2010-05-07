@@ -100,7 +100,7 @@ public class LogEntry implements Serializable, Comparable<LogEntry> {
 
   @Override
   public int hashCode() {
-    return new Long(this.entryTime).hashCode();
+    return Long.valueOf(this.entryTime).hashCode();
   }
 
   @Override
