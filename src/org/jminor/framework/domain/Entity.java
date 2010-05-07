@@ -515,6 +515,14 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
+   * @return a new Entity instance with the same entityID as this entity
+   */
+  @Override
+  public ValueChangeMap<String, Object> getInstance() {
+    return new Entity(getEntityID());
+  }
+
+  /**
    * @return a deep copy of this Entity
    */
   public Entity getCopy() {
@@ -526,8 +534,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return a deep copy of this Entity
    */
   public Entity getCopy(final boolean includePrimaryKey) {
-    final Key key = getPrimaryKey().getCopy();
-    final Entity copy = new Entity(getEntityID());
+    final ValueChangeMap<String, Object> key = getPrimaryKey().getCopy();
+    final Entity copy = (Entity) getInstance();
     copy.setAs(this);
     if (!includePrimaryKey)
       copy.getPrimaryKey().setAs(key);
@@ -536,46 +544,23 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @return a deep copy of this entity in its original state
-   */
-  public Entity getOriginalCopy() {
-    final Entity copy = getCopy();
-    copy.revertAll();
-
-    return copy;
-  }
-
-  /**
-   * Makes this entity identical to <code>sourceEntity</code>.
+   * Makes this entity identical to <code>sourceEntity</code>, assuming it
+   * is a Entity instance.
    * Reference entity values, which are mutable, are deep copied with getCopy()
-   * @param valueMap the Entity to copy
+   * @param sourceEntity the Entity to copy
+   * @throws IllegalArgumentException in case <code>sourceEntity</code> is not Entity instance.
    */
   @Override
-  public void setAs(final ValueChangeMap<String, Object> valueMap) {
-    super.setAs(valueMap);
-    final Entity entity = (Entity) valueMap;
-    primaryKey.setAs(entity.getPrimaryKey());
-    foreignKeyValues.setAs(entity.foreignKeyValues);
-    toString = valueMap.toString();
+  public void setAs(final ValueChangeMap<String, Object> sourceEntity) {
+    if (sourceEntity != null && !(sourceEntity instanceof Entity))
+      throw new IllegalArgumentException("Not a Entity instance: " + sourceEntity);
+    
+    super.setAs(sourceEntity);
+    final Entity entity = (Entity) sourceEntity;
+    primaryKey.setAs(entity == null ? null : entity.getPrimaryKey());
+    foreignKeyValues.setAs(entity == null ? null : entity.foreignKeyValues);
+    toString = sourceEntity == null ? null : sourceEntity.toString();
   }
-
-//  private static Map<String, Map<Key, Entity>> cache = new HashMap<String, Map<Key, Entity>>();
-//  public Object readResolve() throws ObjectStreamException {
-//    Map<Key, Entity> entityCache = cache.get(getEntityID());
-//    if (entityCache == null) {
-//      entityCache = new HashMap<Key, Entity>();
-//      cache.put(getEntityID(), entityCache);
-//    }
-//    Entity entity = entityCache.get(primaryKey);
-//    if (entity == null) {
-//      entityCache.put(primaryKey, entity = this);
-//      System.out.println("cached: " + this);
-//    }
-//    else
-//      System.out.println("from cache: " + entity);
-//
-//    return entity;
-//  }
 
   /**
    * Returns the primary key of the entity referenced by the given ForeignKeyProperty
@@ -940,22 +925,10 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     /**
-     * @param propertyID the property identifier
-     * @return the key property identified by propertyID, null if the property is not found
-     */
-    public Property.PrimaryKeyProperty getProperty(final String propertyID) {
-      for (final Property.PrimaryKeyProperty property : getProperties())
-        if (property.is(propertyID))
-          return property;
-
-      return null;
-    }
-
-    /**
      * @return the first key property
      */
     public Property getFirstKeyProperty() {
-      if (getProperties().size() == 0)
+      if (getPropertyCount() == 0)
         throw new RuntimeException("No properties defined for primary key");
 
       return getProperties().get(0);
@@ -966,18 +939,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      */
     public Object getFirstKeyValue() {
       return getValue(getFirstKeyProperty().getPropertyID());
-    }
-
-    /**
-     * @param propertyID the property identifier
-     * @return true if this key contains a property with the given identifier
-     */
-    public boolean containsProperty(final String propertyID) {
-      for (final Property.PrimaryKeyProperty property : getProperties())
-        if (property.is(propertyID))
-          return true;
-
-      return false;
     }
 
     @Override
@@ -1011,13 +972,11 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     /**
-     * @return an identical deep copy of this entity key
+     * @return an Key instance with the entityID of this key
      */
-    public Key getCopy() {
-      final Key copy = new Key(entityID);
-      copy.setAs(this);
-
-      return copy;
+    @Override
+    public ValueChangeMap<String, Object> getInstance() {
+      return new Key(entityID);
     }
 
     /**
@@ -1083,35 +1042,34 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     public static List<Key> copy(final List<Key> entityKeys) {
       final List<Key> copies = new ArrayList<Key>(entityKeys.size());
       for (final Key key : entityKeys)
-        copies.add(key.getCopy());
+        copies.add((Key) key.getCopy());
 
       return copies;
     }
 
     /**
-     * Copies the values from <code>valueMap</code> to this entity key
-     * @param valueMap the key to copy
+     * Copies the values from <code>valueMap</code> to this entity key,
+     * assuming it is a Key instance
+     * @param sourceKey the key to copy
+     * @throws IllegalArgumentException in case the entityIDs don't match or
+     * <code>valueMap</code> is not a Key instance.
      */
     @Override
-    public void setAs(final ValueChangeMap<String, Object> valueMap) {
-      final Key key = (Key) valueMap;
+    public void setAs(final ValueChangeMap<String, Object> sourceKey) {
+      if (sourceKey != null && !(sourceKey instanceof Key))
+        throw new IllegalArgumentException("Not a Entity.Key instance: " + sourceKey);
+
+      final Key key = (Key) sourceKey;
       if (key != null && !key.getEntityID().equals(getEntityID()))
         throw new IllegalArgumentException("Entity ID mismatch, expected: " + getEntityID() + ", actual: " + key.getEntityID());
 
       hashCodeDirty = true;
-      super.setAs(valueMap);
+      super.setAs(sourceKey);
     }
 
     @Override
     public Object copyValue(final Object value) {
       return copyPropertyValue(value);
-    }
-
-    public Key getOriginalCopy() {
-      final Key copy = getCopy();
-      copy.revertAll();
-
-      return copy;
     }
   }
 

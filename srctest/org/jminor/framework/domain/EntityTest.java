@@ -62,7 +62,7 @@ public class EntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     //assert types
-    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.INTEGER);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.INTEGER);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getType(), Types.INTEGER);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getType(), Types.DOUBLE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getType(), Types.VARCHAR);
@@ -75,7 +75,7 @@ public class EntityTest {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);
 
     //assert column names
-    assertEquals(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getPropertyID(), EntityTestDomain.DETAIL_ID);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getPropertyID(), EntityTestDomain.DETAIL_ID);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getPropertyID(), EntityTestDomain.DETAIL_INT);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getPropertyID(), EntityTestDomain.DETAIL_DOUBLE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getPropertyID(), EntityTestDomain.DETAIL_STRING);
@@ -87,7 +87,7 @@ public class EntityTest {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getPropertyID(), EntityTestDomain.DETAIL_MASTER_CODE);
 
     //assert captions
-    assertNull(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).getCaption());
+    assertNull(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getCaption());
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getCaption(), EntityTestDomain.DETAIL_INT);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getCaption(), EntityTestDomain.DETAIL_DOUBLE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getCaption(), EntityTestDomain.DETAIL_STRING);
@@ -99,7 +99,7 @@ public class EntityTest {
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_MASTER_CODE).getCaption(), EntityTestDomain.DETAIL_MASTER_CODE);
 
     //assert hidden status
-    assertTrue(testEntity.getPrimaryKey().getProperty(EntityTestDomain.DETAIL_ID).isHidden());
+    assertTrue(testEntity.getProperty(EntityTestDomain.DETAIL_ID).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_INT).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).isHidden());
     assertFalse(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).isHidden());

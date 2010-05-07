@@ -209,6 +209,27 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
+  public ValueChangeMap<K, V> getInstance() {
+    return new ValueChangeMapImpl<K, V>();
+  }
+
+  /** {@inheritDoc} */
+  public ValueChangeMap<K, V> getCopy() {
+    final ValueChangeMap<K, V> copy = getInstance();
+    copy.setAs(this);
+
+    return copy;
+  }
+
+  /** {@inheritDoc} */
+  public ValueChangeMap<K, V> getOriginalCopy() {
+    final ValueChangeMap<K, V> copy = getCopy();
+    copy.revertAll();
+    
+    return copy;
+  }
+
+  /** {@inheritDoc} */
   public V copyValue(final V value) {
     return value;
   }

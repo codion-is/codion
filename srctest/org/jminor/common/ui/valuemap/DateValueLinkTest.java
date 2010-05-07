@@ -20,11 +20,11 @@ import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DatePropertyLinkTest {
+public class DateValueLinkTest {
 
   private ValueChangeMapEditModel<String, Object> model;
 
-  public DatePropertyLinkTest() {
+  public DateValueLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 

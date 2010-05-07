@@ -1510,3 +1510,7 @@
   ClientMonitor/Panel renamed to ClientUserMonitor/Panel, UserMonitor and UserInstanceMonitor (and panels) removed
   Entity.Key.equals() improved
   Entity.Key.INTEGER_NULL_VALUE added
+  ValueChangeMap.getInstance(), getCopy() and getOriginalCopy() added
+  ValueChangeMapImpl implements the above
+  Entity and Entity.Key override the above when necessary
+  Renamed a few tests in common.model.valuemap

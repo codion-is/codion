@@ -13,11 +13,11 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class DoublePropertyLinkTest {
+public class DoubleValueLinkTest {
 
   private ValueChangeMapEditModel<String, Object> model;
 
-  public DoublePropertyLinkTest() {
+  public DoubleValueLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 

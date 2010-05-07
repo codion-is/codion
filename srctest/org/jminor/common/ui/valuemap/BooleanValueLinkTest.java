@@ -15,11 +15,11 @@ import org.junit.Test;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 
-public class BooleanPropertyLinkTest {
+public class BooleanValueLinkTest {
 
   private ValueChangeMapEditModel<String, Object> model;
 
-  public BooleanPropertyLinkTest() {
+  public BooleanValueLinkTest() {
     model = new ItemModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 

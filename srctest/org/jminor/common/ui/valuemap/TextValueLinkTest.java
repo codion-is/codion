@@ -14,11 +14,11 @@ import org.junit.Test;
 
 import javax.swing.JTextField;
 
-public class TextPropertyLinkTest {
+public class TextValueLinkTest {
 
   private ValueChangeMapEditModel<String, Object> model;
 
-  public TextPropertyLinkTest() {
+  public TextValueLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 

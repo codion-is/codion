@@ -14,11 +14,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
-public class IntPropertyLinkTest {
+public class IntValueLinkTest {
 
   private ValueChangeMapEditModel<String, Object> model;
 
-  public IntPropertyLinkTest() {
+  public IntValueLinkTest() {
     model = new EmployeeModel(EntityDbConnectionTest.DB_PROVIDER).getEditModel();
   }
 

@@ -28,7 +28,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
    * @return a String identifying the map type, for example a table name.
-   * in case this value map represents a table row
+   * in case this value map represents a table row or a class name.
    */
   String getMapTypeID();
 
@@ -82,18 +82,36 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void revertAll();
 
   /**
+   * @return a new instance compatible with this instance,
+   * preferably with a matching mapTypeID.
+   * @see #getMapTypeID()
+   */
+  ValueChangeMap<K, V> getInstance();
+
+  /**
+   * @return a deep copy of this value map
+   */
+  ValueChangeMap<K, V> getCopy();
+
+  /**
+   * @return a deep copy of this value map in it's original state
+   */
+  ValueChangeMap<K, V> getOriginalCopy();
+
+  /**
    * Removes all items and change history from this map.
    */
   void clear();
 
   /**
    * After a call to this method this ValueMap should contain the same values and original values as the given map.
+   * A null argument to this method clears the destination map.
    * @param map the map to copy
    */
   void setAs(final ValueChangeMap<K, V> map);
 
   /**
-   * Returns a deep copy of the given value, if the value is immutable then the same value is returned.
+   * Returns a deep copy of the given value, immutable values are simply returned.
    * @param value the value to copy
    * @return a deep copy of the given value, or the same instance in case the value is immutable
    */

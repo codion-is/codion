@@ -417,7 +417,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * e.g. "(idCol = 42)" or in case of multiple column key "(idCol1 = 42) and (idCol2 = 24)"
    */
   public static String getWhereCondition(final Database database, final Entity entity) {
-    return getWhereCondition(database, entity.getPrimaryKey().getOriginalCopy());
+    return getWhereCondition(database, (Entity.Key) entity.getPrimaryKey().getOriginalCopy());
   }
 
   /**

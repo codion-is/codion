@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-public class ChangeValueMapModelTest {
+public class ValueChangeMapImplTest {
 
   @Test
   public void test() {
