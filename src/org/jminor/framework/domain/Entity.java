@@ -911,7 +911,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       this(entityID);
       if (properties.size() > 1)
         throw new RuntimeException("Not a single value key");
-      setValue(properties.get(0).getPropertyID(), value);
+
+      initializeValue(properties.get(0).getPropertyID(), value);
     }
 
     /**
