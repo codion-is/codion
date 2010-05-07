@@ -857,11 +857,13 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * A class representing column key objects for entities, contains the values for those columns
+   * A class representing column key objects for entities, contains the values for those columns.
    */
   public static class Key extends ValueChangeMapImpl<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1;
+
+    private static final int INTEGER_NULL_VALUE = Integer.MAX_VALUE;
 
     /**
      * the entity ID
@@ -876,7 +878,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     /**
      * Caching the hash code
      */
-    private int hashCode = -Integer.MAX_VALUE;
+    private int hashCode = INTEGER_NULL_VALUE;
 
     /**
      * True if the value of a key property has changed, thereby invalidating the cached hash code value
@@ -985,7 +987,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
         if (!(newValue == null || newValue instanceof Integer))
           throw new IllegalArgumentException("Expecting a Integer value for Key: " + entityID + ", "
                   + propertyID + ", got " + newValue + "; " + newValue.getClass());
-        hashCode = newValue == null ? -Integer.MAX_VALUE : (Integer) newValue;
+        hashCode = newValue == null ? INTEGER_NULL_VALUE : (Integer) newValue;
         hashCodeDirty = false;
       }
 
@@ -1026,13 +1028,22 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     /**
+     * Key objects are equal if the entityIDs match as well as all property values.
      * @param object the object to compare with
      * @return true if object is equal to this key
      */
+    @SuppressWarnings({"SimplifiableIfStatement"})
     @Override
     public boolean equals(final Object object) {
-      return this == object || object instanceof Key && ((Key) object).entityID.equals(entityID)
-              && object.hashCode() == hashCode();
+      if (object instanceof Key) {
+        final Key key = (Key) object;
+        if (singleIntegerKey && key.singleIntegerKey && hashCode() != key.hashCode())
+          return false;
+
+        return entityID.equals(key.entityID) && super.equals(key);
+      }
+
+      return false;
     }
 
     /**
@@ -1045,7 +1056,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
         for (final Object value : getValues())
           hash = hash + (value == null ? 0 : value.hashCode());
 
-        hashCode = hash == 0 ? -Integer.MAX_VALUE : hash;//in case all values were null
+        hashCode = hash == 0 ? INTEGER_NULL_VALUE : hash;//in case all values were null
         hashCodeDirty = false;
       }
 
@@ -1057,9 +1068,9 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
      */
     public boolean isNull() {
       if (singleIntegerKey)
-        return hashCode() == -Integer.MAX_VALUE;
+        return hashCode() == INTEGER_NULL_VALUE;
 
-      if (hashCode() == -Integer.MAX_VALUE)
+      if (hashCode() == INTEGER_NULL_VALUE)
         return true;
 
       for (final Property property : getProperties())

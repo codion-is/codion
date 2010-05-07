@@ -126,12 +126,17 @@ public class EntityTest {
       testEntity.setValue(EntityTestDomain.DETAIL_MASTER_NAME, "hello");
       fail("Set value for a denormalized view property should cause an error");
     }
-    catch (Exception e) {}
+    catch (IllegalArgumentException e) {}
     try {
       testEntity.setValue(EntityTestDomain.DETAIL_MASTER_CODE, 2);
       fail("Set value for a denormalized property should cause an error");
     }
-    catch (Exception e) {}
+    catch (IllegalArgumentException e) {}
+    try {
+      testEntity.setValue(EntityTestDomain.DETAIL_ID, "hello");
+      fail("Set string value for a single integer key should cause an error");
+    }
+    catch (IllegalArgumentException e) {}
     //test setAs()
     test = new Entity(EntityTestDomain.T_DETAIL);
     test.setAs(testEntity);

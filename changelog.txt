@@ -1508,3 +1508,5 @@
   EntityResultPacker now sets denormalized values
   Entity.initializeValue() does not propagate denormalized values anymore
   ClientMonitor/Panel renamed to ClientUserMonitor/Panel, UserMonitor and UserInstanceMonitor (and panels) removed
+  Entity.Key.equals() improved
+  Entity.Key.INTEGER_NULL_VALUE added
