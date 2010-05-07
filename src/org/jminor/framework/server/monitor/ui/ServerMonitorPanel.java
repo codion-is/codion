@@ -122,8 +122,7 @@ public class ServerMonitorPanel extends JPanel {
     pane.addTab("Performance", performancePanel);
     pane.addTab("Environment", initEnvironmentPanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
-    pane.addTab("Clients", new ClientMonitorPanel(model.getClientMonitor()));
-    pane.addTab("Users", new UserMonitorPanel(model.getUserMonitor()));
+    pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
 
     add(pane, BorderLayout.CENTER);
   }

@@ -1507,3 +1507,4 @@
   Entity.loaded field removed
   EntityResultPacker now sets denormalized values
   Entity.initializeValue() does not propagate denormalized values anymore
+  ClientMonitor/Panel renamed to ClientUserMonitor/Panel, UserMonitor and UserInstanceMonitor (and panels) removed

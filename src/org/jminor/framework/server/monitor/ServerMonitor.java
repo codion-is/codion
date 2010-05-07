@@ -45,8 +45,7 @@ public class ServerMonitor {
   private int statsUpdateInterval;
 
   private final DatabaseMonitor databaseMonitor;
-  private final ClientMonitor clientMonitor;
-  private final UserMonitor userMonitor;
+  private final ClientUserMonitor clientMonitor;
 
   private int connectionCount = 0;
   private boolean shutdown = false;
@@ -76,8 +75,7 @@ public class ServerMonitor {
     memoryUsageCollection.addSeries(usedMemorySeries);
     connectionCountCollection.addSeries(connectionCountSeries);
     databaseMonitor = new DatabaseMonitor(server);
-    clientMonitor = new ClientMonitor(server);
-    userMonitor = new UserMonitor(server);
+    clientMonitor = new ClientUserMonitor(server);
     refreshDomainList();
     setStatsUpdateInterval(2);
   }
@@ -96,7 +94,6 @@ public class ServerMonitor {
       updateTimer.cancel();
     databaseMonitor.shutdown();
     clientMonitor.shutdown();
-    userMonitor.shutdown();
   }
 
   public EntityDbServerAdmin getServer() {
@@ -111,16 +108,12 @@ public class ServerMonitor {
     return connectionCount;
   }
 
-  public ClientMonitor getClientMonitor() {
+  public ClientUserMonitor getClientMonitor() {
     return clientMonitor;
   }
 
   public DatabaseMonitor getDatabaseMonitor() {
     return databaseMonitor;
-  }
-
-  public UserMonitor getUserMonitor() {
-    return userMonitor;
   }
 
   public int getWarningThreshold() throws RemoteException {

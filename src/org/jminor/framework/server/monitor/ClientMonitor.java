@@ -3,60 +3,59 @@
  */
 package org.jminor.framework.server.monitor;
 
+import org.jminor.common.model.User;
+import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.server.EntityDbServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
-import java.util.Enumeration;
+import java.util.Collection;
 
 /**
  * User: Bjorn Darri<br>
  * Date: 11.12.2007<br>
- * Time: 12:58:44<br>
+ * Time: 11:42:18<br>
  */
 public class ClientMonitor {
 
   private final EntityDbServerAdmin server;
+  private final String clientTypeID;
+  private final User user;
 
-  private final DefaultListModel clientTypeListModel = new DefaultListModel();
+  private final DefaultListModel clientInstanceListModel = new DefaultListModel();
 
-  public ClientMonitor(final EntityDbServerAdmin server) throws RemoteException {
+  public ClientMonitor(final EntityDbServerAdmin server, final String clientTypeID, final User user) throws RemoteException {
     this.server = server;
+    this.clientTypeID = clientTypeID;
+    this.user = user;
     refresh();
   }
 
-  public DefaultListModel getClientTypeListModel() {
-    return clientTypeListModel;
+  public void refresh() throws RemoteException {
+    clientInstanceListModel.clear();
+    final Collection<ClientInfo> clients = clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID);
+    for (final ClientInfo client : clients)
+      clientInstanceListModel.addElement(new ClientInstanceMonitor(client, server));
   }
 
-  public void refresh() throws RemoteException{
-    clientTypeListModel.clear();
-    for (final String clientType : server.getClientTypes())
-      clientTypeListModel.addElement(new ClientTypeMonitor(server, clientType));
+  public DefaultListModel getClientInstanceListModel() {
+    return clientInstanceListModel;
   }
 
-  public void disconnectAll() throws RemoteException {
-    server.removeConnections(false);
-    refresh();
+  public String getClientTypeID() {
+    return clientTypeID;
   }
 
-  public void disconnectTimedOut() throws RemoteException {
-    server.removeConnections(true);
-    refresh();
+  public EntityDbServerAdmin getServer() {
+    return server;
   }
 
-  public void setCheckMaintenanceInterval(final int interval) throws RemoteException {
-    server.setCheckMaintenanceInterval(interval);
-  }
-
-  public int getCheckMaintenanceInterval() throws RemoteException {
-    return server.getCheckMaintenanceInterval();
+  @Override
+  public String toString() {
+    return clientTypeID == null ? user.toString() : clientTypeID;
   }
 
   public void shutdown() {
     System.out.println("ClientMonitor shutdown");
-    final Enumeration enumeration = clientTypeListModel.elements();
-    while (enumeration.hasMoreElements())
-      ((ClientTypeMonitor) enumeration.nextElement()).shutdown();
   }
 }
