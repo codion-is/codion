@@ -1111,7 +1111,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
       if (!fkValueNull) {
         boolean queried = false;
         Entity referencedEntity = entity.getEntityValue(property.getPropertyID());
-        if (referencedEntity == null || !referencedEntity.isLoaded()) {
+        if (referencedEntity == null) {
           referencedEntity = dbProvider.getEntityDb().selectSingle(entity.getReferencedPrimaryKey(property));
           entity.removeValue(property.getPropertyID());
           entity.setValue(property, referencedEntity);

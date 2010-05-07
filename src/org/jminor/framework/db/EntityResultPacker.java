@@ -63,7 +63,6 @@ public class EntityResultPacker implements ResultPacker<Entity> {
 
   protected Entity loadEntity(final ResultSet resultSet) throws SQLException {
     final Entity entity = new Entity(entityID);
-    entity.setLoaded(true);
     if (transientProperties != null && transientProperties.size() > 0) {
       for (final Property.TransientProperty transientProperty : transientProperties) {
         if (!(transientProperty instanceof Property.DenormalizedViewProperty)

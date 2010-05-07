@@ -43,11 +43,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   };
 
   /**
-   * True if property values have been loaded for this entity
-   */
-  private boolean loaded = false;
-
-  /**
    * Used to cache the return value of the frequently called toString(),
    * invalidated each time a property value changes
    */
@@ -101,23 +96,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    */
   public Key getPrimaryKey() {
     return primaryKey;
-  }
-
-  /**
-   * Sets the loaded status of this entity, true means that property
-   * values have been loaded, but does not imply that foreign key
-   * entities have been set
-   * @param loaded the loaded status
-   */
-  public void setLoaded(final boolean loaded) {
-    this.loaded = loaded;
-  }
-
-  /**
-   * @return true if property values have been loaded for this entity
-   */
-  public boolean isLoaded() {
-    return loaded;
   }
 
   /**
@@ -331,8 +309,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return true if the reference entity has been loaded
    */
   public boolean isLoaded(final String foreignKeyPropertyID) {
-    final Entity entity = getEntityValue(foreignKeyPropertyID);
-    return entity != null && entity.isLoaded();
+    return foreignKeyValues.isValueNull(foreignKeyPropertyID);
   }
 
   /**
@@ -583,7 +560,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     primaryKey.setAs(entity.getPrimaryKey());
     foreignKeyValues.setAs(entity.foreignKeyValues);
     toString = valueMap.toString();
-    loaded = ((Entity) valueMap).loaded;
   }
 
 //  private static Map<String, Map<Key, Entity>> cache = new HashMap<String, Map<Key, Entity>>();
@@ -758,7 +734,6 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       for (final Map.Entry<String, Object> entry : originalValues.entrySet())
         entity.setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
     }
-    entity.setLoaded(true);
 
     return entity;
   }
