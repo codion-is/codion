@@ -249,8 +249,8 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   @Override
-  public List<Object> getValues() {
-    final List<Object> values = new ArrayList<Object>(primaryKey.getValues());
+  public Collection<Object> getValues() {
+    final Collection<Object> values = new ArrayList<Object>(primaryKey.getValues());
     values.addAll(foreignKeyValues.getValues());
     values.addAll(super.getValues());
 

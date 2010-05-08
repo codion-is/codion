@@ -118,7 +118,12 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   V copyValue(final V value);
 
   /**
-   * @return the keys mapping the values in this ValueChangeMap
+   * @return an unmodifiable view of the values in this map.
+   */
+  Collection<V> getValues();
+
+  /**
+   * @return an unmodifiable view of the keys mapping the values in this ValueChangeMap
    */
   Collection<K> getValueKeys();
 

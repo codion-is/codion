@@ -8,7 +8,7 @@ package org.jminor.common.model.valuemap;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueListProvider<V> {
+public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProvider<V> {
 
   /**
    * Maps the given value to the given key, returning the old value if any

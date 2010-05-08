@@ -3,12 +3,12 @@
  */
 package org.jminor.common.model.valuemap;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
- * Specifies an object that provides a List of values.
+ * Specifies an object that provides a Collection of values.
  * @param <V> the type of the values
  */
-public interface ValueListProvider<V> {
-  List<V> getValues();
+public interface ValueCollectionProvider<V> {
+  Collection<V> getValues();
 }

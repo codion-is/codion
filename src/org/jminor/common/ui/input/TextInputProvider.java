@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.input;
 
-import org.jminor.common.model.valuemap.ValueListProvider;
+import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
 
@@ -14,7 +14,7 @@ import javax.swing.JTextField;
  */
 public class TextInputProvider extends AbstractInputProvider<String> {
 
-  public TextInputProvider(final String inputDialogTitle, final ValueListProvider valueListProvider, final String currentValue) {
+  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueListProvider, final String currentValue) {
     super(createTextInputPanel(inputDialogTitle, valueListProvider, currentValue));
   }
 
@@ -25,7 +25,7 @@ public class TextInputProvider extends AbstractInputProvider<String> {
     return value.length() == 0 ? null : value;
   }
 
-  private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueListProvider valueListProvider,
+  private static TextInputPanel createTextInputPanel(final String inputDialogTitle, final ValueCollectionProvider valueListProvider,
                                                      final Object currentValue) {
     final JTextField txtField = new JTextField(currentValue != null ? currentValue.toString() : "");
     txtField.setColumns(16);

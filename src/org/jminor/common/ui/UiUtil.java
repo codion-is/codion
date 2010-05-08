@@ -9,7 +9,7 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueListProvider;
+import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.textfield.TextFieldPlus;
 
 import com.toedter.calendar.JCalendar;
@@ -717,7 +717,7 @@ public class UiUtil {
     component.getActionMap().put(name, action);
   }
 
-  public static void addLookupDialog(final JTextField txtField, final ValueListProvider valueListProvider) {
+  public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueListProvider) {
     addKeyEvent(txtField, KeyEvent.VK_SPACE, 0, InputEvent.CTRL_DOWN_MASK, new AbstractAction("valueLookup") {
       public void actionPerformed(final ActionEvent e) {
         try {

@@ -1522,3 +1522,5 @@
   Property.hashCode() result pre-cached
   EntityDbRemoteServer.loadDomainModel() now uses URI instead of URL
   Util.getURI()/getURIs() added
+  ValueListProvider renamed to ValueCollectionProvider, returns Collection
+  ValueChangeMapImpl.getValues() and getValueKeys() return unmodifiableCollection instead of creating new lists

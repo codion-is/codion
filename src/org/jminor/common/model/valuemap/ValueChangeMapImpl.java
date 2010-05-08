@@ -11,8 +11,8 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,8 +96,8 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public List<V> getValues() {
-    return new ArrayList<V>(values.values());
+  public Collection<V> getValues() {
+    return Collections.unmodifiableCollection(values.values());
   }
 
   /** {@inheritDoc} */
@@ -241,7 +241,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public Collection<K> getValueKeys() {
-    return new ArrayList<K>(values.keySet());
+    return Collections.unmodifiableCollection(values.keySet());
   }
 
   /** {@inheritDoc} */

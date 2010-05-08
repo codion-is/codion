@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.valuemap.ValueListProvider;
+import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.provider.EntityDbProvider;
 
-import java.util.List;
+import java.util.Collection;
 
-public class PropertyValueListProvider implements ValueListProvider<Object> {
+public class PropertyValueListProvider implements ValueCollectionProvider<Object> {
 
   private final EntityDbProvider dbProvider;
   private final String entityID;
@@ -32,7 +32,7 @@ public class PropertyValueListProvider implements ValueListProvider<Object> {
     return dbProvider;
   }
 
-  public List<Object> getValues() {
+  public Collection<Object> getValues() {
     try {
       return getDbProvider().getEntityDb().selectPropertyValues(getEntityID(), getPropertyID(), true);
     }
