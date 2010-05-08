@@ -17,8 +17,7 @@ import org.apache.log4j.Logger;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.io.File;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.RemoteException;
@@ -238,30 +237,35 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
 
   public static void loadDomainModel(final String domainClassName) throws ClassNotFoundException,
           InstantiationException, IllegalAccessException {
-    loadDomainModel((URL) null, domainClassName);
+    loadDomainModel((URI) null, domainClassName);
   }
 
-  public static void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException,
+  public static void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
-    loadDomainModel(location == null ? null : new URL[] {location}, domainClassName);
+    loadDomainModel(location == null ? null : new URI[] {location}, domainClassName);
   }
 
-  public static void loadDomainModel(final URL[] locations, final String domainClassName) throws ClassNotFoundException,
+  public static void loadDomainModel(final URI[] locations, final String domainClassName) throws ClassNotFoundException,
           IllegalAccessException, InstantiationException {
     final String message = "Server loading domain model class '" + domainClassName + "' from"
             + (locations == null || locations.length == 0 ? " classpath" : " jars: ") + Util.getArrayContentsAsString(locations, false);
     log.info(message);
-    AccessController.doPrivileged(new PrivilegedAction() {
+    AccessController.doPrivileged(new PrivilegedAction<Object>() {
       public Object run() {
         try {
           if (locations == null || locations.length == 0)
             Class.forName(domainClassName);
-          else
-            Class.forName(domainClassName, true, new URLClassLoader(locations, ClassLoader.getSystemClassLoader()));
+          else {
+            final URL[] locationsURL = new URL[locations.length];
+            int i = 0;
+            for (final URI uri : locations)
+              locationsURL[i++] = uri.toURL();
+            Class.forName(domainClassName.trim(), true, new URLClassLoader(locationsURL, ClassLoader.getSystemClassLoader()));
+          }
 
           return null;
         }
-        catch (ClassNotFoundException e) {
+        catch (Exception e) {
           throw new RuntimeException(e);
         }
       }
@@ -298,25 +302,13 @@ public class EntityDbRemoteServer extends AbstractRemoteServer<EntityDbRemote> {
     final String domainModelJars = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_JARS);
     final String[] jars = domainModelJars == null || domainModelJars.length() == 0 ? null : domainModelJars.split(",");
     try {
-      final URL[] jarURLs = jars == null ? null : getJarURLs(jars);
+      final URI[] jarURIs = jars == null ? null : Util.getURIs(jars);
       for (final String classname : classes)
-        loadDomainModel(jarURLs, classname);
+        loadDomainModel(jarURIs, classname);
     }
     catch (Exception e) {
       throw new RemoteException("Exception while loading default domain models", e);
     }
-  }
-
-  private URL[] getJarURLs(final String[] jars) throws MalformedURLException {
-    final URL[] urls = new URL[jars.length];
-    for (int i = 0; i < jars.length; i++) {
-      if (jars[i].toLowerCase().startsWith("http"))
-        urls[i] = new URL(jars[i]);
-      else
-        urls[i] = new File(jars[i]).toURI().toURL();
-    }
-
-    return urls;
   }
 
   private void startConnectionCheckTimer() {

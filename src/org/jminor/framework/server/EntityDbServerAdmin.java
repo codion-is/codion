@@ -13,7 +13,7 @@ import org.jminor.framework.domain.EntityDefinition;
 
 import org.apache.log4j.Level;
 
-import java.net.URL;
+import java.net.URI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -234,7 +234,7 @@ public interface EntityDbServerAdmin extends Remote {
 
   String getSystemProperties() throws RemoteException;
 
-  void loadDomainModel(final URL location, final String domainClassName) throws RemoteException, ClassNotFoundException,
+  void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
           IllegalAccessException, InstantiationException;
 
   Map<String, EntityDefinition> getEntityDefinitions() throws RemoteException;

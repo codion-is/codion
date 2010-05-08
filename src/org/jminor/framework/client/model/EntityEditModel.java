@@ -412,6 +412,10 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
       performRangeValidation(entity, property);
   }
 
+  /**
+   * Refreshes any data aware control models found in the edit model,
+   * such as combo box models.
+   */
   public void refresh() {
     refreshComboBoxModels();
   }

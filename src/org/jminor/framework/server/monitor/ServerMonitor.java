@@ -14,7 +14,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
-import java.net.URL;
+import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -159,7 +159,7 @@ public class ServerMonitor {
     connectionCountSeries.clear();
   }
 
-  public void loadDomainModel(final URL location, final String domainClassName) throws ClassNotFoundException, RemoteException,
+  public void loadDomainModel(final URI location, final String domainClassName) throws ClassNotFoundException, RemoteException,
           InstantiationException, IllegalAccessException {
     server.loadDomainModel(location, domainClassName);
   }

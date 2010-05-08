@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -512,5 +514,21 @@ public class Util {
 
   public static Random getRandom() {
     return random;
+  }
+
+  public static URI getURI(final String urlOrPath) throws URISyntaxException {
+    return getURIs(new String[] {urlOrPath})[0];
+  }
+
+  public static URI[] getURIs(final String[] urlsOrPaths) throws URISyntaxException {
+    final URI[] urls = new URI[urlsOrPaths.length];
+    for (int i = 0; i < urlsOrPaths.length; i++) {
+      if (urlsOrPaths[i].toLowerCase().startsWith("http"))
+        urls[i] = new URI(urlsOrPaths[i].trim());
+      else
+        urls[i] = new File(urlsOrPaths[i].trim()).toURI();
+    }
+
+    return urls;
   }
 }

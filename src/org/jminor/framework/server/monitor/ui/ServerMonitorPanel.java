@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlFactory;
@@ -23,8 +24,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 
 /**
@@ -70,12 +70,12 @@ public class ServerMonitorPanel extends JPanel {
     }
   }
 
-  public void loadDomainModel() throws ClassNotFoundException, RemoteException, MalformedURLException,
-          IllegalAccessException, InstantiationException {
+  public void loadDomainModel() throws ClassNotFoundException, RemoteException,
+          IllegalAccessException, InstantiationException, URISyntaxException {
     final String domainModelClass = JOptionPane.showInputDialog("Domain class name");
     final String locationURL = JOptionPane.showInputDialog("Location URL");
     if (domainModelClass.length() > 0 && locationURL.length() > 0)
-      getModel().loadDomainModel(new URL(locationURL), domainModelClass);
+      getModel().loadDomainModel(Util.getURI(locationURL), domainModelClass);
   }
 
   private void initUI() throws RemoteException {

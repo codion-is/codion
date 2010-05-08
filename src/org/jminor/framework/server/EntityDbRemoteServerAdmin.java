@@ -20,7 +20,7 @@ import org.apache.log4j.Level;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.net.URL;
+import java.net.URI;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -284,7 +284,7 @@ public class EntityDbRemoteServerAdmin extends UnicastRemoteObject implements En
   }
 
   /** {@inheritDoc} */
-  public void loadDomainModel(final URL location, final String domainClassName) throws RemoteException, ClassNotFoundException,
+  public void loadDomainModel(final URI location, final String domainClassName) throws RemoteException, ClassNotFoundException,
           IllegalAccessException, InstantiationException {
     EntityDbRemoteServer.loadDomainModel(location, domainClassName);
   }
