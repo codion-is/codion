@@ -922,7 +922,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
       final Entity entity = getTableModel().getSelectedItem();
       if (entity != null) {
         final JPopupMenu popupMenu = new JPopupMenu();
-        populateEntityMenu(popupMenu, entity.getCopy(), getTableModel().getDbProvider());
+        populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getTableModel().getDbProvider());
         popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
       }
     }

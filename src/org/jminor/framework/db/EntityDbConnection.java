@@ -604,7 +604,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
    * @param entity the entity to check
    * @throws DbException in case of a database exception
    * @throws RecordNotFoundException in case the entity has been deleted
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified
+   * @throws RecordModifiedException in case the entity has been modified
    */
   private void checkIfModified(final Entity entity) throws DbException {
     final Entity current = selectSingle(new EntitySelectCriteria(entity.getEntityID(),
@@ -652,7 +652,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
     final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
-      if (key != null && !key.isNull())
+      if (key != null)
         keySet.add(key);
     }
 

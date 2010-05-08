@@ -217,7 +217,7 @@ public class EntityUtil {
   public static List<Entity> copyEntities(final List<Entity> entities) {
     final List<Entity> copies = new ArrayList<Entity>(entities.size());
     for (final Entity entity : entities)
-      copies.add(entity.getCopy());
+      copies.add((Entity) entity.getCopy());
 
     return copies;
   }

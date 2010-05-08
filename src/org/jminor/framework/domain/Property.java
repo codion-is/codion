@@ -135,6 +135,10 @@ public class Property implements Serializable {
    * Caching this frequently referenced attribute
    */
   private Class<?> typeClass;
+  /**
+   * This is based on an immutable field, so chache it
+   */
+  private int hashCode;
 
   /**
    * Instantiates a new property of the type Integer.class
@@ -161,6 +165,7 @@ public class Property implements Serializable {
     if (propertyID == null)
       throw new IllegalArgumentException("Property ID must be specified");
     this.propertyID = propertyID;
+    this.hashCode = propertyID.hashCode();
     this.type = type;
     this.caption = caption;
     this.columnName = propertyID;
@@ -647,7 +652,7 @@ public class Property implements Serializable {
 
   @Override
   public int hashCode() {
-    return propertyID.hashCode();
+    return hashCode;
   }
 
   /**

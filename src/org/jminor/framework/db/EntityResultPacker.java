@@ -86,9 +86,7 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   protected Object getValue(final ResultSet resultSet, final Property property) throws SQLException {
-    if (property.isReference())
-      throw new IllegalArgumentException("EntityResultPacker does not handle loading of reference properties");
-    else if (property.isBoolean())
+    if (property.isBoolean())
       return getBoolean(resultSet, property);
     else
       return getValue(resultSet, property.getType(), property.getSelectIndex());
@@ -112,27 +110,29 @@ public class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private Object getValue(final ResultSet resultSet, final int sqlType, final int selectIndex) throws SQLException {
-    if (sqlType == Types.INTEGER)
-      return getInteger(resultSet, selectIndex);
-    else if (sqlType == Types.DOUBLE)
-      return getDouble(resultSet, selectIndex);
-    else if (sqlType == Types.DATE)
-      return getDate(resultSet, selectIndex);
-    else if (sqlType == Types.TIMESTAMP)
-      return getTimestamp(resultSet, selectIndex);
-    else if (sqlType == Types.VARCHAR)
-      return getString(resultSet, selectIndex);
-    else if (sqlType == Types.BOOLEAN)
-      return getBoolean(resultSet, selectIndex);
-    else if (sqlType == Types.CHAR) {
-      final String val = getString(resultSet, selectIndex);
-      if (val != null && val.length() > 0)
-        return val.charAt(0);
-      else
-        return null;
+    switch (sqlType) {
+      case Types.INTEGER:
+        return getInteger(resultSet, selectIndex);
+      case Types.DOUBLE:
+        return getDouble(resultSet, selectIndex);
+      case Types.DATE:
+        return getDate(resultSet, selectIndex);
+      case Types.TIMESTAMP:
+        return getTimestamp(resultSet, selectIndex);
+      case Types.VARCHAR:
+        return getString(resultSet, selectIndex);
+      case Types.BOOLEAN:
+        return getBoolean(resultSet, selectIndex);
+      case Types.CHAR: {
+        final String val = getString(resultSet, selectIndex);
+        if (val != null && val.length() > 0)
+          return val.charAt(0);
+        else
+          return null;
+      }
     }
-    else
-      throw new IllegalArgumentException("Unknown value type: " + sqlType);
+
+    throw new IllegalArgumentException("Unknown value type: " + sqlType);
   }
 
   private Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {

@@ -144,7 +144,7 @@ public class EntityTest {
     assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));
 
     //test copy()
-    final Entity test2 = testEntity.getCopy();
+    final Entity test2 = (Entity) testEntity.getCopy();
     assertFalse("Entity copy should not be == the original", test2 == testEntity);
     assertTrue("Entities should be equal after .getCopy()", Util.equal(test2, testEntity));
     assertTrue("Entity property values should be equal after .getCopy()", test2.propertyValuesEqual(testEntity));

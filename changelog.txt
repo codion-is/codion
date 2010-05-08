@@ -1515,3 +1515,8 @@
   Entity and Entity.Key override the above when necessary
   Renamed a few tests in common.model.valuemap
   ValueChangeMapEditModel.evtValueMapChanged renamed to evtValueMapSet
+  Entity.getCopy() override removed
+  Entity.getReferencedPrimaryKey() now returns null in case of null references instead of a Key with .isNull() = true
+  Entity.Key.equals improved
+  EntityResultPacker.getValue() now uses switch instead of if/else
+  Property.hashCode() result pre-cached

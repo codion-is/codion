@@ -234,12 +234,16 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
   }
 
   /**
-   * @param includePrimaryKeyValues if true then the primary key values are include
+   * @param includePrimaryKeyValues if false then the primary key values are excluded
    * @return a deep copy of the active entity
    * @see org.jminor.framework.domain.Entity#getCopy()
    */
   public Entity getEntityCopy(final boolean includePrimaryKeyValues) {
-    return getEntity().getCopy(includePrimaryKeyValues);
+    final Entity copy = (Entity) getEntity().getCopy();
+    if (!includePrimaryKeyValues)
+      copy.getPrimaryKey().clear();
+    
+    return copy;
   }
 
   /**
