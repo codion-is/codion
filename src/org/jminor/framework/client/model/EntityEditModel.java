@@ -790,7 +790,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     evtAfterDelete.addListener(evtEntitiesChanged);
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);
-    eventValueMapChanged().addListener(new ActionListener() {
+    eventValueMapSet().addListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         stEntityNull.setActive(getEntity().isNull());
       }

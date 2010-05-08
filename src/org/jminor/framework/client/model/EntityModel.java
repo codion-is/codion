@@ -594,7 +594,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
       }
     });
     if (!containsTableModel()) {
-      getEditModel().eventValueMapChanged().addListener(new ActionListener() {
+      getEditModel().eventValueMapSet().addListener(new ActionListener() {
         public void actionPerformed(final ActionEvent event) {
           updateDetailModelsByActiveEntity();
         }

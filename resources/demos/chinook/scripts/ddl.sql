@@ -122,14 +122,35 @@ CREATE TABLE Chinook.PlaylistTrack
 /*******************************************************************************
    Create Foreign Keys
 ********************************************************************************/
-ALTER TABLE Chinook.Album ADD CONSTRAINT FK_Artist_Album FOREIGN KEY (ArtistId) REFERENCES Chinook.Artist(ArtistId);
-ALTER TABLE Chinook.Track ADD CONSTRAINT FK_Album_Track FOREIGN KEY (AlbumId) REFERENCES Chinook.Album(AlbumId);
-ALTER TABLE Chinook.Track ADD CONSTRAINT FK_MediaType_Track FOREIGN KEY (MediaTypeId) REFERENCES Chinook.MediaType(MediaTypeId);
-ALTER TABLE Chinook.Track ADD CONSTRAINT FK_Genre_Track FOREIGN KEY (GenreId) REFERENCES Chinook.Genre(GenreId);
-ALTER TABLE Chinook.Employee ADD CONSTRAINT FK_Employee_ReportsTo FOREIGN KEY (ReportsTo) REFERENCES Chinook.Employee(EmployeeId);
-ALTER TABLE Chinook.Customer ADD CONSTRAINT FK_Employee_Customer FOREIGN KEY (SupportRepId) REFERENCES Chinook.Employee(EmployeeId);
-ALTER TABLE Chinook.Invoice ADD CONSTRAINT FK_Customer_Invoice FOREIGN KEY (CustomerId) REFERENCES Chinook.Customer(CustomerId);
-ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_ProductItem_InvoiceLine FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
-ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_Invoice_InvoiceLine FOREIGN KEY (InvoiceId) REFERENCES Chinook.Invoice(InvoiceId);
-ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Track_PlaylistTrack FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
-ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Playlist_PlaylistTrack FOREIGN KEY (PlaylistId) REFERENCES Chinook.Playlist(PlaylistId);
+ALTER TABLE Chinook.Album ADD CONSTRAINT FK_Artist_Album
+FOREIGN KEY (ArtistId) REFERENCES Chinook.Artist(ArtistId);
+
+ALTER TABLE Chinook.Track ADD CONSTRAINT FK_Album_Track
+FOREIGN KEY (AlbumId) REFERENCES Chinook.Album(AlbumId);
+
+ALTER TABLE Chinook.Track ADD CONSTRAINT FK_MediaType_Track
+FOREIGN KEY (MediaTypeId) REFERENCES Chinook.MediaType(MediaTypeId);
+
+ALTER TABLE Chinook.Track ADD CONSTRAINT FK_Genre_Track
+FOREIGN KEY (GenreId) REFERENCES Chinook.Genre(GenreId);
+
+ALTER TABLE Chinook.Employee ADD CONSTRAINT FK_Employee_ReportsTo
+FOREIGN KEY (ReportsTo) REFERENCES Chinook.Employee(EmployeeId);
+
+ALTER TABLE Chinook.Customer ADD CONSTRAINT FK_Employee_Customer
+FOREIGN KEY (SupportRepId) REFERENCES Chinook.Employee(EmployeeId);
+
+ALTER TABLE Chinook.Invoice ADD CONSTRAINT FK_Customer_Invoice
+FOREIGN KEY (CustomerId) REFERENCES Chinook.Customer(CustomerId);
+
+ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_ProductItem_InvoiceLine
+FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
+
+ALTER TABLE Chinook.InvoiceLine ADD CONSTRAINT FK_Invoice_InvoiceLine
+FOREIGN KEY (InvoiceId) REFERENCES Chinook.Invoice(InvoiceId);
+
+ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Track_PlaylistTrack
+FOREIGN KEY (TrackId) REFERENCES Chinook.Track(TrackId);
+
+ALTER TABLE Chinook.PlaylistTrack ADD CONSTRAINT FK_Playlist_PlaylistTrack
+FOREIGN KEY (PlaylistId) REFERENCES Chinook.Playlist(PlaylistId);

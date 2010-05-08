@@ -1514,3 +1514,4 @@
   ValueChangeMapImpl implements the above
   Entity and Entity.Key override the above when necessary
   Renamed a few tests in common.model.valuemap
+  ValueChangeMapEditModel.evtValueMapChanged renamed to evtValueMapSet

@@ -82,8 +82,8 @@ public interface EntityDb {
    * @param statement the statement to execute
    * @param outParameterType the type of the output parameter, if any, java.sql.Types.*
    * Use Types.NULL to indicate no output parameter.
-   * @throws org.jminor.common.db.exception.DbException in case of a database error
    * @return the return parameter if any, otherwise null
+   * @throws org.jminor.common.db.exception.DbException in case of a database error
    */
   Object executeStatement(final String statement, final int outParameterType) throws Exception;
 
@@ -200,8 +200,8 @@ public interface EntityDb {
   List<Entity> selectAll(final String entityID) throws Exception;
 
   /**
-   * Returns the entities that depend on the given entities via foreign keys
-   * @param entities the entities for which to retrieve dependencies, mapped to corresponding entityIDs
+   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIDs
+   * @param entities the entities for which to retrieve dependencies
    * @return the entities that depend on <code>entities</code>
    * @throws org.jminor.common.db.exception.DbException in case of a db exception
    */
