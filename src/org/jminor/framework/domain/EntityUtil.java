@@ -60,17 +60,23 @@ public class EntityUtil {
   }
 
   public static String getJSONString(final Collection<Entity> entities) throws JSONException {
-    return getJSONString(entities, 0);
+    return getJSONString(entities, false);
   }
 
-  public static String getJSONString(final Collection<Entity> entities, final int indentFactor) throws JSONException {
-    return indentFactor > 0 ? getJSONObject(entities).toString(indentFactor) : getJSONObject(entities).toString();
+  public static String getJSONString(final Collection<Entity> entities, final boolean includeForeignKeys) throws JSONException {
+    return getJSONString(entities, includeForeignKeys, 0);
   }
 
-  public static JSONObject getJSONObject(final Collection<Entity> entities) throws JSONException {
+  public static String getJSONString(final Collection<Entity> entities, final boolean includeForeignKeys,
+                                     final int indentFactor) throws JSONException {
+    return indentFactor > 0 ? getJSONObject(entities, includeForeignKeys).toString(indentFactor) :
+            getJSONObject(entities, includeForeignKeys).toString();
+  }
+
+  public static JSONObject getJSONObject(final Collection<Entity> entities, final boolean includeForeignKeys) throws JSONException {
     final JSONObject jsonEntities = new JSONObject();
     for (final Entity entity : entities)
-      jsonEntities.put(entity.getEntityID() + " PK[" + entity.getPrimaryKey() + "]", toJSONObject(entity));
+      jsonEntities.put(entity.getEntityID() + " PK[" + entity.getPrimaryKey() + "]", toJSONObject(entity, includeForeignKeys));
 
     return jsonEntities;
   }
@@ -245,31 +251,31 @@ public class EntityUtil {
     return propertyValues.getString(propertyID);
   }
 
-  private static JSONObject toJSONObject(final Entity entity) throws JSONException {
+  private static JSONObject toJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject jsonEntity = new JSONObject();
     jsonEntity.put("entityID", entity.getEntityID());
-    jsonEntity.put("propertyValues", getPropertyValuesJSONObject(entity));
+    jsonEntity.put("propertyValues", getPropertyValuesJSONObject(entity, includeForeignKeys));
     if (entity.isModified())
       jsonEntity.put("originalValues", getOriginalValuesJSONObject(entity));
 
     return jsonEntity;
   }
 
-  private static JSONObject getPropertyValuesJSONObject(final Entity entity) throws JSONException {
+  private static JSONObject getPropertyValuesJSONObject(final Entity entity, final boolean includeForeignKeys) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : EntityRepository.getDatabaseProperties(entity.getEntityID(), true, true, true)) {
-      if (!(property instanceof Property.ForeignKeyProperty))
-        propertyValues.put(property.getPropertyID(), getJSONValue(entity, property));
+      if (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeys)
+        propertyValues.put(property.getPropertyID(), getJSONValue(entity, property, includeForeignKeys));
     }
 
     return propertyValues;
   }
 
-  private static Object getJSONValue(final Entity entity, final Property property) throws JSONException {
+  private static Object getJSONValue(final Entity entity, final Property property, final boolean includeForeignKeys) throws JSONException {
     if (entity.isValueNull(property.getPropertyID()))
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
-      return getJSONObject(Arrays.asList(entity.getEntityValue(property.getPropertyID())));
+      return getJSONObject(Arrays.asList(entity.getEntityValue(property.getPropertyID())), includeForeignKeys);
     if (property.isTime())
       return entity.getFormattedValue(property.getPropertyID(), property.isDate() ? jsonDateFormat : jsonTimestampFormat);
 
@@ -291,7 +297,7 @@ public class EntityUtil {
     if (originalValue == null)
       return JSONObject.NULL;
     if (property instanceof Property.ForeignKeyProperty)
-      return getJSONObject(Arrays.asList((Entity) originalValue));
+      return getJSONObject(Arrays.asList((Entity) originalValue), false);
     if (property.isTime()) {
       final Date date = (Date) originalValue;
       return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);

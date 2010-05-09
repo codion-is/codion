@@ -586,7 +586,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
     if (throwable instanceof ValidationException) {
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
-      getEditPanel().selectControl((String) ((ValidationException) throwable).getKey());
+      getEditPanel().selectControl(((ValidationException) throwable).getKey());
     }
     else {
       handleException(throwable, this);
@@ -789,7 +789,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
    */
   public void exportSelected() throws CancelException, JSONException {
     final List<Entity> selected = getModel().getTableModel().getSelectedItems();
-    Util.writeFile(EntityUtil.getJSONString(selected, 2), UiUtil.chooseFileToSave(this, null, null));
+    Util.writeFile(EntityUtil.getJSONString(selected, false, 2), UiUtil.chooseFileToSave(this, null, null));
     JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
   }
 
