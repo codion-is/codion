@@ -107,7 +107,6 @@
     <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/DateUtil*
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/**,
                 org/jminor/framework/i18n/**,
@@ -120,10 +119,8 @@
     <jar jarfile="${dist}/${ant.project.name}-client-remote.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/DateUtil*
                 org/jminor/framework/client/**,
                 org/jminor/framework/db/criteria/**,
-                org/jminor/framework/db/exception/**,
                 org/jminor/framework/db/EntityDb.class,
                 org/jminor/framework/db/provider/EntityDbProvider*,
                 org/jminor/framework/i18n/**,
@@ -181,10 +178,10 @@
           description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true"/>
     <mkdir dir="${docsapi}"/>
-    <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8" docencoding="UTF-8"
-             overview="${src}/overview.html" author="true" version="true" use="true"
-             windowtitle="JMinor v${version} API"
-             doctitle="JMinor v${version} API" link="http://java.sun.com/javase/6/docs/api/"
+    <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8"
+             docencoding="UTF-8" overview="${src}/overview.html" author="true" version="true" use="true"
+             windowtitle="JMinor v${version} API" doctitle="JMinor v${version} API"
+             link="http://java.sun.com/javase/6/docs/api/"
              group="Common org.jminor.common*,
                     Client org.jminor.framework.client*,
                     Db org.jminor.framework.db*,
@@ -484,7 +481,7 @@
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>
       <jvmarg value="-Djminor.server.db.port=3333"/>
-      <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore"/>
+      <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${basedir}/resources/security/JMinorServerKeystore"/>
       <jvmarg value="-Djava.security.policy=${basedir}/resources/security/jminor_server.policy"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=jminor"/>
