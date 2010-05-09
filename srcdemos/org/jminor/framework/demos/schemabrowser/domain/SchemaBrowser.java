@@ -5,7 +5,6 @@ package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.dbms.DatabaseProvider;
 import org.jminor.common.model.valuemap.StringProvider;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -54,14 +53,8 @@ public class SchemaBrowser {
     EntityRepository.add(new EntityDefinition(T_SCHEMA, bundle.getString("t_schema"),
             new Property.PrimaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderByClause(SCHEMA_NAME)
-            .setReadOnly(true));
-
-    Entity.setProxy(T_SCHEMA, new Entity.Proxy() {
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getStringValue(SCHEMA_NAME);
-      }
-    });
+            .setReadOnly(true)
+            .setStringProvider(new StringProvider<String, Object>(SCHEMA_NAME)));
 
     EntityRepository.add(new EntityDefinition(T_TABLE, bundle.getString("t_table"),
             new Property.ForeignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,

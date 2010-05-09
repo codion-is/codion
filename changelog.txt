@@ -1526,3 +1526,4 @@
   ValueChangeMapImpl.getValues() and getValueKeys() return unmodifiableCollection instead of creating new lists
   AbstractSearchModel moved to common.model
   AbstractSearchPanel moved to common.ui
+  EntityDefinition now serves Entity.Proxy's purpose, proxy removed

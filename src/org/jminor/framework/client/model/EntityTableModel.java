@@ -253,13 +253,13 @@ public class EntityTableModel extends AbstractFilteredTableModel<Entity> impleme
   /**
    * @param row the row for which to retrieve the background color
    * @return the background color for this row, specified by the row entity
-   * @see org.jminor.framework.domain.Entity.Proxy#getBackgroundColor(org.jminor.framework.domain.Entity)
+   * @see org.jminor.framework.domain.EntityDefinition#getBackgroundColor(org.jminor.framework.domain.Entity)
    * @see org.jminor.framework.client.ui.EntityTableCellRenderer
    */
   public Color getRowBackgroundColor(final int row) {
     final Entity rowEntity = getItemAtViewIndex(row);
 
-    return Entity.getProxy(rowEntity.getEntityID()).getBackgroundColor(rowEntity);
+    return rowEntity.getEntityDefinition().getBackgroundColor(rowEntity);
   }
 
   /**

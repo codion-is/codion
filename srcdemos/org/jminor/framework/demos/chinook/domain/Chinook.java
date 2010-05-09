@@ -259,14 +259,7 @@ public class Chinook {
                     .addLinkedPropertyIDs(TRACK_MILLISECONDS),
             new Property(TRACK_BYTES, Types.INTEGER, "Bytes"),
             new Property(TRACK_UNITPRICE, Types.DOUBLE, "Price")
-                    .setNullable(false))
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
-            .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
-            .setLargeDataset(true)
-            .setSearchPropertyIDs(TRACK_NAME)
-            .setOrderByClause(TRACK_NAME));
-
-    Entity.setProxy(T_TRACK, new Entity.Proxy() {
+                    .setNullable(false)) {
       @Override
       public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
         if (property.is(TRACK_MINUTES_SECONDS_DERIVED)) {
@@ -282,7 +275,12 @@ public class Chinook {
 
         return super.getDerivedValue(entity, property);
       }
-    });
+    }
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
+            .setStringProvider(new StringProvider<String, Object>(TRACK_NAME))
+            .setLargeDataset(true)
+            .setSearchPropertyIDs(TRACK_NAME)
+            .setOrderByClause(TRACK_NAME));
 
     EntityRepository.add(new EntityDefinition(T_PLAYLIST,
             new Property.PrimaryKeyProperty(PLAYLIST_PLAYLISTID),

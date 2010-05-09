@@ -396,7 +396,7 @@ public class EntityRepository {
    * @return the EntityDefinition for the given entityID
    * @throws IllegalArgumentException in case the entity has not been defined
    */
-  private static EntityDefinition getEntityDefinition(final String entityID) {
+  public static EntityDefinition getEntityDefinition(final String entityID) {
     final EntityDefinition definition = entityDefinitions.get(entityID);
     if (definition == null)
       throw new IllegalArgumentException("Undefined entity: " + entityID);
