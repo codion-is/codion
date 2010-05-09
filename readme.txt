@@ -42,21 +42,21 @@ Release contents (~18 MB):
 
 The "dist" directory contains the following distinct jar files for use in applications.
 
-* "jminor" (~820 KB)
+* "jminor" (~850 KB)
 - Convenient jar file containing the full framework codebase
 
-* "jminor-client (~400 KB)
+* "jminor-client (~370 KB)
 - Full client codebase, including both local and remote connection facilities
 - Dependencies: jminor-common
 
-* "jminor-client-remote (~380 KB)
+* "jminor-client-remote (~350 KB)
 - Client codebase including only remote connection facilities
 - Dependencies: jminor-common
 
-* "jminor-common" (~320 KB)
+* "jminor-common" (~370 KB)
 - Common codebase
 
-* "jminor-demos.jar" (~70 KB)
+* "jminor-demos.jar" (~100 KB)
 - Three demo applications
 - Dependencies: jminor-client, jminor-common
 
@@ -64,7 +64,7 @@ The "dist" directory contains the following distinct jar files for use in applic
 - RMI server codebase
 - Dependencies: jminor-common
 
-* "jminor_server_monitor" (~110 KB)
+* "jminor_server_monitor" (~100 KB)
 - RMI server monitor codebase
 - Dependencies: jminor-common
 
