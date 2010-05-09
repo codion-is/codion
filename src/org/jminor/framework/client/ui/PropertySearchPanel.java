@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.control.DoubleBeanValueLink;
@@ -30,10 +31,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PropertySearchPanel extends AbstractSearchPanel {
+public class PropertySearchPanel extends AbstractSearchPanel<Property> {
 
   public PropertySearchPanel(final PropertySearchModel model) {
     this(model, false, false);
@@ -54,9 +56,19 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   /** {@inheritDoc} */
   @Override
   protected boolean searchTypeAllowed(final SearchType searchType) {
-    final Property property = getModel().getProperty();
+    final Property property = getModel().getSearchProperty();
     return !(property instanceof Property.ForeignKeyProperty || property.isBoolean())
             || searchType == SearchType.LIKE || searchType == SearchType.NOT_LIKE;
+  }
+
+  /** {@inheritDoc} */
+  protected SimpleDateFormat getInputFormat() {
+    if (getModel().getType() == Types.TIMESTAMP)
+      return Configuration.getDefaultTimestampFormat();
+    if (getModel().getType() == Types.DATE)
+      return Configuration.getDefaultDateFormat();
+
+    return null;
   }
 
   @Override
@@ -72,7 +84,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   }
 
   private JComponent initField(final SimpleDateFormat dateFormat) {
-    final Property property = getModel().getProperty();
+    final Property property = getModel().getSearchProperty();
     if (property.isTime())
       return UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat));
     else if (property.isDouble())
@@ -115,7 +127,7 @@ public class PropertySearchPanel extends AbstractSearchPanel {
   }
 
   private void bindField(final JComponent field, final boolean isUpperBound, final SimpleDateFormat format) {
-    final Property property = getModel().getProperty();
+    final Property property = getModel().getSearchProperty();
     if (property.isTime()) {
       new FormattedTextBeanValueLink((JFormattedTextField) field, getModel(),
               isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,

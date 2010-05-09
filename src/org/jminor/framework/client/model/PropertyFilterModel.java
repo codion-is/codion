@@ -3,8 +3,10 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -15,10 +17,10 @@ import java.util.regex.Pattern;
  * A class for filtering a set of entities based on a property.
  */
 @SuppressWarnings({"unchecked"})
-public class PropertyFilterModel extends AbstractSearchModel {
+public class PropertyFilterModel extends AbstractSearchModel<Property> {
 
   public PropertyFilterModel(final Property property) {
-    super(property);
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
   }
 
   /** {@inheritDoc} */
@@ -83,7 +85,7 @@ public class PropertyFilterModel extends AbstractSearchModel {
     if (comparable == null)
       return false;
 
-    final Property property = getProperty();
+    final Property property = getSearchProperty();
     if (property.isString() || property.isReference())
       return !includeExactWildcard((String) comparable);
 
@@ -162,11 +164,11 @@ public class PropertyFilterModel extends AbstractSearchModel {
 
   protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getPropertyID()))
+    if (entity.isValueNull(getSearchProperty().getPropertyID()))
       return null;
 
-    final Object value = entity.getValue(getPropertyID());
-    if (getProperty().isReference())
+    final Object value = entity.getValue(getSearchProperty().getPropertyID());
+    if (getSearchProperty().isReference())
       return value.toString();
     else
       return (Comparable) value;

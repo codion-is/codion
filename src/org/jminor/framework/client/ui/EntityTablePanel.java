@@ -959,7 +959,7 @@ public class EntityTablePanel extends AbstractFilteredTablePanel {
       if (model.isSearchEnabled())
         addFilterIndicator(column);
 
-      propertyFilterPanels.put(model.getPropertyID(), new PropertyFilterPanel(model, true, true));
+      propertyFilterPanels.put(model.getSearchProperty().getPropertyID(), new PropertyFilterPanel(model, true, true));
     }
 
     return propertyFilterPanels;

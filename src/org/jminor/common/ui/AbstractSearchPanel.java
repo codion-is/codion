@@ -1,20 +1,17 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui;
+package org.jminor.common.ui;
 
+import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.AbstractSearchModel;
-import org.jminor.framework.domain.Property;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -26,7 +23,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
+import java.text.Format;
 
 /**
  * An abstract panel for showing search/filter configuration.<br>
@@ -34,7 +31,7 @@ import java.text.SimpleDateFormat;
  * Date: 26.12.2007<br>
  * Time: 15:17:20<br>
  */
-public abstract class AbstractSearchPanel extends JPanel {
+public abstract class AbstractSearchPanel<K> extends JPanel {
 
   private static final SearchType[] searchTypes = new SearchType[] {
           SearchType.LIKE, SearchType.NOT_LIKE, SearchType.AT_LEAST,
@@ -47,7 +44,7 @@ public abstract class AbstractSearchPanel extends JPanel {
   /**
    * The AbstractSearchModel this AbstractSearchPanel represents
    */
-  private final AbstractSearchModel model;
+  private final AbstractSearchModel<K> model;
 
   /**
    * A JToggleButton for enabling/disabling the filter
@@ -72,7 +69,7 @@ public abstract class AbstractSearchPanel extends JPanel {
   private final boolean includeToggleSearchEnabledBtn;
   private final boolean includeToggleSearchAdvancedBtn;
 
-  public AbstractSearchPanel(final AbstractSearchModel model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
+  public AbstractSearchPanel(final AbstractSearchModel<K> model, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
     if (model == null)
       throw new IllegalArgumentException("Can not construct a AbstractSearchPanel without a AbstractSearchModel");
     this.model = model;
@@ -80,7 +77,7 @@ public abstract class AbstractSearchPanel extends JPanel {
     this.includeToggleSearchAdvancedBtn = includeToggleAdvBtn;
     this.searchTypeCombo = initSearchTypeComboBox();
     this.upperBoundField = getInputField(true);
-    this.lowerBoundField = isLowerBoundFieldRequired(model.getProperty()) ? getInputField(false) : null;
+    this.lowerBoundField = isLowerBoundFieldRequired(model.getSearchProperty()) ? getInputField(false) : null;
 
     this.toggleSearchEnabled = ControlProvider.createToggleButton(
             ControlFactory.toggleControl(model, "searchEnabled", null, model.eventEnabledChanged()));
@@ -97,7 +94,7 @@ public abstract class AbstractSearchPanel extends JPanel {
   /**
    * @return the search model this panel uses
    */
-  public AbstractSearchModel getModel() {
+  public AbstractSearchModel<K> getModel() {
     return this.model;
   }
 
@@ -200,16 +197,12 @@ public abstract class AbstractSearchPanel extends JPanel {
    * @param property the Property
    * @return true if a lower bound field is required given the property
    */
-  protected abstract boolean isLowerBoundFieldRequired(final Property property);
+  protected abstract boolean isLowerBoundFieldRequired(final K property);
 
-  protected SimpleDateFormat getInputFormat() {
-    if (model.getProperty().isTimestamp())
-      return Configuration.getDefaultTimestampFormat();
-    if (model.getProperty().isDate())
-      return Configuration.getDefaultDateFormat();
-
-    return null;
-  }
+  /**
+   * @return the Format object to use when formatting input, is any
+   */
+  protected abstract Format getInputFormat();
 
   private JComboBox initSearchTypeComboBox() {
     final JComboBox comboBox = new SteppedComboBox(initSearchTypeModel());

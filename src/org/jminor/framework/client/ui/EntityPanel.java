@@ -715,7 +715,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
    * Queries the user on which property to update, after which it calls the
    * <code>updateSelectedEntities(property)</code> with that property
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
-   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
+   * @see #getInputProvider(org.jminor.framework.domain.Property , java.util.List)
    */
   public void updateSelectedEntities() {
     try {
@@ -727,7 +727,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
+   * @see #getInputProvider(org.jminor.framework.domain.Property , java.util.List)
    */
   public void updateSelectedEntities(final Property propertyToUpdate) {
     if (!getModel().containsTableModel() || getModel().getTableModel().stateSelectionEmpty().isActive())

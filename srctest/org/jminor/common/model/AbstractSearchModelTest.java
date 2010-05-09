@@ -1,28 +1,21 @@
-package org.jminor.framework.client.model;
-
-import org.jminor.common.model.SearchType;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.EntityRepository;
-import org.jminor.framework.domain.Property;
+package org.jminor.common.model;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.sql.Types;
 
 public class AbstractSearchModelTest {
 
   @Test
   public void test() throws Exception {
-    new EmpDept();
-    final Property property = EntityRepository.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME);
-    final AbstractSearchModel model = new AbstractSearchModel(property) {
+    final AbstractSearchModel<String> model = new AbstractSearchModel<String>("test", Types.VARCHAR, "%") {
       @Override
       public boolean include(final Object object) {
         return false;
       }
     };
-    assertEquals(property.getPropertyID(), model.getPropertyID());
-    assertEquals(property.getCaption(), model.getCaption());
-    assertEquals(property.getType(), model.getProperty().getType());
+    assertEquals("test", model.getSearchProperty());
 
     model.setCaseSensitive(true);
     assertTrue(model.isCaseSensitive());

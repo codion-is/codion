@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.AbstractSearchModel;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.PropertyCriteria;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * A class for searching a set of entities based on a property.
  */
-public class PropertySearchModel extends AbstractSearchModel {
+public class PropertySearchModel extends AbstractSearchModel<Property> {
 
   private final EntityComboBoxModel entityComboBoxModel;
   private final EntityLookupModel entityLookupModel;
@@ -29,7 +31,7 @@ public class PropertySearchModel extends AbstractSearchModel {
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public PropertySearchModel(final Property property) {
-    super(property);
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityLookupModel = null;
     this.entityComboBoxModel = null;
   }
@@ -41,7 +43,7 @@ public class PropertySearchModel extends AbstractSearchModel {
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public PropertySearchModel(final Property property, final EntityLookupModel entityLookupModel) {
-    super(property);
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityLookupModel = entityLookupModel;
     this.entityComboBoxModel = null;
     bindLookupModelEvents();
@@ -54,7 +56,7 @@ public class PropertySearchModel extends AbstractSearchModel {
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public PropertySearchModel(final Property property, final EntityComboBoxModel entityComboBoxModel) {
-    super(property);
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityComboBoxModel = entityComboBoxModel;
     this.entityLookupModel = null;
     bindComboBoxEvents();
@@ -82,7 +84,7 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   @Override
   public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getProperty().getPropertyID());
+    final StringBuilder stringBuilder = new StringBuilder(getSearchProperty().getPropertyID());
     if (isSearchEnabled()) {
       stringBuilder.append(getSearchType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
@@ -124,8 +126,8 @@ public class PropertySearchModel extends AbstractSearchModel {
 
   public PropertyCriteria getPropertyCriteria() {
     final PropertyCriteria criteria = getValueCount(getSearchType()) == 1 ?
-            new PropertyCriteria(getProperty(), getSearchType(), getUpperBound()) :
-            new PropertyCriteria(getProperty(), getSearchType(), getLowerBound(), getUpperBound());
+            new PropertyCriteria(getSearchProperty(), getSearchType(), getUpperBound()) :
+            new PropertyCriteria(getSearchProperty(), getSearchType(), getLowerBound(), getUpperBound());
 
     criteria.setCaseSensitive(isCaseSensitive());
 

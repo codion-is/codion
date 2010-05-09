@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
+import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.DoubleBeanValueLink;
 import org.jminor.common.ui.control.FormattedTextBeanValueLink;
@@ -15,6 +16,7 @@ import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.PropertyFilterModel;
 import org.jminor.framework.domain.Property;
 
@@ -32,10 +34,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PropertyFilterPanel extends AbstractSearchPanel {
+public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
 
   private final State stIsDialogActive = new State();
   private final State stIsDialogShowing = new State();
@@ -145,11 +148,21 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   /** {@inheritDoc} */
+  protected SimpleDateFormat getInputFormat() {
+    if (getModel().getType() == Types.TIMESTAMP)
+      return Configuration.getDefaultTimestampFormat();
+    if (getModel().getType() == Types.DATE)
+      return Configuration.getDefaultDateFormat();
+
+    return null;
+  }
+
+  /** {@inheritDoc} */
   @Override
   protected JComponent getInputField(final boolean isUpperBound) {
     final SimpleDateFormat format = getInputFormat();
     final JComponent field = initField(format);
-    if (getModel().getProperty().isBoolean())
+    if (getModel().getType() == Types.BOOLEAN)
       createToggleProperty((JCheckBox) field, isUpperBound);
     else
       createTextProperty(field, isUpperBound, format);
@@ -167,7 +180,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private JComponent initField(final SimpleDateFormat format) {
-    final Property property = getModel().getProperty();
+    final Property property = getModel().getSearchProperty();
     if (property.isTime())
       return UiUtil.createFormattedField(DateUtil.getDateMask(format));
     else if (property.isDouble())
@@ -186,9 +199,9 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
 
     final JDialog dlgParent = UiUtil.getParentDialog(parent);
     if (dlgParent != null)
-      dialog = new JDialog(dlgParent, getModel().getCaption(), false);
+      dialog = new JDialog(dlgParent, getModel().getSearchProperty().getCaption(), false);
     else
-      dialog = new JDialog(UiUtil.getParentFrame(parent), getModel().getCaption(), false);
+      dialog = new JDialog(UiUtil.getParentFrame(parent), getModel().getSearchProperty().getCaption(), false);
 
     final JPanel searchPanel = new JPanel(new BorderLayout());
     searchPanel.add(this, BorderLayout.NORTH);
@@ -216,7 +229,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel {
   }
 
   private TextBeanValueLink createTextProperty(final JComponent component, boolean isUpper, final SimpleDateFormat format) {
-    final Property property = getModel().getProperty();
+    final Property property = getModel().getSearchProperty();
     if (property.isInteger())
       return new IntBeanValueLink((IntField) component, getModel(),
               isUpper ? PropertyFilterModel.UPPER_BOUND_PROPERTY : PropertyFilterModel.LOWER_BOUND_PROPERTY,

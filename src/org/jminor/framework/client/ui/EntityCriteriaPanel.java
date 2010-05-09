@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.common.ui.control.ControlFactory;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.framework.client.model.AbstractSearchModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
@@ -88,7 +88,7 @@ public class EntityCriteriaPanel extends JPanel {
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         final PropertySearchModel selected = (PropertySearchModel) value;
-        ((JLabel)cellRenderer).setText(selected.getProperty().toString());
+        ((JLabel)cellRenderer).setText(selected.getSearchProperty().toString());
         cellRenderer.setForeground(selected.isSearchEnabled() ? Color.red : Color.black);
 
         return cellRenderer;
@@ -117,10 +117,10 @@ public class EntityCriteriaPanel extends JPanel {
 
   private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel entityModel) {
     final List<PropertySearchModel> searchCriteria = entityModel.getPropertySearchModels();
-    Collections.sort(searchCriteria, new Comparator<AbstractSearchModel>() {
-      public int compare(final AbstractSearchModel searchModelOne, final AbstractSearchModel searchModelTwo) {
-        final Property propertyOne = searchModelOne.getProperty();
-        final Property propertyTwo = searchModelTwo.getProperty();
+    Collections.sort(searchCriteria, new Comparator<AbstractSearchModel<Property>>() {
+      public int compare(final AbstractSearchModel<Property> searchModelOne, final AbstractSearchModel<Property> searchModelTwo) {
+        final Property propertyOne = searchModelOne.getSearchProperty();
+        final Property propertyTwo = searchModelTwo.getSearchProperty();
         if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null)
           return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
         else

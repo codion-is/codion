@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.model.AbstractSearchModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.State;

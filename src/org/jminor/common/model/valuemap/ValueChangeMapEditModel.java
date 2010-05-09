@@ -163,8 +163,6 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @param action describes the action requiring validation,
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @throws ValidationException if the given value is not valid for the given property
-   * @see org.jminor.framework.domain.Property#setNullable(boolean)
-   * @see org.jminor.framework.Configuration#PERFORM_NULL_VALIDATION
    */
   public abstract void validate(final ValueChangeMap<K, V> valueMap, final String propertyID, final int action) throws ValidationException;
 

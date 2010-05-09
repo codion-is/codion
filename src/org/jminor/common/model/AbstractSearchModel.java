@@ -1,16 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model;
-
-import org.jminor.common.model.Event;
-import org.jminor.common.model.SearchType;
-import org.jminor.common.model.State;
-import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
-import org.jminor.framework.domain.Property;
+package org.jminor.common.model;
 
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Date;
 
 /**
@@ -20,7 +14,7 @@ import java.util.Date;
  * Date: 26.12.2007<br>
  * Time: 14:48:22<br>
  */
-public abstract class AbstractSearchModel {
+public abstract class AbstractSearchModel<K> {
 
   public static final String UPPER_BOUND_PROPERTY = "upperBound";
   public static final String LOWER_BOUND_PROPERTY = "lowerBound";
@@ -34,7 +28,8 @@ public abstract class AbstractSearchModel {
 
   private final State stLocked = new State();
 
-  private final Property property;
+  private final K searchProperty;
+  private final int type;
 
   private SearchType searchType = SearchType.LIKE;
   private boolean enabled = false;
@@ -42,25 +37,19 @@ public abstract class AbstractSearchModel {
   private boolean caseSensitive = true;
   private Object upperBound = null;
   private Object lowerBound = null;
-  private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+  private String wildcard;
 
-  public AbstractSearchModel(final Property property) {
-    if (property == null)
-      throw new IllegalArgumentException("Search model requires a non-null property");
-    this.property = property;
+  public AbstractSearchModel(final K searchProperty, final int type, final String wildcard) {
+    if (searchProperty == null)
+      throw new IllegalArgumentException("Search model requires a non-null search property");
+    this.searchProperty = searchProperty;
+    this.type = type;
+    this.wildcard = wildcard;
     bindEvents();
   }
 
-  public Property getProperty() {
-    return property;
-  }
-
-  public String getPropertyID() {
-    return property.getPropertyID();
-  }
-
-  public String getCaption() {
-    return property.getCaption();
+  public K getSearchProperty() {
+    return searchProperty;
   }
 
   /**
@@ -153,7 +142,7 @@ public abstract class AbstractSearchModel {
    */
   public void setUpperBound(final Object upper) {
     if (stLocked.isActive())
-      throw new IllegalStateException("Search model for property " + property + " is locked");
+      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
     if (!Util.equal(upperBound, upper)) {
       upperBound = upper;
       evtUpperBoundChanged.fire();
@@ -161,10 +150,18 @@ public abstract class AbstractSearchModel {
   }
 
   /**
+   * @return the data type of the underlying search property.
+   * @see Types
+   */
+  public int getType() {
+    return type;
+  }
+
+  /**
    * @return the upper bound
    */
   public Object getUpperBound() {
-    if (getProperty().isString() && automaticWildcard)
+    if (getType() == Types.VARCHAR && automaticWildcard)
       return getWildcard() + upperBound + getWildcard();
     else
       return upperBound;
@@ -232,7 +229,7 @@ public abstract class AbstractSearchModel {
    */
   public void setLowerBound(final Object value) {
     if (stLocked.isActive())
-      throw new IllegalStateException("Search model for property " + property + " is locked");
+      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
     if (!Util.equal(lowerBound, value)) {
       lowerBound = value;
       evtLowerBoundChanged.fire();
@@ -243,7 +240,7 @@ public abstract class AbstractSearchModel {
    * @return the lower bound
    */
   public Object getLowerBound() {
-    if (getProperty().isString() && automaticWildcard)
+    if (getType() == Types.VARCHAR && automaticWildcard)
       return getWildcard() + lowerBound + getWildcard();
     else
       return lowerBound;
@@ -262,7 +259,7 @@ public abstract class AbstractSearchModel {
    */
   public void setSearchType(final SearchType type) {
     if (stLocked.isActive())
-      throw new IllegalStateException("Search model for property " + property + " is locked");
+      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
     if (type != searchType) {
       searchType = type;
       evtSearchTypeChanged.fire();
@@ -297,7 +294,7 @@ public abstract class AbstractSearchModel {
    */
   public void setSearchEnabled(final boolean value) {
     if (stLocked.isActive())
-      throw new IllegalStateException("Search model for property " + property + " is locked");
+      throw new IllegalStateException("Search model for property " + searchProperty + " is locked");
     if (enabled != value) {
       enabled = value;
       evtEnabledChanged.fire();
@@ -311,6 +308,9 @@ public abstract class AbstractSearchModel {
     automaticWildcard = value;
   }
 
+  /**
+   * @return true if wildcard is automatically be added to strings
+   */
   public boolean isAutomaticWildcard() {
     return automaticWildcard;
   }
