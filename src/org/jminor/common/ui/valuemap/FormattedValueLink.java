@@ -102,7 +102,7 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
       }
       public void changedUpdate(final DocumentEvent e) {}
     });
-    editModel.getPropertyChangeEvent(getKey()).addListener(new ActionListener() {
+    editModel.getValueChangeEvent(getKey()).addListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         updateValidityInfo(textComponent, editModel, maskString, defaultTextFieldBackground, invalidBackgroundColor, defaultToolTip);
       }

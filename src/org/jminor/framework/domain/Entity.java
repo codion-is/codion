@@ -7,9 +7,11 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.Collator;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +57,9 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * Caching this frequently referenced map
    */
   private transient Map<String, Property> properties;
+
+  private static Map<String, Proxy> proxies;
+  private static Proxy defaultProxy = new Proxy();
 
   /**
    * Instantiates a new Entity
@@ -235,7 +240,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     if (property instanceof Property.DenormalizedViewProperty)
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
     if (property instanceof Property.DerivedProperty)
-      return getEntityDefinition(getEntityID()).getDerivedValue(this, (Property.DerivedProperty) property);
+      return getProxy(getEntityID()).getDerivedValue(this, (Property.DerivedProperty) property);
 
     if (containsValue(property.getPropertyID()))
       return super.getValue(property.getPropertyID());
@@ -410,7 +415,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   public String getFormattedValue(final Property property, final Format format) {
-    return getEntityDefinition(getEntityID()).getFormattedValue(this, property, format);
+    return getProxy(getEntityID()).getFormattedValue(this, property, format);
   }
 
   @Override
@@ -486,7 +491,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
    * @return the compare result from comparing <code>entity</code> with this Entity instance
    */
   public int compareTo(final Entity entity) {
-    return getEntityDefinition(getEntityID()).compareTo(this, entity);
+    return getProxy(getEntityID()).compareTo(this, entity);
   }
 
   /**
@@ -499,12 +504,12 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
 
   /**
    * @return a string representation of this entity
-   * @see org.jminor.framework.domain.EntityDefinition#toString(Entity)
+   * @see org.jminor.framework.domain.Entity.Proxy#toString(Entity)
    */
   @Override
   public String toString() {
     if (toString == null)
-      toString = getEntityDefinition(getEntityID()).toString(this);
+      toString = getProxy(getEntityID()).toString(this);
 
     return toString;
   }
@@ -647,19 +652,41 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   /**
-   * @return the EntityDefinition instance defining this entity type
+   * Sets the global default static proxy instance
+   * @param proxy sets the default Entity.Proxy instance used if no entity specific one is specified
+   * @see org.jminor.framework.domain.Entity.Proxy
    */
-  public EntityDefinition getEntityDefinition() {
-    return getEntityDefinition(getEntityID());
+  public static void setDefaultProxy(final Proxy proxy) {
+    defaultProxy = proxy;
   }
 
   /**
-   * Returns the EntityDefinition instance defining the entity identified by the given entityID
-   * @param entityID the entity ID for which to retrieve the definition
-   * @return the EntityDefinition instance assigned to the given entity ID
+   * Sets a entity specific proxy instance
+   * @param entityID the ID of the entity for which this proxy instance is used
+   * @param entityProxy the proxy instance to link to the given entity ID
+   * @see org.jminor.framework.domain.Entity.Proxy
    */
-  public static EntityDefinition getEntityDefinition(final String entityID) {
-    return EntityRepository.getEntityDefinition(entityID);
+  public static void setProxy(final String entityID, final Proxy entityProxy) {
+    if (proxies == null)
+      proxies = new HashMap<String, Proxy>();
+
+    if (proxies.containsKey(entityID))
+      throw new RuntimeException("Proxy already set for: " + entityID);
+
+    proxies.put(entityID, entityProxy);
+  }
+
+  /**
+   * Returns the proxy instance assigned to the given entity ID or the default proxy if none has been assigned
+   * @param entityID the entity ID for which to retrieve the proxy
+   * @return the proxy instance assigned to the given entity ID
+   * @see org.jminor.framework.domain.Entity.Proxy
+   */
+  public static Proxy getProxy(final String entityID) {
+    if (proxies != null && proxies.containsKey(entityID))
+      return proxies.get(entityID);
+
+    return defaultProxy;
   }
 
   static Entity initialize(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
@@ -1028,6 +1055,39 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     @Override
     public Object copyValue(final Object value) {
       return copyPropertyValue(value);
+    }
+  }
+
+  /**
+   * Acts as a proxy for retrieving values from Entity objects, allowing for plugged
+   * in entity specific functionality, such as providing toString() and compareTo() implementations
+   */
+  public static class Proxy {
+    protected final Collator collator = Collator.getInstance();
+
+    public int compareTo(final Entity entity, final Entity entityToCompare) {
+      return collator.compare(entity.toString(), entityToCompare.toString());
+    }
+
+    public String toString(final Entity entity) {
+      final String entityID = entity.getEntityID();
+      final ToString<String, Object> stringProvider = EntityRepository.getStringProvider(entityID);
+
+      return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
+    }
+
+    public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
+      throw new RuntimeException("getDerivedValue() has not been overriden in Entity.Proxy for: " + entity + ", " + property);
+    }
+
+    public String getFormattedValue(final Entity entity, final Property property, final Format format) {
+      final Object value = entity.getValue(property);
+      return entity.isValueNull(property) ? "" : (format != null ? format.format(value) : value.toString());
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public Color getBackgroundColor(final Entity entity) {
+      return null;
     }
   }
 }

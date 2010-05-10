@@ -26,7 +26,7 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
    * @param linkType the link type
    */
   public AbstractValueMapLink(final ValueChangeMapEditModel<K, V> editModel, final K key, final LinkType linkType) {
-    super(editModel, editModel.getPropertyChangeEvent(key), linkType);
+    super(editModel, editModel.getValueChangeEvent(key), linkType);
     this.key = key;
   }
 

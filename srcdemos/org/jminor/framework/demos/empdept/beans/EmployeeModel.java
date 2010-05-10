@@ -60,7 +60,7 @@ public class EmployeeModel extends EntityModel {
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed
-    getEditModel().getPropertyChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
+    getEditModel().getValueChangeEvent(EmpDept.EMPLOYEE_DEPARTMENT_FK).addListener(new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent e) {
         //only show managers in the same department as the active entity

@@ -101,7 +101,14 @@ public class EmpDept {
                     .setNullable(false),
             new Property.DenormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     EntityRepository.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
-                    getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100)) {
+                    getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
+            .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_NAME))
+            .setRowColoring(true));
+
+    /*Set a Proxy implementation to provide a custom background color for managers*/
+    Entity.setProxy(T_EMPLOYEE, new Entity.Proxy() {
       @Override
       public Color getBackgroundColor(final Entity entity) {
         if (entity.getStringValue(EMPLOYEE_JOB).equals("MANAGER"))
@@ -109,11 +116,7 @@ public class EmpDept {
 
         return super.getBackgroundColor(entity);
       }
-    }
-            .setIdSource(IdSource.MAX_PLUS_ONE)
-            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
-            .setStringProvider(new StringProvider<String, Object>(EMPLOYEE_NAME))
-            .setRowColoring(true));
+    });
   }
 
   public static String getString(final String key) {

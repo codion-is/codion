@@ -279,7 +279,7 @@ public class EntityUiUtil {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    editModel.getPropertyChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
+    editModel.getValueChangeEvent(foreignKeyProperty.getPropertyID()).addListener(new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent e) {
         textField.setText(e.getNewValue() == null ? "" : e.getNewValue().toString());

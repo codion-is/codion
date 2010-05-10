@@ -78,7 +78,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
     final V newValue = doSetValue(key, value);
 
     if (!Util.equal(newValue, oldValue))
-      notifyPropertyValueSet(key, new ValueChangeEvent<K, V>(this, getValueMap().getMapTypeID(), key, newValue, oldValue, false, initialization));
+      notifyValueSet(key, new ValueChangeEvent<K, V>(this, getValueMap().getMapTypeID(), key, newValue, oldValue, false, initialization));
   }
 
   /**
@@ -109,13 +109,13 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   }
 
   /**
-   * Returns true if the given value is valid for the given property, using the <code>validate</code> method
+   * Returns true if the given value is valid for the given key, using the <code>validate</code> method
    * @param key the key
    * @param action describes the action requiring validation,
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
-   * @see #validate(ValueChangeMap, String, int)
+   * @see #validate(ValueChangeMap, Object, int)
    */
   public boolean isValid(final K key, final int action) {
     try {
@@ -146,7 +146,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   public abstract boolean isNullable(final ValueChangeMap<K, V> valueMap, final K key);
 
   /**
-   * Checks if the value of the given property is valid, throws a ValidationException if not,
+   * Checks if the value associated with the give key is valid, throws a ValidationException if not,
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param key the key
    * @param action describes the action requiring validation,
@@ -156,15 +156,15 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   public abstract void validate(final K key, final int action) throws ValidationException;
 
   /**
-   * Checks if the value of the given property is valid, throws a ValidationException if not,
+   * Checks if the value associated with the give key is valid, throws a ValidationException if not,
    * this default implementation performs a null value validation if the corresponding configuration parameter is set
    * @param valueMap the value map to validate
-   * @param propertyID the propertyID
+   * @param key the key the value is associated with
    * @param action describes the action requiring validation,
    * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
-   * @throws ValidationException if the given value is not valid for the given property
+   * @throws ValidationException if the given value is not valid for the given key
    */
-  public abstract void validate(final ValueChangeMap<K, V> valueMap, final String propertyID, final int action) throws ValidationException;
+  public abstract void validate(final ValueChangeMap<K, V> valueMap, final K key, final int action) throws ValidationException;
 
   /**
    * @param key the key for which to retrieve the event
@@ -172,7 +172,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * the <code>setValue()</code> methods
    * @see #setValue(Object, Object)
    */
-  public Event getPropertyValueSetEvent(final K key) {
+  public Event getValueSetEvent(final K key) {
     if (!valueSetEventMap.containsKey(key))
       valueSetEventMap.put(key, new Event());
 
@@ -183,7 +183,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @param key the key for which to retrieve the event
    * @return an Event object which fires when the value of <code>key</code> changes
    */
-  public Event getPropertyChangeEvent(final K key) {
+  public Event getValueChangeEvent(final K key) {
     if (!valueChangeEventMap.containsKey(key))
       valueChangeEventMap.put(key, new Event());
 
@@ -236,17 +236,17 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @param key the key
    * @param event the event describing the value change
    */
-  protected void notifyPropertyValueSet(final K key, final ActionEvent event) {
-    getPropertyValueSetEvent(key).fire(event);
+  protected void notifyValueSet(final K key, final ActionEvent event) {
+    getValueSetEvent(key).fire(event);
   }
 
   private void bindEventsInternal() {
     valueMap.addValueListener(new ValueChangeListener<K, V>() {
       @Override
       protected void valueChanged(final ValueChangeEvent<K, V> event) {
-        final Event propertyEvent = valueChangeEventMap.get(event.getKey());
-        if (propertyEvent != null)
-          propertyEvent.fire(event);
+        final Event valueChangeEvent = valueChangeEventMap.get(event.getKey());
+        if (valueChangeEvent != null)
+          valueChangeEvent.fire(event);
       }
     });
   }

@@ -6,10 +6,8 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.valuemap.ValueMap;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.text.Collator;
-import java.text.Format;
 import java.util.*;
 
 /**
@@ -297,31 +295,6 @@ public class EntityDefinition implements Serializable {
   @Override
   public String toString() {
     return entityID;
-  }
-
-  public int compareTo(final Entity entity, final Entity entityToCompare) {
-    return collator.compare(entity.toString(), entityToCompare.toString());
-  }
-
-  public String toString(final Entity entity) {
-    final String entityID = entity.getEntityID();
-    final ValueMap.ToString<String, Object> stringProvider = EntityRepository.getStringProvider(entityID);
-
-    return stringProvider == null ? new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString() : stringProvider.toString(entity);
-  }
-
-  public Object getDerivedValue(final Entity entity, final Property.DerivedProperty property) {
-    throw new RuntimeException("getDerivedValue() has not been overridden for property " + property + "\nin the EntityDefinition for: " + entity.getEntityID());
-  }
-
-  public String getFormattedValue(final Entity entity, final Property property, final Format format) {
-    final Object value = entity.getValue(property);
-    return entity.isValueNull(property) ? "" : (format != null ? format.format(value) : value.toString());
-  }
-
-  @SuppressWarnings({"UnusedDeclaration"})
-  public Color getBackgroundColor(final Entity entity) {
-    return null;
   }
 
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {

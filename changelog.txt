@@ -1527,3 +1527,5 @@
   AbstractSearchModel moved to common.model
   AbstractSearchPanel moved to common.ui
   EntityDefinition now serves Entity.Proxy's purpose, proxy removed
+  ValueMapChangeEditModel.getPropertyChangeEvent() and getPropertySetEvent() renamed to getValueChangeEvent() and getValueSetEvent()
+  Entity.Proxy removal undoood
