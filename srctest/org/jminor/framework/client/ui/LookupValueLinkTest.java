@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui.property;
+package org.jminor.framework.client.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
@@ -31,7 +31,7 @@ public class LookupValueLinkTest {
     final Property.ForeignKeyProperty fkProperty = EntityRepository.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final Property deptName = EntityRepository.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
     final EntityLookupModel lookupModel = model.createEntityLookupModel(fkProperty.getReferencedEntityID(), null, Arrays.asList(deptName));
-    new LookupValueLink(lookupModel, model, fkProperty);
+    new EntityUiUtil.LookupValueLink(lookupModel, model, fkProperty);
     assertTrue(lookupModel.getSelectedEntities().size() == 0);
     Entity department = model.getDbProvider().getEntityDb().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);

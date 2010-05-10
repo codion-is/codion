@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.State;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
+import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
@@ -580,6 +581,71 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final JCheckBox createCheckBox(final Property property, final State enabledState,
                                            final boolean includeCaption) {
     final JCheckBox box = EntityUiUtil.createCheckBox(property, getEditModel(), enabledState, includeCaption);
+    setControl(property.getPropertyID(), box);
+
+    return box;
+  }
+
+  /**
+   * Creates a TristateCheckBox bound to the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property to bind
+   * @return a TristateCheckBox bound to the property
+   */
+  protected final TristateCheckBox createTristateCheckBox(final String propertyID) {
+    return createTristateCheckBox(propertyID, null);
+  }
+
+  /**
+   * Creates a TristateCheckBox bound to the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property to bind
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a TristateCheckBox bound to the property
+   */
+  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final State enabledState) {
+    return createTristateCheckBox(propertyID, enabledState, true);
+  }
+
+  /**
+   * Creates a TristateCheckBox bound to the property identified by <code>propertyID</code>
+   * @param propertyID the ID of the property to bind
+   * @param enabledState a state for controlling the enabled state of the component
+   * @param includeCaption specifies whether or not the caption should be included
+   * @return a TristateCheckBox bound to the property
+   */
+  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final State enabledState,
+                                                          final boolean includeCaption) {
+    return createTristateCheckBox(EntityRepository.getProperty(getEditModel().getEntityID(), propertyID), enabledState, includeCaption);
+  }
+
+  /**
+   * Creates a TristateCheckBox bound to the given property
+   * @param property the property to bind
+   * @return a TristateCheckBox bound to the property
+   */
+  protected final TristateCheckBox createTristateCheckBox(final Property property) {
+    return createTristateCheckBox(property, null);
+  }
+
+  /**
+   * Creates a TristateCheckBox bound to the given property
+   * @param property the property to bind
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a TristateCheckBox bound to the property
+   */
+  protected final TristateCheckBox createTristateCheckBox(final Property property, final State enabledState) {
+    return createTristateCheckBox(property, enabledState, true);
+  }
+
+  /**
+   * Creates a TristateCheckBox bound to the given property
+   * @param property the property to bind
+   * @param enabledState a state for controlling the enabled state of the component
+   * @param includeCaption specifies whether or not the caption should be included
+   * @return a TristateCheckBox bound to the property
+   */
+  protected final TristateCheckBox createTristateCheckBox(final Property property, final State enabledState,
+                                                          final boolean includeCaption) {
+    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property, getEditModel(), enabledState, includeCaption);
     setControl(property.getPropertyID(), box);
 
     return box;

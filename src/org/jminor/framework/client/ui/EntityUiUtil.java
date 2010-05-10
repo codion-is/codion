@@ -10,12 +10,14 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
@@ -23,6 +25,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.TextFieldPlus;
+import org.jminor.common.ui.valuemap.AbstractValueMapLink;
 import org.jminor.common.ui.valuemap.BooleanValueLink;
 import org.jminor.common.ui.valuemap.ComboBoxValueLink;
 import org.jminor.common.ui.valuemap.DateValueLink;
@@ -30,14 +33,15 @@ import org.jminor.common.ui.valuemap.DoubleValueLink;
 import org.jminor.common.ui.valuemap.FormattedValueLink;
 import org.jminor.common.ui.valuemap.IntValueLink;
 import org.jminor.common.ui.valuemap.TextValueLink;
+import org.jminor.common.ui.valuemap.TristateValueLink;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertyComboBoxModel;
 import org.jminor.framework.client.model.PropertyValueListProvider;
 import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.ui.property.LookupValueLink;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityRepository;
 import org.jminor.framework.domain.Property;
@@ -204,15 +208,31 @@ public class EntityUiUtil {
                                          final State enabledState) {
     return createCheckBox(property, editModel, enabledState, true);
   }
-
+//todo should this check for boolean property?
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
-    if (!includeCaption)
-      checkBox.setToolTipText(property.getCaption());
     new BooleanValueLink<String>(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    checkBox.setToolTipText(property.getDescription());
+    if (property.getDescription() == null)
+      checkBox.setToolTipText(property.getCaption());
+    else
+      checkBox.setToolTipText(property.getDescription());
+    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
+      UiUtil.transferFocusOnEnter(checkBox);
+
+    return checkBox;
+  }
+//todo should this check for boolean property and nullable?
+  public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
+                                                        final State enabledState, final boolean includeCaption) {
+    final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
+    new TristateValueLink<String>((TristateButtonModel) checkBox.getModel(), editModel, property.getPropertyID());
+    UiUtil.linkToEnabledState(enabledState, checkBox);
+    if (property.getDescription() == null)
+      checkBox.setToolTipText(property.getCaption());
+    else
+      checkBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER))
       UiUtil.transferFocusOnEnter(checkBox);
 
@@ -620,7 +640,7 @@ public class EntityUiUtil {
     return button;
   }
 
-  private static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
+  public static class EntityComboBoxValueLink extends ComboBoxValueLink<String> {
     public EntityComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<String, Object> editModel,
                                    final Property property) {
       super(comboBox, editModel, property.getPropertyID(), LinkType.READ_WRITE, property.isString());
@@ -635,6 +655,48 @@ public class EntityUiUtil {
         return ((PropertyComboBoxModel) boxModel).isNullValueItemSelected() ? null : boxModel.getSelectedItem();
       else
         return super.getUIValue();
+    }
+  }
+
+  /**
+   * A class for linking an EntityLookupModel to a EntityEditModel foreign key property value.
+   */
+  public static class LookupValueLink extends AbstractValueMapLink<String, Object> {
+
+    private final EntityLookupModel lookupModel;
+
+    /**
+     * Instantiates a new LookupModelValueLink
+     * @param lookupModel the lookup model to link
+     * @param editModel the EntityEditModel instance
+     * @param foreignKeyProperty the foreign key property to link
+     */
+    public LookupValueLink(final EntityLookupModel lookupModel, final ValueChangeMapEditModel<String, Object> editModel,
+                           final Property.ForeignKeyProperty foreignKeyProperty) {
+      super(editModel, foreignKeyProperty.getPropertyID(), LinkType.READ_WRITE);
+      this.lookupModel = lookupModel;
+      updateUI();
+      lookupModel.eventSelectedEntitiesChanged().addListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+          updateModel();
+        }
+      });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected Object getUIValue() {
+      final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
+      return selectedEntities.size() == 0 ? null : selectedEntities.get(0);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void setUIValue(final Object propertyValue) {
+      final List<Entity> value = new ArrayList<Entity>();
+      if (getModelValue() != null)
+        value.add((Entity) propertyValue);
+      lookupModel.setSelectedEntities(value);
     }
   }
 }

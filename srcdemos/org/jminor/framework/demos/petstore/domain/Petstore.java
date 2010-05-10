@@ -106,7 +106,7 @@ public class Petstore {
     EntityRepository.add(new EntityDefinition(T_ITEM, "petstore.item",
             new Property.PrimaryKeyProperty(ITEM_ID),
             new Property.ForeignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
-                    new Property(ITEM_PRODUCT_ID)).setNullable(false),
+                    new Property(ITEM_PRODUCT_ID)).setFetchDepth(2).setNullable(false),
             new Property(ITEM_NAME, Types.VARCHAR, "Name").setMaxLength(30).setNullable(false),
             new Property(ITEM_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(500).setNullable(false),
             new Property(ITEM_IMAGE_URL, Types.VARCHAR, "Image URL").setHidden(true).setMaxLength(55),
@@ -116,7 +116,7 @@ public class Petstore {
                     new Property(ITEM_C0NTACT_INFO_ID)).setNullable(false),
             new Property.ForeignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
                     new Property(ITEM_ADDRESS_ID)).setNullable(false),
-            new Property(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setNullable(false).setDefaultValue(false))
+            new Property(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
             .setIdSource(IdSource.MAX_PLUS_ONE)
             .setOrderByClause(ITEM_NAME)
             .setStringProvider(new StringProvider<String, Object>(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME)));

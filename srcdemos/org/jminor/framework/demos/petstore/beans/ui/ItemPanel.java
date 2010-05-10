@@ -65,7 +65,7 @@ public class ItemPanel extends EntityPanel {
                 new EntityPanelProvider(AddressModel.class, AddressPanel.class), false)));
         add(createPropertyPanel(ITEM_IMAGE_URL, createTextField(ITEM_IMAGE_URL)));
         add(createPropertyPanel(ITEM_IMAGE_THUMB_URL, createTextField(ITEM_IMAGE_THUMB_URL)));
-        add(createPropertyPanel(ITEM_DISABLED, createCheckBox(ITEM_DISABLED, null, false)));
+        add(createPropertyPanel(ITEM_DISABLED, createTristateCheckBox(ITEM_DISABLED, null, false)));
       }
     };
   }

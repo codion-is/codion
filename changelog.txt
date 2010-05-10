@@ -1529,3 +1529,10 @@
   EntityDefinition now serves Entity.Proxy's purpose, proxy removed
   ValueMapChangeEditModel.getPropertyChangeEvent() and getPropertySetEvent() renamed to getValueChangeEvent() and getValueSetEvent()
   Entity.Proxy removal undoood
+  common.model.checkbox.TristateState, TristateButtonModel added
+  common.ui.checkbox.TristateCheckBox added
+  TristateValueLink added
+  EntityUiUtil.createTristateCheckBox() added
+  LookupValueLink moved to EntityUiUtil
+  EntityEditPanel.createTristateCheckBox() added
+  TristateCheckBox used in petstore's ItemPanel
