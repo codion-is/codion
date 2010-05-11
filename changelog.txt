@@ -1536,3 +1536,10 @@
   LookupValueLink moved to EntityUiUtil
   EntityEditPanel.createTristateCheckBox() added
   TristateCheckBox used in petstore's ItemPanel
+  ValueChangeMapEditPanel.getControlKeys() added
+  UiUtil.selectPropertyValue() renamed to selectValue()
+  EntityUtil.getSortedProperties() added
+  EntityPanel, ALT-CTR-C shows select control dialog
+  ValueChangeMapPanel generified
+  AbstractFilteredTablePanel generified
+  UiUtil.selectValue() overloaded with dialogTitle parameter

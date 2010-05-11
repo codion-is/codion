@@ -7,6 +7,8 @@ import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +64,13 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
       requestFocusInWindow();
     else
       defaultFocusComponent.requestFocusInWindow();
+  }
+
+  /**
+   * @return the keys that have been associated with controls.
+   */
+  public Collection<K> getControlKeys() {
+    return new ArrayList<K>(controls.keySet());
   }
 
   public void selectControl(final K key) {

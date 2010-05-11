@@ -721,7 +721,7 @@ public class UiUtil {
     addKeyEvent(txtField, KeyEvent.VK_SPACE, 0, InputEvent.CTRL_DOWN_MASK, new AbstractAction("valueLookup") {
       public void actionPerformed(final ActionEvent e) {
         try {
-          final Object value = selectPropertyValue(txtField, valueListProvider.getValues());
+          final Object value = selectValue(txtField, valueListProvider.getValues());
           if (value != null)
             txtField.setText(value.toString());
         }
@@ -732,14 +732,18 @@ public class UiUtil {
     });
   }
 
-  public static Object selectPropertyValue(final JComponent dialogOwner, Collection<?> values) {
+  public static Object selectValue(final JComponent dialogOwner, Collection<?> values) {
+    return selectValue(dialogOwner, values, Messages.get(Messages.SELECT_VALUE));
+  }
+
+  public static Object selectValue(final JComponent dialogOwner, Collection<?> values, final String dialogTitle) {
     final DefaultListModel listModel = new DefaultListModel();
     for (final Object value : values)
       listModel.addElement(value);
 
     final JList list = new JList(new Vector<Object>(values));
     final Window owner = getParentWindow(dialogOwner);
-    final JDialog dialog = new JDialog(owner, Messages.get(Messages.SELECT_VALUE));
+    final JDialog dialog = new JDialog(owner, dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       public void actionPerformed(ActionEvent e) {

@@ -66,6 +66,7 @@ public class Messages {
   public static final String UNABLE_TO_OPEN_FILE = "unable_to_open_file";
   public static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
   public static final String SELECT_VALUE = "select_value";
+  public static final String SELECT_INPUT_FIELD = "select_input_field";   
 
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));

@@ -11,6 +11,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.WeakPropertyChangeListener;
+import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.AbstractFilteredTablePanel;
@@ -76,7 +77,7 @@ import java.util.*;
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  * To lay out the panel components and initialize the panel you must call the method <code>initializePanel()</code>.
  */
-public abstract class EntityPanel extends ValueChangeMapPanel implements ExceptionHandler {
+public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> implements ExceptionHandler {
 
   private static final Logger log = Util.getLogger(EntityPanel.class);
 
@@ -587,7 +588,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
     if (throwable instanceof ValidationException) {
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
-      getEditPanel().selectControl(((ValidationException) throwable).getKey());
+      getEditPanel().selectControl((String) ((ValidationException) throwable).getKey());
     }
     else {
       handleException(throwable, this);
@@ -1039,6 +1040,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
   }
 
   /**
+   * @return a list of properties to use when selecting a control in the edit panel,
+   * by default this returns all the properties that have mapped controls in the edit panel.
+   * @see ValueChangeMapEditPanel#setControl(Object, javax.swing.JComponent)
+   */
+  protected List<Property> getSelectControlProperties() {
+    return EntityUtil.getSortedProperties(getModel().getEntityID(), getEditPanel().getControlKeys());
+  }
+
+  /**
    * Creates a static entity panel showing the given entities
    * @param entities the entities to show in the panel
    * @param dbProvider the EntityDbProvider, in case the returned panel should require one
@@ -1194,11 +1204,11 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
   /**
    * Initializes the keyboard navigation actions.
    * By default ALT-CTRL-T transfers focus to the table in case one is available,
-   * ALT-CTR-E transfers focus to the edit panel in case one is available
-   * and ALT-CTR-S transfers focus to the search panel.
+   * ALT-CTR-E transfers focus to the edit panel in case one is available,
+   * ALT-CTR-S transfers focus to the search panel and ALT-CTR-C opens a select control dialog
    */
   protected void setupKeyboardActions() {
-    if (getTablePanel() != null) {
+    if (containsTablePanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectTablePanel") {
                 public void actionPerformed(ActionEvent event) {
@@ -1206,13 +1216,25 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
                 }
               });
     }
-    if (getEditControlPanel() != null) {
+    if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectEditPanel") {
                 public void actionPerformed(ActionEvent event) {
                   if (getEditPanelState() == HIDDEN)
                     setEditPanelState(EMBEDDED);
                   getEditPanel().prepareUI(true, false);
+                }
+              });
+      UiUtil.addKeyEvent(this, KeyEvent.VK_C, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectControl") {
+                public void actionPerformed(ActionEvent event) {
+                  if (getEditPanelState() == HIDDEN)
+                    setEditPanelState(EMBEDDED);
+
+                  final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectControlProperties(),
+                          Messages.get(Messages.SELECT_INPUT_FIELD));
+                  if (property != null)
+                    getEditPanel().selectControl(property.getPropertyID());
                 }
               });
     }
@@ -1270,14 +1292,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel implements Excepti
   }
 
   @Override
-  protected final ValueChangeMapEditPanel initializeEditPanel(final ValueChangeMapEditModel editModel) {
+  protected final ValueChangeMapEditPanel<String, Object> initializeEditPanel(final ValueChangeMapEditModel<String, Object> editModel) {
     return initializeEditPanel((EntityEditModel) editModel);
   }
 
   protected abstract EntityEditPanel initializeEditPanel(final EntityEditModel editModel);
 
   @Override
-  protected final AbstractFilteredTablePanel initializeTablePanel(final AbstractFilteredTableModel tableModel) {
+  protected final AbstractFilteredTablePanel<? extends ValueChangeMap<String, Object>> initializeTablePanel(
+          final AbstractFilteredTableModel<? extends ValueChangeMap<String, Object>> tableModel) {
     return initializeTablePanel((EntityTableModel) tableModel);
   }
 

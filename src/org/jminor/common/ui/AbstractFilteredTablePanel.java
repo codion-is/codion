@@ -14,9 +14,9 @@ import javax.swing.JTable;
  * Date: 25.4.2010<br>
  * Time: 12:47:55<br>
  */
-public abstract class AbstractFilteredTablePanel extends JPanel {
+public abstract class AbstractFilteredTablePanel<T> extends JPanel {
 
-  private final AbstractFilteredTableModel model;
+  private final AbstractFilteredTableModel<T> model;
 
   /**
    * the JTable for showing the underlying entities
@@ -28,7 +28,7 @@ public abstract class AbstractFilteredTablePanel extends JPanel {
    */
   private final JScrollPane tableScrollPane;
 
-  public AbstractFilteredTablePanel(final AbstractFilteredTableModel model) {
+  public AbstractFilteredTablePanel(final AbstractFilteredTableModel<T> model) {
     if (model == null)
       throw new IllegalArgumentException("Table model must not be null");
 
@@ -40,7 +40,7 @@ public abstract class AbstractFilteredTablePanel extends JPanel {
   /**
    * @return the TableModel used by this TablePanel
    */
-  public AbstractFilteredTableModel getTableModel() {
+  public AbstractFilteredTableModel<T> getTableModel() {
     return model;
   }
 

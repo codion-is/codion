@@ -12,7 +12,7 @@ To sort a table, click a column header once to sort ascending, a second time to 
 To sort by more than one column, hold down the CTRL key while repeating the method described above for subsequent columns.
 
 Navigation
-To navigate between panels with the keyboard, use the arrow keys while holding down the ALT key. Pressing ALT-CTRL-T transfers focus to the table, ALT-CTR-E transfers focus to the edit panel and ALT-CTR-S transfers focus to the search panel.
+To navigate between panels with the keyboard, use the arrow keys while holding down the ALT key. Pressing ALT-CTRL-T transfers focus to the table, ALT-CTR-E transfers focus to the edit panel and ALT-CTR-S transfers focus to the search panel. ALT-CTR-C selects an input field.
 
 Layout
 To resize or hide the active panel with the keyboard, use the arrow keys while holding down the SHIFT and ALT keys.

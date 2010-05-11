@@ -84,7 +84,7 @@ import java.util.Map;
  * </pre>
  * The search and summary panels can be hidden
  */
-public class EntityTablePanel extends AbstractFilteredTablePanel {
+public class EntityTablePanel extends AbstractFilteredTablePanel<Entity> {
 
   public static final char FILTER_INDICATOR = '*';
 
