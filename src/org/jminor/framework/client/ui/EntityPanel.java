@@ -74,6 +74,7 @@ import java.util.*;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
+ * To lay out the panel components and initialize the panel you must call the method <code>initializePanel()</code>.
  */
 public abstract class EntityPanel extends ValueChangeMapPanel implements ExceptionHandler {
 
