@@ -291,14 +291,20 @@ public abstract class EntityTestUnit {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected void initializeReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
-    initializeRandomReferenceEntities(referenceEntityIDs);
-  }
-
-  protected void initializeRandomReferenceEntities(final List<String> referenceEntityIDs) throws Exception {
     for (int i = referenceEntityIDs.size() - 1; i >= 0; i--) {
       final String entityID = referenceEntityIDs.get(i);
-      setReferenceEntity(entityID, EntityUtil.createRandomEntity(entityID, referencedEntities));
+      setReferenceEntity(entityID, createReferenceEntity(entityID));
     }
+  }
+
+  /**
+   * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
+   * @param entityID the entity ID
+   * @return a entity of the given type
+   * @throws Exception in case of an exception
+   */
+  protected Entity createReferenceEntity(final String entityID) throws Exception {
+    return EntityUtil.createRandomEntity(entityID, referencedEntities);
   }
 
   /**

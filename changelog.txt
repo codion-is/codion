@@ -1547,3 +1547,4 @@
   EntityUiUtil.EntityFieldPanel added
   EntityEditPanel.createEntityFieldPanel() returns the above, set the text field as the property control
   EntityUiUtil.createCheckBox() checks if property is boolean and createTristateCheckBox() checks if it is nullable
+  EntityTestUnit.createReferenceEntity(entityID) added

@@ -87,8 +87,8 @@ public class DomainClassGenerator {
 
       builder.append("import org.jminor.framework.domain.EntityDefinition;\n");
       builder.append("import org.jminor.framework.domain.EntityRepository;\n");
-      builder.append("import org.jminor.framework.domain.Property;\n");
-      builder.append("import org.jminor.framework.domain.Type;\n\n");
+      builder.append("import org.jminor.framework.domain.Property;\n\n");
+      builder.append("import java.sql.Types;");
 
       builder.append("public class ").append(domainClassName).append(" {\n\n");
 
@@ -160,7 +160,7 @@ public class DomainClassGenerator {
       ret += "\n                .setNullable(false)";
     if (column.hasDefaultValue)
       ret += "\n                .setColumnHasDefaultValue(false)";
-    if (column.columnType.equals("String.class"))
+    if (column.columnType.equals("Types.VARCHAR"))
       ret += "\n                .setMaxLength(" + column.columnSize + ")";
 
     return ret;
