@@ -10,7 +10,6 @@ import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -26,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
 
@@ -134,11 +134,17 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
                                              final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel panel = new JPanel(labelOnTop ?
-            new FlexibleGridLayout(2, 1, hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
+            new BorderLayout(hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
     if (labelComponent instanceof JLabel)
       ((JLabel) labelComponent).setLabelFor(inputComponent);
-    panel.add(labelComponent);
-    panel.add(inputComponent);
+    if (labelOnTop) {
+      panel.add(labelComponent, BorderLayout.NORTH);
+      panel.add(inputComponent, BorderLayout.CENTER);
+    }
+    else {
+      panel.add(labelComponent);
+      panel.add(inputComponent);
+    }
 
     return panel;
   }
