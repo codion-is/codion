@@ -169,6 +169,10 @@ public class Property implements Serializable {
     this.type = type;
     this.caption = caption;
     this.columnName = propertyID;
+    if (isDate())
+      setFormat(Configuration.getDefaultDateFormat());
+    else if (isTimestamp())
+      setFormat(Configuration.getDefaultTimestampFormat());
     setHidden(caption == null);
     setFormat(initializeFormat());
   }
@@ -977,7 +981,7 @@ public class Property implements Serializable {
    * A property which value is derived from the values of one or more properties.
    * For the property to be updated when the parent properties are you must
    * link the properties together using the <code>addLinkedPropertyIDs()</code>method.
-   * @see org.jminor.framework.domain.EntityDefinition#getDerivedValue(Entity, org.jminor.framework.domain.Property.DerivedProperty)
+   * @see org.jminor.framework.domain.Entity.Proxy#getDerivedValue(Entity, org.jminor.framework.domain.Property.DerivedProperty)
    */
   public static class DerivedProperty extends TransientProperty {
 

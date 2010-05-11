@@ -1543,3 +1543,7 @@
   ValueChangeMapPanel generified
   AbstractFilteredTablePanel generified
   UiUtil.selectValue() overloaded with dialogTitle parameter
+  Property now gets assigned the default formats in case it is date or timestamp
+  EntityUiUtil.EntityFieldPanel added
+  EntityEditPanel.createEntityFieldPanel() returns the above, set the text field as the property control
+  EntityUiUtil.createCheckBox() checks if property is boolean and createTristateCheckBox() checks if it is nullable

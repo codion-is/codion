@@ -321,6 +321,15 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property for which to create the panel
+   * @return a DateInputPanel bound to the property
+   */
+  protected final DateInputPanel createDateInputPanel(final Property property) {
+    return createDateInputPanel(property, (SimpleDateFormat) property.getFormat());
+  }
+
+  /**
+   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * @param property the property for which to create the panel
    * @param dateFormat the format to use for masking the input field
    * @return a DateInputPanel bound to the property
    */
@@ -1023,10 +1032,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @param lookupModel an EntityTableModel to use when looking up entities
    * @return an uneditable JTextField bound to the property
    */
-  protected final JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                final EntityTableModel lookupModel) {
-    final JPanel ret = EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
-    setControl(foreignKeyProperty.getPropertyID(), ret);//todo get my hands on the text field
+  protected final EntityUiUtil.EntityFieldPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                                       final EntityTableModel lookupModel) {
+    final EntityUiUtil.EntityFieldPanel ret = EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, getEditModel(), lookupModel);
+    setControl(foreignKeyProperty.getPropertyID(), ret.getTextField());
 
     return ret;
   }

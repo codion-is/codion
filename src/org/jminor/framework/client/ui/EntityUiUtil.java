@@ -208,9 +208,12 @@ public class EntityUiUtil {
                                          final State enabledState) {
     return createCheckBox(property, editModel, enabledState, true);
   }
-//todo should this check for boolean property?
+
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final State enabledState, final boolean includeCaption) {
+    if (!property.isBoolean())
+      throw new RuntimeException("Boolean property required for createCheckBox");
+
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     new BooleanValueLink<String>(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
@@ -223,9 +226,12 @@ public class EntityUiUtil {
 
     return checkBox;
   }
-//todo should this check for boolean property and nullable?
+
   public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
                                                         final State enabledState, final boolean includeCaption) {
+    if (!property.isBoolean() && property.isNullable())
+      throw new RuntimeException("Nullable boolean property required for createTristateCheckBox");
+
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
     new TristateValueLink<String>((TristateButtonModel) checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
@@ -272,26 +278,9 @@ public class EntityUiUtil {
     return comboBox;
   }
 
-  public static JPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
-                                              final EntityEditModel editModel, final EntityTableModel lookupModel) {
-    final JPanel panel = new JPanel(new BorderLayout(5,5));
-    final JTextField txt = createEntityField(foreignKeyProperty, editModel);
-    final JButton btn = new JButton(new AbstractAction("...") {
-      public void actionPerformed(ActionEvent e) {
-        try {
-          final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(panel),
-                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
-          editModel.setValue(foreignKeyProperty.getPropertyID(), selected.size() > 0 ? selected.get(0) : null);
-        }
-        catch (CancelException ex) {/**/}
-      }
-    });
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-
-    panel.add(txt, BorderLayout.CENTER);
-    panel.add(btn, BorderLayout.EAST);
-
-    return panel;
+  public static EntityFieldPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                        final EntityEditModel editModel, final EntityTableModel lookupModel) {
+    return new EntityFieldPanel(foreignKeyProperty, editModel, lookupModel);
   }
 
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
@@ -697,6 +686,40 @@ public class EntityUiUtil {
       if (getModelValue() != null)
         value.add((Entity) propertyValue);
       lookupModel.setSelectedEntities(value);
+    }
+  }
+
+  public static class EntityFieldPanel extends JPanel {
+
+    final JTextField textField;
+
+    public EntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
+                            final EntityEditModel editModel, final EntityTableModel lookupModel) {
+      super(new BorderLayout(5,5));
+      textField = createEntityField(foreignKeyProperty, editModel);
+      initializeUI(foreignKeyProperty, editModel, lookupModel);
+    }
+
+    public JTextField getTextField() {
+      return textField;
+    }
+
+    private void initializeUI(final Property.ForeignKeyProperty foreignKeyProperty,
+                              final EntityEditModel editModel, final EntityTableModel lookupModel) {
+      final JButton btn = new JButton(new AbstractAction("...") {
+        public void actionPerformed(ActionEvent e) {
+          try {
+            final List<Entity> selected = EntityUiUtil.selectEntities(lookupModel, UiUtil.getParentWindow(textField),
+                    true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null, false);
+            editModel.setValue(foreignKeyProperty.getPropertyID(), selected.size() > 0 ? selected.get(0) : null);
+          }
+          catch (CancelException ex) {/**/}
+        }
+      });
+      btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+
+      add(textField, BorderLayout.CENTER);
+      add(btn, BorderLayout.EAST);
     }
   }
 }
