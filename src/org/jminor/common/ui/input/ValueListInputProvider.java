@@ -11,6 +11,10 @@ import org.jminor.common.ui.combobox.SteppedComboBox;
 import javax.swing.JComboBox;
 import java.util.List;
 
+/**
+ * A InputProvider implementation based on a list of Item's
+ * @see Item
+ */
 public class ValueListInputProvider extends AbstractInputProvider<Object> {
 
   public ValueListInputProvider(final Object currentValue, final List<Item<Object>> values) {

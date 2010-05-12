@@ -86,16 +86,18 @@ public class OracleDatabase extends AbstractDatabase {
   /**
    * @return false
    */
+  @Override
   public boolean supportsIsValid() {
     return false;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getCheckConnectionQuery() {
     return "select 1 from dual";
   }
 
-  /** {@inheritDoc} */
+  @Override
   public String getErrorMessage(final SQLException exception) {
     if (exception.getErrorCode() == 1400 || exception.getErrorCode() == 1407) {
       final String errorMsg = exception.getMessage();

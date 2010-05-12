@@ -65,11 +65,12 @@ public class PostgreSQLDatabase extends AbstractDatabase {
   /**
    * @return false
    */
+  @Override
   public boolean supportsIsValid() {
     return false;
   }
 
-  /** {@inheritDoc} */
+  @Override
   public String getCheckConnectionQuery() {
     return "select 1";
   }
