@@ -42,7 +42,8 @@ public class ClientMonitorPanel extends JPanel {
   }
 
   public void refresh() throws RemoteException {
-    model.refresh();
+    if (model != null)
+      model.refresh();
   }
 
   private void initUI() {
