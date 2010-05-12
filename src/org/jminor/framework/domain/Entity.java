@@ -175,7 +175,7 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     if (property instanceof Property.DerivedProperty)
       throw new IllegalArgumentException("Can not set the value of a derived property");
-    if (property instanceof Property.ValueListProperty && !((Property.ValueListProperty) property).isValid(value))
+    if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value))
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property ");
     if (value != null && value instanceof Entity && value.equals(this))
       throw new IllegalArgumentException("Circular entity reference detected: " + primaryKey + "->" + property.getPropertyID());

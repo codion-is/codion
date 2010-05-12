@@ -783,7 +783,7 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
     if (!(property instanceof Property.ValueListProperty))
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
 
-    return EntityUiUtil.createValueListComboBox((Property.ValueListProperty) property, getEditModel());
+    return createValueListComboBox((Property.ValueListProperty) property);
   }
 
   /**
@@ -793,7 +793,10 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property) {
-    return EntityUiUtil.createValueListComboBox(property, getEditModel());
+    final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEditModel());
+    setComponent(property.getPropertyID(), box);
+
+    return box;
   }
 
   /**
