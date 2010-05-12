@@ -271,13 +271,6 @@ public class Configuration {
   public static final String SQL_BOOLEAN_VALUE_TRUE = "jminor.client.sqlBooleanValueTrue";
 
   /**
-   * Specifies the value used to denote a null boolean value in the database<br>
-   * Value type: Any Object<br>
-   * Default value: null
-   */
-  public static final String SQL_BOOLEAN_VALUE_NULL = "jminor.client.sqlBooleanValueNull";
-
-  /**
    * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanelDialog</code> method
    * should be persisted, or kept in memory, when the dialog is closed.<br>
    * Value type: Boolean<br>
@@ -411,7 +404,6 @@ public class Configuration {
     setValue(TOOLTIP_DELAY, 500);
     setValue(SQL_BOOLEAN_VALUE_FALSE, 0);
     setValue(SQL_BOOLEAN_VALUE_TRUE, 1);
-    setValue(SQL_BOOLEAN_VALUE_NULL, null);
     setValue(PERSIST_ENTITY_PANELS, false);
     setValue(DEFAULT_SEARCH_PANEL_STATE, false);
     setValue(SERVER_NAME_PREFIX, "JMinor Server");

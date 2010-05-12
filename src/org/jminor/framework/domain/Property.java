@@ -4,6 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.Item;
+import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public class Property implements Serializable {
   /**
    * The property identifier, should be unique within an Entity.
    * By default this ID serves as column name for database properties.
-   * @see #getPropertyID
+   * @see #getPropertyID()
    */
   private final String propertyID;
 
@@ -132,25 +133,29 @@ public class Property implements Serializable {
    * The Format used when presenting this Property value
    */
   private Format format;
+
   /**
    * Caching this frequently referenced attribute
    */
   private Class<?> typeClass;
+
   /**
-   * This is based on an immutable field, so chache it
+   * This is based on an immutable field, so cache it
    */
   private int hashCode;
 
   /**
-   * Instantiates a new property of the type Integer.class
-   * @param propertyID the property ID, this is used as the underlying column name
+   * Instantiates a new property of the type Types.INTEGER
+   * @param propertyID the property ID, this is used as the underlying column name,
+   * override by calling setColumnName()
    */
   public Property(final String propertyID) {
     this(propertyID, Types.INTEGER);
   }
 
   /**
-   * @param propertyID the property ID, this is used as the underlying column name
+   * @param propertyID the property ID, this is used as the underlying column name,
+   * override by calling setColumnName()
    * @param type the data type of this property
    */
   public Property(final String propertyID, final int type) {
@@ -1170,18 +1175,6 @@ public class Property implements Serializable {
      * the Object value representing false
      */
     private final Object falseValue;
-    /**
-     * the Object value representing null
-     */
-    private final Object nullValue;
-    /**
-     * for quick comparison of 'true' values
-     */
-    private final int trueValueHash;
-    /**
-     * for quick comparison of 'false' values
-     */
-    private final int falseValueHash;
 
     /**
      * Instantiates a BooleanProperty based on the INT data type
@@ -1206,32 +1199,15 @@ public class Property implements Serializable {
      * @param propertyID the property ID, in case of database properties this should be the underlying column name
      * @param columnType the data type of the underlying column
      * @param caption the caption of this property
-     * @param trueValue the Object value representing 'true'
-     * @param falseValue the Object value representing 'false'
+     * @param trueValue the Object value representing 'true' in the underlying column
+     * @param falseValue the Object value representing 'false' in the underlying column
      */
     public BooleanProperty(final String propertyID, final int columnType, final String caption,
                            final Object trueValue, final Object falseValue) {
-      this(propertyID, columnType, caption, trueValue, falseValue,
-              Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL));
-    }
-
-    /**
-     * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param columnType the data type of the underlying column
-     * @param caption the caption of this property
-     * @param trueValue the Object value representing 'true'
-     * @param falseValue the Object value representing 'false'
-     * @param nullValue the Object value representing 'null'
-     */
-    public BooleanProperty(final String propertyID, final int columnType, final String caption,
-                           final Object trueValue, final Object falseValue, final Object nullValue) {
       super(propertyID, Types.BOOLEAN, caption);
       this.columnType = columnType;
-      this.nullValue = nullValue;
       this.trueValue = trueValue;
       this.falseValue = falseValue;
-      this.trueValueHash = trueValue.hashCode();
-      this.falseValueHash = falseValue.hashCode();
     }
 
     /**
@@ -1246,10 +1222,9 @@ public class Property implements Serializable {
      * @return the Boolean value of <code>object</code>
      */
     public Boolean toBoolean(final Object object) {
-      final int hashCode = object == null ? 0 : object.hashCode();
-      if (hashCode == trueValueHash)
+      if (Util.equal(trueValue, object))
         return true;
-      else if (hashCode == falseValueHash)
+      else if (Util.equal(falseValue, object))
         return false;
 
       return null;
@@ -1260,7 +1235,7 @@ public class Property implements Serializable {
      * @return the sql string value of <code>value</code>
      */
     public String toSQLString(final Boolean value) {
-      final Object result = value == null ? nullValue : (value ? trueValue : falseValue);
+      final Object result = toSQLValue(value);
       if (columnType == Types.VARCHAR)
         return "'" + result + "'";
       else
@@ -1268,7 +1243,7 @@ public class Property implements Serializable {
     }
 
     public Object toSQLValue(final Boolean value) {
-      return value == null ? nullValue : (value ? trueValue : falseValue);
+      return value == null ? null : (value ? trueValue : falseValue);
     }
   }
 

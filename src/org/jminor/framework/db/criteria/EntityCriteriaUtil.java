@@ -72,12 +72,18 @@ public class EntityCriteriaUtil {
   }
 
   public static String getBooleanSQLString(final Boolean value) {
+    String sqlString;
     if (value == null)
-      return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_NULL).toString();
-    else if (value)
-      return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE).toString();
-    else
-      return Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE).toString();
+      sqlString = "null";
+    else if (value) {
+      final Object trueValue = Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE);
+      sqlString = trueValue == null ? "null" : trueValue.toString();
+    }
+    else {
+      final Object falseValue = Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE);
+      sqlString = falseValue == null ? "null" : falseValue.toString();
+    }
+    return sqlString;
   }
 
   public static EntitySelectCriteria selectCriteria(final Entity.Key key) {

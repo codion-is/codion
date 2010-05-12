@@ -1559,3 +1559,7 @@
   Entity.setValue() now validates value list property values
   EntityTableModel.getValueAt() now returns the caption value for value list properties
   ValueListInputProvider added to common.ui.input
+  BooleanProperty hash comparison removed
+  BooleanProperty.nullValue removed
+  Configuration.SQL_BOOLEAN_VALUE_NULL removed
+  EntityCriteriaUtil.getBooleanSQLString() improved, now handles null true/false values
