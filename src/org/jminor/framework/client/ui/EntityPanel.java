@@ -588,7 +588,7 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
     if (throwable instanceof ValidationException) {
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
-      getEditPanel().selectControl((String) ((ValidationException) throwable).getKey());
+      getEditPanel().selectComponent((String) ((ValidationException) throwable).getKey());
     }
     else {
       handleException(throwable, this);
@@ -1040,12 +1040,12 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   }
 
   /**
-   * @return a list of properties to use when selecting a control in the edit panel,
-   * by default this returns all the properties that have mapped controls in the edit panel.
-   * @see ValueChangeMapEditPanel#setControl(Object, javax.swing.JComponent)
+   * @return a list of properties to use when selecting a input component in the edit panel,
+   * by default this returns all the properties that have mapped components in the edit panel.
+   * @see ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
    */
-  protected List<Property> getSelectControlProperties() {
-    return EntityUtil.getSortedProperties(getModel().getEntityID(), getEditPanel().getControlKeys());
+  protected List<Property> getSelectComponentProperties() {
+    return EntityUtil.getSortedProperties(getModel().getEntityID(), getEditPanel().getComponentKeys());
   }
 
   /**
@@ -1226,15 +1226,15 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
                 }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_C, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectControl") {
+              KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectComponent") {
                 public void actionPerformed(ActionEvent event) {
                   if (getEditPanelState() == HIDDEN)
                     setEditPanelState(EMBEDDED);
 
-                  final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectControlProperties(),
+                  final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectComponentProperties(),
                           Messages.get(Messages.SELECT_INPUT_FIELD));
                   if (property != null)
-                    getEditPanel().selectControl(property.getPropertyID());
+                    getEditPanel().selectComponent(property.getPropertyID());
                 }
               });
     }

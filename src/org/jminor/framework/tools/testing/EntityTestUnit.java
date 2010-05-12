@@ -352,8 +352,6 @@ public abstract class EntityTestUnit {
     final boolean equal = entityOne.propertyValuesEqual(entityTwo);
     if (!equal) {
       try {
-        entityOne.clearOriginalValues();
-        entityTwo.clearOriginalValues();
         System.out.println(EntityUtil.getJSONString(Arrays.asList(entityOne)));
         System.out.println(EntityUtil.getJSONString(Arrays.asList(entityTwo)));
       }

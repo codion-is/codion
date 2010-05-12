@@ -22,12 +22,14 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
 
   private final ValueChangeMapEditModel<K, V> model;
 
-  private final Map<K, JComponent> controls = new HashMap<K, JComponent>();
+  private final Map<K, JComponent> components = new HashMap<K, JComponent>();
 
   /**
    * The component that should receive focus when the UI is prepared for a new record
    */
   private JComponent defaultFocusComponent;
+
+  private K defaultFocusComponentKey;
 
   public ValueChangeMapEditPanel(final ValueChangeMapEditModel<K, V> model) {
     this.model = model;
@@ -45,17 +47,21 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   /**
-   * Sets the component that should receive the focus when the UI is initialized after
-   * a new record has been inserted or the panel is activated
+   * Sets the component that should receive the focus when the UI is cleared or activated
    * @param defaultFocusComponent the component
    * @return the component
+   * @see #prepareUI(boolean, boolean)
    */
   public JComponent setDefaultFocusComponent(final JComponent defaultFocusComponent) {
     return this.defaultFocusComponent = defaultFocusComponent;
   }
 
-  protected JComponent getDefaultFocusComponent() {
-    return defaultFocusComponent;
+  public K getDefaultFocusComponentKey() {
+    return defaultFocusComponentKey;
+  }
+
+  public void setDefaultFocusKey(final K defaultFocusComponentKey) {
+    this.defaultFocusComponentKey = defaultFocusComponentKey;
   }
 
   public void setDefaultFocus() {
@@ -67,26 +73,37 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   /**
-   * @return the keys that have been associated with controls.
+   * @return the keys that have been associated with components.
    */
-  public Collection<K> getControlKeys() {
-    return new ArrayList<K>(controls.keySet());
+  public Collection<K> getComponentKeys() {
+    return new ArrayList<K>(components.keySet());
   }
 
-  public void selectControl(final K key) {
-    if (controls.containsKey(key))
-      controls.get(key).requestFocusInWindow();
+  public void selectComponent(final K key) {
+    if (components.containsKey(key))
+      components.get(key).requestFocusInWindow();
+  }
+
+  protected JComponent getDefaultFocusComponent() {
+    if (defaultFocusComponent != null)
+      return defaultFocusComponent;
+
+    if (defaultFocusComponentKey != null)
+      return components.get(defaultFocusComponentKey);
+
+    return null;
   }
 
   /**
-   * Associates the given input component with the given property, this should
-   * be called for all controls
+   * Associates the given input component with the given property,
+   * preferably this should be called for components associated with
+   * key values.
    * @param key the propertyID
-   * @param component the input control
+   * @param component the input component
    */
-  protected void setControl(final K key, final JComponent component) {
-    if (controls.containsKey(key))
-      throw new RuntimeException("Control already set for key: " + key);
-    controls.put(key, component);
+  protected void setComponent(final K key, final JComponent component) {
+    if (components.containsKey(key))
+      throw new RuntimeException("Component already set for key: " + key);
+    components.put(key, component);
   }
 }

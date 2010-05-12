@@ -104,7 +104,7 @@ public class State {
       this.referenceState = referenceState;
       this.referenceState.eventStateChanged().addListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          LinkedState.this.eventStateChanged().fire();
+          eventStateChanged().actionPerformed(e);
         }
       });
     }

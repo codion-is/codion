@@ -64,11 +64,6 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   boolean isModified(final K key);
 
   /**
-   * Clears the orignal values rendering the map unmodified.
-   */
-  public void clearOriginalValues();
-
-  /**
    * Reverts the value associated with the given key to its original value.
    * If the value has not been changed then calling this method has no effect.
    * @param key the key for which to revert the value

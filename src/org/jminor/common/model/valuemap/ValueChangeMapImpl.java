@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,11 +36,6 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   private Map<K, V> originalValues;
 
   /**
-   * Holds the modified state of this value map.
-   */
-  private transient State stModified;
-
-  /**
    * Fired when a value changes.
    */
   protected transient Event evtValueChanged;
@@ -61,10 +57,14 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public State stateModified() {
-    if (stModified == null)
-      stModified = new State(isModified());
+    final State state = new State(isModified());
+    eventValueChanged().addListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        state.setActive(isModified());
+      }
+    });
 
-    return stModified.getLinkedState();
+    return state;
   }
 
   /** {@inheritDoc} */
@@ -119,19 +119,10 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   }
 
   /** {@inheritDoc} */
-  public void clearOriginalValues() {
-    if (originalValues != null)
-      originalValues.clear();
-
-    if (stModified != null)
-      stModified.setActive(isModified());
-  }
-
-  /** {@inheritDoc} */
   public void initializeValue(K key, V value) {
     values.put(key, value);
     if (evtValueChanged != null)
-      notifyValueChange(key, value, true, null);
+      notifyValueChange(key, value, null, true);
   }
 
   /** {@inheritDoc} */
@@ -149,7 +140,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
     values.put(key, value);
     if (evtValueChanged != null)
-      notifyValueChange(key, value, initialization, previousValue);
+      notifyValueChange(key, value, previousValue, initialization);
 
     return previousValue;
   }
@@ -160,10 +151,8 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
     values.remove(key);
     removeOriginalValue(key);
 
-    if (stModified != null)
-      stModified.setActive(isModified());
     if (evtValueChanged != null)
-      notifyValueChange(key, null, false, value);
+      notifyValueChange(key, null, value, false);
 
     return value;
   }
@@ -191,21 +180,19 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
   public void setAs(final ValueChangeMap<K, V> changeValueMap) {
     clear();
     if (changeValueMap != null) {
-      for (final K entryKey : changeValueMap.getValueKeys()) {
-        final V value = copyValue(changeValueMap.getValue(entryKey));
-        values.put(entryKey, value);
-        if (evtValueChanged != null)
-          notifyValueChange(entryKey, value, true, null);
-      }
       if (changeValueMap.isModified()) {
         if (originalValues == null)
           originalValues = new HashMap<K, V>();
         for (final K entryKey : changeValueMap.getOriginalValueKeys())
           originalValues.put(entryKey, copyValue(changeValueMap.getOriginalValue(entryKey)));
       }
+      for (final K entryKey : changeValueMap.getValueKeys()) {
+        final V value = copyValue(changeValueMap.getValue(entryKey));
+        values.put(entryKey, value);
+        if (evtValueChanged != null)
+          notifyValueChange(entryKey, value, null, true);
+      }
     }
-    if (stModified != null)
-      stModified.setActive(isModified());
   }
 
   /** {@inheritDoc} */
@@ -287,7 +274,7 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
     return Util.equal(valueOne, valueTwo);
   }
 
-  protected void notifyValueChange(final K key, final V value, final boolean initialization, final V oldValue) {
+  protected void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
     evtValueChanged.fire(new ValueChangeEvent<K, V>(this, getMapTypeID(), key, value, oldValue, true, initialization));
   }
 
@@ -306,8 +293,5 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
       removeOriginalValue(key);//we're back to the original value
     else if (!modified)
       setOriginalValue(key, previousValue);
-
-    if (stModified != null)
-      stModified.setActive(isModified());
   }
 }

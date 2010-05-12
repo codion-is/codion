@@ -55,6 +55,11 @@ public class EntityTest {
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
 
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
+    assertTrue(referencedEntityValue.stateModified().isActive());
+    referencedEntityValue.revertValue(EntityTestDomain.MASTER_ID);
+    assertFalse(referencedEntityValue.stateModified().isActive());
+
     Entity test = new Entity(EntityTestDomain.T_DETAIL);
     //assert not modified
     assertFalse(test.isModified());
@@ -168,12 +173,6 @@ public class EntityTest {
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.getValue(EntityTestDomain.MASTER_CODE));
-
-    try {
-      test2.stateModified().setActive(true);
-      fail("Should not be able to set the state of the modified state");
-    }
-    catch (Exception e) {}
   }
 
   @Test

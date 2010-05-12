@@ -1548,3 +1548,8 @@
   EntityEditPanel.createEntityFieldPanel() returns the above, set the text field as the property control
   EntityUiUtil.createCheckBox() checks if property is boolean and createTristateCheckBox() checks if it is nullable
   EntityTestUnit.createReferenceEntity(entityID) added
+  ValueChangeMapEditPanel.setControl() renamed to setComponent(), as well as other instances
+  ValueChangeMapImpl.stateModified() changed, now returns a new state on each invocation
+  ValueChangeMapImpl.stModified field removed
+  ValueChangeMapImpl.setAs() now starts by setting the original values so the modified state is correct on each subsequent set value
+  ValueChangeMap.clearOriginalValues() removed

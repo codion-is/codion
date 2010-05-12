@@ -703,13 +703,13 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
   }
 
   @Override
-  protected void notifyValueChange(final String key, final Object value, final boolean initialization, final Object oldValue) {
+  protected void notifyValueChange(final String key, final Object value, final Object oldValue, final boolean initialization) {
     if (EntityRepository.hasLinkedDerivedProperties(getEntityID(), key)) {
       final Collection<String> linkedPropertyIDs = EntityRepository.getLinkedDerivedPropertyIDs(getEntityID(), key);
       for (final String propertyID : linkedPropertyIDs)
-        super.notifyValueChange(propertyID, getValue(propertyID), false, null);
+        super.notifyValueChange(propertyID, getValue(propertyID), null, false);
     }
-    super.notifyValueChange(key, value, initialization, oldValue);
+    super.notifyValueChange(key, value, oldValue, initialization);
   }
 
   private void propagateReferenceValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
