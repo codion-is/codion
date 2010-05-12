@@ -175,10 +175,6 @@ public class Property implements Serializable {
     this.type = type;
     this.caption = caption;
     this.columnName = propertyID;
-    if (isDate())
-      setFormat(Configuration.getDefaultDateFormat());
-    else if (isTimestamp())
-      setFormat(Configuration.getDefaultTimestampFormat());
     setHidden(caption == null);
     setFormat(initializeFormat());
   }
