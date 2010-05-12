@@ -27,8 +27,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A class responsible for, among other things, coordinating a EntityEditModel and an EntityTableModel.
@@ -66,7 +68,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
   /**
    * Holds linked detail models that should be updated and filtered according to the selected entity/entities
    */
-  private final List<EntityModel> linkedDetailModels = new ArrayList<EntityModel>();
+  private final Set<EntityModel> linkedDetailModels = new HashSet<EntityModel>();
 
   /**
    * Indicates whether selection in a master model triggers the filtering of this model
@@ -235,7 +237,7 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
     if (detailModels.size() == 0)
       return null;
 
-    return linkedDetailModels.size() > 0 ? linkedDetailModels.get(0) : detailModels.get(0);
+    return linkedDetailModels.size() > 0 ? linkedDetailModels.iterator().next() : detailModels.get(0);
   }
 
   /**
@@ -253,11 +255,13 @@ public class EntityModel extends ValueChangeMapModel<String, Object> {
    * @param detailModels the detail models to link
    */
   public void setLinkedDetailModels(final List<EntityModel> detailModels) {
+    final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
     if (detailModels != null)
       linkedDetailModels.addAll(detailModels);
 
-    evtLinkedDetailModelsChanged.fire();
+    if (!linkedDetailModels.equals(linked))
+      evtLinkedDetailModelsChanged.fire();
   }
 
   /**

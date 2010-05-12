@@ -1563,3 +1563,4 @@
   BooleanProperty.nullValue removed
   Configuration.SQL_BOOLEAN_VALUE_NULL removed
   EntityCriteriaUtil.getBooleanSQLString() improved, now handles null true/false values
+  EntityModel.setLinkedDetailModels() no longer fires change event even if no changes are made
