@@ -30,6 +30,7 @@ import org.jminor.common.ui.input.InputProvider;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.input.IntInputProvider;
 import org.jminor.common.ui.input.TextInputProvider;
+import org.jminor.common.ui.input.ValueListInputProvider;
 import org.jminor.common.ui.valuemap.ValueChangeMapEditPanel;
 import org.jminor.common.ui.valuemap.ValueChangeMapPanel;
 import org.jminor.framework.Configuration;
@@ -1704,6 +1705,8 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection<Object> values = EntityUtil.getDistinctPropertyValues(toUpdate, property.getPropertyID());
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
+    if (property instanceof Property.ValueListProperty)
+      return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());
     if (property.isTimestamp())
       return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
     if (property.isDate())

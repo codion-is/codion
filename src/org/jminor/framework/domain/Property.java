@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.Item;
 import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
@@ -921,6 +922,43 @@ public class Property implements Serializable {
     @Override
     public boolean isDenormalized() {
       return true;
+    }
+  }
+
+  /**
+   * A property based on a list of values, each with a displayable caption.
+   */
+  public static class ValueListProperty extends Property {
+
+    final List<Item<Object>> values;
+
+    /**
+     * @param propertyID the property ID
+     * @param type the data type of this property
+     * @param caption the property caption
+     * @param values the values to base this property on
+     */
+    public ValueListProperty(final String propertyID, final int type, final String caption,
+                             final List<Item<Object>> values) {
+      super(propertyID, type, caption);
+      this.values = Collections.unmodifiableList(values);
+    }
+
+    public boolean isValid(final Object value) {
+      return values.contains(new Item<Object>(value, ""));
+    }
+
+    public List<Item<Object>> getValues() {
+      return values;
+    }
+
+    public String getCaption(final Object value) {
+      final Item item = new Item<Object>(value, "");
+      final int index = values.indexOf(item);
+      if (index >= 0)
+        return values.get(index).getCaption();
+
+      return "";
     }
   }
 

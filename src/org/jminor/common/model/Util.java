@@ -531,4 +531,13 @@ public class Util {
 
     return urls;
   }
+
+  public static ThreadLocal<Collator> getThreadLocalCollator() {
+    return new ThreadLocal<Collator>() {
+      @Override
+      protected synchronized Collator initialValue() {
+        return Collator.getInstance();
+      }
+    };
+  }
 }

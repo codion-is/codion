@@ -772,6 +772,31 @@ public abstract class EntityEditPanel extends ValueChangeMapEditPanel<String, Ob
   }
 
   /**
+   * Creates a SteppedComboBox containing the values defined by the given value list property,
+   * bound to the given property.
+   * @param propertyID the propertyID
+   * @return a SteppedComboBox bound to the property
+   * @throws IllegalArgumentException in case the property is not a value list property
+   */
+  protected final SteppedComboBox createValueListComboBox(final String propertyID) {
+    final Property property = EntityRepository.getProperty(getEditModel().getEntityID(), propertyID);
+    if (!(property instanceof Property.ValueListProperty))
+      throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
+
+    return EntityUiUtil.createValueListComboBox((Property.ValueListProperty) property, getEditModel());
+  }
+
+  /**
+   * Creates a SteppedComboBox containing the values defined in the given value list property,
+   * bound to the given property.
+   * @param property the property
+   * @return a SteppedComboBox bound to the property
+   */
+  protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property) {
+    return EntityUiUtil.createValueListComboBox(property, getEditModel());
+  }
+
+  /**
    * Creates an editable SteppedComboBox bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel

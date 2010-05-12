@@ -4,11 +4,12 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Item;
 
 /**
  * A ComboBoxModel for boolean values, true, false and null.
  */
-public class BooleanComboBoxModel extends ItemComboBoxModel {
+public class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
 
   /**
    * Constructs a new BooleanComboBoxModel.

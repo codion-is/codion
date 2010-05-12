@@ -3,8 +3,8 @@
  */
 package org.jminor.common.ui.input;
 
+import org.jminor.common.model.Item;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
-import org.jminor.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.JComboBox;
 
@@ -21,6 +21,6 @@ public class BooleanInputProvider extends AbstractInputProvider<Boolean> {
 
   @Override
   public Boolean getValue() {
-    return (Boolean) ((ItemComboBoxModel.Item) ((JComboBox) getInputComponent()).getModel().getSelectedItem()).getItem();
+    return (Boolean) ((Item) ((JComboBox) getInputComponent()).getModel().getSelectedItem()).getItem();
   }
 }

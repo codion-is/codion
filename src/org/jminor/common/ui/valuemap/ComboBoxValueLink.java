@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.Item;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 import org.jminor.common.ui.control.LinkType;
@@ -42,6 +43,7 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @param editModel the ValueChangeMapEditModel instance
    * @param property the property to link to
    * @param linkType the link type
+   * @param isString true if the underlying value is string based
    */
   public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<K, Object> editModel,
                            final K property, final LinkType linkType, final boolean isString) {
@@ -72,8 +74,8 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   @Override
   protected Object getUIValue() {
     if (boxModel instanceof ItemComboBoxModel)
-      return ((ItemComboBoxModel.Item) boxModel.getSelectedItem()).getItem();
-    
+      return ((Item) boxModel.getSelectedItem()).getItem();
+
     return boxModel.getSelectedItem();
   }
 

@@ -148,6 +148,7 @@ public class PropertyFilterPanel extends AbstractSearchPanel<Property> {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected SimpleDateFormat getInputFormat() {
     if (getModel().getType() == Types.TIMESTAMP)
       return Configuration.getDefaultTimestampFormat();

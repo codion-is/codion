@@ -47,7 +47,8 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
   }
 
   /**
-   * Sets the component that should receive the focus when the UI is cleared or activated
+   * Sets the component that should receive the focus when the UI is cleared or activated.
+   * Overrides the value set via setDefaultFocusComponentKey()
    * @param defaultFocusComponent the component
    * @return the component
    * @see #prepareUI(boolean, boolean)
@@ -60,7 +61,14 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return defaultFocusComponentKey;
   }
 
-  public void setDefaultFocusKey(final K defaultFocusComponentKey) {
+  /**
+   * Defines the component associated with the given key as the component
+   * that should recieve the default focus in this edit panel.
+   * This is overridden by setDefaultFocusComponent().
+   * @param defaultFocusComponentKey the component key
+   * @see #setDefaultFocusComponent(javax.swing.JComponent)
+   */
+  public void setDefaultFocusComponentKey(final K defaultFocusComponentKey) {
     this.defaultFocusComponentKey = defaultFocusComponentKey;
   }
 

@@ -12,6 +12,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
@@ -335,6 +336,14 @@ public class EntityUiUtil {
     UiUtil.selectAllOnFocusGained(lookupField);
 
     return lookupField;
+  }
+
+  public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel) {
+    final SteppedComboBox comboBox = createComboBox(property, editModel,
+            new ItemComboBoxModel<Object>(property.getValues()), null);
+    MaximumMatch.enable(comboBox);
+
+    return comboBox;
   }
 
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,

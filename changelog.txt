@@ -1553,3 +1553,9 @@
   ValueChangeMapImpl.stModified field removed
   ValueChangeMapImpl.setAs() now starts by setting the original values so the modified state is correct on each subsequent set value
   ValueChangeMap.clearOriginalValues() removed
+  ItemComboBoxModel.Item moved to common.model
+  ItemComboBoxModel sorts items by caption and adds the null item at top
+  Property.ValueListProperty added
+  Entity.setValue() now validates value list property values
+  EntityTableModel.getValueAt() now returns the caption value for value list properties
+  ValueListInputProvider added to common.ui.input

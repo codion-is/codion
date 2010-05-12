@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -41,7 +42,7 @@ public class SelectedItemBeanValueLink extends AbstractBeanValueLink {
   @Override
   protected Object getUIValue() {
     if (comboBoxModel instanceof ItemComboBoxModel)
-      return ((ItemComboBoxModel.Item) comboBoxModel.getSelectedItem()).getItem();
+      return ((Item) comboBoxModel.getSelectedItem()).getItem();
     else
       return comboBoxModel.getSelectedItem();
   }

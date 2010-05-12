@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.client.model.EntityComboBoxModel;
@@ -60,7 +61,9 @@ public class EntityComboBox extends SteppedComboBox {
   }
 
   public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyID) {
-    return new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyPropertyID));
+    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyPropertyID));
+    MaximumMatch.enable(comboBox);
+    return comboBox;
   }
 
   private JPopupMenu initializePopupMenu() {

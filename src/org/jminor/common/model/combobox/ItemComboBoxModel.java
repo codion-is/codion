@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.combobox;
 
+import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 
 import javax.swing.DefaultComboBoxModel;
@@ -10,11 +11,15 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A ComboBoxModel implementation based on the <code>ItemComboBoxModel.Item</code> class.
  */
-public class ItemComboBoxModel extends DefaultComboBoxModel {
+public class ItemComboBoxModel<T> extends DefaultComboBoxModel {
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {
@@ -25,8 +30,12 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
    * Constructs a new ItemComboBoxModel
    * @param items the items
    */
-  public ItemComboBoxModel(final Item... items) {
-    initializeItems(items);
+  public ItemComboBoxModel(final Item<T>... items) {
+    this(Arrays.asList(items));
+  }
+
+  public ItemComboBoxModel(final List<Item<T>> items) {
+    initializeItems(new ArrayList<Item<T>>(items));
   }
 
   /** {@inheritDoc} */
@@ -42,8 +51,21 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
     return indexOf(item);
   }
 
-  protected void initializeItems(final Item[] items) {
+  @SuppressWarnings({"unchecked"})
+  @Override
+  public Item<T> getSelectedItem() {
+    return (Item<T>) super.getSelectedItem();
+  }
+
+  protected void initializeItems(final List<Item<T>> items) {
     if (items != null) {
+      Item<T> nullItem = null;
+      final int nullIndex = items.indexOf(new Item<T>(null, ""));
+      if (nullIndex >= 0)
+        nullItem = items.remove(nullIndex);
+      Collections.sort(items);
+      if (nullItem != null)
+        super.addElement(nullItem);
       for (final Item item : items)
         super.addElement(item);
     }
@@ -60,49 +82,14 @@ public class ItemComboBoxModel extends DefaultComboBoxModel {
   }
 
   /**
-   * An Item to use in a ItemComboBoxModel.
-   * @param <T> the type of the actual item
-   */
-  public static class Item<T> {
-
-    private final T item;
-    private final String caption;
-
-    public Item(final T item, final String caption) {
-      this.item = item;
-      this.caption = caption;
-    }
-
-    /**
-     * @return the caption
-     */
-    public String getCaption() {
-      return caption;
-    }
-
-    /**
-     * @return the actual item
-     */
-    public T getItem() {
-      return item;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-      return getCaption();
-    }
-  }
-
-  /**
    * An IconItem to use in a ItemComboBoxModel.
    */
-  public static class IconItem extends Item<Object> implements Icon {
+  public static class IconItem<T> extends Item<T> implements Icon {
 
     private final ImageIcon icon;
 
-    public IconItem(final Object item, final ImageIcon icon) {
-      super(item, null);
+    public IconItem(final T item, final ImageIcon icon) {
+      super(item, item == null ? "" : item.toString());
       if (icon == null)
         throw new IllegalArgumentException("ItemComboBoxModel.IconItem must have an icon");
       this.icon = icon;

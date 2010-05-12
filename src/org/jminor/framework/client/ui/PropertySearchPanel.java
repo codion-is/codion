@@ -6,9 +6,11 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.ui.AbstractSearchPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
+import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.DoubleBeanValueLink;
 import org.jminor.common.ui.control.FormattedTextBeanValueLink;
 import org.jminor.common.ui.control.IntBeanValueLink;
@@ -62,6 +64,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected SimpleDateFormat getInputFormat() {
     if (getModel().getType() == Types.TIMESTAMP)
       return Configuration.getDefaultTimestampFormat();
@@ -85,6 +88,8 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
 
   private JComponent initField(final SimpleDateFormat dateFormat) {
     final Property property = getModel().getSearchProperty();
+    if (property instanceof Property.ValueListProperty)
+      return initValueListField((Property.ValueListProperty) property);
     if (property.isTime())
       return UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat));
     else if (property.isDouble())
@@ -97,6 +102,14 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
       return initEntityField();
     else
       return new JTextField(4);
+  }
+
+  private JComponent initValueListField(final Property.ValueListProperty property) {
+    final ItemComboBoxModel<Object> boxModel = new ItemComboBoxModel<Object>(property.getValues());
+    final SteppedComboBox box = new SteppedComboBox(boxModel);
+    MaximumMatch.enable(box);
+
+    return box;
   }
 
   private JComponent initEntityField() {
@@ -128,7 +141,12 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
 
   private void bindField(final JComponent field, final boolean isUpperBound, final SimpleDateFormat format) {
     final Property property = getModel().getSearchProperty();
-    if (property.isTime()) {
+    if (property instanceof Property.ValueListProperty) {
+      new SelectedItemBeanValueLink((JComboBox) field, getModel(),
+                isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
+                Object.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(), LinkType.READ_WRITE);
+    }
+    else if (property.isTime()) {
       new FormattedTextBeanValueLink((JFormattedTextField) field, getModel(),
               isUpperBound ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
               Timestamp.class, isUpperBound ? getModel().eventUpperBoundChanged() : getModel().eventLowerBoundChanged(),
