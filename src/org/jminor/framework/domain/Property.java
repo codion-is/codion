@@ -938,6 +938,16 @@ public class Property implements Serializable {
     final List<Item<Object>> values;
 
     /**
+     * Instantiates a new hidden value list property
+     * @param propertyID the property ID
+     * @param type the data type of this property
+     * @param values the values to base this property on
+     */
+    public ValueListProperty(final String propertyID, final int type, final List<Item<Object>> values) {
+      this(propertyID, type, null, values);
+    }
+
+    /**
      * @param propertyID the property ID
      * @param type the data type of this property
      * @param caption the property caption
