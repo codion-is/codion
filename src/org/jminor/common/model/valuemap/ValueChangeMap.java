@@ -77,7 +77,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   void revertAll();
 
   /**
-   * @return a new instance compatible with this instance,
+   * @return a new ValueChangeMap instance compatible with this instance,
    * preferably with a matching mapTypeID.
    * @see #getMapTypeID()
    */
@@ -100,8 +100,8 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
    * After a call to this method this ValueMap should contain the same values and original values as the given map.
-   * A null argument to this method clears the destination map.
-   * @param map the map to copy
+   * A null argument to this method clears the destination map of all values and original values.
+   * @param map the map to copy or null for clearing the destination map
    */
   void setAs(final ValueChangeMap<K, V> map);
 
@@ -123,7 +123,7 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
   Collection<K> getValueKeys();
 
 /**
-   * @return the keys mapping the original values in this ValueChangeMap
+   * @return an unmodifiable view of the keys mapping the original values in this ValueChangeMap
    */
   Collection<K> getOriginalValueKeys();
 }

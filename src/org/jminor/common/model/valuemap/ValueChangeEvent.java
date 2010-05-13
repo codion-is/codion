@@ -15,7 +15,7 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   /**
    * The ID of the type of object owning the property
    */
-  private final String propertyOwnerTypeID;
+  private final String valueOwnerTypeID;
 
   /**
    * The key
@@ -45,18 +45,18 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
 
   /**
    * Instantiates a new PropertyEvent
-   * @param source the source of the property value change
-   * @param propertyOwnerTypeID the ID of the type of object which owns the property
-   * @param key the property ID
+   * @param source the source of the value change
+   * @param valueOwnerTypeID the ID of the type of object which owns the value
+   * @param key the key associated with the value
    * @param newValue the new value
    * @param oldValue the old value
    * @param isModelChange true if the value change originates from the model, false if it originates in the UI
-   * @param initialization true if the property value was being initialized
+   * @param initialization true if the value was being initialized
    */
-  public ValueChangeEvent(final Object source, final String propertyOwnerTypeID, final K key, final V newValue,
+  public ValueChangeEvent(final Object source, final String valueOwnerTypeID, final K key, final V newValue,
                           final V oldValue, final boolean isModelChange, final boolean initialization) {
     super(source, 0, key.toString());
-    this.propertyOwnerTypeID = propertyOwnerTypeID;
+    this.valueOwnerTypeID = valueOwnerTypeID;
     this.key = key;
     this.newValue = newValue;
     this.oldValue = oldValue;
@@ -65,28 +65,28 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   }
 
   /**
-   * @return the ID of the type of object owning the property
+   * @return the ID of the type of object owning the value
    */
-  public String getPropertyOwnerTypeID() {
-    return propertyOwnerTypeID;
+  public String getValueOwnerTypeID() {
+    return valueOwnerTypeID;
   }
 
   /**
-   * @return the property which value just changed
+   * @return the key of the associated with the changed value
    */
   public K getKey() {
     return key;
   }
 
   /**
-   * @return the property's old value
+   * @return the old value
    */
   public Object getOldValue() {
     return oldValue;
   }
 
   /**
-   * @return the property's new value
+   * @return the new value
    */
   public Object getNewValue() {
     return newValue;
@@ -141,7 +141,7 @@ public class ValueChangeEvent<K, V> extends ActionEvent {
   }
 
   /**
-   * @return true if this property did not have a value prior to this value change
+   * @return true if this key had no associated value prior to this value change
    */
   public boolean isInitialization() {
     return initialization;

@@ -114,7 +114,7 @@ public class EntityEditModelTest {
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }
 
-    editModel.clear();
+    editModel.setValueMap(null);
     assertTrue("Active entity is not null after model is cleared", employeeModel.getEditModel().getEntityCopy().isNull());
   }
 

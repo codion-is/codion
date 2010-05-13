@@ -35,13 +35,13 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     this.model = model;
   }
 
-  public ValueChangeMapEditModel getEditModel() {
+  public ValueChangeMapEditModel<K, V> getEditModel() {
     return model;
   }
 
   public void prepareUI(final boolean requestDefaultFocus, final boolean clearUI) {
     if (clearUI)
-      getEditModel().clear();
+      getEditModel().setValueMap(null);
     if (requestDefaultFocus && isVisible())
       setDefaultFocus();
   }

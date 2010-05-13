@@ -223,7 +223,8 @@ public class ValueChangeMapImpl<K, V> implements ValueChangeMap<K, V>, Serializa
 
   /** {@inheritDoc} */
   public Collection<K> getOriginalValueKeys() {
-    return originalValues == null ? new ArrayList<K>() : originalValues.keySet();
+    return originalValues == null ? new ArrayList<K>() :
+            Collections.unmodifiableCollection(originalValues.keySet());
   }
 
   /** {@inheritDoc} */

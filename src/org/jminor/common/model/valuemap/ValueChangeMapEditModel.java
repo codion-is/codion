@@ -9,12 +9,11 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
-import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class which facilitates the editing the contents of a ValueChangeMap instance.
+ * A class which facilitates the editing of the contents of a ValueChangeMap instance.
  * @param <K> the type of the keys in the value map
  * @param <V> the type of the values in the value map
  */
@@ -37,7 +36,6 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
 
   private final ValueChangeMap<K, V> valueMap;
   private final Event evtValueMapSet = new Event();
-  private final Event evtModelCleared = new Event();
 
   /**
    * Holds events signaling value changes made via the ui
@@ -82,14 +80,6 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   }
 
   /**
-   * Clears all values from the underlying value map
-   */
-  public void clear() {
-    setValueMap(null);
-    evtModelCleared.fire();
-  }
-
-  /**
    * @param key the key
    * @return true if the value of the given key is null
    */
@@ -100,7 +90,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   /**
    * Sets the active value map, that is, deep copies the value from the source map into the underlying map
    * @param valueMap the map to set as active, if null then the default map value is set as active
-   * @see #evtValueMapSet
+   * @see #getDefaultValueMap() 
    * @see #eventValueMapSet()
    */
   public void setValueMap(final ValueChangeMap<K, V> valueMap) {
@@ -199,13 +189,6 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
   }
 
   /**
-   * @return an Event fired when the model has been cleared
-   */
-  public Event eventModelCleared() {
-    return evtModelCleared;
-  }
-
-  /**
    * @return a State indicating the modified status of this value map
    */
   public State stateModified() {
@@ -236,7 +219,7 @@ public abstract class ValueChangeMapEditModel<K, V> implements Refreshable {
    * @param key the key
    * @param event the event describing the value change
    */
-  protected void notifyValueSet(final K key, final ActionEvent event) {
+  protected void notifyValueSet(final K key, final ValueChangeEvent event) {
     getValueSetEvent(key).fire(event);
   }
 

@@ -582,6 +582,14 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     return new EntityLookupModel(entityID, getDbProvider(), additionalSearchCriteria, lookupProperties);
   }
 
+  /**
+   * Clears the edit model and sets the default state.
+   * @see #getDefaultValueMap()
+   */
+  public void clear() {
+    setValueMap(null);
+  }
+
   @Override
   public final Entity getDefaultValueMap() {
     final Entity defaultEntity = new Entity(getEntityID());
@@ -807,7 +815,7 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
       getEntity().addValueListener(new ValueChangeListener<String, Object>() {
         @Override
         protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-          final String msg = getPropertyChangeDebugString(event);
+          final String msg = getValueChangeDebugString(event);
           System.out.println(msg);
           log.trace(msg);
         }
@@ -828,14 +836,14 @@ public class EntityEditModel extends ValueChangeMapEditModel<String, Object> {
     propertyComboBoxModels.put(property, model);
   }
 
-  private static String getPropertyChangeDebugString(final ValueChangeEvent<String, Object> event) {
+  private static String getValueChangeDebugString(final ValueChangeEvent<String, Object> event) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (event.getSource() instanceof Entity)
       stringBuilder.append("[entity] ");
     else
       stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
-    final Property property = EntityRepository.getProperty(event.getPropertyOwnerTypeID(), event.getKey());
-    stringBuilder.append(event.getPropertyOwnerTypeID()).append(" : ").append(property).append(
+    final Property property = EntityRepository.getProperty(event.getValueOwnerTypeID(), event.getKey());
+    stringBuilder.append(event.getValueOwnerTypeID()).append(" : ").append(property).append(
             property.hasParentProperty() ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (event.getOldValue() != null)
