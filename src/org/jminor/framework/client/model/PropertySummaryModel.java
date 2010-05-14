@@ -142,7 +142,7 @@ public class PropertySummaryModel {
     public String getSummary(final Collection<?> values, final Property property, final Format format) {
       String txt = "";
       if (property.isInteger()) {
-        int sum = 0;
+        long sum = 0;
         for (final Object obj : values)
           sum += (Integer)obj;
         txt = format.format(sum);

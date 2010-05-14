@@ -1565,3 +1565,6 @@
   EntityCriteriaUtil.getBooleanSQLString() improved, now handles null true/false values
   EntityModel.setLinkedDetailModels() no longer fires change event even if no changes are made
   ValueChangeMapEditModel.clear() removed, added to EntityEditModel
+  ValueChangeMapEditPanel.getComponent(key) added
+  PropertySummaryModel.Sum now uses long for integer sums, preventing overflow
+  EntityPanel.getSelectComponentProperties() now excludes disabled components

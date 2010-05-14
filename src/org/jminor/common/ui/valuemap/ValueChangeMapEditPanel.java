@@ -87,6 +87,13 @@ public abstract class ValueChangeMapEditPanel<K, V> extends JPanel {
     return new ArrayList<K>(components.keySet());
   }
 
+  public JComponent getComponent(final K key) {
+    if (!components.containsKey(key))
+      throw new RuntimeException("No component associated with key: " + key);
+
+    return components.get(key);
+  }
+
   public void selectComponent(final K key) {
     if (components.containsKey(key))
       components.get(key).requestFocusInWindow();

@@ -1042,11 +1042,18 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
 
   /**
    * @return a list of properties to use when selecting a input component in the edit panel,
-   * by default this returns all the properties that have mapped components in the edit panel.
+   * by default this returns all the properties that have mapped enabled components in the edit panel.
    * @see ValueChangeMapEditPanel#setComponent(Object, javax.swing.JComponent)
    */
   protected List<Property> getSelectComponentProperties() {
-    return EntityUtil.getSortedProperties(getModel().getEntityID(), getEditPanel().getComponentKeys());
+    final EntityEditPanel editPanel = (EntityEditPanel) getEditPanel();
+    final Collection<String> componentKeys = editPanel.getComponentKeys();
+    final Collection<String> focusableComponentKeys = new ArrayList<String>(componentKeys.size());
+    for (final String key : componentKeys) {
+      if (editPanel.getComponent(key).isEnabled())
+        focusableComponentKeys.add(key);
+    }
+    return EntityUtil.getSortedProperties(getModel().getEntityID(), focusableComponentKeys);
   }
 
   /**
@@ -1212,43 +1219,43 @@ public abstract class EntityPanel extends ValueChangeMapPanel<String, Object> im
     if (containsTablePanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectTablePanel") {
-                public void actionPerformed(ActionEvent event) {
-                  getTablePanel().getJTable().requestFocusInWindow();
-                }
+      public void actionPerformed(ActionEvent event) {
+        getTablePanel().getJTable().requestFocusInWindow();
+      }
               });
-    }
+      }
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectEditPanel") {
-                public void actionPerformed(ActionEvent event) {
-                  if (getEditPanelState() == HIDDEN)
-                    setEditPanelState(EMBEDDED);
-                  getEditPanel().prepareUI(true, false);
-                }
+      public void actionPerformed(ActionEvent event) {
+        if (getEditPanelState() == HIDDEN)
+          setEditPanelState(EMBEDDED);
+        getEditPanel().prepareUI(true, false);
+      }
               });
       UiUtil.addKeyEvent(this, KeyEvent.VK_C, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectComponent") {
-                public void actionPerformed(ActionEvent event) {
-                  if (getEditPanelState() == HIDDEN)
-                    setEditPanelState(EMBEDDED);
+      public void actionPerformed(ActionEvent event) {
+        if (getEditPanelState() == HIDDEN)
+          setEditPanelState(EMBEDDED);
 
-                  final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectComponentProperties(),
-                          Messages.get(Messages.SELECT_INPUT_FIELD));
-                  if (property != null)
-                    getEditPanel().selectComponent(property.getPropertyID());
-                }
+        final Property property = (Property) UiUtil.selectValue(getEditPanel(), getSelectComponentProperties(),
+                Messages.get(Messages.SELECT_INPUT_FIELD));
+        if (property != null)
+          getEditPanel().selectComponent(property.getPropertyID());
+      }
               });
     }
-    if (getTablePanel().getSearchPanel() != null) {
-      UiUtil.addKeyEvent(this, KeyEvent.VK_S, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      if (getTablePanel().getSearchPanel() != null) {
+        UiUtil.addKeyEvent(this, KeyEvent.VK_S, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK, true, new AbstractAction("selectSearchPanel") {
                 public void actionPerformed(ActionEvent event) {
                   getTablePanel().setSearchPanelVisible(true);
                   getTablePanel().getSearchPanel().requestFocusInWindow();
-                }
-              });
+      }
+     });
     }
-  }
+   }
 
   /**
    * Initializes the edit control panel.
