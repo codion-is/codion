@@ -1568,11 +1568,19 @@
   ValueChangeMapEditPanel.getComponent(key) added
   PropertySummaryModel.Sum now uses long for integer sums, preventing overflow
   EntityPanel.getSelectComponentProperties() now excludes disabled components
-0.5.5  
+0.5.5
   Criteria.getValues() added
+  Criteria.getTypes() added
   DbConnection.connected field removed
   EntityUtil.hashKeysByEntityID() added
   PropertyCriteria.getForeignKeyCriteriaValues() and getMultipleColumnForeignKeyCriteriaValues() added
   EntityDbPreparedConnection added
   Configuration.USE_PREPARED_CONNECTIONS added
   EntityKeyCriteria now extends CriteriaSet and delegates to PropertyCriteria
+  Criteria generified
+  Criteria.getTypes() removed
+  Criteria.getValueKeys() added
+  EntityCriteria.getTypes() renamed to getValueProperties()
+  EntityDbPreparedConnection.setStatementValue() now handles the specific case of Property.BooleanProperty
+  EntityUtil.getRandomValue() now handles value list properties correctly
+  Entity.Key.isCompositeKey() added

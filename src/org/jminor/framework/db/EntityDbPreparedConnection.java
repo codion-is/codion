@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -19,10 +20,12 @@ import org.jminor.framework.domain.Property;
 
 import org.apache.log4j.Logger;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,26 +55,16 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    String sql = "";
+    String selectQuery = "";
     try {
-      final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
-      if (selectQuery == null) {
-        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
+      selectQuery = initializeSelectQuery(criteria, PREPARED_VALUE_PROVIDER,
+              EntityRepository.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
 
-        sql = EntityDbConnection.getSelectSQL(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-                criteria.getWhereClause(null, PREPARED_VALUE_PROVIDER,
-                        !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
-      }
-      else {
-        sql = selectQuery + " " + criteria.getWhereClause(null, PREPARED_VALUE_PROVIDER,
-                !selectQuery.toLowerCase().contains("where"));
-      }
-      statement = getConnection().prepareStatement(sql);
-
+      statement = getConnection().prepareStatement(selectQuery);
       final List<?> values = criteria.getValues();
-      setValues(statement, values, criteria.getTypes());
+      setStatementValues(statement, values, criteria.getValueProperties());
 
-      resultSet = executePreparedSelect(statement, sql, values);
+      resultSet = executePreparedSelect(statement, selectQuery, values);
 
       final List<Entity> result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
 
@@ -80,9 +73,9 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
       return result;
     }
     catch (SQLException exception) {
-      log.info(sql);
+      log.info(selectQuery);
       log.error(this, exception);
-      throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
+      throw new DbException(exception, selectQuery, getDatabase().getErrorMessage(exception));
     }
     finally {
       cleanup(statement, resultSet);
@@ -94,27 +87,22 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
   public int selectRowCount(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
+    String selectQuery = "";
     try {
-      final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
-      String sql;
-      if (selectQuery == null) {
-        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = getSelectSQL(datasource, "count(*)", criteria.getWhereClause(getDatabase(), PREPARED_VALUE_PROVIDER,
-                !datasource.toLowerCase().contains("where")), null);
+      selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
+      selectQuery = getSelectSQL(selectQuery == null ? EntityRepository.getSelectTableName(criteria.getEntityID()) :
+              "(" + selectQuery + " " + criteria.getWhereClause(getDatabase(), PREPARED_VALUE_PROVIDER,
+                      !selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
+      selectQuery += " " + criteria.getWhereClause(null, PREPARED_VALUE_PROVIDER, !containsWhereKeyword(selectQuery));
 
-      }
-      else {
-        sql = getSelectSQL("(" + selectQuery + " " + criteria.getWhereClause(getDatabase(), PREPARED_VALUE_PROVIDER,
-                !selectQuery.toLowerCase().contains("where")) + ") alias", "count(*)", null, null);
-      }
-
-      statement = getConnection().prepareStatement(sql);
+      statement = getConnection().prepareStatement(selectQuery);
       final List<?> values = criteria.getValues();
-      setValues(statement, values, criteria.getTypes());
+      setStatementValues(statement, values, criteria.getValueProperties());
 
-      resultSet = executePreparedSelect(statement, sql, values);
+      resultSet = executePreparedSelect(statement, selectQuery, values);
 
       final List<Integer> result = INT_PACKER.pack(resultSet, -1);
+
       if (result.size() == 0)
         throw new RecordNotFoundException("Record count query returned no value");
       else if (result.size() > 1)
@@ -123,8 +111,9 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
       return result.get(0);
     }
     catch (SQLException e) {
+      log.info(selectQuery);
       log.error(this, e);
-      throw new DbException(e, null, getDatabase().getErrorMessage(e));
+      throw new DbException(e, selectQuery, getDatabase().getErrorMessage(e));
     }
     finally {
       cleanup(statement, resultSet);
@@ -138,6 +127,7 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
       return;
 
     PreparedStatement statement = null;
+    String deleteQuery = "";
     try {
       final Map<String, Collection<Entity.Key>> hashed = EntityUtil.hashKeysByEntityID(entities);
       for (final String entityID : hashed.keySet())
@@ -145,21 +135,20 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
           throw new DbException("Cannot delete a read only entity: " + entityID);
 
       for (final Map.Entry<String, Collection<Entity.Key>> entry : hashed.entrySet()) {
-        final List<Property.PrimaryKeyProperty> properties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
-        final String sql = "delete from " + EntityRepository.getTableName(entry.getKey())
-                + getWhereCondition(properties);
-        statement = getConnection().prepareStatement(sql);
-        final List<Object> values = new ArrayList<Object>(properties.size());
-        final List<Integer> types = new ArrayList<Integer>(properties.size());
+        final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
+        deleteQuery = "delete from " + EntityRepository.getTableName(entry.getKey()) + getWhereCondition(primaryKeyProperties);
+        statement = getConnection().prepareStatement(deleteQuery);
+        final List<Object> values = new ArrayList<Object>(primaryKeyProperties.size());
+        final List<Property> properties = new ArrayList<Property>(primaryKeyProperties.size());
         for (final Entity.Key key : entry.getValue()) {
           values.clear();
-          types.clear();
-          for (final Property property : properties) {
+          properties.clear();
+          for (final Property property : primaryKeyProperties) {
             values.add(key.getOriginalValue(property.getPropertyID()));
-            types.add(property.getType());
+            properties.add(property);
           }
-          setValues(statement, values, types);
-          executePreparedUpdate(statement, sql, values);
+          setStatementValues(statement, values, properties);
+          executePreparedUpdate(statement, deleteQuery, values);
         }
         statement.close();
       }
@@ -167,9 +156,11 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
         getConnection().commit();
     }
     catch (SQLException e) {
-      rollbackQuietly();
+      if (!isTransactionOpen())
+        rollbackQuietly();
+      log.info(deleteQuery);
       log.error(this, e);
-      throw new DbException(e, null, getDatabase().getErrorMessage(e));
+      throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
       cleanup(statement, null);
@@ -180,23 +171,27 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
   @Override
   public void delete(final EntityCriteria criteria) throws DbException {
     PreparedStatement statement = null;
+    String deleteQuery = "";
     try {
       if (EntityRepository.isReadOnly(criteria.getEntityID()))
         throw new DbException("Cannot delete a read only entity: " + criteria.getEntityID());
 
-      final String sql = getDeleteSQL(getDatabase(), criteria, PREPARED_VALUE_PROVIDER);
-      statement = getConnection().prepareStatement(sql);
+      deleteQuery = getDeleteSQL(getDatabase(), criteria, PREPARED_VALUE_PROVIDER);
+      statement = getConnection().prepareStatement(deleteQuery);
+
       final List<?> values = criteria.getValues();
-      setValues(statement, values, criteria.getTypes());
-      executePreparedUpdate(statement, sql, values);
+      setStatementValues(statement, values, criteria.getValueProperties());
+      executePreparedUpdate(statement, deleteQuery, values);
 
       if (!isTransactionOpen())
         getConnection().commit();
     }
     catch (SQLException e) {
-      rollbackQuietly();
+      if (!isTransactionOpen())
+        rollbackQuietly();
+      log.info(deleteQuery);
       log.error(this, e);
-      throw new DbException(e, null, getDatabase().getErrorMessage(e));
+      throw new DbException(e, deleteQuery, getDatabase().getErrorMessage(e));
     }
     finally {
       cleanup(statement, null);
@@ -209,6 +204,7 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
     if (entities == null || entities.size() == 0)
       return entities;
 
+    String updateQuery = "";
     PreparedStatement statement = null;
     try {
       final Map<String, Collection<Entity>> hashed = EntityUtil.hashByEntityID(entities);
@@ -217,29 +213,29 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
           throw new DbException("Cannot update a read only entity: " + entityID);
 
       for (final Map.Entry<String, Collection<Entity>> entry : hashed.entrySet()) {
-        final List<Property.PrimaryKeyProperty> pkProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
+        final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityRepository.getPrimaryKeyProperties(entry.getKey());
         for (final Entity entity : entry.getValue()) {
           if (!entity.isModified())
             throw new DbException("Trying to update non-modified entity: " + entity);
           if (isOptimisticLocking())
             checkIfModified(entity);
-          
+
           final Collection<Property> updateProperties = getUpdateProperties(entity);
-          final String sql = getUpdateSQL(entity, updateProperties, pkProperties);
+          updateQuery = getUpdateSQL(entity, updateProperties, primaryKeyProperties);
           final List<Object> values = new ArrayList<Object>(updateProperties.size());
-          final List<Integer> types = new ArrayList<Integer>(updateProperties.size());
+          final List<Property> properties = new ArrayList<Property>(updateProperties.size());
           for (final Property property : updateProperties) {
             values.add(entity.getValue(property.getPropertyID()));
-            types.add(property.getType());
+            properties.add(property);
           }
-          for (final Property.PrimaryKeyProperty pkProperty : pkProperties) {
-            values.add(entity.getPrimaryKey().getOriginalValue(pkProperty.getPropertyID()));
-            types.add(pkProperty.getType());
+          for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
+            values.add(entity.getPrimaryKey().getOriginalValue(primaryKeyProperty.getPropertyID()));
+            properties.add(primaryKeyProperty);
           }
 
-          statement = getConnection().prepareStatement(sql);
-          setValues(statement, values, types);
-          executePreparedUpdate(statement, sql, values);
+          statement = getConnection().prepareStatement(updateQuery);
+          setStatementValues(statement, values, properties);
+          executePreparedUpdate(statement, updateQuery, values);
           statement.close();
         }
       }
@@ -249,9 +245,10 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
       return selectMany(EntityUtil.getPrimaryKeys(entities));
     }
     catch (SQLException e) {
-      rollbackQuietly();
+      if (!isTransactionOpen())
+        rollbackQuietly();
       log.error(this, e);
-      throw new DbException(e, null, getDatabase().getErrorMessage(e));
+      throw new DbException(e, updateQuery, getDatabase().getErrorMessage(e));
     }
     finally {
       cleanup(statement, null);
@@ -266,6 +263,7 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
 
     final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
     PreparedStatement statement = null;
+    String insertQuery = "";
     try {
       for (final Entity entity : entities) {
         if (EntityRepository.isReadOnly(entity.getEntityID()))
@@ -276,17 +274,17 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
                   queryNewIdValue(entity.getEntityID(), idSource));
 
         final Collection<Property> insertProperties = getInsertProperties(entity);
-        final String sql = getInsertSQL(entity.getEntityID(), insertProperties);
+        insertQuery = getInsertSQL(entity.getEntityID(), insertProperties);
         final List<Object> values = new ArrayList<Object>(insertProperties.size());
-        statement = getConnection().prepareStatement(sql);
+        statement = getConnection().prepareStatement(insertQuery);
         int i = 1;
         for (final Property property : insertProperties) {
           final Object value = entity.getValue(property);
           values.add(value);
-          setStatementValue(statement, i++, value, property.getType());
+          setStatementValue(statement, i++, value, property);
         }
 
-        executePreparedUpdate(statement, sql, values);
+        executePreparedUpdate(statement, insertQuery, values);
 
         if (idSource.isAutoIncrement() && entity.getPrimaryKey().isNull())
           entity.setValue(entity.getPrimaryKey().getFirstKeyProperty().getPropertyID(),
@@ -302,9 +300,11 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
       return keys;
     }
     catch (SQLException e) {
-      rollbackQuietly();
+      if (!isTransactionOpen())
+        rollbackQuietly();
+      log.info(insertQuery);
       log.error(this, e);
-      throw new DbException(e, null, getDatabase().getErrorMessage(e));
+      throw new DbException(e, insertQuery, getDatabase().getErrorMessage(e));
     }
     finally {
       cleanup(statement, null);
@@ -313,11 +313,13 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
 
   /**
    * @param entity the Entity instance
+   * @param properties the properties being updated
+   * @param primaryKeyProperties the primary key properties for the given entity
    * @return a query for updating this entity instance
    * @throws DbException in case the entity is unmodified or it contains no modified updatable properties
    */
   static String getUpdateSQL(final Entity entity, final Collection<Property> properties,
-                             final List<Property.PrimaryKeyProperty> pkProperties) throws DbException {
+                             final List<Property.PrimaryKeyProperty> primaryKeyProperties) throws DbException {
     if (!entity.isModified())
       throw new DbException("Can not get update sql for an unmodified entity");
 
@@ -330,10 +332,12 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
         sql.append(", ");
     }
 
-    return sql.append(getWhereCondition(pkProperties)).toString();
+    return sql.append(getWhereCondition(primaryKeyProperties)).toString();
   }
 
   /**
+   * @param entityID the entityID
+   * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting this entity instance
    */
   static String getInsertSQL(final String entityID, final Collection<Property> insertProperties) {
@@ -407,33 +411,66 @@ public class EntityDbPreparedConnection extends EntityDbConnection implements En
 
   private void rollbackQuietly() {
     try {
-      if (!isTransactionOpen())
-        getConnection().rollback();
+      getConnection().rollback();
     }
     catch (SQLException e) {/**/}
   }
 
-  private void setValues(final PreparedStatement statement, final Collection<?> values, final List<Integer> types) throws SQLException {
+  private void setStatementValues(final PreparedStatement statement, final Collection<?> values, final List<Property> properties) throws SQLException {
     if (values == null || values.size() == 0)
       return;
-    if (types == null || types.size() != values.size())
-      throw new RuntimeException("Types not specified: " + (types == null ? "no types" : ("expected: " + values.size() + ", got: " + types.size())));
+    if (properties == null || properties.size() != values.size())
+      throw new RuntimeException("Properties not specified: " + (properties == null ? "no types" : ("expected: " + values.size() + ", got: " + properties.size())));
 
     if (statement.getParameterMetaData().getParameterCount() == 0)
       return;
 
     int i = 1;
     for (final Object value : values) {
-      setStatementValue(statement, i, value, types.get(i-1));
+      setStatementValue(statement, i, value, properties.get(i-1));
       i++;
     }
   }
 
-  private void setStatementValue(final PreparedStatement statement, final int index, final Object value, final int type) throws SQLException {
-    if (value == null)
-      statement.setNull(index, type);
-    else
-     statement.setObject(index, value, type);
+  private void setStatementValue(final PreparedStatement statement, final int index, final Object value, final Property property) throws SQLException {
+    final int columnType = translateType(property);
+    final Object columnValue = translateValue(property, value);
+    try {
+      if (columnValue == null)
+        statement.setNull(index, columnType);
+      else
+       statement.setObject(index, columnValue, columnType);
+    }
+    catch (SQLException e) {
+      System.out.println("Unable to set property value: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()));
+      throw e;
+    }
+  }
+
+  private Object translateValue(final Property property, final Object value) {
+    if (property.isBoolean()) {
+      if (property instanceof Property.BooleanProperty)
+        return ((Property.BooleanProperty) property).toSQLValue((Boolean) value);
+      else
+        return value == null ? null : ((Boolean) value ?
+                Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE) :
+                Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
+    }
+    else if (value instanceof java.util.Date)
+      return new Date(((java.util.Date) value).getTime());
+
+    return value;
+  }
+
+  private int translateType(final Property property) {
+    if (property.isBoolean()) {
+      if (property instanceof Property.BooleanProperty)
+        return ((Property.BooleanProperty) property).getColumnType();
+      else
+        return Types.INTEGER;
+    }
+
+    return property.getType();
   }
 
   private void cleanup(final Statement statement, final ResultSet resultSet) {

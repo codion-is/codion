@@ -210,15 +210,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DbException {
     String sql = null;
     try {
-      final String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
-      if (selectQuery == null) {
-        final String datasource = EntityRepository.getSelectTableName(criteria.getEntityID());
-        sql = getSelectSQL(datasource, EntityRepository.getSelectColumnsString(criteria.getEntityID()),
-                criteria.getWhereClause(getDatabase(), ENTITY_SQL_VALUE_PROVIDER, !datasource.toLowerCase().contains("where")), criteria.getOrderByClause());
-      }
-      else {
-        sql = selectQuery + " " + criteria.getWhereClause(getDatabase(), ENTITY_SQL_VALUE_PROVIDER, !selectQuery.toLowerCase().contains("where"));
-      }
+      sql = initializeSelectQuery(criteria, ENTITY_SQL_VALUE_PROVIDER,
+              EntityRepository.getSelectColumnsString(criteria.getEntityID()), criteria.getOrderByClause());
 
       final List<Entity> result = (List<Entity>) query(sql, getEntityResultPacker(criteria.getEntityID()), criteria.getFetchCount());
 
@@ -458,6 +451,8 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /**
    * @param database the Database instance
    * @param entity the Entity instance
+   * @param valueProvider the value provider
+   * @param insertProperties the properties to insert
    * @return a query for inserting this entity instance
    */
   static String getInsertSQL(final Database database, final Entity entity, final Criteria.ValueProvider valueProvider,
@@ -526,6 +521,7 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
   /**
    * @param database the Database instance
    * @param criteria the EntityCriteria instance
+   * @param valueProvider the value provider
    * @return a query for deleting the entities specified by the given criteria
    */
   static String getDeleteSQL(final Database database, final EntityCriteria criteria,
@@ -690,6 +686,32 @@ public class EntityDbConnection extends DbConnection implements EntityDb {
 
       throw new DbException(exception, sql, getDatabase().getErrorMessage(exception));
     }
+  }
+
+  static String initializeSelectQuery(final EntityCriteria criteria, Criteria.ValueProvider valueProvider,
+                                      final String columnsString, final String orderByClause) {
+    String selectQuery = EntityRepository.getSelectQuery(criteria.getEntityID());
+    if (selectQuery == null)
+      selectQuery = getSelectSQL(EntityRepository.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
+
+    selectQuery += " " + criteria.getWhereClause(null, valueProvider, !containsWhereKeyword(selectQuery));
+    if (orderByClause != null)
+      selectQuery += " order by " + orderByClause;
+
+    return selectQuery;
+  }
+
+  /**
+   * @param selectQuery the query to check
+   * @return true if the query contains the WHERE keyword after the last FROM keyword instance
+   */
+  static boolean containsWhereKeyword(final String selectQuery) {
+    final String lowerCaseQuery = selectQuery.toLowerCase();
+    int lastFromIndex = lowerCaseQuery.lastIndexOf("from");
+    if (lastFromIndex < 0)
+      lastFromIndex = 0;
+
+    return selectQuery.substring(lastFromIndex, lowerCaseQuery.length()-1).contains("where");
   }
 
   private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,

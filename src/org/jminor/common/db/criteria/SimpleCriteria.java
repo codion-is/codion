@@ -10,20 +10,20 @@ import java.util.List;
 /**
  * Encapsulates a simple free-form query criteria.
  */
-public class SimpleCriteria implements Criteria {
+public class SimpleCriteria<T> implements Criteria<T> {
 
   private final String criteriaString;
   private List<Object> values;
-  private List<Integer> types;
+  private List<T> keys;
 
   public SimpleCriteria(final String criteriaString) {
     this(criteriaString, null, null);
   }
 
-  public SimpleCriteria(final String criteriaString, final List<Object> values, final List<Integer> types) {
+  public SimpleCriteria(final String criteriaString, final List<Object> values, final List<T> keys) {
     this.criteriaString = criteriaString;
     this.values = values;
-    this.types = types;
+    this.keys = keys;
   }
 
   public String asString(final Database database, final ValueProvider valueProvider) {
@@ -34,7 +34,7 @@ public class SimpleCriteria implements Criteria {
     return values;
   }
 
-  public List<Integer> getTypes() {
-    return types;
+  public List<T> getValueKeys() {
+    return keys;
   }
 }

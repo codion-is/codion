@@ -4,6 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueProvider;
 
@@ -355,8 +356,8 @@ public class EntityUtil {
 
   public static Entity createRandomEntity(final String entityID, final Map<String, Entity> referenceEntities) {
     return createEntity(entityID, new ValueProvider<Property, Object>() {
-      public Object getValue(final Property key) {
-        return getRandomValue(key, referenceEntities);
+      public Object getValue(final Property property) {
+        return getRandomValue(property, referenceEntities);
       }
     });
   }
@@ -387,7 +388,13 @@ public class EntityUtil {
       return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
     }
     else {
-      if (property.isBoolean())
+      if (property instanceof Property.ValueListProperty) {
+        final List<Item<Object>> items = ((Property.ValueListProperty) property).getValues();
+        final Item item = items.get(random.nextInt(items.size()));
+
+        return item.getItem();
+      }
+      else if (property.isBoolean())
         return random.nextBoolean();
       else if (property.isCharacter())
         return (char) random.nextInt();

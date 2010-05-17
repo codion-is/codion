@@ -39,7 +39,7 @@ public class EntitySelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public EntitySelectCriteria(final String entityID, final Criteria criteria) {
+  public EntitySelectCriteria(final String entityID, final Criteria<Property> criteria) {
     this(entityID, criteria, null);
   }
 
@@ -52,7 +52,7 @@ public class EntitySelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public EntitySelectCriteria(final String entityID, final Criteria criteria, final String orderByClause) {
+  public EntitySelectCriteria(final String entityID, final Criteria<Property> criteria, final String orderByClause) {
     this(entityID, criteria, orderByClause, -1);
   }
 
@@ -65,7 +65,7 @@ public class EntitySelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public EntitySelectCriteria(final String entityID, final Criteria criteria, final int fetchCount) {
+  public EntitySelectCriteria(final String entityID, final Criteria<Property> criteria, final int fetchCount) {
     this(entityID, criteria, null, fetchCount);
   }
 
@@ -79,7 +79,7 @@ public class EntitySelectCriteria extends EntityCriteria {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public EntitySelectCriteria(final String entityID, final Criteria criteria, final String orderByClause,
+  public EntitySelectCriteria(final String entityID, final Criteria<Property> criteria, final String orderByClause,
                               final int fetchCount) {
     super(entityID, criteria);
     this.fetchCount = fetchCount;

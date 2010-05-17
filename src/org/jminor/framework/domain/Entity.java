@@ -909,6 +909,13 @@ public final class Entity extends ValueChangeMapImpl<String, Object> implements 
     }
 
     /**
+     * @return true if this key is comprised of multiple properties.
+     */
+    public boolean isCompositeKey() {
+      return getProperties().size() > 1;
+    }
+
+    /**
      * @return the first key property
      */
     public Property getFirstKeyProperty() {

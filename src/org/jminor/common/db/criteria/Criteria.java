@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * A generic interface for objects serving as where conditions in database queries
  */
-public interface Criteria {
+public interface Criteria<T> {
   /**
    * @return a SQL where condition string without the 'where' keyword  @param database the Database instance
    * @param database the underlying Database
@@ -24,9 +24,9 @@ public interface Criteria {
   List<?> getValues();
 
   /**
-   * @return the types of the values this criteria is based on, if any
+   * @return a list of objects describing the values this criteria is based on, if any
    */
-  List<Integer> getTypes();
+  List<T> getValueKeys();
 
   /**
    * An interface describing an object responsible for returning sql string representations

@@ -13,7 +13,7 @@ import java.util.List;
  * A class encapsulating a set of Criteria objects, that should be either AND'ed
  * or OR'ed together in a query context
  */
-public class CriteriaSet implements Criteria, Serializable {
+public class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -45,7 +45,7 @@ public class CriteriaSet implements Criteria, Serializable {
   /**
    * The criteria in this set
    */
-  private final List<Criteria> criteriaList = new ArrayList<Criteria>();
+  private final List<Criteria<T>> criteriaList = new ArrayList<Criteria<T>>();
 
   /**
    * Initializes a new CriteriaSet instance
@@ -60,9 +60,9 @@ public class CriteriaSet implements Criteria, Serializable {
    * @param conjunction the conjunction to use
    * @param criteria the Criteria objects to be included in this set
    */
-  public CriteriaSet(final Conjunction conjunction, final Criteria... criteria) {
+  public CriteriaSet(final Conjunction conjunction, final Criteria<T>... criteria) {
     this.conjunction = conjunction;
-    for (final Criteria criterion : criteria)
+    for (final Criteria<T> criterion : criteria)
       addCriteria(criterion);
   }
 
@@ -70,7 +70,7 @@ public class CriteriaSet implements Criteria, Serializable {
    * Adds a new Criteria object to this set
    * @param criteria the Criteria to add
    */
-  public void addCriteria(final Criteria criteria) {
+  public void addCriteria(final Criteria<T> criteria) {
     if (criteria != null)
       this.criteriaList.add(criteria);
   }
@@ -100,16 +100,16 @@ public class CriteriaSet implements Criteria, Serializable {
 
   public List<?> getValues() {
     final List<Object> values = new ArrayList<Object>();
-    for (final Criteria criteria : criteriaList)
+    for (final Criteria<T> criteria : criteriaList)
       values.addAll(criteria.getValues());
 
     return values;
   }
 
-  public List<Integer> getTypes() {
-    final List<Integer> types = new ArrayList<Integer>();
-    for (final Criteria criteria : criteriaList)
-      types.addAll(criteria.getTypes());
+  public List<T> getValueKeys() {
+    final List<T> types = new ArrayList<T>();
+    for (final Criteria<T> criteria : criteriaList)
+      types.addAll(criteria.getValueKeys());
 
     return types;
   }

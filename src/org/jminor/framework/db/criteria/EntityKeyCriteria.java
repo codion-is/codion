@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * A class encapsulating a query criteria with Entity.Key objects as values.
  */
-public class EntityKeyCriteria extends CriteriaSet {
+public class EntityKeyCriteria extends CriteriaSet<Property> {
 
   private static final long serialVersionUID = 1;
 
@@ -64,31 +64,6 @@ public class EntityKeyCriteria extends CriteriaSet {
     setupCriteria();
   }
 
-  private void setupCriteria() {
-    if (keys.get(0).getPropertyCount() > 1) {//multiple column key
-      final List<? extends Property> propertyList = properties == null ? keys.get(0).getProperties() : properties;
-      final List<Property.PrimaryKeyProperty> pkProperties = keys.get(0).getProperties();
-      //(a = b and c = d) or (a = g and c = d)
-      for (final Entity.Key key : keys) {
-        final CriteriaSet andSet = new CriteriaSet(Conjunction.AND);
-        int i = 0;
-        for (final Property property : propertyList)
-          andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE,
-                  key.getValue(pkProperties.get(i++).getPropertyID())));
- 
-        addCriteria(andSet);
-      }
-    }
-    else {
-      final Property property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
-      //a = b
-      if (keys.size() == 1)
-        addCriteria(new PropertyCriteria(property, SearchType.LIKE, keys.get(0).getFirstKeyValue()));
-      else //a in (c, v, d, s)
-        addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
-    }
-  }
-
   public List<String> getColumnNames() {
     if (properties == null)
       return null;
@@ -105,5 +80,30 @@ public class EntityKeyCriteria extends CriteriaSet {
    */
   public String getEntityID() {
     return keys.get(0).getEntityID();
+  }
+
+  private void setupCriteria() {
+    if (keys.get(0).isCompositeKey()) {//multiple column key
+      final List<? extends Property> propertyList = properties == null ? keys.get(0).getProperties() : properties;
+      final List<Property.PrimaryKeyProperty> pkProperties = keys.get(0).getProperties();
+      //(a = b and c = d) or (a = g and c = d)
+      for (final Entity.Key key : keys) {
+        final CriteriaSet<Property> andSet = new CriteriaSet<Property>(Conjunction.AND);
+        int i = 0;
+        for (final Property property : propertyList)
+          andSet.addCriteria(new PropertyCriteria(property, SearchType.LIKE,
+                  key.getValue(pkProperties.get(i++).getPropertyID())));
+
+        addCriteria(andSet);
+      }
+    }
+    else {
+      final Property property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
+      //a = b
+      if (keys.size() == 1)
+        addCriteria(new PropertyCriteria(property, SearchType.LIKE, keys.get(0).getFirstKeyValue()));
+      else //a in (c, v, d, s)
+        addCriteria(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
+    }
   }
 }

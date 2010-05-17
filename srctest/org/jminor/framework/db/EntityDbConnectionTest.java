@@ -145,12 +145,12 @@ public class EntityDbConnectionTest {
     assertEquals(2, result.size());
     result = getConnection().selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("deptno in (10, 20)")));
+    result = getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = getConnection().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria("d.deptno = 10")));
+    result = getConnection().selectMany(new EntitySelectCriteria(COMBINED_ENTITY_ID, new SimpleCriteria<Property>("d.deptno = 10")));
     assertTrue(result.size() > 0);
 
-    final EntitySelectCriteria criteria = new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria("ename = 'BLAKE'"));
+    final EntitySelectCriteria criteria = new EntitySelectCriteria(EmpDept.T_EMPLOYEE, new SimpleCriteria<Property>("ename = 'BLAKE'"));
     result = getConnection().selectMany(criteria);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EmpDept.EMPLOYEE_DEPARTMENT_FK));
@@ -181,8 +181,7 @@ public class EntityDbConnectionTest {
 
   @Test(expected = DbException.class)
   public void selectManyInvalidColumn() throws Exception {
-    getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT,
-            new SimpleCriteria("no_column is null")));
+    getConnection().selectMany(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("no_column is null")));
   }
 
   @Test
@@ -199,7 +198,7 @@ public class EntityDbConnectionTest {
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
     sales = getConnection().selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
-    sales = getConnection().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria("dname = 'SALES'")));
+    sales = getConnection().selectSingle(new EntitySelectCriteria(EmpDept.T_DEPARTMENT, new SimpleCriteria<Property>("dname = 'SALES'")));
     assertEquals(sales.getStringValue(EmpDept.DEPARTMENT_NAME), "SALES");
   }
 

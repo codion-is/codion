@@ -154,7 +154,7 @@ public class PropertySearchPanel extends AbstractSearchPanel<Property> {
         @Override
         protected Object getUIValue() {
           final Date value = (Date) super.getUIValue();
-          return value == null ? null : new Timestamp(value.getTime());
+          return value == null ? null : property.isDate() ? value : new Timestamp(value.getTime());
         }
       };
     }

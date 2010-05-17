@@ -6,6 +6,7 @@ package org.jminor.framework.db.criteria;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.dbms.Database;
 import org.jminor.framework.domain.EntityRepository;
+import org.jminor.framework.domain.Property;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +19,7 @@ public class EntityCriteria implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final String entityID;
-  private final Criteria criteria;
+  private final Criteria<Property> criteria;
 
   /**
    * Instantiates a new empty EntityCriteria.
@@ -37,7 +38,7 @@ public class EntityCriteria implements Serializable {
    * @see org.jminor.framework.db.criteria.PropertyCriteria
    * @see org.jminor.framework.db.criteria.EntityKeyCriteria
    */
-  public EntityCriteria(final String entityID, final Criteria criteria) {
+  public EntityCriteria(final String entityID, final Criteria<Property> criteria) {
     if (entityID == null)
       throw new IllegalArgumentException("Can not instantiate EntityCriteria without entityID");
     this.entityID = entityID;
@@ -52,10 +53,10 @@ public class EntityCriteria implements Serializable {
   }
 
   /**
-   * @return the types of the values the underlying criteria is based on, if any
+   * @return the properties of the values the underlying criteria is based on, if any
    */
-  public List<Integer> getTypes() {
-    return criteria == null ? null : criteria.getTypes();
+  public List<Property> getValueProperties() {
+    return criteria == null ? null : criteria.getValueKeys();
   }
 
   /**

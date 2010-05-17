@@ -17,12 +17,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A object for encapsulating a query criteria with a single property and one or more values.
  */
-public class PropertyCriteria implements Criteria, Serializable {
+public class PropertyCriteria implements Criteria<Property>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -35,6 +36,11 @@ public class PropertyCriteria implements Criteria, Serializable {
    * The values used in this criteria
    */
   private final List<Object> values;
+
+  /**
+   * True if this criteria tests for null
+   */
+  private final boolean isNullCriteria;
 
   /**
    * The search type used in this criteria
@@ -50,8 +56,6 @@ public class PropertyCriteria implements Criteria, Serializable {
    * True if this criteria should be case sensitive, only applies to criteria based on string properties
    */
   private boolean caseSensitive = true;
-
-  private boolean isNullCriteria;
 
   /**
    * Instantiates a new PropertyCriteria instance
@@ -78,7 +82,7 @@ public class PropertyCriteria implements Criteria, Serializable {
 
   public List<?> getValues() {
     if (isNullCriteria)
-      return new ArrayList();
+      return new ArrayList();//null criteria, uses 'x is null', not 'x = ?'
 
     if (getProperty() instanceof Property.ForeignKeyProperty)
       return getForeignKeyCriteriaValues();
@@ -86,18 +90,14 @@ public class PropertyCriteria implements Criteria, Serializable {
     return values;
   }
 
-  public List<Integer> getTypes() {
+  public List<Property> getValueKeys() {
     if (isNullCriteria)
-      return new ArrayList<Integer>();
+      return new ArrayList<Property>();//null criteria, uses 'x is null', not 'x = ?'
 
     if (getProperty() instanceof Property.ForeignKeyProperty)
-      return getForeignKeyCriteriaTypes();
+      return getForeignKeyValueProperties();
 
-    final ArrayList<Integer> types = new ArrayList<Integer>(values.size());
-    for (int i = 0; i < values.size(); i++)
-      types.add(property.getType());
-
-    return types;
+    return Collections.nCopies(values.size(), property);
   }
 
   public SearchType getSearchType() {
@@ -198,7 +198,7 @@ public class PropertyCriteria implements Criteria, Serializable {
     if (criteria.getValueCount() > 1)
       return getMultipleColumnForeignKeyCriteriaString(database, valueProvider);
 
-    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
+    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
     final Entity.Key entityKey = (Entity.Key) criteria.values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) criteria.getProperty()).getReferencedEntityID());
@@ -210,45 +210,13 @@ public class PropertyCriteria implements Criteria, Serializable {
     return set.asString(database, valueProvider);
   }
 
-  private List<?> getForeignKeyCriteriaValues() {
-    if (values.size() > 1)
-      return getMultipleColumnForeignKeyCriteriaValues();
-
-    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
-    final Entity.Key entityKey = (Entity.Key) values.get(0);
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-      set.addCriteria(new PropertyCriteria(
-              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
-
-    return set.getValues();
-  }
-
-  private List<Integer> getForeignKeyCriteriaTypes() {
-    if (values.size() > 1)
-      return getMultipleColumnForeignKeyCriteriaTypes();
-
-    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.AND);
-    final Entity.Key entityKey = (Entity.Key) values.get(0);
-    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
-            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-      set.addCriteria(new PropertyCriteria(
-              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
-
-    return set.getTypes();
-  }
-
   private String getMultipleColumnForeignKeyCriteriaString(final Database database, final ValueProvider valueProvider) {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
     if (primaryKeyProperties.size() > 1) {
-      final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
+      final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
       for (final Object entityKey : values) {
-        final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
+        final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
         for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
           pkSet.addCriteria(new PropertyCriteria(
                   ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
@@ -264,12 +232,28 @@ public class PropertyCriteria implements Criteria, Serializable {
               getSearchType() == SearchType.NOT_LIKE, valueProvider);
   }
 
+  private List<?> getForeignKeyCriteriaValues() {
+    if (values.size() > 1)
+      return getMultipleColumnForeignKeyCriteriaValues();
+
+    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
+    final Entity.Key entityKey = (Entity.Key) values.get(0);
+    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
+    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
+      set.addCriteria(new PropertyCriteria(
+              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
+              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
+
+    return set.getValues();
+  }
+
   private List<?> getMultipleColumnForeignKeyCriteriaValues() {
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
+    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
     for (final Object entityKey : values) {
-      final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
+      final CriteriaSet<Property> pkSet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
       for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
         pkSet.addCriteria(new PropertyCriteria(
                 ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
@@ -281,21 +265,37 @@ public class PropertyCriteria implements Criteria, Serializable {
     return set.getValues();
   }
 
-  private List<Integer> getMultipleColumnForeignKeyCriteriaTypes() {
+  private List<Property> getForeignKeyValueProperties() {
+    if (values.size() > 1)
+      return getMultipleColumnForeignKeyValueProperties();
+
+    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
+    final Entity.Key entityKey = (Entity.Key) values.get(0);
     final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
             EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
-    final CriteriaSet set = new CriteriaSet(CriteriaSet.Conjunction.OR);
-    for (final Object entityKey : values) {
-      final CriteriaSet pkSet = new CriteriaSet(CriteriaSet.Conjunction.AND);
-      for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
-        pkSet.addCriteria(new PropertyCriteria(
-                ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
-                getSearchType(), ((Entity.Key) entityKey).getValue(keyProperty.getPropertyID())));
+    for (final Property.PrimaryKeyProperty keyProperty : primaryKeyProperties)
+      set.addCriteria(new PropertyCriteria(
+              ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(keyProperty.getIndex()),
+              getSearchType(), entityKey == null ? null : entityKey.getValue(keyProperty.getPropertyID())));
 
-      set.addCriteria(pkSet);
+    return set.getValueKeys();
+  }
+
+  private List<Property> getMultipleColumnForeignKeyValueProperties() {
+    final Collection<Property.PrimaryKeyProperty > primaryKeyProperties =
+            EntityRepository.getPrimaryKeyProperties(((Property.ForeignKeyProperty) getProperty()).getReferencedEntityID());
+    final CriteriaSet<Property> set = new CriteriaSet<Property>(CriteriaSet.Conjunction.OR);
+    for (final Object entityKey : values) {
+      final CriteriaSet<Property> primaryKeySet = new CriteriaSet<Property>(CriteriaSet.Conjunction.AND);
+      for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties)
+        primaryKeySet.addCriteria(new PropertyCriteria(
+                ((Property.ForeignKeyProperty) getProperty()).getReferenceProperties().get(primaryKeyProperty.getIndex()),
+                getSearchType(), ((Entity.Key) entityKey).getValue(primaryKeyProperty.getPropertyID())));
+
+      set.addCriteria(primaryKeySet);
     }
 
-    return set.getTypes();
+    return set.getValueKeys();
   }
 
   private String getInList(final Database database, final String whereColumn, final boolean notIn,
